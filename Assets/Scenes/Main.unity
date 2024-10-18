@@ -301,12 +301,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  jumpForce: 10
   groundCheck: {fileID: 244590196}
   groundCheckRadius: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  jumpForce: 10
+  maxJumps: 2
 --- !u!50 &371894295
 Rigidbody2D:
   serializedVersion: 5
@@ -332,7 +333,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!114 &371894296
 MonoBehaviour:
