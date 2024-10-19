@@ -66,12 +66,12 @@ public class PlayerMovement : MonoBehaviour
 		if (moveInput.x != 0)
 			CheckDirectionToFace(moveInput.x > 0);
 
-		if(PlayerInput.JumpInput)
+		if(PlayerInput.JumpInputDown)
         {
 			OnJumpInput();
         }
 
-		if (PlayerInput.JumpInput)
+		if (PlayerInput.JumpInputUp)
 		{
 			OnJumpUpInput();
 		}

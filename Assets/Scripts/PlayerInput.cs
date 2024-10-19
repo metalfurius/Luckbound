@@ -3,7 +3,8 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     public Vector2 MovementInput { get; private set; }
-    public bool JumpInput { get; private set; }
+    public bool JumpInputDown { get; private set; }
+    public bool JumpInputUp { get; private set; }
 
     private void Update()
     {
@@ -12,6 +13,7 @@ public class PlayerInput : MonoBehaviour
 
         MovementInput = new Vector2(_moveX, _moveY);
 
-        JumpInput = Input.GetButtonDown("Jump");
+        JumpInputDown = Input.GetButtonDown("Jump");
+        JumpInputUp = Input.GetButtonUp("Jump");
     }
 }
