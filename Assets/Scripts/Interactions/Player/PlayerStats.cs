@@ -9,7 +9,7 @@ public class PlayerStats : MonoBehaviour
     public void TakeDamage(int amount)
     {
         var _actualDamage = amount - resistance; 
-        health -= _actualDamage;
+        health -= Randomizer.GetRandomizedInt(_actualDamage);
 
         if (health <= 0)
         {
@@ -17,7 +17,7 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public void Die()
+    private void Die()
     {
         Debug.Log("Player has died!"); 
     }

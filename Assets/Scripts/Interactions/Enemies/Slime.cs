@@ -15,13 +15,12 @@ public class Slime : Enemy
         rb = GetComponent<Rigidbody2D>(); 
         nextJumpTime = Time.time; 
     }
-
     private void Update()
     {
         if (Time.time > nextJumpTime)
         {
             JumpTowardsPlayer();
-            nextJumpTime = Time.time + jumpInterval;
+            nextJumpTime = Time.time + Randomizer.GetRandomizedInt(jumpInterval);
         }
     }
 
@@ -30,7 +29,7 @@ public class Slime : Enemy
         if (playerTarget)
         {
             Vector2 _direction = (playerTarget.position - transform.position).normalized;
-            rb.AddForce(_direction * jumpForce, ForceMode2D.Impulse); 
+            rb.AddForce((Vector2.up + _direction) * Randomizer.GetRandomizedInt(jumpForce), ForceMode2D.Impulse);
         }
     }
 

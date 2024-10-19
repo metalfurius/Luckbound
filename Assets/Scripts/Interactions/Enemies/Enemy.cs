@@ -9,12 +9,12 @@ public class Enemy : MonoBehaviour
     public virtual void TakeDamage(int amount)
     {
         var _actualDamage = amount - resistance;
-        health -= _actualDamage;
+        health -= Randomizer.GetRandomizedInt(_actualDamage);
         if (health <= 0)
             Die();
     }
 
-    public virtual void Die()
+    protected virtual void Die()
     {
         Destroy(gameObject);
     }
