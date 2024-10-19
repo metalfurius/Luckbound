@@ -13,7 +13,7 @@ public class Damageable : MonoBehaviour
         }
     }
 
-    public virtual void Die()
+    protected virtual void Die()
     {
         Destroy(gameObject); 
     }

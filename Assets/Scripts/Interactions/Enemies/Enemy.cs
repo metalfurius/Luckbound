@@ -1,20 +1,16 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Damageable
 {
-    public int health = 50;
     public int resistance = 5;
-    public SpriteRenderer spriteRenderer; 
 
-    public virtual void TakeDamage(int amount)
+    public override void TakeDamage(int amount)
     {
         var _actualDamage = amount - resistance;
-        health -= Randomizer.GetRandomizedInt(_actualDamage);
-        if (health <= 0)
-            Die();
+        base.TakeDamage(Randomizer.GetRandomizedInt(_actualDamage));
     }
 
-    protected virtual void Die()
+    protected override void Die()
     {
         Destroy(gameObject);
     }

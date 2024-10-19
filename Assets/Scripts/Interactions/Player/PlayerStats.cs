@@ -1,12 +1,11 @@
 using UnityEngine;
 
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : Damageable
 {
-    public int health = 100; 
     public int mana = 50;
     public int resistance = 10;
 
-    public void TakeDamage(int amount)
+    public override void TakeDamage(int amount)
     {
         var _actualDamage = amount - resistance; 
         health -= Randomizer.GetRandomizedInt(_actualDamage);
@@ -17,7 +16,7 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    private void Die()
+    protected override void Die()
     {
         Debug.Log("Player has died!"); 
     }
