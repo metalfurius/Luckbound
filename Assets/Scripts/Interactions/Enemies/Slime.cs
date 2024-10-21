@@ -9,13 +9,15 @@ public class Slime : Enemy
     private Rigidbody2D rb;
     private float nextJumpTime;
 
-    private void Start()
+    public override void Start()
     {
+        base.Start();
         playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
         rb = GetComponent<Rigidbody2D>(); 
         nextJumpTime = Time.time; 
     }
-    private void Update()
+
+    protected override void HandleChaseState()
     {
         if (Time.time > nextJumpTime)
         {
@@ -44,5 +46,15 @@ public class Slime : Enemy
                 _player.TakeDamage(attackDamage);
             }
         }
+    }
+
+    protected override void OnPlayerEnterArea()
+    {
+        currentState = EnemyState.Chase;
+    }
+
+    protected override void OnPlayerExitArea()
+    {
+        currentState = EnemyState.Patrol;
     }
 }

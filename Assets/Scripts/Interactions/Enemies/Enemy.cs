@@ -7,9 +7,8 @@ public class Enemy : Damageable
     public EnemyState currentState = EnemyState.Idle;
     public BoxCollider2D areaOfInfluence;
 
-    private void Start()
+    public virtual void Start()
     {
-        areaOfInfluence = GetComponent<BoxCollider2D>(); 
         if (areaOfInfluence)
             areaOfInfluence.isTrigger = true; 
         else
@@ -43,25 +42,27 @@ public class Enemy : Damageable
         }
     }
 
-    public virtual void HandleAttackState()
+    protected virtual void HandleAttackState()
     {
     }
 
-    public virtual void HandleIdleState() 
+    protected virtual void HandleIdleState() 
     {
     }
 
-    public virtual void HandlePatrolState() 
+    protected virtual void HandlePatrolState() 
     {
     }
 
-    public virtual void HandleChaseState() 
+    protected virtual void HandleChaseState() 
     {
     }
-    public virtual void HandleFleeState() 
+
+    protected virtual void HandleFleeState() 
     {
     }
-    public virtual void HandleDieState() 
+
+    protected virtual void HandleDieState() 
     {
     }
 
@@ -81,20 +82,12 @@ public class Enemy : Damageable
         }
     }
 
-    public virtual void OnPlayerEnterArea()
+    protected virtual void OnPlayerEnterArea()
     {
-        if (currentState is EnemyState.Idle or EnemyState.Patrol)
-        {
-            currentState = EnemyState.Chase;
-        }
     }
 
-    public virtual void OnPlayerExitArea()
+    protected virtual void OnPlayerExitArea()
     {
-        if (currentState == EnemyState.Chase)
-        {
-            currentState = EnemyState.Idle; // Or back to Patrol
-        }
     }
 
     public override void TakeDamage(int amount)
