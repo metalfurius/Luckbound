@@ -18,6 +18,7 @@ public class PlayerStats : Damageable
 
     protected override void Die()
     {
+        base.Die();
         Debug.Log("Player has died!"); 
     }
 }

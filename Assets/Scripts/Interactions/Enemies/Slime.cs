@@ -16,7 +16,6 @@ public class Slime : Enemy
         rb = GetComponent<Rigidbody2D>(); 
         nextJumpTime = Time.time; 
     }
-
     protected override void HandleChaseState()
     {
         if (Time.time > nextJumpTime)
@@ -25,7 +24,6 @@ public class Slime : Enemy
             nextJumpTime = Time.time + Randomizer.GetRandomizedInt(jumpInterval);
         }
     }
-
     private void JumpTowardsPlayer()
     {
         if (playerTarget)
@@ -34,7 +32,6 @@ public class Slime : Enemy
             rb.AddForce((Vector2.up + _direction) * Randomizer.GetRandomizedInt(jumpForce), ForceMode2D.Impulse);
         }
     }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -47,12 +44,10 @@ public class Slime : Enemy
             }
         }
     }
-
     protected override void OnPlayerEnterArea()
     {
         currentState = EnemyState.Chase;
     }
-
     protected override void OnPlayerExitArea()
     {
         currentState = EnemyState.Patrol;

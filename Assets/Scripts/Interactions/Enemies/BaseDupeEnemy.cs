@@ -24,30 +24,12 @@ public class BaseDupeEnemy : Enemy
             }
         }
     }
-    protected override void HandleAttackState()
-    {
-        
-    }
-    protected override void HandleIdleState()
-    {
-        
-    }
-    protected override void HandlePatrolState()
-    {
-        
-    }
-    protected override void HandleChaseState()
-    {
-        
-    }
-    protected override void HandleFleeState()
-    {
-        
-    }
-    protected override void HandleDieState()
-    {
-        
-    }
+    protected override void HandleAttackState() { }
+    protected override void HandleIdleState() { }
+    protected override void HandlePatrolState() { }
+    protected override void HandleChaseState() { }
+    protected override void HandleFleeState() { }
+    protected override void HandleDieState() { }
     protected override void OnPlayerEnterArea()
     {
         currentState = EnemyState.Chase;

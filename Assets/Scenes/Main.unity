@@ -393,6 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  timeToDestroy: 2
   mana: 50
   resistance: 10
 --- !u!1 &429111205
@@ -1313,6 +1314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 50
+  timeToDestroy: 2
   resistance: 5
   currentState: 0
   areaOfInfluence: {fileID: 563328130}

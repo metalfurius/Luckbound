@@ -1,8 +1,10 @@
 using UnityEngine;
+using System.Collections;
 
 public class Damageable : MonoBehaviour
 {
     public int health;
+    public int timeToDestroy;
 
     public virtual void TakeDamage(int amount)
     {
@@ -12,9 +14,13 @@ public class Damageable : MonoBehaviour
             Die();
         }
     }
-
     protected virtual void Die()
     {
-        Destroy(gameObject); 
+        StartCoroutine(DelayedDestroy());
+    }
+    private IEnumerator DelayedDestroy()
+    {
+        yield return new WaitForSeconds(timeToDestroy);
+        Destroy(gameObject);
     }
 }
