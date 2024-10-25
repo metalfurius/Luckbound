@@ -6,8 +6,9 @@ using UnityEngine;
 public class WeaponAnimation
 {
     public string name;
+    public bool collidersExpanded; 
     public List<Sprite> sprites;
     public List<int> frameTimings;
-    public List<Collider2D> colliders;
+    public List<BoxCollider2D> colliders;
     public List<float> damagePerFrame;
 }

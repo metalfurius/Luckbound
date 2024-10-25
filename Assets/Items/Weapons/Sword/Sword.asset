@@ -13,19 +13,41 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   weaponName: Sword
-  weaponGameObject: {fileID: 6099326850942934369, guid: b37c39f608431be4ca53eebd1c57de0a, type: 3}
+  weaponGameObject: {fileID: 3028906282997671057, guid: b37c39f608431be4ca53eebd1c57de0a, type: 3}
   attackAnimations:
-  - name: Attack1
+  - name: Ataque pocho
+    collidersExpanded: 1
     sprites:
-    - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    frameTimings: 0000000000000000
+    colliders:
+    - {fileID: 525174557917944801, guid: b37c39f608431be4ca53eebd1c57de0a, type: 3}
+    - {fileID: 4929510852087314583, guid: b37c39f608431be4ca53eebd1c57de0a, type: 3}
+    damagePerFrame:
+    - 0
+    - 34534
+  - name: Ataque galaxial
+    collidersExpanded: 0
+    sprites: []
     frameTimings: 000000000000000000000000
     colliders:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
     damagePerFrame:
-    - 23
+    - 0
+    - 0
+    - 0
+  - name: Increible habilidad
+    collidersExpanded: 0
+    sprites: []
+    frameTimings: 000000000000000000000000
+    colliders:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    damagePerFrame:
+    - 0
     - 0
     - 0
