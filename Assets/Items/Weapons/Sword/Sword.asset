@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11c3a200f2422e64b9916dbbc5708b11, type: 3}
+  m_Name: Sword
+  m_EditorClassIdentifier: 
+  weaponName: Sword
+  weaponGameObject: {fileID: 6099326850942934369, guid: b37c39f608431be4ca53eebd1c57de0a, type: 3}
+  attackAnimations:
+  - name: Attack1
+    sprites:
+    - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    frameTimings: 000000000000000000000000
+    colliders:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    damagePerFrame:
+    - 23
+    - 0
+    - 0

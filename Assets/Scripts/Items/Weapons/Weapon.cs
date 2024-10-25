@@ -4,7 +4,6 @@ using UnityEngine;
 public class Weapon : ScriptableObject
 {
     public string weaponName;
-    public Sprite weaponSprite;
-    public int damage;
-    public float attackSpeed;
+    public GameObject weaponGameObject;
+    public WeaponAnimation[] attackAnimations;
 }

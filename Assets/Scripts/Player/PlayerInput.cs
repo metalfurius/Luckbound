@@ -8,10 +8,10 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
-        var _moveX = Input.GetAxis("Horizontal");
-        var _moveY = Input.GetAxis("Vertical");
+        var moveX = Input.GetAxis("Horizontal");
+        var moveY = Input.GetAxis("Vertical");
 
-        MovementInput = new Vector2(_moveX, _moveY);
+        MovementInput = new Vector2(moveX, moveY);
 
         JumpInputDown = Input.GetButtonDown("Jump");
         JumpInputUp = Input.GetButtonUp("Jump");
