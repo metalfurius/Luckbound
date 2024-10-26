@@ -59,8 +59,8 @@ public class Enemy : Damageable
     protected virtual void OnPlayerExitArea() { }
     public override void TakeDamage(int amount)
     {
-        var _actualDamage = amount - resistance;
-        base.TakeDamage(Randomizer.GetRandomizedInt(_actualDamage));
+        var actualDamage = amount - resistance;
+        base.TakeDamage(Randomizer.GetRandomizedInt(actualDamage));
     }
     protected override void Die()
     {
