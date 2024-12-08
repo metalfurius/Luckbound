@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BaseDupeEnemy : Enemy
+public class BaseCollissionEnemy : Enemy
 {
     public int attackBodyDamage = 60;
     private Transform _playerTarget;
