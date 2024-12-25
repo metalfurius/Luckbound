@@ -1,17 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-public class AnimationRequest
-{
-    public List<Sprite> Sprites;
-    public List<float> FrameTimings;
-    public int Priority; // Higher priority interrupts lower priority animations
-    public System.Action<int> OnFrameUpdated;
-    public System.Action OnAnimationCompleted;
-}
+
 public abstract class BaseAnimator : MonoBehaviour
 {
-    protected SpriteRenderer _spriteRenderer;
+    private SpriteRenderer _spriteRenderer;
     private Coroutine _currentAnimationCoroutine;
     private AnimationRequest _currentRequest;
     private readonly Queue<AnimationRequest> _animationQueue = new Queue<AnimationRequest>();
@@ -24,9 +17,9 @@ public abstract class BaseAnimator : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void RequestAnimation(AnimationRequest request)
+    protected void RequestAnimation(AnimationRequest request)
     {
-        if (_currentRequest == null || request.Priority >= _currentRequest.Priority)
+        if (_currentRequest == null || request.priority >= _currentRequest.priority)
         {
             StopCurrentAnimation();
             PlayAnimation(request);
@@ -49,12 +42,18 @@ public abstract class BaseAnimator : MonoBehaviour
 
         try
         {
-            for (int i = 0; i < request.Sprites.Count; i++)
+            for (int i = 0; i < request.sprites.Count; i++)
             {
-                _spriteRenderer.sprite = request.Sprites[i];
+                _spriteRenderer.sprite = request.sprites[i];
                 request.OnFrameUpdated?.Invoke(i);
 
-                float frameDuration = request.FrameTimings[i] / animationFPS;
+                // Update collider state if colliders are provided
+                if (request.colliders != null && i < request.colliders.Count)
+                {
+                    UpdateColliderState(request.colliders[i]);
+                }
+
+                float frameDuration = request.frameTimings[i] / animationFPS;
                 float elapsedTime = 0f;
 
                 while (elapsedTime < frameDuration)
@@ -70,6 +69,11 @@ public abstract class BaseAnimator : MonoBehaviour
         {
             CleanupAnimation();
         }
+    }
+
+    private void UpdateColliderState(BoxCollider2D boxCollider2D)
+    {
+        // Implement the logic to update the collider state
     }
 
     private void StopCurrentAnimation()

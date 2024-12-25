@@ -7,9 +7,9 @@ public class PlayerAnimator : BaseAnimator
     {
         RequestAnimation(new AnimationRequest
         {
-            Sprites = idleSprites,
-            FrameTimings = CreateUniformTimings(idleSprites.Count, frameDuration),
-            Priority = 0 // Lowest priority
+            sprites = idleSprites,
+            frameTimings = CreateUniformTimings(idleSprites.Count, frameDuration),
+            priority = 0 // Lowest priority
         });
     }
     
@@ -17,19 +17,21 @@ public class PlayerAnimator : BaseAnimator
     {
         RequestAnimation(new AnimationRequest
         {
-            Sprites = movementSprites,
-            FrameTimings = CreateUniformTimings(movementSprites.Count, frameDuration),
-            Priority = 1 // Low priority, interruptible by attack or other animations
+            sprites = movementSprites,
+            frameTimings = CreateUniformTimings(movementSprites.Count, frameDuration),
+            priority = 1 // Low priority, interruptible by attack or other animations
         });
     }
 
-    public void PlayAttackAnimation(List<Sprite> attackSprites, List<float> frameTimings, System.Action<int> onHitFrame)
+    public void PlayAttackAnimation(List<Sprite> attackSprites, List<float> frameTimings, List<BoxCollider2D> colliders, List<float> damagePerFrame, System.Action<int> onHitFrame)
     {
         RequestAnimation(new AnimationRequest
         {
-            Sprites = attackSprites,
-            FrameTimings = frameTimings,
-            Priority = 2, // Higher priority than movement
+            sprites = attackSprites,
+            frameTimings = frameTimings,
+            priority = 2, // Higher priority than movement
+            colliders = colliders, // Set colliders
+            damagePerFrame = damagePerFrame, // Set damage per frame
             OnFrameUpdated = onHitFrame
         });
     }
