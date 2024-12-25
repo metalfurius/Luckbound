@@ -17,12 +17,12 @@ public abstract class BaseAnimator : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    protected void RequestAnimation(AnimationRequest request)
+    public void PlayAnimation(AnimationRequest request)
     {
         if (_currentRequest == null || request.priority >= _currentRequest.priority)
         {
             StopCurrentAnimation();
-            PlayAnimation(request);
+            StartAnimation(request);
         }
         else
         {
@@ -30,7 +30,7 @@ public abstract class BaseAnimator : MonoBehaviour
         }
     }
 
-    private void PlayAnimation(AnimationRequest request)
+    private void StartAnimation(AnimationRequest request)
     {
         _currentRequest = request;
         _currentAnimationCoroutine = StartCoroutine(AnimateSequence(request));
@@ -58,6 +58,11 @@ public abstract class BaseAnimator : MonoBehaviour
 
                 while (elapsedTime < frameDuration)
                 {
+                    if (request.colliders != null)
+                    {
+                        CheckCollisionsForCurrentFrame(request, i);
+                    }
+
                     yield return waitForEndOfFrame;
                     elapsedTime += Time.deltaTime;
                 }
@@ -76,6 +81,11 @@ public abstract class BaseAnimator : MonoBehaviour
         // Implement the logic to update the collider state
     }
 
+    private void CheckCollisionsForCurrentFrame(AnimationRequest request, int frameIndex)
+    {
+        // Implement the logic to check collisions and apply damage
+    }
+
     private void StopCurrentAnimation()
     {
         if (_currentAnimationCoroutine != null)
@@ -92,7 +102,7 @@ public abstract class BaseAnimator : MonoBehaviour
 
         if (_animationQueue.Count > 0)
         {
-            PlayAnimation(_animationQueue.Dequeue());
+            StartAnimation(_animationQueue.Dequeue());
         }
     }
 
