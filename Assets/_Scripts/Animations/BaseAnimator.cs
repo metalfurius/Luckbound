@@ -8,13 +8,23 @@ public abstract class BaseAnimator : MonoBehaviour
     private Coroutine _currentAnimationCoroutine;
     private AnimationRequest _currentRequest;
     private readonly Queue<AnimationRequest> _animationQueue = new Queue<AnimationRequest>();
-    protected bool IsAnimating => _currentAnimationCoroutine != null;
+    private readonly HashSet<Enemy> _hitEnemiesThisFrame = new HashSet<Enemy>();
+    private BoxCollider2D _weaponCollider;
 
     [SerializeField] private float animationFPS = 60f;
+    [SerializeField] private LayerMask enemyLayer;
+
+    protected bool IsAnimating => _currentAnimationCoroutine != null;
 
     protected virtual void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    public void Initialize(BoxCollider2D weaponCollider)
+    {
+        _weaponCollider = weaponCollider;
+        _weaponCollider.enabled = false;
     }
 
     public void PlayAnimation(AnimationRequest request)
@@ -78,12 +88,41 @@ public abstract class BaseAnimator : MonoBehaviour
 
     private void UpdateColliderState(BoxCollider2D boxCollider2D)
     {
-        // Implement the logic to update the collider state
+        if (!_weaponCollider) return;
+
+        _weaponCollider.offset = boxCollider2D.offset;
+        _weaponCollider.size = boxCollider2D.size;
+        _weaponCollider.enabled = boxCollider2D.enabled;
     }
 
     private void CheckCollisionsForCurrentFrame(AnimationRequest request, int frameIndex)
     {
-        // Implement the logic to check collisions and apply damage
+        if (!_weaponCollider || !_weaponCollider.enabled) return;
+
+        var filter = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = enemyLayer,
+            useTriggers = true
+        };
+
+        var results = new List<Collider2D>();
+
+        if (_weaponCollider.Overlap(filter, results) > 0)
+        {
+            int currentFrameDamage = (int)request.damagePerFrame[frameIndex];
+
+            foreach (var result in results)
+            {
+                if (result == null) continue;
+
+                var enemy = result.GetComponent<Enemy>();
+                if (enemy != null && _hitEnemiesThisFrame.Add(enemy))
+                {
+                    enemy.TakeDamage(currentFrameDamage);
+                }
+            }
+        }
     }
 
     private void StopCurrentAnimation()
@@ -99,6 +138,13 @@ public abstract class BaseAnimator : MonoBehaviour
     {
         _currentRequest = null;
         _currentAnimationCoroutine = null;
+
+        if (_weaponCollider)
+        {
+            _weaponCollider.enabled = false;
+        }
+
+        _hitEnemiesThisFrame.Clear();
 
         if (_animationQueue.Count > 0)
         {

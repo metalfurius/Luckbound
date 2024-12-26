@@ -1,9 +1,16 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Weapon", menuName = "Weapon")]
-public class Weapon : ScriptableObject
+public class Weapon : MonoBehaviour
 {
-    public string weaponName;
-    public GameObject weaponGameObject;
-    public WeaponAnimation[] attackAnimations;
+    [SerializeField] private WeaponData weaponData;
+
+    public WeaponData WeaponData => weaponData;
+
+    public void PerformAttack(BaseAnimator animator)
+    {
+        foreach (var animationRequest in weaponData.animations)
+        {
+            animator.PlayAnimation(animationRequest);
+        }
+    }
 }

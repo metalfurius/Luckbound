@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿/*
+using UnityEngine;
 using System.Collections.Generic;
 
 public class CustomWeaponAnimator : MonoBehaviour
@@ -156,3 +157,4 @@ public class CustomWeaponAnimator : MonoBehaviour
         }
     }
 }
+*/
