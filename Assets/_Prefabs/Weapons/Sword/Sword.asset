@@ -13,7 +13,13 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   dataName: 
-  animations: []
+  animations:
+  - animationName: 
+    sprites: []
+    frameTimings: []
+    priority: 0
+    colliders: []
+    damagePerFrame: []
   baseDamage: 0
   weaponIcon: {fileID: 0}
   attackSpeed: 0

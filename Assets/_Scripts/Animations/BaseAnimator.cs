@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class BaseAnimator : MonoBehaviour
+public sealed class BaseAnimator : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
     private Coroutine _currentAnimationCoroutine;
@@ -14,9 +14,9 @@ public abstract class BaseAnimator : MonoBehaviour
     [SerializeField] private float animationFPS = 60f;
     [SerializeField] private LayerMask enemyLayer;
 
-    protected bool IsAnimating => _currentAnimationCoroutine != null;
+    private bool IsAnimating => _currentAnimationCoroutine != null;
 
-    protected virtual void Awake()
+    private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -31,6 +31,12 @@ public abstract class BaseAnimator : MonoBehaviour
     {
         if (_currentRequest == null || request.priority >= _currentRequest.priority)
         {
+            if (_currentRequest != null && _currentRequest.animationName == request.animationName && IsAnimating)
+            {
+                // If the current animation is the same and it's already animating, do nothing
+                return;
+            }
+
             StopCurrentAnimation();
             StartAnimation(request);
         }
@@ -46,37 +52,41 @@ public abstract class BaseAnimator : MonoBehaviour
         _currentAnimationCoroutine = StartCoroutine(AnimateSequence(request));
     }
 
+    
     private IEnumerator AnimateSequence(AnimationRequest request)
     {
         var waitForEndOfFrame = new WaitForEndOfFrame();
 
         try
         {
-            for (int i = 0; i < request.sprites.Count; i++)
+            do
             {
-                _spriteRenderer.sprite = request.sprites[i];
-                request.OnFrameUpdated?.Invoke(i);
-
-                // Update collider state if colliders are provided
-                if (request.colliders != null && i < request.colliders.Count)
+                for (int i = 0; i < request.sprites.Count; i++)
                 {
-                    UpdateColliderState(request.colliders[i]);
-                }
+                    _spriteRenderer.sprite = request.sprites[i];
+                    request.OnFrameUpdated?.Invoke(i);
 
-                float frameDuration = request.frameTimings[i] / animationFPS;
-                float elapsedTime = 0f;
-
-                while (elapsedTime < frameDuration)
-                {
-                    if (request.colliders != null)
+                    // Update collider state if colliders are provided
+                    if (request.colliders != null && i < request.colliders.Count)
                     {
-                        CheckCollisionsForCurrentFrame(request, i);
+                        UpdateColliderState(request.colliders[i]);
                     }
 
-                    yield return waitForEndOfFrame;
-                    elapsedTime += Time.deltaTime;
+                    float frameDuration = request.frameTimings[i] / animationFPS;
+                    float elapsedTime = 0f;
+
+                    while (elapsedTime < frameDuration)
+                    {
+                        if (request.colliders != null)
+                        {
+                            CheckCollisionsForCurrentFrame(request, i);
+                        }
+
+                        yield return waitForEndOfFrame;
+                        elapsedTime += Time.deltaTime;
+                    }
                 }
-            }
+            } while (request.loop);
 
             request.OnAnimationCompleted?.Invoke();
         }

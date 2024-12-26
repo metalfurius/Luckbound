@@ -5,11 +5,15 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public PlayerData data;
+    private BaseAnimator _animator;
+    private PlayerStats _playerStats;
 
     private void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
         PlayerInput = GetComponent<PlayerInput>();
+        _animator = GetComponent<BaseAnimator>();
+        _playerStats = GetComponent<PlayerStats>();
     }
 
     private void Start()
@@ -37,7 +41,13 @@ public class PlayerMovement : MonoBehaviour
         _moveInput.y = PlayerInput.MovementInput.y;
 
         if (_moveInput.x != 0)
+        {
             CheckDirectionToFace(_moveInput.x > 0);
+            _animator.PlayAnimation(_playerStats.playerAnimations.GetAnimationByName("Run"));
+        }else
+        {
+            _animator.PlayAnimation(_playerStats.playerAnimations.GetAnimationByName("Idle"));
+        }
 
         if (PlayerInput.JumpInputDown) OnJumpInput();
 

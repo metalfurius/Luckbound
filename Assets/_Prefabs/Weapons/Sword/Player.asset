@@ -13,4 +13,34 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: Assembly-CSharp::BaseData
   dataName: 
-  animations: []
+  animations:
+  - animationName: Run
+    sprites:
+    - {fileID: 2765022284340413302, guid: b4362681eb748db498644e4d560012a1, type: 3}
+    - {fileID: -5118592714017665260, guid: b4362681eb748db498644e4d560012a1, type: 3}
+    - {fileID: 2282252505155267186, guid: b4362681eb748db498644e4d560012a1, type: 3}
+    - {fileID: -8975760766481363634, guid: b4362681eb748db498644e4d560012a1, type: 3}
+    frameTimings:
+    - 0
+    - 5
+    - 10
+    - 15
+    priority: 1
+    loop: 1
+    colliders: []
+    damagePerFrame: []
+  - animationName: Idle
+    sprites:
+    - {fileID: 2765022284340413302, guid: b4362681eb748db498644e4d560012a1, type: 3}
+    - {fileID: -8017329338523267135, guid: 8111bb0363517104690f2d84ad478059, type: 3}
+    - {fileID: 2765022284340413302, guid: b4362681eb748db498644e4d560012a1, type: 3}
+    - {fileID: -8017329338523267135, guid: 8111bb0363517104690f2d84ad478059, type: 3}
+    frameTimings:
+    - 0
+    - 5
+    - 10
+    - 15
+    priority: 1
+    loop: 1
+    colliders: []
+    damagePerFrame: []

@@ -4,6 +4,7 @@ public class PlayerStats : Damageable
 {
     public int mana = 50;
     public int resistance = 10;
+    public BaseData playerAnimations;
 
     public override void TakeDamage(int amount)
     {

@@ -194,11 +194,11 @@ GameObject:
   - component: {fileID: 371894291}
   - component: {fileID: 371894296}
   - component: {fileID: 371894295}
+  - component: {fileID: 371894300}
   - component: {fileID: 371894294}
   - component: {fileID: 371894297}
   - component: {fileID: 371894299}
-  - component: {fileID: 371894300}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -399,6 +399,7 @@ MonoBehaviour:
   timeToDestroy: 2
   mana: 50
   resistance: 10
+  playerAnimations: {fileID: 11400000, guid: dab64be11106a63439561b8c9ef218fe, type: 2}
 --- !u!114 &371894299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,13 +407,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 371894290}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b6874b0e27347cc4d8d89cba353b18ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentWeapon: {fileID: 11400000, guid: aba3b43056bd80a4caf98949b9ca9e6a, type: 2}
-  weaponCollider: {fileID: 794631800}
 --- !u!114 &371894300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -422,7 +422,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 371894290}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb0f6ecd1004416d94e3c5720c5e0efb, type: 3}
+  m_Script: {fileID: 11500000, guid: f3f78ae2b4880384ea889347a1245919, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animationFPS: 60
