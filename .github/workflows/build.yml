@@ -13,21 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout del código fuente
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Cachear la carpeta Library
       - name: Cache Unity Library
         uses: actions/cache@v3
         with:
           path: Library
-          key: Library-WindowsStandalone
-          restore-keys: Library-
+          key: Library-WindowsStandalone-${{ runner.os }}-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
 
-      # Construir el proyecto para Windows Standalone
       - name: Build Unity Project
         uses: game-ci/unity-builder@v4
         env:
@@ -37,43 +33,42 @@ jobs:
         with:
           targetPlatform: StandaloneWindows64
 
-      # Subir la build a una rama separada
       - name: Deploy to Build Branch
         run: |
-          BUILD_DIR=build/StandaloneWindows64
+          BUILD_DIR=$GITHUB_WORKSPACE/build/StandaloneWindows64
           BUILD_BRANCH=build-branch
 
-          # Configurar Git
+          if [ ! -d "$BUILD_DIR" ]; then
+            echo "Error: Directory $BUILD_DIR does not exist."
+            exit 1
+          fi
+
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Crear un nuevo repositorio en un directorio temporal
           DEPLOY_DIR=$(mktemp -d)
           mkdir -p $DEPLOY_DIR
+          cp -r $BUILD_DIR/* $DEPLOY_DIR/
+
           cd $DEPLOY_DIR
           git init
           git checkout --orphan $BUILD_BRANCH
-
-          # Copiar los archivos de la build al directorio temporal
-          cp -r $GITHUB_WORKSPACE/$BUILD_DIR/* $DEPLOY_DIR/
-
-          # Commit y push a la branch
           git add .
-          git commit -m "Deploy Windows Standalone build from commit ${{ github.sha }}"
+          git commit -m "Deploy build from commit ${{ github.sha }}"
           git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $BUILD_BRANCH
 
-      # Crear un archivo ZIP con la build y publicarlo como un release
       - name: Create Release Artifact
         run: |
-          BUILD_DIR=build/StandaloneWindows64
-          ZIP_FILE=StandaloneWindows64.zip
+          BUILD_DIR=$GITHUB_WORKSPACE/build/StandaloneWindows64
+          ZIP_FILE=$GITHUB_WORKSPACE/StandaloneWindows64.zip
 
-          # Crear un archivo ZIP de la build
+          if [ ! -d "$BUILD_DIR" ]; then
+            echo "Error: Directory $BUILD_DIR does not exist."
+            exit 1
+          fi
+
           cd $BUILD_DIR
-          zip -r $ZIP_FILE .
-
-          # Mover el ZIP al directorio de trabajo principal
-          mv $ZIP_FILE $GITHUB_WORKSPACE/
+          zip -r $ZIP_FILE . || { echo "Failed to create ZIP file"; exit 1; }
 
       - name: Upload Release to GitHub
         uses: ncipollo/release-action@v1
@@ -81,6 +76,6 @@ jobs:
           tag: "build-${{ github.sha }}"
           name: "Windows Standalone Build"
           body: "Build creada a partir del commit ${{ github.sha }}."
-          files: StandaloneWindows64.zip
+          files: $GITHUB_WORKSPACE/StandaloneWindows64.zip
           draft: false
           prerelease: false
