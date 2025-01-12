@@ -1,4 +1,4 @@
-name: Build and Deploy WebGL
+name: Build and Deploy Windows Standalone
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  buildAndDeploy:
+  buildAndRelease:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +24,10 @@ jobs:
         uses: actions/cache@v3
         with:
           path: Library
-          key: Library-WebGL
+          key: Library-WindowsStandalone
           restore-keys: Library-
 
-      # Construir el proyecto en WebGL
+      # Construir el proyecto para Windows Standalone
       - name: Build Unity Project
         uses: game-ci/unity-builder@v4
         env:
@@ -35,13 +35,13 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: WebGL
+          targetPlatform: StandaloneWindows64
 
-      # Crear o actualizar la branch gh-pages directamente
-      - name: Deploy to GitHub Pages
+      # Subir la build a una rama separada
+      - name: Deploy to Build Branch
         run: |
-          BUILD_DIR=build/WebGL
-          GH_PAGES_BRANCH=gh-pages
+          BUILD_DIR=build/StandaloneWindows64
+          BUILD_BRANCH=build-branch
 
           # Configurar Git
           git config --global user.name "github-actions[bot]"
@@ -52,18 +52,35 @@ jobs:
           mkdir -p $DEPLOY_DIR
           cd $DEPLOY_DIR
           git init
-          git checkout --orphan $GH_PAGES_BRANCH
+          git checkout --orphan $BUILD_BRANCH
 
-          # Copiar los archivos de la build (que están dentro de la carpeta WebGL) a la raíz de gh-pages
+          # Copiar los archivos de la build al directorio temporal
           cp -r $GITHUB_WORKSPACE/$BUILD_DIR/* $DEPLOY_DIR/
 
-          # Mover el contenido de la carpeta WebGL al root del branch gh-pages
-          mv $DEPLOY_DIR/WebGL/* $DEPLOY_DIR/
-          
-          # Eliminar la carpeta WebGL vacía
-          rm -rf $DEPLOY_DIR/WebGL
-
-          # Commit y push a la branch gh-pages
+          # Commit y push a la branch
           git add .
-          git commit -m "Deploy WebGL build from commit ${{ github.sha }}"
-          git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $GH_PAGES_BRANCH
+          git commit -m "Deploy Windows Standalone build from commit ${{ github.sha }}"
+          git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $BUILD_BRANCH
+
+      # Crear un archivo ZIP con la build y publicarlo como un release
+      - name: Create Release Artifact
+        run: |
+          BUILD_DIR=build/StandaloneWindows64
+          ZIP_FILE=StandaloneWindows64.zip
+
+          # Crear un archivo ZIP de la build
+          cd $BUILD_DIR
+          zip -r $ZIP_FILE .
+
+          # Mover el ZIP al directorio de trabajo principal
+          mv $ZIP_FILE $GITHUB_WORKSPACE/
+
+      - name: Upload Release to GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          tag: "build-${{ github.sha }}"
+          name: "Windows Standalone Build"
+          body: "Build creada a partir del commit ${{ github.sha }}."
+          files: StandaloneWindows64.zip
+          draft: false
+          prerelease: false
