@@ -28,6 +28,7 @@ MonoBehaviour:
     priority: 1
     loop: 1
     colliders: []
+    damageFrames: 
     damagePerFrame: []
   - animationName: Idle
     sprites:
@@ -43,4 +44,7 @@ MonoBehaviour:
     priority: 1
     loop: 1
     colliders: []
-    damagePerFrame: []
+    damageFrames: 0100
+    damagePerFrame:
+    - 10
+    - 5

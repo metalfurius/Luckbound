@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaa3569ba9bc4bf40ad45b0cbc6d233d, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
-  dataName: 
+  dataName: Sword
   animations:
-  - animationName: 
+  - animationName: AtaqueNormal
     sprites: []
     frameTimings: []
-    priority: 0
+    priority: 3
+    loop: 0
     colliders: []
+    damageFrames: 
     damagePerFrame: []
   baseDamage: 0
   weaponIcon: {fileID: 0}

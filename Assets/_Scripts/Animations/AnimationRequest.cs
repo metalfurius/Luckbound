@@ -10,8 +10,9 @@ public class AnimationRequest
     public List<float> frameTimings;
     public int priority; // Higher priority interrupts lower priority animations
     public bool loop;
-    public List<BoxCollider2D> colliders; // New field for colliders
-    public List<float> damagePerFrame; // New field for damage per frame
+    public List<BoxCollider2D> colliders; 
+    public bool[] damageFrames; 
+    public List<float> damagePerFrame;
     public Action<int> OnFrameUpdated;
     public Action OnAnimationCompleted;
 }
