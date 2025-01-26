@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: b4362681eb748db498644e4d560012a1
+guid: 43b9424b1123a4d408477a89b7d74a46
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2765022284340413302
-    second: spritesheet_run_0
-  - first:
-      213: -5118592714017665260
-    second: spritesheet_run_1
-  - first:
-      213: 2282252505155267186
-    second: spritesheet_run_2
-  - first:
-      213: -8975760766481363634
-    second: spritesheet_run_3
+      213: -5822370736333308498
+    second: slime_1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -105,17 +96,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spritesheet_run_0
+      name: slime_1_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 8
-        width: 81
-        height: 79
+        x: 18
+        y: 22
+        width: 72
+        height: 35
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,74 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 673462e2e155f5620800000000000000
-      internalID: 2765022284340413302
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet_run_1
-      rect:
-        serializedVersion: 2
-        x: 116
-        y: 8
-        width: 69
-        height: 89
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 41f031bcb0b17f8b0800000000000000
-      internalID: -5118592714017665260
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet_run_2
-      rect:
-        serializedVersion: 2
-        x: 206
-        y: 5
-        width: 87
-        height: 82
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 27a6681cf803caf10800000000000000
-      internalID: 2282252505155267186
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spritesheet_run_3
-      rect:
-        serializedVersion: 2
-        x: 315
-        y: 5
-        width: 62
-        height: 82
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e4d8df47321bf6380800000000000000
-      internalID: -8975760766481363634
+      spriteID: ead393ed9a8c23fa0800000000000000
+      internalID: -5822370736333308498
       vertices: []
       indices: 
       edges: []
@@ -210,10 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      spritesheet_run_0: 2765022284340413302
-      spritesheet_run_1: -5118592714017665260
-      spritesheet_run_2: 2282252505155267186
-      spritesheet_run_3: -8975760766481363634
+      slime_1_0: -5822370736333308498
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

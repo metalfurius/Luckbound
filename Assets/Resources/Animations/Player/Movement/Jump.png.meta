@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 43b9424b1123a4d408477a89b7d74a46
+guid: 8111bb0363517104690f2d84ad478059
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5822370736333308498
-    second: slime_1_0
+      213: -8017329338523267135
+    second: spritesheet_jump_0
+  - first:
+      213: -6398241609474287674
+    second: spritesheet_jump_1
+  - first:
+      213: 6255897784766978116
+    second: spritesheet_jump_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,17 +102,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: slime_1_0
+      name: spritesheet_jump_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 22
-        width: 72
-        height: 35
+        x: 25
+        y: 24
+        width: 52
+        height: 75
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +134,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ead393ed9a8c23fa0800000000000000
-      internalID: -5822370736333308498
+      spriteID: 1cfc00ab179bcb090800000000000000
+      internalID: -8017329338523267135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_jump_1
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 0
+        width: 49
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c75920d721e437a0800000000000000
+      internalID: -6398241609474287674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_jump_2
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 4
+        width: 60
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 448503cd3e961d650800000000000000
+      internalID: 6255897784766978116
       vertices: []
       indices: 
       edges: []
@@ -135,7 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      slime_1_0: -5822370736333308498
+      spritesheet_jump_0: -8017329338523267135
+      spritesheet_jump_1: -6398241609474287674
+      spritesheet_jump_2: 6255897784766978116
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

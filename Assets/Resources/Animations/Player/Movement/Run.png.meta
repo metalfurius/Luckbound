@@ -1,16 +1,19 @@
 fileFormatVersion: 2
-guid: 8111bb0363517104690f2d84ad478059
+guid: b4362681eb748db498644e4d560012a1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8017329338523267135
-    second: spritesheet_jump_0
+      213: 2765022284340413302
+    second: spritesheet_run_0
   - first:
-      213: -6398241609474287674
-    second: spritesheet_jump_1
+      213: -5118592714017665260
+    second: spritesheet_run_1
   - first:
-      213: 6255897784766978116
-    second: spritesheet_jump_2
+      213: 2282252505155267186
+    second: spritesheet_run_2
+  - first:
+      213: -8975760766481363634
+    second: spritesheet_run_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -102,17 +105,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spritesheet_jump_0
+      name: spritesheet_run_0
       rect:
         serializedVersion: 2
-        x: 25
-        y: 24
-        width: 52
-        height: 75
+        x: 7
+        y: 8
+        width: 81
+        height: 79
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -121,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1cfc00ab179bcb090800000000000000
-      internalID: -8017329338523267135
+      spriteID: 673462e2e155f5620800000000000000
+      internalID: 2765022284340413302
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_jump_1
+      name: spritesheet_run_1
       rect:
         serializedVersion: 2
-        x: 121
-        y: 0
-        width: 49
-        height: 92
+        x: 116
+        y: 8
+        width: 69
+        height: 89
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -143,20 +159,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6c75920d721e437a0800000000000000
-      internalID: -6398241609474287674
+      spriteID: 41f031bcb0b17f8b0800000000000000
+      internalID: -5118592714017665260
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_jump_2
+      name: spritesheet_run_2
       rect:
         serializedVersion: 2
-        x: 219
-        y: 4
-        width: 60
-        height: 95
+        x: 206
+        y: 5
+        width: 87
+        height: 82
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -165,8 +181,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 448503cd3e961d650800000000000000
-      internalID: 6255897784766978116
+      spriteID: 27a6681cf803caf10800000000000000
+      internalID: 2282252505155267186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spritesheet_run_3
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 5
+        width: 62
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4d8df47321bf6380800000000000000
+      internalID: -8975760766481363634
       vertices: []
       indices: 
       edges: []
@@ -185,9 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      spritesheet_jump_0: -8017329338523267135
-      spritesheet_jump_1: -6398241609474287674
-      spritesheet_jump_2: 6255897784766978116
+      spritesheet_run_0: 2765022284340413302
+      spritesheet_run_1: -5118592714017665260
+      spritesheet_run_2: 2282252505155267186
+      spritesheet_run_3: -8975760766481363634
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
