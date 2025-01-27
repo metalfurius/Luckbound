@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Rb = GetComponent<Rigidbody2D>();
         PlayerInput = GetComponent<PlayerInput>();
-        _animator = GetComponent<BaseAnimator>();
+        //_animator = GetComponent<BaseAnimator>();
         _playerStats = GetComponent<PlayerStats>();
     }
 
@@ -43,10 +43,10 @@ public class PlayerMovement : MonoBehaviour
         if (_moveInput.x != 0)
         {
             CheckDirectionToFace(_moveInput.x > 0);
-            _animator.PlayAnimation(_playerStats.playerAnimations.GetAnimationByName("Run"));
+            //_animator.PlayAnimation(_playerStats.playerAnimations.GetAnimationByName("Run"));
         }else
         {
-            _animator.PlayAnimation(_playerStats.playerAnimations.GetAnimationByName("Idle"));
+            //_animator.PlayAnimation(_playerStats.playerAnimations.GetAnimationByName("Idle"));
         }
 
         if (PlayerInput.JumpInputDown) OnJumpInput();
