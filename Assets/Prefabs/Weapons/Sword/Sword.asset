@@ -15,13 +15,24 @@ MonoBehaviour:
   dataName: Sword
   animations:
   - animationName: AtaqueNormal
-    sprites: []
-    frameTimings: []
+    sprites:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    frameTimings:
+    - 0
+    - 0
+    - 0
     priority: 3
-    loop: 0
-    colliders: []
-    damageFrames: 
-    damagePerFrame: []
+    loop: 1
+    colliders:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    damageFrames: 0000
+    damagePerFrame:
+    - 0
+    - 0
   baseDamage: 0
   weaponIcon: {fileID: 0}
   attackSpeed: 0
