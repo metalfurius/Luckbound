@@ -5,15 +5,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public PlayerData data;
-    private BaseAnimator _animator;
-    private PlayerStats _playerStats;
 
     private void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
         PlayerInput = GetComponent<PlayerInput>();
         //_animator = GetComponent<BaseAnimator>();
-        _playerStats = GetComponent<PlayerStats>();
     }
 
     private void Start()
