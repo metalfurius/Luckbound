@@ -18,11 +18,11 @@ public class PlayerMovement : MonoBehaviour
 	public float LastOnWallLeftTime { get; private set; }
 	public float LastPressedJumpTime { get; private set; }
 
-	private bool isJumpCut;
-	private bool isJumpFalling;
-	private float wallJumpStartTime;
-	private int lastWallJumpDir;
-	private Vector2 moveInput;
+	private bool _isJumpCut;
+	private bool _isJumpFalling;
+	private float _wallJumpStartTime;
+	private int _lastWallJumpDir;
+	private Vector2 _moveInput;
 
 	[Header("Checks")] 
 	[SerializeField] private Transform groundCheckPoint;
@@ -34,6 +34,17 @@ public class PlayerMovement : MonoBehaviour
 	
     [Header("Layers & Tags")]
 	[SerializeField] private LayerMask groundLayer;
+    
+	[Header("Animator")]
+	[SerializeField] private Animator playerAnimator;
+
+	private static readonly int Jump1 = Animator.StringToHash("Jump");
+	private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
+	private static readonly int IsOnWall = Animator.StringToHash("isOnWall");
+	private static readonly int VerticalVelocity = Animator.StringToHash("VerticalVelocity");
+	private static readonly int Speed = Animator.StringToHash("Speed");
+	private static readonly int IsJumpHeld = Animator.StringToHash("isJumpHeld");
+
 	#endregion
 
     private void Awake()
@@ -60,20 +71,23 @@ public class PlayerMovement : MonoBehaviour
 		#endregion
 
 		#region INPUT HANDLER
-		moveInput.x = PlayerInput.MovementInput.x;
-		moveInput.y = PlayerInput.MovementInput.y;
+		_moveInput.x = PlayerInput.MovementInput.x;
+		_moveInput.y = PlayerInput.MovementInput.y;
 
-		if (moveInput.x != 0)
-			CheckDirectionToFace(moveInput.x > 0);
+		if (_moveInput.x != 0)
+			CheckDirectionToFace(_moveInput.x > 0);
 
 		if(PlayerInput.JumpInputDown)
         {
 			OnJumpInput();
+			playerAnimator.SetTrigger(Jump1);
+			playerAnimator.SetBool(IsJumpHeld, true);
         }
 
 		if (PlayerInput.JumpInputUp)
 		{
 			OnJumpUpInput();
+			playerAnimator.SetBool(IsJumpHeld, false);
 		}
 		#endregion
 
@@ -84,43 +98,55 @@ public class PlayerMovement : MonoBehaviour
 			if (Physics2D.OverlapBox(groundCheckPoint.position, groundCheckSize, 0, groundLayer) && !IsJumping) //checks if set box overlaps with ground
 			{
 				LastOnGroundTime = data.coyoteTime; //if so sets the lastGrounded to coyoteTime
-            }		
+				playerAnimator.SetBool(IsGrounded, true);
+            }
+			else
+			{
+				playerAnimator.SetBool(IsGrounded, false);
+			}
 
 			//Right Wall Check
 			if (((Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, groundLayer) && IsFacingRight)
-					|| (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer) && !IsFacingRight)) && !IsWallJumping)
+			     || (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer) &&
+			         !IsFacingRight)) && !IsWallJumping)
 				LastOnWallRightTime = data.coyoteTime;
+			
 
-			//Right Wall Check
+			//Left Wall Check
 			if (((Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, groundLayer) && !IsFacingRight)
-				|| (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer) && IsFacingRight)) && !IsWallJumping)
+			     || (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer) &&
+			         IsFacingRight)) && !IsWallJumping)
 				LastOnWallLeftTime = data.coyoteTime;
 
 			//Two checks needed for both left and right walls since whenever the play turns the wall checkPoints swap sides
 			LastOnWallTime = Mathf.Max(LastOnWallLeftTime, LastOnWallRightTime);
+			playerAnimator.SetBool(IsOnWall, LastOnWallTime > 0);
 		}
 		#endregion
 
 		#region JUMP CHECKS
+		
+		playerAnimator.SetFloat(VerticalVelocity, Rb.linearVelocity.y);
+		
 		if (IsJumping && Rb.linearVelocity.y < 0)
 		{
 			IsJumping = false;
 
 			if(!IsWallJumping)
-				isJumpFalling = true;
+				_isJumpFalling = true;
 		}
 
-		if (IsWallJumping && Time.time - wallJumpStartTime > data.wallJumpTime)
+		if (IsWallJumping && Time.time - _wallJumpStartTime > data.wallJumpTime)
 		{
 			IsWallJumping = false;
 		}
 
 		if (LastOnGroundTime > 0 && !IsJumping && !IsWallJumping)
         {
-			isJumpCut = false;
+			_isJumpCut = false;
 
 			if(!IsJumping)
-				isJumpFalling = false;
+				_isJumpFalling = false;
 		}
 
 		//Jump
@@ -128,8 +154,8 @@ public class PlayerMovement : MonoBehaviour
 		{
 			IsJumping = true;
 			IsWallJumping = false;
-			isJumpCut = false;
-			isJumpFalling = false;
+			_isJumpCut = false;
+			_isJumpFalling = false;
 			Jump();
 		}
 		//WALL JUMP
@@ -137,17 +163,17 @@ public class PlayerMovement : MonoBehaviour
 		{
 			IsWallJumping = true;
 			IsJumping = false;
-			isJumpCut = false;
-			isJumpFalling = false;
-			wallJumpStartTime = Time.time;
-			lastWallJumpDir = (LastOnWallRightTime > 0) ? -1 : 1;
+			_isJumpCut = false;
+			_isJumpFalling = false;
+			_wallJumpStartTime = Time.time;
+			_lastWallJumpDir = (LastOnWallRightTime > 0) ? -1 : 1;
 			
-			WallJump(lastWallJumpDir);
+			WallJump(_lastWallJumpDir);
 		}
 		#endregion
 
 		#region SLIDE CHECKS
-		if (CanSlide() && ((LastOnWallLeftTime > 0 && moveInput.x < 0) || (LastOnWallRightTime > 0 && moveInput.x > 0)))
+		if (CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) || (LastOnWallRightTime > 0 && _moveInput.x > 0)))
 			IsSliding = true;
 		else
 			IsSliding = false;
@@ -159,20 +185,20 @@ public class PlayerMovement : MonoBehaviour
 		{
 			SetGravityScale(0);
 		}
-		else if (Rb.linearVelocity.y < 0 && moveInput.y < 0)
+		else if (Rb.linearVelocity.y < 0 && _moveInput.y < 0)
 		{
 			//Much higher gravity if holding down
 			SetGravityScale(data.gravityScale * data.fastFallGravityMult);
 			//Caps maximum fall speed, so when falling over large distances we don't accelerate to insanely high speeds
 			Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, Mathf.Max(Rb.linearVelocity.y, -data.maxFastFallSpeed));
 		}
-		else if (isJumpCut)
+		else if (_isJumpCut)
 		{
 			//Higher gravity if jump button released
 			SetGravityScale(data.gravityScale * data.jumpCutGravityMult);
 			Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, Mathf.Max(Rb.linearVelocity.y, -data.maxFallSpeed));
 		}
-		else if ((IsJumping || IsWallJumping || isJumpFalling) && Mathf.Abs(Rb.linearVelocity.y) < data.jumpHangTimeThreshold)
+		else if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(Rb.linearVelocity.y) < data.jumpHangTimeThreshold)
 		{
 			SetGravityScale(data.gravityScale * data.jumpHangGravityMult);
 		}
@@ -193,6 +219,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
 	{
+		playerAnimator.SetFloat(Speed, Mathf.Abs(Rb.linearVelocity.x));
+		
 		//Handle Run
 		if (IsWallJumping)
 			Run(data.wallJumpRunLerp);
@@ -214,7 +242,7 @@ public class PlayerMovement : MonoBehaviour
 	public void OnJumpUpInput()
 	{
 		if (CanJumpCut() || CanWallJumpCut())
-			isJumpCut = true;
+			_isJumpCut = true;
 	}
     #endregion
 
@@ -230,48 +258,48 @@ public class PlayerMovement : MonoBehaviour
     private void Run(float lerpAmount)
 	{
 		//Calculate the direction we want to move in and our desired velocity
-		var _targetSpeed = moveInput.x * data.runMaxSpeed;
+		var targetSpeed = _moveInput.x * data.runMaxSpeed;
 		//We can reduce are control using Lerp() this smooths changes to are direction and speed
-		_targetSpeed = Mathf.Lerp(Rb.linearVelocity.x, _targetSpeed, lerpAmount);
+		targetSpeed = Mathf.Lerp(Rb.linearVelocity.x, targetSpeed, lerpAmount);
 
 		#region Calculate AccelRate
-		float _accelRate;
+		float accelRate;
 
 		//Gets an acceleration value based on if we are accelerating (includes turning) 
 		//or trying to decelerate (stop). As well as applying a multiplier if we're airborne.
 		if (LastOnGroundTime > 0)
-			_accelRate = (Mathf.Abs(_targetSpeed) > 0.01f) ? data.runAccelAmount : data.runDeccelAmount;
+			accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? data.runAccelAmount : data.runDeccelAmount;
 		else
-			_accelRate = (Mathf.Abs(_targetSpeed) > 0.01f) ? data.runAccelAmount * data.accelInAir : data.runDeccelAmount * data.deccelInAir;
+			accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? data.runAccelAmount * data.accelInAir : data.runDeccelAmount * data.deccelInAir;
 		#endregion
 
 		#region Add Bonus Jump Apex Acceleration
 		//Increase are acceleration and maxSpeed when at the apex of their jump, makes the jump feel a bit more bouncy, responsive and natural
-		if ((IsJumping || IsWallJumping || isJumpFalling) && Mathf.Abs(Rb.linearVelocity.y) < data.jumpHangTimeThreshold)
+		if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(Rb.linearVelocity.y) < data.jumpHangTimeThreshold)
 		{
-			_accelRate *= data.jumpHangAccelerationMult;
-			_targetSpeed *= data.jumpHangMaxSpeedMult;
+			accelRate *= data.jumpHangAccelerationMult;
+			targetSpeed *= data.jumpHangMaxSpeedMult;
 		}
 		#endregion
 
 		#region Conserve Momentum
 		//We won't slow the player down if they are moving in their desired direction but at a greater speed than their maxSpeed
-		if(data.doConserveMomentum && Mathf.Abs(Rb.linearVelocity.x) > Mathf.Abs(_targetSpeed) && Mathf.Approximately(Mathf.Sign(Rb.linearVelocity.x), Mathf.Sign(_targetSpeed)) && Mathf.Abs(_targetSpeed) > 0.01f && LastOnGroundTime < 0)
+		if(data.doConserveMomentum && Mathf.Abs(Rb.linearVelocity.x) > Mathf.Abs(targetSpeed) && Mathf.Approximately(Mathf.Sign(Rb.linearVelocity.x), Mathf.Sign(targetSpeed)) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
 		{
 			//Prevent any deceleration from happening, or in other words conserve are current momentum
 			//You could experiment with allowing for the player to slightly increase their speed whilst in this "state"
-			_accelRate = 0; 
+			accelRate = 0; 
 		}
 		#endregion
 
 		//Calculate difference between current velocity and desired velocity
-		var _speedDif = _targetSpeed - Rb.linearVelocity.x;
+		var speedDif = targetSpeed - Rb.linearVelocity.x;
 		//Calculate force along x-axis to apply to thr player
 
-		var _movement = _speedDif * _accelRate;
+		var movement = speedDif * accelRate;
 
 		//Convert this to a vector and apply to rigid body
-		Rb.AddForce(_movement * Vector2.right, ForceMode2D.Force);
+		Rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
 
 		/*
 		 * For those interested here is what AddForce() will do
@@ -282,10 +310,8 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Turn()
 	{
-		//stores scale and flips the player along the x-axis, 
-		var _scale = transform.localScale; 
-		_scale.x *= -1;
-		transform.localScale = _scale;
+		var spriteRenderer = playerAnimator.GetComponent<SpriteRenderer>();
+		spriteRenderer.flipX = !spriteRenderer.flipX;
 
 		IsFacingRight = !IsFacingRight;
 	}
@@ -302,11 +328,11 @@ public class PlayerMovement : MonoBehaviour
 		//We increase the force applied if we are falling
 		//This means we'll always feel like we jump the same amount 
 		//(setting the player's Y velocity to 0 beforehand will likely work the same, but I find this more elegant :D)
-		var _force = data.jumpForce;
+		var force = data.jumpForce;
 		if (Rb.linearVelocity.y < 0)
-			_force -= Rb.linearVelocity.y;
+			force -= Rb.linearVelocity.y;
 
-		Rb.AddForce(Vector2.up * _force, ForceMode2D.Impulse);
+		Rb.AddForce(Vector2.up * force, ForceMode2D.Impulse);
 		#endregion
 	}
 
@@ -319,18 +345,18 @@ public class PlayerMovement : MonoBehaviour
 		LastOnWallLeftTime = 0;
 
 		#region Perform Wall Jump
-		var _force = new Vector2(data.wallJumpForce.x, data.wallJumpForce.y);
-		_force.x *= dir; //apply force in opposite direction of wall
+		var force = new Vector2(data.wallJumpForce.x, data.wallJumpForce.y);
+		force.x *= dir; //apply force in opposite direction of wall
 
-		if (!Mathf.Approximately(Mathf.Sign(Rb.linearVelocity.x), Mathf.Sign(_force.x)))
-			_force.x -= Rb.linearVelocity.x;
+		if (!Mathf.Approximately(Mathf.Sign(Rb.linearVelocity.x), Mathf.Sign(force.x)))
+			force.x -= Rb.linearVelocity.x;
 
 		if (Rb.linearVelocity.y < 0) //checks whether player is falling, if so we subtract the velocity.y (counteracting force of gravity). This ensures the player always reaches our desired jump force or greater
-			_force.y -= Rb.linearVelocity.y;
+			force.y -= Rb.linearVelocity.y;
 
 		//Unlike in the run we want to use the Impulse mode.
 		//The default mode will apply are force instantly ignoring mass
-		Rb.AddForce(_force, ForceMode2D.Impulse);
+		Rb.AddForce(force, ForceMode2D.Impulse);
 		#endregion
 	}
 	#endregion
@@ -340,13 +366,13 @@ public class PlayerMovement : MonoBehaviour
 	{
 		//Works the same as the Run but only in the y-axis
 		//THis seems to work fine, but maybe you'll find a better way to implement a slide into this system
-		var _speedDif = data.slideSpeed - Rb.linearVelocity.y;	
-		var _movement = _speedDif * data.slideAccel;
+		var speedDif = data.slideSpeed - Rb.linearVelocity.y;	
+		var movement = speedDif * data.slideAccel;
 		//So, we clamp the movement here to prevent any over corrections (these aren't noticeable in the Run)
 		//The force applied can't be greater than the (negative) speedDifference * by how many times a second FixedUpdate() is called. For more info research how force are applied to rigid bodies.
-		_movement = Mathf.Clamp(_movement, -Mathf.Abs(_speedDif)  * (1 / Time.fixedDeltaTime), Mathf.Abs(_speedDif) * (1 / Time.fixedDeltaTime));
+		movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif)  * (1 / Time.fixedDeltaTime), Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
 
-		Rb.AddForce(_movement * Vector2.up);
+		Rb.AddForce(movement * Vector2.up);
 	}
     #endregion
 
@@ -366,7 +392,7 @@ public class PlayerMovement : MonoBehaviour
 	private bool CanWallJump()
     {
 		return LastPressedJumpTime > 0 && LastOnWallTime > 0 && LastOnGroundTime <= 0 && (!IsWallJumping ||
-			 (LastOnWallRightTime > 0 && lastWallJumpDir == 1) || (LastOnWallLeftTime > 0 && lastWallJumpDir == -1));
+			 (LastOnWallRightTime > 0 && _lastWallJumpDir == 1) || (LastOnWallLeftTime > 0 && _lastWallJumpDir == -1));
 	}
 
 	private bool CanJumpCut()
