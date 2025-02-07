@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - Main
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -37,7 +38,7 @@ jobs:
         with:
           targetPlatform: WebGL
 
-      # Crear o actualizar la branch gh-pages directamente
+      # Desplegar en GitHub Pages
       - name: Deploy to GitHub Pages
         run: |
           BUILD_DIR=build/WebGL
@@ -47,23 +48,32 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Crear un nuevo repositorio en un directorio temporal
-          DEPLOY_DIR=$(mktemp -d)
-          mkdir -p $DEPLOY_DIR
-          cd $DEPLOY_DIR
-          git init
-          git checkout --orphan $GH_PAGES_BRANCH
+          # Verificar si existe la rama gh-pages
+          if git ls-remote --exit-code --heads origin $GH_PAGES_BRANCH; then
+            # Clonar la rama existente
+            git clone --branch $GH_PAGES_BRANCH https://github.com/${{ github.repository }}.git deploy
+          else
+            # Crear nuevo repositorio para gh-pages
+            mkdir deploy
+            cd deploy
+            git init
+            git remote add origin https://github.com/${{ github.repository }}.git
+            git checkout --orphan $GH_PAGES_BRANCH
+            cd ..
+          fi
 
-          # Copiar los archivos de la build (que están dentro de la carpeta WebGL) a la raíz de gh-pages
-          cp -r $GITHUB_WORKSPACE/$BUILD_DIR/* $DEPLOY_DIR/
+          # Limpiar directorio y copiar archivos
+          cd deploy
+          rm -rf * .gitignore .gitmodules || true
+          cp -r $GITHUB_WORKSPACE/$BUILD_DIR/* .
 
-          # Mover el contenido de la carpeta WebGL al root del branch gh-pages
-          mv $DEPLOY_DIR/WebGL/* $DEPLOY_DIR/
-          
-          # Eliminar la carpeta WebGL vacía
-          rm -rf $DEPLOY_DIR/WebGL
+          # Mover contenido de WebGL a la raíz si es necesario
+          if [ -d WebGL ]; then
+            mv WebGL/* .
+            rmdir WebGL
+          fi
 
-          # Commit y push a la branch gh-pages
-          git add .
-          git commit -m "Deploy WebGL build from commit ${{ github.sha }}"
-          git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $GH_PAGES_BRANCH
+          # Hacer commit y push
+          git add -A
+          git commit -m "Deploy WebGL build from ${{ github.sha }}"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git $GH_PAGES_BRANCH
