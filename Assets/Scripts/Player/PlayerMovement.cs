@@ -1,20 +1,20 @@
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 	public PlayerData data;
 	#region Variables
-    public Rigidbody2D Rb { get; private set; }
-    public PlayerInput PlayerInput { get; private set; }
-	public bool IsFacingRight { get; private set; }
-	public bool IsJumping { get; private set; }
-	public bool IsWallJumping { get; private set; }
-	public bool IsSliding { get; private set; }
-	public float LastOnGroundTime { get; private set; }
-	public float LastOnWallTime { get; private set; }
-	public float LastOnWallRightTime { get; private set; }
-	public float LastOnWallLeftTime { get; private set; }
-	public float LastPressedJumpTime { get; private set; }
+
+	private Rigidbody2D Rb { get; set; }
+	private PlayerInput PlayerInput { get; set; }
+	private bool IsFacingRight { get; set; }
+	private bool IsJumping { get; set; }
+	private bool IsWallJumping { get; set; }
+	private bool IsSliding { get; set; }
+	private float LastOnGroundTime { get; set; }
+	private float LastOnWallTime { get; set; }
+	private float LastOnWallRightTime { get; set; }
+	private float LastOnWallLeftTime { get; set; }
+	private float LastPressedJumpTime { get; set; }
 
 	private bool _isJumpCut;
 	private bool _isJumpFalling;
@@ -239,12 +239,12 @@ public class PlayerMovement : MonoBehaviour
 
     #region INPUT CALLBACKS
 	//Methods which handle input detected in Update()
-    public void OnJumpInput()
+	private void OnJumpInput()
 	{
 		LastPressedJumpTime = data.jumpInputBufferTime;
 	}
 
-	public void OnJumpUpInput()
+	private void OnJumpUpInput()
 	{
 		if (CanJumpCut() || CanWallJumpCut())
 			_isJumpCut = true;
@@ -252,7 +252,8 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #region GENERAL METHODS
-    public void SetGravityScale(float scale)
+
+    private void SetGravityScale(float scale)
 	{
 		Rb.gravityScale = scale;
 	}
@@ -387,7 +388,8 @@ public class PlayerMovement : MonoBehaviour
 
 
     #region CHECK METHODS
-    public void CheckDirectionToFace(bool isMovingRight)
+
+    private void CheckDirectionToFace(bool isMovingRight)
 	{
 		if (isMovingRight != IsFacingRight)
 			Turn();

@@ -11,9 +11,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: isGrounded
     m_EventTreshold: 0
-  - m_ConditionMode: 2
-    m_ConditionEvent: isJumpHeld
-    m_EventTreshold: 0
   - m_ConditionMode: 4
     m_ConditionEvent: VerticalVelocity
     m_EventTreshold: 0.01
