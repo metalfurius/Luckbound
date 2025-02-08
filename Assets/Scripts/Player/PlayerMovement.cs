@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public class PlayerMovement : MonoBehaviour
 {
 	public PlayerData data;
@@ -23,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 	private float _wallJumpStartTime;
 	private int _lastWallJumpDir;
 	private Vector2 _moveInput;
+	private bool _currentOnWall;
 
 	[Header("Checks")] 
 	[SerializeField] private Transform groundCheckPoint;
@@ -80,7 +79,6 @@ public class PlayerMovement : MonoBehaviour
 		if(PlayerInput.JumpInputDown)
         {
 			OnJumpInput();
-			playerAnimator.SetTrigger(Jump1);
 			playerAnimator.SetBool(IsJumpHeld, true);
         }
 
@@ -92,36 +90,37 @@ public class PlayerMovement : MonoBehaviour
 		#endregion
 
 		#region COLLISION CHECKS
-		if (!IsJumping)
+
+		// Ground Check
+		if (Physics2D.OverlapBox(groundCheckPoint.position, groundCheckSize, 0, groundLayer) && !IsJumping)
 		{
-			//Ground Check
-			if (Physics2D.OverlapBox(groundCheckPoint.position, groundCheckSize, 0, groundLayer) && !IsJumping) //checks if set box overlaps with ground
-			{
-				LastOnGroundTime = data.coyoteTime; //if so sets the lastGrounded to coyoteTime
-				playerAnimator.SetBool(IsGrounded, true);
-            }
-			else
-			{
-				playerAnimator.SetBool(IsGrounded, false);
-			}
-
-			//Right Wall Check
-			if (((Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, groundLayer) && IsFacingRight)
-			     || (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer) &&
-			         !IsFacingRight)) && !IsWallJumping)
-				LastOnWallRightTime = data.coyoteTime;
-			
-
-			//Left Wall Check
-			if (((Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, groundLayer) && !IsFacingRight)
-			     || (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer) &&
-			         IsFacingRight)) && !IsWallJumping)
-				LastOnWallLeftTime = data.coyoteTime;
-
-			//Two checks needed for both left and right walls since whenever the play turns the wall checkPoints swap sides
-			LastOnWallTime = Mathf.Max(LastOnWallLeftTime, LastOnWallRightTime);
-			playerAnimator.SetBool(IsOnWall, LastOnWallTime > 0);
+			LastOnGroundTime = data.coyoteTime;
+			playerAnimator.SetBool(IsGrounded, true);
 		}
+		else
+		{
+			playerAnimator.SetBool(IsGrounded, false);
+		}
+
+		// Right Wall Check
+		var isOnRightWall = (Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, groundLayer) && IsFacingRight)
+		                    || (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer) && !IsFacingRight);
+		if (isOnRightWall)
+			LastOnWallRightTime = data.coyoteTime;
+
+		// Left Wall Check
+		var isOnLeftWall = (Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, groundLayer) && !IsFacingRight)
+		                   || (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer) && IsFacingRight);
+		if (isOnLeftWall)
+			LastOnWallLeftTime = data.coyoteTime;
+
+		// Update animator based on CURRENT wall contact
+		_currentOnWall = isOnRightWall || isOnLeftWall;
+		playerAnimator.SetBool(IsOnWall, _currentOnWall); 
+
+		// Update coyote timers
+		LastOnWallTime = Mathf.Max(LastOnWallLeftTime, LastOnWallRightTime);
+
 		#endregion
 
 		#region JUMP CHECKS
@@ -157,6 +156,7 @@ public class PlayerMovement : MonoBehaviour
 			_isJumpCut = false;
 			_isJumpFalling = false;
 			Jump();
+			playerAnimator.SetTrigger(Jump1);
 		}
 		//WALL JUMP
 		else if (CanWallJump() && LastPressedJumpTime > 0)
@@ -166,9 +166,14 @@ public class PlayerMovement : MonoBehaviour
 			_isJumpCut = false;
 			_isJumpFalling = false;
 			_wallJumpStartTime = Time.time;
-			_lastWallJumpDir = (LastOnWallRightTime > 0) ? -1 : 1;
+			
+			if (isOnRightWall)
+				_lastWallJumpDir = -1; // Jump left if on right wall
+			else if (isOnLeftWall)
+				_lastWallJumpDir = 1;  // Jump right if on left wall
 			
 			WallJump(_lastWallJumpDir);
+			playerAnimator.SetTrigger(Jump1);
 		}
 		#endregion
 
@@ -344,6 +349,9 @@ public class PlayerMovement : MonoBehaviour
 		LastOnWallRightTime = 0;
 		LastOnWallLeftTime = 0;
 
+		Rb.linearVelocity = new Vector2(0, Rb.linearVelocity.y);
+
+		
 		#region Perform Wall Jump
 		var force = new Vector2(data.wallJumpForce.x, data.wallJumpForce.y);
 		force.x *= dir; //apply force in opposite direction of wall
@@ -356,6 +364,7 @@ public class PlayerMovement : MonoBehaviour
 
 		//Unlike in the run we want to use the Impulse mode.
 		//The default mode will apply are force instantly ignoring mass
+		CheckDirectionToFace(dir == 1);
 		Rb.AddForce(force, ForceMode2D.Impulse);
 		#endregion
 	}
@@ -405,9 +414,10 @@ public class PlayerMovement : MonoBehaviour
 		return IsWallJumping && Rb.linearVelocity.y > 0;
 	}
 
-	public bool CanSlide()
+	private bool CanSlide()
 	{
-		return LastOnWallTime > 0 && !IsJumping && !IsWallJumping && LastOnGroundTime <= 0;
+		// Replace LastOnWallTime > 0 with currentOnWall for instant sliding stop
+		return _currentOnWall && !IsJumping && !IsWallJumping && LastOnGroundTime <= 0;
 	}
     #endregion
 

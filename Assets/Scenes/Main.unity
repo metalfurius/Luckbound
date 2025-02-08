@@ -282,7 +282,7 @@ MonoBehaviour:
   groundCheckSize: {x: 0.65, y: 0.18}
   frontWallCheckPoint: {fileID: 2079220987}
   backWallCheckPoint: {fileID: 293067002}
-  wallCheckSize: {x: 0.5, y: 1.64}
+  wallCheckSize: {x: 0.38, y: 1.4}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
