@@ -207,8 +207,8 @@ TextureImporter:
         serializedVersion: 2
         x: 609
         y: 259
-        width: 65
-        height: 98
+        width: 95
+        height: 107
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -315,9 +315,9 @@ TextureImporter:
       name: playerAttack_10
       rect:
         serializedVersion: 2
-        x: 866
+        x: 858
         y: 130
-        width: 92
+        width: 100
         height: 87
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -359,9 +359,9 @@ TextureImporter:
       name: playerAttack_14
       rect:
         serializedVersion: 2
-        x: 364
+        x: 325
         y: 5
-        width: 128
+        width: 167
         height: 97
       alignment: 7
       pivot: {x: 0.5, y: 0}
