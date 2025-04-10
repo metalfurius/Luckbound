@@ -413,7 +413,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsTouchingLeftWall()
     {
-            return Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer);
+            
+                        return Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, groundLayer);
     }
 
     #endregion
