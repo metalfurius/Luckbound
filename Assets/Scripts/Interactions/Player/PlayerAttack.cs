@@ -16,6 +16,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float comboWindow = 0.5f; // Ventana de tiempo DESPUÉS de iniciar un ataque para registrar el siguiente input del combo
 
     private Animator _animator; 
+    private PlayerMovement _playerMovement;
 
     // --- Variables de Estado ---
     private PlayerInput _playerInput;
@@ -28,9 +29,11 @@ public class PlayerAttack : MonoBehaviour
     // --- Control Externo ---
     // 1. Variable pública para controlar si se puede atacar
     public bool CanAttack { get; set; } = true; // Por defecto, se puede atacar.
+    public bool IsAttacking => _isAttacking;
 
     private void Awake()
     {
+        _playerMovement = GetComponent<PlayerMovement>();
         _playerInput = GetComponent<PlayerInput>();
         _animator = transform.Find("Sprite").GetComponent<Animator>();
         if (comboAttacks.Length == 0)
@@ -41,7 +44,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update()
     {
-        if (!CanAttack || comboAttacks.Length == 0)
+        if (!CanPerformAttack() || comboAttacks.Length == 0)
         {
             _inputBuffered = false; // Limpia el buffer si no se puede atacar
             return;
@@ -77,6 +80,11 @@ public class PlayerAttack : MonoBehaviour
             _currentAttackIndex = 0;
             // Debug.Log("Combo index reset due to timeout.");
         }
+    }
+    
+    private bool CanPerformAttack()
+    {
+        return CanAttack && !_playerMovement.IsSliding;
     }
 
     private void StartAttack(int index)

@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private bool IsFacingRight { get; set; }
     private bool IsJumping { get; set; }
     private bool IsWallJumping { get; set; }
-    private bool IsSliding { get; set; }
+    public bool IsSliding { get; private set; }
     private float LastOnGroundTime { get; set; }
     private float LastOnWallTime { get; set; }
     private float LastOnWallRightTime { get; set; }
@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _moveInput;
     private bool _currentOnWall;
     private SpriteRenderer _spriteRenderer; //Cached SpriteRenderer
+    private PlayerAttack _playerAttack;
 
     [Header("Checks")]
     [SerializeField] private Transform groundCheckPoint;
@@ -53,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Rb = GetComponent<Rigidbody2D>();
         PlayerInput = GetComponent<PlayerInput>();
+        _playerAttack = GetComponent<PlayerAttack>();
     }
 
     private void Start()
@@ -276,8 +278,8 @@ public class PlayerMovement : MonoBehaviour
     private void Run(float lerpAmount)
     {
         float targetSpeed;
-        // Calculate target speed based on input.  If wall jumping, ignore horizontal input.
-        if (IsWallJumping)
+        // Calculate target speed based on input. If wall jumping, ignore horizontal input.
+        if (IsWallJumping || _playerAttack.IsAttacking)
         {
             targetSpeed = 0;
         }
