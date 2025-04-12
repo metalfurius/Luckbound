@@ -27,8 +27,6 @@ public class PlayerAttack : MonoBehaviour
     private Coroutine _attackCoroutine;
 
     // --- Control Externo ---
-    // 1. Variable pública para controlar si se puede atacar
-    public bool CanAttack { get; set; } = true; // Por defecto, se puede atacar.
     public bool IsAttacking => _isAttacking;
 
     private void Awake()
@@ -84,7 +82,7 @@ public class PlayerAttack : MonoBehaviour
     
     private bool CanPerformAttack()
     {
-        return CanAttack && !_playerMovement.IsSliding;
+        return !_playerMovement.IsSliding;
     }
 
     private void StartAttack(int index)
