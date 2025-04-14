@@ -3,8 +3,8 @@ using UnityEngine;
 public class BaseDupeEnemy : Enemy
 {
     public int attackBodyDamage = 60;
-    private Transform playerTarget;
-    private Rigidbody2D rb;
+    public Transform playerTarget;
+    public Rigidbody2D rb;
 
     public override void Start()
     {
@@ -17,10 +17,10 @@ public class BaseDupeEnemy : Enemy
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("Hit");
-            var _player = collision.gameObject.GetComponent<PlayerStats>();
-            if (_player)
+            var player = collision.gameObject.GetComponent<PlayerStats>();
+            if (player)
             {
-                _player.TakeDamage(attackBodyDamage);
+                player.TakeDamage(attackBodyDamage);
             }
         }
     }
