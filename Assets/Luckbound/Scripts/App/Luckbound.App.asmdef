@@ -1,0 +1,19 @@
+{
+  "name": "Luckbound.App",
+  "rootNamespace": "Luckbound.App",
+  "references": [
+    "Luckbound.Core",
+    "Luckbound.Content",
+    "Luckbound.Gameplay",
+    "Luckbound.Presentation"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

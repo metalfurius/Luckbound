@@ -1,0 +1,14 @@
+{
+  "name": "Luckbound.Content",
+  "rootNamespace": "Luckbound.Content",
+  "references": ["Luckbound.Core"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

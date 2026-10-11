@@ -1,0 +1,15 @@
+{
+  "name": "Luckbound.PlayMode.Tests",
+  "rootNamespace": "Luckbound.Tests.PlayMode",
+  "references": ["Luckbound.App"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "noEngineReferences": false
+}

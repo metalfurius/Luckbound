@@ -1,0 +1,14 @@
+{
+  "name": "Luckbound.Editor",
+  "rootNamespace": "Luckbound.Editor",
+  "references": ["Luckbound.App"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

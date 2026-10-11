@@ -2,7 +2,7 @@
 
 **Versión del documento:** 1.0 — 11 de octubre de 2026.
 
-**Estado:** preproducción documentada y verificada; puesta en marcha técnica (A03) en curso. Todavía no se ha creado el proyecto limpio ni implementado el juego.
+**Estado:** preproducción documentada; A01–A03 verificados y A04 creado y comprobado. El juego todavía no tiene sistemas de juego implementados.
 
 **Responsable de producto:** Fran / CodeOverdose.
 
@@ -104,16 +104,16 @@ Se utilizará **Unity 6000.6.5f1**, publicada el 8 de octubre de 2026 y verifica
 Configuración:
 
 - Plantilla oficial 2D URP.
-- Renderer 2D, Tilemaps, Pixel Perfect Camera y Cinemachine.
+- Renderer 2D, Tilemaps, Pixel Perfect Camera integrado en URP y Cinemachine.
 - Input System como único sistema de entrada.
-- uGUI y TextMeshPro para las interfaces.
+- uGUI y TextMeshPro para las interfaces; TextMeshPro llega mediante UGUI, sin instalar el paquete separado obsoleto.
 - Windows x64 con Mono.
 - WebGL sin multithreading.
 - Unity Test Framework.
 - Serialización JSON mediante adaptador de `JsonUtility`.
 - Python en un entorno local del proyecto para síntesis y validación de audio.
 
-Los paquetes utilizarán la versión estable compatible que resuelva el editor fijado, excluyendo versiones preliminares. El resultado se registrará y se conservará en el archivo de bloqueo de paquetes.
+El manifiesto debe conservar el conjunto verificado con Unity 6000.6.5f1: URP `17.6.0`, Input System `1.20.0`, Cinemachine `6.6.0`, Unity Test Framework `1.8.0` y UGUI `2.6.0`, además de los módulos requeridos por Unity. `Packages/packages-lock.json` registra las resoluciones completas. La cámara Pixel Perfect se obtiene del propio URP 17.6; no añadir `com.unity.2d.pixel-perfect`, cuya versión probada no compila con ese URP. No añadir el paquete separado `com.unity.textmeshpro`: UGUI ya lo incluye. Si se actualiza el Editor, repetir la resolución de paquetes y las pruebas antes de cambiar esta lista.
 
 Se retirarán de la nueva implementación Visual Scripting, Multiplayer Center, Collab Proxy y las dependencias del prototipo que no sean necesarias.
 

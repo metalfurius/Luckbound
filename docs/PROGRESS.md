@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A03: Verified; A04: InProgress; A05–J09: Pending.
+- A01–A04: Verified; A05–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
-- La nueva versión del Editor y WebGL están instalados y verificados; A04 está creando el proyecto limpio. Aún no se han implementado sistemas de juego.
+- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y sus pruebas pasan. Aún no se han implementado sistemas de juego.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; no se ha publicado ni modificado la web.
-- Tarea activa: A04, crear proyecto limpio, assemblies y escenas.
+- Siguientes tareas disponibles: A05, primera build de Windows y WebGL; A07, herramientas de Editor.
 
 ## Estados y dependencias
 
@@ -32,7 +32,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | A01 | Guardar este plan, registro de progreso y una guía breve para agentes que remita al plan | — | Verified |
 | A02 | Archivar prototipo y versión web mediante referencias Git; conservar los tres documentos originales | A01 | Verified |
 | A03 | Instalar o localizar Unity fijada y módulos Windows/WebGL | A02 | Verified |
-| A04 | Crear proyecto limpio, assemblies y escenas de arranque | A03 | InProgress |
+| A04 | Crear proyecto limpio, assemblies y escenas de arranque | A03 | Verified |
 | A05 | Crear primera build de Windows y WebGL | A04 | Pending |
 | A06 | Adaptar CI para tests y builds; conservar publicación en Main y gh-pages | A05 | Pending |
 | A07 | Crear driver y generadores de Editor | A04 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `5fdd5253d8b992c5e1d3d86378e51c429f373d3191b8643f3487742e11882fc4`.
+Hash SHA-256 del plan comprobado: `49ebef78549aa8ba519f321044f91b390252d7b1c557bdeb0a8c729f34dee4b2`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -172,7 +172,17 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - `Unity.exe` identifica el producto como `6000.6.5f1_3ff58d469c8a`; CLI lo clasifica en el stream `SUPPORTED`.
 - Windows x64 Mono: existe `WindowsStandaloneSupport/Variations/win64_player_nondevelopment_mono` con `WindowsPlayer.exe` y `UnityPlayer.dll`. En este Editor el destino Windows del sistema anfitrión viene integrado; no aparece como módulo opcional `windows-mono`.
 - WebGL: el catálogo indica `webgl Installed` y existe `Editor/Data/PlaybackEngines/WebGLSupport`.
-- `unity auth status` indicó que la CLI no tiene sesión iniciada. No era necesaria para instalar; se comprobará el requisito de licencia al abrir el proyecto en A04.
+- `unity auth status` indicó que la CLI no tiene sesión iniciada. No impidió abrir el proyecto, generar las escenas ni ejecutar las pruebas locales.
+
+## Evidencia A04 — Proyecto limpio y arranque
+
+- Se creó el proyecto Universal 2D con Unity `6000.6.5f1`, sin conexión a servicios de Unity Cloud. El manifiesto y `Packages/packages-lock.json` fijan URP `17.6.0`, Input System `1.20.0`, Cinemachine `6.6.0`, Unity Test Framework `1.8.0` y UGUI `2.6.0`.
+- Las assemblies `Luckbound.Core`, `Luckbound.Content`, `Luckbound.Gameplay`, `Luckbound.Presentation` y `Luckbound.App` separan las reglas de dominio de Unity, contenido, simulación, presentación y composición. `Luckbound.Core.asmdef` activa `noEngineReferences`.
+- La assembly de herramientas de Editor crea las escenas solo si no existen y se niega a sobrescribirlas. Build Settings incluye `Bootstrap`, `Menu`, `Hub` y `Expedition`, en ese orden; `Bootstrap` carga `Menu` y allí se muestra el título `Luckbound`.
+- URP `17.6.0` provee Pixel Perfect Camera. No se añadió el paquete `com.unity.2d.pixel-perfect`, que dio errores de compilación al probar su versión separada contra este URP. TextMeshPro se usa a través de UGUI `2.6.0`, que ya lo incluye; no se añadió `com.unity.textmeshpro`.
+- Pruebas Unity ejecutadas en Windows con Editor `6000.6.5f1`: `unity test . --mode EditMode --output Logs\A04-editmode-2.xml --timeout 600 -- -nographics` → 1/1 pasa; `unity test . --mode PlayMode --output Logs\A04-playmode.xml --timeout 600 -- -nographics` → 1/1 pasa. EditMode prueba `CoreIdentifiesTheProductWithoutAnEngineDependency`; PlayMode carga `Bootstrap`, espera la transición y comprueba que aparece el menú.
+- La primera ejecución EditMode descubrió que el assembly PlayMode estaba marcado solo para Editor, por lo que intentó cargar una escena fuera de PlayMode. Se corrigió `Luckbound.PlayMode.Tests.asmdef` para compilar también en la plataforma jugador; las dos suites finales pasan. Los informes están en la carpeta local ignorada `Logs/`.
+- Aceptación A04 satisfecha: el proyecto compila, el arranque de menú se prueba en PlayMode y Core se compila en un assembly sin referencias de Unity. Aún no hay mecánicas de juego y todavía no se ha probado una build de jugador; eso corresponde a A05.
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:
