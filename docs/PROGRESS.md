@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A02: Verified; A03: InProgress; A04–J09: Pending.
+- A01–A03: Verified; A04: InProgress; A05–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
-- Aún no se ha creado el proyecto limpio ni implementado sistemas del juego.
+- La nueva versión del Editor y WebGL están instalados y verificados; A04 está creando el proyecto limpio. Aún no se han implementado sistemas de juego.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; no se ha publicado ni modificado la web.
-- Siguiente tarea tras verificar el editor: A04, crear proyecto limpio, assemblies y escenas.
+- Tarea activa: A04, crear proyecto limpio, assemblies y escenas.
 
 ## Estados y dependencias
 
@@ -31,8 +31,8 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 |---|---|---|---|
 | A01 | Guardar este plan, registro de progreso y una guía breve para agentes que remita al plan | — | Verified |
 | A02 | Archivar prototipo y versión web mediante referencias Git; conservar los tres documentos originales | A01 | Verified |
-| A03 | Instalar o localizar Unity fijada y módulos Windows/WebGL | A02 | InProgress |
-| A04 | Crear proyecto limpio, assemblies y escenas de arranque | A03 | Pending |
+| A03 | Instalar o localizar Unity fijada y módulos Windows/WebGL | A02 | Verified |
+| A04 | Crear proyecto limpio, assemblies y escenas de arranque | A03 | InProgress |
 | A05 | Crear primera build de Windows y WebGL | A04 | Pending |
 | A06 | Adaptar CI para tests y builds; conservar publicación en Main y gh-pages | A05 | Pending |
 | A07 | Crear driver y generadores de Editor | A04 | Pending |
@@ -165,6 +165,14 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - Se conservaron los originales en la raíz y se hicieron copias en `docs/references/`: `Luckbound.png`, `LuckboundMecanicas.png` y `Todo.pdf`. SHA-256 origen/copia coincide para los tres: Luckbound.png=009848c7b8f7a1847672da404ace7d7f2447acfddd0943333b71279b2ddf0719; LuckboundMecanicas.png=eb23fcc8fc4f28245b0b83dce20088481cc8e16f5a3d40c5aba3b467924f18e1; Todo.pdf=85ef0d178a8ffc1c72fafd75d1dfc4017151ef2286027818b230ea251b82e677.
 - La web publicada sigue apuntando a su commit original; el nuevo desarrollo no ha cambiado el remoto.
 
+## Evidencia A03 — Unity y destinos de build
+
+- Unity CLI `1.0.0-beta.13` instaló Unity Editor `6000.6.5f1` y el módulo `webgl`; resultado del comando: `success`, elementos `6000.6.5f1-x86_64` y `webgl` en estado `installed`.
+- `unity editors verify 6000.6.5f1` devolvió `editor ok` y `webgl ok`.
+- `Unity.exe` identifica el producto como `6000.6.5f1_3ff58d469c8a`; CLI lo clasifica en el stream `SUPPORTED`.
+- Windows x64 Mono: existe `WindowsStandaloneSupport/Variations/win64_player_nondevelopment_mono` con `WindowsPlayer.exe` y `UnityPlayer.dll`. En este Editor el destino Windows del sistema anfitrión viene integrado; no aparece como módulo opcional `windows-mono`.
+- WebGL: el catálogo indica `webgl Installed` y existe `Editor/Data/PlaybackEngines/WebGLSupport`.
+- `unity auth status` indicó que la CLI no tiene sesión iniciada. No era necesaria para instalar; se comprobará el requisito de licencia al abrir el proyecto en A04.
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:
