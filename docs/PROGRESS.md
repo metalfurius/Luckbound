@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A05: Verified; A06: InProgress; A07–J09: Pending.
+- A01–A05, A07: Verified; A06: InProgress; A08–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. Aún no se han implementado sistemas de juego.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- Siguiente paso de A06: ejecutar Actions en el repositorio con los secretos y permisos reales; A07, herramientas de Editor, también está disponible al depender solo de A04.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07 quedó verificada; A08, escenarios de prueba, logs y capturas, es el siguiente hito disponible.
 
 ## Estados y dependencias
 
@@ -35,7 +35,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | A04 | Crear proyecto limpio, assemblies y escenas de arranque | A03 | Verified |
 | A05 | Crear primera build de Windows y WebGL | A04 | Verified |
 | A06 | Adaptar CI para tests y builds; conservar publicación en Main y gh-pages | A05 | InProgress |
-| A07 | Crear driver y generadores de Editor | A04 | Pending |
+| A07 | Crear driver y generadores de Editor | A04 | Verified |
 | A08 | Crear escenarios, logs y capturas | A05, A07 | Pending |
 | B01 | Sesión, identificadores y propiedad de actores | A08 | Pending |
 | B02 | Input System y mapas de entrada | B01 | Pending |
@@ -192,7 +192,7 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - `unity build run . --path Builds\A05\WebGL` sirvió la build en `http://localhost:8080/`. La página y los tres recursos comprimidos devolvieron HTTP `200`. El navegador ejecutó WebGL 2.0 y mostró el menú completo: `LUCKBOUND`, `Atrium Gloriam`, lema y `PREPRODUCCIÓN · 0.1.0`. La consola no contiene errores; registra avisos por pases de postprocesado URP no incluidos, efectos que el menú no utiliza.
 - `StartupFlowTests` comprueba la transición `Bootstrap` → `Menu`, la presencia del título y el texto exacto de versión. La suite PlayMode se ejecutó otra vez: 1/1 pasa. A04 conserva su resultado EditMode 1/1 y PlayMode 1/1.
 - Los registros de CLI muestran un mensaje no bloqueante de renovación de acceso de Unity (`Access token is unavailable; failed to update`) durante builds cuyo resultado real fue `success`/0. La CLI no tenía sesión iniciada; la Editor resolvió la licencia durante las pruebas.
-- Aceptación A05 satisfecha para ambos destinos. Los artefactos locales están excluidos por `.gitignore`; todavía no se ha modificado el workflow, enviado una release ni alterado el sitio público.
+- Aceptación A05 satisfecha para ambos destinos. Los artefactos locales están excluidos por `.gitignore`; el workflow se ha actualizado solo en la rama local y todavía no se ha enviado, publicado una release ni alterado el sitio público.
 
 ## Evidencia A06 — Automatización de tests, builds y publicación
 
@@ -204,6 +204,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Estado InProgress, no Verified:** este cambio local aún no se ha ejecutado en GitHub Actions. Por eso no se han validado los secretos `UNITY_LICENSE`, `UNITY_EMAIL`, `UNITY_PASSWORD`, los permisos de escritura del token ni la URL pública. A05 valida localmente los mismos destinos, no la autenticación o el despliegue de Actions.
 - `actionlint .github/workflows/build.yml` terminó con código 0 y sin diagnósticos. `git diff --check` tampoco informó errores de formato. Las imágenes Docker exactas de las plataformas se consultaron en el registro oficial.
 - **Estado InProgress:** queda por ejecutar el workflow en el repositorio desde GitHub Actions, comprobar que los secretos funcionan y verificar el destino después de un despliegue autorizado desde `Main`. El workflow no ha sido enviado al remoto ni se ha tocado `gh-pages`.
+
+## Evidencia A07 — Herramientas de Editor
+
+- `ProjectScaffoldGenerator.GenerateStartupScenes` crea únicamente escenas ausentes en modo aditivo, por lo que no cierra una escena del usuario ni sobrescribe las existentes. Reconcilia las cuatro escenas propias en orden, elimina duplicados de esas rutas y conserva otras entradas de Build Settings.
+- `ProjectDevelopmentChecks.RunAll` se puede ejecutar desde `Luckbound/Validate Project` o con `-executeMethod`. Revisa la versión fijada del Editor, Build Settings, el mapa Player de Input Actions, el perfil WebGL, las fronteras de assemblies y el contenido estructural de las escenas sin modificar ni cerrar escenas que ya estuvieran abiertas.
+- `ProjectScaffoldGeneratorTests.StartupSceneGenerator_IsIdempotentAndLeavesNoProjectDiff` generó dos veces: los hashes de las escenas, sus `.meta` y los ProjectSettings quedaron idénticos; la secuencia de escenas no cambió. `DevelopmentCheckDriver_CompletesForTheGeneratedScaffold` ejecutó y aprobó el driver real.
+- `unity test . --mode EditMode --output Logs\A07-editmode-retry.xml --timeout 1200 -- -nographics` → 3/3 pasan. `unity test . --mode PlayMode --output Logs\A07-playmode.xml --timeout 1200 -- -nographics` → 1/1 pasa.
+- La CLI Unity local no admite `--mode All`; las dos suites se ejecutaron por separado. GameCI recibe `testMode: all` según el input propio de su Test Runner y queda sujeto a la ejecución real pendiente de A06.
+- **Aceptación A07 satisfecha.**
+
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:

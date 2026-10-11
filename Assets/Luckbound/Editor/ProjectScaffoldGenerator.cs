@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Luckbound.App;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -10,7 +12,7 @@ using UnityEngine.UI;
 namespace Luckbound.Editor
 {
     /// <summary>
-    /// Creates the four stable startup scenes once, with no prototype asset dependencies.
+    /// Creates missing startup scenes and reconciles only the build settings it owns.
     /// </summary>
     public static class ProjectScaffoldGenerator
     {
@@ -21,52 +23,153 @@ namespace Luckbound.Editor
         public static void GenerateStartupScenes()
         {
             Directory.CreateDirectory(SceneDirectory);
+            Scene previousActiveScene = SceneManager.GetActiveScene();
+            int createdScenes = 0;
+
+            try
+            {
+                foreach (string sceneName in SceneNames)
+                {
+                    string scenePath = ScenePath(sceneName);
+                    if (File.Exists(scenePath))
+                    {
+                        continue;
+                    }
+
+                    Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+                    EditorSceneManager.SetActiveScene(scene);
+                    scene.name = sceneName;
+
+                    try
+                    {
+                        if (sceneName == "Bootstrap")
+                        {
+                            CreateBootstrapScene();
+                        }
+                        else
+                        {
+                            CreateCamera("#10111B");
+                            if (sceneName == "Menu")
+                            {
+                                CreateMenu();
+                            }
+                        }
+
+                        if (!EditorSceneManager.SaveScene(scene, scenePath))
+                        {
+                            throw new IOException("Unity could not save scene " + scenePath);
+                        }
+
+                        createdScenes++;
+                    }
+                    finally
+                    {
+                        RestoreActiveScene(previousActiveScene);
+                        if (scene.IsValid() && scene.isLoaded)
+                        {
+                            EditorSceneManager.CloseScene(scene, true);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                RestoreActiveScene(previousActiveScene);
+            }
+
+            if (createdScenes > 0)
+            {
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            }
+
+            EditorBuildSettingsScene[] mergedBuildScenes = MergeBuildScenes(EditorBuildSettings.scenes);
+            if (!BuildScenesEqual(EditorBuildSettings.scenes, mergedBuildScenes))
+            {
+                EditorBuildSettings.scenes = mergedBuildScenes;
+            }
+
+            bool playerSettingsChanged = false;
+            if (PlayerSettings.companyName != "CodeOverdose")
+            {
+                PlayerSettings.companyName = "CodeOverdose";
+                playerSettingsChanged = true;
+            }
+            if (PlayerSettings.productName != "Luckbound")
+            {
+                PlayerSettings.productName = "Luckbound";
+                playerSettingsChanged = true;
+            }
+            if (PlayerSettings.bundleVersion != "0.1.0")
+            {
+                PlayerSettings.bundleVersion = "0.1.0";
+                playerSettingsChanged = true;
+            }
+
+            if (playerSettingsChanged)
+            {
+                AssetDatabase.SaveAssets();
+            }
+
+            Debug.Log(
+                "Luckbound startup scaffold reconciled. Created " + createdScenes +
+                " missing scene(s); existing scenes and unrelated build entries were preserved.");
+        }
+
+        private static EditorBuildSettingsScene[] MergeBuildScenes(EditorBuildSettingsScene[] existing)
+        {
+            var managedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var merged = new List<EditorBuildSettingsScene>();
 
             foreach (string sceneName in SceneNames)
             {
-                string scenePath = ScenePath(sceneName);
-                if (File.Exists(scenePath))
-                {
-                    throw new InvalidOperationException(
-                        "Refusing to overwrite an existing startup scene: " + scenePath);
-                }
-
-                Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-                scene.name = sceneName;
-
-                if (sceneName == "Bootstrap")
-                {
-                    CreateBootstrapScene();
-                }
-                else
-                {
-                    CreateCamera("#10111B");
-                    if (sceneName == "Menu")
-                    {
-                        CreateMenu();
-                    }
-                }
-
-                if (!EditorSceneManager.SaveScene(scene, scenePath))
-                {
-                    throw new IOException("Unity could not save scene " + scenePath);
-                }
+                string path = ScenePath(sceneName);
+                managedPaths.Add(NormalizePath(path));
+                merged.Add(new EditorBuildSettingsScene(path, true));
             }
 
-            var buildScenes = new EditorBuildSettingsScene[SceneNames.Length];
-            for (int index = 0; index < SceneNames.Length; index++)
+            foreach (EditorBuildSettingsScene scene in existing ?? Array.Empty<EditorBuildSettingsScene>())
             {
-                buildScenes[index] = new EditorBuildSettingsScene(ScenePath(SceneNames[index]), true);
+                if (!managedPaths.Contains(NormalizePath(scene.path)))
+                {
+                    merged.Add(scene);
+                }
             }
 
-            EditorBuildSettings.scenes = buildScenes;
-            PlayerSettings.companyName = "CodeOverdose";
-            PlayerSettings.productName = "Luckbound";
-            PlayerSettings.bundleVersion = "0.1.0";
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            return merged.ToArray();
+        }
 
-            Debug.Log("Luckbound startup scaffold generated: Bootstrap -> Menu, Hub, Expedition.");
+        private static bool BuildScenesEqual(
+            EditorBuildSettingsScene[] current,
+            EditorBuildSettingsScene[] expected)
+        {
+            if (current == null || expected == null || current.Length != expected.Length)
+            {
+                return false;
+            }
+
+            for (int index = 0; index < current.Length; index++)
+            {
+                if (!string.Equals(current[index].path, expected[index].path, StringComparison.Ordinal) ||
+                    current[index].enabled != expected[index].enabled)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static string NormalizePath(string path)
+        {
+            return (path ?? string.Empty).Replace('\\', '/');
+        }
+
+        private static void RestoreActiveScene(Scene previousActiveScene)
+        {
+            if (previousActiveScene.IsValid() && previousActiveScene.isLoaded)
+            {
+                EditorSceneManager.SetActiveScene(previousActiveScene);
+            }
         }
 
         private static void CreateBootstrapScene()
