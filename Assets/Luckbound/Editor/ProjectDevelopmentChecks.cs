@@ -17,7 +17,7 @@ namespace Luckbound.Editor
     public static class ProjectDevelopmentChecks
     {
         private const string ProjectVersionPath = "ProjectSettings/ProjectVersion.txt";
-        private const string InputActionsPath = "Assets/Settings/InputSystem_Actions.inputactions";
+        private const string InputActionsPath = "Assets/Resources/Luckbound/InputSystem_Actions.inputactions";
         private const string WebGlProfilePath = "Assets/Settings/Build Profiles/WebGL.asset";
         private static readonly string[] StartupScenes = { "Bootstrap", "Menu", "Hub", "Expedition" };
 
@@ -112,17 +112,96 @@ namespace Luckbound.Editor
             try
             {
                 InputActionsDefinition actions = JsonUtility.FromJson<InputActionsDefinition>(File.ReadAllText(InputActionsPath));
-                bool hasPlayerMap = actions != null && actions.maps != null &&
-                    actions.maps.Any(map => map != null && string.Equals(map.name, "Player", StringComparison.Ordinal));
-                if (!hasPlayerMap)
+                InputActionMapDefinition playerMap = actions?.maps?.FirstOrDefault(map =>
+                    map != null && string.Equals(map.name, "Player", StringComparison.Ordinal));
+                if (playerMap == null)
                 {
                     errors.Add("Input Actions must contain the Player action map.");
+                    return;
+                }
+
+                var requiredActions = new Dictionary<string, string[]>
+                {
+                    { "Move", new[] { "Value", "Axis" } },
+                    { "Jump", new[] { "Button", "Button" } },
+                    { "Attack", new[] { "Button", "Button" } },
+                    { "Dodge", new[] { "Button", "Button" } },
+                    { "Skill1", new[] { "Button", "Button" } },
+                    { "Skill2", new[] { "Button", "Button" } },
+                    { "Interact", new[] { "Button", "Button" } },
+                    { "Consumable", new[] { "Button", "Button" } },
+                    { "Inventory", new[] { "Button", "Button" } },
+                    { "Map", new[] { "Button", "Button" } },
+                    { "Pause", new[] { "Button", "Button" } }
+                };
+
+                foreach (KeyValuePair<string, string[]> requirement in requiredActions)
+                {
+                    bool found = playerMap.actions != null && playerMap.actions.Any(action => action != null &&
+                        string.Equals(action.name, requirement.Key, StringComparison.Ordinal) &&
+                        string.Equals(action.type, requirement.Value[0], StringComparison.Ordinal) &&
+                        string.Equals(action.expectedControlType, requirement.Value[1], StringComparison.Ordinal));
+                    if (!found)
+                    {
+                        errors.Add("Player map is missing action " + requirement.Key + " with the required type.");
+                    }
+                }
+
+                string[][] requiredBindings =
+                {
+                    new[] { "Move", "<Gamepad>/leftStick/x", "Gamepad" },
+                    new[] { "Move", "<Keyboard>/a", "Keyboard&Mouse" },
+                    new[] { "Move", "<Keyboard>/d", "Keyboard&Mouse" },
+                    new[] { "Move", "<Keyboard>/leftArrow", "Keyboard&Mouse" },
+                    new[] { "Move", "<Keyboard>/rightArrow", "Keyboard&Mouse" },
+                    new[] { "Jump", "<Keyboard>/space", "Keyboard&Mouse" },
+                    new[] { "Jump", "<Gamepad>/buttonSouth", "Gamepad" },
+                    new[] { "Attack", "<Mouse>/leftButton", "Keyboard&Mouse" },
+                    new[] { "Attack", "<Keyboard>/j", "Keyboard&Mouse" },
+                    new[] { "Attack", "<Gamepad>/buttonWest", "Gamepad" },
+                    new[] { "Dodge", "<Keyboard>/leftShift", "Keyboard&Mouse" },
+                    new[] { "Dodge", "<Gamepad>/rightShoulder", "Gamepad" },
+                    new[] { "Skill1", "<Mouse>/rightButton", "Keyboard&Mouse" },
+                    new[] { "Skill1", "<Keyboard>/k", "Keyboard&Mouse" },
+                    new[] { "Skill1", "<Gamepad>/buttonNorth", "Gamepad" },
+                    new[] { "Skill2", "<Keyboard>/q", "Keyboard&Mouse" },
+                    new[] { "Skill2", "<Keyboard>/l", "Keyboard&Mouse" },
+                    new[] { "Skill2", "<Gamepad>/rightTrigger", "Gamepad" },
+                    new[] { "Interact", "<Keyboard>/e", "Keyboard&Mouse" },
+                    new[] { "Interact", "<Gamepad>/buttonEast", "Gamepad" },
+                    new[] { "Consumable", "<Keyboard>/f", "Keyboard&Mouse" },
+                    new[] { "Consumable", "<Gamepad>/leftShoulder", "Gamepad" },
+                    new[] { "Inventory", "<Keyboard>/tab", "Keyboard&Mouse" },
+                    new[] { "Inventory", "<Gamepad>/select", "Gamepad" },
+                    new[] { "Map", "<Keyboard>/m", "Keyboard&Mouse" },
+                    new[] { "Map", "<Gamepad>/dpad/up", "Gamepad" },
+                    new[] { "Pause", "<Keyboard>/escape", "Keyboard&Mouse" },
+                    new[] { "Pause", "<Gamepad>/start", "Gamepad" }
+                };
+
+                foreach (string[] requirement in requiredBindings)
+                {
+                    bool found = playerMap.bindings != null && playerMap.bindings.Any(binding => binding != null &&
+                        string.Equals(binding.action, requirement[0], StringComparison.Ordinal) &&
+                        string.Equals(binding.path, requirement[1], StringComparison.Ordinal) &&
+                        ContainsBindingGroup(binding.groups, requirement[2]));
+                    if (!found)
+                    {
+                        errors.Add("Player map is missing " + requirement[0] + " binding " + requirement[1] +
+                            " for " + requirement[2] + ".");
+                    }
                 }
             }
             catch (Exception exception)
             {
                 errors.Add("Could not parse " + InputActionsPath + ": " + exception.Message);
             }
+        }
+
+        private static bool ContainsBindingGroup(string groups, string requiredGroup)
+        {
+            return !string.IsNullOrEmpty(groups) && groups.Split(';').Any(group =>
+                string.Equals(group.Trim(), requiredGroup, StringComparison.Ordinal));
         }
 
         private static void ValidateWebGlProfile(List<string> errors)
@@ -151,9 +230,10 @@ namespace Luckbound.Editor
                 errors.Add("Luckbound.Content must reference Luckbound.Core.");
             }
             if (gameplay != null && (!References(gameplay, "Luckbound.Core") ||
-                !References(gameplay, "Luckbound.Content") || References(gameplay, "Luckbound.Presentation")))
+                !References(gameplay, "Luckbound.Content") || !References(gameplay, "Unity.InputSystem") ||
+                References(gameplay, "Luckbound.Presentation")))
             {
-                errors.Add("Luckbound.Gameplay must depend on Core and Content, never Presentation.");
+                errors.Add("Luckbound.Gameplay must depend on Core, Content and Unity.InputSystem, never Presentation.");
             }
             if (presentation != null && (!References(presentation, "Luckbound.Core") ||
                 !References(presentation, "Luckbound.Content") || References(presentation, "Luckbound.Gameplay")))
@@ -337,6 +417,24 @@ namespace Luckbound.Editor
         private sealed class InputActionMapDefinition
         {
             public string name;
+            public InputActionDefinition[] actions;
+            public InputActionBindingDefinition[] bindings;
+        }
+
+        [Serializable]
+        private sealed class InputActionDefinition
+        {
+            public string name;
+            public string type;
+            public string expectedControlType;
+        }
+
+        [Serializable]
+        private sealed class InputActionBindingDefinition
+        {
+            public string action;
+            public string path;
+            public string groups;
         }
     }
 }

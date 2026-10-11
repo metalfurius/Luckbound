@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A05, A07–A08, B01: Verified; A06: InProgress; B02–J09: Pending.
+- A01–A05, A07–A08, B01–B02: Verified; A06: InProgress; B03–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
-- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece ya la sesión y los siete identificadores runtime; aún no hay mecánicas jugables.
+- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común para el primer actor. Aún no hay mecánicas jugables.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07, A08 y B01 están verificadas; B02, entrada común para teclado y mando, es el siguiente hito.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07, A08, B01 y B02 están verificadas; B03, movimiento físico con colisión, es el siguiente hito.
 
 ## Estados y dependencias
 
@@ -38,7 +38,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | A07 | Crear driver y generadores de Editor | A04 | Verified |
 | A08 | Crear escenarios, logs y capturas | A05, A07 | Verified |
 | B01 | Sesión, identificadores y propiedad de actores | A08 | Verified |
-| B02 | Input System y mapas de entrada | B01 | Pending |
+| B02 | Input System y mapas de entrada | B01 | Verified |
 | B03 | Movimiento, collider y suelo | B02 | Pending |
 | B04 | Salto variable, buffer y coyote | B03 | Pending |
 | B05 | Esquiva y recarga | B04 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `95329CDD0E6B685B849D46E831042A1883E5AF84B278BF1BC4285E6FC58A2AF1`.
+Hash SHA-256 del plan comprobado: `803154066ECBCBC6B5C67CD850041D46FF572E2341C72D4B73B001432A200DDA`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -232,6 +232,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - Unity Editor `6000.6.5f1`, tras completar los siete IDs: `unity test . --mode EditMode --output Logs\B01-editmode-verified.xml --timeout 1200 -- -nographics` → 8/8 pasan; `unity test . --mode PlayMode --output Logs\B01-playmode-verified.xml --timeout 1200 -- -nographics` → 2/2 pasan; cero fallos.
 - `git diff --check` pasa. Los 61 GUID de `.meta` del proyecto son únicos; el hash del plan está registrado tras el cambio de contrato.
 - **Aceptación B01 satisfecha; estado Verified.** B02 queda habilitada. No se atribuyen a B01 pruebas de builds ni entrada física.
+
+## Evidencia B02 — Input System y mapas de entrada
+
+- El `.inputactions` existente se conserva con su GUID en `Assets/Resources/Luckbound/InputSystem_Actions.inputactions`. Se mantuvo el mapa `UI` y se sustituyó `Player` por las diez acciones del dominio y movimiento horizontal; teclado/ratón y Gamepad siguen las asignaciones de la tabla 3.3.
+- `PlayerCommand` lleva actor, tick, movimiento `[-1,1]` y máscaras de pulsación, mantenimiento y liberación. `PlayerInputBuffer` drena los flancos una sola vez por tick y conserva movimiento mantenido; los toques entre ticks conservan pulsación y liberación juntas. `PlayerInputSource` traduce callbacks del Input System y se libera junto con sus acciones.
+- `ProjectDevelopmentChecks` valida el tipo de las acciones, las vinculaciones requeridas de ambos dispositivos y la referencia de `Unity.InputSystem` en Gameplay.
+- Pruebas con dispositivos simulados del Input System: `KeyboardAndGamepadProduceTheSameGameplayActions` compara salto, ataque y movimiento; `ButtonTapBetweenTicksKeepsPressAndReleaseEdges` comprueba el toque completo dentro de una actualización. Cuatro pruebas de Core verifican buffer, flancos, clamping y consumo ordenado por tick.
+- Unity Editor `6000.6.5f1`: `unity test . --mode EditMode --output Logs\B02-editmode-retry2.xml --timeout 1200 -- -nographics` → 12/12 pasan; `unity test . --mode PlayMode --output Logs\B02-playmode-first.xml --timeout 1200 -- -nographics` → 4/4 pasan; cero fallos.
+- `unity build . --target StandaloneWindows64 --output-path Builds\B02\Windows\Luckbound.exe --allow-dirty-build --timeout 600 --no-tail` terminó `success`, código 0, Editor `6000.6.5f1`; la procedencia quedó en `Builds/B02/Windows/Luckbound.provenance.json`. Unity registró sus avisos habituales de renovación de licencia, sin cambiar el resultado de build.
+- **Aceptación B02 satisfecha; estado Verified.** B03 queda habilitada. La prueba usa dispositivos simulados; no afirma haber conectado hardware físico.
 
 ## Ficha que debe completar cada ejecución
 

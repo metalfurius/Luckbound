@@ -220,7 +220,11 @@ Los siete identificadores de runtime (`SessionId`, `ActorId`, `EntityId`, `RunId
 
 `GameSession` requiere un `SessionId` válido y es el propietario del registro de estados `IActorState`. Cada estado tiene un `ActorId` inmutable durante su vida; la sesión rechaza estados nulos, IDs inválidos y duplicados. `TryGetActor` devuelve `false` si el ID no pertenece a esa sesión; `GetActor` falla con `KeyNotFoundException`; `RemoveActor` devuelve `false` cuando no hay entrada que quitar. `Actors` expone una instantánea de solo lectura en orden de alta. No se ordenarán actores por su `Guid`: los IDs son referencias opacas, y no deben introducir aleatoriedad externa en el orden de la simulación.
 
-`PlayerCommand` contendrá actor, tick, movimiento horizontal y acciones de salto, ataque, esquiva, habilidades, interacción y consumible. Incluirá pulsación, mantenimiento o liberación cuando la acción lo necesite.
+`PlayerCommand` contendrá actor, tick creciente de simulación, movimiento horizontal normalizado y máscaras de acciones pulsadas, mantenidas y liberadas. La máscara cubre salto, ataque, esquiva, habilidades 1 y 2, interacción, consumible, inventario, mapa y pausa. `IPlayerInputSource.Consume(tick)` produce exactamente un comando para ese actor y tick.
+
+`PlayerInputBuffer` pertenece a Core y conserva el movimiento mantenido y los flancos de botones entre actualizaciones renderizadas y ticks fijos. Un toque de botón que empiece y termine entre dos ticks producirá `Pressed` y `Released` juntos en el siguiente comando; los flancos se limpian después de consumirlos una vez. Los ticks negativos o repetidos se rechazan.
+
+El mapa `Player` compartirá las mismas acciones para teclado/ratón y mando, con las asignaciones iniciales de la tabla 3.3. `Luckbound.Gameplay` adaptará los eventos de `Input System` a `IPlayerInputSource` y será dueño de esa suscripción durante la vida del actor; al terminarla desactivará el mapa y eliminará el adaptador. Los mapas de interfaz permanecerán separados del mapa `Player`.
 
 Las operaciones persistentes devolverán un resultado con identificador de transacción, estado, código de éxito o rechazo y cambios que debe representar la interfaz. Los rechazos usarán códigos traducibles: energía insuficiente, mochila llena, objeto incompatible o materiales insuficientes.
 
@@ -263,8 +267,9 @@ Una transición repetida o una respuesta tardía de una sala anterior no podrá 
 
 La simulación utilizará ticks a **60 Hz**.
 
-- La entrada se leerá en `Update`.
-- Las pulsaciones se conservarán hasta ser consumidas en `FixedUpdate`.
+- `Input System` recogerá eventos en su actualización dinámica y los adaptará a comandos por actor.
+- Los comandos se consumirán en `FixedUpdate`; movimiento y flancos se conservarán entre actualizaciones.
+- Una pulsación y liberación completadas antes del siguiente tick aparecerán como ambos flancos en un único comando.
 - Las reglas de acciones y los temporizadores de combate utilizarán tiempo de juego.
 - Interfaces y transiciones visuales utilizarán tiempo real cuando corresponda.
 - Pausa, inventario, diálogos y ofertas detendrán la simulación de la partida.

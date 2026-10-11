@@ -1,7 +1,7 @@
 {
   "name": "Luckbound.Gameplay",
   "rootNamespace": "Luckbound.Gameplay",
-  "references": ["Luckbound.Core", "Luckbound.Content"],
+  "references": ["Luckbound.Core", "Luckbound.Content", "Unity.InputSystem"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
