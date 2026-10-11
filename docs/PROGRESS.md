@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A05, A07: Verified; A06: InProgress; A08–J09: Pending.
+- A01–A05, A07–A08: Verified; A06: InProgress; B01–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. Aún no se han implementado sistemas de juego.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07 quedó verificada; A08, escenarios de prueba, logs y capturas, es el siguiente hito disponible.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07 y A08 quedaron verificadas; B01, sesión e identificadores de dominio, es el siguiente hito.
 
 ## Estados y dependencias
 
@@ -36,7 +36,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | A05 | Crear primera build de Windows y WebGL | A04 | Verified |
 | A06 | Adaptar CI para tests y builds; conservar publicación en Main y gh-pages | A05 | InProgress |
 | A07 | Crear driver y generadores de Editor | A04 | Verified |
-| A08 | Crear escenarios, logs y capturas | A05, A07 | Pending |
+| A08 | Crear escenarios, logs y capturas | A05, A07 | Verified |
 | B01 | Sesión, identificadores y propiedad de actores | A08 | Pending |
 | B02 | Input System y mapas de entrada | B01 | Pending |
 | B03 | Movimiento, collider y suelo | B02 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `aa67c9e93a81ea390b45e65b923da8b4a37dc2bc0c89910e693260e23fa3cf67`.
+Hash SHA-256 del plan comprobado: `57f90599d3ba669af84dab3cffd81976feafe3a06bc15040be3ee39115d8a17b`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -213,6 +213,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - `unity test . --mode EditMode --output Logs\A07-editmode-retry.xml --timeout 1200 -- -nographics` → 3/3 pasan. `unity test . --mode PlayMode --output Logs\A07-playmode.xml --timeout 1200 -- -nographics` → 1/1 pasa.
 - La CLI Unity local no admite `--mode All`; las dos suites se ejecutaron por separado. GameCI recibe `testMode: all` según el input propio de su Test Runner y queda sujeto a la ejecución real pendiente de A06.
 - **Aceptación A07 satisfecha.**
+
+## Evidencia A08 — Escenarios, informes y capturas
+
+- `StartupFlowTests.BootstrapLoadsTheVisibleMenuAndWritesEvidence` recorre `Bootstrap` → `Menu` con semilla `31415926` y registra evento, entrada, aserciones, versión Unity, plataforma, hash de fuentes y resultado.
+- `ScenarioEvidenceRecorder` conserva `scenario-report.json` y `scenario.log` bajo `Logs/Scenarios/A08/<ejecución>/`. El reporte usa código `0`/`1`; Unity CLI retorna un proceso no cero al fallar. El workflow sube esos directorios con `if: always()` para no perder evidencia de fallos.
+- `FailureProbeReturnsOneAndPreservesEvidence` simula deliberadamente un objeto ausente y comprueba código de escenario `1`, error detallado, informe JSON y log. Con `LUCKBOUND_SCENARIO_FAIL_PROBE=1`, la aserción intencionalmente fallida se ejecutó por separado: NUnit marca `Failed(Child)`, la CLI local devuelve `8` y el proceso del Editor informa `2`; ambos códigos de proceso son fallos no cero. El reporte conserva `exitCode: 1` y el log explica la aserción.
+- Ejecución normal final: EditMode 3/3 y PlayMode 2/2. Ejecución negativa separada: 1/1 falla deliberadamente y deja reporte y log.
+- Las pruebas locales y CI corren en batch/headless y registran el motivo por el que no pueden capturar pantalla. El código escribe `screen.png` cuando se ejecuta el escenario de forma interactiva; esa ruta visual no se pudo probar en esta sesión.
+- `.github/workflows/build.yml` pasó `actionlint` después de incluir `Logs/Scenarios` en los artefactos de test.
+- **Aceptación A08 satisfecha para el escenario, el fallo y la conservación de evidencia textual.**
 
 ## Ficha que debe completar cada ejecución
 

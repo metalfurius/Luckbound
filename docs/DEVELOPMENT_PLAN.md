@@ -1177,7 +1177,7 @@ Códigos de salida:
 
 Estos comandos todavía deberán crearse. Un comando que devuelve éxito sin ejecutar comprobaciones no será una prueba válida.
 
-Las evidencias registrarán tarea, commit o hash de los archivos comprobados, versión del editor, plataforma, semilla, entradas, resultado y archivos producidos. Los tests Unity producirán resultados de test; los escenarios producirán un informe de ejecución. Una selección de tests vacía no contará como éxito.
+Las evidencias registrarán tarea, commit o hash de los archivos comprobados, versión del editor, plataforma, semilla, entradas, resultado y archivos producidos. Los tests Unity producirán resultados de test; los escenarios producirán `Logs/Scenarios/<tarea>/<ejecución>/scenario-report.json` y un `scenario.log` con eventos, entradas y aserciones. El reporte conserva su código de dominio `0` si pasa y `1` si falla; la CLI del motor debe propagar cualquier resultado fallido como código de proceso distinto de cero. `screen.png` se captura en sesiones interactivas; los runs batch/headless registran claramente que no hay captura y conservan logs y reporte. El workflow sube los resultados de test y esos archivos incluso si falla la suite. Una selección de tests vacía no contará como éxito.
 
 ### 5.3. Dependencias
 
