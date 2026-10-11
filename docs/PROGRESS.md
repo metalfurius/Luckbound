@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A05: Verified; A06–J09: Pending.
+- A01–A05: Verified; A06: InProgress; A07–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. Aún no se han implementado sistemas de juego.
 - Revisiones de builds: ninguna realizada.
-- El desarrollo continúa en una rama local; no se ha publicado ni modificado la web.
-- Siguientes tareas disponibles: A06, CI y continuidad de publicación; A07, herramientas de Editor.
+- El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
+- Siguiente paso de A06: ejecutar Actions en el repositorio con los secretos y permisos reales; A07, herramientas de Editor, también está disponible al depender solo de A04.
 
 ## Estados y dependencias
 
@@ -34,7 +34,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | A03 | Instalar o localizar Unity fijada y módulos Windows/WebGL | A02 | Verified |
 | A04 | Crear proyecto limpio, assemblies y escenas de arranque | A03 | Verified |
 | A05 | Crear primera build de Windows y WebGL | A04 | Verified |
-| A06 | Adaptar CI para tests y builds; conservar publicación en Main y gh-pages | A05 | Pending |
+| A06 | Adaptar CI para tests y builds; conservar publicación en Main y gh-pages | A05 | InProgress |
 | A07 | Crear driver y generadores de Editor | A04 | Pending |
 | A08 | Crear escenarios, logs y capturas | A05, A07 | Pending |
 | B01 | Sesión, identificadores y propiedad de actores | A08 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `82d091230c59f43afb019eb1990ca064ce0a2b4b19f1082779892259ecf46d2f`.
+Hash SHA-256 del plan comprobado: `aa67c9e93a81ea390b45e65b923da8b4a37dc2bc0c89910e693260e23fa3cf67`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -193,6 +193,17 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - `StartupFlowTests` comprueba la transición `Bootstrap` → `Menu`, la presencia del título y el texto exacto de versión. La suite PlayMode se ejecutó otra vez: 1/1 pasa. A04 conserva su resultado EditMode 1/1 y PlayMode 1/1.
 - Los registros de CLI muestran un mensaje no bloqueante de renovación de acceso de Unity (`Access token is unavailable; failed to update`) durante builds cuyo resultado real fue `success`/0. La CLI no tenía sesión iniciada; la Editor resolvió la licencia durante las pruebas.
 - Aceptación A05 satisfecha para ambos destinos. Los artefactos locales están excluidos por `.gitignore`; todavía no se ha modificado el workflow, enviado una release ni alterado el sitio público.
+
+## Evidencia A06 — Automatización de tests, builds y publicación
+
+- `.github/workflows/build.yml` reemplaza el workflow WebGL monolítico. Ejecuta tests EditMode/PlayMode y builds de Windows x64 y WebGL en jobs separados; las builds dependen de los tests y suben artefactos ligados al SHA. Los artefactos de test se conservan 14 días y las builds 30.
+- Los inputs se fijan a GameCI Test Runner `v4.4.0`, Unity Builder `v6.0.0`, CLI `v0.1.72` e imágenes `unityci/editor` del Editor `6000.6.5f1` y módulos `base`, `windows-mono` y `webgl` `3.2.2`. Los tags de las tres imágenes existen en Docker Hub a fecha de esta revisión.
+- Los tags de versión crean un Release con ZIP de Windows, ZIP WebGL, metadatos de commit/Editor/workflow y sumas SHA-256. Repetir la ejecución reemplaza los assets del mismo tag.
+- Solo los pushes a `Main` pueden desplegar. El job requiere los tres éxitos, descarta builds de commits que ya no encabezan `Main`, actualiza `gh-pages` sin borrado destructivo ni push forzado y guarda el player en `builds/<commit>/`; la URL estable redirige a esa build. Se conserva el contenido histórico de `gh-pages`.
+- Los pull requests de forks se omiten porque carecen de secretos Unity. No se usa `pull_request_target`. El workflow manual produce artefactos, pero no publica.
+- **Estado InProgress, no Verified:** este cambio local aún no se ha ejecutado en GitHub Actions. Por eso no se han validado los secretos `UNITY_LICENSE`, `UNITY_EMAIL`, `UNITY_PASSWORD`, los permisos de escritura del token ni la URL pública. A05 valida localmente los mismos destinos, no la autenticación o el despliegue de Actions.
+- `actionlint .github/workflows/build.yml` terminó con código 0 y sin diagnósticos. `git diff --check` tampoco informó errores de formato. Las imágenes Docker exactas de las plataformas se consultaron en el registro oficial.
+- **Estado InProgress:** queda por ejecutar el workflow en el repositorio desde GitHub Actions, comprobar que los secretos funcionan y verificar el destino después de un despliegue autorizado desde `Main`. El workflow no ha sido enviado al remoto ni se ha tocado `gh-pages`.
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:

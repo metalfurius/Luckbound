@@ -1475,15 +1475,14 @@ El flujo nuevo utilizará GameCI y la versión fijada del editor. Los secretos d
 
 Comportamiento:
 
-- Pull requests: validación y pruebas.
-- Builds de hitos: artefactos Windows y WebGL.
-- `Main`: pruebas, ambas builds y publicación web cuando todo termine correctamente.
-- Tags de versión: release con ZIP Windows y metadatos.
-- Publicaciones serializadas para evitar que una ejecución antigua sobrescriba otra nueva.
+- `.github/workflows/build.yml` valida pull requests contra `Main`, los pushes a `Main`, tags `v*` y ejecuciones manuales. Tests, build Windows x64 y build WebGL son jobs separados; las dos builds esperan a que pasen los tests. Pull requests desde forks omiten estos jobs porque GitHub no entrega secretos a un fork. No se usará `pull_request_target` para dar secretos a código no confiable.
+- Builds de hitos y ejecuciones manuales suben artefactos de ambos destinos sin publicar la web.
+- Solo un push a `Main` puede desplegar. El job necesita éxito explícito de tests y ambas builds, verifica que el commit aún sea la cabeza de `Main`, y serializa los despliegues. Nunca fuerza el push ni elimina los archivos anteriores de `gh-pages`.
+- Cada build web se conserva en `builds/<commit>/`; el `index.html` estable redirige a esa versión y un `build-version.json` identifica el commit, el Editor y el workflow. La página anterior seguirá disponible en el historial Git. Antes del lanzamiento 1.0 se probará restaurar una versión ensayada.
+- Un tag `vMAJOR.MINOR.PATCH` genera un GitHub Release con ZIP Windows x64, ZIP WebGL, metadatos de procedencia y sumas SHA-256. Repetir el workflow de un release sustituye sus assets de forma idempotente.
 - Cachés separadas por editor, destino y dependencias.
-- Archivos web versionados para evitar mezclar código y datos de distintas builds.
-- Conservación de la última publicación válida.
-- Restauración de la versión anterior ensayada antes de 1.0.
+- GameCI, sus imágenes Unity y las acciones de GitHub quedan fijados por versión. La imagen debe incluir el Editor y módulo del destino; un upgrade se acepta solo después de tests y builds de ambos destinos.
+- A06 solo se verificará cuando una ejecución real de GitHub Actions produzca los artefactos esperados y la publicación en el destino correcto funcione. La build local no valida los secretos ni permisos de Actions.
 
 La rama de trabajo será `codex/luckbound-reboot` cuando comience el desarrollo. Este guardado documental no crea ni publica esa rama.
 
