@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A05, A07–A08: Verified; A06: InProgress; B01–J09: Pending.
+- A01–A05, A07–A08, B01: Verified; A06: InProgress; B02–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
-- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. Aún no se han implementado sistemas de juego.
+- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece ya la sesión y los siete identificadores runtime; aún no hay mecánicas jugables.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07 y A08 quedaron verificadas; B01, sesión e identificadores de dominio, es el siguiente hito.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07, A08 y B01 están verificadas; B02, entrada común para teclado y mando, es el siguiente hito.
 
 ## Estados y dependencias
 
@@ -37,7 +37,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | A06 | Adaptar CI para tests y builds; conservar publicación en Main y gh-pages | A05 | InProgress |
 | A07 | Crear driver y generadores de Editor | A04 | Verified |
 | A08 | Crear escenarios, logs y capturas | A05, A07 | Verified |
-| B01 | Sesión, identificadores y propiedad de actores | A08 | Pending |
+| B01 | Sesión, identificadores y propiedad de actores | A08 | Verified |
 | B02 | Input System y mapas de entrada | B01 | Pending |
 | B03 | Movimiento, collider y suelo | B02 | Pending |
 | B04 | Salto variable, buffer y coyote | B03 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `57f90599d3ba669af84dab3cffd81976feafe3a06bc15040be3ee39115d8a17b`.
+Hash SHA-256 del plan comprobado: `95329CDD0E6B685B849D46E831042A1883E5AF84B278BF1BC4285E6FC58A2AF1`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -223,6 +223,15 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - Las pruebas locales y CI corren en batch/headless y registran el motivo por el que no pueden capturar pantalla. El código escribe `screen.png` cuando se ejecuta el escenario de forma interactiva; esa ruta visual no se pudo probar en esta sesión.
 - `.github/workflows/build.yml` pasó `actionlint` después de incluir `Logs/Scenarios` en los artefactos de test.
 - **Aceptación A08 satisfecha para el escenario, el fallo y la conservación de evidencia textual.**
+
+## Evidencia B01 — Sesión, identificadores y propiedad de actores
+
+- `Luckbound.Core` contiene los siete IDs del contrato (`SessionId`, `ActorId`, `EntityId`, `RunId`, `RoomInstanceId`, `ItemInstanceId` y `TransactionId`) como valores inmutables tipados sobre `Guid`, sin conversiones implícitas. El formato serializable de diagnóstico es GUID `N` minúsculo; el valor vacío es inválido y la creación de IDs no utiliza el azar reproducible del juego.
+- `GameSession` exige una sesión válida y conserva estados `IActorState` en un registro propio por `ActorId`. Rechaza estados nulos, IDs inválidos y duplicados. Ofrece búsqueda opcional (`TryGetActor`), búsqueda requerida (`GetActor`), retirada sin efectos en otros actores (`RemoveActor`) y una instantánea de solo lectura en orden de alta. El `Guid` no decide el orden de simulación.
+- `ActorSessionTests` verifica dos estados mutables independientes, orden de alta, duplicados, IDs inválidos, tipos distintos, parseo y formato canónico de los siete identificadores y retirada aislada. La assembly Core mantiene `noEngineReferences`; las pruebas se compilan y ejecutan en su assembly sin Unity.
+- Unity Editor `6000.6.5f1`, tras completar los siete IDs: `unity test . --mode EditMode --output Logs\B01-editmode-verified.xml --timeout 1200 -- -nographics` → 8/8 pasan; `unity test . --mode PlayMode --output Logs\B01-playmode-verified.xml --timeout 1200 -- -nographics` → 2/2 pasan; cero fallos.
+- `git diff --check` pasa. Los 61 GUID de `.meta` del proyecto son únicos; el hash del plan está registrado tras el cambio de contrato.
+- **Aceptación B01 satisfecha; estado Verified.** B02 queda habilitada. No se atribuyen a B01 pruebas de builds ni entrada física.
 
 ## Ficha que debe completar cada ejecución
 

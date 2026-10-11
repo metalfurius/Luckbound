@@ -200,6 +200,7 @@ Campos comunes de una definición: ID, claves de nombre y descripción, versión
 
 | Contrato | Función |
 |---|---|
+| `SessionId` | Identifica una sesión de simulación en memoria y sus eventos; no equivale a una expedición persistible |
 | `ActorId` | Identifica a un personaje que recibe órdenes |
 | `EntityId` | Identifica enemigos, proyectiles, objetos y entidades del mundo |
 | `RunId` | Identifica una expedición |
@@ -214,6 +215,10 @@ Campos comunes de una definición: ID, claves de nombre y descripción, versión
 | `IGameClock` | Expone ticks y tiempo de juego |
 | `ISaveStore` | Carga y persiste sobres de guardado |
 | `ContentCatalog` | Resuelve definiciones por identificador |
+
+Los siete identificadores de runtime (`SessionId`, `ActorId`, `EntityId`, `RunId`, `RoomInstanceId`, `ItemInstanceId` y `TransactionId`) serán valores tipados, inmutables y respaldados por `Guid`; nunca se convertirán implícitamente entre sí. La sesión mantiene un registro propio indexado por `ActorId`. `SessionId` vive mientras existe esa instancia de simulación; `RunId` identifica la expedición y sobrevive a una reanudación. La generación de identificadores no consume el azar reproducible del juego.
+
+`GameSession` requiere un `SessionId` válido y es el propietario del registro de estados `IActorState`. Cada estado tiene un `ActorId` inmutable durante su vida; la sesión rechaza estados nulos, IDs inválidos y duplicados. `TryGetActor` devuelve `false` si el ID no pertenece a esa sesión; `GetActor` falla con `KeyNotFoundException`; `RemoveActor` devuelve `false` cuando no hay entrada que quitar. `Actors` expone una instantánea de solo lectura en orden de alta. No se ordenarán actores por su `Guid`: los IDs son referencias opacas, y no deben introducir aleatoriedad externa en el orden de la simulación.
 
 `PlayerCommand` contendrá actor, tick, movimiento horizontal y acciones de salto, ataque, esquiva, habilidades, interacción y consumible. Incluirá pulsación, mantenimiento o liberación cuando la acción lo necesite.
 
