@@ -2,6 +2,7 @@ using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.TestTools;
 
 namespace Luckbound.Tests.PlayMode
@@ -20,6 +21,9 @@ namespace Luckbound.Tests.PlayMode
 
             Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
             Assert.That(GameObject.Find("LuckboundTitle"), Is.Not.Null);
+
+            Text version = GameObject.Find("MenuVersion").GetComponent<Text>();
+            Assert.That(version.text, Is.EqualTo("PREPRODUCCIÓN  ·  0.1.0"));
         }
     }
 }

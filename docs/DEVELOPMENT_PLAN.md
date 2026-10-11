@@ -2,7 +2,7 @@
 
 **Versión del documento:** 1.0 — 11 de octubre de 2026.
 
-**Estado:** preproducción documentada; A01–A03 verificados y A04 creado y comprobado. El juego todavía no tiene sistemas de juego implementados.
+**Estado:** preproducción documentada; A01–A05 verificados. Las primeras builds muestran el menú y su versión. El juego todavía no tiene sistemas de juego implementados.
 
 **Responsable de producto:** Fran / CodeOverdose.
 
@@ -114,6 +114,8 @@ Configuración:
 - Python en un entorno local del proyecto para síntesis y validación de audio.
 
 El manifiesto debe conservar el conjunto verificado con Unity 6000.6.5f1: URP `17.6.0`, Input System `1.20.0`, Cinemachine `6.6.0`, Unity Test Framework `1.8.0` y UGUI `2.6.0`, además de los módulos requeridos por Unity. `Packages/packages-lock.json` registra las resoluciones completas. La cámara Pixel Perfect se obtiene del propio URP 17.6; no añadir `com.unity.2d.pixel-perfect`, cuya versión probada no compila con ese URP. No añadir el paquete separado `com.unity.textmeshpro`: UGUI ya lo incluye. Si se actualiza el Editor, repetir la resolución de paquetes y las pruebas antes de cambiar esta lista.
+
+El perfil de build WebGL inicial está en `Assets/Settings/Build Profiles/WebGL.asset`; su lista de escenas sigue `EditorBuildSettings`. La primera build WebGL limpia tardó más de diez minutos al compilar IL2CPP y aplicar Brotli; el build local o el worker de CI deben permitir al menos veinte minutos para la primera compilación y conservar caché incremental cuando sea posible. El smoke test actual muestra avisos de URP por pases de postprocesado ausentes o descartados en WebGL; el menú no depende de esos efectos. No hacer depender el arte o la legibilidad de postprocesado sin verificar primero un build WebGL real.
 
 Se retirarán de la nueva implementación Visual Scripting, Multiplayer Center, Collab Proxy y las dependencias del prototipo que no sean necesarias.
 

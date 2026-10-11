@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A04: Verified; A05–J09: Pending.
+- A01–A05: Verified; A06–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
-- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y sus pruebas pasan. Aún no se han implementado sistemas de juego.
+- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. Aún no se han implementado sistemas de juego.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; no se ha publicado ni modificado la web.
-- Siguientes tareas disponibles: A05, primera build de Windows y WebGL; A07, herramientas de Editor.
+- Siguientes tareas disponibles: A06, CI y continuidad de publicación; A07, herramientas de Editor.
 
 ## Estados y dependencias
 
@@ -33,7 +33,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | A02 | Archivar prototipo y versión web mediante referencias Git; conservar los tres documentos originales | A01 | Verified |
 | A03 | Instalar o localizar Unity fijada y módulos Windows/WebGL | A02 | Verified |
 | A04 | Crear proyecto limpio, assemblies y escenas de arranque | A03 | Verified |
-| A05 | Crear primera build de Windows y WebGL | A04 | Pending |
+| A05 | Crear primera build de Windows y WebGL | A04 | Verified |
 | A06 | Adaptar CI para tests y builds; conservar publicación en Main y gh-pages | A05 | Pending |
 | A07 | Crear driver y generadores de Editor | A04 | Pending |
 | A08 | Crear escenarios, logs y capturas | A05, A07 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `49ebef78549aa8ba519f321044f91b390252d7b1c557bdeb0a8c729f34dee4b2`.
+Hash SHA-256 del plan comprobado: `82d091230c59f43afb019eb1990ca064ce0a2b4b19f1082779892259ecf46d2f`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -183,6 +183,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - Pruebas Unity ejecutadas en Windows con Editor `6000.6.5f1`: `unity test . --mode EditMode --output Logs\A04-editmode-2.xml --timeout 600 -- -nographics` → 1/1 pasa; `unity test . --mode PlayMode --output Logs\A04-playmode.xml --timeout 600 -- -nographics` → 1/1 pasa. EditMode prueba `CoreIdentifiesTheProductWithoutAnEngineDependency`; PlayMode carga `Bootstrap`, espera la transición y comprueba que aparece el menú.
 - La primera ejecución EditMode descubrió que el assembly PlayMode estaba marcado solo para Editor, por lo que intentó cargar una escena fuera de PlayMode. Se corrigió `Luckbound.PlayMode.Tests.asmdef` para compilar también en la plataforma jugador; las dos suites finales pasan. Los informes están en la carpeta local ignorada `Logs/`.
 - Aceptación A04 satisfecha: el proyecto compila, el arranque de menú se prueba en PlayMode y Core se compila en un assembly sin referencias de Unity. Aún no hay mecánicas de juego y todavía no se ha probado una build de jugador; eso corresponde a A05.
+
+## Evidencia A05 — Primeras builds y arranque
+
+- El build de Windows terminó con `unity build . --target StandaloneWindows64 --output-path Builds\A05\Windows\Luckbound.exe --allow-dirty-build --timeout 600 --no-tail`; creó el jugador x64 y `Luckbound.provenance.json` con resultado `success`, código de salida `0`, Editor `6000.6.5f1` y versión de producto `0.1.0`.
+- Se creó el perfil `Assets/Settings/Build Profiles/WebGL.asset`. La primera compilación WebGL limpia se interrumpió al llegar al límite de 600 segundos mientras terminaba la compresión Brotli. La repetición con el perfil y destino idénticos y `--timeout 1200` finalizó correctamente y escribió `index.html`, loader, `.data.br`, `.framework.js.br` y `.wasm.br`; su manifiesto de procedencia indica `success`, código `0`, Editor `6000.6.5f1` y objetivo `WebGL`.
+- El jugador Windows se lanzó en segundo plano y siguió activo tras 10 segundos. `Builds/A05/Windows/Player.log` registra inicialización de Unity `6000.6.5f1` y de Input System y física, sin excepción fatal.
+- `unity build run . --path Builds\A05\WebGL` sirvió la build en `http://localhost:8080/`. La página y los tres recursos comprimidos devolvieron HTTP `200`. El navegador ejecutó WebGL 2.0 y mostró el menú completo: `LUCKBOUND`, `Atrium Gloriam`, lema y `PREPRODUCCIÓN · 0.1.0`. La consola no contiene errores; registra avisos por pases de postprocesado URP no incluidos, efectos que el menú no utiliza.
+- `StartupFlowTests` comprueba la transición `Bootstrap` → `Menu`, la presencia del título y el texto exacto de versión. La suite PlayMode se ejecutó otra vez: 1/1 pasa. A04 conserva su resultado EditMode 1/1 y PlayMode 1/1.
+- Los registros de CLI muestran un mensaje no bloqueante de renovación de acceso de Unity (`Access token is unavailable; failed to update`) durante builds cuyo resultado real fue `success`/0. La CLI no tenía sesión iniciada; la Editor resolvió la licencia durante las pruebas.
+- Aceptación A05 satisfecha para ambos destinos. Los artefactos locales están excluidos por `.gitignore`; todavía no se ha modificado el workflow, enviado una release ni alterado el sitio público.
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:
