@@ -1255,7 +1255,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 |---|---|---|
 | B01 | Sesión, identificadores y propiedad de actores | Dos actores de prueba mantienen estados independientes |
 | B02 | Input System y mapas de entrada | Teclado y mando producen las mismas acciones; no se pierden pulsaciones entre ticks |
-| B03 | Movimiento, collider y suelo | Recorre terreno y choca con paredes sin atravesarlas |
+| B03 | Movimiento, collider y suelo | En el escenario `B03_WalkWall`, queda apoyado en `Ground`, alcanza al menos 5,9 u/s frente al objetivo de 6, frena al soltar y la cápsula no atraviesa una pared estática |
 | B04 | Salto variable, buffer y coyote | Escenario distingue salto válido, tardío permitido y tardío rechazado |
 | B05 | Esquiva y recarga | Invulnerabilidad coincide con la ventana definida y respeta obstáculos |
 | B06 | Cámara y representación de estados | Seguimiento estable, límites de sala y cambios correctos de animación |

@@ -17,9 +17,20 @@ namespace Luckbound.Tests.PlayMode
         private static readonly string[] SourceFiles =
         {
             "ProjectSettings/ProjectVersion.txt",
+            "ProjectSettings/TagManager.asset",
             "Assets/Luckbound/Scenes/Bootstrap.unity",
             "Assets/Luckbound/Scenes/Menu.unity",
+            "Assets/Resources/Luckbound/InputSystem_Actions.inputactions",
+            "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+            "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
+            "Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
+            "Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
+            "Assets/Luckbound/Scripts/Gameplay/Luckbound.Gameplay.asmdef",
+            "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
+            "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+            "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
             "Assets/Luckbound/Tests/PlayMode/ScenarioEvidenceRecorder.cs",
+            "Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
             "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs"
         };
 

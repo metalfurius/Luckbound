@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (11 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B02: Verified; A06: InProgress; B03–J09: Pending.
+- A01–A05, A07–A08, B01–B03: Verified; A06: InProgress; B04–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
-- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común para el primer actor. Aún no hay mecánicas jugables.
+- La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07, A08, B01 y B02 están verificadas; B03, movimiento físico con colisión, es el siguiente hito.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07, A08 y B01–B03 están verificadas; B04 queda habilitada para salto variable, buffer y coyote.
 
 ## Estados y dependencias
 
@@ -39,7 +39,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | A08 | Crear escenarios, logs y capturas | A05, A07 | Verified |
 | B01 | Sesión, identificadores y propiedad de actores | A08 | Verified |
 | B02 | Input System y mapas de entrada | B01 | Verified |
-| B03 | Movimiento, collider y suelo | B02 | Pending |
+| B03 | Movimiento, collider y suelo | B02 | Verified |
 | B04 | Salto variable, buffer y coyote | B03 | Pending |
 | B05 | Esquiva y recarga | B04 | Pending |
 | B06 | Cámara y representación de estados | B05 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `803154066ECBCBC6B5C67CD850041D46FF572E2341C72D4B73B001432A200DDA`.
+Hash SHA-256 del plan comprobado: `00EA2ED2C6A527C59BEBD717A1E22E794AE330A0645E4DAB3738229CA86FE6A8`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -243,6 +243,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - `unity build . --target StandaloneWindows64 --output-path Builds\B02\Windows\Luckbound.exe --allow-dirty-build --timeout 600 --no-tail` terminó `success`, código 0, Editor `6000.6.5f1`; la procedencia quedó en `Builds/B02/Windows/Luckbound.provenance.json`. Unity registró sus avisos habituales de renovación de licencia, sin cambiar el resultado de build.
 - **Aceptación B02 satisfecha; estado Verified.** B03 queda habilitada. La prueba usa dispositivos simulados; no afirma haber conectado hardware físico.
 
+
+## Evidencia B03 — Movimiento, collider y suelo
+
+- Se añadió la capa de colisión `Ground` y `PlayerMotor2D`, separado de la representación visual. El actor usa `Rigidbody2D` dinámico con rotación bloqueada, interpolación y colisión continua; la consulta de suelo filtra la capa `Ground` y exige una normal ascendente. La entrada se consume una vez por tick y se valida que pertenezca al `ActorId` del motor.
+- Contrato inicial de locomoción: velocidad horizontal máxima 6 u/s, aceleración 60 u/s², frenado 80 u/s² y control aéreo al 85 %. La cápsula no atraviesa paredes estáticas. Un material físico creado y destruido por el componente fija fricción y rebote a cero con combinación `Minimum`; el primer escenario había medido 5,765 u/s al rozar el suelo, por lo que se eliminó el rozamiento incidental y se volvió a ejecutar la prueba.
+- `B03_WalkWall`, semilla `31415926`, Unity `6000.6.5f1`, Windows/PlayMode: suelo detectado antes de moverse; velocidad máxima `6,000 u/s`; velocidad antes del frenado `6,000 u/s`; después `0,000 u/s`; pared izquierda en `x=7,500`; máximo y posición final `x=7,128` y `x=7,120`. Las cinco aserciones pasan. Reporte: `Logs/Scenarios/B03/20261011T202707693Z_B03_WalkWall_57c667a5/scenario-report.json` (carpeta local ignorada por Git); `sourceHash=5bc8d8c3894e2deaf40c7085142c366605b52dc05dc243344e00f4055d23d536`. Captura omitida al ejecutarse con dispositivo gráfico nulo.
+- `unity test . --mode EditMode --output Logs\B03-editmode-final.xml --timeout 1200 -- -nographics` → 12/12 pasan. `unity test . --mode PlayMode --output Logs\B03-playmode-material.xml --timeout 1200 -- -nographics` → 5/5 pasan.
+- Build Windows x64: `unity build . --target StandaloneWindows64 --output-path Builds\B03\Windows\Luckbound.exe --allow-dirty-build --timeout 600 --no-tail` → `success`, código 0, Editor `6000.6.5f1`; procedencia en `Builds/B03/Windows/Luckbound.provenance.json`. Los avisos de renovación de licencia de la CLI no alteraron el resultado.
+- Auditoría: 75 GUID de `.meta`, todos únicos; `git diff --check` sin errores.
+- **Aceptación B03 satisfecha; estado Verified.**
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:

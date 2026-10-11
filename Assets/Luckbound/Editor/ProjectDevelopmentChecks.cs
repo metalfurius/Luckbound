@@ -5,6 +5,7 @@ using System.Linq;
 using Luckbound.App;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -41,6 +42,7 @@ namespace Luckbound.Editor
             ValidateEditorVersion(errors);
             ValidateBuildScenes(errors);
             ValidateInputActions(errors);
+            ValidateGroundLayer(errors);
             ValidateWebGlProfile(errors);
             ValidateAssemblies(errors);
 
@@ -202,6 +204,14 @@ namespace Luckbound.Editor
         {
             return !string.IsNullOrEmpty(groups) && groups.Split(';').Any(group =>
                 string.Equals(group.Trim(), requiredGroup, StringComparison.Ordinal));
+        }
+
+        private static void ValidateGroundLayer(List<string> errors)
+        {
+            if (InternalEditorUtility.layers == null || !InternalEditorUtility.layers.Contains("Ground"))
+            {
+                errors.Add("The Ground layer is required for actor grounding and collision scenarios.");
+            }
         }
 
         private static void ValidateWebGlProfile(List<string> errors)
