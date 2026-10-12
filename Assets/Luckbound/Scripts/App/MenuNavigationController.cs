@@ -10,17 +10,19 @@ namespace Luckbound.App
     {
         [SerializeField] private Button _startDemoButton;
         [SerializeField] private Button _startArenaButton;
+        [SerializeField] private Button _startCustodianButton;
         [SerializeField] private Button _startTavernButton;
 
         private void OnEnable()
         {
-            if (_startDemoButton == null || _startArenaButton == null || _startTavernButton == null)
+            if (_startDemoButton == null || _startArenaButton == null || _startCustodianButton == null || _startTavernButton == null)
             {
-                throw new System.InvalidOperationException("MenuNavigationController requires demo, arena, and tavern buttons.");
+                throw new System.InvalidOperationException("MenuNavigationController requires demo, arena, Custodian, and tavern buttons.");
             }
 
             _startDemoButton.onClick.AddListener(StartMovementDemo);
             _startArenaButton.onClick.AddListener(StartCombatArena);
+            _startCustodianButton.onClick.AddListener(StartCustodianArena);
             _startTavernButton.onClick.AddListener(StartTavern);
         }
 
@@ -39,6 +41,7 @@ namespace Luckbound.App
                 _startDemoButton.onClick.RemoveListener(StartMovementDemo);
             }
             if (_startArenaButton != null) _startArenaButton.onClick.RemoveListener(StartCombatArena);
+            if (_startCustodianButton != null) _startCustodianButton.onClick.RemoveListener(StartCustodianArena);
             if (_startTavernButton != null) _startTavernButton.onClick.RemoveListener(StartTavern);
         }
 
@@ -54,6 +57,13 @@ namespace Luckbound.App
             Time.timeScale = 1f;
             if (ApplicationBootstrapper.Instance != null) ApplicationBootstrapper.Instance.ClearActiveRun();
             SceneManager.LoadScene("CombatArena", LoadSceneMode.Single);
+        }
+
+        public void StartCustodianArena()
+        {
+            Time.timeScale = 1f;
+            if (ApplicationBootstrapper.Instance != null) ApplicationBootstrapper.Instance.ClearActiveRun();
+            SceneManager.LoadScene("CustodianArena", LoadSceneMode.Single);
         }
 
         public void StartTavern()

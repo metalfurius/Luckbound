@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using Luckbound.App;
 using Luckbound.Content;
+using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Inventory;
+using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Movement;
 using Luckbound.Gameplay.Rooms;
 using Luckbound.Presentation;
@@ -32,7 +34,7 @@ namespace Luckbound.Editor
         private const string InputActionsPath = "Assets/Resources/Luckbound/InputSystem_Actions.inputactions";
         private const string PlayerVisualControllerPath = "Assets/Resources/Luckbound/PlayerVisualStates.controller";
         private const string WebGlProfilePath = "Assets/Settings/Build Profiles/WebGL.asset";
-        private static readonly string[] StartupScenes = { "Bootstrap", "Menu", "Hub", "Expedition", "CombatArena" };
+        private static readonly string[] StartupScenes = { "Bootstrap", "Menu", "Hub", "Expedition", "CombatArena", "CustodianArena" };
 
         [MenuItem("Luckbound/Validate Project")]
         public static void RunAll()
@@ -67,6 +69,7 @@ namespace Luckbound.Editor
             }
 
             ValidateCombatArena(errors);
+            ValidateCustodianArena(errors);
             ValidateRoomTemplate(errors);
             ValidateExpeditionRouteCatalog(errors);
             ValidateItemCatalog(errors);
@@ -444,10 +447,17 @@ namespace Luckbound.Editor
                 errors.Add("Menu must expose the PREPARAR EXPEDICIÓN entry to Hub.");
             }
 
+            Button custodianButton = objects.FirstOrDefault(gameObject => gameObject.name == "StartCustodianArenaButton")?.GetComponent<Button>();
+            Text custodianLabel = custodianButton == null ? null : custodianButton.GetComponentInChildren<Text>(true);
+            if (custodianButton == null || custodianLabel == null || custodianLabel.text != "ENFRENTAR · CUSTODIO (D06)")
+            {
+                errors.Add("Menu must expose the ENFRENTAR · CUSTODIO (D06) provisional-boss entry.");
+            }
+
             MenuNavigationController navigation = objects.SelectMany(gameObject => gameObject.GetComponents<MenuNavigationController>()).FirstOrDefault();
             if (navigation == null)
             {
-                errors.Add("Menu navigation must route both the movement prototype and combat arena.");
+                errors.Add("Menu navigation must route the movement prototype, arenas and tavern.");
             }
             else
             {
@@ -459,6 +469,10 @@ namespace Luckbound.Editor
                 if (navigationData.FindProperty("_startTavernButton").objectReferenceValue != tavernButton)
                 {
                     errors.Add("MenuNavigationController must serialize the tavern-preparation button.");
+                }
+                if (navigationData.FindProperty("_startCustodianButton").objectReferenceValue != custodianButton)
+                {
+                    errors.Add("MenuNavigationController must serialize the D06 Custodian button.");
                 }
             }
 
@@ -592,6 +606,84 @@ namespace Luckbound.Editor
                 {
                     errors.Add("CombatArena encounter data must be present in Resources.");
                 }
+            }
+            finally
+            {
+                if (openedByCheck && scene.IsValid() && scene.isLoaded) EditorSceneManager.CloseScene(scene, true);
+            }
+        }
+
+        private static void ValidateCustodianArena(List<string> errors)
+        {
+            const string dataPath = "Assets/Resources/Luckbound/Data/Encounters/CustodianBoss.json";
+            const string bossPrefabPath = "Assets/Luckbound/Prefabs/CustodianArena/CustodianPrototype.prefab";
+            const string wavePrefabPath = "Assets/Luckbound/Prefabs/CustodianArena/CustodianWavePrototype.prefab";
+            TextAsset source = AssetDatabase.LoadAssetAtPath<TextAsset>(dataPath);
+            if (source == null)
+            {
+                errors.Add("D06 Custodian definition is missing at " + dataPath + ".");
+            }
+            else
+            {
+                try
+                {
+                    CustodianBossDefinition definition = CustodianBossJsonLoader.Load(source.text);
+                    if (definition.MaximumHealth != 900 || definition.Defense != 3 || definition.CutDamage != 14 ||
+                        definition.WaveDamage != 12 || definition.ChargeDamage != 16)
+                        errors.Add("D06 Custodian values differ from the boss specification.");
+                }
+                catch (Exception exception)
+                {
+                    errors.Add("D06 Custodian definition is invalid: " + exception.Message);
+                }
+            }
+
+            GameObject bossPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(bossPrefabPath);
+            if (bossPrefab == null || bossPrefab.GetComponent<CustodianBoss2D>() == null ||
+                bossPrefab.GetComponent<Rigidbody2D>() == null || bossPrefab.GetComponent<Collider2D>() == null)
+                errors.Add("D06 Custodian prefab must include its behavior and physical body.");
+            GameObject wavePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(wavePrefabPath);
+            if (wavePrefab == null || wavePrefab.GetComponent<CustodianWaveHazard2D>() == null ||
+                wavePrefab.GetComponent<Rigidbody2D>() == null || wavePrefab.GetComponent<Collider2D>() == null)
+                errors.Add("D06 wave prefab must include its behavior and physical trigger.");
+
+            Scene scene = SceneManager.GetSceneByName("CustodianArena");
+            bool openedByCheck = !scene.IsValid() || !scene.isLoaded;
+            if (openedByCheck)
+            {
+                string path = ScenePath("CustodianArena");
+                if (!File.Exists(path))
+                {
+                    errors.Add("CustodianArena scene is missing.");
+                    return;
+                }
+                scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+            }
+
+            try
+            {
+                List<GameObject> objects = scene.GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren<Transform>(true))
+                    .Select(transform => transform.gameObject)
+                    .ToList();
+                CustodianArenaComposition[] compositions = objects.SelectMany(gameObject => gameObject.GetComponents<CustodianArenaComposition>()).ToArray();
+                if (compositions.Length != 1)
+                {
+                    errors.Add("CustodianArena must contain exactly one CustodianArenaComposition; found " + compositions.Length + ".");
+                    return;
+                }
+
+                SerializedObject composition = new SerializedObject(compositions[0]);
+                string[] references = { "_playerPrefab", "_custodianPrefab", "_wavePrefab", "_playerSpawn", "_waveRoot",
+                    "_roomBounds", "_cameraRig", "_telemetryText", "_bossStatusText", "_pauseText", "_returnToMenuButton" };
+                foreach (string reference in references)
+                {
+                    if (composition.FindProperty(reference)?.objectReferenceValue == null)
+                        errors.Add("CustodianArenaComposition must serialize " + reference + ".");
+                }
+                if (objects.Count(gameObject => gameObject.GetComponent<EventSystem>() != null) != 1 ||
+                    objects.Count(gameObject => gameObject.GetComponent<InputSystemUIInputModule>() != null) != 1)
+                    errors.Add("CustodianArena must contain one EventSystem using InputSystemUIInputModule.");
             }
             finally
             {

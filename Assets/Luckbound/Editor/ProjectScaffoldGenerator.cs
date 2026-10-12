@@ -22,7 +22,7 @@ namespace Luckbound.Editor
     {
         private const string SceneDirectory = "Assets/Luckbound/Scenes";
         private const string PlayerVisualControllerPath = "Assets/Resources/Luckbound/PlayerVisualStates.controller";
-        private static readonly string[] SceneNames = { "Bootstrap", "Menu", "Hub", "Expedition", "CombatArena" };
+        private static readonly string[] SceneNames = { "Bootstrap", "Menu", "Hub", "Expedition", "CombatArena", "CustodianArena" };
 
         [MenuItem("Luckbound/Generate Startup Scenes")]
         public static void GenerateStartupScenes()
@@ -94,6 +94,7 @@ namespace Luckbound.Editor
             EnsureExpeditionCameraRig();
             MovementDemoScaffoldGenerator.EnsureGenerated();
             CombatArenaScaffoldGenerator.EnsureGenerated();
+            CustodianArenaScaffoldGenerator.EnsureGenerated();
             RoomTemplateScaffoldGenerator.EnsureGenerated();
             HubPreparationScaffoldGenerator.EnsureGenerated();
             ExpeditionRunSessionScaffoldGenerator.EnsureGenerated();

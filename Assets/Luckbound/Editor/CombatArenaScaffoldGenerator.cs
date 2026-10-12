@@ -222,11 +222,12 @@ namespace Luckbound.Editor
                 GameObject bottomRule = FindObject(scene, "BottomRule");
                 RectTransform ruleRect = bottomRule == null ? null : bottomRule.GetComponent<RectTransform>();
                 bool hasTavernEntry = FindObject(scene, "StartTavernButton") != null;
-                Vector2 rulePosition = new Vector2(0f, hasTavernEntry ? -123f : -101f);
-                Vector2 statusPosition = new Vector2(0f, hasTavernEntry ? -122f : -114f);
-                Vector2 versionPosition = new Vector2(0f, hasTavernEntry ? -133f : -130f);
-                Vector2 statusSize = new Vector2(300f, hasTavernEntry ? 12f : 18f);
-                Vector2 versionSize = new Vector2(300f, hasTavernEntry ? 8f : 12f);
+                bool hasCustodianEntry = FindObject(scene, "StartCustodianArenaButton") != null;
+                Vector2 rulePosition = new Vector2(0f, hasCustodianEntry ? -145f : hasTavernEntry ? -123f : -101f);
+                Vector2 statusPosition = new Vector2(0f, hasCustodianEntry ? -145f : hasTavernEntry ? -122f : -114f);
+                Vector2 versionPosition = new Vector2(0f, hasCustodianEntry ? -156f : hasTavernEntry ? -133f : -130f);
+                Vector2 statusSize = new Vector2(300f, hasCustodianEntry ? 10f : hasTavernEntry ? 12f : 18f);
+                Vector2 versionSize = new Vector2(300f, hasCustodianEntry ? 8f : hasTavernEntry ? 8f : 12f);
                 if (ruleRect != null && ruleRect.anchoredPosition != rulePosition)
                 {
                     ruleRect.anchoredPosition = rulePosition;

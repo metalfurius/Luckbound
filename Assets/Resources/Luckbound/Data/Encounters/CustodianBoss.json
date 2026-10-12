@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "bossId": "boss.custodian_of_the_oaks",
+  "maximumHealth": 900,
+  "defense": 3,
+  "telegraphTicks": 45,
+  "phaseTransitionTicks": 120,
+  "phaseOneRecoveryTicks": 90,
+  "phaseTwoRecoveryTicks": 54,
+  "cutDamage": 14,
+  "waveDamage": 12,
+  "chargeDamage": 16,
+  "phaseTwoWaveCount": 2
+}
