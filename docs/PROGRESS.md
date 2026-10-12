@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07 y C01–C07: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07 y C01–C08: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -16,6 +16,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - C05 añade al Slime con persecución a 60 Hz, aviso de 27 ticks, salto de ataque físico, daño de 8 una sola vez por `HitId` y derrota real mediante proyectil; ambas suites y los escenarios físicos pasan en el commit `1510320`.
 - C06 añade al Huesoguardia con guardia direccional, corte físico y recuperación vulnerable; el bono temporal de defensa se calcula en Core y ambas suites y escenarios pasan en el commit `5bc36a0`.
 - C07 añade HUD de recursos, poción interrumpible y pausa con suspensión/restauración explícita de la simulación 2D; ambas suites y escenarios pasan en el commit `6d7e0d8`.
+- C08 incorpora el ataque cuerpo a cuerpo físico con impactos resueltos al tick de 60 Hz siguiente, datos JSON validados para dos oleadas y una arena alcanzable desde el menú. La prueba de teclado venció ambos Slimes y Huesoguardias sin eliminar enemigos desde el test; ambas suites postcommit y la prueba de idempotencia pasan en `1b5c278`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -56,7 +57,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C05 | Slime funcional | C04 | Verified |
 | C06 | Huesoguardia funcional | C05 | Verified |
 | C07 | HUD, pociones y pausa | C06 | Verified |
-| C08 | Arena de combate | C07 | Pending |
+| C08 | Arena de combate | C07 | Verified |
 | D01 | Sala, puertos y marcadores | C08 | Pending |
 | D02 | Generación por semilla | D01 | Pending |
 | D03 | Transición y limpieza | D02 | Pending |
@@ -384,6 +385,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación:** Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null. Postcommit: `unity test . --mode EditMode --output Logs\C07-EditMode-commit.xml --timeout 1200 -- -nographics` → 45/45; `unity test . --mode PlayMode --output Logs\C07-PlayMode-commit.xml --timeout 1200 -- -nographics` → 27/27. Cero fallos, omitidos o inconclusos. `git diff --check` pasa; los 144 GUID `.meta` son únicos.
 - **Plan:** v1.9, SHA-256 `25DC4229085B552028C5B5DF28A03E19BE45F9201BB34304AF04D409CFA7BA27`.
 - **Resultado:** aceptación C07 satisfecha; C08 queda habilitada. No se generó ni publicó una build; A06 y la ruta pública siguen sin una ejecución nueva.
+
+## Evidencia C08 — Arena de combate
+
+- **Dependencia comprobada:** C07 `Verified`, implementación `6d7e0d8ae26c96560cb3703635a1353c78bdec11`.
+- **Implementación:** `PlayerMotor2D` recoge colisiones cuerpo a cuerpo dentro de la ventana activa, deduplica actores por `HitId` y encola el impacto para el siguiente tick físico. Slime y Huesoguardia resuelven el impacto mediante el contrato de daño existente; la guardia frontal del Huesoguardia conserva su bono de defensa. `C08Arena.json` define dos oleadas de dos enemigos a ocho o más unidades de la entrada; el cargador valida IDs, límites y posiciones. El menú conserva el acceso a B07 y expone la arena C08; la escena y prefabs se generan mediante Editor API y la arena se incorpora a `EditorBuildSettings`.
+- **Escenario:** `C08_RealKeyboardTwoWaveCombat`, semilla `17320508`, Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null. Entrada simulada por teclado abrió la escena desde el botón visible; tras 704 ticks de simulación, el jugador terminó con 80 de salud, aplicó los 14 impactos cuerpo a cuerpo, venció a ambos Slimes y a ambos Huesoguardias y alcanzó `Victory`. El escenario comprueba que el impacto permanece encolado durante su tick de contacto, que las muertes ocurren por el flujo de combate y que la transición espera a limpiar la primera oleada. Informe y log: `Logs/Scenarios/C08/20261012T135140164Z_C08_RealKeyboardTwoWaveCombat_8bf2eeb2/`.
+- **Evidencia reproducible:** informe `passed=true`, commit fuente `1b5c27836c22556e8fd62ceb4800fa92a4e44445`, source hash `d2c570a700fb2b5afb3f43871cdae01d0113bb0a18e3bcc3e4a5fa91d684b305`, sin errores. Captura: `Not attempted` porque la ejecución batch usa dispositivo gráfico Null.
+- **Aceptación postcommit:** `unity test . --mode EditMode --output Logs\C08-postcommit-editmode.xml --timeout 1200 -- -nographics` → 45/45; `unity test . --mode PlayMode --output Logs\C08-postcommit-playmode.xml --timeout 1200 -- -nographics` → 29/29. Cero fallos, omitidos o inconclusos. PlayMode incluye el recorrido de combate y las pruebas anteriores; EditMode confirma la reconciliación idempotente del generador.
+- **Plan:** v1.9, SHA-256 `25DC4229085B552028C5B5DF28A03E19BE45F9201BB34304AF04D409CFA7BA27`.
+- **Resultado:** aceptación C08 satisfecha; D01 queda habilitada. No se generó una build ni se ejecutó GitHub Actions; la ruta pública y el workflow de publicación no se modificaron. A06 continúa `InProgress`.
 
 ## Ficha que debe completar cada ejecución
 
