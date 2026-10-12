@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07 y C01–C08: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -17,6 +17,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - C06 añade al Huesoguardia con guardia direccional, corte físico y recuperación vulnerable; el bono temporal de defensa se calcula en Core y ambas suites y escenarios pasan en el commit `5bc36a0`.
 - C07 añade HUD de recursos, poción interrumpible y pausa con suspensión/restauración explícita de la simulación 2D; ambas suites y escenarios pasan en el commit `6d7e0d8`.
 - C08 incorpora el ataque cuerpo a cuerpo físico con impactos resueltos al tick de 60 Hz siguiente, datos JSON validados para dos oleadas y una arena alcanzable desde el menú. La prueba de teclado venció ambos Slimes y Huesoguardias sin eliminar enemigos desde el test; ambas suites postcommit y la prueba de idempotencia pasan en `1b5c278`.
+- D01 define la cuadrícula y los contratos de puertos y marcadores en JSON, más un prefab Tilemap derivado. La validación física confirma suelo y altura libre en ambas puertas y posiciones apoyadas; las suites postcommit pasan en `66d4756`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -58,7 +59,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C06 | Huesoguardia funcional | C05 | Verified |
 | C07 | HUD, pociones y pausa | C06 | Verified |
 | C08 | Arena de combate | C07 | Verified |
-| D01 | Sala, puertos y marcadores | C08 | Pending |
+| D01 | Sala, puertos y marcadores | C08 | Verified |
 | D02 | Generación por semilla | D01 | Pending |
 | D03 | Transición y limpieza | D02 | Pending |
 | D04 | Inventario y botín | D03 | Pending |
@@ -395,6 +396,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación postcommit:** `unity test . --mode EditMode --output Logs\C08-postcommit-editmode.xml --timeout 1200 -- -nographics` → 45/45; `unity test . --mode PlayMode --output Logs\C08-postcommit-playmode.xml --timeout 1200 -- -nographics` → 29/29. Cero fallos, omitidos o inconclusos. PlayMode incluye el recorrido de combate y las pruebas anteriores; EditMode confirma la reconciliación idempotente del generador.
 - **Plan:** v1.9, SHA-256 `25DC4229085B552028C5B5DF28A03E19BE45F9201BB34304AF04D409CFA7BA27`.
 - **Resultado:** aceptación C08 satisfecha; D01 queda habilitada. No se generó una build ni se ejecutó GitHub Actions; la ruta pública y el workflow de publicación no se modificaron. A06 continúa `InProgress`.
+
+## Evidencia D01 — Sala, puertos y marcadores
+
+- **Dependencia comprobada:** C08 `Verified`, código `1b5c27836c22556e8fd62ceb4800fa92a4e44445`.
+- **Contrato de datos:** `D01PrototypeRoom.json` es la fuente del ID estable, dimensiones en tiles, tamaño de celda, cuadrícula bottom-up (`.` vacío, `#` sólido, `!` peligro), puertos y marcadores. El validador requiere dimensiones suficientes para el encuadre 20×11,25, exactamente una entrada y una salida laterales, tres tiles libres, suelo en el borde y en el tile interior, IDs de marcadores únicos y posiciones de aparición sobre piso, y ocho tiles de separación entre jugador y enemigos. El `tileY` de un marcador señala la superficie del suelo y el tile se centra en `tileX + 0,5`.
+- **Prefab derivado:** `RoomTemplateScaffoldGenerator` crea mediante Unity Editor API un prefab con `Grid`, `Tilemap`, `TilemapCollider2D`, límites de cámara, puertos y marcadores. `RoomTemplatePrefab2D` vuelve a cotejar cada tile, celda, posición y límite contra el JSON. El suelo usa el `StonePrototype` de 16 PPU como referencia visual temporal hasta F05; la geometría comprobada es el Tilemap con colisión real.
+- **Pruebas:** `D01JsonDefinesValidGridPortsFloorAndPlayerAndEnemyPositions` valida la definición; `D01LoaderRejectsBlockedPortsMissingLandingFloorAndInvalidMarkerPositions` demuestra los rechazos; `D01GeneratedPrefabMatchesJsonAndHasPhysicalSafeFloorAtBothPorts` instancia el prefab y consulta `Physics2D` para suelo bajo ambos puertos y todos los marcadores, y altura libre en las dos puertas. `ProjectScaffoldGeneratorTests` confirma validación del proyecto e idempotencia con la salida D01 incluida.
+- **Aceptación postcommit:** commit fuente `66d4756471bac2847f513883329f3ba619b31eac`; `unity test . --mode EditMode --output Logs\D01-postcommit-editmode.xml --timeout 1200 -- -nographics` → 45/45; `unity test . --mode PlayMode --output Logs\D01-postcommit-playmode.xml --timeout 1200 -- -nographics` → 32/32. Cero fallos, omitidos o inconclusos; 167 GUID `.meta`, todos únicos. Ejecución WindowsEditor headless, sin captura visual.
+- **Plan:** v1.9, SHA-256 `25DC4229085B552028C5B5DF28A03E19BE45F9201BB34304AF04D409CFA7BA27`.
+- **Resultado:** aceptación D01 satisfecha; D02 queda habilitada. No se generó una build ni se ejecutó GitHub Actions; A06 continúa `InProgress` y la publicación pública no se modificó.
 
 ## Ficha que debe completar cada ejecución
 
