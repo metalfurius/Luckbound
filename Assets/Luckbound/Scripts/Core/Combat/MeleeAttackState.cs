@@ -21,6 +21,12 @@ namespace Luckbound.Core.Combat
             _combo = combo ?? throw new ArgumentNullException(nameof(combo));
         }
 
+        public void Interrupt()
+        {
+            _attackCancelled = true;
+            _hitWindow = null;
+        }
+
         public MeleeAttackSnapshot Tick(long tick, bool attackPressed, bool dodgeAccepted)
         {
             if (tick < 0)

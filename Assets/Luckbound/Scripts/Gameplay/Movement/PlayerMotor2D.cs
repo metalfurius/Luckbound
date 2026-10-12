@@ -30,6 +30,7 @@ namespace Luckbound.Gameplay.Movement
         public const float DodgeDuration = 0.18f;
         public const float DodgeInvulnerabilityDuration = 0.12f;
         public const float DodgeCooldownDuration = 0.8f;
+        public const int DirectHitProtectionTicks = 27;
 
         private const float GroundProbeDistance = 0.08f;
         private const float GroundNormalThreshold = 0.65f;
@@ -40,6 +41,7 @@ namespace Luckbound.Gameplay.Movement
 
         private MeleeAttackState _meleeAttackState;
         private MeleeAttackSnapshot _meleeAttackSnapshot;
+        private ActorDamageState _damageState;
         private ActorId _actorId;
         private Collider2D _collider;
         private ContactFilter2D _groundContactFilter;
@@ -55,14 +57,27 @@ namespace Luckbound.Gameplay.Movement
         private float _facingDirection = 1f;
         private float _jumpBufferRemaining;
         private bool _dodgeActive;
+        private bool _dodgeInvulnerabilityActive;
         private bool _dodgeSpeedRecoveryPending;
+        private int _stunTicksRemaining;
         private long _tick;
 
         public bool IsGrounded { get; private set; }
 
         public bool IsDodging { get; private set; }
 
-        public bool IsInvulnerable { get; private set; }
+        public bool IsInvulnerable => _dodgeInvulnerabilityActive ||
+            (_damageState != null && _damageState.IsDirectImpactProtectedAt(Math.Max(0L, _tick - 1)));
+
+        public bool IsDead => _damageState != null && _damageState.IsDead;
+
+        public bool IsStunned => _stunTicksRemaining > 0;
+
+        public int StunTicksRemaining => _stunTicksRemaining;
+
+        public int CurrentHealth => _damageState != null ? _damageState.CurrentHealth : 0;
+
+        public CombatStats CombatStats => _damageState != null ? _damageState.Stats : null;
 
         public int SuccessfulJumpCount { get; private set; }
 
@@ -76,7 +91,7 @@ namespace Luckbound.Gameplay.Movement
 
         public MeleeHitWindow CurrentMeleeHitWindow => _meleeAttackSnapshot.HitWindow;
 
-        public bool IsDodgeReady => !_dodgeActive && _dodgeCooldownRemaining <= 0f;
+        public bool IsDodgeReady => !IsDead && !IsStunned && !_dodgeActive && _dodgeCooldownRemaining <= 0f;
 
         public float CoyoteTimeRemaining => _coyoteTimeRemaining;
 
@@ -92,8 +107,8 @@ namespace Luckbound.Gameplay.Movement
         {
             Vector2 velocity = Velocity;
             PlayerVisualState state = PlayerVisualStateResolver.Resolve(
-                isDead: false,
-                isStunned: false,
+                isDead: IsDead,
+                isStunned: IsStunned,
                 isDodging: IsDodging,
                 isAttacking: IsAttacking,
                 isGrounded: IsGrounded,
@@ -101,7 +116,7 @@ namespace Luckbound.Gameplay.Movement
             return new PlayerVisualSnapshot(state, velocity.x, velocity.y, _facingDirection);
         }
 
-        public void Initialize(ActorId actorId, IPlayerInputSource inputSource, LayerMask groundLayers)
+        public void Initialize(ActorId actorId, IPlayerInputSource inputSource, LayerMask groundLayers, CombatStats combatStats = null)
         {
             if (_initialized)
             {
@@ -137,6 +152,9 @@ namespace Luckbound.Gameplay.Movement
 
             _actorId = actorId;
             _inputSource = inputSource;
+            _damageState = new ActorDamageState(
+                combatStats ?? new CombatStats(maximumHealth: 100, maximumEnergy: 50, defense: 0),
+                DirectHitProtectionTicks);
             _meleeAttackState = new MeleeAttackState(
                 MeleeAttackProfile.BellatorWornSword,
                 MeleeComboSequence.CreateBellator());
@@ -160,6 +178,55 @@ namespace Luckbound.Gameplay.Movement
             _collider.sharedMaterial = _movementMaterial;
 
             _initialized = true;
+        }
+
+        public DirectImpactOutcome ReceiveDirectImpact(
+            HitId hitId,
+            DamageCalculationRequest request,
+            long impactTick,
+            Vector2 knockbackVelocity,
+            int stunDurationTicks = 0)
+        {
+            if (!_initialized)
+            {
+                throw new InvalidOperationException("PlayerMotor2D must be initialized before it can receive damage.");
+            }
+
+            if (float.IsNaN(knockbackVelocity.x) || float.IsInfinity(knockbackVelocity.x) ||
+                float.IsNaN(knockbackVelocity.y) || float.IsInfinity(knockbackVelocity.y))
+            {
+                throw new ArgumentOutOfRangeException(nameof(knockbackVelocity), "Knockback velocity must be finite.");
+            }
+
+            if (stunDurationTicks < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(stunDurationTicks));
+            }
+
+            DirectImpactOutcome outcome = _damageState.ReceiveDirectImpact(
+                hitId,
+                request,
+                impactTick,
+                additionalInvulnerability: _dodgeInvulnerabilityActive);
+            if (outcome.Status != DirectImpactStatus.Applied)
+            {
+                return outcome;
+            }
+
+            _body.linearVelocity = knockbackVelocity;
+            if (stunDurationTicks > 0 && !outcome.IsDead)
+            {
+                _stunTicksRemaining = Math.Max(_stunTicksRemaining, stunDurationTicks);
+                InterruptActions();
+            }
+
+            if (outcome.IsDead)
+            {
+                _stunTicksRemaining = 0;
+                InterruptActions();
+            }
+
+            return outcome;
         }
 
         private void OnDestroy()
@@ -194,14 +261,6 @@ namespace Luckbound.Gameplay.Movement
 
             IsGrounded = UpdateGrounded();
             float deltaTime = Time.fixedDeltaTime;
-            if (command.WasPressed(PlayerAction.Jump))
-            {
-                _jumpBufferRemaining = JumpBufferDuration;
-            }
-            else if (_jumpBufferRemaining > 0f)
-            {
-                _jumpBufferRemaining = Mathf.Max(0f, _jumpBufferRemaining - deltaTime);
-            }
 
             if (IsGrounded)
             {
@@ -212,15 +271,39 @@ namespace Luckbound.Gameplay.Movement
                 _coyoteTimeRemaining = Mathf.Max(0f, _coyoteTimeRemaining - deltaTime);
             }
 
+            if (_dodgeCooldownRemaining > 0f)
+            {
+                _dodgeCooldownRemaining = Mathf.Max(0f, _dodgeCooldownRemaining - deltaTime);
+            }
+
+            if (IsDead)
+            {
+                InterruptActions();
+                ApplyRestrictedMotion(deltaTime);
+                return;
+            }
+
+            if (IsStunned)
+            {
+                _stunTicksRemaining--;
+                InterruptActions();
+                ApplyRestrictedMotion(deltaTime);
+                return;
+            }
+
+            if (command.WasPressed(PlayerAction.Jump))
+            {
+                _jumpBufferRemaining = JumpBufferDuration;
+            }
+            else if (_jumpBufferRemaining > 0f)
+            {
+                _jumpBufferRemaining = Mathf.Max(0f, _jumpBufferRemaining - deltaTime);
+            }
+
             float input = command.MoveX;
             if (Mathf.Abs(input) > MovementDeadZone)
             {
                 _facingDirection = Mathf.Sign(input);
-            }
-
-            if (_dodgeCooldownRemaining > 0f)
-            {
-                _dodgeCooldownRemaining = Mathf.Max(0f, _dodgeCooldownRemaining - deltaTime);
             }
 
             bool dodgeStartedThisTick = command.WasPressed(PlayerAction.Dodge) && IsDodgeReady;
@@ -255,7 +338,7 @@ namespace Luckbound.Gameplay.Movement
             if (_dodgeActive)
             {
                 IsDodging = true;
-                IsInvulnerable = _dodgeElapsed + (deltaTime * 0.5f) < DodgeInvulnerabilityDuration;
+                _dodgeInvulnerabilityActive = _dodgeElapsed + (deltaTime * 0.5f) < DodgeInvulnerabilityDuration;
                 velocity.x = _dodgeDirection * DodgeSpeed;
                 _jumpBufferRemaining = 0f;
                 _dodgeElapsed += deltaTime;
@@ -268,7 +351,7 @@ namespace Luckbound.Gameplay.Movement
             else
             {
                 IsDodging = false;
-                IsInvulnerable = false;
+                _dodgeInvulnerabilityActive = false;
                 if (_dodgeSpeedRecoveryPending)
                 {
                     velocity.x = _dodgeDirection * MaximumHorizontalSpeed;
@@ -292,6 +375,30 @@ namespace Luckbound.Gameplay.Movement
                 }
             }
 
+            ApplyVerticalGravity(ref velocity, deltaTime);
+            _body.linearVelocity = velocity;
+        }
+
+        private void InterruptActions()
+        {
+            if (_meleeAttackState != null)
+            {
+                _meleeAttackState.Interrupt();
+            }
+
+            _meleeAttackSnapshot = default;
+            IsDodging = false;
+            IsAttacking = false;
+            _dodgeActive = false;
+            _dodgeInvulnerabilityActive = false;
+            _dodgeSpeedRecoveryPending = false;
+            _jumpBufferRemaining = 0f;
+        }
+
+        private void ApplyRestrictedMotion(float deltaTime)
+        {
+            Vector2 velocity = _body.linearVelocity;
+            velocity.x = Mathf.MoveTowards(velocity.x, 0f, GroundBraking * deltaTime);
             ApplyVerticalGravity(ref velocity, deltaTime);
             _body.linearVelocity = velocity;
         }

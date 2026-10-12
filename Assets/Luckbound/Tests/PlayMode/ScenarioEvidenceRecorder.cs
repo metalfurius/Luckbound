@@ -32,6 +32,8 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Core/Combat/DamageCalculationRequest.cs",
             "Assets/Luckbound/Scripts/Core/Combat/DamageResolution.cs",
             "Assets/Luckbound/Scripts/Core/Combat/DamageResolver.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/ActorDamageState.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/DirectImpactOutcome.cs",
             "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackProfile.cs",
             "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackSnapshot.cs",
             "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackState.cs",
@@ -75,10 +77,12 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs",
             "Assets/Luckbound/Tests/PlayMode/MeleeAttackMotorTests.cs",
             "Assets/Luckbound/Tests/EditMode/DamageResolverTests.cs",
+            "Assets/Luckbound/Tests/EditMode/ActorDamageStateTests.cs",
             "Assets/Luckbound/Tests/EditMode/MeleeAttackTests.cs",
             "Assets/Luckbound/Tests/EditMode/SkillUseStateTests.cs",
             "Assets/Luckbound/Tests/PlayMode/SkillCatalogContentTests.cs",
             "Assets/Luckbound/Tests/PlayMode/ProjectilePoolTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/PlayerDamageTests.cs",
             "Assets/Resources/Luckbound/Data/Skills.json"
         };
 

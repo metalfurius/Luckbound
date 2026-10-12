@@ -8,10 +8,11 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07 y C01–C03: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07 y C01–C03: Verified; A06 y C04: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
+- C04 integra salud, protección tras impacto directo, empuje, aturdimiento opcional y bloqueo de acciones tras morir; su validación precommit pasa en ambas suites.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -48,7 +49,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C01 | Estadísticas y resolución de daño | B07 | Verified |
 | C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Verified |
 | C03 | Proyectiles y sistema de habilidades | C02 | Verified |
-| C04 | Daño recibido, empuje y muerte | C03 | Pending |
+| C04 | Daño recibido, empuje y muerte | C03 | InProgress |
 | C05 | Slime funcional | C04 | Pending |
 | C06 | Huesoguardia funcional | C05 | Pending |
 | C07 | HUD, pociones y pausa | C06 | Pending |
@@ -333,6 +334,15 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Escenarios físicos:** `C03_RoomProjectileCleanup`, `C03_PiercingProjectile` y `C03_ProjectileExpiry`, semilla y entradas registradas en `Logs/Scenarios/C03/20261012T114435810Z_C03_RoomProjectileCleanup_5eae59a2/`, `Logs/Scenarios/C03/20261012T114436364Z_C03_PiercingProjectile_1f9db1ab/` y `Logs/Scenarios/C03/20261012T114436676Z_C03_ProjectileExpiry_d708d1b0/`. Los tres informes dan `passed=true`, source commit `8425b894a1f7d1bf678cddd6a87a1dbc0f37e4c5` y source hash `f3b885e252ee4932302e9a7293352f98a536aeba16ced9fa149e4662e0d971e7`.
 - **Integridad:** `git diff --check` pasa; los 95 GUID de `.meta` del proyecto son únicos. SHA-256 del plan v1.5: `0B702C08F2585BA7ADF7705C09A53AB5066361EB5278363267CD8FBEE0891F1E`.
 - **Resultado:** aceptación C03 satisfecha; C04 es la siguiente tarea habilitada. Los avisos conocidos de `AudioListener` aparecen al cambiar escenas en parte de la suite PlayMode y no causaron fallos C03.
+
+## Ejecución C04 — Daño recibido, empuje y muerte
+
+- **Contrato:** estadísticas de salud máxima; impactos directos identificados y deduplicados; todos los impactos distintos del mismo tick/grupo se aplican; daño directo inicia 27 ticks protegidos después del grupo; impactos protegidos no renuevan la protección; daño letal fija salud en cero y la muerte impide actuar. Gameplay aplica empuje y aturdimiento solo a impactos aceptados.
+- **Dependencias comprobadas:** C03 `Verified`, commit `8425b894a1f7d1bf678cddd6a87a1dbc0f37e4c5`; las pruebas de C03 y los informes bajo `Logs/Scenarios/C03/` pasan.
+- **Estado:** `InProgress`; implementación terminada y pruebas preliminares satisfactorias. Falta repetir la validación tras el commit para registrar el mismo contenido ejecutado.
+- **Cambios:** `ActorDamageState` resuelve vida, `HitId`, protección temporal y muerte en Core; `PlayerMotor2D` recibe la velocidad de empuje y duración explícita de aturdimiento, prioriza `Stunned`/`Dead` frente a comandos, interrumpe ataques y conserva gravedad. Salud inicial por defecto 100 y energía máxima 50, según 3.4; protección de 27 ticks equivale a 0,45 s a 60 Hz.
+- **Validación preliminar:** Unity `6000.6.5f1`, WindowsEditor con dispositivo gráfico Null: EditMode 38/38 y PlayMode 21/21; cero fallos u omitidos. `ActorDamageStateTests` cubre protección en el tick límite, varios impactos del mismo tick, `HitId` duplicado, daño letal y protección externa. Los escenarios `C04_ProtectedKnockback` y `C04_DeathBlocksActions` comprueban Rigidbody2D y comandos reales/simulados de movimiento, ataque, esquiva y salto.
+- **Plan:** v1.6, SHA-256 `4EEB59FCFD5BCE415FE418C263E126B059FA551C21932F437E20CEA9FE6ACE2A`.
 
 ## Ficha que debe completar cada ejecución
 
