@@ -317,15 +317,20 @@ namespace Luckbound.Editor
 
                 GameObject bottomRule = FindObject(scene, "BottomRule");
                 RectTransform ruleRect = bottomRule == null ? null : bottomRule.GetComponent<RectTransform>();
-                if (ruleRect != null && ruleRect.anchoredPosition != new Vector2(0f, -101f))
+                bool hasTavernEntry = FindObject(scene, "StartTavernButton") != null;
+                Vector2 rulePosition = new Vector2(0f, hasTavernEntry ? -123f : -101f);
+                if (ruleRect != null && ruleRect.anchoredPosition != rulePosition)
                 {
-                    ruleRect.anchoredPosition = new Vector2(0f, -101f);
+                    ruleRect.anchoredPosition = rulePosition;
                     changed = true;
                 }
 
                 EventSystem eventSystem = FindEventSystem(scene);
                 GameObject arenaButton = FindObject(scene, "StartCombatArenaButton");
-                GameObject firstSelected = arenaButton != null ? arenaButton : startButton.gameObject;
+                GameObject tavernButton = FindObject(scene, "StartTavernButton");
+                GameObject firstSelected = tavernButton != null
+                    ? tavernButton
+                    : arenaButton != null ? arenaButton : startButton.gameObject;
                 if (eventSystem != null && eventSystem.firstSelectedGameObject != firstSelected)
                 {
                     eventSystem.firstSelectedGameObject = firstSelected;

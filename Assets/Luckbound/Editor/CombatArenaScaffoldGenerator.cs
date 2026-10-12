@@ -221,20 +221,28 @@ namespace Luckbound.Editor
 
                 GameObject bottomRule = FindObject(scene, "BottomRule");
                 RectTransform ruleRect = bottomRule == null ? null : bottomRule.GetComponent<RectTransform>();
-                if (ruleRect != null && ruleRect.anchoredPosition != new Vector2(0f, -101f))
+                bool hasTavernEntry = FindObject(scene, "StartTavernButton") != null;
+                Vector2 rulePosition = new Vector2(0f, hasTavernEntry ? -123f : -101f);
+                Vector2 statusPosition = new Vector2(0f, hasTavernEntry ? -122f : -114f);
+                Vector2 versionPosition = new Vector2(0f, hasTavernEntry ? -133f : -130f);
+                Vector2 statusSize = new Vector2(300f, hasTavernEntry ? 12f : 18f);
+                Vector2 versionSize = new Vector2(300f, hasTavernEntry ? 8f : 12f);
+                if (ruleRect != null && ruleRect.anchoredPosition != rulePosition)
                 {
-                    ruleRect.anchoredPosition = new Vector2(0f, -101f);
+                    ruleRect.anchoredPosition = rulePosition;
                     changed = true;
                 }
-                changed |= SetTextLayout(scene, "MenuStatus", new Vector2(0.5f, 0.5f), new Vector2(0f, -114f),
-                    new Vector2(300f, 18f), TextAnchor.MiddleCenter);
-                changed |= SetTextLayout(scene, "MenuVersion", new Vector2(0.5f, 0.5f), new Vector2(0f, -130f),
-                    new Vector2(300f, 12f), TextAnchor.MiddleCenter);
+                changed |= SetTextLayout(scene, "MenuStatus", new Vector2(0.5f, 0.5f), statusPosition,
+                    statusSize, TextAnchor.MiddleCenter);
+                changed |= SetTextLayout(scene, "MenuVersion", new Vector2(0.5f, 0.5f), versionPosition,
+                    versionSize, TextAnchor.MiddleCenter);
 
                 EventSystem eventSystem = FindEventSystem(scene);
-                if (eventSystem != null && eventSystem.firstSelectedGameObject != button.gameObject)
+                GameObject tavernButton = FindObject(scene, "StartTavernButton");
+                GameObject firstSelected = tavernButton != null ? tavernButton : button.gameObject;
+                if (eventSystem != null && eventSystem.firstSelectedGameObject != firstSelected)
                 {
-                    eventSystem.firstSelectedGameObject = button.gameObject;
+                    eventSystem.firstSelectedGameObject = firstSelected;
                     EditorUtility.SetDirty(eventSystem);
                     changed = true;
                 }
