@@ -19,6 +19,7 @@ namespace Luckbound.Gameplay.Combat
         private RoomProjectileScope _roomScope;
         private EntityId _projectileId;
         private ActorId _sourceActorId;
+        private float _sourcePositionX;
         private HitId _hitId;
         private LayerMask _impactLayers;
         private int _ageTicks;
@@ -73,6 +74,7 @@ namespace Luckbound.Gameplay.Combat
             _definition = definition;
             _projectileId = projectileId;
             _sourceActorId = sourceActorId;
+            _sourcePositionX = transform.position.x;
             _hitId = HitId.New();
             _impactLayers = impactLayers;
             _ageTicks = 0;
@@ -104,6 +106,7 @@ namespace Luckbound.Gameplay.Combat
             _roomScope = null;
             _projectileId = default;
             _sourceActorId = default;
+            _sourcePositionX = 0f;
             _hitId = default;
             _impactLayers = default;
             _ageTicks = 0;
@@ -151,7 +154,8 @@ namespace Luckbound.Gameplay.Combat
                 _hitId,
                 _sourceActorId,
                 target.ActorId,
-                definition.BaseDamage);
+                definition.BaseDamage,
+                _sourcePositionX);
             target.QueueImpact(impact);
             Impacted?.Invoke(impact);
 

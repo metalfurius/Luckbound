@@ -50,6 +50,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
             "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Enemies/Slime2D.cs",
+            "Assets/Luckbound/Scripts/Gameplay/Enemies/Huesoguardia2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Combat/ProjectileImpactTarget2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Combat/ProjectilePool2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Combat/Projectile2D.cs",
@@ -85,6 +86,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/ProjectilePoolTests.cs",
             "Assets/Luckbound/Tests/PlayMode/PlayerDamageTests.cs",
             "Assets/Luckbound/Tests/PlayMode/SlimeTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/HuesoguardiaTests.cs",
             "Assets/Resources/Luckbound/Data/Skills.json"
         };
 

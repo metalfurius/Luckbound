@@ -51,6 +51,7 @@ namespace Luckbound.Editor
             ValidateBuildScenes(errors);
             ValidateInputActions(errors);
             ValidateGroundLayer(errors);
+            ValidateEnemyLayer(errors);
             ValidateSimulationRate(errors);
             ValidateWebGlProfile(errors);
             ValidateAssemblies(errors);
@@ -221,6 +222,14 @@ namespace Luckbound.Editor
             if (InternalEditorUtility.layers == null || !InternalEditorUtility.layers.Contains("Ground"))
             {
                 errors.Add("The Ground layer is required for actor grounding and collision scenarios.");
+            }
+        }
+
+        private static void ValidateEnemyLayer(List<string> errors)
+        {
+            if (InternalEditorUtility.layers == null || !InternalEditorUtility.layers.Contains("Enemies"))
+            {
+                errors.Add("The Enemies layer is required to filter combat projectiles away from the player and room geometry.");
             }
         }
 

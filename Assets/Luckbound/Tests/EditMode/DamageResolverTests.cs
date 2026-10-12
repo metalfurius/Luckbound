@@ -48,6 +48,23 @@ namespace Luckbound.Tests.Core
         }
 
         [Test]
+        public void TemporaryDefenseBonusStacksBeforePenetration()
+        {
+            var target = new CombatStats(maximumHealth: 100, maximumEnergy: 0, defense: 2);
+            var request = CreateRequest(target, baseDamage: 12m, defensePenetration: 1, targetDefenseBonus: 4);
+
+            Assert.That(DamageResolver.Resolve(request).Damage, Is.EqualTo(7));
+        }
+
+        [Test]
+        public void TemporaryDefenseBonusCannotBeNegative()
+        {
+            var target = new CombatStats(maximumHealth: 100, maximumEnergy: 0, defense: 2);
+
+            Assert.That(() => CreateRequest(target, targetDefenseBonus: -1), Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
         public void ReductionIsClampedAndDamageStillHasMinimumOfOne()
         {
             var target = new CombatStats(maximumHealth: 100, maximumEnergy: 0, defense: 0);
@@ -93,7 +110,8 @@ namespace Luckbound.Tests.Core
             decimal offensiveBonusPercent = 0m,
             int defensePenetration = 0,
             decimal incomingDamageReductionPercent = 0m,
-            bool targetIsInvulnerable = false)
+            bool targetIsInvulnerable = false,
+            int targetDefenseBonus = 0)
         {
             return new DamageCalculationRequest(
                 baseDamage,
@@ -103,7 +121,8 @@ namespace Luckbound.Tests.Core
                 defensePenetration,
                 incomingDamageReductionPercent,
                 target,
-                targetIsInvulnerable);
+                targetIsInvulnerable,
+                targetDefenseBonus);
         }
     }
 }

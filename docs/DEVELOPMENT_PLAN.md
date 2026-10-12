@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 1.7 — 12 de octubre de 2026.
+**Versión del documento:** 1.8 — 12 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -154,6 +154,8 @@ Se crearán estas assemblies:
 `Core` tendrá `No Engine References`: no contendrá `MonoBehaviour`, `GameObject`, física, audio o interfaces de Unity.
 
 `Gameplay` y `Presentation` se comunicarán a través de consultas, comandos y eventos definidos en `Core`. No se referenciarán mutuamente.
+
+Las capas de física de 2D se nombrarán y validarán en el proyecto: `Ground` identifica suelo y obstáculos; `Enemies` permite que los proyectiles filtren a sus objetivos sin detenerse en el propio jugador, el suelo u otros colliders. Los colliders de personajes se mantendrán separados de la capa Ground.
 
 ```mermaid
 flowchart TD
@@ -488,7 +490,7 @@ Valores iniciales:
 Daño directo:
 
 1. Calcular `daño base × multiplicador de rareza × multiplicador de mejora × (1 + suma de bonificaciones ofensivas porcentuales)`.
-2. Restar `máximo(0, defensa − penetración)`.
+2. Sumar el bono temporal de defensa y restar la penetración: `máximo(0, defensa + bonoDefensa − penetración)`.
 3. Aplicar `1 − reducción porcentual`, sumando las reducciones de la misma categoría y limitando el total al 100 %.
 4. Redondear al entero más próximo; los medios se alejan de cero. Si el impacto no está evitado por invulnerabilidad, limitar el resultado a un mínimo de uno.
 5. Una invulnerabilidad válida evita el impacto por completo: el resultado es cero y se identifica como evitado.
@@ -1287,12 +1289,12 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 
 | ID | Entregable | Aceptación demostrable |
 |---|---|---|
-| C01 | Estadísticas y resolución de daño | Core define estadísticas máximas inmutables y resuelve impactos deterministas: modificadores en el orden de 3.4, defensa efectiva mínima cero, reducciones sumadas y limitadas al 100 %, redondeo al entero más próximo con medios alejándose de cero y daño mínimo uno salvo impacto evitado; pruebas cubren defensa alta, penetración, reducción, redondeo, mínimo e invulnerabilidad sin depender de Unity |
+| C01 | Estadísticas y resolución de daño | Core define estadísticas máximas inmutables y resuelve impactos deterministas: modificadores en el orden de 3.4, defensa efectiva `máximo(0, defensa + bono temporal − penetración)`, reducciones sumadas y limitadas al 100 %, redondeo al entero más próximo con medios alejándose de cero y daño mínimo uno salvo impacto evitado; pruebas cubren defensa alta, bono temporal, penetración, reducción, redondeo, mínimo e invulnerabilidad sin depender de Unity |
 | C02 | Ataques cuerpo a cuerpo y secuencia | El ataque básico de Bellator usa 27 ticks de intervalo y ventana `[6,12)`; `HitId` deduplica `ActorId` dentro de esa ventana; la secuencia `1/1/1,25` avanza solo con ataques aceptados y reinicia tras 60 ticks; motor admite ataque en el aire, aplica 65 % de movimiento y esquiva interrumpe sin borrar recarga; pruebas Core y PlayMode usan comandos y física reales |
 | C03 | Proyectiles y sistema de habilidades | Catálogo de datos contiene las nueve definiciones de 3.5; Core mide preparación de nueve ticks, rechaza acción inválida/sin energía/en recarga sin coste, consume energía e inicia recarga en el tick del efecto; un proyectil físico encola el impacto con `HitId` para resolverlo en el tick siguiente, permite hasta el máximo de objetivos sin duplicar `ActorId` y se devuelve al pool al impactar/expirar/cerrar sala; pruebas comprueban orden temporal, coste, recarga, impacto, penetración y limpieza de propietario |
 | C04 | Daño recibido, empuje y muerte | Core aplica un `HitId` una sola vez, descuenta salud hasta cero y admite todos los impactos distintos del mismo tick/grupo. Tras el grupo de daño inicia 27 ticks protegidos; los impactos bloqueados no prolongan la ventana y el siguiente impacto se admite en `tickDeDaño + 28`. Gameplay aplica el vector de empuje y los ticks de aturdimiento solo si el impacto causa daño. Con salud agotada, entradas reales/simuladas de movimiento, salto, esquiva y ataque no producen acciones; el estado visual es `Dead`. EditMode comprueba protección, deduplicación y muerte; PlayMode comprueba empuje/aturdimiento y que la muerte impida actuar |
 | C05 | Slime funcional | El Slime tiene 24 salud, 0 defensa y causa 8 de daño. Detecta al jugador a ocho unidades, lo persigue por suelo a 2 u/s y comienza el ataque a 1,25 unidades; muestra aviso durante 27 ticks, salta con 4 u/s horizontales y 4,5 u/s verticales con gravedad 3, e impacta una vez por `HitId`. Termina al aterrizar o a los 60 ticks, recupera durante 30 y vuelve a perseguir. Los impactos de proyectil se resuelven en el siguiente tick; un impacto de 24 causa muerte y desactiva collider y simulación. PlayMode demuestra persecución, aviso, salto, daño real y derrota mediante colisión física |
-| C06 | Huesoguardia funcional | Protección frontal y recuperación comprobables |
+| C06 | Huesoguardia funcional | Tiene 48 salud, 2 defensa y 10 daño. Detecta a ocho unidades, avanza por suelo a 1,5 u/s, encara al jugador y entra en guardia frontal dentro de 1,4 unidades. `Ground` y `Enemies` son capas validadas en el proyecto; la máscara de proyectiles usa `Enemies`. En `Chase` y `Telegraph` protege el semiplano que mira con +4 defensa temporal; fuera del semiplano no aplica el bono. Su corte se anuncia 30 ticks, avanza a 5 u/s hasta impactar o 18 ticks y causa daño una vez por `HitId`; `Recovery` dura 30 ticks y no protege. PlayMode demuestra con proyectiles físicos que un impacto base 12 hace 6 desde el frente y 10 desde atrás, y que el corte colisiona, daña y termina en recuperación vulnerable antes de volver a perseguir |
 | C07 | HUD, pociones y pausa | Valores reales; consumo correcto; pausa detiene simulación |
 | C08 | Arena de combate | Vencer encuentro de Slimes y Huesoguardias sin invulnerabilidad de prueba ni eliminación forzada |
 

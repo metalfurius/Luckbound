@@ -24,7 +24,10 @@ namespace Luckbound.Core.Combat
                 * request.UpgradeMultiplier
                 * (1m + request.OffensiveBonusPercent);
 
-            int effectiveDefense = Math.Max(0, request.TargetStats.Defense - request.DefensePenetration);
+            long defenseAfterModifiers = (long)request.TargetStats.Defense + request.TargetDefenseBonus - request.DefensePenetration;
+            int effectiveDefense = defenseAfterModifiers <= 0L
+                ? 0
+                : defenseAfterModifiers >= int.MaxValue ? int.MaxValue : (int)defenseAfterModifiers;
             damage = Math.Max(0m, damage - effectiveDefense);
 
             decimal reduction = Math.Min(1m, request.IncomingDamageReductionPercent);

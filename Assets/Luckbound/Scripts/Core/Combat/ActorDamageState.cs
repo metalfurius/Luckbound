@@ -144,7 +144,8 @@ namespace Luckbound.Core.Combat
                 request.DefensePenetration,
                 request.IncomingDamageReductionPercent,
                 request.TargetStats,
-                targetIsInvulnerable);
+                targetIsInvulnerable,
+                request.TargetDefenseBonus);
         }
     }
 }

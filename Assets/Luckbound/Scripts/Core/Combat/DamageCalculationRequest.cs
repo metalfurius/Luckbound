@@ -17,7 +17,8 @@ namespace Luckbound.Core.Combat
             int defensePenetration,
             decimal incomingDamageReductionPercent,
             CombatStats targetStats,
-            bool targetIsInvulnerable)
+            bool targetIsInvulnerable,
+            int targetDefenseBonus = 0)
         {
             if (baseDamage <= 0m)
             {
@@ -49,6 +50,11 @@ namespace Luckbound.Core.Combat
                 throw new ArgumentOutOfRangeException(nameof(incomingDamageReductionPercent), "Damage reduction cannot be negative.");
             }
 
+            if (targetDefenseBonus < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(targetDefenseBonus), "Temporary defense bonuses cannot be negative.");
+            }
+
             TargetStats = targetStats ?? throw new ArgumentNullException(nameof(targetStats));
             BaseDamage = baseDamage;
             RarityMultiplier = rarityMultiplier;
@@ -57,6 +63,7 @@ namespace Luckbound.Core.Combat
             DefensePenetration = defensePenetration;
             IncomingDamageReductionPercent = incomingDamageReductionPercent;
             TargetIsInvulnerable = targetIsInvulnerable;
+            TargetDefenseBonus = targetDefenseBonus;
         }
 
         public decimal BaseDamage { get; }
@@ -74,5 +81,7 @@ namespace Luckbound.Core.Combat
         public CombatStats TargetStats { get; }
 
         public bool TargetIsInvulnerable { get; }
+
+        public int TargetDefenseBonus { get; }
     }
 }
