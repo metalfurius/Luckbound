@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D03: Verified; A06 y D04: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D04: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -64,7 +64,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D01 | Sala, puertos y marcadores | C08 | Verified |
 | D02 | Generación por semilla | D01 | Verified |
 | D03 | Transición y limpieza | D02 | Verified |
-| D04 | Inventario y botín | D03 | InProgress |
+| D04 | Inventario y botín | D03 | Verified |
 | D05 | Taberna y preparación | D04 | Pending |
 | D06 | Custodio provisional | D05 | Pending |
 | D07 | Muerte, extracción y liquidación | D06 | Pending |
@@ -430,12 +430,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Plan:** v2.1, SHA-256 `1D0B61073537211EF7B0C23C34F6958951F9E1DE5BB34070B2F01B4B2331C1C8`.
 - **Resultado:** aceptación D03 satisfecha; D04 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 continúa `InProgress`.
 
-## Ejecución D04 — Contrato y pasos
+## Evidencia D04 — Inventario y botín
 
-- **Estado:** `InProgress`; dependencia D03 comprobada en `2ebf45b21651a255a72708f00397098f0bb131ab`.
-- **Contrato:** doce índices de mochila; equipo de arma, armadura y dos reliquias; consumible rápido como referencia a su pila; consumibles apilan hasta tres; seis materiales entre 0 y 99 y oro independiente. Armas validan compatibilidad de clase. Equipar una pieza devuelve la anterior al mismo índice. Sustituir un índice ocupado retorna el objeto desplazado como botín del mundo. Todas las órdenes usan `TransactionId`; reintentos reproducen el resultado inicial y los rechazos preservan el estado.
-- **Aceptación prevista:** validar `Items.json`, los seis materiales y compatibilidades; cubrir reglas e idempotencia con EditMode; en PlayMode recoger por trigger 2D, equipar e intercambiar, rechazar con mochila llena conservando el pickup y sustituir solo si se pudo preparar primero el botín desplazado.
-- **Límites:** no incluye arte final, UI de inventario ni persistencia, previstas en I03, F06 y D08/D09 respectivamente. No se modifica el workflow ni la publicación pública.
+- **Dependencia comprobada:** D03 `Verified`, código `61653bc001db6fe2559b123e5f1984d73bd26311`.
+- **Contrato implementado:** `Luckbound.Core.Inventory` no depende de Unity. `ExpeditionInventory` mantiene doce índices, arma, armadura, dos reliquias, referencia al consumible rápido, seis contadores de material 0–99 y oro independiente. Armas y armaduras admiten +0 a +3; consumibles solo común/+0 y apilan hasta tres. La clase se valida al equipar armas y no se admite la misma definición de reliquia en ambos espacios. Equipar devuelve el objeto anterior al mismo índice.
+- **Contenido y transacciones:** `Items.json` define 16 entradas: tres armas de inicio, tres armaduras, dos reliquias, dos consumibles y seis materiales con límite 99. El loader valida esquema, IDs únicos, categorías, pilas, materiales completos y clases conocidas. Cada mutación de recoger, equipar, reemplazar, material u oro usa `TransactionId`; reintentos reproducen el resultado y las operaciones rechazadas no mutan el inventario.
+- **Integración física:** `LootPickup2D` recoge por trigger 2D. Cuando la mochila está llena mantiene el pickup en el mundo. Antes de reemplazar un índice ocupado, `LootPickupDropStager2D` crea el objeto desplazado inactivo; solo lo activa tras el éxito de Core. El fallo de staging conserva ambos objetos y el jugador que sustituye no puede recoger inmediatamente el objeto que acaba de soltar.
+- **Escenario:** `D04_PhysicalLootAndInventorySwap`, semilla `27182818`, Unity `6000.6.5f1`, WindowsEditor y dispositivo Null. Informe: `Logs/Scenarios/D04/20261012T160432973Z_D04_PhysicalLootAndInventorySwap_4cf7cbc2/scenario-report.json`. Resultado `passed=true`, 7 aserciones aprobadas: recogida física, intercambio de equipo, rechazo con mochila llena, índice inválido, staging fallido sin mutación, staging y reemplazo correctos, y recogida por un segundo actor. `sourceHash`: `cc1f7513d0d504f6ccc2f1112d173bb3576c79efae48b450904e4371edd5912e`.
+- **Aceptación postcommit:** commit `684eb80836ae9a3ecec3ee0a3179d85ec6ee02c3`. `unity test . --mode EditMode --output Logs\\D04-postcommit-editmode.xml --timeout 1200 -- -nographics` → 64/64; `unity test . --mode PlayMode --output Logs\\D04-postcommit-playmode.xml --timeout 1200 -- -nographics` → 39/39. Cero fallos, omitidos o inconclusos. Los 203 GUID `.meta` son únicos; `git diff --check` pasa.
+- **Plan:** v2.2, SHA-256 `78AA653A216D7FC12FE41CE36D5748289E915295EC5AA41D12861963174FEE50`.
+- **Resultado:** D04 `Verified`; D05 queda habilitada. No se generó una build, no se ejecutó GitHub Actions ni se modificó la ruta pública; A06 sigue `InProgress`.
 
 ## Ficha que debe completar cada ejecución
 
