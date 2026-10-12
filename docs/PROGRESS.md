@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01 y C02: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01 y C02: Verified; A06 y C03: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - Revisiones de builds: ninguna realizada.
@@ -46,7 +46,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | B07 | Demo de movimiento 0.1 | B06 | Verified |
 | C01 | Estadísticas y resolución de daño | B07 | Verified |
 | C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Verified |
-| C03 | Proyectiles y sistema de habilidades | C02 | Pending |
+| C03 | Proyectiles y sistema de habilidades | C02 | InProgress |
 | C04 | Daño recibido, empuje y muerte | C03 | Pending |
 | C05 | Slime funcional | C04 | Pending |
 | C06 | Huesoguardia funcional | C05 | Pending |
@@ -321,6 +321,15 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - `git diff --check` pasa; 110 GUID `.meta` únicos. Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null; sin captura visual en batch.
 - SHA-256 del plan v1.4 comprobado: `4C37EF64E74DCB7B133566F9F4537CDB0C8042ABC50BA2A4CA58B3B201DC9E50`.
 - **Aceptación C02 satisfecha; estado Verified.** C03 queda habilitada.
+
+## Ejecución C03 — Proyectiles y sistema de habilidades
+
+- **Contrato:** catálogo de las nueve habilidades; validación Core sin dependencia de Unity; preparación de nueve ticks, coste y recarga al comenzar el efecto; coste cero si la acción es inválida o se interrumpe antes; recursos y recargas independientes por habilidad; proyectil físico con `HitId`, máximo de objetivos y deduplicación por `ActorId`; pool propiedad de sala que recupera proyectiles al impacto, expiración o cierre.
+- **Dependencias comprobadas:** C02 `Verified`, commit `2e8730c`; C01 `Verified`, commit `33d4659`.
+- **Estado:** `InProgress`; implementación completa y validación preliminar satisfactoria. Repetiré ambas suites tras el commit de código para guardar evidencia ligada al commit final.
+- **Cambios:** `Skills.json` y su cargador validan las nueve definiciones; Core resuelve preparación, energía y recargas independientes; `Projectile2D` emite impactos identificados y deduplica objetivos; el pool y `RoomProjectileScope` limpian impactos, caducidad y salida de sala. Se corrigió el orden de activación del objeto del pool después de que PlayMode demostrara que Unity reiniciaba la velocidad asignada mientras el `Rigidbody2D` estaba inactivo.
+- **Validación preliminar:** Unity `6000.6.5f1`, WindowsEditor con dispositivo gráfico Null: EditMode 34/34 y PlayMode 19/19; cero fallos u omitidos en la última ejecución. La prueba de penetración, limpieza de sala y expiración generó reportes bajo `Logs/Scenarios/C03/`; el resultado final se registrará al repetir después del commit.
+- **Integridad:** `git diff --check` pasa; los 95 GUID de `.meta` del proyecto son únicos. SHA-256 del plan v1.5: `0B702C08F2585BA7ADF7705C09A53AB5066361EB5278363267CD8FBEE0891F1E`.
 
 ## Ficha que debe completar cada ejecución
 

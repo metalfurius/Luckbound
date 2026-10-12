@@ -1,7 +1,7 @@
 {
   "name": "Luckbound.PlayMode.Tests",
   "rootNamespace": "Luckbound.Tests.PlayMode",
-  "references": ["Luckbound.App", "Luckbound.Core", "Luckbound.Gameplay", "Luckbound.Presentation", "Unity.Cinemachine", "Unity.InputSystem", "Unity.InputSystem.TestFramework", "Unity.ugui", "Unity.RenderPipelines.Universal.2D.Runtime"],
+  "references": ["Luckbound.App", "Luckbound.Content", "Luckbound.Core", "Luckbound.Gameplay", "Luckbound.Presentation", "Unity.Cinemachine", "Unity.InputSystem", "Unity.InputSystem.TestFramework", "Unity.ugui", "Unity.RenderPipelines.Universal.2D.Runtime"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

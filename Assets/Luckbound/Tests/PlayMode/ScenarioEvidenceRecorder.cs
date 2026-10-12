@@ -37,10 +37,21 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackState.cs",
             "Assets/Luckbound/Scripts/Core/Combat/MeleeComboSequence.cs",
             "Assets/Luckbound/Scripts/Core/Combat/MeleeHitWindow.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/SkillDefinition.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/SkillCatalog.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/SkillUseOutcome.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/ProjectileDefinition.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/ProjectileImpact.cs",
             "Assets/Luckbound/Scripts/Core/Presentation/PlayerVisualState.cs",
             "Assets/Luckbound/Scripts/Gameplay/Luckbound.Gameplay.asmdef",
             "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
             "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+            "Assets/Luckbound/Scripts/Gameplay/Combat/ProjectileImpactTarget2D.cs",
+            "Assets/Luckbound/Scripts/Gameplay/Combat/ProjectilePool2D.cs",
+            "Assets/Luckbound/Scripts/Gameplay/Combat/Projectile2D.cs",
+            "Assets/Luckbound/Scripts/Gameplay/Combat/RoomProjectileScope.cs",
+            "Assets/Luckbound/Scripts/Content/SkillCatalogJsonLoader.cs",
             "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
             "Assets/Luckbound/Scripts/App/MovementDemoComposition.cs",
             "Assets/Luckbound/Scripts/App/MovementDemoGoalTrigger.cs",
@@ -64,7 +75,11 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs",
             "Assets/Luckbound/Tests/PlayMode/MeleeAttackMotorTests.cs",
             "Assets/Luckbound/Tests/EditMode/DamageResolverTests.cs",
-            "Assets/Luckbound/Tests/EditMode/MeleeAttackTests.cs"
+            "Assets/Luckbound/Tests/EditMode/MeleeAttackTests.cs",
+            "Assets/Luckbound/Tests/EditMode/SkillUseStateTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/SkillCatalogContentTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/ProjectilePoolTests.cs",
+            "Assets/Resources/Luckbound/Data/Skills.json"
         };
 
         private readonly string _projectRoot;

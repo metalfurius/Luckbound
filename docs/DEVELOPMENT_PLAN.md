@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 1.4 — 12 de octubre de 2026.
+**Versión del documento:** 1.5 — 12 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -531,6 +531,10 @@ Valores comunes:
 - Energía y recarga se consumen cuando comienza el efecto.
 - Embestidas se detienen al chocar con una pared.
 - Trampas y sellos pertenecen a la sala y se eliminan al salir.
+
+La preparación se mide en ticks: nueve ticks a 60 Hz. La acción se valida al solicitarla; coste y recarga se aplican en el tick que comienza el efecto. Una interrupción antes de ese tick no consume energía ni recarga; se vuelve a comprobar energía al iniciar el efecto. Cada habilidad mantiene su propia recarga. Los proyectiles usan un `HitId` por instancia: una flecha que atraviesa hasta tres objetivos puede impactar una vez a cada `ActorId`; cada flecha de Disparo triple lleva su propio `HitId`. Los proyectiles pertenecen a un pool compartido y el propietario de sala los recupera al impactar, expirar o cerrar la sala. Trampas y sellos siguen siendo objetos de sala, limpios junto con ella y devueltos a su pool de efectos.
+
+El catálogo fuente será `Assets/Resources/Luckbound/Data/Skills.json`, con versión de esquema y tick rate explícitos. Las flechas del Venator usan 18 u/s y caducan tras 120 ticks; Disparo triple crea tres flechas a −12°, 0° y +12° respecto al apuntado. La Bola de fuego usa 10 u/s y caduca tras 180 ticks. Estos valores son datos de contenido editables; la caducidad también impide proyectiles perdidos durante recorridos largos.
 
 ### 3.6. Razas
 
@@ -1285,7 +1289,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 |---|---|---|
 | C01 | Estadísticas y resolución de daño | Core define estadísticas máximas inmutables y resuelve impactos deterministas: modificadores en el orden de 3.4, defensa efectiva mínima cero, reducciones sumadas y limitadas al 100 %, redondeo al entero más próximo con medios alejándose de cero y daño mínimo uno salvo impacto evitado; pruebas cubren defensa alta, penetración, reducción, redondeo, mínimo e invulnerabilidad sin depender de Unity |
 | C02 | Ataques cuerpo a cuerpo y secuencia | El ataque básico de Bellator usa 27 ticks de intervalo y ventana `[6,12)`; `HitId` deduplica `ActorId` dentro de esa ventana; la secuencia `1/1/1,25` avanza solo con ataques aceptados y reinicia tras 60 ticks; motor admite ataque en el aire, aplica 65 % de movimiento y esquiva interrumpe sin borrar recarga; pruebas Core y PlayMode usan comandos y física reales |
-| C03 | Proyectiles y sistema de habilidades | Impacto, coste, recarga y eliminación al abandonar sala |
+| C03 | Proyectiles y sistema de habilidades | Catálogo de datos contiene las nueve definiciones de 3.5; Core mide preparación de nueve ticks, rechaza acción inválida/sin energía/en recarga sin coste, consume energía e inicia recarga en el tick del efecto; un proyectil físico emite impacto con `HitId`, permite hasta el máximo de objetivos sin duplicar `ActorId` y se devuelve al pool al impactar/expirar/cerrar sala; pruebas comprueban orden temporal, coste, recarga, impacto, penetración y limpieza de propietario |
 | C04 | Daño recibido, empuje y muerte | Impactos repetidos respetan protección; muerte impide actuar |
 | C05 | Slime funcional | Detecta, avisa, salta, recibe daño y muere |
 | C06 | Huesoguardia funcional | Protección frontal y recuperación comprobables |
