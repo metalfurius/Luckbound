@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D05: Verified; A06 y D06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D06: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -21,7 +21,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - D02 añade Xorshift32 versionado, subflujos FNV-1a independientes y un grafo de expedición reproducible de 21 localizaciones obligatorias más tres desvíos opcionales. La misma semilla produce la huella `D9AAFA27`; 100 semillas conservan conectividad y no repiten plantillas en su sector. Las suites postcommit pasan en `e76bdd1`.
 - D03 añade el cursor de ruta dirigida, transiciones preparadas antes de retirar la sala, colocación del jugador persistente entre puertos y ámbitos que liberan actores, suscripciones, recursos y coroutines. Veinte cambios terminan en `final.boss` sin acumulación; las suites finales postcommit pasan en `61653bc`.
 - D05 conecta Menú, Taberna y el inicio de una expedición. La taberna permite escoger una clase, exactamente dos habilidades compatibles y la única raza desbloqueada; `Items.json` v2 asigna equipo inicial por clase. Cada salida construye `RunId`, semilla, ruta de 24 nodos, inventario nuevo, equipo, dos pociones y las estadísticas iniciales. El escenario vuelve a la taberna, contamina deliberadamente el primer inventario con oro/materiales y demuestra que Venator inicia con equipo, habilidades e inventario independientes. Ambas suites postcommit pasan en `fabcbcb`.
-- D06 implementará el Custodio provisional con los tres patrones de la especificación, transición real al 50 % y muerte por combate del jugador; depende de D05, ya verificada. No se modifican decisiones ni equilibrio del plan.
+- D06 añade al Custodio provisional con Corte, Onda y Carga físicos, transición de 120 ticks al 50 %, doble onda en fase dos y derrota por impactos cuerpo a cuerpo reales. El escenario dirigido y ambas suites postcommit pasan en `cb7b7ba`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -68,7 +68,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D03 | Transición y limpieza | D02 | Verified |
 | D04 | Inventario y botín | D03 | Verified |
 | D05 | Taberna y preparación | D04 | Verified |
-| D06 | Custodio provisional | D05 | InProgress |
+| D06 | Custodio provisional | D05 | Verified |
 | D07 | Muerte, extracción y liquidación | D06 | Pending |
 | D08 | Perfil y ajustes con respaldo | D07 | Pending |
 | D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | Pending |
@@ -453,12 +453,15 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Integridad del contenido:** el hash de fuentes del escenario es `538372266f42c8fc888aff42b05ff47b5690ca9d81d754842bf75d12d346d050`. El plan v2.2 permanece sin cambios, SHA-256 `78AA653A216D7FC12FE41CE36D5748289E915295EC5AA41D12861963174FEE50`.
 - **Resultado:** D05 `Verified`; D06 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 continúa `InProgress`.
 
-## Ejecución D06 — Custodio provisional (InProgress)
+## Evidencia D06 — Custodio provisional
 
 - **Contrato:** custodio de 900 salud y 3 defensa; patrones Corte (14), Onda (12) y Carga (16); telegráficos visibles de al menos 33 ticks a 60 Hz; cambio de fase al 50 % con transición de 120 ticks sin ataques; segunda fase con dos ondas y recuperación más corta. La derrota debe ocurrir mediante ataques reales del jugador.
-- **Dependencia comprobada:** D05 `Verified`, código `fabcbcb9bc62653c37831eae0943f177094c75ae`; registro actualizado en `3d5ac2c`.
+- **Dependencia comprobada:** D05 `Verified`, implementación `4c2e61c2b03764eb3b7525349babb1ee77e2dc56`, corrección de idempotencia `fabcbcb9bc62653c37831eae0943f177094c75ae` y evidencia registrada en `3d5ac2c`.
 - **Criterio de aceptación heredado:** D06 no se cierra por instanciar el jefe ni mostrar una barra: una ruta accesible debe ejecutar las tres acciones físicas, observar segunda fase y vencer al jefe por combate; las pruebas no fijarán la salud ni eliminarán el actor para alcanzar la victoria.
-- **Resultado:** trabajo en curso; no se ha atribuido aún implementación, prueba ni build.
+- **Implementación:** `CustodianBoss.json` fija 900 de salud, 3 de defensa, telegráficos de 45 ticks, transición de 120 ticks, ataques Corte/Onda/Carga de 14/12/16 de daño, recuperaciones de 90/54 ticks y dos ondas adicionales en fase dos. El menú ofrece el acceso a `CustodianArena`; el Custodio y las ondas usan colisiones y colas de daño del combate existentes. Las pruebas no alteran salud ni fuerzan victoria. Arte visual gris provisional; no se incorpora música ni arte final.
+- **Escenario físico:** `D06_RealCombatCustodianTwoPhases`, semilla `31415927`, informe `Logs/Scenarios/D06/20261012T171349900Z_D06_RealCombatCustodianTwoPhases_08f8e4ea/scenario-report.json`. `passed=true`, siete aserciones y cero errores. Unity `6000.6.5f1`, WindowsEditor, dispositivo Null. Resultado `Victory`: 91 impactos de melee, 5 impactos recibidos, 44/100 de salud final del jugador; observó 6 cortes, 6 ondas, 6 cargas, seis ondas adicionales de fase dos y la transición de 120 ticks. El jugador sobrevivió y causó la muerte del jefe.
+- **Aceptación postcommit:** commit `cb7b7ba` (`feat(boss): implement D06 Custodian encounter`). EditMode `67/67` y PlayMode `45/45`; cero fallos, omitidos o inconclusos. La prueba de idempotencia del generador también pasa. GUID `.meta` y comprobación `git diff --check` limpios. El `sourceHash` del escenario es `91ca0140f984187689ef2cd87820faa9b4fba632465daec9c75be485a408b53a`.
+- **Resultado:** D06 `Verified`; D07 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 sigue `InProgress`.
 
 ## Ficha que debe completar cada ejecución
 
