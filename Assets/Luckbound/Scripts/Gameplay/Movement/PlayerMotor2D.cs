@@ -1,4 +1,5 @@
 using System;
+using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Presentation;
@@ -37,6 +38,8 @@ namespace Luckbound.Gameplay.Movement
 
         private readonly RaycastHit2D[] _groundHits = new RaycastHit2D[4];
 
+        private MeleeAttackState _meleeAttackState;
+        private MeleeAttackSnapshot _meleeAttackSnapshot;
         private ActorId _actorId;
         private Collider2D _collider;
         private ContactFilter2D _groundContactFilter;
@@ -65,6 +68,14 @@ namespace Luckbound.Gameplay.Movement
 
         public int DodgeActivationCount { get; private set; }
 
+        public int MeleeAttackActivationCount { get; private set; }
+
+        public bool IsAttacking { get; private set; }
+
+        public MeleeAttackSnapshot CurrentMeleeAttack => _meleeAttackSnapshot;
+
+        public MeleeHitWindow CurrentMeleeHitWindow => _meleeAttackSnapshot.HitWindow;
+
         public bool IsDodgeReady => !_dodgeActive && _dodgeCooldownRemaining <= 0f;
 
         public float CoyoteTimeRemaining => _coyoteTimeRemaining;
@@ -84,7 +95,7 @@ namespace Luckbound.Gameplay.Movement
                 isDead: false,
                 isStunned: false,
                 isDodging: IsDodging,
-                isAttacking: false,
+                isAttacking: IsAttacking,
                 isGrounded: IsGrounded,
                 horizontalVelocity: velocity.x);
             return new PlayerVisualSnapshot(state, velocity.x, velocity.y, _facingDirection);
@@ -126,6 +137,9 @@ namespace Luckbound.Gameplay.Movement
 
             _actorId = actorId;
             _inputSource = inputSource;
+            _meleeAttackState = new MeleeAttackState(
+                MeleeAttackProfile.BellatorWornSword,
+                MeleeComboSequence.CreateBellator());
             _body.bodyType = RigidbodyType2D.Dynamic;
             _body.constraints |= RigidbodyConstraints2D.FreezeRotation;
             _body.interpolation = RigidbodyInterpolation2D.Interpolate;
@@ -209,7 +223,8 @@ namespace Luckbound.Gameplay.Movement
                 _dodgeCooldownRemaining = Mathf.Max(0f, _dodgeCooldownRemaining - deltaTime);
             }
 
-            if (command.WasPressed(PlayerAction.Dodge) && IsDodgeReady)
+            bool dodgeStartedThisTick = command.WasPressed(PlayerAction.Dodge) && IsDodgeReady;
+            if (dodgeStartedThisTick)
             {
                 _dodgeActive = true;
                 _dodgeElapsed = 0f;
@@ -218,7 +233,18 @@ namespace Luckbound.Gameplay.Movement
                 DodgeActivationCount++;
             }
 
-            float targetSpeed = input * MaximumHorizontalSpeed;
+            _meleeAttackSnapshot = _meleeAttackState.Tick(
+                command.Tick,
+                attackPressed: command.WasPressed(PlayerAction.Attack) && !_dodgeActive,
+                dodgeAccepted: dodgeStartedThisTick);
+            IsAttacking = _meleeAttackSnapshot.IsAttacking && !_dodgeActive;
+            if (_meleeAttackSnapshot.WasStartedThisTick)
+            {
+                MeleeAttackActivationCount++;
+            }
+
+            float attackMovementMultiplier = IsAttacking ? (float)_meleeAttackSnapshot.MovementSpeedMultiplier : 1f;
+            float targetSpeed = input * MaximumHorizontalSpeed * attackMovementMultiplier;
             float acceleration = Mathf.Abs(input) > MovementDeadZone ? GroundAcceleration : GroundBraking;
             if (!IsGrounded)
             {

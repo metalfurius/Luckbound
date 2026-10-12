@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01: Verified; A06: InProgress; B08–J09: Pending. C02 es la siguiente tarea técnica.
+- A01–A05, A07–A08, B01–B07, C01 y C02: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - Revisiones de builds: ninguna realizada.
@@ -45,7 +45,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | B06 | Cámara, límites y estados visuales | B05 | Verified |
 | B07 | Demo de movimiento 0.1 | B06 | Verified |
 | C01 | Estadísticas y resolución de daño | B07 | Verified |
-| C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Pending |
+| C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Verified |
 | C03 | Proyectiles y sistema de habilidades | C02 | Pending |
 | C04 | Daño recibido, empuje y muerte | C03 | Pending |
 | C05 | Slime funcional | C04 | Pending |
@@ -309,6 +309,18 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - `git diff --check` pasa; los 102 GUID `.meta` del proyecto son únicos. Versión fijada del Editor: Unity `6000.6.5f1`, WindowsEditor, pruebas batch con dispositivo gráfico Null.
 - SHA-256 del plan v1.3 comprobado: `70167F20437B0DB07EAE0D0BE26016BD4274609B51EAE47C71DC8F123D9E4189`.
 - **Aceptación C01 satisfecha; estado Verified.** C02 queda habilitada; la aplicación del daño al estado y salud actual de actores corresponde a C04.
+- Implementación C01 registrada en el commit `33d4659` (`feat(combat): add deterministic damage resolution`).
+
+## Ejecución C02 — Ataque cuerpo a cuerpo y secuencia
+
+- **Contrato:** abrir una ventana `[inicio + 6, inicio + 12)` en la espada inicial de Bellator, con intervalo de 27 ticks; un `HitId` permite registrar una vez cada `ActorId`; combo `1/1/1,25`, reinicio tras un hueco de 60 ticks, ataque en el aire, movimiento al 65 % y esquiva que interrumpe sin borrar la recarga.
+- **Dependencias comprobadas:** C01 `Verified`, commit `33d4659`; física e input a 60 Hz verificados en B03–B07.
+- `Luckbound.Core.Combat` añade perfil a 60 Hz, secuencia por actor, estado de ataque, ventana con `HitId` y deduplicación por `ActorId`. `PlayerMotor2D` consume el flanco real del comando Attack, actualiza la presentación y limita movimiento a 65 % durante ataque; no rechaza ataques en el aire.
+- `C02_AttackMovement`, semilla `27182818`: con suelo y `Rigidbody2D` real, el ataque mantiene 3,900 u/s, el motor muestra `Attacking`, abre la ventana a los seis ticks y el mismo `ActorId` solo se registra una vez. `C02_AirAttack`, semilla `31415926`: el jugador sigue en el aire al aceptar el ataque. Reportes: `Logs/Scenarios/C02/20261012T111114442Z_C02_AttackMovement_6fa9684c/scenario-report.json` y `Logs/Scenarios/C02/20261012T111115140Z_C02_AirAttack_bedcde25/scenario-report.json`; ambos pasan con source hash `5e4f49fac6def9eb468566b1a441ac1cd72018d9d936872bad9266f6df74ecbf`.
+- `unity test . --mode EditMode --output Logs\\C02-editmode.xml --timeout 1200 -- -nographics` → 28/28; `unity test . --mode PlayMode --output Logs\\C02-playmode.xml --timeout 1200 -- -nographics` → 14/14. Sin fallos ni pruebas omitidas. Una compilación inicial se detuvo por un `using` faltante en la prueba PlayMode; quedó corregido antes de ambos resultados finales.
+- `git diff --check` pasa; 110 GUID `.meta` únicos. Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null; sin captura visual en batch.
+- SHA-256 del plan v1.4 comprobado: `4C37EF64E74DCB7B133566F9F4537CDB0C8042ABC50BA2A4CA58B3B201DC9E50`.
+- **Aceptación C02 satisfecha; estado Verified.** C03 queda habilitada.
 
 ## Ficha que debe completar cada ejecución
 

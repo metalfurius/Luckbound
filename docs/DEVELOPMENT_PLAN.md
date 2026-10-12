@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 1.3 — 12 de octubre de 2026.
+**Versión del documento:** 1.4 — 12 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -277,6 +277,8 @@ La simulación utilizará ticks a **60 Hz**.
 Los impactos de física se recogerán en una cola y se resolverán en el siguiente tick. La resolución ocurrirá antes de aceptar las nuevas acciones de ese tick, evitando esquivas retroactivas.
 
 Cada impacto tendrá un `HitId`. Un ataque cuerpo a cuerpo no podrá golpear dos veces al mismo objetivo por tener varios colliders. Proyectiles distintos de una misma habilidad podrán producir impactos distintos cuando la habilidad así lo especifique.
+
+`HitId` será un identificador opaco de Core, único para una ventana de impacto y distinto de `ActorId`; no se guarda ni consume azar de juego. La ventana registra `ActorId` de cada objetivo aceptado, así los colliders hermanos del mismo actor se deduplican y objetivos distintos pueden recibir el impacto.
 
 Los impactos válidos del mismo paso físico se resolverán como un grupo. Si jugador y jefe mueren en ese grupo, prevalecerá el resultado de muerte del jugador y no se concederá la recompensa de victoria.
 
@@ -583,6 +585,10 @@ Los objetos generados tendrán identificador de instancia. Dos objetos con la mi
 | Magus | Báculo de sombra | 14 | 0,60 s | Ignora un punto de defensa |
 
 Bellator tendrá una secuencia de tres golpes con multiplicadores `1 / 1 / 1,25`. La secuencia se reiniciará al transcurrir un segundo sin continuarla.
+
+El arma inicial de Bellator, Espada gastada, ataca cada 27 ticks (0,45 s). Cada activación mantiene el estado `Attacking` hasta el tick 27; su ventana de daño abre en el tick 6 y cierra antes del tick 12, con intervalos semiabiertos `[inicio + 6, inicio + 12)`. El resto es recuperación. El daño y la ventana vienen de datos de combate, nunca de eventos o duración del clip. Solo un ataque aceptado avanza la secuencia; el tiempo entre ataques aceptados de 60 ticks o más la reinicia. Una entrada rechazada por recarga no la avanza.
+
+Durante el ataque se conserva el control horizontal al 65 % de la velocidad normal y se puede atacar en el aire. Una esquiva válida interrumpe el ataque actual y cierra su ventana para ticks futuros; los impactos del paso físico ya recogidos se resuelven antes de aceptar la esquiva. La recarga del arma no se borra al interrumpir el ataque. Si ataque y esquiva se pulsan en el mismo tick, solo se acepta la esquiva.
 
 Los ataques básicos de Venator y Magus no consumirán munición ni energía.
 
@@ -1278,7 +1284,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 | ID | Entregable | Aceptación demostrable |
 |---|---|---|
 | C01 | Estadísticas y resolución de daño | Core define estadísticas máximas inmutables y resuelve impactos deterministas: modificadores en el orden de 3.4, defensa efectiva mínima cero, reducciones sumadas y limitadas al 100 %, redondeo al entero más próximo con medios alejándose de cero y daño mínimo uno salvo impacto evitado; pruebas cubren defensa alta, penetración, reducción, redondeo, mínimo e invulnerabilidad sin depender de Unity |
-| C02 | Ataques cuerpo a cuerpo y secuencia | Un golpe por objetivo y ventana; movimiento permitido |
+| C02 | Ataques cuerpo a cuerpo y secuencia | El ataque básico de Bellator usa 27 ticks de intervalo y ventana `[6,12)`; `HitId` deduplica `ActorId` dentro de esa ventana; la secuencia `1/1/1,25` avanza solo con ataques aceptados y reinicia tras 60 ticks; motor admite ataque en el aire, aplica 65 % de movimiento y esquiva interrumpe sin borrar recarga; pruebas Core y PlayMode usan comandos y física reales |
 | C03 | Proyectiles y sistema de habilidades | Impacto, coste, recarga y eliminación al abandonar sala |
 | C04 | Daño recibido, empuje y muerte | Impactos repetidos respetan protección; muerte impide actuar |
 | C05 | Slime funcional | Detecta, avisa, salta, recibe daño y muere |

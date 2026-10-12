@@ -27,6 +27,16 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
             "Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
             "Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
+            "Assets/Luckbound/Scripts/Core/Identifiers/HitId.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/CombatStats.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/DamageCalculationRequest.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/DamageResolution.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/DamageResolver.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackProfile.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackSnapshot.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackState.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/MeleeComboSequence.cs",
+            "Assets/Luckbound/Scripts/Core/Combat/MeleeHitWindow.cs",
             "Assets/Luckbound/Scripts/Core/Presentation/PlayerVisualState.cs",
             "Assets/Luckbound/Scripts/Gameplay/Luckbound.Gameplay.asmdef",
             "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
@@ -51,7 +61,10 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/PlayerDodgeTests.cs",
             "Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
             "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs"
+            "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/MeleeAttackMotorTests.cs",
+            "Assets/Luckbound/Tests/EditMode/DamageResolverTests.cs",
+            "Assets/Luckbound/Tests/EditMode/MeleeAttackTests.cs"
         };
 
         private readonly string _projectRoot;
