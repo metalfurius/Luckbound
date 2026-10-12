@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D04: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D05: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -20,6 +20,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - D01 define la cuadrícula y los contratos de puertos y marcadores en JSON, más un prefab Tilemap derivado. La validación física confirma suelo y altura libre en ambas puertas y posiciones apoyadas; las suites postcommit pasan en `66d4756`.
 - D02 añade Xorshift32 versionado, subflujos FNV-1a independientes y un grafo de expedición reproducible de 21 localizaciones obligatorias más tres desvíos opcionales. La misma semilla produce la huella `D9AAFA27`; 100 semillas conservan conectividad y no repiten plantillas en su sector. Las suites postcommit pasan en `e76bdd1`.
 - D03 añade el cursor de ruta dirigida, transiciones preparadas antes de retirar la sala, colocación del jugador persistente entre puertos y ámbitos que liberan actores, suscripciones, recursos y coroutines. Veinte cambios terminan en `final.boss` sin acumulación; las suites finales postcommit pasan en `61653bc`.
+- D05 conecta Menú, Taberna y el inicio de una expedición. La taberna permite escoger una clase, exactamente dos habilidades compatibles y la única raza desbloqueada; `Items.json` v2 asigna equipo inicial por clase. Cada salida construye `RunId`, semilla, ruta de 24 nodos, inventario nuevo, equipo, dos pociones y las estadísticas iniciales. El escenario vuelve a la taberna, contamina deliberadamente el primer inventario con oro/materiales y demuestra que Venator inicia con equipo, habilidades e inventario independientes. Ambas suites postcommit pasan en `fabcbcb`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -65,7 +66,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D02 | Generación por semilla | D01 | Verified |
 | D03 | Transición y limpieza | D02 | Verified |
 | D04 | Inventario y botín | D03 | Verified |
-| D05 | Taberna y preparación | D04 | Pending |
+| D05 | Taberna y preparación | D04 | Verified |
 | D06 | Custodio provisional | D05 | Pending |
 | D07 | Muerte, extracción y liquidación | D06 | Pending |
 | D08 | Perfil y ajustes con respaldo | D07 | Pending |
@@ -440,6 +441,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación postcommit:** commit `684eb80836ae9a3ecec3ee0a3179d85ec6ee02c3`. `unity test . --mode EditMode --output Logs\\D04-postcommit-editmode.xml --timeout 1200 -- -nographics` → 64/64; `unity test . --mode PlayMode --output Logs\\D04-postcommit-playmode.xml --timeout 1200 -- -nographics` → 39/39. Cero fallos, omitidos o inconclusos. Los 203 GUID `.meta` son únicos; `git diff --check` pasa.
 - **Plan:** v2.2, SHA-256 `78AA653A216D7FC12FE41CE36D5748289E915295EC5AA41D12861963174FEE50`.
 - **Resultado:** D04 `Verified`; D05 queda habilitada. No se generó una build, no se ejecutó GitHub Actions ni se modificó la ruta pública; A06 sigue `InProgress`.
+
+## Evidencia D05 — Taberna y preparación
+
+- **Dependencia comprobada:** D04 `Verified`, implementación `684eb80836ae9a3ecec3ee0a3179d85ec6ee02c3`.
+- **Contrato:** la taberna permite configurar una expedición antes de salir, respeta desbloqueos y compatibilidad de habilidades, y aplica la selección al construir una sesión completamente nueva. Salir por segunda vez no puede heredar oro, materiales, equipo, cargas ni estadísticas de una expedición anterior.
+- **Implementación:** el menú abre la preparación de taberna; clase, dos habilidades y raza se validan contra los catálogos. `Items.json` v2 declara kits iniciales por clase. El constructor de expedición crea `RunId`, semilla, ruta de 24 nodos, inventario nuevo, equipo y dos pociones con estadísticas iniciales. El recibo de sesión muestra la carga aplicada y conserva el acceso a la demo C08 cuando no hay configuración activa. Los generadores del menú y la arena se ajustaron para mantener selección y salida estables al regenerar escenas.
+- **Escenario:** `D05_TavernSelectionAndFreshRun`, semilla `27182819`, informe `Logs/Scenarios/D05/20261012T163915760Z_D05_TavernSelectionAndFreshRun_1b3c014e/scenario-report.json`. `passed=true`, 14 aserciones y cero errores. Recorre Menú→Taberna, comprueba la raza bloqueada, selecciona Magus y dos habilidades compatibles, inicia con kit y consumibles de catálogo, contamina oro y material de la primera sesión y vuelve a salir como Venator. La segunda sesión tiene `RunId` distinto, habilidades y kit correspondientes, oro/material iniciales, inventario limpio y dos pociones. Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null; no se intentó captura por ejecución headless.
+- **Aceptación postcommit:** implementación `4c2e61c2b03764eb3b7525349babb1ee77e2dc56`; corrección de idempotencia `fabcbcb9bc62653c37831eae0943f177094c75ae`. `unity test . --mode EditMode --output Logs/D05-postcommit-editmode.xml --timeout 1200 -- -nographics` → 64/64; `unity test . --mode PlayMode --output Logs/D05-postcommit-playmode.xml --timeout 1200 -- -nographics` → 43/43. Cero fallos, omitidos o inconclusos; la prueba dirigida de idempotencia pasa. Los 211 GUID `.meta` son únicos y `git diff --check` pasa.
+- **Integridad del contenido:** el hash de fuentes del escenario es `538372266f42c8fc888aff42b05ff47b5690ca9d81d754842bf75d12d346d050`. El plan v2.2 permanece sin cambios, SHA-256 `78AA653A216D7FC12FE41CE36D5748289E915295EC5AA41D12861963174FEE50`.
+- **Resultado:** D05 `Verified`; D06 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 continúa `InProgress`.
 
 ## Ficha que debe completar cada ejecución
 
