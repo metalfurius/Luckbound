@@ -291,6 +291,13 @@ namespace Luckbound.Editor
                         "#32251F");
                     changed = true;
                 }
+                RectTransform startButtonRect = startButton.GetComponent<RectTransform>();
+                if (startButtonRect.anchoredPosition != new Vector2(0f, -48f) || startButtonRect.sizeDelta != new Vector2(204f, 26f))
+                {
+                    startButtonRect.anchoredPosition = new Vector2(0f, -48f);
+                    startButtonRect.sizeDelta = new Vector2(204f, 26f);
+                    changed = true;
+                }
 
                 GameObject flowObject = FindObject(scene, "MenuNavigation");
                 if (flowObject == null)
@@ -310,16 +317,18 @@ namespace Luckbound.Editor
 
                 GameObject bottomRule = FindObject(scene, "BottomRule");
                 RectTransform ruleRect = bottomRule == null ? null : bottomRule.GetComponent<RectTransform>();
-                if (ruleRect != null && ruleRect.anchoredPosition != new Vector2(0f, -82f))
+                if (ruleRect != null && ruleRect.anchoredPosition != new Vector2(0f, -101f))
                 {
-                    ruleRect.anchoredPosition = new Vector2(0f, -82f);
+                    ruleRect.anchoredPosition = new Vector2(0f, -101f);
                     changed = true;
                 }
 
                 EventSystem eventSystem = FindEventSystem(scene);
-                if (eventSystem != null && eventSystem.firstSelectedGameObject != startButton.gameObject)
+                GameObject arenaButton = FindObject(scene, "StartCombatArenaButton");
+                GameObject firstSelected = arenaButton != null ? arenaButton : startButton.gameObject;
+                if (eventSystem != null && eventSystem.firstSelectedGameObject != firstSelected)
                 {
-                    eventSystem.firstSelectedGameObject = startButton.gameObject;
+                    eventSystem.firstSelectedGameObject = firstSelected;
                     EditorUtility.SetDirty(eventSystem);
                     changed = true;
                 }

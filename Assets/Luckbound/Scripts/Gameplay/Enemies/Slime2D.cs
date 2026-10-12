@@ -17,7 +17,7 @@ namespace Luckbound.Gameplay.Enemies
         Dead = 5
     }
 
-    /// <summary>Grounded Slime baseline: chase, telegraph, short leap, recovery, and projectile damage.</summary>
+    /// <summary>Grounded Slime baseline: chase, telegraph, short leap, recovery, and queued combat damage.</summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
     public sealed class Slime2D : MonoBehaviour
@@ -71,6 +71,8 @@ namespace Luckbound.Gameplay.Enemies
         public int LeapAttackCount { get; private set; }
 
         public int ProjectileImpactCount { get; private set; }
+
+        public int MeleeImpactCount { get; private set; }
 
         public int SuccessfulPlayerHitCount { get; private set; }
 
@@ -165,6 +167,12 @@ namespace Luckbound.Gameplay.Enemies
             }
 
             long tick = _simulationTick++;
+            ResolveMeleeImpacts(tick);
+            if (State == SlimeBehaviorState.Dead)
+            {
+                return;
+            }
+
             ResolveProjectileImpacts(tick);
             if (State == SlimeBehaviorState.Dead)
             {
@@ -295,6 +303,33 @@ namespace Luckbound.Gameplay.Enemies
                 if (outcome.Status == DirectImpactStatus.Applied)
                 {
                     ProjectileImpactCount++;
+                }
+
+                if (outcome.DeathOccurred)
+                {
+                    EnterDeadState();
+                }
+            }
+        }
+
+        private void ResolveMeleeImpacts(long tick)
+        {
+            long physicsTick = Math.Max(0L, (long)Math.Round(Time.fixedTimeAsDouble / Time.fixedDeltaTime));
+            while (_impactTarget.TryDequeueMeleeImpactForTick(physicsTick, out MeleeImpact impact))
+            {
+                if (State == SlimeBehaviorState.Dead)
+                {
+                    _impactTarget.ClearPendingImpacts();
+                    return;
+                }
+
+                DirectImpactOutcome outcome = _damageState.ReceiveDirectImpact(
+                    impact.HitId,
+                    CreateDamageRequest(_damageState.Stats, impact.Damage),
+                    tick);
+                if (outcome.Status == DirectImpactStatus.Applied)
+                {
+                    MeleeImpactCount++;
                 }
 
                 if (outcome.DeathOccurred)

@@ -17,5 +17,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Luckbound/Scenes/Expedition.unity
     guid: 887ba356345d9e044af4d40af06e1aef
+  - enabled: 1
+    path: Assets/Luckbound/Scenes/CombatArena.unity
+    guid: f04ef25e133b50b4aae08f33a149f91f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

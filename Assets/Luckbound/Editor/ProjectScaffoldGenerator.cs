@@ -22,12 +22,20 @@ namespace Luckbound.Editor
     {
         private const string SceneDirectory = "Assets/Luckbound/Scenes";
         private const string PlayerVisualControllerPath = "Assets/Resources/Luckbound/PlayerVisualStates.controller";
-        private static readonly string[] SceneNames = { "Bootstrap", "Menu", "Hub", "Expedition" };
+        private static readonly string[] SceneNames = { "Bootstrap", "Menu", "Hub", "Expedition", "CombatArena" };
 
         [MenuItem("Luckbound/Generate Startup Scenes")]
         public static void GenerateStartupScenes()
         {
             Directory.CreateDirectory(SceneDirectory);
+            Scene batchUntitledScene = SceneManager.GetActiveScene();
+            if (Application.isBatchMode && batchUntitledScene.IsValid() && string.IsNullOrEmpty(batchUntitledScene.path) &&
+                batchUntitledScene.rootCount == 0 && File.Exists(ScenePath("Menu")))
+            {
+                // Batch-mode Editors start with an unsaved empty scene, which Unity cannot keep open additively.
+                // Replacing that editor-owned placeholder lets the non-destructive generators run normally.
+                EditorSceneManager.OpenScene(ScenePath("Menu"), OpenSceneMode.Single);
+            }
             Scene previousActiveScene = SceneManager.GetActiveScene();
             int createdScenes = 0;
 
@@ -85,6 +93,7 @@ namespace Luckbound.Editor
             EnsurePlayerVisualController();
             EnsureExpeditionCameraRig();
             MovementDemoScaffoldGenerator.EnsureGenerated();
+            CombatArenaScaffoldGenerator.EnsureGenerated();
 
             if (createdScenes > 0)
             {

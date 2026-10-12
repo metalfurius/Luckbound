@@ -3,6 +3,7 @@ using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Presentation;
+using Luckbound.Gameplay.Combat;
 using UnityEngine;
 
 namespace Luckbound.Gameplay.Movement
@@ -38,6 +39,7 @@ namespace Luckbound.Gameplay.Movement
         private const float MovementDeadZone = 0.001f;
 
         private readonly RaycastHit2D[] _groundHits = new RaycastHit2D[4];
+        private readonly Collider2D[] _meleeOverlaps = new Collider2D[16];
 
         private MeleeAttackState _meleeAttackState;
         private MeleeAttackSnapshot _meleeAttackSnapshot;
@@ -47,6 +49,8 @@ namespace Luckbound.Gameplay.Movement
         private ActorId _actorId;
         private Collider2D _collider;
         private ContactFilter2D _groundContactFilter;
+        private ContactFilter2D _meleeContactFilter;
+        private LayerMask _meleeTargetLayers;
         private bool _initialized;
         private IPlayerInputSource _inputSource;
         private PhysicsMaterial2D _movementMaterial;
@@ -148,7 +152,9 @@ namespace Luckbound.Gameplay.Movement
                 HealthPotionPreparationTicksRemaining);
         }
 
-        public void Initialize(ActorId actorId, IPlayerInputSource inputSource, LayerMask groundLayers, CombatStats combatStats = null)
+        public int MeleeImpactsQueuedCount { get; private set; }
+
+        public void Initialize(ActorId actorId, IPlayerInputSource inputSource, LayerMask groundLayers, CombatStats combatStats = null, LayerMask enemyLayers = default)
         {
             if (_initialized)
             {
@@ -200,6 +206,11 @@ namespace Luckbound.Gameplay.Movement
             _groundContactFilter = new ContactFilter2D();
             _groundContactFilter.SetLayerMask(groundLayers);
             _groundContactFilter.useTriggers = false;
+
+            _meleeTargetLayers = enemyLayers.value != 0 ? enemyLayers : LayerMask.GetMask("Enemies");
+            _meleeContactFilter = new ContactFilter2D();
+            _meleeContactFilter.SetLayerMask(_meleeTargetLayers);
+            _meleeContactFilter.useTriggers = false;
 
             _movementMaterial = new PhysicsMaterial2D("Luckbound Actor Surface")
             {
@@ -377,6 +388,11 @@ namespace Luckbound.Gameplay.Movement
                 MeleeAttackActivationCount++;
             }
 
+            if (_meleeAttackSnapshot.HitWindow != null && _meleeTargetLayers.value != 0)
+            {
+                CollectMeleeImpacts(_meleeAttackSnapshot.HitWindow);
+            }
+
             float attackMovementMultiplier = IsAttacking ? (float)_meleeAttackSnapshot.MovementSpeedMultiplier : 1f;
             float targetSpeed = input * MaximumHorizontalSpeed * attackMovementMultiplier;
             float acceleration = Mathf.Abs(input) > MovementDeadZone ? GroundAcceleration : GroundBraking;
@@ -444,6 +460,41 @@ namespace Luckbound.Gameplay.Movement
             _dodgeInvulnerabilityActive = false;
             _dodgeSpeedRecoveryPending = false;
             _jumpBufferRemaining = 0f;
+        }
+
+        private void CollectMeleeImpacts(MeleeHitWindow hitWindow)
+        {
+            Vector2 center = new Vector2(
+                transform.position.x + _facingDirection * 0.9f,
+                transform.position.y + 0.9f);
+            int overlapCount = Physics2D.OverlapBox(center, new Vector2(1.35f, 1.25f), 0f, _meleeContactFilter, _meleeOverlaps);
+            for (int index = 0; index < overlapCount; index++)
+            {
+                Collider2D overlap = _meleeOverlaps[index];
+                if (overlap == null) continue;
+
+                ProjectileImpactTarget2D target = overlap.GetComponentInParent<ProjectileImpactTarget2D>();
+                if (target == null || !target.IsInitialized || target.ActorId == _actorId ||
+                    hitWindow.TryRegisterTarget(target.ActorId) == false)
+                {
+                    continue;
+                }
+
+                var impact = new MeleeImpact(
+                    hitWindow.Id,
+                    _actorId,
+                    target.ActorId,
+                    hitWindow.BaseDamage * hitWindow.DamageMultiplier,
+                    transform.position.x,
+                    CurrentPhysicsTick());
+                target.QueueMeleeImpact(impact);
+                MeleeImpactsQueuedCount++;
+            }
+        }
+
+        private static long CurrentPhysicsTick()
+        {
+            return Math.Max(0L, (long)Math.Round(Time.fixedTimeAsDouble / Time.fixedDeltaTime));
         }
 
         private void ApplyRestrictedMotion(float deltaTime)

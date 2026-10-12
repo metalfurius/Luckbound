@@ -28,7 +28,7 @@ namespace Luckbound.Editor
         private const string InputActionsPath = "Assets/Resources/Luckbound/InputSystem_Actions.inputactions";
         private const string PlayerVisualControllerPath = "Assets/Resources/Luckbound/PlayerVisualStates.controller";
         private const string WebGlProfilePath = "Assets/Settings/Build Profiles/WebGL.asset";
-        private static readonly string[] StartupScenes = { "Bootstrap", "Menu", "Hub", "Expedition" };
+        private static readonly string[] StartupScenes = { "Bootstrap", "Menu", "Hub", "Expedition", "CombatArena" };
 
         [MenuItem("Luckbound/Validate Project")]
         public static void RunAll()
@@ -61,6 +61,8 @@ namespace Luckbound.Editor
             {
                 ValidateScene(sceneName, errors);
             }
+
+            ValidateCombatArena(errors);
 
             return errors;
         }
@@ -415,10 +417,91 @@ namespace Luckbound.Editor
                 errors.Add("Menu must contain exactly one MenuNavigationController.");
             }
 
+            Button arenaButton = objects.FirstOrDefault(gameObject => gameObject.name == "StartCombatArenaButton")?.GetComponent<Button>();
+            Text arenaLabel = arenaButton == null ? null : arenaButton.GetComponentInChildren<Text>(true);
+            if (arenaButton == null || arenaLabel == null || arenaLabel.text != "LUCHAR · ARENA 0.2")
+            {
+                errors.Add("Menu must expose the LUCHAR · ARENA 0.2 combat entry.");
+            }
+
+            MenuNavigationController navigation = objects.SelectMany(gameObject => gameObject.GetComponents<MenuNavigationController>()).FirstOrDefault();
+            if (navigation == null)
+            {
+                errors.Add("Menu navigation must route both the movement prototype and combat arena.");
+            }
+            else
+            {
+                SerializedObject navigationData = new SerializedObject(navigation);
+                if (navigationData.FindProperty("_startArenaButton").objectReferenceValue != arenaButton)
+                {
+                    errors.Add("MenuNavigationController must serialize the combat-arena button.");
+                }
+            }
+
             if (objects.Count(gameObject => gameObject.GetComponent<EventSystem>() != null) != 1 ||
                 objects.Count(gameObject => gameObject.GetComponent<InputSystemUIInputModule>() != null) != 1)
             {
                 errors.Add("Menu must contain one EventSystem using InputSystemUIInputModule.");
+            }
+        }
+
+        private static void ValidateCombatArena(List<string> errors)
+        {
+            Scene scene = SceneManager.GetSceneByName("CombatArena");
+            bool openedByCheck = !scene.IsValid() || !scene.isLoaded;
+            if (openedByCheck)
+            {
+                string path = ScenePath("CombatArena");
+                if (!File.Exists(path))
+                {
+                    errors.Add("CombatArena scene is missing.");
+                    return;
+                }
+                scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+            }
+
+            try
+            {
+                List<GameObject> objects = scene.GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren<Transform>(true))
+                    .Select(transform => transform.gameObject)
+                    .ToList();
+                CombatArenaComposition[] compositions = objects.SelectMany(gameObject => gameObject.GetComponents<CombatArenaComposition>()).ToArray();
+                if (compositions.Length != 1)
+                {
+                    errors.Add("CombatArena must contain exactly one CombatArenaComposition; found " + compositions.Length + ".");
+                    return;
+                }
+
+                SerializedObject composition = new SerializedObject(compositions[0]);
+                if (composition.FindProperty("_playerPrefab").objectReferenceValue == null ||
+                    composition.FindProperty("_slimePrefab").objectReferenceValue == null ||
+                    composition.FindProperty("_huesoguardiaPrefab").objectReferenceValue == null ||
+                    composition.FindProperty("_playerSpawn").objectReferenceValue == null ||
+                    composition.FindProperty("_roomBounds").objectReferenceValue == null ||
+                    composition.FindProperty("_cameraRig").objectReferenceValue == null ||
+                    composition.FindProperty("_telemetryText").objectReferenceValue == null ||
+                    composition.FindProperty("_encounterText").objectReferenceValue == null ||
+                    composition.FindProperty("_pauseText").objectReferenceValue == null ||
+                    composition.FindProperty("_returnToMenuButton").objectReferenceValue == null)
+                {
+                    errors.Add("CombatArenaComposition must serialize its player, enemy prototypes, spawn, bounds, camera and UI references.");
+                }
+
+                if (objects.Count(gameObject => gameObject.GetComponent<EventSystem>() != null) != 1 ||
+                    objects.Count(gameObject => gameObject.GetComponent<InputSystemUIInputModule>() != null) != 1)
+                {
+                    errors.Add("CombatArena must contain one EventSystem using InputSystemUIInputModule.");
+                }
+
+                if (AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Resources/Luckbound/Data/Encounters/C08Arena.json") == null)
+                {
+                    errors.Add("CombatArena encounter data must be present in Resources.");
+                }
+            }
+            finally
+            {
+                if (openedByCheck && scene.IsValid() && scene.isLoaded) EditorSceneManager.CloseScene(scene, true);
             }
         }
 

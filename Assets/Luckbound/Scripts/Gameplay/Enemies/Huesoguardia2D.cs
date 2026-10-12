@@ -81,6 +81,8 @@ namespace Luckbound.Gameplay.Enemies
 
         public int ProjectileImpactCount { get; private set; }
 
+        public int MeleeImpactCount { get; private set; }
+
         public bool IsGrounded { get; private set; }
 
         public void Initialize(ActorId actorId, PlayerMotor2D player, LayerMask groundLayers)
@@ -171,7 +173,14 @@ namespace Luckbound.Gameplay.Enemies
                 return;
             }
 
-            ResolveProjectileImpacts(_simulationTick++);
+            long tick = _simulationTick++;
+            ResolveMeleeImpacts(tick);
+            if (IsDead)
+            {
+                return;
+            }
+
+            ResolveProjectileImpacts(tick);
             if (IsDead)
             {
                 return;
@@ -305,6 +314,36 @@ namespace Luckbound.Gameplay.Enemies
                 if (outcome.Status == DirectImpactStatus.Applied)
                 {
                     ProjectileImpactCount++;
+                }
+
+                if (outcome.DeathOccurred)
+                {
+                    EnterDeadState();
+                }
+            }
+        }
+
+        private void ResolveMeleeImpacts(long tick)
+        {
+            long physicsTick = Math.Max(0L, (long)Math.Round(Time.fixedTimeAsDouble / Time.fixedDeltaTime));
+            while (_impactTarget.TryDequeueMeleeImpactForTick(physicsTick, out MeleeImpact impact))
+            {
+                if (IsDead)
+                {
+                    _impactTarget.ClearPendingImpacts();
+                    return;
+                }
+
+                int defenseBonus = IsGuarding && IsInFrontArc(impact.SourcePositionX)
+                    ? GuardDefenseBonus
+                    : 0;
+                DirectImpactOutcome outcome = _damageState.ReceiveDirectImpact(
+                    impact.HitId,
+                    CreateDamageRequest(_damageState.Stats, impact.Damage, defenseBonus),
+                    tick);
+                if (outcome.Status == DirectImpactStatus.Applied)
+                {
+                    MeleeImpactCount++;
                 }
 
                 if (outcome.DeathOccurred)

@@ -22,6 +22,8 @@ namespace Luckbound.Tests.Editor
             "Assets/Luckbound/Scenes/Hub.unity.meta",
             "Assets/Luckbound/Scenes/Expedition.unity",
             "Assets/Luckbound/Scenes/Expedition.unity.meta",
+            "Assets/Luckbound/Scenes/CombatArena.unity",
+            "Assets/Luckbound/Scenes/CombatArena.unity.meta",
             "Assets/Resources/Luckbound/PlayerVisualStates.controller",
             "Assets/Resources/Luckbound/PlayerVisualStates.controller.meta",
             "Assets/Luckbound/Art.meta",
@@ -34,6 +36,14 @@ namespace Luckbound.Tests.Editor
             "Assets/Luckbound/Prefabs.meta",
             "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab",
             "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab.meta",
+            "Assets/Luckbound/Prefabs/CombatArena.meta",
+            "Assets/Luckbound/Prefabs/CombatArena/SlimePrototype.prefab",
+            "Assets/Luckbound/Prefabs/CombatArena/SlimePrototype.prefab.meta",
+            "Assets/Luckbound/Prefabs/CombatArena/HuesoguardiaPrototype.prefab",
+            "Assets/Luckbound/Prefabs/CombatArena/HuesoguardiaPrototype.prefab.meta",
+            "Assets/Resources/Luckbound/Data/Encounters.meta",
+            "Assets/Resources/Luckbound/Data/Encounters/C08Arena.json",
+            "Assets/Resources/Luckbound/Data/Encounters/C08Arena.json.meta",
             "ProjectSettings/EditorBuildSettings.asset",
             "ProjectSettings/ProjectSettings.asset"
         };

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "encounterId": "encounter.c08_arena",
+  "entranceX": -11.5,
+  "entranceY": -3.5,
+  "minimumEntranceDistance": 8,
+  "waves": [
+    {
+      "id": "wave.slimes",
+      "spawns": [
+        { "enemyId": "enemy.slime", "x": 0, "y": -3.5 },
+        { "enemyId": "enemy.slime", "x": 4.5, "y": -3.5 }
+      ]
+    },
+    {
+      "id": "wave.huesoguardias",
+      "spawns": [
+        { "enemyId": "enemy.huesoguardia", "x": -2, "y": -3.5 },
+        { "enemyId": "enemy.huesoguardia", "x": 4, "y": -3.5 }
+      ]
+    }
+  ]
+}
