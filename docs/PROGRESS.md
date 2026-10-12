@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D02: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -18,6 +18,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - C07 añade HUD de recursos, poción interrumpible y pausa con suspensión/restauración explícita de la simulación 2D; ambas suites y escenarios pasan en el commit `6d7e0d8`.
 - C08 incorpora el ataque cuerpo a cuerpo físico con impactos resueltos al tick de 60 Hz siguiente, datos JSON validados para dos oleadas y una arena alcanzable desde el menú. La prueba de teclado venció ambos Slimes y Huesoguardias sin eliminar enemigos desde el test; ambas suites postcommit y la prueba de idempotencia pasan en `1b5c278`.
 - D01 define la cuadrícula y los contratos de puertos y marcadores en JSON, más un prefab Tilemap derivado. La validación física confirma suelo y altura libre en ambas puertas y posiciones apoyadas; las suites postcommit pasan en `66d4756`.
+- D02 añade Xorshift32 versionado, subflujos FNV-1a independientes y un grafo de expedición reproducible de 21 localizaciones obligatorias más tres desvíos opcionales. La misma semilla produce la huella `D9AAFA27`; 100 semillas conservan conectividad y no repiten plantillas en su sector. Las suites postcommit pasan en `e76bdd1`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -60,7 +61,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C07 | HUD, pociones y pausa | C06 | Verified |
 | C08 | Arena de combate | C07 | Verified |
 | D01 | Sala, puertos y marcadores | C08 | Verified |
-| D02 | Generación por semilla | D01 | Pending |
+| D02 | Generación por semilla | D01 | Verified |
 | D03 | Transición y limpieza | D02 | Pending |
 | D04 | Inventario y botín | D03 | Pending |
 | D05 | Taberna y preparación | D04 | Pending |
@@ -160,7 +161,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 vigente del plan comprobado: `EC4E7C42DF26A9E5CE3C375950A834C6CD1BCCB9E5E73A8335504C2A5D28B2BA`.
+Hash SHA-256 del plan comprobado en A01: `EC4E7C42DF26A9E5CE3C375950A834C6CD1BCCB9E5E73A8335504C2A5D28B2BA`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -406,6 +407,17 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación postcommit:** commit fuente `66d4756471bac2847f513883329f3ba619b31eac`; `unity test . --mode EditMode --output Logs\D01-postcommit-editmode.xml --timeout 1200 -- -nographics` → 45/45; `unity test . --mode PlayMode --output Logs\D01-postcommit-playmode.xml --timeout 1200 -- -nographics` → 32/32. Cero fallos, omitidos o inconclusos; 167 GUID `.meta`, todos únicos. Ejecución WindowsEditor headless, sin captura visual.
 - **Plan:** v1.9, SHA-256 `25DC4229085B552028C5B5DF28A03E19BE45F9201BB34304AF04D409CFA7BA27`.
 - **Resultado:** aceptación D01 satisfecha; D02 queda habilitada. No se generó una build ni se ejecutó GitHub Actions; A06 continúa `InProgress` y la publicación pública no se modificó.
+
+## Evidencia D02 — Generación por semilla
+
+- **Algoritmo y frontera:** `Luckbound.Core` implementa Xorshift32 v1 sin referencias Unity, normaliza la semilla cero y deriva flujos independientes con FNV-1a sobre UTF-8 y cultura invariante. Los enteros usan muestreo por rechazo sobre los `2^32 − 1` estados válidos del algoritmo.
+- **Catálogo y ruta:** `RouteTemplates.json` define los IDs canónicos para las 30 plantillas C/E/T/P/N, las tres arenas de guardián, el descanso y el jefe final. El loader comprueba esquema, versión de generación, orden de sectores, pools exactos y unicidad. La ruta genera 21 nodos obligatorios conectados por 20 conexiones y tres salas de combate opcionales conectadas como desvíos saltables por seis conexiones. El catálogo es lógico; no declara que las salas físicas ya estén construidas.
+- **Reglas de selección:** por sector se eligen tres de cinco plantillas C para el recorrido, una cuarta distinta para el desvío y se reserva la quinta; E1/E2 usa otro flujo. T, P y N aparecen exactamente una vez en el recorrido y se asignan con el flujo global de especiales. Cada desvío ofrece el combate opcional tras el segundo combate y vuelve a la sala especial.
+- **Comprobaciones:** el driver `ProjectDevelopmentChecks` valida el catálogo y una ruta real; `ProjectScaffoldGeneratorTests` incluye JSON y `.meta` en la prueba de idempotencia. EditMode postcommit `Logs\D02-postcommit-editmode.xml` → 51/51; PlayMode `Logs\D02-postcommit-playmode.xml` → 34/34. Cero fallos, pruebas omitidas o inconclusas. Los 175 GUID `.meta` del proyecto son únicos.
+- **Escenario:** `Logs\Scenarios\D02\20261012T144127429Z_D02_SeededMandatoryRoute_2a45b9bf\scenario-report.json` registra semilla `17320508`, huella `D9AAFA27`, cinco aserciones aprobadas, 100 rutas válidas y 100 huellas distintas. WindowsEditor `6000.6.5f1`, modo headless.
+- **Commits:** implementación y especificación `e76bdd13e8c7e81ba7983e42b1b9620493812e75`; evidencia de progreso registrada en el commit siguiente.
+- **Resultado:** aceptación D02 satisfecha; D03 queda habilitada. No se generó una build ni se ejecutó GitHub Actions; la ruta pública no se modificó y A06 continúa `InProgress`.
+- **Plan:** v2.0, SHA-256 `592594080CFB15936BBA4D07858777271EC0937FD5445E364EFD1EEF675E40DB`.
 
 ## Ficha que debe completar cada ejecución
 
