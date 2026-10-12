@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D02: Verified; A06 y D03: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D03: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -19,6 +19,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - C08 incorpora el ataque cuerpo a cuerpo físico con impactos resueltos al tick de 60 Hz siguiente, datos JSON validados para dos oleadas y una arena alcanzable desde el menú. La prueba de teclado venció ambos Slimes y Huesoguardias sin eliminar enemigos desde el test; ambas suites postcommit y la prueba de idempotencia pasan en `1b5c278`.
 - D01 define la cuadrícula y los contratos de puertos y marcadores en JSON, más un prefab Tilemap derivado. La validación física confirma suelo y altura libre en ambas puertas y posiciones apoyadas; las suites postcommit pasan en `66d4756`.
 - D02 añade Xorshift32 versionado, subflujos FNV-1a independientes y un grafo de expedición reproducible de 21 localizaciones obligatorias más tres desvíos opcionales. La misma semilla produce la huella `D9AAFA27`; 100 semillas conservan conectividad y no repiten plantillas en su sector. Las suites postcommit pasan en `e76bdd1`.
+- D03 añade el cursor de ruta dirigida, transiciones preparadas antes de retirar la sala, colocación del jugador persistente entre puertos y ámbitos que liberan actores, suscripciones, recursos y coroutines. Veinte cambios terminan en `final.boss` sin acumulación; las suites finales postcommit pasan en `61653bc`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -62,7 +63,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C08 | Arena de combate | C07 | Verified |
 | D01 | Sala, puertos y marcadores | C08 | Verified |
 | D02 | Generación por semilla | D01 | Verified |
-| D03 | Transición y limpieza | D02 | InProgress |
+| D03 | Transición y limpieza | D02 | Verified |
 | D04 | Inventario y botín | D03 | Pending |
 | D05 | Taberna y preparación | D04 | Pending |
 | D06 | Custodio provisional | D05 | Pending |
@@ -418,6 +419,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Commits:** implementación y especificación `e76bdd13e8c7e81ba7983e42b1b9620493812e75`; evidencia de progreso registrada en el commit siguiente.
 - **Resultado:** aceptación D02 satisfecha; D03 queda habilitada. No se generó una build ni se ejecutó GitHub Actions; la ruta pública no se modificó y A06 continúa `InProgress`.
 - **Plan:** v2.0, SHA-256 `592594080CFB15936BBA4D07858777271EC0937FD5445E364EFD1EEF675E40DB`.
+
+## Evidencia D03 — Transiciones y limpieza de salas
+
+- **Dependencia comprobada:** D02 `Verified`, implementación `e76bdd13e8c7e81ba7983e42b1b9620493812e75`.
+- **Implementación:** `ExpeditionRouteTraversal` permite únicamente aristas del grafo; `ExpeditionRoomTransitionController` verifica ID de origen, prepara la instancia nueva antes de retirar la anterior y conserva el cursor/sala actual si falta el prefab. Alinea `port.exit.east` con `port.entry.west`, mueve al jugador de sesión al interior de la entrada y sincroniza `Transform`, `Rigidbody2D` y `Physics2D`. `RoomLifetimeScope` es dueño de actores, recursos, suscripciones y coroutines de la sala.
+- **Escenario:** `D03_TwentyRoomTransitions`, semilla `17320508`, informe `Logs/Scenarios/D03/20261012T151249196Z_D03_TwentyRoomTransitions_023941db/scenario-report.json`. Registra 20 entradas de salida dirigidas, 44 aserciones aprobadas y fin en `final.boss`. En cada cambio verifica alineación de puertos, posición y velocidad cero del jugador, rechazo del ID obsoleto, una sola sala/actor/suscripción/coroutine, destrucción de la jerarquía anterior y ausencia de nuevos ticks en la coroutine retirada. Al cerrar la expedición desaparecen los recursos de la sala y se conserva el actor de sesión. Informe `passed=true`, `exitCode=0`, `sourceHash=805ac7b38dc63c3acadc5adafeb7bf0b33e0f6e404b4c61c2f024429d794ad4c`, Unity `6000.6.5f1`, WindowsEditor y dispositivo gráfico Null; no se intentó una captura.
+- **Fallo detectado y corrección:** la primera suite completa postcommit mostró que escribir solo `Rigidbody2D.position` dejaba desfasado el `Transform`. `61653bc` sincroniza ambos antes de activar la nueva sala; el escenario dirigido D03 pasa 2/2 y la repetición completa postcommit queda limpia.
+- **Aceptación postcommit:** implementación en `0d68e5e6b86c467b33281ce6a011dc3262d3492d` y corrección en `61653bc001db6fe2559b123e5f1984d73bd26311`. `unity test . --mode EditMode --output Logs\D03-final-postcommit-editmode.xml --timeout 1200 -- -nographics` → 54/54; `unity test . --mode PlayMode --output Logs\D03-final-postcommit-playmode.xml --timeout 1200 -- -nographics` → 36/36. Cero fallos, omitidos o inconclusos. `git diff --check` pasa; hay 180 GUID `.meta`, todos únicos.
+- **Plan:** v2.1, SHA-256 `1D0B61073537211EF7B0C23C34F6958951F9E1DE5BB34070B2F01B4B2331C1C8`.
+- **Resultado:** aceptación D03 satisfecha; D04 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 continúa `InProgress`.
 
 ## Ficha que debe completar cada ejecución
 
