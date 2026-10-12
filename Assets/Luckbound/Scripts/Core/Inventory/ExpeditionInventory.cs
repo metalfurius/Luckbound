@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using Luckbound.Core.Identifiers;
 
 namespace Luckbound.Core.Inventory
@@ -56,6 +57,94 @@ namespace Luckbound.Core.Inventory
         public IReadOnlyDictionary<MaterialKind, int> GetMaterialSnapshot()
         {
             return new ReadOnlyDictionary<MaterialKind, int>(new Dictionary<MaterialKind, int>(_materials));
+        }
+
+        public ExpeditionInventorySnapshot CreateSnapshot()
+        {
+            var materialSnapshots = Enum.GetValues(typeof(MaterialKind)).Cast<MaterialKind>()
+                .Select(kind => new MaterialCountSnapshot { kind = (int)kind, count = _materials[kind] }).ToArray();
+            return new ExpeditionInventorySnapshot
+            {
+                classId = ClassId,
+                gold = _gold,
+                weapon = Snapshot(_weapon),
+                armor = Snapshot(_armor),
+                relicOne = Snapshot(_relicOne),
+                relicTwo = Snapshot(_relicTwo),
+                backpackSlots = _backpackSlots.Select(Snapshot).ToArray(),
+                quickConsumableInstanceId = _quickConsumableId.IsValid ? _quickConsumableId.ToString() : string.Empty,
+                materials = materialSnapshots,
+                transactions = _transactions.OrderBy(pair => pair.Key.ToString(), StringComparer.Ordinal)
+                    .Select(pair => new InventoryTransactionSnapshot
+                    {
+                        transactionId = pair.Key.ToString(),
+                        signature = pair.Value.Signature,
+                        status = (int)pair.Value.Outcome.Status,
+                        itemId = pair.Value.Outcome.ItemId,
+                        displacedItem = Snapshot(pair.Value.Outcome.DisplacedItem)
+                    }).ToArray()
+            };
+        }
+
+        public static ExpeditionInventory Restore(ItemCatalog catalog, ExpeditionInventorySnapshot snapshot)
+        {
+            if (catalog == null) throw new ArgumentNullException(nameof(catalog));
+            if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
+            if (snapshot.backpackSlots == null || snapshot.backpackSlots.Length != BackpackCapacity)
+                throw new FormatException("Inventory snapshot must contain exactly twelve backpack slots.");
+            if (snapshot.materials == null || snapshot.materials.Length != Enum.GetValues(typeof(MaterialKind)).Length)
+                throw new FormatException("Inventory snapshot must contain all six material counters.");
+            if (snapshot.transactions == null) throw new FormatException("Inventory transaction history is missing.");
+
+            var restored = new ExpeditionInventory(catalog, snapshot.classId, snapshot.gold);
+            var instanceIds = new HashSet<ItemInstanceId>();
+            for (int index = 0; index < snapshot.backpackSlots.Length; index++)
+                restored._backpackSlots[index] = RestoreStack(restored, snapshot.backpackSlots[index], instanceIds, "backpack slot " + index);
+
+            restored._weapon = RestoreEquipped(restored, snapshot.weapon, ItemKind.Weapon, instanceIds, "weapon");
+            restored._armor = RestoreEquipped(restored, snapshot.armor, ItemKind.Armor, instanceIds, "armor");
+            restored._relicOne = RestoreEquipped(restored, snapshot.relicOne, ItemKind.Relic, instanceIds, "first relic");
+            restored._relicTwo = RestoreEquipped(restored, snapshot.relicTwo, ItemKind.Relic, instanceIds, "second relic");
+            if (restored._relicOne != null && restored._relicTwo != null &&
+                string.Equals(restored._relicOne.ItemId, restored._relicTwo.ItemId, StringComparison.Ordinal))
+                throw new FormatException("The same relic definition cannot occupy both equipment slots.");
+
+            if (!string.IsNullOrWhiteSpace(snapshot.quickConsumableInstanceId))
+            {
+                if (!ItemInstanceId.TryParse(snapshot.quickConsumableInstanceId, out ItemInstanceId quickId))
+                    throw new FormatException("Quick consumable instance ID is invalid.");
+                InventoryItemStack quick = restored._backpackSlots.FirstOrDefault(item => item != null && item.InstanceId == quickId);
+                if (quick == null || catalog.Get(quick.ItemId).Kind != ItemKind.Consumable)
+                    throw new FormatException("Quick consumable must point to a consumable in the backpack.");
+                restored._quickConsumableId = quickId;
+            }
+
+            var materialKinds = new HashSet<MaterialKind>();
+            foreach (MaterialCountSnapshot material in snapshot.materials)
+            {
+                if (material == null || !Enum.IsDefined(typeof(MaterialKind), material.kind))
+                    throw new FormatException("Inventory snapshot contains an unknown material kind.");
+                MaterialKind kind = (MaterialKind)material.kind;
+                if (!materialKinds.Add(kind)) throw new FormatException("Inventory snapshot repeats material " + kind + ".");
+                if (material.count < 0 || material.count > MaximumMaterialCount)
+                    throw new FormatException("Inventory material count is outside 0–99 for " + kind + ".");
+                restored._materials[kind] = material.count;
+            }
+
+            var transactionIds = new HashSet<TransactionId>();
+            foreach (InventoryTransactionSnapshot transaction in snapshot.transactions)
+            {
+                if (transaction == null || !TransactionId.TryParse(transaction.transactionId, out TransactionId id) ||
+                    string.IsNullOrWhiteSpace(transaction.signature) ||
+                    !Enum.IsDefined(typeof(InventoryOperationStatus), transaction.status))
+                    throw new FormatException("Inventory transaction history contains an invalid entry.");
+                if (!transactionIds.Add(id)) throw new FormatException("Inventory transaction history repeats " + id + ".");
+                InventoryItemStack displaced = RestoreStack(restored, transaction.displacedItem, null, "transaction result");
+                var outcome = new InventoryOperationOutcome(id, (InventoryOperationStatus)transaction.status,
+                    displaced, transaction.itemId);
+                restored._transactions.Add(id, new CachedTransaction(transaction.signature, outcome));
+            }
+            return restored;
         }
 
         public int GetMaterialCount(MaterialKind materialKind)
@@ -245,6 +334,48 @@ namespace Luckbound.Core.Inventory
                 return InventoryOperationStatus.RejectedInvalidItem;
             }
             return InventoryOperationStatus.Succeeded;
+        }
+
+        private static InventoryItemStack RestoreEquipped(ExpeditionInventory inventory, InventoryStackSnapshot snapshot,
+            ItemKind expectedKind, HashSet<ItemInstanceId> instanceIds, string slotName)
+        {
+            InventoryItemStack item = RestoreStack(inventory, snapshot, instanceIds, slotName);
+            if (item == null) return null;
+            ItemDefinition definition = inventory._catalog.Get(item.ItemId);
+            if (definition.Kind != expectedKind || expectedKind == ItemKind.Weapon && !definition.IsCompatibleWithClass(inventory.ClassId))
+                throw new FormatException("Saved " + slotName + " is incompatible with the selected class or equipment slot.");
+            return item;
+        }
+
+        private static InventoryItemStack RestoreStack(ExpeditionInventory inventory, InventoryStackSnapshot snapshot,
+            HashSet<ItemInstanceId> instanceIds, string location)
+        {
+            if (snapshot == null) return null;
+            // JsonUtility materializes null reference entries in object arrays as empty DTO instances.
+            if (string.IsNullOrEmpty(snapshot.instanceId) && string.IsNullOrEmpty(snapshot.itemId) &&
+                snapshot.rarity == 0 && snapshot.upgradeLevel == 0 && snapshot.quantity == 0) return null;
+            if (!ItemInstanceId.TryParse(snapshot.instanceId, out ItemInstanceId instanceId) ||
+                !Enum.IsDefined(typeof(ItemRarity), snapshot.rarity))
+                throw new FormatException("Saved item identity or rarity is invalid at " + location + ".");
+            var item = new InventoryItemStack(instanceId, snapshot.itemId, (ItemRarity)snapshot.rarity,
+                snapshot.upgradeLevel, snapshot.quantity);
+            if (inventory.ValidateStack(item) != InventoryOperationStatus.Succeeded)
+                throw new FormatException("Saved item is incompatible with the catalog at " + location + ": " + item.ItemId + ".");
+            if (instanceIds != null && !instanceIds.Add(instanceId))
+                throw new FormatException("Saved item instance ID is duplicated: " + instanceId + ".");
+            return item;
+        }
+
+        private static InventoryStackSnapshot Snapshot(InventoryItemStack item)
+        {
+            return item == null ? null : new InventoryStackSnapshot
+            {
+                instanceId = item.InstanceId.ToString(),
+                itemId = item.ItemId,
+                rarity = (int)item.Rarity,
+                upgradeLevel = item.UpgradeLevel,
+                quantity = item.Quantity
+            };
         }
 
         private bool CanFitConsumable(InventoryItemStack incoming, ItemDefinition definition)

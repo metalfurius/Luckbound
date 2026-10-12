@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Saves;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -36,14 +37,20 @@ namespace Luckbound.App
             }
 
             _titleText.text = "EXPEDICIÓN PREPARADA · " + ClassLabel(run.ClassId);
+            ExpeditionSaveData saved = ApplicationBootstrapper.Instance.ActiveExpedition;
             InventoryItemStack quickConsumable = run.Inventory.QuickConsumable;
+            int currentHealth = saved == null ? run.StartingHealth : saved.currentHealth;
+            int currentEnergy = saved == null ? run.StartingEnergy : saved.currentEnergy;
+            int currentFortuna = saved == null ? run.StartingFortunaCharges : saved.fortunaCharges;
             _summaryText.text = "RAZA · HUMANO\nHABILIDADES · " + string.Join("  ·  ", run.SkillIds.Select(SkillLabel)) +
                 "\nARMA · " + (run.Inventory.Weapon?.ItemId ?? "sin equipar") +
                 "\nARMADURA · " + (run.Inventory.Armor?.ItemId ?? "sin equipar") +
                 "\nPOCIONES · " + (quickConsumable == null ? 0 : quickConsumable.Quantity) +
-                "\nSALUD / ENERGÍA · " + run.StartingHealth + " / " + run.StartingEnergy +
-                "\nFORTUNA · " + run.StartingFortunaCharges +
+                "\nSALUD / ENERGÍA · " + currentHealth + " / " + currentEnergy +
+                "\nFORTUNA · " + currentFortuna +
                 "\nRUTA · " + run.Route.Nodes.Count + " nodos · semilla " + run.Seed.ToString("X8") +
+                (saved == null ? string.Empty : "\nSALA · " + saved.currentNodeId + " · " + saved.completedRoomIds.Length + " completadas" +
+                    (saved.completedRoomIds.Contains(saved.currentNodeId) ? " · resultado guardado" : " · checkpoint de entrada guardado")) +
                 "\nID · " + run.RunId;
             _overlayRoot.SetActive(true);
         }

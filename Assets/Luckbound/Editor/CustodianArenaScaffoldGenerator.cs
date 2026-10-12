@@ -222,12 +222,12 @@ namespace Luckbound.Editor
                 if (button == null)
                 {
                     button = CreateButton("StartCustodianArenaButton", "ENFRENTAR · CUSTODIO (D06)", canvas.transform,
-                        new Vector2(0f, -110f), new Vector2(230f, 24f), 10, Amber, ParseColor("#32251F"), topRight: false);
+                        new Vector2(105f, -110f), new Vector2(200f, 24f), 10, Amber, ParseColor("#32251F"), topRight: false);
                     changed = true;
                 }
                 else
                 {
-                    changed |= SetButtonRect(button, new Vector2(0f, -110f), new Vector2(230f, 24f));
+                    changed |= SetButtonRect(button, new Vector2(105f, -110f), new Vector2(200f, 24f));
                     Text label = button.GetComponentInChildren<Text>(true);
                     if (label != null && label.text != "ENFRENTAR · CUSTODIO (D06)")
                     {

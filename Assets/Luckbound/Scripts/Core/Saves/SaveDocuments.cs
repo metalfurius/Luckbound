@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 
 namespace Luckbound.Core.Saves
@@ -99,11 +100,19 @@ namespace Luckbound.Core.Saves
         public string classId;
         public string raceId;
         public string[] selectedSkillIds = Array.Empty<string>();
+        public string[] startingEquipmentInstanceIds = Array.Empty<string>();
         public string routeSnapshotJson;
         public string currentNodeId;
+        public string[] visitedNodeIds = Array.Empty<string>();
         public string[] completedRoomIds = Array.Empty<string>();
+        public ExpeditionRoomCompletionSaveData[] completedRoomResults = Array.Empty<ExpeditionRoomCompletionSaveData>();
         public string roomEntryCheckpointJson;
         public string inventorySnapshotJson;
+        public int maximumHealth = 100;
+        public int currentHealth = 100;
+        public int maximumEnergy = 50;
+        public int currentEnergy = 50;
+        public int healthPotionCharges = 2;
         public int accumulatedRenown;
         public string[] pactIds = Array.Empty<string>();
         public int fortunaCharges;
@@ -111,6 +120,74 @@ namespace Luckbound.Core.Saves
         public int[] offerRerollCounts = Array.Empty<int>();
         public string[] collectedItemIds = Array.Empty<string>();
         public string[] claimedRewardIds = Array.Empty<string>();
+
+        public ExpeditionSaveData Clone() => new ExpeditionSaveData
+        {
+            runId = runId,
+            seed = seed,
+            generationVersion = generationVersion,
+            contentVersion = contentVersion,
+            classId = classId,
+            raceId = raceId,
+            selectedSkillIds = Copy(selectedSkillIds),
+            startingEquipmentInstanceIds = Copy(startingEquipmentInstanceIds),
+            routeSnapshotJson = routeSnapshotJson,
+            currentNodeId = currentNodeId,
+            visitedNodeIds = Copy(visitedNodeIds),
+            completedRoomIds = Copy(completedRoomIds),
+            completedRoomResults = completedRoomResults == null ? null : completedRoomResults
+                .Select(result => result == null ? null : result.Clone()).ToArray(),
+            roomEntryCheckpointJson = roomEntryCheckpointJson,
+            inventorySnapshotJson = inventorySnapshotJson,
+            maximumHealth = maximumHealth,
+            currentHealth = currentHealth,
+            maximumEnergy = maximumEnergy,
+            currentEnergy = currentEnergy,
+            healthPotionCharges = healthPotionCharges,
+            accumulatedRenown = accumulatedRenown,
+            pactIds = Copy(pactIds),
+            fortunaCharges = fortunaCharges,
+            pendingOfferIds = Copy(pendingOfferIds),
+            offerRerollCounts = offerRerollCounts == null ? null : (int[])offerRerollCounts.Clone(),
+            collectedItemIds = Copy(collectedItemIds),
+            claimedRewardIds = Copy(claimedRewardIds)
+        };
+
+        private static string[] Copy(string[] values) => values == null ? null : (string[])values.Clone();
+    }
+
+    [Serializable]
+    public sealed class ExpeditionRoomCheckpointSaveData
+    {
+        public string roomNodeId;
+        public string inventorySnapshotJson;
+        public int maximumHealth;
+        public int currentHealth;
+        public int maximumEnergy;
+        public int currentEnergy;
+        public int healthPotionCharges;
+        public int accumulatedRenown;
+        public int fortunaCharges;
+        public string[] pactIds = Array.Empty<string>();
+        public string[] pendingOfferIds = Array.Empty<string>();
+        public int[] offerRerollCounts = Array.Empty<int>();
+        public string[] collectedItemIds = Array.Empty<string>();
+        public string[] claimedRewardIds = Array.Empty<string>();
+    }
+
+    [Serializable]
+    public sealed class ExpeditionRoomCompletionSaveData
+    {
+        public string roomNodeId;
+        public string resultId;
+        public string resultJson;
+
+        public ExpeditionRoomCompletionSaveData Clone() => new ExpeditionRoomCompletionSaveData
+        {
+            roomNodeId = roomNodeId,
+            resultId = resultId,
+            resultJson = resultJson
+        };
     }
 
     [Serializable]
@@ -186,6 +263,13 @@ namespace Luckbound.Core.Saves
             return errors.AsReadOnly();
         }
 
+        public static IReadOnlyList<string> Validate(ExpeditionSaveData expedition)
+        {
+            var errors = new List<string>();
+            ValidateExpedition(expedition, errors);
+            return errors.AsReadOnly();
+        }
+
         public static IReadOnlyList<string> Validate(GameSettingsSaveData settings)
         {
             var errors = new List<string>();
@@ -253,17 +337,95 @@ namespace Luckbound.Core.Saves
             if (string.IsNullOrWhiteSpace(expedition.classId) || string.IsNullOrWhiteSpace(expedition.raceId))
                 errors.Add("Active expedition requires class and race IDs.");
             ValidateIds(expedition.selectedSkillIds, "active expedition skill IDs", errors, allowEmpty: false);
+            if (expedition.selectedSkillIds != null && expedition.selectedSkillIds.Length != 2)
+                errors.Add("An active expedition must contain exactly two selected skills.");
+            ValidateIds(expedition.startingEquipmentInstanceIds, "starting equipment instance IDs", errors, allowEmpty: false);
+            if (expedition.startingEquipmentInstanceIds != null)
+            {
+                if (expedition.startingEquipmentInstanceIds.Length != 2)
+                    errors.Add("Active expedition requires the two starting equipment instance IDs.");
+                foreach (string value in expedition.startingEquipmentInstanceIds)
+                    if (!ItemInstanceId.TryParse(value, out _)) errors.Add("Invalid starting equipment instance ID: " + value + ".");
+            }
+            ExpeditionRoutePlan route = null;
             if (string.IsNullOrWhiteSpace(expedition.routeSnapshotJson)) errors.Add("Active expedition route snapshot is missing.");
+            else
+            {
+                try { route = ExpeditionRoutePlan.ParseCanonical(expedition.routeSnapshotJson); }
+                catch (Exception exception) { errors.Add("Active expedition route snapshot is invalid: " + exception.Message); }
+            }
             if (string.IsNullOrWhiteSpace(expedition.currentNodeId)) errors.Add("Active expedition current node is missing.");
+            ValidateIds(expedition.visitedNodeIds, "visited route node IDs", errors, allowEmpty: false);
+            if (expedition.visitedNodeIds != null && expedition.visitedNodeIds.Length > 0 &&
+                !string.Equals(expedition.visitedNodeIds[expedition.visitedNodeIds.Length - 1], expedition.currentNodeId, StringComparison.Ordinal))
+                errors.Add("Current route node must match the final visited node.");
+            if (route != null)
+            {
+                if (route.Seed != expedition.seed || route.GenerationVersion != expedition.generationVersion)
+                    errors.Add("Active expedition route header does not match its saved seed and generation version.");
+                try
+                {
+                    var traversal = new ExpeditionRouteTraversal(route, expedition.visitedNodeIds);
+                    if (!string.Equals(traversal.CurrentNodeId, expedition.currentNodeId, StringComparison.Ordinal))
+                        errors.Add("Active expedition cursor does not match route history.");
+                }
+                catch (Exception exception) { errors.Add("Active expedition route history is invalid: " + exception.Message); }
+                var routeNodeIds = new HashSet<string>(route.Nodes.Select(node => node.NodeId), StringComparer.Ordinal);
+                if (expedition.completedRoomIds != null && expedition.completedRoomIds.Any(id => !routeNodeIds.Contains(id)))
+                    errors.Add("Completed room history references a node outside the saved route.");
+                if (expedition.completedRoomIds != null && expedition.visitedNodeIds != null &&
+                    expedition.completedRoomIds.Any(id => !expedition.visitedNodeIds.Contains(id)))
+                    errors.Add("Completed room history cannot include a room that was never visited.");
+            }
             ValidateIds(expedition.completedRoomIds, "completed room IDs", errors);
+            ValidateRoomResults(expedition, errors);
+            if (string.IsNullOrWhiteSpace(expedition.inventorySnapshotJson))
+                errors.Add("Active expedition inventory snapshot is missing.");
             if (expedition.accumulatedRenown < 0) errors.Add("Active expedition Renown cannot be negative.");
             if (expedition.fortunaCharges < 0) errors.Add("Active expedition Fortuna charges cannot be negative.");
+            if (expedition.maximumHealth < 1 || expedition.currentHealth < 0 || expedition.currentHealth > expedition.maximumHealth)
+                errors.Add("Active expedition health must be within its positive maximum.");
+            if (expedition.maximumEnergy < 0 || expedition.currentEnergy < 0 || expedition.currentEnergy > expedition.maximumEnergy)
+                errors.Add("Active expedition energy must be within its maximum.");
+            if (expedition.healthPotionCharges < 0) errors.Add("Active expedition potion charges cannot be negative.");
             ValidateIds(expedition.pactIds, "active expedition pact IDs", errors);
             ValidateIds(expedition.pendingOfferIds, "pending offer IDs", errors);
             ValidateIds(expedition.collectedItemIds, "collected item IDs", errors);
             ValidateIds(expedition.claimedRewardIds, "claimed reward IDs", errors);
             if (expedition.offerRerollCounts == null || expedition.offerRerollCounts.Any(count => count < 0))
                 errors.Add("Offer reroll counts must be present and non-negative.");
+        }
+
+        private static void ValidateRoomResults(ExpeditionSaveData expedition, List<string> errors)
+        {
+            if (expedition.completedRoomResults == null)
+            {
+                errors.Add("Completed room result history cannot be null.");
+                return;
+            }
+            var resultRooms = new HashSet<string>(StringComparer.Ordinal);
+            var resultIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (ExpeditionRoomCompletionSaveData result in expedition.completedRoomResults)
+            {
+                if (result == null || string.IsNullOrWhiteSpace(result.roomNodeId) ||
+                    string.IsNullOrWhiteSpace(result.resultId) || string.IsNullOrWhiteSpace(result.resultJson))
+                {
+                    errors.Add("Completed room results require a node, stable result ID and serialized result.");
+                    continue;
+                }
+                if (!resultRooms.Add(result.roomNodeId)) errors.Add("A route room cannot have more than one completion result: " + result.roomNodeId + ".");
+                if (!resultIds.Add(result.resultId)) errors.Add("A room completion result ID cannot be reused: " + result.resultId + ".");
+                if (expedition.completedRoomIds == null || !expedition.completedRoomIds.Contains(result.roomNodeId))
+                    errors.Add("Completed room result has no matching completed room ID: " + result.roomNodeId + ".");
+            }
+            if (expedition.completedRoomIds != null && resultRooms.Count != expedition.completedRoomIds.Length)
+                errors.Add("Every completed room must have exactly one saved result.");
+            if (expedition.completedRoomIds != null && expedition.completedRoomIds.Contains(expedition.currentNodeId) &&
+                !string.IsNullOrWhiteSpace(expedition.roomEntryCheckpointJson))
+                errors.Add("A completed current room cannot retain an entry checkpoint.");
+            if (expedition.completedRoomIds != null && !expedition.completedRoomIds.Contains(expedition.currentNodeId) &&
+                string.IsNullOrWhiteSpace(expedition.roomEntryCheckpointJson))
+                errors.Add("An unfinished current room requires its entry checkpoint.");
         }
 
         private static void ValidateSettings(GameSettingsSaveData settings, List<string> errors)

@@ -179,12 +179,18 @@ namespace Luckbound.Core.Expeditions
     public sealed class ExpeditionRouteConnection
     {
         internal ExpeditionRouteConnection(string fromNodeId, string toNodeId, bool isOptionalBranch)
+            : this(fromNodeId, "port.exit.east", toNodeId, "port.entry.west", isOptionalBranch)
+        {
+        }
+
+        internal ExpeditionRouteConnection(string fromNodeId, string fromPortId, string toNodeId, string toPortId,
+            bool isOptionalBranch)
         {
             FromNodeId = fromNodeId;
             ToNodeId = toNodeId;
             IsOptionalBranch = isOptionalBranch;
-            FromPortId = "port.exit.east";
-            ToPortId = "port.entry.west";
+            FromPortId = fromPortId;
+            ToPortId = toPortId;
         }
 
         public string FromNodeId { get; }
@@ -223,6 +229,61 @@ namespace Luckbound.Core.Expeditions
         public IReadOnlyList<string> MandatoryNodeIds => _mandatoryNodeIds;
         public string CanonicalForm { get; }
         public string Fingerprint { get; }
+
+        /// <summary>Restores the exact persisted route without consulting mutable content catalogs.</summary>
+        public static ExpeditionRoutePlan ParseCanonical(string canonicalForm)
+        {
+            if (string.IsNullOrWhiteSpace(canonicalForm)) throw new FormatException("Route snapshot is empty.");
+            string[] lines = canonicalForm.Split(new[] { '\n' }, StringSplitOptions.None);
+            if (lines.Length < 2) throw new FormatException("Route snapshot header is incomplete.");
+            string[] header = lines[0].Split('|');
+            if (header.Length != 2 || !header[0].StartsWith("route-v", StringComparison.Ordinal) ||
+                !header[1].StartsWith("seed=", StringComparison.Ordinal))
+                throw new FormatException("Route snapshot header is invalid.");
+            if (!int.TryParse(header[0].Substring("route-v".Length), NumberStyles.None, CultureInfo.InvariantCulture, out int generationVersion) ||
+                generationVersion < 1)
+                throw new FormatException("Route generation version is invalid.");
+            if (!uint.TryParse(header[1].Substring("seed=".Length), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint seed) || seed == 0)
+                throw new FormatException("Route seed is invalid.");
+
+            var nodes = new List<ExpeditionRouteNode>();
+            var connections = new List<ExpeditionRouteConnection>();
+            string[] mandatoryNodeIds = null;
+            for (int index = 1; index < lines.Length; index++)
+            {
+                string[] parts = lines[index].Split('|');
+                if (parts[0] == "N" && parts.Length == 7)
+                {
+                    if (!Enum.TryParse(parts[3], ignoreCase: false, out ExpeditionRouteNodeKind kind) ||
+                        !Enum.IsDefined(typeof(ExpeditionRouteNodeKind), kind) ||
+                        parts[5] != "0" && parts[5] != "1" ||
+                        !int.TryParse(parts[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out int pathIndex))
+                        throw new FormatException("Route node snapshot contains invalid metadata.");
+                    nodes.Add(new ExpeditionRouteNode(parts[1], parts[2], parts[4], kind, parts[5] == "1", pathIndex));
+                }
+                else if (parts[0] == "E" && parts.Length == 6)
+                {
+                    if (parts[5] != "0" && parts[5] != "1") throw new FormatException("Route edge snapshot contains an invalid branch flag.");
+                    connections.Add(new ExpeditionRouteConnection(parts[1], parts[2], parts[3], parts[4], parts[5] == "1"));
+                }
+                else if (parts[0] == "M" && parts.Length == 2 && mandatoryNodeIds == null)
+                {
+                    mandatoryNodeIds = parts[1].Split(',');
+                }
+                else
+                {
+                    throw new FormatException("Route snapshot contains an unknown or malformed record at line " + index + ".");
+                }
+            }
+
+            if (mandatoryNodeIds == null) throw new FormatException("Route snapshot is missing its mandatory path.");
+            var route = new ExpeditionRoutePlan(generationVersion, seed, nodes, connections, mandatoryNodeIds);
+            IReadOnlyList<string> errors = route.Validate();
+            if (errors.Count != 0) throw new FormatException("Persisted route violates its invariants: " + string.Join("; ", errors));
+            if (!string.Equals(route.CanonicalForm, canonicalForm, StringComparison.Ordinal))
+                throw new FormatException("Persisted route is not in canonical form.");
+            return route;
+        }
 
         public IReadOnlyList<string> Validate()
         {

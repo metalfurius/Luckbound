@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D08: Verified; A06 y D09: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D08: Verified; A06: InProgress; D09: NeedsOwnerReview; E01: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -24,6 +24,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - D06 añade al Custodio provisional con Corte, Onda y Carga físicos, transición de 120 ticks al 50 %, doble onda en fase dos y derrota por impactos cuerpo a cuerpo reales. El escenario dirigido y ambas suites postcommit pasan en `cb7b7ba`.
 - D07 añade liquidación por resultado y deduplicación por `RunId`: muerte conserva el 25 % redondeado hacia abajo, extracción y victoria conservan Renombre y convierten botín, y abandono no paga. D08 persiste ahora el saldo y las liquidaciones procesadas; las suites y el escenario D07 pasan en `dd0a707`.
 - D08 persiste perfil y ajustes por separado con sobre versionado, checksum SHA-256, respaldo recuperable, escrituras temporales y sincronización WebGL confirmada por callback de IndexedDB. La recarga, corrupción, esquema futuro, escritura reintentable y retención de expediente están cubiertos; el arranque bloquea nuevas expediciones si el perfil no se puede recuperar.
+- D09 restaura expediciones desde el checkpoint de entrada, conserva una sola resolución por sala, protege las escrituras nuevas frente a snapshots concurrentes obsoletos y vuelve a la misma partida al recargar WebGL. Suites, escenarios de reinicio y builds locales de Windows/WebGL pasan; su revisión de Fran sigue Pending.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -73,8 +74,8 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D06 | Custodio provisional | D05 | Verified |
 | D07 | Muerte, extracción y liquidación | D06 | Verified |
 | D08 | Perfil y ajustes con respaldo | D07 | Verified |
-| D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | InProgress |
-| E01 | Materiales y bolsa | D09 | Pending |
+| D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | NeedsOwnerReview |
+| E01 | Materiales y bolsa | D09 | InProgress |
 | E02 | Fabricación | E01 | Pending |
 | E03 | Comercio, herrería y descanso | E02 | Pending |
 | E04 | Ofertas y Fortuna | E03 | Pending |
@@ -486,11 +487,17 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Build WebGL local:** `unity build . --profile WebGL --output-path Logs/Builds/D08-WebGL --no-tail`, Unity `6000.6.5f1`, resultado `success`, exit code 0. Compiló y enlazó el plugin `.jslib`. Unity informó avisos no bloqueantes de compilación JS/WebGPU y que no había token de actualización de Licensing Client; no hubo fallo de build. La procedencia de Unity CLI identifica revisión `2b8d3e5` y árbol sucio por archivos de referencia del usuario no añadidos al repositorio. No se probó la sincronización en un navegador WebGL ni se publicó esta build.
 - **Resultado:** D08 `Verified`; D09 queda habilitada. La build se guardó solo en `Logs/Builds/D08-WebGL`; no se ejecutó GitHub Actions ni se modificó la ruta pública. A06 continúa `InProgress`.
 
-## Ejecución D09 — Reanudar expedición en Windows y WebGL (InProgress)
+## Evidencia D09 — Reanudar expedición en Windows y WebGL (NeedsOwnerReview)
 
 - **Contrato:** al entrar en combate se guarda el punto de entrada completo de la sala. Si la aplicación se cierra en combate, se restaura ese checkpoint y se descarta todo lo obtenido durante el intento interrumpido. Al completar sala se guarda el resultado y el botín pendiente; volver no regenera enemigos ni vuelve a entregar recompensas. Operaciones repetidas conservan su coste/premio único y el resultado de extracción no se confirma antes de persistir.
 - **Dependencia comprobada:** D08 `Verified`, implementación `2b8d3e5e100a7e44c77d79a5e23b31fb4a091602`, suites postcommit y build WebGL registrados arriba.
-- **Resultado:** implementación en curso; registrar la reanudación Windows/WebGL, recuperación de sala, deduplicación y evidencia de build antes de cerrar.
+- **Implementación:** `ExpeditionSaveMapper` serializa el estado completo del inventario, identidad de equipo y consumible rápido, ruta visitada, cursor, checkpoint de entrada, resultado de sala, recursos y transacciones idempotentes. Al reanudar restaura el checkpoint y descarta las ganancias del intento interrumpido; la liquidación y avance de sala solo se confirman después de guardar. `ApplicationBootstrapper` serializa las escrituras de perfil y rechaza snapshots atrasados que puedan sobrescribir una revisión más nueva. Se guarda la expedición inicial antes de entrar en juego y el arranque carga la misma partida.
+- **Escenario de bootstrap e integración:** `D09_BootstrapResumeAndRoomProgress`, semilla `27182818`, informe `Logs/Scenarios/D09/20261012T191947734Z_D09_BootstrapResumeAndRoomProgress_6e17c983/scenario-report.json`. `passed=true`, siete aserciones, cero errores; verifica hidratación, escritura inicial, rechazo de escritura atrasada, reinicio real de Bootstrap con mismo `RunId`/sala/checkpoint, resultado único y guardado del siguiente nodo. `sourceHash`: `93d207d873dd9e6bd30714ac7f131b2d250dd2dd029f052d876aca371bc7d08c`.
+- **Escenario de checkpoint:** `D09_RoomCheckpointRestartAndCompletedResult`, semilla `31415926`, informe `Logs/Scenarios/D09/20261012T192014127Z_D09_RoomCheckpointRestartAndCompletedResult_c6efc2ab/scenario-report.json`. `passed=true`, cuatro aserciones, cero errores; confirma rollback tras reinicio, resultado estable de sala completada y ausencia de un checkpoint de entrada duplicado. Mismo `sourceHash`. Unity `6000.6.5f1`, WindowsEditor, Direct3D12.
+- **Pruebas:** `Logs/D09-editmode-final.xml` → 82/82; `Logs/D09-playmode-final.xml` → 58/58; escenario de integración dirigido `Logs/D09-playmode-integration.xml` → 1/1. Cero fallos, omitidos o inconclusos.
+- **Builds locales:** Windows Standalone64 y WebGL terminaron con `success`, exit code 0, en Unity `6000.6.5f1`. Evidencia Windows: `Logs/build-StandaloneWindows64-1791832848718.log` y `Logs/Builds/D09-Windows/Luckbound.provenance.json`; WebGL: `Logs/build-WebGL-1791833025263.log` y `Logs/Builds/D09-WebGL/unity-build.provenance.json`. Los avisos del Licensing Client y JS/WebGPU fueron no bloqueantes. Las procedencias registran la revisión previa `de7710a` y el árbol modificado; estas builds son locales y no se publicaron.
+- **Prueba WebGL en navegador:** desde una página limpia se inició Bellator, se guardó la expedición y se recargó `http://localhost:8081/`. Tras recargar se mostró el mismo `RunId` `2bca1e4555bb4b2290782886910ad640`, sala `patio.combat.01`, ruta de 24 nodos, checkpoint de entrada y valores 100 salud / 50 energía / 2 pociones / 2 Fortuna / cero Renombre y oro. La pestaña se mantuvo oculta durante la prueba.
+- **Resultado:** aceptación técnica D09 satisfecha; estado `NeedsOwnerReview` porque la revisión de Fran «Ciclo y persistencia 0.2» sigue `Pending`. La dependencia técnica habilita E01, que comienza a continuación. No se ejecutó GitHub Actions ni se modificó la ruta pública `/Luckbound/`; A06 sigue `InProgress` porque faltan secretos/permisos del repositorio.
 
 ## Ficha que debe completar cada ejecución
 

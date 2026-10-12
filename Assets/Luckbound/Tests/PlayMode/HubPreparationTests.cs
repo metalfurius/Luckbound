@@ -1,9 +1,12 @@
 using System.Collections;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Luckbound.App;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Saves;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -157,6 +160,11 @@ namespace Luckbound.Tests.PlayMode
                 returnButton.onClick.Invoke();
                 for (int frame = 0; frame < 30 && SceneManager.GetActiveScene().name != "Hub"; frame++) yield return null;
 
+                Task<ExpeditionSettlementCommitResult> abandonFirstRun = app.SettleActiveRunAsync(ExpeditionOutcome.Abandoned, 0);
+                while (!abandonFirstRun.IsCompleted) yield return null;
+                Assert.That(abandonFirstRun.Result.Persisted, Is.True, abandonFirstRun.Result.Message);
+                app.ClearActiveRun();
+
                 HubPreparationController secondPreparation = Object.FindAnyObjectByType<HubPreparationController>();
                 bool resetSelection = secondPreparation != null && secondPreparation.SelectedClassId == "class.bellator" &&
                     secondPreparation.SelectedSkillIds.Count == 2 && secondPreparation.SelectedSkillIds.All(id => id.StartsWith("skill.bellator.", System.StringComparison.Ordinal));
@@ -198,6 +206,11 @@ namespace Luckbound.Tests.PlayMode
                         "normalized run seed equals route seed", secondRun.Seed.ToString("X8") + " / " + secondRun.Route.Seed.ToString("X8"));
                 }
 
+                Task<ExpeditionSettlementCommitResult> abandonSecondRun = app.SettleActiveRunAsync(ExpeditionOutcome.Abandoned, 0);
+                while (!abandonSecondRun.IsCompleted) yield return null;
+                evidence.RecordAssertion("The scenario settles its final run so later tests start from a clean profile",
+                    abandonSecondRun.Result.Persisted && !app.HasActiveExpedition, "no active run remains on disk", abandonSecondRun.Result.Message);
+
                 int exitCode = evidence.Complete();
                 Assert.That(exitCode, Is.Zero, "The tavern scenario failed. Evidence: " + evidence.ReportPath);
             }
@@ -207,6 +220,179 @@ namespace Luckbound.Tests.PlayMode
                 if (ApplicationBootstrapper.Instance != null) ApplicationBootstrapper.Instance.ClearActiveRun();
                 UnityRandom.state = previousRandomState;
                 Time.timeScale = 1f;
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator D09_BootstrapRestoresCheckpointCompletionAndNextRoomAcrossRestarts()
+        {
+            const int scenarioSeed = 27182818;
+            UnityRandom.State previousRandomState = UnityRandom.state;
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundD09", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var evidence = new ScenarioEvidenceRecorder("D09", "D09_BootstrapResumeAndRoomProgress", scenarioSeed);
+            var testStore = new BlockingProfileWriteStore(new FileSaveStore(saveDirectory, null));
+            try
+            {
+                UnityRandom.InitState(scenarioSeed);
+                Time.timeScale = 1f;
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => testStore;
+                if (ApplicationBootstrapper.Instance != null) Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                yield return null;
+
+                evidence.RecordInput(0, "LoadScene", "Bootstrap with isolated durable store");
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                for (int frame = 0; frame < 120 &&
+                    (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady); frame++) yield return null;
+                ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+                evidence.RecordAssertion("Bootstrap finishes profile hydration before allowing a new expedition",
+                    app != null && app.SaveDataReady && app.CanStartNewExpedition, "ready profile and no active run",
+                    app == null ? "missing app" : app.ProfileLoadStatus + "; ready=" + app.SaveDataReady);
+                Assert.That(app != null && app.CanStartNewExpedition, Is.True);
+
+                ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator",
+                    ExpeditionRunConfiguration.HumanRaceId, new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
+                Task<SaveWriteResult> begin = app.BeginExpeditionAsync(run);
+                while (!begin.IsCompleted) yield return null;
+                Assert.That(begin.Result.Succeeded, Is.True, begin.Result.Message);
+                ExpeditionSaveData entry = app.ActiveExpedition;
+                evidence.RecordAssertion("The run is attached only after its complete initial snapshot reaches durable storage",
+                    app.ActiveRun != null && entry != null && entry.runId == run.RunId.ToString() &&
+                    !string.IsNullOrWhiteSpace(entry.roomEntryCheckpointJson), "persisted RunId and entry checkpoint", entry?.runId);
+
+                ExpeditionInventory changedInventory = ExpeditionInventory.Restore(run.Inventory.Catalog, run.Inventory.CreateSnapshot());
+                Assert.That(changedInventory.TryAddGold(19, TransactionId.New()).Succeeded, Is.True);
+                ExpeditionSaveData duringRoom = entry.Clone();
+                duringRoom.inventorySnapshotJson = JsonUtility.ToJson(changedInventory.CreateSnapshot());
+                duringRoom.currentHealth = 21;
+                duringRoom.accumulatedRenown = 52;
+                duringRoom.fortunaCharges = 0;
+                ExpeditionSaveData staleRoom = duringRoom.Clone();
+                staleRoom.currentHealth = 20;
+                testStore.BlockNextProfileWrite();
+                Task<SaveWriteResult> update = app.SaveActiveExpeditionStateAsync(duringRoom);
+                for (int frame = 0; frame < 120 && !testStore.ProfileWriteStarted.IsCompleted; frame++) yield return null;
+                Assert.That(testStore.ProfileWriteStarted.IsCompleted, Is.True, "The first in-room write should reach the delayed store.");
+                Task<SaveWriteResult> staleUpdate = app.SaveActiveExpeditionStateAsync(staleRoom);
+                testStore.ReleaseBlockedProfileWrite();
+                while (!update.IsCompleted || !staleUpdate.IsCompleted) yield return null;
+                Assert.That(update.Result.Succeeded, Is.True, update.Result.Message);
+                bool staleUpdateRejected = !staleUpdate.Result.Succeeded && app.ActiveExpedition.currentHealth == duringRoom.currentHealth &&
+                    app.ActiveExpedition.inventorySnapshotJson == duringRoom.inventorySnapshotJson;
+                evidence.RecordAssertion("An older queued room snapshot cannot overwrite a newer committed snapshot",
+                    staleUpdateRejected, "health 21 and the first snapshot inventory remain durable",
+                    "first=" + update.Result.Succeeded + "; stale=" + staleUpdate.Result.Succeeded + "; health=" + app.ActiveExpedition.currentHealth);
+                Assert.That(staleUpdateRejected, Is.True);
+                string firstRoomId = entry.currentNodeId;
+
+                evidence.RecordInput(1, "ProcessRestart", "destroy application root; reload Bootstrap from same save directory");
+                Object.Destroy(app.gameObject);
+                yield return null;
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                for (int frame = 0; frame < 120 &&
+                    (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady ||
+                     ApplicationBootstrapper.Instance.ActiveRun == null || SceneManager.GetActiveScene().name != "Expedition"); frame++) yield return null;
+                app = ApplicationBootstrapper.Instance;
+                ExpeditionSaveData resumedEntry = app == null ? null : app.ActiveExpedition;
+                ExpeditionRunConfiguration resumedRun = app == null ? null : app.ActiveRun;
+                bool rollbackWorked = app != null && app.CanContinueExpedition && SceneManager.GetActiveScene().name == "Expedition" &&
+                    resumedRun != null && resumedRun.RunId == run.RunId && resumedEntry.currentNodeId == firstRoomId &&
+                    resumedEntry.currentHealth == entry.currentHealth && resumedEntry.accumulatedRenown == entry.accumulatedRenown &&
+                    resumedRun.Inventory.Gold == run.Inventory.Gold;
+                evidence.RecordAssertion("A real Bootstrap restart returns to the same expedition at the room-entry checkpoint",
+                    rollbackWorked, "same RunId/node and entry health, Renown, and gold", rollbackWorked
+                        ? resumedRun.RunId + " / " + resumedEntry.currentNodeId + " / " + resumedEntry.currentHealth + " / " + resumedRun.Inventory.Gold
+                        : "scene=" + SceneManager.GetActiveScene().name + "; run=" + (resumedRun == null ? "missing" : resumedRun.RunId.ToString()) +
+                          "; save=" + (resumedEntry == null ? "missing" : resumedEntry.currentNodeId + "/" + resumedEntry.currentHealth + "/" + resumedEntry.accumulatedRenown) +
+                          "; loadError=" + (app == null ? "missing app" : app.ActiveExpeditionLoadError));
+                Assert.That(rollbackWorked, Is.True);
+
+                const string resultId = "result.d09.integration.room0";
+                const string resultJson = "{\"outcome\":\"cleared\",\"renown\":12}";
+                testStore.BlockNextProfileWrite();
+                Task<SaveWriteResult> completion = app.CompleteCurrentRoomAsync(resultId, resultJson);
+                for (int frame = 0; frame < 120 && !testStore.ProfileWriteStarted.IsCompleted; frame++) yield return null;
+                Assert.That(testStore.ProfileWriteStarted.IsCompleted, Is.True, "The first completion should reach the delayed store.");
+                Task<SaveWriteResult> duplicateCompletion = app.CompleteCurrentRoomAsync(resultId, resultJson);
+                testStore.ReleaseBlockedProfileWrite();
+                while (!completion.IsCompleted || !duplicateCompletion.IsCompleted) yield return null;
+                Assert.That(completion.Result.Succeeded, Is.True, completion.Result.Message);
+                Assert.That(duplicateCompletion.Result.Succeeded, Is.True, duplicateCompletion.Result.Message);
+                Assert.That(app.ActiveExpedition.completedRoomResults.Length, Is.EqualTo(1));
+
+                Object.Destroy(app.gameObject);
+                yield return null;
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                for (int frame = 0; frame < 120 &&
+                    (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady ||
+                     ApplicationBootstrapper.Instance.ActiveRun == null || SceneManager.GetActiveScene().name != "Expedition"); frame++) yield return null;
+                app = ApplicationBootstrapper.Instance;
+                ExpeditionSaveData completed = app == null ? null : app.ActiveExpedition;
+                bool resultSurvived = app != null && app.ActiveRun != null && completed != null &&
+                    completed.completedRoomIds.Contains(firstRoomId) && completed.completedRoomResults.Length == 1 &&
+                    completed.completedRoomResults[0].resultId == resultId && completed.completedRoomResults[0].resultJson == resultJson &&
+                    string.IsNullOrEmpty(completed.roomEntryCheckpointJson);
+                evidence.RecordAssertion("A completed room retains exactly one stable result after another process restart",
+                    resultSurvived, "one committed result and no combat-entry checkpoint",
+                    resultSurvived ? completed.completedRoomResults[0].resultId : "result missing");
+                Assert.That(resultSurvived, Is.True);
+
+                string nextNode = app.ActiveRun.Route.MandatoryNodeIds[1];
+                Task<SaveWriteResult> advance = app.AdvanceToRoomAsync(nextNode);
+                while (!advance.IsCompleted) yield return null;
+                bool enteredNextRoom = advance.Result.Succeeded && app.ActiveExpedition.currentNodeId == nextNode &&
+                    app.ActiveExpedition.visitedNodeIds.Length == 2 && !string.IsNullOrWhiteSpace(app.ActiveExpedition.roomEntryCheckpointJson);
+                evidence.RecordAssertion("Advancing after completion persists the route cursor and a new entry checkpoint",
+                    enteredNextRoom, "second visited node and new checkpoint", advance.Result.Message);
+                Assert.That(enteredNextRoom, Is.True);
+
+                Task<ExpeditionSettlementCommitResult> cleanup = app.SettleActiveRunAsync(ExpeditionOutcome.Abandoned, 0);
+                while (!cleanup.IsCompleted) yield return null;
+                evidence.RecordAssertion("The integration test settles its isolated run before cleanup", cleanup.Result.Persisted && !app.HasActiveExpedition,
+                    "no active expedition in isolated store", cleanup.Result.Message);
+                int failures = evidence.Complete();
+                Assert.That(failures, Is.Zero, "D09 integration evidence: " + evidence.ReportPath);
+            }
+            finally
+            {
+                evidence.Dispose();
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = null;
+                if (ApplicationBootstrapper.Instance != null) Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                UnityRandom.state = previousRandomState;
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        private sealed class BlockingProfileWriteStore : ISaveStore
+        {
+            private readonly ISaveStore _inner;
+            private bool _blockNextProfileWrite;
+            private TaskCompletionSource<bool> _profileWriteStarted = new TaskCompletionSource<bool>();
+            private TaskCompletionSource<bool> _continueProfileWrite = new TaskCompletionSource<bool>();
+
+            public BlockingProfileWriteStore(ISaveStore inner) { _inner = inner; }
+            public Task ProfileWriteStarted => _profileWriteStarted.Task;
+
+            public void BlockNextProfileWrite()
+            {
+                _profileWriteStarted = new TaskCompletionSource<bool>();
+                _continueProfileWrite = new TaskCompletionSource<bool>();
+                _blockNextProfileWrite = true;
+            }
+
+            public void ReleaseBlockedProfileWrite() => _continueProfileWrite.TrySetResult(true);
+            public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
+
+            public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
+            {
+                if (document == SaveDocument.Profile && _blockNextProfileWrite)
+                {
+                    _blockNextProfileWrite = false;
+                    _profileWriteStarted.TrySetResult(true);
+                    await _continueProfileWrite.Task;
+                }
+                await _inner.WriteAsync(document, json, lastKnownGoodPrimaryJson);
             }
         }
 

@@ -204,6 +204,51 @@ namespace Luckbound.Tests.Core
             Assert.That(inventory.Weapon, Is.Null);
         }
 
+        [Test]
+        public void SnapshotRestoresExactSlotsResourcesAndCachedTransactionOutcomes()
+        {
+            ItemCatalog catalog = CreateCatalog();
+            var inventory = new ExpeditionInventory(catalog, "class.bellator", initialGold: 39);
+            InventoryItemStack sword = Stack("weapon.bellator.sword");
+            TransactionId collectId = TransactionId.New();
+            Assert.That(inventory.TryCollectItem(sword, collectId).Succeeded, Is.True);
+            TransactionId equipId = TransactionId.New();
+            Assert.That(inventory.EquipBackpackItem(0, EquipmentSlot.Weapon, equipId).Succeeded, Is.True);
+            InventoryItemStack potion = Stack("consumable.health_potion", quantity: 2);
+            Assert.That(inventory.TryCollectItem(potion, TransactionId.New()).Succeeded, Is.True);
+            Assert.That(inventory.SetQuickConsumable(0, TransactionId.New()).Succeeded, Is.True);
+            Assert.That(inventory.TryAddMaterial(MaterialKind.Ore, 7, TransactionId.New()).Succeeded, Is.True);
+            TransactionId rejectedId = TransactionId.New();
+            InventoryItemStack rejectedItem = Stack("relic.marked_coin");
+            InventoryOperationOutcome rejected = inventory.TryReplaceBackpackSlot(-1, rejectedItem, rejectedId);
+
+            ExpeditionInventory restored = ExpeditionInventory.Restore(catalog, inventory.CreateSnapshot());
+
+            Assert.That(restored.ClassId, Is.EqualTo("class.bellator"));
+            Assert.That(restored.Gold, Is.EqualTo(39));
+            Assert.That(restored.Weapon.InstanceId, Is.EqualTo(sword.InstanceId));
+            Assert.That(restored.GetBackpackSlot(0).InstanceId, Is.EqualTo(potion.InstanceId));
+            Assert.That(restored.GetBackpackSlot(0).Quantity, Is.EqualTo(2));
+            Assert.That(restored.QuickConsumableInstanceId, Is.EqualTo(potion.InstanceId));
+            Assert.That(restored.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(7));
+            InventoryOperationOutcome replay = restored.TryReplaceBackpackSlot(-1, rejectedItem, rejectedId);
+            Assert.That(replay.Status, Is.EqualTo(rejected.Status));
+            Assert.That(restored.GetBackpackSlot(0).InstanceId, Is.EqualTo(potion.InstanceId));
+        }
+
+        [Test]
+        public void SnapshotRejectsDuplicateItemInstancesRatherThanSilentlyRepairingTheSave()
+        {
+            ItemCatalog catalog = CreateCatalog();
+            var inventory = new ExpeditionInventory(catalog, "class.bellator");
+            InventoryItemStack sword = Stack("weapon.bellator.sword");
+            Assert.That(inventory.TryCollectItem(sword, TransactionId.New()).Succeeded, Is.True);
+            ExpeditionInventorySnapshot snapshot = inventory.CreateSnapshot();
+            snapshot.backpackSlots[1] = snapshot.backpackSlots[0];
+
+            Assert.Throws<FormatException>(() => ExpeditionInventory.Restore(catalog, snapshot));
+        }
+
         private static InventoryItemStack[] Fill(ExpeditionInventory inventory)
         {
             var stacks = new InventoryItemStack[ExpeditionInventory.BackpackCapacity];

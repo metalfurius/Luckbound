@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
@@ -32,6 +33,13 @@ namespace Luckbound.App
 
         public void Initialize(ExpeditionRoutePlan route, Func<string, GameObject> prefabResolver, Transform sessionPlayer)
         {
+            if (route == null) throw new ArgumentNullException(nameof(route));
+            Initialize(route, prefabResolver, sessionPlayer, new[] { route.MandatoryNodeIds[0] });
+        }
+
+        public void Initialize(ExpeditionRoutePlan route, Func<string, GameObject> prefabResolver, Transform sessionPlayer,
+            IEnumerable<string> visitedNodeIds)
+        {
             if (_initialized) throw new InvalidOperationException("ExpeditionRoomTransitionController can only be initialized once.");
             if (route == null) throw new ArgumentNullException(nameof(route));
             if (prefabResolver == null) throw new ArgumentNullException(nameof(prefabResolver));
@@ -40,7 +48,7 @@ namespace Luckbound.App
             _route = route;
             _prefabResolver = prefabResolver;
             _sessionPlayer = sessionPlayer;
-            _traversal = new ExpeditionRouteTraversal(route);
+            _traversal = new ExpeditionRouteTraversal(route, visitedNodeIds);
             ExpeditionRouteNode initialNode = FindNode(_traversal.CurrentNodeId);
             if (!TryStageRoom(initialNode, out GameObject roomRoot, out RoomLifetimeScope scope))
             {

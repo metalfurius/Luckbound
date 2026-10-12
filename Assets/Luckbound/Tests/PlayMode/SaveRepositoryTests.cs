@@ -1,10 +1,14 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Luckbound.App;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
+using Luckbound.Core.Inventory;
 using Luckbound.Core.Saves;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Luckbound.Tests.PlayMode
 {
@@ -272,20 +276,10 @@ namespace Luckbound.Tests.PlayMode
         public void ActiveExpeditionMarkerAndPayloadSurviveARepositoryRestart()
         {
             var repository = NewRepository();
-            var expedition = new ExpeditionSaveData
-            {
-                runId = RunId.New().ToString(),
-                seed = 42,
-                generationVersion = 1,
-                contentVersion = 1,
-                classId = "class.bellator",
-                raceId = "race.human",
-                selectedSkillIds = new[] { "skill.bellator.cleave" },
-                routeSnapshotJson = "{}",
-                currentNodeId = "node.01",
-                accumulatedRenown = 13,
-                fortunaCharges = 2
-            };
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator",
+                ExpeditionRunConfiguration.HumanRaceId, new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
+            ExpeditionSaveData expedition = ExpeditionSaveMapper.Create(run);
+            expedition.accumulatedRenown = 13;
 
             Assert.That(Wait(repository.SaveProfileAsync(ProfileSaveData.CreateNewProfile(), expedition)).Succeeded, Is.True);
             SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(NewRepository().LoadProfileAsync());
@@ -293,9 +287,80 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
             Assert.That(loaded.Data.hasActiveExpedition, Is.True);
             Assert.That(loaded.Data.activeExpedition.runId, Is.EqualTo(expedition.runId));
-            Assert.That(loaded.Data.activeExpedition.seed, Is.EqualTo(42));
-            Assert.That(loaded.Data.activeExpedition.currentNodeId, Is.EqualTo("node.01"));
+            Assert.That(loaded.Data.activeExpedition.seed, Is.EqualTo(run.Seed));
+            Assert.That(loaded.Data.activeExpedition.currentNodeId, Is.EqualTo(run.Route.MandatoryNodeIds[0]));
             Assert.That(loaded.Data.activeExpedition.accumulatedRenown, Is.EqualTo(13));
+        }
+
+        [Test]
+        public void D09_RestartRollsBackInterruptedRoomAndKeepsCommittedRoomResult()
+        {
+            const int scenarioSeed = 31415926;
+            using (var evidence = new ScenarioEvidenceRecorder("D09", "D09_RoomCheckpointRestartAndCompletedResult", scenarioSeed))
+            {
+                ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator",
+                    ExpeditionRunConfiguration.HumanRaceId, new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
+                ExpeditionSaveData entry = ExpeditionSaveMapper.Create(run);
+                string directory = Path.Combine(_directory, "D09Restart");
+                Directory.CreateDirectory(directory);
+                var firstProcess = new SaveRepository(new FileSaveStore(directory, null));
+                SaveWriteResult start = Wait(firstProcess.SaveProfileAsync(ProfileSaveData.CreateNewProfile(), entry));
+                evidence.RecordAssertion("A new run persists its route, inventory, and room-entry checkpoint before play", start.Succeeded &&
+                    !string.IsNullOrWhiteSpace(entry.roomEntryCheckpointJson) && entry.visitedNodeIds.Length == 1,
+                    "saved active expedition with entry checkpoint", start.Message);
+                Assert.That(start.Succeeded, Is.True, start.Message);
+
+                ExpeditionInventory changedInventory = ExpeditionInventory.Restore(run.Inventory.Catalog, run.Inventory.CreateSnapshot());
+                InventoryOperationOutcome loot = changedInventory.TryAddGold(17, TransactionId.New());
+                Assert.That(loot.Succeeded, Is.True);
+                ExpeditionSaveData duringCombat = entry.Clone();
+                duringCombat.inventorySnapshotJson = JsonUtility.ToJson(changedInventory.CreateSnapshot());
+                duringCombat.currentHealth = 23;
+                duringCombat.healthPotionCharges = 1;
+                duringCombat.accumulatedRenown = 40;
+                duringCombat.fortunaCharges = 0;
+                SaveWriteResult combatWrite = Wait(firstProcess.SaveProfileAsync(ProfileSaveData.CreateNewProfile(), duringCombat));
+                evidence.RecordInput(1, "SaveWrite", "persist changed state during current room, retain entry checkpoint");
+                evidence.RecordAssertion("Mid-room gains are durably recorded separately from the immutable rollback point", combatWrite.Succeeded &&
+                    duringCombat.roomEntryCheckpointJson == entry.roomEntryCheckpointJson,
+                    "room-entry checkpoint unchanged", combatWrite.Message);
+                Assert.That(combatWrite.Succeeded, Is.True, combatWrite.Message);
+
+                var restartedProcess = new SaveRepository(new FileSaveStore(directory, null));
+                SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(restartedProcess.LoadProfileAsync());
+                ExpeditionRunConfiguration resumed = ExpeditionSaveMapper.Restore(loaded.Data.activeExpedition, out ExpeditionSaveData rolledBack);
+                evidence.RecordAssertion("Restart returns to the room-entry snapshot rather than keeping interrupted gains",
+                    loaded.Status == SaveLoadStatus.LoadedPrimary && resumed.RunId == run.RunId &&
+                    rolledBack.currentHealth == entry.currentHealth && rolledBack.accumulatedRenown == entry.accumulatedRenown &&
+                    resumed.Inventory.Gold == run.Inventory.Gold,
+                    "same RunId, entry health/Renown/gold", rolledBack.currentHealth + "/" + rolledBack.accumulatedRenown + "/" + resumed.Inventory.Gold);
+
+                ExpeditionSaveData completed = rolledBack.Clone();
+                string resultJson = "{\"outcome\":\"cleared\",\"renown\":12,\"lootId\":\"reward.d09.test\"}";
+                completed.completedRoomIds = new[] { completed.currentNodeId };
+                completed.completedRoomResults = new[]
+                {
+                    new ExpeditionRoomCompletionSaveData
+                    {
+                        roomNodeId = completed.currentNodeId,
+                        resultId = "result." + completed.currentNodeId,
+                        resultJson = resultJson
+                    }
+                };
+                completed.roomEntryCheckpointJson = string.Empty;
+                SaveWriteResult completeWrite = Wait(restartedProcess.SaveProfileAsync(loaded.Data.profile, completed));
+                Assert.That(completeWrite.Succeeded, Is.True, completeWrite.Message);
+                SaveLoadResult<ProfileSaveEnvelope> afterCompletionRestart = Wait(new SaveRepository(new FileSaveStore(directory, null)).LoadProfileAsync());
+                ExpeditionSaveMapper.Restore(afterCompletionRestart.Data.activeExpedition, out ExpeditionSaveData completionState);
+                bool completedResultSurvives = completionState.completedRoomIds.Contains(completionState.currentNodeId) &&
+                    completionState.completedRoomResults.Length == 1 && completionState.completedRoomResults[0].resultJson == resultJson &&
+                    string.IsNullOrWhiteSpace(completionState.roomEntryCheckpointJson);
+                evidence.RecordAssertion("A completed room reloads its committed result without generating a fresh entry checkpoint",
+                    completedResultSurvives, "one stable result, completed room, no entry rollback", completionState.completedRoomResults.Length.ToString());
+                Assert.That(completedResultSurvives, Is.True);
+                int failedAssertions = evidence.Complete();
+                Assert.That(failedAssertions, Is.Zero, "D09 scenario evidence: " + evidence.ReportPath);
+            }
         }
 
         [Test]

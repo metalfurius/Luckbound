@@ -124,10 +124,10 @@ namespace Luckbound.Editor
                 if (tavernButton == null)
                 {
                     tavernButton = CreateButton("StartTavernButton", "PREPARAR EXPEDICIÓN", menuCanvas.transform,
-                        new Vector2(0f, -108f), new Vector2(204f, 22f), 9, "#10111B", "#F0C15A");
+                        new Vector2(-105f, -110f), new Vector2(190f, 24f), 9, "#10111B", "#F0C15A");
                     changed = true;
                 }
-                changed |= SetRect(tavernButton.GetComponent<RectTransform>(), new Vector2(0f, -108f), new Vector2(204f, 22f));
+                changed |= SetRect(tavernButton.GetComponent<RectTransform>(), new Vector2(-105f, -110f), new Vector2(190f, 24f));
                 Text tavernLabel = tavernButton.GetComponentInChildren<Text>(true);
                 if (tavernLabel != null && tavernLabel.text != "PREPARAR EXPEDICIÓN")
                 {

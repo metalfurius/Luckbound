@@ -4,6 +4,7 @@ using System.Linq;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
+using Luckbound.Core.Saves;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -34,6 +35,7 @@ namespace Luckbound.App
         private int _selectedClassIndex;
         private string _statusMessage;
         private string _profileStatusMessage;
+        private bool _startingExpedition;
 
         public string SelectedClassId => PlayableClasses[_selectedClassIndex];
         public string SelectedRaceId => ExpeditionRunConfiguration.HumanRaceId;
@@ -140,9 +142,67 @@ namespace Luckbound.App
             RefreshView();
         }
 
-        public void StartExpedition()
+        public async void StartExpedition()
         {
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (_startingExpedition) return;
+            if (app != null && app.HasPendingExpeditionWrite)
+            {
+                _startingExpedition = true;
+                RefreshView();
+                try
+                {
+                    SaveWriteResult retry = await app.RetryPendingExpeditionWriteAsync();
+                    if (!retry.Succeeded)
+                    {
+                        _statusMessage = "El guardado sigue pendiente: " + retry.Message;
+                        return;
+                    }
+                    if (app.CanContinueExpedition) app.ContinueActiveExpedition();
+                    return;
+                }
+                catch (Exception exception)
+                {
+                    _statusMessage = "No se pudo reintentar el guardado: " + exception.Message;
+                }
+                finally
+                {
+                    _startingExpedition = false;
+                    RefreshView();
+                }
+            }
+            if (app != null && app.HasPendingSettlement)
+            {
+                _startingExpedition = true;
+                RefreshView();
+                try
+                {
+                    ExpeditionSettlementCommitResult retry = await app.RetryPendingSettlementAsync();
+                    _statusMessage = retry.Persisted
+                        ? "La liquidación se guardó. Puedes preparar otra expedición."
+                        : "La liquidación sigue pendiente: " + retry.Message;
+                }
+                catch (Exception exception)
+                {
+                    _statusMessage = "No se pudo reintentar la liquidación: " + exception.Message;
+                }
+                finally
+                {
+                    _startingExpedition = false;
+                    RefreshView();
+                }
+                return;
+            }
+            if (app != null && app.CanContinueExpedition)
+            {
+                try { app.ContinueActiveExpedition(); }
+                catch (Exception exception)
+                {
+                    _statusMessage = "No se pudo reanudar: " + exception.Message;
+                    RefreshView();
+                }
+                return;
+            }
             if (app == null || !app.CanStartNewExpedition)
             {
                 _profileStatusMessage = ProfileStatusMessage(app);
@@ -160,13 +220,26 @@ namespace Luckbound.App
             {
                 ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
                     SelectedClassId, SelectedRaceId, _selectedSkillIds);
-                app.BeginExpedition(run);
+                _startingExpedition = true;
+                RefreshView();
+                SaveWriteResult save = await app.BeginExpeditionAsync(run);
+                if (!save.Succeeded)
+                {
+                    _statusMessage = "No se pudo guardar la expedición: " + save.Message;
+                    RefreshView();
+                    return;
+                }
                 Time.timeScale = 1f;
                 SceneManager.LoadScene("Expedition", LoadSceneMode.Single);
             }
             catch (Exception exception)
             {
                 _statusMessage = "No se pudo iniciar: " + exception.Message;
+                RefreshView();
+            }
+            finally
+            {
+                _startingExpedition = false;
                 RefreshView();
             }
         }
@@ -239,7 +312,12 @@ namespace Luckbound.App
             if (_startExpeditionButton != null)
             {
                 ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
-                _startExpeditionButton.interactable = _selectedSkillIds.Count == 2 && app != null && app.CanStartNewExpedition;
+                bool canContinue = app != null && app.CanContinueExpedition;
+                bool canRetry = app != null && app.HasPendingExpeditionWrite;
+                bool retrySettlement = app != null && app.HasPendingSettlement;
+                SetLabel(_startExpeditionButton, retrySettlement ? "REINTENTAR LIQUIDACIÓN" : canRetry ? "REINTENTAR GUARDADO" : canContinue ? "CONTINUAR EXPEDICIÓN" : "PARTIR");
+                _startExpeditionButton.interactable = !_startingExpedition && (retrySettlement || canRetry || canContinue ||
+                    (_selectedSkillIds.Count == 2 && app != null && app.CanStartNewExpedition));
             }
         }
 
@@ -255,6 +333,9 @@ namespace Luckbound.App
         {
             if (app == null || !app.SaveDataReady) return "El perfil todavía no está disponible. Vuelve a intentarlo en unos segundos.";
             if (app.HasPendingSettlement) return "Hay una liquidación pendiente de guardar. Reinténtala o exporta el guardado antes de iniciar otra expedición.";
+            if (app.HasPendingExpeditionWrite) return "La expedición no se ha guardado. Reintenta la escritura antes de continuar.";
+            if (app.CanContinueExpedition) return "Hay una expedición guardada. Continúa para volver al punto de entrada de la sala actual.";
+            if (app.HasActiveExpedition) return "La expedición guardada necesita revisión y se conserva: " + app.ActiveExpeditionLoadError;
             if (app.ProfileLoadStatus == SaveLoadStatus.Incompatible) return "El perfil pertenece a una versión más nueva. Se conserva sin cambios y no se iniciará una partida nueva.";
             if (app.ProfileLoadStatus == SaveLoadStatus.RecoveredBackup) return "El perfil principal estaba dañado; se recuperó la copia de respaldo. Revisa el Renombre y vuelve a guardar cuando puedas.";
             if (app.ProfileLoadStatus == SaveLoadStatus.Corrupted) return "El perfil y su respaldo no se pudieron leer. Se conservaron y no se sobrescribirán.";

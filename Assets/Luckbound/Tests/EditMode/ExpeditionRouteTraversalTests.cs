@@ -52,6 +52,29 @@ namespace Luckbound.Tests.Core
             Assert.Throws<ArgumentException>(() => new ExpeditionRouteTraversal(plan, "room.missing"));
         }
 
+        [Test]
+        public void CanonicalRouteAndVisitedHistoryRestoreTheSameCursorAndBranchChoices()
+        {
+            ExpeditionRoutePlan generated = ExpeditionRouteGenerator.Generate(16180339u, CreateCatalog());
+            ExpeditionRoutePlan restoredRoute = ExpeditionRoutePlan.ParseCanonical(generated.CanonicalForm);
+            string[] history = { generated.MandatoryNodeIds[0], generated.MandatoryNodeIds[1],
+                generated.MandatoryNodeIds[2], "patio.optional.combat", "patio.special" };
+            var restoredTraversal = new ExpeditionRouteTraversal(restoredRoute, history);
+
+            Assert.That(restoredRoute.CanonicalForm, Is.EqualTo(generated.CanonicalForm));
+            Assert.That(restoredRoute.Fingerprint, Is.EqualTo(generated.Fingerprint));
+            Assert.That(restoredTraversal.CurrentNodeId, Is.EqualTo("patio.special"));
+            Assert.That(restoredTraversal.VisitedNodeIds, Is.EqualTo(history));
+            Assert.That(restoredTraversal.CanTransitionTo(generated.MandatoryNodeIds[4]), Is.True);
+            Assert.Throws<ArgumentException>(() => new ExpeditionRouteTraversal(restoredRoute,
+                new[] { generated.MandatoryNodeIds[0], generated.MandatoryNodeIds[3] }));
+            string firstMandatoryEdge = "E|" + generated.MandatoryNodeIds[0] + "|port.exit.east|" +
+                generated.MandatoryNodeIds[1] + "|port.entry.west|0";
+            string brokenRoute = generated.CanonicalForm.Replace(firstMandatoryEdge,
+                "E|" + generated.MandatoryNodeIds[0] + "|port.exit.east|node.missing|port.entry.west|0");
+            Assert.Throws<FormatException>(() => ExpeditionRoutePlan.ParseCanonical(brokenRoute));
+        }
+
         private static ExpeditionRouteCatalog CreateCatalog()
         {
             return new ExpeditionRouteCatalog(new[]

@@ -454,6 +454,13 @@ namespace Luckbound.Editor
                 errors.Add("Menu must expose the ENFRENTAR · CUSTODIO (D06) provisional-boss entry.");
             }
 
+            RectTransform tavernRect = tavernButton == null ? null : tavernButton.GetComponent<RectTransform>();
+            RectTransform custodianRect = custodianButton == null ? null : custodianButton.GetComponent<RectTransform>();
+            if (tavernRect == null || custodianRect == null || UiRectsOverlap(tavernRect, custodianRect))
+            {
+                errors.Add("Menu's expedition and Custodian entries must have separate clickable areas.");
+            }
+
             MenuNavigationController navigation = objects.SelectMany(gameObject => gameObject.GetComponents<MenuNavigationController>()).FirstOrDefault();
             if (navigation == null)
             {
@@ -481,6 +488,13 @@ namespace Luckbound.Editor
             {
                 errors.Add("Menu must contain one EventSystem using InputSystemUIInputModule.");
             }
+        }
+
+        private static bool UiRectsOverlap(RectTransform left, RectTransform right)
+        {
+            Rect leftBounds = new Rect(left.anchoredPosition + left.rect.min, left.rect.size);
+            Rect rightBounds = new Rect(right.anchoredPosition + right.rect.min, right.rect.size);
+            return leftBounds.Overlaps(rightBounds);
         }
 
         private static void ValidateHubPreparation(List<GameObject> objects, List<string> errors)
