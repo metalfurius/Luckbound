@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07: Verified; A06: InProgress; B08–J09: Pending. C01 queda habilitada y es la siguiente tarea técnica.
+- A01–A05, A07–A08, B01–B07, C01: Verified; A06: InProgress; B08–J09: Pending. C02 es la siguiente tarea técnica.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - Revisiones de builds: ninguna realizada.
@@ -44,7 +44,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | B05 | Esquiva y recarga | B04 | Verified |
 | B06 | Cámara, límites y estados visuales | B05 | Verified |
 | B07 | Demo de movimiento 0.1 | B06 | Verified |
-| C01 | Estadísticas y resolución de daño | B07 | InProgress |
+| C01 | Estadísticas y resolución de daño | B07 | Verified |
 | C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Pending |
 | C03 | Proyectiles y sistema de habilidades | C02 | Pending |
 | C04 | Daño recibido, empuje y muerte | C03 | Pending |
@@ -298,6 +298,17 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - WebGL: perfil `Assets/Settings/Build Profiles/WebGL.asset`, build `success`, Unity `6000.6.5f1`, salida `Builds/B07/WebGL`, procedencia `Builds/B07/WebGL/unity-build.provenance.json`; `WebGL.wasm.br` 7.984.491 bytes y `WebGL.data.br` 2.849.209 bytes. Unity registró advertencias del paquete por compatibilidad de WebGPU en versiones antiguas de Firefox, un símbolo JS obsoleto y renovación local de licencia sin token; el resultado fue código 0. La build añadió dos combinaciones de variantes de luces 2D a `Assets/Settings/UniversalRP.asset` para conservarlas al compilar.
 - Ambas builds corresponden al working tree basado en `3edbb3d` y no se publicaron. Ningún workflow remoto, `gh-pages` ni ruta pública fue modificado. `git diff --check` pasa y los 96 GUID `.meta` son únicos. El SHA-256 actual del plan v1.2 es `53e55d97cc768355f3c95634e573e82399d93f362faf91d3341bf648962cdf23`.
 - **Aceptación B07 satisfecha; estado Verified.** Fran conserva pendiente la revisión de Movimiento 0.1; C01 empieza con el contrato de combate y estadísticas fijado en el plan.
+- Implementación B07 registrada en el commit `fbe4cf1` (`feat(gameplay): implement B07 movement demo`). Las builds de evidencia se generaron antes de ese commit desde un working tree basado en `3edbb3d`, según sus manifiestos.
+
+## Evidencia C01 — Estadísticas y resolución de daño
+
+- El plan v1.3 fija la fórmula explícita de daño directo: base × rareza × mejora × (1 + bonos ofensivos sumados); defensa efectiva `máximo(0, defensa − penetración)`; reducciones de la misma categoría sumadas y limitadas al 100 %; redondeo decimal al entero más próximo con medios alejándose de cero; mínimo uno salvo invulnerabilidad, que devuelve cero e identifica el impacto como evitado.
+- `Luckbound.Core.Combat` añade `CombatStats` (máximos de salud/energía y defensa inmutables), `DamageCalculationRequest`, `DamageResolution` y el resolver puro `DamageResolver`. No muta salud ni depende de Unity, reloj, física o animación; aplicar el resultado a actores queda para C04.
+- `unity test . --mode EditMode --output Logs\\C01-editmode.xml --timeout 1200 -- -nographics` → 21/21 pasaron (14 existentes y 7 casos C01). Cubre fórmula/orden, defensa alta sin curación, límite de penetración, reducción al 100 %, redondeo de medios, invulnerabilidad y validación de estadísticas.
+- `unity test . --mode PlayMode --output Logs\\C01-playmode.xml --timeout 1200 -- -nographics` → 12/12 pasaron. El test runner terminó con código 0; Unity mostró advertencias de dos AudioListener durante las transiciones de escenas de la suite, sin fallos de aserción.
+- `git diff --check` pasa; los 102 GUID `.meta` del proyecto son únicos. Versión fijada del Editor: Unity `6000.6.5f1`, WindowsEditor, pruebas batch con dispositivo gráfico Null.
+- SHA-256 del plan v1.3 comprobado: `70167F20437B0DB07EAE0D0BE26016BD4274609B51EAE47C71DC8F123D9E4189`.
+- **Aceptación C01 satisfecha; estado Verified.** C02 queda habilitada; la aplicación del daño al estado y salud actual de actores corresponde a C04.
 
 ## Ficha que debe completar cada ejecución
 

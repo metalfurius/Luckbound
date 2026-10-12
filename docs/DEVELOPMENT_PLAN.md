@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 1.2 — 12 de octubre de 2026.
+**Versión del documento:** 1.3 — 12 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -485,13 +485,14 @@ Valores iniciales:
 
 Daño directo:
 
-1. Aplicar daño base, rareza, mejora y modificadores ofensivos.
-2. Restar defensa.
-3. Aplicar reducción porcentual válida.
-4. Redondear y limitar a un mínimo de uno.
-5. Una invulnerabilidad válida evita el daño por completo.
+1. Calcular `daño base × multiplicador de rareza × multiplicador de mejora × (1 + suma de bonificaciones ofensivas porcentuales)`.
+2. Restar `máximo(0, defensa − penetración)`.
+3. Aplicar `1 − reducción porcentual`, sumando las reducciones de la misma categoría y limitando el total al 100 %.
+4. Redondear al entero más próximo; los medios se alejan de cero. Si el impacto no está evitado por invulnerabilidad, limitar el resultado a un mínimo de uno.
+5. Una invulnerabilidad válida evita el impacto por completo: el resultado es cero y se identifica como evitado.
 
 No se utilizará variación aleatoria del daño. Una defensa alta nunca curará al objetivo.
+El cálculo utilizará `decimal` en Core para dar el mismo resultado en todas las plataformas. Rareza, mejora, bonificación ofensiva agregada, penetración, reducción agregada y defensa serán entradas explícitas; el cálculo no leerá estado global, reloj, física ni animación.
 
 | Estado | Regla |
 |---|---|
@@ -1276,7 +1277,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 
 | ID | Entregable | Aceptación demostrable |
 |---|---|---|
-| C01 | Estadísticas y resolución de daño | Defensa alta no cura; invulnerabilidad evita impactos |
+| C01 | Estadísticas y resolución de daño | Core define estadísticas máximas inmutables y resuelve impactos deterministas: modificadores en el orden de 3.4, defensa efectiva mínima cero, reducciones sumadas y limitadas al 100 %, redondeo al entero más próximo con medios alejándose de cero y daño mínimo uno salvo impacto evitado; pruebas cubren defensa alta, penetración, reducción, redondeo, mínimo e invulnerabilidad sin depender de Unity |
 | C02 | Ataques cuerpo a cuerpo y secuencia | Un golpe por objetivo y ventana; movimiento permitido |
 | C03 | Proyectiles y sistema de habilidades | Impacto, coste, recarga y eliminación al abandonar sala |
 | C04 | Daño recibido, empuje y muerte | Impactos repetidos respetan protección; muerte impide actuar |
