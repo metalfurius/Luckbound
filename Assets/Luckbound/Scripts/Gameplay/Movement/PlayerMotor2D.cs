@@ -79,6 +79,10 @@ namespace Luckbound.Gameplay.Movement
 
         public CombatStats CombatStats => _damageState != null ? _damageState.Stats : null;
 
+        public ActorId ActorId => _actorId;
+
+        public long SimulationTick => Math.Max(0L, _tick - 1);
+
         public int SuccessfulJumpCount { get; private set; }
 
         public int DodgeActivationCount { get; private set; }

@@ -146,12 +146,14 @@ namespace Luckbound.Gameplay.Combat
             }
 
             ProjectileDefinition definition = _definition;
-            Impacted?.Invoke(new ProjectileImpact(
+            var impact = new ProjectileImpact(
                 _projectileId,
                 _hitId,
                 _sourceActorId,
                 target.ActorId,
-                definition.BaseDamage));
+                definition.BaseDamage);
+            target.QueueImpact(impact);
+            Impacted?.Invoke(impact);
 
             if (!_initialized || _returnPending)
             {
