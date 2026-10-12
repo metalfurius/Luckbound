@@ -386,10 +386,16 @@ namespace Luckbound.Editor
                     ValidateMenuMovementEntry(objects, errors);
                 }
 
+                if (sceneName == "Hub")
+                {
+                    ValidateHubPreparation(objects, errors);
+                }
+
                 if (sceneName == "Expedition")
                 {
                     ValidateExpeditionCamera(objects, errors);
                     ValidateMovementDemo(objects, errors);
+                    ValidateExpeditionRunSession(objects, errors);
                 }
             }
             catch (Exception exception)
@@ -431,6 +437,13 @@ namespace Luckbound.Editor
                 errors.Add("Menu must expose the LUCHAR · ARENA 0.2 combat entry.");
             }
 
+            Button tavernButton = objects.FirstOrDefault(gameObject => gameObject.name == "StartTavernButton")?.GetComponent<Button>();
+            Text tavernLabel = tavernButton == null ? null : tavernButton.GetComponentInChildren<Text>(true);
+            if (tavernButton == null || tavernLabel == null || tavernLabel.text != "PREPARAR EXPEDICIÓN")
+            {
+                errors.Add("Menu must expose the PREPARAR EXPEDICIÓN entry to Hub.");
+            }
+
             MenuNavigationController navigation = objects.SelectMany(gameObject => gameObject.GetComponents<MenuNavigationController>()).FirstOrDefault();
             if (navigation == null)
             {
@@ -443,12 +456,86 @@ namespace Luckbound.Editor
                 {
                     errors.Add("MenuNavigationController must serialize the combat-arena button.");
                 }
+                if (navigationData.FindProperty("_startTavernButton").objectReferenceValue != tavernButton)
+                {
+                    errors.Add("MenuNavigationController must serialize the tavern-preparation button.");
+                }
             }
 
             if (objects.Count(gameObject => gameObject.GetComponent<EventSystem>() != null) != 1 ||
                 objects.Count(gameObject => gameObject.GetComponent<InputSystemUIInputModule>() != null) != 1)
             {
                 errors.Add("Menu must contain one EventSystem using InputSystemUIInputModule.");
+            }
+        }
+
+        private static void ValidateHubPreparation(List<GameObject> objects, List<string> errors)
+        {
+            string[] requiredButtons =
+            {
+                "ClassBellatorButton", "ClassVenatorButton", "ClassMagusButton",
+                "SkillOptionOneButton", "SkillOptionTwoButton", "SkillOptionThreeButton",
+                "RaceHumanButton", "RaceOrciniButton", "RaceAlvariButton", "RaceDvergarButton",
+                "StartExpeditionButton", "HubReturnToMenuButton"
+            };
+            foreach (string buttonName in requiredButtons)
+            {
+                if (objects.FirstOrDefault(gameObject => gameObject.name == buttonName)?.GetComponent<Button>() == null)
+                    errors.Add("Hub must expose the " + buttonName + " control.");
+            }
+
+            HubPreparationController[] controllers = objects.SelectMany(gameObject => gameObject.GetComponents<HubPreparationController>()).ToArray();
+            if (controllers.Length != 1)
+            {
+                errors.Add("Hub must contain exactly one HubPreparationController; found " + controllers.Length + ".");
+                return;
+            }
+
+            SerializedObject serialized = new SerializedObject(controllers[0]);
+            string[] arrayNames = { "_classButtons", "_skillButtons", "_lockedRaceButtons" };
+            int[] expectedSizes = { 3, 3, 3 };
+            for (int index = 0; index < arrayNames.Length; index++)
+            {
+                SerializedProperty array = serialized.FindProperty(arrayNames[index]);
+                if (array == null || array.arraySize != expectedSizes[index] ||
+                    Enumerable.Range(0, expectedSizes[index]).Any(item => array.GetArrayElementAtIndex(item).objectReferenceValue == null))
+                    errors.Add("HubPreparationController must serialize three " + arrayNames[index] + " references.");
+            }
+            foreach (string propertyName in new[] { "_humanRaceButton", "_startExpeditionButton", "_returnToMenuButton", "_selectionSummaryText", "_statusText" })
+            {
+                if (serialized.FindProperty(propertyName)?.objectReferenceValue == null)
+                    errors.Add("HubPreparationController must serialize " + propertyName + ".");
+            }
+            if (objects.Count(gameObject => gameObject.GetComponent<EventSystem>() != null) != 1 ||
+                objects.Count(gameObject => gameObject.GetComponent<InputSystemUIInputModule>() != null) != 1)
+                errors.Add("Hub must contain one EventSystem using InputSystemUIInputModule.");
+        }
+
+        private static void ValidateExpeditionRunSession(List<GameObject> objects, List<string> errors)
+        {
+            ExpeditionRunSessionPresenter[] presenters = objects.SelectMany(gameObject => gameObject.GetComponents<ExpeditionRunSessionPresenter>()).ToArray();
+            if (presenters.Length != 1)
+            {
+                errors.Add("Expedition must contain exactly one ExpeditionRunSessionPresenter; found " + presenters.Length + ".");
+                return;
+            }
+            SerializedObject presenter = new SerializedObject(presenters[0]);
+            foreach (string propertyName in new[] { "_overlayRoot", "_titleText", "_summaryText", "_returnToTavernButton" })
+            {
+                if (presenter.FindProperty(propertyName)?.objectReferenceValue == null)
+                    errors.Add("ExpeditionRunSessionPresenter must serialize " + propertyName + ".");
+            }
+            MovementDemoComposition[] demos = objects.SelectMany(gameObject => gameObject.GetComponents<MovementDemoComposition>()).ToArray();
+            if (demos.Length != 1)
+            {
+                errors.Add("Expedition run routing requires exactly one MovementDemoComposition.");
+                return;
+            }
+            SerializedObject demo = new SerializedObject(demos[0]);
+            foreach (string propertyName in new[] { "_demoCourseRoot", "_movementDemoHudRoot" })
+            {
+                if (demo.FindProperty(propertyName)?.objectReferenceValue == null)
+                    errors.Add("MovementDemoComposition must serialize " + propertyName + " for run/demo scene routing.");
             }
         }
 
@@ -592,6 +679,14 @@ namespace Luckbound.Editor
                 {
                     errors.Add("D04 starter weapons must match the Bellator, Venator and Magus classes.");
                 }
+                if (catalog.StartingLoadouts.Count != 3 ||
+                    catalog.GetStartingLoadout("class.bellator").WeaponItemId != "weapon.bellator.rusted_sword" ||
+                    catalog.GetStartingLoadout("class.venator").WeaponItemId != "weapon.venator.short_bow" ||
+                    catalog.GetStartingLoadout("class.magus").WeaponItemId != "weapon.magus.ember_staff" ||
+                    catalog.GetStartingLoadout("class.bellator").ArmorItemId != "armor.bellator.guild_cuirass" ||
+                    catalog.GetStartingLoadout("class.venator").ArmorItemId != "armor.venator.leather_vest" ||
+                    catalog.GetStartingLoadout("class.magus").ArmorItemId != "armor.magus.traveler_robe")
+                    errors.Add("Items.json must map each playable class to its own starter weapon and armor.");
             }
             catch (Exception exception)
             {

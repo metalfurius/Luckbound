@@ -19,6 +19,8 @@ namespace Luckbound.App
         [SerializeField] private Text _telemetryText;
         [SerializeField] private Text _courseText;
         [SerializeField] private Button _returnToMenuButton;
+        [SerializeField] private GameObject _demoCourseRoot;
+        [SerializeField] private GameObject _movementDemoHudRoot;
 
         private GameObject _playerObject;
         private PlayerInputSource _inputSource;
@@ -40,6 +42,16 @@ namespace Luckbound.App
 
         private void Start()
         {
+            if (ApplicationBootstrapper.Instance != null && ApplicationBootstrapper.Instance.ActiveRun != null)
+            {
+                if (_demoCourseRoot == null || _movementDemoHudRoot == null)
+                    throw new InvalidOperationException("A launched expedition must disable its serialized movement-demo course and HUD.");
+                _demoCourseRoot.SetActive(false);
+                _movementDemoHudRoot.SetActive(false);
+                enabled = false;
+                return;
+            }
+
             if (_playerPrefab == null || _spawnPoint == null || _roomBounds == null || _cameraRig == null ||
                 _telemetryText == null || _courseText == null || _returnToMenuButton == null)
             {

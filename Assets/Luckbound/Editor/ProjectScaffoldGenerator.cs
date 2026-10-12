@@ -95,6 +95,8 @@ namespace Luckbound.Editor
             MovementDemoScaffoldGenerator.EnsureGenerated();
             CombatArenaScaffoldGenerator.EnsureGenerated();
             RoomTemplateScaffoldGenerator.EnsureGenerated();
+            HubPreparationScaffoldGenerator.EnsureGenerated();
+            ExpeditionRunSessionScaffoldGenerator.EnsureGenerated();
 
             if (createdScenes > 0)
             {

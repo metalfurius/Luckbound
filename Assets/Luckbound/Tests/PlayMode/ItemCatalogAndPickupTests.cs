@@ -19,6 +19,9 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(catalog.Count, Is.EqualTo(16));
             Assert.That(catalog.Get("weapon.bellator.rusted_sword").IsCompatibleWithClass("class.bellator"), Is.True);
             Assert.That(catalog.Get("weapon.venator.short_bow").IsCompatibleWithClass("class.bellator"), Is.False);
+            Assert.That(catalog.GetStartingLoadout("class.bellator").WeaponItemId, Is.EqualTo("weapon.bellator.rusted_sword"));
+            Assert.That(catalog.GetStartingLoadout("class.venator").ArmorItemId, Is.EqualTo("armor.venator.leather_vest"));
+            Assert.That(catalog.GetStartingLoadout("class.magus").WeaponItemId, Is.EqualTo("weapon.magus.ember_staff"));
             Assert.That(catalog.Get("consumable.health_potion").MaxStack, Is.EqualTo(3));
             Assert.That(catalog.GetMaterial(MaterialKind.Ore).MaxStack, Is.EqualTo(99));
             foreach (MaterialKind materialKind in System.Enum.GetValues(typeof(MaterialKind)))
@@ -42,6 +45,8 @@ namespace Luckbound.Tests.PlayMode
                 source.text.Replace("\"maxStack\": 99", "\"maxStack\": 1")));
             Assert.Throws<System.FormatException>(() => ItemCatalogJsonLoader.Load(
                 source.text.Replace("class.bellator", "class.unknown")));
+            Assert.Throws<System.FormatException>(() => ItemCatalogJsonLoader.Load(
+                source.text.Replace("\"schemaVersion\": 2", "\"schemaVersion\": 1")));
         }
 
         [UnityTest]

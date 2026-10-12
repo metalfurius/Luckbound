@@ -22,9 +22,9 @@ namespace Luckbound.Content
                 throw new FormatException("Item catalog JSON could not be parsed.", exception);
             }
 
-            if (data == null || data.schemaVersion != 1 || data.items == null)
+            if (data == null || data.schemaVersion != 2 || data.items == null || data.startingLoadouts == null)
             {
-                throw new FormatException("Items.json must use schema version 1 and an items array.");
+                throw new FormatException("Items.json must use schema version 2, items, and startingLoadouts arrays.");
             }
 
             var definitions = new List<ItemDefinition>(data.items.Length);
@@ -70,7 +70,19 @@ namespace Luckbound.Content
 
             try
             {
-                return new ItemCatalog(definitions);
+                var startingLoadouts = new List<StartingLoadout>(data.startingLoadouts.Length);
+                foreach (StartingLoadoutData loadout in data.startingLoadouts)
+                {
+                    if (loadout == null) throw new FormatException("Items.json contains a null starting loadout.");
+                    startingLoadouts.Add(new StartingLoadout(loadout.classId, loadout.weaponItemId, loadout.armorItemId));
+                }
+                if (startingLoadouts.Count != 3)
+                    throw new FormatException("Items.json must define exactly one starting loadout for each playable class.");
+
+                ItemCatalog catalog = new ItemCatalog(definitions, startingLoadouts);
+                foreach (string classId in new[] { "class.bellator", "class.venator", "class.magus" })
+                    catalog.GetStartingLoadout(classId);
+                return catalog;
             }
             catch (ArgumentException exception)
             {
@@ -89,6 +101,7 @@ namespace Luckbound.Content
         {
             public int schemaVersion;
             public ItemData[] items;
+            public StartingLoadoutData[] startingLoadouts;
         }
 
         [Serializable]
@@ -101,6 +114,14 @@ namespace Luckbound.Content
             public int maxStack;
             public string[] compatibleClassIds;
             public string materialKind;
+        }
+
+        [Serializable]
+        private sealed class StartingLoadoutData
+        {
+            public string classId;
+            public string weaponItemId;
+            public string armorItemId;
         }
     }
 }

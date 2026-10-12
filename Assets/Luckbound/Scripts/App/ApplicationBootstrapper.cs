@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Luckbound.Core.Expeditions;
 
 namespace Luckbound.App
 {
@@ -10,6 +11,10 @@ namespace Luckbound.App
     public sealed class ApplicationBootstrapper : MonoBehaviour
     {
         private static ApplicationBootstrapper _instance;
+
+        public static ApplicationBootstrapper Instance => _instance;
+
+        public ExpeditionRunConfiguration ActiveRun { get; private set; }
 
         private void Awake()
         {
@@ -29,6 +34,16 @@ namespace Luckbound.App
             {
                 SceneManager.LoadScene("Menu", LoadSceneMode.Single);
             }
+        }
+
+        public void BeginExpedition(ExpeditionRunConfiguration run)
+        {
+            ActiveRun = run ?? throw new System.ArgumentNullException(nameof(run));
+        }
+
+        public void ClearActiveRun()
+        {
+            ActiveRun = null;
         }
 
         private void OnDestroy()

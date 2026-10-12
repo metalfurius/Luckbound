@@ -1,5 +1,22 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "startingLoadouts": [
+    {
+      "classId": "class.bellator",
+      "weaponItemId": "weapon.bellator.rusted_sword",
+      "armorItemId": "armor.bellator.guild_cuirass"
+    },
+    {
+      "classId": "class.venator",
+      "weaponItemId": "weapon.venator.short_bow",
+      "armorItemId": "armor.venator.leather_vest"
+    },
+    {
+      "classId": "class.magus",
+      "weaponItemId": "weapon.magus.ember_staff",
+      "armorItemId": "armor.magus.traveler_robe"
+    }
+  ],
   "items": [
     {
       "id": "weapon.bellator.rusted_sword",

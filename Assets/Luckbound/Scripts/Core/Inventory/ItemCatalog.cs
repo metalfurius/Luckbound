@@ -9,8 +9,9 @@ namespace Luckbound.Core.Inventory
     {
         private readonly Dictionary<string, ItemDefinition> _definitions;
         private readonly ReadOnlyCollection<ItemDefinition> _orderedDefinitions;
+        private readonly Dictionary<string, StartingLoadout> _startingLoadouts;
 
-        public ItemCatalog(IEnumerable<ItemDefinition> definitions)
+        public ItemCatalog(IEnumerable<ItemDefinition> definitions, IEnumerable<StartingLoadout> startingLoadouts = null)
         {
             if (definitions == null) throw new ArgumentNullException(nameof(definitions));
 
@@ -35,6 +36,30 @@ namespace Luckbound.Core.Inventory
             }
 
             _orderedDefinitions = ordered.AsReadOnly();
+            _startingLoadouts = new Dictionary<string, StartingLoadout>(StringComparer.Ordinal);
+            if (startingLoadouts != null)
+            {
+                foreach (StartingLoadout loadout in startingLoadouts)
+                {
+                    if (loadout == null) throw new ArgumentException("Starting loadouts cannot contain null entries.", nameof(startingLoadouts));
+                    if (_startingLoadouts.ContainsKey(loadout.ClassId))
+                        throw new ArgumentException("Starting loadouts must be unique by class: " + loadout.ClassId + ".", nameof(startingLoadouts));
+                    if (!_definitions.TryGetValue(loadout.WeaponItemId, out ItemDefinition weapon) || weapon.Kind != ItemKind.Weapon ||
+                        !weapon.IsCompatibleWithClass(loadout.ClassId))
+                        throw new ArgumentException("Starting weapon is missing, not a weapon, or incompatible with " + loadout.ClassId + ".", nameof(startingLoadouts));
+                    if (!_definitions.TryGetValue(loadout.ArmorItemId, out ItemDefinition armor) || armor.Kind != ItemKind.Armor)
+                        throw new ArgumentException("Starting armor is missing or not armor for " + loadout.ClassId + ".", nameof(startingLoadouts));
+                    _startingLoadouts.Add(loadout.ClassId, loadout);
+                }
+
+                foreach (string classId in new[] { "class.bellator", "class.venator", "class.magus" })
+                {
+                    if (!_startingLoadouts.ContainsKey(classId))
+                        throw new ArgumentException("Starting loadout is missing for " + classId + ".", nameof(startingLoadouts));
+                }
+                if (_startingLoadouts.Count != 3)
+                    throw new ArgumentException("Starting loadouts must contain only the three playable classes.", nameof(startingLoadouts));
+            }
         }
 
         public int Count => _definitions.Count;
@@ -64,5 +89,14 @@ namespace Luckbound.Core.Inventory
             }
             throw new KeyNotFoundException("No item definition exists for material " + materialKind + ".");
         }
+
+        public StartingLoadout GetStartingLoadout(string classId)
+        {
+            if (string.IsNullOrWhiteSpace(classId) || !_startingLoadouts.TryGetValue(classId, out StartingLoadout loadout))
+                throw new KeyNotFoundException("No starting loadout exists for class " + (classId ?? "<null>") + ".");
+            return loadout;
+        }
+
+        public IReadOnlyCollection<StartingLoadout> StartingLoadouts => _startingLoadouts.Values;
     }
 }
