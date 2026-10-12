@@ -8,9 +8,10 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01 y C02: Verified; A06 y C03: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07 y C01–C03: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
+- C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -46,7 +47,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | B07 | Demo de movimiento 0.1 | B06 | Verified |
 | C01 | Estadísticas y resolución de daño | B07 | Verified |
 | C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Verified |
-| C03 | Proyectiles y sistema de habilidades | C02 | InProgress |
+| C03 | Proyectiles y sistema de habilidades | C02 | Verified |
 | C04 | Daño recibido, empuje y muerte | C03 | Pending |
 | C05 | Slime funcional | C04 | Pending |
 | C06 | Huesoguardia funcional | C05 | Pending |
@@ -326,10 +327,12 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 
 - **Contrato:** catálogo de las nueve habilidades; validación Core sin dependencia de Unity; preparación de nueve ticks, coste y recarga al comenzar el efecto; coste cero si la acción es inválida o se interrumpe antes; recursos y recargas independientes por habilidad; proyectil físico con `HitId`, máximo de objetivos y deduplicación por `ActorId`; pool propiedad de sala que recupera proyectiles al impacto, expiración o cierre.
 - **Dependencias comprobadas:** C02 `Verified`, commit `2e8730c`; C01 `Verified`, commit `33d4659`.
-- **Estado:** `InProgress`; implementación completa y validación preliminar satisfactoria. Repetiré ambas suites tras el commit de código para guardar evidencia ligada al commit final.
+- **Estado:** `Verified`; implementación y aceptación completadas en el commit `8425b894a1f7d1bf678cddd6a87a1dbc0f37e4c5`.
 - **Cambios:** `Skills.json` y su cargador validan las nueve definiciones; Core resuelve preparación, energía y recargas independientes; `Projectile2D` emite impactos identificados y deduplica objetivos; el pool y `RoomProjectileScope` limpian impactos, caducidad y salida de sala. Se corrigió el orden de activación del objeto del pool después de que PlayMode demostrara que Unity reiniciaba la velocidad asignada mientras el `Rigidbody2D` estaba inactivo.
-- **Validación preliminar:** Unity `6000.6.5f1`, WindowsEditor con dispositivo gráfico Null: EditMode 34/34 y PlayMode 19/19; cero fallos u omitidos en la última ejecución. La prueba de penetración, limpieza de sala y expiración generó reportes bajo `Logs/Scenarios/C03/`; el resultado final se registrará al repetir después del commit.
+- **Aceptación:** Unity `6000.6.5f1`, WindowsEditor con dispositivo gráfico Null; EditMode 34/34 y PlayMode 19/19 tras el commit, cero fallos u omitidos. La comprobación focalizada de los tres escenarios físicos pasa 3/3. XML: `Logs/C03-editmode-commit.xml`, `Logs/C03-playmode-commit.xml` y `Logs/C03-projectile-commit.xml`.
+- **Escenarios físicos:** `C03_RoomProjectileCleanup`, `C03_PiercingProjectile` y `C03_ProjectileExpiry`, semilla y entradas registradas en `Logs/Scenarios/C03/20261012T114435810Z_C03_RoomProjectileCleanup_5eae59a2/`, `Logs/Scenarios/C03/20261012T114436364Z_C03_PiercingProjectile_1f9db1ab/` y `Logs/Scenarios/C03/20261012T114436676Z_C03_ProjectileExpiry_d708d1b0/`. Los tres informes dan `passed=true`, source commit `8425b894a1f7d1bf678cddd6a87a1dbc0f37e4c5` y source hash `f3b885e252ee4932302e9a7293352f98a536aeba16ced9fa149e4662e0d971e7`.
 - **Integridad:** `git diff --check` pasa; los 95 GUID de `.meta` del proyecto son únicos. SHA-256 del plan v1.5: `0B702C08F2585BA7ADF7705C09A53AB5066361EB5278363267CD8FBEE0891F1E`.
+- **Resultado:** aceptación C03 satisfecha; C04 es la siguiente tarea habilitada. Los avisos conocidos de `AudioListener` aparecen al cambiar escenas en parte de la suite PlayMode y no causaron fallos C03.
 
 ## Ficha que debe completar cada ejecución
 
