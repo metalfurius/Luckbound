@@ -41,6 +41,8 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
             "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
             "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+            "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+            "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
             "Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
             "Assets/Luckbound/Scripts/Core/Inventory/ItemRarity.cs",
             "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
@@ -104,6 +106,9 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Content/ItemCatalogJsonLoader.cs",
             "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
             "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+            "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+            "Assets/Luckbound/Scripts/App/FileSaveStore.cs",
+            "Assets/Luckbound/Scripts/App/WebGlFileSystemSyncer.cs",
             "Assets/Luckbound/Scripts/App/ExpeditionRunConfigurationFactory.cs",
             "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
             "Assets/Luckbound/Scripts/App/ExpeditionRunSessionPresenter.cs",
@@ -159,6 +164,8 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
             "Assets/Luckbound/Tests/PlayMode/CustodianBossTests.cs",
             "Assets/Luckbound/Tests/PlayMode/ExpeditionSettlementFlowTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
+            "Assets/Luckbound/Plugins/WebGL/LuckboundFileSystemSync.jslib",
             "Assets/Resources/Luckbound/Data/Skills.json"
         };
 

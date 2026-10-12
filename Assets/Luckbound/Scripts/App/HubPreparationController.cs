@@ -33,6 +33,7 @@ namespace Luckbound.App
         private List<SkillDefinition> _classSkills = new List<SkillDefinition>(3);
         private int _selectedClassIndex;
         private string _statusMessage;
+        private string _profileStatusMessage;
 
         public string SelectedClassId => PlayableClasses[_selectedClassIndex];
         public string SelectedRaceId => ExpeditionRunConfiguration.HumanRaceId;
@@ -67,6 +68,7 @@ namespace Luckbound.App
                 TextAsset skillData = Resources.Load<TextAsset>("Luckbound/Data/Skills");
                 if (skillData == null) throw new InvalidOperationException("Skills.json could not be loaded.");
                 _skillCatalog = SkillCatalogJsonLoader.Load(skillData.text);
+                RefreshProfileStatus();
                 SelectClass(0);
                 SelectHumanRace();
                 RefreshView();
@@ -140,6 +142,13 @@ namespace Luckbound.App
 
         public void StartExpedition()
         {
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null || !app.CanStartNewExpedition)
+            {
+                _profileStatusMessage = ProfileStatusMessage(app);
+                RefreshView();
+                return;
+            }
             if (_selectedSkillIds.Count != 2)
             {
                 _statusMessage = "Debes elegir exactamente dos habilidades.";
@@ -151,8 +160,6 @@ namespace Luckbound.App
             {
                 ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
                     SelectedClassId, SelectedRaceId, _selectedSkillIds);
-                ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
-                if (app == null) throw new InvalidOperationException("The persistent application root is not available.");
                 app.BeginExpedition(run);
                 Time.timeScale = 1f;
                 SceneManager.LoadScene("Expedition", LoadSceneMode.Single);
@@ -224,11 +231,34 @@ namespace Luckbound.App
             }
             if (_statusText != null)
             {
-                _statusText.text = string.IsNullOrEmpty(_statusMessage)
+                string selectionStatus = string.IsNullOrEmpty(_statusMessage)
                     ? (_selectedSkillIds.Count == 2 ? "Preparación lista · 100 SALUD · 50 ENERGÍA · 2 pociones" : "Elige exactamente dos habilidades (" + _selectedSkillIds.Count + "/2).")
                     : _statusMessage;
+                _statusText.text = string.IsNullOrEmpty(_profileStatusMessage) ? selectionStatus : _profileStatusMessage;
             }
-            if (_startExpeditionButton != null) _startExpeditionButton.interactable = _selectedSkillIds.Count == 2;
+            if (_startExpeditionButton != null)
+            {
+                ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+                _startExpeditionButton.interactable = _selectedSkillIds.Count == 2 && app != null && app.CanStartNewExpedition;
+            }
+        }
+
+        private void RefreshProfileStatus()
+        {
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null) return;
+            if (app.ProfileLoadStatus == SaveLoadStatus.RecoveredBackup || !app.CanStartNewExpedition)
+                _profileStatusMessage = ProfileStatusMessage(app);
+        }
+
+        private static string ProfileStatusMessage(ApplicationBootstrapper app)
+        {
+            if (app == null || !app.SaveDataReady) return "El perfil todavía no está disponible. Vuelve a intentarlo en unos segundos.";
+            if (app.HasPendingSettlement) return "Hay una liquidación pendiente de guardar. Reinténtala o exporta el guardado antes de iniciar otra expedición.";
+            if (app.ProfileLoadStatus == SaveLoadStatus.Incompatible) return "El perfil pertenece a una versión más nueva. Se conserva sin cambios y no se iniciará una partida nueva.";
+            if (app.ProfileLoadStatus == SaveLoadStatus.RecoveredBackup) return "El perfil principal estaba dañado; se recuperó la copia de respaldo. Revisa el Renombre y vuelve a guardar cuando puedas.";
+            if (app.ProfileLoadStatus == SaveLoadStatus.Corrupted) return "El perfil y su respaldo no se pudieron leer. Se conservaron y no se sobrescribirán.";
+            return "El perfil no está disponible; no se iniciará una expedición.";
         }
 
         private void ValidateReferences()
