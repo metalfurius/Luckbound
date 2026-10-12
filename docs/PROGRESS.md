@@ -8,13 +8,14 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07 y C01–C06: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07 y C01–C07: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
 - C04 integra salud, protección tras impacto directo, empuje, aturdimiento opcional y bloqueo de acciones tras morir; ambas suites y los escenarios de aceptación pasan.
 - C05 añade al Slime con persecución a 60 Hz, aviso de 27 ticks, salto de ataque físico, daño de 8 una sola vez por `HitId` y derrota real mediante proyectil; ambas suites y los escenarios físicos pasan en el commit `1510320`.
 - C06 añade al Huesoguardia con guardia direccional, corte físico y recuperación vulnerable; el bono temporal de defensa se calcula en Core y ambas suites y escenarios pasan en el commit `5bc36a0`.
+- C07 añade HUD de recursos, poción interrumpible y pausa con suspensión/restauración explícita de la simulación 2D; ambas suites y escenarios pasan en el commit `6d7e0d8`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -54,7 +55,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C04 | Daño recibido, empuje y muerte | C03 | Verified |
 | C05 | Slime funcional | C04 | Verified |
 | C06 | Huesoguardia funcional | C05 | Verified |
-| C07 | HUD, pociones y pausa | C06 | Pending |
+| C07 | HUD, pociones y pausa | C06 | Verified |
 | C08 | Arena de combate | C07 | Pending |
 | D01 | Sala, puertos y marcadores | C08 | Pending |
 | D02 | Generación por semilla | D01 | Pending |
@@ -371,6 +372,18 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación:** Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null. Postcommit: `unity test . --mode EditMode --output Logs\C06-EditMode-commit.xml --timeout 1200 -- -nographics` → 40/40; `unity test . --mode PlayMode --output Logs\C06-PlayMode-commit.xml --timeout 1200 -- -nographics` → 25/25. Cero fallos, omitidos o inconclusos. `git diff --check` pasa.
 - **Plan:** v1.8, SHA-256 `5012C0FB521837FE1141B426EEFBEE4FC4F3261967A6008374CBC35DC10AFD9A`.
 - **Resultado:** aceptación C06 satisfecha; C07 queda habilitada. No se generó ni publicó una build; A06 y la ruta pública siguen sin una ejecución nueva.
+
+## Ejecución C07 — HUD, pociones y pausa
+
+- **Contrato:** HUD con salud y energía actuales/máximas y cargas actuales/máximas de poción; dos pociones iniciales, máximo tres y cura de 25 tras 21 ticks. Sin gasto con salud completa o sin cargas; un impacto aceptado o una esquiva válida cancela la preparación. Escape/Menu alternan la pausa desde el callback de input; la pérdida de foco pausa y Escape/Menu reanuda.
+- **Dependencias comprobadas:** C06 `Verified`, commit `5bc36a0e3c794302af6ff64a7abc81c01c9d4bff`; B07 `Verified`, commit `fbe4cf1`.
+- **Estado:** `Verified`; implementación en `6d7e0d8ae26c96560cb3703635a1353c78bdec11` (`feat(expedition): implement C07 hud consumables and pause`).
+- **Cambios:** `PlayerHudPresenter` consulta una instantánea real de `PlayerMotor2D`; el jugador inicia con energía llena y `HealthPotionUseState` mantiene preparación, carga y curación deterministas. `ExpeditionPauseController` escucha Escape/Menu fuera de `FixedUpdate`, presenta el estado de pausa y, al perder foco, detiene `timeScale`, suspende temporalmente `Physics2D.simulationMode` y restaura el modo anterior al reanudar. El movimiento y los relojes de jugador, Slime, Huesoguardia y proyectiles permanecen quietos durante cualquier `FixedUpdate` invocado con tiempo detenido.
+- **HUD y poción:** `C07_HudAndHealthPotion`, semilla `17320508`. Comprueba energía inicial 50/50, estado vivo 60/100 y 37/50, 2/3 cargas, 20 ticks sin cura, cura de 25 en el tick 21, HUD 85/100 y 1/3, cancelación por impacto (salud 75, sin gastar) y cancelación por esquiva válida (sin gastar). Informe: `Logs/Scenarios/C07/20261012T130841872Z_C07_HudAndHealthPotion_c304a0ff/scenario-report.json`.
+- **Pausa:** `C07_PauseAndFocusLoss`, semilla `22360679`. La pérdida de foco deja `timeScale=0`, suspende `Physics2D` y conserva tick y posición del cuerpo; un Escape real del Input System restaura el modo 2D y reanuda ambos. Informe: `Logs/Scenarios/C07/20261012T130842425Z_C07_PauseAndFocusLoss_4e493e21/scenario-report.json`. Ambos informes tienen `passed=true`, commit `6d7e0d8ae26c96560cb3703635a1353c78bdec11` y source hash `92500d40ef0109784d7dd2639ceb32a125b42792ff3708cd740b3abdc9e152b9`.
+- **Aceptación:** Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null. Postcommit: `unity test . --mode EditMode --output Logs\C07-EditMode-commit.xml --timeout 1200 -- -nographics` → 45/45; `unity test . --mode PlayMode --output Logs\C07-PlayMode-commit.xml --timeout 1200 -- -nographics` → 27/27. Cero fallos, omitidos o inconclusos. `git diff --check` pasa; los 144 GUID `.meta` son únicos.
+- **Plan:** v1.9, SHA-256 `25DC4229085B552028C5B5DF28A03E19BE45F9201BB34304AF04D409CFA7BA27`.
+- **Resultado:** aceptación C07 satisfecha; C08 queda habilitada. No se generó ni publicó una build; A06 y la ruta pública siguen sin una ejecución nueva.
 
 ## Ficha que debe completar cada ejecución
 
