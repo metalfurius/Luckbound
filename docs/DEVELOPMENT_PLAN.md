@@ -446,6 +446,8 @@ El jugador utilizará `Rigidbody2D`, rotación bloqueada, interpolación y detec
 
 No habrá salto doble ni salto de pared en 1.0.
 
+La esquiva será horizontal, usable tanto en suelo como en aire, a 12 unidades/s durante 0,18 s (2,16 unidades en espacio libre). La dirección se fija al activarla: entrada horizontal actual, o último lado mirado si no hay entrada; el valor inicial es derecha. Conserva la velocidad vertical y su gravedad, pero bloquea el salto durante la maniobra y no guarda esa pulsación. La invulnerabilidad ocupa los primeros 0,12 s; la recarga de 0,80 s empieza al activar la esquiva. La física mantiene la colisión con paredes; no se teletransporta al otro lado. Los intervalos se discretizan al tick fijo más próximo.
+
 Una caída fuera de la sala devolverá al jugador al último apoyo seguro, causará diez puntos de daño y concederá una breve protección. Las arenas de jefes no tendrán caídas al vacío.
 
 ### 3.3. Controles
@@ -1257,7 +1259,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 | B02 | Input System y mapas de entrada | Teclado y mando producen las mismas acciones; no se pierden pulsaciones entre ticks |
 | B03 | Movimiento, collider y suelo | En el escenario `B03_WalkWall`, queda apoyado en `Ground`, alcanza al menos 5,9 u/s frente al objetivo de 6, frena al soltar y la cápsula no atraviesa una pared estática |
 | B04 | Salto variable, buffer y coyote | Salto completo alcanza 3,0 ± 0,3 unidades en 0,40 ± 0,05 s; soltar lo reduce; salto almacenado dentro de 0,12 s se ejecuta al aterrizar; salto tras coyote de 0,10 s se rechaza |
-| B05 | Esquiva y recarga | Invulnerabilidad coincide con la ventana definida y respeta obstáculos |
+| B05 | Esquiva y recarga a 60 Hz | Escenario `B05_Dodge` confirma 12 u/s, duración 0,18 ± un tick, invulnerabilidad 0,12 ± un tick, recarga desde activación de 0,80 ± un tick, dirección fija, rechazo durante la recarga y colisión con pared |
 | B06 | Cámara y representación de estados | Seguimiento estable, límites de sala y cambios correctos de animación |
 | B07 | Demo de movimiento 0.1 | Recorrido completo mediante entradas; build para primera revisión de Fran |
 

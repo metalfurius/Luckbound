@@ -24,6 +24,10 @@ namespace Luckbound.Gameplay.Movement
         public const float CoyoteDuration = 0.1f;
         public const float JumpBufferDuration = 0.12f;
         public const float JumpCutMultiplier = 0.5f;
+        public const float DodgeSpeed = 12f;
+        public const float DodgeDuration = 0.18f;
+        public const float DodgeInvulnerabilityDuration = 0.12f;
+        public const float DodgeCooldownDuration = 0.8f;
 
         private const float GroundProbeDistance = 0.08f;
         private const float GroundNormalThreshold = 0.65f;
@@ -41,12 +45,26 @@ namespace Luckbound.Gameplay.Movement
         private PhysicsMaterial2D _previousMaterial;
         private Rigidbody2D _body;
         private float _coyoteTimeRemaining;
+        private float _dodgeCooldownRemaining;
+        private float _dodgeDirection = 1f;
+        private float _dodgeElapsed;
+        private float _facingDirection = 1f;
         private float _jumpBufferRemaining;
+        private bool _dodgeActive;
+        private bool _dodgeSpeedRecoveryPending;
         private long _tick;
 
         public bool IsGrounded { get; private set; }
 
+        public bool IsDodging { get; private set; }
+
+        public bool IsInvulnerable { get; private set; }
+
+        public bool IsDodgeReady => !_dodgeActive && _dodgeCooldownRemaining <= 0f;
+
         public float CoyoteTimeRemaining => _coyoteTimeRemaining;
+
+        public float DodgeCooldownRemaining => _dodgeCooldownRemaining;
 
         public float JumpBufferRemaining => _jumpBufferRemaining;
 
@@ -74,9 +92,9 @@ namespace Luckbound.Gameplay.Movement
                 throw new ArgumentException("PlayerMotor2D requires at least one ground layer.", nameof(groundLayers));
             }
 
-            if (Physics2D.gravity.y >= -0.01f)
+            if (Mathf.Abs(Physics2D.gravity.x) > 0.01f || Physics2D.gravity.y >= -0.01f)
             {
-                throw new InvalidOperationException("PlayerMotor2D requires downward 2D gravity on the Y axis.");
+                throw new InvalidOperationException("PlayerMotor2D requires vertical downward 2D gravity with no horizontal component.");
             }
 
             _body = GetComponent<Rigidbody2D>();
@@ -161,6 +179,24 @@ namespace Luckbound.Gameplay.Movement
             }
 
             float input = command.MoveX;
+            if (Mathf.Abs(input) > MovementDeadZone)
+            {
+                _facingDirection = Mathf.Sign(input);
+            }
+
+            if (_dodgeCooldownRemaining > 0f)
+            {
+                _dodgeCooldownRemaining = Mathf.Max(0f, _dodgeCooldownRemaining - deltaTime);
+            }
+
+            if (command.WasPressed(PlayerAction.Dodge) && IsDodgeReady)
+            {
+                _dodgeActive = true;
+                _dodgeElapsed = 0f;
+                _dodgeDirection = Mathf.Abs(input) > MovementDeadZone ? Mathf.Sign(input) : _facingDirection;
+                _dodgeCooldownRemaining = DodgeCooldownDuration;
+            }
+
             float targetSpeed = input * MaximumHorizontalSpeed;
             float acceleration = Mathf.Abs(input) > MovementDeadZone ? GroundAcceleration : GroundBraking;
             if (!IsGrounded)
@@ -169,19 +205,43 @@ namespace Luckbound.Gameplay.Movement
             }
 
             Vector2 velocity = _body.linearVelocity;
-            velocity.x = Mathf.MoveTowards(velocity.x, targetSpeed, acceleration * deltaTime);
-
-            if (_jumpBufferRemaining > 0f && _coyoteTimeRemaining > 0f)
+            if (_dodgeActive)
             {
-                velocity.y = Mathf.Sqrt(2f * AscendingGravity * JumpHeight);
+                IsDodging = true;
+                IsInvulnerable = _dodgeElapsed + (deltaTime * 0.5f) < DodgeInvulnerabilityDuration;
+                velocity.x = _dodgeDirection * DodgeSpeed;
                 _jumpBufferRemaining = 0f;
-                _coyoteTimeRemaining = 0f;
-                IsGrounded = false;
+                _dodgeElapsed += deltaTime;
+                if (_dodgeElapsed >= DodgeDuration)
+                {
+                    _dodgeActive = false;
+                    _dodgeSpeedRecoveryPending = true;
+                }
             }
-
-            if (command.WasReleased(PlayerAction.Jump) && velocity.y > 0f)
+            else
             {
-                velocity.y *= JumpCutMultiplier;
+                IsDodging = false;
+                IsInvulnerable = false;
+                if (_dodgeSpeedRecoveryPending)
+                {
+                    velocity.x = _dodgeDirection * MaximumHorizontalSpeed;
+                    _dodgeSpeedRecoveryPending = false;
+                }
+
+                velocity.x = Mathf.MoveTowards(velocity.x, targetSpeed, acceleration * deltaTime);
+
+                if (_jumpBufferRemaining > 0f && _coyoteTimeRemaining > 0f)
+                {
+                    velocity.y = Mathf.Sqrt(2f * AscendingGravity * JumpHeight);
+                    _jumpBufferRemaining = 0f;
+                    _coyoteTimeRemaining = 0f;
+                    IsGrounded = false;
+                }
+
+                if (command.WasReleased(PlayerAction.Jump) && velocity.y > 0f)
+                {
+                    velocity.y *= JumpCutMultiplier;
+                }
             }
 
             ApplyVerticalGravity(ref velocity, deltaTime);

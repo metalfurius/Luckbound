@@ -18,6 +18,7 @@ namespace Luckbound.Tests.PlayMode
         {
             "ProjectSettings/ProjectVersion.txt",
             "ProjectSettings/TagManager.asset",
+            "ProjectSettings/TimeManager.asset",
             "Assets/Luckbound/Scenes/Bootstrap.unity",
             "Assets/Luckbound/Scenes/Menu.unity",
             "Assets/Resources/Luckbound/InputSystem_Actions.inputactions",
@@ -28,9 +29,11 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Gameplay/Luckbound.Gameplay.asmdef",
             "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
             "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+            "Assets/Luckbound/Editor/ProjectDevelopmentChecks.cs",
             "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
             "Assets/Luckbound/Tests/PlayMode/ScenarioEvidenceRecorder.cs",
             "Assets/Luckbound/Tests/PlayMode/JumpControlTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/PlayerDodgeTests.cs",
             "Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
             "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs"
         };

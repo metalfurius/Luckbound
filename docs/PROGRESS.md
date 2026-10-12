@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B04: Verified; A06: InProgress; B05–J09: Pending.
+- A01–A05, A07–A08, B01–B05: Verified; A06: InProgress; B06–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B04 verifica salto variable, buffer de aterrizaje y ventana de coyote; B05 queda habilitada.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija y comprueba la física a 60 Hz; las regresiones B03–B04 pasan en esa cadencia.
 
 ## Estados y dependencias
 
@@ -41,7 +41,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | B02 | Input System y mapas de entrada | B01 | Verified |
 | B03 | Movimiento, collider y suelo | B02 | Verified |
 | B04 | Salto variable, buffer y coyote | B03 | Verified |
-| B05 | Esquiva y recarga | B04 | Pending |
+| B05 | Esquiva y recarga | B04 | Verified |
 | B06 | Cámara y representación de estados | B05 | Pending |
 | B07 | Demo de movimiento 0.1 | B06 | Pending |
 | C01 | Estadísticas y resolución de daño | B07 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `54C89E4C75F9E1AF6D2836A36D6B23E0C7A14243C72C24ED15236FFDDB285A3F`.
+Hash SHA-256 del plan comprobado: `F21D400FE3FBA2CF016A9AC3811F72291FFACD7F40FB7817D85A953D50E943CA`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -248,8 +248,8 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 
 - Se añadió la capa de colisión `Ground` y `PlayerMotor2D`, separado de la representación visual. El actor usa `Rigidbody2D` dinámico con rotación bloqueada, interpolación y colisión continua; la consulta de suelo filtra la capa `Ground` y exige una normal ascendente. La entrada se consume una vez por tick y se valida que pertenezca al `ActorId` del motor.
 - Contrato inicial de locomoción: velocidad horizontal máxima 6 u/s, aceleración 60 u/s², frenado 80 u/s² y control aéreo al 85 %. La cápsula no atraviesa paredes estáticas. Un material físico creado y destruido por el componente fija fricción y rebote a cero con combinación `Minimum`; el primer escenario había medido 5,765 u/s al rozar el suelo, por lo que se eliminó el rozamiento incidental y se volvió a ejecutar la prueba.
-- `B03_WalkWall`, semilla `31415926`, Unity `6000.6.5f1`, Windows/PlayMode: suelo detectado antes de moverse; velocidad máxima `6,000 u/s`; velocidad antes del frenado `6,000 u/s`; después `0,000 u/s`; pared izquierda en `x=7,500`; máximo y posición final `x=7,128` y `x=7,120`. Las cinco aserciones pasan. Reporte: `Logs/Scenarios/B03/20261011T202707693Z_B03_WalkWall_57c667a5/scenario-report.json` (carpeta local ignorada por Git); `sourceHash=5bc8d8c3894e2deaf40c7085142c366605b52dc05dc243344e00f4055d23d536`. Captura omitida al ejecutarse con dispositivo gráfico nulo.
-- `unity test . --mode EditMode --output Logs\B03-editmode-final.xml --timeout 1200 -- -nographics` → 12/12 pasan. `unity test . --mode PlayMode --output Logs\B03-playmode-material.xml --timeout 1200 -- -nographics` → 5/5 pasan.
+- Revalidado a 60 Hz en `B05_Dodge` usando la semilla `31415926`, Editor `6000.6.5f1`, WindowsEditor y hash `4415f2c8a31e3759f21575ffd3a279578e7527442210df9d196acf7032c13bb9`: suelo detectado; velocidad máxima `6,000 u/s`; antes/después del frenado `6,000`/`0,000 u/s`; pared izquierda `x=7,500`; máximo y final `x=7,120`. Las cinco aserciones pasan. Reporte: `Logs/Scenarios/B03/20261012T085418529Z_B03_WalkWall_79568bd6/scenario-report.json`.
+- El escenario original `B03_WalkWall` también pasó antes de fijar 60 Hz; la suite PlayMode conjunta tras el cambio registra 9/9 pruebas aprobadas. El build Windows B05 vuelve a compilar el proyecto con esta cadencia.
 - Build Windows x64: `unity build . --target StandaloneWindows64 --output-path Builds\B03\Windows\Luckbound.exe --allow-dirty-build --timeout 600 --no-tail` → `success`, código 0, Editor `6000.6.5f1`; procedencia en `Builds/B03/Windows/Luckbound.provenance.json`. Los avisos de renovación de licencia de la CLI no alteraron el resultado.
 - Auditoría: 75 GUID de `.meta`, todos únicos; `git diff --check` sin errores.
 - **Aceptación B03 satisfecha; estado Verified.**
@@ -257,14 +257,25 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 ## Evidencia B04 — Salto variable, buffer y coyote
 
 - `PlayerMotor2D` aplica gravedad ascendente `37,5 u/s²`, descendente `56,25 u/s²`, altura objetivo de `3 u`, ápice de `0,40 s`, caída máxima de `22 u/s`, coyote de `0,10 s` y buffer de `0,12 s`. La velocidad del salto deriva de altura y gravedad. Soltar el botón reduce a la mitad la velocidad ascendente. El material del motor restaura el material previo al destruir el componente.
-- Los tres escenarios PlayMode usan física de Unity y comandos de `PlayerInputBuffer`, semilla `31415926`, Editor `6000.6.5f1`, WindowsEditor y hash de fuentes `ce5ba37865ee7f8134a354e2c1059c96796404fbc8ff5448620f3813fe408cb0`:
-  - `B04_JumpProfile` (`Logs/Scenarios/B04/20261012T084205049Z_B04_JumpProfile_60ac76d2`): salto mantenido `2,850 u`, ápice `0,420 s`; al soltar, altura `0,892 u`; velocidad ascendente antes/después del corte `14,250`/`6,375 u/s`. Cinco aserciones pasan.
-  - `B04_JumpBuffer` (`Logs/Scenarios/B04/20261012T084206407Z_B04_JumpBuffer_66ab531b`): la entrada llega descendiendo a `-2,250 u/s`; activa el salto al tocar suelo `0,080 s` después, dentro del buffer de `0,12 s`. Tres aserciones pasan.
-  - `B04_Coyote` (`Logs/Scenarios/B04/20261012T084203742Z_B04_Coyote_92011480`): tras salir de la plataforma quedan `0,040 s`; el salto se acepta con `12,750 u/s`. Una vez expirado el tiempo, la entrada se rechaza y la velocidad sigue descendiendo (`-18,952 u/s`). Cinco aserciones pasan.
-- `unity test . --mode PlayMode --output Logs\B04-playmode-final.xml --timeout 1200 -- -nographics` → 8/8 pasan; `unity test . --mode EditMode --output Logs\B04-editmode-final.xml --timeout 1200 -- -nographics` → 12/12 pasan.
+- Los tres escenarios PlayMode usan física de Unity y comandos de `PlayerInputBuffer`, semilla `31415926`, Editor `6000.6.5f1`, WindowsEditor y hash de fuentes `4415f2c8a31e3759f21575ffd3a279578e7527442210df9d196acf7032c13bb9`; se revalidaron junto con B05 a 60 Hz:
+  - `B04_JumpProfile` (`Logs/Scenarios/B04/20261012T085415621Z_B04_JumpProfile_a69fe7be`): salto mantenido `2,875 u`, ápice `0,400 s`; al soltar, altura `0,870 u`; velocidad ascendente antes/después del corte `14,375`/`6,563 u/s`. Cinco aserciones pasan.
+  - `B04_JumpBuffer` (`Logs/Scenarios/B04/20261012T085416737Z_B04_JumpBuffer_7f3254f9`): la entrada llega descendiendo a `-1,875 u/s`; activa el salto `0,083 s` después, dentro del buffer de `0,12 s`. Tres aserciones pasan.
+  - `B04_Coyote` (`Logs/Scenarios/B04/20261012T085414478Z_B04_Coyote_780802f6`): tras salir de la plataforma quedan `0,050 s`; el salto se acepta con `13,125 u/s`. Una vez expirado el tiempo, la entrada se rechaza y la velocidad sigue descendiendo (`-16,730 u/s`). Cinco aserciones pasan.
+- En la regresión a 60 Hz, `unity test . --mode PlayMode --output Logs\B05-playmode-retry.xml --timeout 1200 -- -nographics` → 9/9 pasan (B03, B04 y B05); `unity test . --mode EditMode --output Logs\B05-editmode-final.xml --timeout 1200 -- -nographics` → 12/12 pasan.
 - Build Windows x64: `unity build . --target StandaloneWindows64 --output-path Builds\B04\Windows\Luckbound.exe --allow-dirty-build --timeout 900 --no-tail` → `success`, código 0, Editor `6000.6.5f1`; procedencia en `Builds/B04/Windows/Luckbound.provenance.json`. Persisten avisos no bloqueantes de validación/renovación de licencia de Unity.
 - Auditoría: 76 GUID de `.meta`, todos únicos; `git diff --check` sin errores.
 - **Aceptación B04 satisfecha; estado Verified.**
+
+## Evidencia B05 — Esquiva, invulnerabilidad, recarga y tick fijo
+
+- Unity estaba usando el valor predeterminado `0,02 s` (50 Hz), aunque el plan exige 60 Hz. `ProjectSettings/TimeManager.asset` ahora fija `0,016666668 s`; `ProjectDevelopmentChecks` rechaza cualquier ajuste distinto de 1/60 s y el escenario lo comprueba.
+- La esquiva horizontal se fija al input al activarse (o al último lado mirado; empieza mirando a la derecha), funciona en suelo y aire, desplaza a `12 u/s` durante `0,18 s`, conserva la física vertical, no acepta ni almacena salto durante la maniobra, brinda invulnerabilidad los primeros `0,12 s` y empieza una recarga de `0,80 s` al activarse. No atraviesa paredes. `PlayerMotor2D` expone estado para la integración futura de daño y cancelación de recuperación de ataque.
+- `B05_Dodge`, semilla `31415926`, Editor `6000.6.5f1`, WindowsEditor, `fixedDeltaTime=0,016667`, hash `4415f2c8a31e3759f21575ffd3a279578e7527442210df9d196acf7032c13bb9`; reporte `Logs/Scenarios/B05/20261012T085417021Z_B05_Dodge_3065208a/scenario-report.json`. Once aserciones pasan: duración `0,183 s` (11 ticks), invulnerabilidad `0,117 s` (7 ticks), desplazamiento libre `2,200 u`, pared izquierda `x=1,750` y actor detenido en `x=1,370`; la recarga reactivó a `0,817 s`, y el intento temprano bajó el restante `0,617` → `0,600 s` sin reiniciarlo. La dirección se mantuvo aunque el input cambió a la izquierda y luego usó ese último lado para reactivarse.
+- La primera medición de recarga falló porque el test iniciaba el cronómetro antes de que el comando alcanzara su tick y leía después de activar la segunda esquiva. Se corrigieron los extremos de medida; el reloj del juego quedó igual y el segundo escenario pasó con la tolerancia de un tick fijada en el plan.
+- `unity test . --mode PlayMode --output Logs\B05-playmode-retry.xml --timeout 1200 -- -nographics` → 9/9 pasan; `unity test . --mode EditMode --output Logs\B05-editmode-final.xml --timeout 1200 -- -nographics` → 12/12 pasan.
+- Build Windows x64: `unity build . --target StandaloneWindows64 --output-path Builds\B05\Windows\Luckbound.exe --allow-dirty-build --timeout 900 --no-tail` → `success`, código 0, Editor `6000.6.5f1`; procedencia en `Builds/B05/Windows/Luckbound.provenance.json`. Unity aún registra avisos no bloqueantes de validación de licencia.
+- Auditoría: 77 GUID de `.meta`, todos únicos; `git diff --check` sin errores.
+- **Aceptación B05 satisfecha; estado Verified.** B06 queda habilitada.
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:

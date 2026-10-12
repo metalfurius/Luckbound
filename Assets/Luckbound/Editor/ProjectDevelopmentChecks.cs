@@ -43,6 +43,7 @@ namespace Luckbound.Editor
             ValidateBuildScenes(errors);
             ValidateInputActions(errors);
             ValidateGroundLayer(errors);
+            ValidateSimulationRate(errors);
             ValidateWebGlProfile(errors);
             ValidateAssemblies(errors);
 
@@ -211,6 +212,15 @@ namespace Luckbound.Editor
             if (InternalEditorUtility.layers == null || !InternalEditorUtility.layers.Contains("Ground"))
             {
                 errors.Add("The Ground layer is required for actor grounding and collision scenarios.");
+            }
+        }
+
+        private static void ValidateSimulationRate(List<string> errors)
+        {
+            const float expectedFixedDeltaTime = 1f / 60f;
+            if (Mathf.Abs(Time.fixedDeltaTime - expectedFixedDeltaTime) > 0.000001f)
+            {
+                errors.Add("Physics fixed timestep must be 1/60 second; found " + Time.fixedDeltaTime + ".");
             }
         }
 
