@@ -44,6 +44,14 @@ namespace Luckbound.Tests.Editor
             "Assets/Resources/Luckbound/Data/Encounters.meta",
             "Assets/Resources/Luckbound/Data/Encounters/C08Arena.json",
             "Assets/Resources/Luckbound/Data/Encounters/C08Arena.json.meta",
+            "Assets/Resources/Luckbound/Data/Rooms.meta",
+            "Assets/Resources/Luckbound/Data/Rooms/D01PrototypeRoom.json",
+            "Assets/Resources/Luckbound/Data/Rooms/D01PrototypeRoom.json.meta",
+            "Assets/Resources/Luckbound/Rooms.meta",
+            "Assets/Resources/Luckbound/Rooms/PrototypeFloorTile.asset",
+            "Assets/Resources/Luckbound/Rooms/PrototypeFloorTile.asset.meta",
+            "Assets/Resources/Luckbound/Rooms/PrototypeRoom.prefab",
+            "Assets/Resources/Luckbound/Rooms/PrototypeRoom.prefab.meta",
             "ProjectSettings/EditorBuildSettings.asset",
             "ProjectSettings/ProjectSettings.asset"
         };

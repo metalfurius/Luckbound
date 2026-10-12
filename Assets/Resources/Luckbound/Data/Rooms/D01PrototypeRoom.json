@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "templateId": "room.patio.prototype",
+  "widthTiles": 24,
+  "heightTiles": 14,
+  "tileSize": 1,
+  "minimumPortClearanceTiles": 3,
+  "minimumEnemyDistanceTiles": 8,
+  "gridRows": [
+    "########################",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................"
+  ],
+  "ports": [
+    { "id": "port.entry.west", "type": "entry", "side": "west", "tileX": 0, "tileY": 1, "clearanceTiles": 3 },
+    { "id": "port.exit.east", "type": "exit", "side": "east", "tileX": 23, "tileY": 1, "clearanceTiles": 3 }
+  ],
+  "markers": [
+    { "id": "spawn.player", "kind": "player_spawn", "tileX": 2, "tileY": 1 },
+    { "id": "spawn.enemy.slime.01", "kind": "enemy_spawn", "tileX": 12, "tileY": 1 },
+    { "id": "exit.trigger", "kind": "exit_trigger", "tileX": 21, "tileY": 1 }
+  ]
+}

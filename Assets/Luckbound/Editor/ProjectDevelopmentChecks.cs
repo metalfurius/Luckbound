@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Luckbound.App;
+using Luckbound.Content;
 using Luckbound.Gameplay.Movement;
+using Luckbound.Gameplay.Rooms;
 using Luckbound.Presentation;
 using Unity.Cinemachine;
 using UnityEditor;
@@ -63,6 +65,7 @@ namespace Luckbound.Editor
             }
 
             ValidateCombatArena(errors);
+            ValidateRoomTemplate(errors);
 
             return errors;
         }
@@ -502,6 +505,36 @@ namespace Luckbound.Editor
             finally
             {
                 if (openedByCheck && scene.IsValid() && scene.isLoaded) EditorSceneManager.CloseScene(scene, true);
+            }
+        }
+
+        private static void ValidateRoomTemplate(List<string> errors)
+        {
+            const string definitionPath = "Assets/Resources/Luckbound/Data/Rooms/D01PrototypeRoom.json";
+            const string prefabPath = "Assets/Resources/Luckbound/Rooms/PrototypeRoom.prefab";
+            TextAsset source = AssetDatabase.LoadAssetAtPath<TextAsset>(definitionPath);
+            if (source == null)
+            {
+                errors.Add("D01 room template JSON could not be imported from " + definitionPath + ".");
+                return;
+            }
+
+            try
+            {
+                RoomTemplateJsonLoader.Load(source.text);
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                RoomTemplatePrefab2D template = prefab == null ? null : prefab.GetComponent<RoomTemplatePrefab2D>();
+                if (template == null)
+                {
+                    errors.Add("D01 room prefab must include RoomTemplatePrefab2D at " + prefabPath + ".");
+                    return;
+                }
+
+                template.ValidateGeneratedPrefab();
+            }
+            catch (Exception exception)
+            {
+                errors.Add("D01 room template or generated prefab is invalid: " + exception.Message);
             }
         }
 
