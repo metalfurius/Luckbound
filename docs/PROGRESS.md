@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D07: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D07: Verified; A06 y D08: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -71,7 +71,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D05 | Taberna y preparación | D04 | Verified |
 | D06 | Custodio provisional | D05 | Verified |
 | D07 | Muerte, extracción y liquidación | D06 | Verified |
-| D08 | Perfil y ajustes con respaldo | D07 | Pending |
+| D08 | Perfil y ajustes con respaldo | D07 | InProgress |
 | D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | Pending |
 | E01 | Materiales y bolsa | D09 | Pending |
 | E02 | Fabricación | E01 | Pending |
@@ -474,6 +474,12 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación postcommit:** commit `dd0a7071fc5426ef3ef7109b7cede5f11f5304ef` (`feat(progression): add idempotent expedition settlement`). EditMode `79/79` y PlayMode `46/46`; cero fallos, omitidos o inconclusos. Los 227 GUID `.meta` son únicos y `git diff --check` pasa. El `sourceHash` del escenario es `e23049dd2ceabc7c3120f02d3c2def0d5c369a9319651f5acc50f936efe4d482`.
 - **Limitación deliberada:** el ledger de perfil aún es temporal en memoria. D08 implementa el archivo, el checksum, el respaldo y la recarga; el flujo persistente al cerrar/reabrir no se afirma aquí.
 - **Resultado:** D07 `Verified`; D08 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 sigue `InProgress`.
+
+## Ejecución D08 — Perfil y ajustes con respaldo (InProgress)
+
+- **Contrato:** el perfil y la expedición ocuparán bloques separados de un sobre versionado; los ajustes tendrán un documento independiente. El perfil cargará saldo, mejoras, desbloqueos, contratos, fragmentos, contadores e IDs de liquidación. Windows usará escritura temporal, respaldo y reemplazo. WebGL sincronizará con IndexedDB y solo confirmará después del callback de `FS.syncfs`.
+- **Dependencia comprobada:** D07 `Verified`, implementación `dd0a7071fc5426ef3ef7109b7cede5f11f5304ef` y evidencia postcommit registrada en `b70ee86`.
+- **Resultado:** trabajo en curso; registrar reinicio, recuperación, rechazo de esquemas nuevos y resultado del adaptador WebGL antes de cerrar la tarea.
 
 ## Ficha que debe completar cada ejecución
 
