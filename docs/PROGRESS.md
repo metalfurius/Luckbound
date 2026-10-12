@@ -1,19 +1,19 @@
 # Luckbound — Registro de progreso
 
-**Actualizado:** 11 de octubre de 2026.
+**Actualizado:** 12 de octubre de 2026.
 
-**Alcance de esta ejecución:** preservar de forma recuperable el prototipo y sus referencias, instalar el editor fijado y empezar el proyecto nuevo siguiendo las tareas verificables del plan.
+**Alcance de esta ejecución:** desarrollar Luckbound por las tareas verificables del plan, conservando el prototipo, las builds y la ruta pública.
 
 Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
-## Estado actual (11 de octubre de 2026)
+## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B03: Verified; A06: InProgress; B04–J09: Pending.
+- A01–A05, A07–A08, B01–B04: Verified; A06: InProgress; B05–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. A07, A08 y B01–B03 están verificadas; B04 queda habilitada para salto variable, buffer y coyote.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B04 verifica salto variable, buffer de aterrizaje y ventana de coyote; B05 queda habilitada.
 
 ## Estados y dependencias
 
@@ -40,7 +40,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | B01 | Sesión, identificadores y propiedad de actores | A08 | Verified |
 | B02 | Input System y mapas de entrada | B01 | Verified |
 | B03 | Movimiento, collider y suelo | B02 | Verified |
-| B04 | Salto variable, buffer y coyote | B03 | Pending |
+| B04 | Salto variable, buffer y coyote | B03 | Verified |
 | B05 | Esquiva y recarga | B04 | Pending |
 | B06 | Cámara y representación de estados | B05 | Pending |
 | B07 | Demo de movimiento 0.1 | B06 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `00EA2ED2C6A527C59BEBD717A1E22E794AE330A0645E4DAB3738229CA86FE6A8`.
+Hash SHA-256 del plan comprobado: `54C89E4C75F9E1AF6D2836A36D6B23E0C7A14243C72C24ED15236FFDDB285A3F`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -253,6 +253,18 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - Build Windows x64: `unity build . --target StandaloneWindows64 --output-path Builds\B03\Windows\Luckbound.exe --allow-dirty-build --timeout 600 --no-tail` → `success`, código 0, Editor `6000.6.5f1`; procedencia en `Builds/B03/Windows/Luckbound.provenance.json`. Los avisos de renovación de licencia de la CLI no alteraron el resultado.
 - Auditoría: 75 GUID de `.meta`, todos únicos; `git diff --check` sin errores.
 - **Aceptación B03 satisfecha; estado Verified.**
+
+## Evidencia B04 — Salto variable, buffer y coyote
+
+- `PlayerMotor2D` aplica gravedad ascendente `37,5 u/s²`, descendente `56,25 u/s²`, altura objetivo de `3 u`, ápice de `0,40 s`, caída máxima de `22 u/s`, coyote de `0,10 s` y buffer de `0,12 s`. La velocidad del salto deriva de altura y gravedad. Soltar el botón reduce a la mitad la velocidad ascendente. El material del motor restaura el material previo al destruir el componente.
+- Los tres escenarios PlayMode usan física de Unity y comandos de `PlayerInputBuffer`, semilla `31415926`, Editor `6000.6.5f1`, WindowsEditor y hash de fuentes `ce5ba37865ee7f8134a354e2c1059c96796404fbc8ff5448620f3813fe408cb0`:
+  - `B04_JumpProfile` (`Logs/Scenarios/B04/20261012T084205049Z_B04_JumpProfile_60ac76d2`): salto mantenido `2,850 u`, ápice `0,420 s`; al soltar, altura `0,892 u`; velocidad ascendente antes/después del corte `14,250`/`6,375 u/s`. Cinco aserciones pasan.
+  - `B04_JumpBuffer` (`Logs/Scenarios/B04/20261012T084206407Z_B04_JumpBuffer_66ab531b`): la entrada llega descendiendo a `-2,250 u/s`; activa el salto al tocar suelo `0,080 s` después, dentro del buffer de `0,12 s`. Tres aserciones pasan.
+  - `B04_Coyote` (`Logs/Scenarios/B04/20261012T084203742Z_B04_Coyote_92011480`): tras salir de la plataforma quedan `0,040 s`; el salto se acepta con `12,750 u/s`. Una vez expirado el tiempo, la entrada se rechaza y la velocidad sigue descendiendo (`-18,952 u/s`). Cinco aserciones pasan.
+- `unity test . --mode PlayMode --output Logs\B04-playmode-final.xml --timeout 1200 -- -nographics` → 8/8 pasan; `unity test . --mode EditMode --output Logs\B04-editmode-final.xml --timeout 1200 -- -nographics` → 12/12 pasan.
+- Build Windows x64: `unity build . --target StandaloneWindows64 --output-path Builds\B04\Windows\Luckbound.exe --allow-dirty-build --timeout 900 --no-tail` → `success`, código 0, Editor `6000.6.5f1`; procedencia en `Builds/B04/Windows/Luckbound.provenance.json`. Persisten avisos no bloqueantes de validación/renovación de licencia de Unity.
+- Auditoría: 76 GUID de `.meta`, todos únicos; `git diff --check` sin errores.
+- **Aceptación B04 satisfecha; estado Verified.**
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:

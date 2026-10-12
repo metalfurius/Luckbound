@@ -30,6 +30,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
             "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
             "Assets/Luckbound/Tests/PlayMode/ScenarioEvidenceRecorder.cs",
+            "Assets/Luckbound/Tests/PlayMode/JumpControlTests.cs",
             "Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
             "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs"
         };
