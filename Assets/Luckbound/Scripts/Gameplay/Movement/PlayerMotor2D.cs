@@ -1,6 +1,7 @@
 using System;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
+using Luckbound.Core.Presentation;
 using UnityEngine;
 
 namespace Luckbound.Gameplay.Movement
@@ -10,7 +11,7 @@ namespace Luckbound.Gameplay.Movement
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
-    public sealed class PlayerMotor2D : MonoBehaviour
+    public sealed class PlayerMotor2D : MonoBehaviour, IPlayerVisualStateSource
     {
         public const float MaximumHorizontalSpeed = 6f;
         public const float GroundAcceleration = 60f;
@@ -69,6 +70,21 @@ namespace Luckbound.Gameplay.Movement
         public float JumpBufferRemaining => _jumpBufferRemaining;
 
         public Vector2 Velocity => _body != null ? _body.linearVelocity : Vector2.zero;
+
+        public float FacingDirection => _facingDirection;
+
+        public PlayerVisualSnapshot CaptureVisualState()
+        {
+            Vector2 velocity = Velocity;
+            PlayerVisualState state = PlayerVisualStateResolver.Resolve(
+                isDead: false,
+                isStunned: false,
+                isDodging: IsDodging,
+                isAttacking: false,
+                isGrounded: IsGrounded,
+                horizontalVelocity: velocity.x);
+            return new PlayerVisualSnapshot(state, velocity.x, velocity.y, _facingDirection);
+        }
 
         public void Initialize(ActorId actorId, IPlayerInputSource inputSource, LayerMask groundLayers)
         {

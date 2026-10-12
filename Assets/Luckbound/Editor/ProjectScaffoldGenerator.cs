@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Luckbound.App;
+using Luckbound.Presentation;
+using Unity.Cinemachine;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -17,6 +21,7 @@ namespace Luckbound.Editor
     public static class ProjectScaffoldGenerator
     {
         private const string SceneDirectory = "Assets/Luckbound/Scenes";
+        private const string PlayerVisualControllerPath = "Assets/Resources/Luckbound/PlayerVisualStates.controller";
         private static readonly string[] SceneNames = { "Bootstrap", "Menu", "Hub", "Expedition" };
 
         [MenuItem("Luckbound/Generate Startup Scenes")]
@@ -77,10 +82,15 @@ namespace Luckbound.Editor
                 RestoreActiveScene(previousActiveScene);
             }
 
+            EnsurePlayerVisualController();
+            EnsureExpeditionCameraRig();
+
             if (createdScenes > 0)
             {
                 AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             }
+
+            AssetDatabase.SaveAssets();
 
             EditorBuildSettingsScene[] mergedBuildScenes = MergeBuildScenes(EditorBuildSettings.scenes);
             if (!BuildScenesEqual(EditorBuildSettings.scenes, mergedBuildScenes))
@@ -188,6 +198,187 @@ namespace Luckbound.Editor
             camera.orthographicSize = 5f;
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = ParseColor(backgroundHex);
+        }
+
+        private static void EnsureExpeditionCameraRig()
+        {
+            string scenePath = ScenePath("Expedition");
+            if (!File.Exists(scenePath))
+            {
+                throw new FileNotFoundException("Expedition scene is required before the camera rig can be generated.", scenePath);
+            }
+
+            Scene previousActiveScene = SceneManager.GetActiveScene();
+            Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+            try
+            {
+                GameObject[] roots = scene.GetRootGameObjects();
+                GameObject cameraObject = roots.SelectMany(root => root.GetComponentsInChildren<Transform>(true))
+                    .Select(transform => transform.gameObject)
+                    .FirstOrDefault(gameObject => gameObject.name == "Main Camera" && gameObject.GetComponent<Camera>() != null);
+                if (cameraObject == null)
+                {
+                    throw new InvalidOperationException("Expedition must contain one Main Camera before B06 can configure its rig.");
+                }
+
+                bool changed = false;
+                if (cameraObject.tag != "MainCamera")
+                {
+                    cameraObject.tag = "MainCamera";
+                    changed = true;
+                }
+                if (cameraObject.GetComponent<AudioListener>() == null)
+                {
+                    cameraObject.AddComponent<AudioListener>();
+                    changed = true;
+                }
+                if (cameraObject.GetComponent<PixelPerfectCamera>() == null)
+                {
+                    cameraObject.AddComponent<PixelPerfectCamera>();
+                    changed = true;
+                }
+                if (cameraObject.GetComponent<CinemachineBrain>() == null)
+                {
+                    cameraObject.AddComponent<CinemachineBrain>();
+                    changed = true;
+                }
+                RoomCameraRig2D rig = cameraObject.GetComponent<RoomCameraRig2D>();
+                if (rig == null)
+                {
+                    rig = cameraObject.AddComponent<RoomCameraRig2D>();
+                    changed = true;
+                }
+
+                if (!CameraRigIsConfigured(cameraObject))
+                {
+                    rig.Configure();
+                    changed = true;
+                }
+
+                if (changed)
+                {
+                    EditorSceneManager.MarkSceneDirty(scene);
+                    if (!EditorSceneManager.SaveScene(scene, scenePath))
+                    {
+                        throw new IOException("Unity could not save the configured Expedition camera rig.");
+                    }
+                }
+            }
+            finally
+            {
+                RestoreActiveScene(previousActiveScene);
+                if (scene.IsValid() && scene.isLoaded)
+                {
+                    EditorSceneManager.CloseScene(scene, true);
+                }
+            }
+        }
+
+        private static bool CameraRigIsConfigured(GameObject cameraObject)
+        {
+            Camera output = cameraObject.GetComponent<Camera>();
+            PixelPerfectCamera pixelPerfect = cameraObject.GetComponent<PixelPerfectCamera>();
+            CinemachineBrain brain = cameraObject.GetComponent<CinemachineBrain>();
+            RoomCameraRig2D rig = cameraObject.GetComponent<RoomCameraRig2D>();
+            if (output == null || pixelPerfect == null || brain == null || rig == null ||
+                cameraObject.name != "Main Camera" || cameraObject.tag != "MainCamera" || !output.orthographic ||
+                !Mathf.Approximately(output.orthographicSize, RoomCameraRig2D.OrthographicSize) ||
+                pixelPerfect.assetsPPU != RoomCameraRig2D.AssetsPixelsPerUnit ||
+                pixelPerfect.refResolutionX != RoomCameraRig2D.ReferenceWidth ||
+                pixelPerfect.refResolutionY != RoomCameraRig2D.ReferenceHeight ||
+                pixelPerfect.gridSnapping != PixelPerfectCamera.GridSnapping.UpscaleRenderTexture ||
+                pixelPerfect.cropFrame != PixelPerfectCamera.CropFrame.Windowbox)
+            {
+                return false;
+            }
+
+            CinemachineCamera virtualCamera = cameraObject.GetComponentInChildren<CinemachineCamera>(true);
+            CinemachineFollow follow = virtualCamera == null ? null : virtualCamera.GetComponent<CinemachineFollow>();
+            CinemachineConfiner2D confiner = virtualCamera == null ? null : virtualCamera.GetComponent<CinemachineConfiner2D>();
+            if (virtualCamera == null || follow == null || confiner == null ||
+                virtualCamera.gameObject.name != "Cinemachine Camera")
+            {
+                return false;
+            }
+
+            Vector3 damping = follow.TrackerSettings.PositionDamping;
+            LensSettings lens = virtualCamera.Lens;
+            return Mathf.Approximately(damping.x, RoomCameraRig2D.HorizontalDamping) &&
+                Mathf.Approximately(damping.y, RoomCameraRig2D.VerticalDamping) &&
+                Mathf.Approximately(confiner.Damping, 0f) &&
+                Mathf.Approximately(confiner.SlowingDistance, 0f) &&
+                lens.ModeOverride == LensSettings.OverrideModes.Orthographic &&
+                Mathf.Approximately(lens.OrthographicSize, RoomCameraRig2D.OrthographicSize);
+        }
+
+        private static void EnsurePlayerVisualController()
+        {
+            AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(PlayerVisualControllerPath);
+            bool changed = false;
+            if (controller == null)
+            {
+                string directory = Path.GetDirectoryName(PlayerVisualControllerPath);
+                if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
+                controller = AnimatorController.CreateAnimatorControllerAtPath(PlayerVisualControllerPath);
+                changed = true;
+            }
+
+            changed |= EnsureAnimatorParameter(controller, "VisualState", AnimatorControllerParameterType.Int);
+            changed |= EnsureAnimatorParameter(controller, "VelocityX", AnimatorControllerParameterType.Float);
+            changed |= EnsureAnimatorParameter(controller, "VelocityY", AnimatorControllerParameterType.Float);
+            changed |= EnsureAnimatorParameter(controller, "FacingX", AnimatorControllerParameterType.Float);
+            AnimatorStateMachine stateMachine = controller.layers[0].stateMachine;
+            AnimatorState[] states = new AnimatorState[7];
+            string[] stateNames = { "Idle", "Moving", "Airborne", "Attacking", "Dodging", "Stunned", "Dead" };
+            for (int stateId = 0; stateId < stateNames.Length; stateId++)
+            {
+                states[stateId] = stateMachine.states.Select(child => child.state)
+                    .FirstOrDefault(state => state != null && state.name == stateNames[stateId]);
+                if (states[stateId] == null)
+                {
+                    states[stateId] = stateMachine.AddState(stateNames[stateId]);
+                    changed = true;
+                }
+                if (stateId == 0 && stateMachine.defaultState == null)
+                {
+                    stateMachine.defaultState = states[stateId];
+                    changed = true;
+                }
+
+                bool transitionExists = stateMachine.anyStateTransitions.Any(transition =>
+                    transition.destinationState == states[stateId] && transition.conditions.Any(condition =>
+                        condition.mode == AnimatorConditionMode.Equals &&
+                        condition.parameter == "VisualState" && condition.threshold == stateId));
+                if (!transitionExists)
+                {
+                    AnimatorStateTransition transition = stateMachine.AddAnyStateTransition(states[stateId]);
+                    transition.duration = 0f;
+                    transition.hasExitTime = false;
+                    transition.canTransitionToSelf = false;
+                    transition.AddCondition(AnimatorConditionMode.Equals, stateId, "VisualState");
+                    changed = true;
+                }
+            }
+
+            if (changed)
+            {
+                EditorUtility.SetDirty(controller);
+                AssetDatabase.SaveAssets();
+            }
+        }
+
+        private static bool EnsureAnimatorParameter(
+            AnimatorController controller,
+            string name,
+            AnimatorControllerParameterType type)
+        {
+            if (!controller.parameters.Any(parameter => parameter.name == name))
+            {
+                controller.AddParameter(name, type);
+                return true;
+            }
+
+            return false;
         }
 
         private static void CreateMenu()

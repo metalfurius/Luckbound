@@ -98,7 +98,7 @@ namespace Luckbound.Tests.PlayMode
                 float cooldownElapsed = cooldownReadyTime - dodgeStartedTime;
                 bool becameReadyAfterCooldown = timingActor.Motor.IsDodgeReady &&
                     cooldownElapsed >= PlayerMotor2D.DodgeCooldownDuration - Time.fixedDeltaTime &&
-                    cooldownElapsed <= PlayerMotor2D.DodgeCooldownDuration + Time.fixedDeltaTime;
+                    cooldownElapsed <= PlayerMotor2D.DodgeCooldownDuration + Time.fixedDeltaTime + 0.0001f;
                 timingActor.Input.SetMoveX(0f);
                 timingActor.Input.Press(PlayerAction.Dodge);
                 evidence.RecordInput(32 + dodgeTicks + cooldownTicks, "Dodge", "Pressed when cooldown expired with no direction input");

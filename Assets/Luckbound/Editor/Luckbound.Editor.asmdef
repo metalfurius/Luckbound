@@ -1,7 +1,7 @@
 {
   "name": "Luckbound.Editor",
   "rootNamespace": "Luckbound.Editor",
-  "references": ["Luckbound.App"],
+  "references": ["Luckbound.App", "Luckbound.Presentation", "Unity.Cinemachine", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Universal.2D.Runtime"],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

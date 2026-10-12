@@ -1,8 +1,8 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 1.0 — 11 de octubre de 2026.
+**Versión del documento:** 1.1 — 12 de octubre de 2026.
 
-**Estado:** preproducción documentada; A01–A05 verificados. Las primeras builds muestran el menú y su versión. El juego todavía no tiene sistemas de juego implementados.
+**Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
 **Responsable de producto:** Fran / CodeOverdose.
 
@@ -935,6 +935,13 @@ Los diálogos tendrán tres momentos: inicio, descubrimiento de la responsabilid
 
 Español será el texto de origen. Inglés conservará significado, tono e información jugable.
 
+### 3.19. Cámara y estados visuales
+
+- La referencia de pantalla será `320×180` píxeles a `16 PPU`, con área visible de `20×11,25` unidades. URP Pixel Perfect usará `GridSnapping.UpscaleRenderTexture` y `CropFrame.Windowbox`: conserva el encuadre 16:9 con barras cuando la pantalla difiera, y mantiene nítidos los píxeles a resoluciones enteras.
+- Una `CinemachineCamera` sigue al objetivo del jugador con damping de `0,12 s` horizontal y `0,15 s` vertical, sin look-ahead y con desplazamiento `(0,0,-10)`. `CinemachineConfiner2D` recibe un `PolygonCollider2D`, `CompositeCollider2D` o `BoxCollider2D` de la sala activa. Cada escena jugable tiene exactamente un `Main Camera`, `CinemachineBrain` y `AudioListener`.
+- `RoomCameraRig2D.Bind(target, bounds)` enlaza jugador y primera sala; `RebindRoom(bounds)` cambia los límites conservando el objetivo. Ambos validan un rectángulo mundial mínimo de `20×11,25` unidades, asignan el collider antes de mostrar la sala e invalidan la caché del Confiner; este mantiene los cuatro bordes visibles dentro del límite.
+- Gameplay publica `PlayerVisualSnapshot` y `IPlayerVisualStateSource` en Core; Presentation no referencia Gameplay. Core resuelve la prioridad `Dead > Stunned > Dodging > Attacking > Airborne > Moving > Idle`. IDs estables del Animator: Idle=0, Moving=1, Airborne=2, Attacking=3, Dodging=4, Stunned=5, Dead=6; parámetros: `VisualState` (int), `VelocityX`, `VelocityY`, `FacingX` (float). Los estados provisionales no tienen clips; F03 añadirá animaciones pixel art sin cambiar IDs ni parámetros.
+
 ---
 
 ## 4. Preproducción artística, sonora y de interfaz
@@ -1260,7 +1267,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 | B03 | Movimiento, collider y suelo | En el escenario `B03_WalkWall`, queda apoyado en `Ground`, alcanza al menos 5,9 u/s frente al objetivo de 6, frena al soltar y la cápsula no atraviesa una pared estática |
 | B04 | Salto variable, buffer y coyote | Salto completo alcanza 3,0 ± 0,3 unidades en 0,40 ± 0,05 s; soltar lo reduce; salto almacenado dentro de 0,12 s se ejecuta al aterrizar; salto tras coyote de 0,10 s se rechaza |
 | B05 | Esquiva y recarga a 60 Hz | Escenario `B05_Dodge` confirma 12 u/s, duración 0,18 ± un tick, invulnerabilidad 0,12 ± un tick, recarga desde activación de 0,80 ± un tick, dirección fija, rechazo durante la recarga y colisión con pared |
-| B06 | Cámara y representación de estados | Seguimiento estable, límites de sala y cambios correctos de animación |
+| B06 | Cámara, límites y estados visuales | A 60 Hz y 320×180/16 PPU la cámara sigue y confina el encuadre a la sala; Animator ejecuta Idle, Moving, Airborne y Dodging según estado de Gameplay mediante contratos Core |
 | B07 | Demo de movimiento 0.1 | Recorrido completo mediante entradas; build para primera revisión de Fran |
 
 ### C. Combate inicial

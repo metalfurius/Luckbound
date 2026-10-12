@@ -22,6 +22,8 @@ namespace Luckbound.Tests.Editor
             "Assets/Luckbound/Scenes/Hub.unity.meta",
             "Assets/Luckbound/Scenes/Expedition.unity",
             "Assets/Luckbound/Scenes/Expedition.unity.meta",
+            "Assets/Resources/Luckbound/PlayerVisualStates.controller",
+            "Assets/Resources/Luckbound/PlayerVisualStates.controller.meta",
             "ProjectSettings/EditorBuildSettings.asset",
             "ProjectSettings/ProjectSettings.asset"
         };

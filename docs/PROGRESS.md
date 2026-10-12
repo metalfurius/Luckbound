@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B05: Verified; A06: InProgress; B06–J09: Pending.
+- A01–A05, A07–A08, B01–B06: Verified; A06: InProgress; B07: InProgress; B08–J09: Pending.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija y comprueba la física a 60 Hz; las regresiones B03–B04 pasan en esa cadencia.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 queda habilitada.
 
 ## Estados y dependencias
 
@@ -42,8 +42,8 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | B03 | Movimiento, collider y suelo | B02 | Verified |
 | B04 | Salto variable, buffer y coyote | B03 | Verified |
 | B05 | Esquiva y recarga | B04 | Verified |
-| B06 | Cámara y representación de estados | B05 | Pending |
-| B07 | Demo de movimiento 0.1 | B06 | Pending |
+| B06 | Cámara, límites y estados visuales | B05 | Verified |
+| B07 | Demo de movimiento 0.1 | B06 | InProgress |
 | C01 | Estadísticas y resolución de daño | B07 | Pending |
 | C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Pending |
 | C03 | Proyectiles y sistema de habilidades | C02 | Pending |
@@ -153,7 +153,7 @@ Comprobaciones de esta entrega: conteo y unicidad de tareas, correspondencia ent
 
 Resultado de la comprobación del 11 de octubre de 2026: 111 tareas únicas; 110 tareas de desarrollo pendientes; grafo sin ciclos; 24 reliquias; ocho enlaces locales comprobados. El diff de archivos previamente seguidos por Git permanecía vacío.
 
-Hash SHA-256 del plan comprobado: `F21D400FE3FBA2CF016A9AC3811F72291FFACD7F40FB7817D85A953D50E943CA`.
+Hash SHA-256 vigente del plan comprobado: `EC4E7C42DF26A9E5CE3C375950A834C6CD1BCCB9E5E73A8335504C2A5D28B2BA`.
 
 Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a93d49620a32ccc078f072217cff1dd70e`.
 
@@ -276,6 +276,18 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - Build Windows x64: `unity build . --target StandaloneWindows64 --output-path Builds\B05\Windows\Luckbound.exe --allow-dirty-build --timeout 900 --no-tail` → `success`, código 0, Editor `6000.6.5f1`; procedencia en `Builds/B05/Windows/Luckbound.provenance.json`. Unity aún registra avisos no bloqueantes de validación de licencia.
 - Auditoría: 77 GUID de `.meta`, todos únicos; `git diff --check` sin errores.
 - **Aceptación B05 satisfecha; estado Verified.** B06 queda habilitada.
+
+## Evidencia B06 — Cámara, límites y estados visuales
+
+- `Luckbound.Core` define `PlayerVisualSnapshot`, `IPlayerVisualStateSource`, IDs de estado estables (`Idle=0`, `Moving=1`, `Airborne=2`, `Attacking=3`, `Dodging=4`, `Stunned=5`, `Dead=6`) y el resolver de prioridad. `PlayerMotor2D` publica locomoción sin depender de Presentation; `PlayerVisualStatePresenter` traduce el contrato a `VisualState`, `VelocityX`, `VelocityY` y `FacingX` y comprueba que el Animator tenga los parámetros exigidos. `Luckbound.Presentation` no referencia Gameplay.
+- `RoomCameraRig2D` configura una cámara ortográfica Pixel Perfect de `320×180`, `16 PPU`, viewport Windowbox 16:9 y Upscale Render Texture; el área de referencia mide `20×11,25` unidades. Cinemachine sigue a `0,12/0,15 s` de damping y el Confiner invalida su caché al enlazar una nueva sala. La escena Expedition tiene `Main Camera`, `CinemachineBrain`, `AudioListener`, `CinemachineCamera`, Follow y Confiner. El generador del Editor crea el Animator de siete estados placeholder y reconcilia la escena sin alterar su segunda ejecución.
+- La auditoría detectó que `Component.name` cambiaba el `GameObject.name` compartido: la cámara pasó a llamarse `Pixel Perfect Camera`, el hijo a `Cinemachine Confiner 2D` y el generador no podía reconciliar `Main Camera`. Se corrigió el contrato para mantener `Main Camera` y `Cinemachine Camera` en los GameObjects y dejar sin nombre propio a sus componentes. El generador ya valida los nombres y el tag reales.
+- PlayMode `B06_CameraBounds` (semilla `31415926`, Editor `6000.6.5f1`, WindowsEditor) registra aspect `1,778`, área `20,00×11,25`, seguimiento de `13,71 u` y damping `0,12/0,15 s`; las cuatro esquinas de cámara quedan dentro de cada una de dos salas después del rebind. Reporte: `Logs/Scenarios/B06/20261012T095447576Z_B06_CameraBounds_85b71275/scenario-report.json`.
+- PlayMode `B06_PlayerVisualStates` envía comandos de juego por `PlayerInputBuffer`: reposo selecciona Idle, movimiento alcanza `6 u/s` y selecciona Moving, salto selecciona Airborne y esquiva en el aire selecciona Dodging. Reporte: `Logs/Scenarios/B06/20261012T095446224Z_B06_PlayerVisualStates_6eefc1ba/scenario-report.json`. Ambos escenarios terminaron con código 0 y hash de fuentes `2a311e2bb3c78dc561715e64f4d83cc445dc6ecf20ef5b71d764d827b8b0a9f1`.
+- `unity test . --mode EditMode --output Logs\B06-editmode-final.xml --timeout 1200 -- -nographics` → 14/14 pasan; `unity test . --mode PlayMode --output Logs\B06-playmode-final.xml --timeout 1200 -- -nographics` → 11/11 pasan, incluyendo las regresiones B03–B05. La serialización YAML usa cadenas vacías explícitas para los campos nulos de Unity; el Editor las importó, el Animator ejecutó los siete estados y el generador ya solo guarda su controlador cuando añade o corrige contenido.
+- `ProjectDevelopmentChecks` valida assemblies, 60 Hz, nombre y tag de la cámara, Pixel Perfect, Cinemachine y contrato Animator. La prueba de generador confirma que la segunda reconciliación no altera las escenas ni el controlador. `git diff --check` pasa; 84 GUID `.meta`, todos únicos. No se generó ni publicó una build en este subpaso.
+- **Aceptación B06 satisfecha; estado Verified.** B07 queda habilitada. El controlador conserva estados sin clips para que F03 los sustituya por animación pixel art manteniendo IDs y parámetros.
+
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:

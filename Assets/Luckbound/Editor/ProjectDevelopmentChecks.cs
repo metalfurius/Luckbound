@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Luckbound.App;
+using Luckbound.Presentation;
+using Unity.Cinemachine;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -19,6 +23,7 @@ namespace Luckbound.Editor
     {
         private const string ProjectVersionPath = "ProjectSettings/ProjectVersion.txt";
         private const string InputActionsPath = "Assets/Resources/Luckbound/InputSystem_Actions.inputactions";
+        private const string PlayerVisualControllerPath = "Assets/Resources/Luckbound/PlayerVisualStates.controller";
         private const string WebGlProfilePath = "Assets/Settings/Build Profiles/WebGL.asset";
         private static readonly string[] StartupScenes = { "Bootstrap", "Menu", "Hub", "Expedition" };
 
@@ -46,6 +51,7 @@ namespace Luckbound.Editor
             ValidateSimulationRate(errors);
             ValidateWebGlProfile(errors);
             ValidateAssemblies(errors);
+            ValidatePlayerVisualController(errors);
 
             foreach (string sceneName in StartupScenes)
             {
@@ -256,9 +262,13 @@ namespace Luckbound.Editor
                 errors.Add("Luckbound.Gameplay must depend on Core, Content and Unity.InputSystem, never Presentation.");
             }
             if (presentation != null && (!References(presentation, "Luckbound.Core") ||
-                !References(presentation, "Luckbound.Content") || References(presentation, "Luckbound.Gameplay")))
+                !References(presentation, "Luckbound.Content") ||
+                !References(presentation, "Unity.Cinemachine") ||
+                !References(presentation, "Unity.RenderPipelines.Universal.Runtime") ||
+                !References(presentation, "Unity.RenderPipelines.Universal.2D.Runtime") ||
+                References(presentation, "Luckbound.Gameplay")))
             {
-                errors.Add("Luckbound.Presentation must depend on Core and Content, never Gameplay.");
+                errors.Add("Luckbound.Presentation must depend on Core, Content, Cinemachine and URP, never Gameplay.");
             }
             if (app != null && (!References(app, "Luckbound.Core") || !References(app, "Luckbound.Content") ||
                 !References(app, "Luckbound.Gameplay") || !References(app, "Luckbound.Presentation")))
@@ -353,6 +363,11 @@ namespace Luckbound.Editor
                     ValidateMenuText(objects, "LuckboundTitle", "LUCKBOUND", errors);
                     ValidateMenuText(objects, "MenuVersion", "PREPRODUCCIÓN  ·  0.1.0", errors);
                 }
+
+                if (sceneName == "Expedition")
+                {
+                    ValidateExpeditionCamera(objects, errors);
+                }
             }
             catch (Exception exception)
             {
@@ -368,6 +383,88 @@ namespace Luckbound.Editor
                 {
                     EditorSceneManager.CloseScene(scene, true);
                 }
+            }
+        }
+
+        private static void ValidateExpeditionCamera(List<GameObject> objects, List<string> errors)
+        {
+            List<GameObject> cameras = objects.Where(gameObject =>
+                gameObject.name == "Main Camera" && gameObject.GetComponent<Camera>() != null).ToList();
+            if (cameras.Count != 1)
+            {
+                errors.Add("Expedition must contain exactly one Main Camera; found " + cameras.Count + ".");
+                return;
+            }
+
+            GameObject cameraObject = cameras[0];
+            Camera camera = cameraObject.GetComponent<Camera>();
+            PixelPerfectCamera pixelPerfect = cameraObject.GetComponent<PixelPerfectCamera>();
+            if (cameraObject.GetComponent<AudioListener>() == null)
+            {
+                errors.Add("Expedition Main Camera must contain one AudioListener.");
+            }
+            if (cameraObject.GetComponent<CinemachineBrain>() == null)
+            {
+                errors.Add("Expedition Main Camera must contain a CinemachineBrain.");
+            }
+            if (cameraObject.GetComponent<RoomCameraRig2D>() == null)
+            {
+                errors.Add("Expedition Main Camera must contain RoomCameraRig2D.");
+            }
+            if (pixelPerfect == null || pixelPerfect.assetsPPU != RoomCameraRig2D.AssetsPixelsPerUnit ||
+                pixelPerfect.refResolutionX != RoomCameraRig2D.ReferenceWidth ||
+                pixelPerfect.refResolutionY != RoomCameraRig2D.ReferenceHeight ||
+                pixelPerfect.gridSnapping != PixelPerfectCamera.GridSnapping.UpscaleRenderTexture ||
+                pixelPerfect.cropFrame != PixelPerfectCamera.CropFrame.Windowbox)
+            {
+                errors.Add("Expedition must use the 320×180, 16 PPU Windowbox/upscale Pixel Perfect contract.");
+            }
+
+            CinemachineCamera virtualCamera = cameraObject.GetComponentInChildren<CinemachineCamera>(true);
+            CinemachineFollow follow = virtualCamera == null ? null : virtualCamera.GetComponent<CinemachineFollow>();
+            CinemachineConfiner2D confiner = virtualCamera == null ? null : virtualCamera.GetComponent<CinemachineConfiner2D>();
+            if (virtualCamera == null || follow == null || confiner == null)
+            {
+                errors.Add("Expedition requires one CinemachineCamera with Follow and Confiner2D components.");
+                return;
+            }
+
+            Vector3 damping = follow.TrackerSettings.PositionDamping;
+            if (!Mathf.Approximately(damping.x, RoomCameraRig2D.HorizontalDamping) ||
+                !Mathf.Approximately(damping.y, RoomCameraRig2D.VerticalDamping) ||
+                !Mathf.Approximately(camera.orthographicSize, RoomCameraRig2D.OrthographicSize))
+            {
+                errors.Add("Expedition camera damping and orthographic size must match the B06 contract.");
+            }
+        }
+
+        private static void ValidatePlayerVisualController(List<string> errors)
+        {
+            UnityEditor.Animations.AnimatorController controller =
+                AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(PlayerVisualControllerPath);
+            if (controller == null)
+            {
+                errors.Add("Missing PlayerVisualStates Animator Controller at " + PlayerVisualControllerPath + ".");
+                return;
+            }
+
+            var parameters = controller.parameters.ToDictionary(parameter => parameter.name, parameter => parameter.type);
+            string[] requiredParameters = { "VisualState", "VelocityX", "VelocityY", "FacingX" };
+            if (requiredParameters.Any(parameter => !parameters.ContainsKey(parameter)) ||
+                parameters["VisualState"] != UnityEngine.AnimatorControllerParameterType.Int ||
+                parameters["VelocityX"] != UnityEngine.AnimatorControllerParameterType.Float ||
+                parameters["VelocityY"] != UnityEngine.AnimatorControllerParameterType.Float ||
+                parameters["FacingX"] != UnityEngine.AnimatorControllerParameterType.Float)
+            {
+                errors.Add("PlayerVisualStates must expose VisualState (int) and VelocityX, VelocityY, FacingX (float).");
+            }
+
+            string[] requiredStates = { "Idle", "Moving", "Airborne", "Attacking", "Dodging", "Stunned", "Dead" };
+            AnimatorStateMachine stateMachine = controller.layers[0].stateMachine;
+            string[] actualStates = stateMachine.states.Select(state => state.state.name).ToArray();
+            if (requiredStates.Any(state => !actualStates.Contains(state)) || stateMachine.anyStateTransitions.Length != requiredStates.Length)
+            {
+                errors.Add("PlayerVisualStates must contain seven stable states and one VisualState transition per state.");
             }
         }
 
