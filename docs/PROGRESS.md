@@ -8,11 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07 y C01–C04: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07 y C01–C05: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
 - C04 integra salud, protección tras impacto directo, empuje, aturdimiento opcional y bloqueo de acciones tras morir; ambas suites y los escenarios de aceptación pasan.
+- C05 añade al Slime con persecución a 60 Hz, aviso de 27 ticks, salto de ataque físico, daño de 8 una sola vez por `HitId` y derrota real mediante proyectil; ambas suites y los escenarios físicos pasan en el commit `1510320`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -50,7 +51,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Verified |
 | C03 | Proyectiles y sistema de habilidades | C02 | Verified |
 | C04 | Daño recibido, empuje y muerte | C03 | Verified |
-| C05 | Slime funcional | C04 | Pending |
+| C05 | Slime funcional | C04 | Verified |
 | C06 | Huesoguardia funcional | C05 | Pending |
 | C07 | HUD, pociones y pausa | C06 | Pending |
 | C08 | Arena de combate | C07 | Pending |
@@ -345,6 +346,18 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Escenarios físicos:** `C04_ProtectedKnockback` y `C04_DeathBlocksActions` verifican Rigidbody2D y comandos de movimiento, ataque, esquiva y salto. Informes: `Logs/Scenarios/C04/20261012T120419148Z_C04_ProtectedKnockback_8a9881da/` y `Logs/Scenarios/C04/20261012T120419293Z_C04_DeathBlocksActions_d47d4cf2/`; ambos `passed=true`, source commit `093ea2d393dc6ffcc3bcca7a0b20f1125ffbdc0b` y source hash `ad5051a0efe96628f6470f4d67e9fc721ae2a0ef39e20d112e00ead476a8d160`.
 - **Plan:** v1.6, SHA-256 `4EEB59FCFD5BCE415FE418C263E126B059FA551C21932F437E20CEA9FE6ACE2A`.
 - **Resultado:** aceptación C04 satisfecha; C05 queda como la siguiente tarea habilitada.
+
+## Ejecución C05 — Slime funcional
+
+- **Contrato:** Slime con 24 de salud, 0 defensa y 8 de daño; detección a 8 unidades, persecución terrestre a 2 u/s, ataque a 1,25 unidades, aviso de 27 ticks, salto a 4 u/s horizontal y 4,5 u/s vertical con gravedad 3, un impacto por `HitId`, fin al aterrizar o a los 60 ticks y recuperación de 30 ticks. El daño de proyectil se resuelve en el tick de simulación siguiente; 24 de daño mata y elimina el collider y la simulación física.
+- **Dependencias comprobadas:** C04 `Verified`, commit `093ea2d393dc6ffcc3bcca7a0b20f1125ffbdc0b`; C03 `Verified`, commit `8425b894a1f7d1bf678cddd6a87a1dbc0f37e4c5`.
+- **Estado:** `Verified`; implementación en `1510320921d21ec25875e25fa9db59f7a9847a10` (`feat(enemies): implement C05 slime combat`).
+- **Cambios:** `Slime2D` implementa sus estados y movimiento con `Rigidbody2D`, deduplica el golpe de contacto por ataque, consume proyectiles y desactiva la física al morir. `ProjectileImpactTarget2D` encola impactos desde callbacks físicos; el actor los aplica durante su siguiente `FixedUpdate`, evitando cambiar salud dentro del callback de colisión. `PlayerMotor2D` expone su identidad y tick actual para aplicar el daño del enemigo con el reloj del jugador. Los valores que el prototipo aún no fijaba quedaron especificados en el plan v1.7.
+- **Escenario de salto:** `C05_SlimeTelegraphedLeap`, semilla `26457513`. El Slime detecta y persigue al jugador hasta el alcance; mantiene el aviso exactamente 27 ticks, salta y causa una colisión física que reduce su salud de 100 a 92 con un único impacto. Informe: `Logs/Scenarios/C05/20261012T122209549Z_C05_SlimeTelegraphedLeap_3ebec167/scenario-report.json`.
+- **Escenario de derrota:** `C05_SlimeProjectileDeath`, semilla `28284271`. El trigger encola el impacto con la salud aún en 24; en el siguiente tick aplica 24 de daño, deja al Slime en `Dead` y apaga collider y simulación. Informe: `Logs/Scenarios/C05/20261012T122209395Z_C05_SlimeProjectileDeath_eb5b9d6e/scenario-report.json`. Ambos informes tienen `passed=true`, commit `1510320921d21ec25875e25fa9db59f7a9847a10` y source hash `eb988bf9bbaac4eb8ff0c153c63e8d9fb7e10c72c8b4dae83ba40ab04944f448`.
+- **Aceptación:** Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null. Postcommit: `unity test . --mode EditMode --output Logs\C05-EditMode-commit.xml --timeout 1200 -- -nographics` → 38/38; `unity test . --mode PlayMode --output Logs\C05-PlayMode-commit.xml --timeout 1200 -- -nographics` → 23/23. Cero fallos, omitidos o inconclusos. `git diff --check` pasa.
+- **Plan:** v1.7, SHA-256 `94A80CEC311AA50743004A2EE3CB7C1C64633EA6D0D77D2E0810C67D69480446`.
+- **Resultado:** aceptación C05 satisfecha; C06 queda habilitada. No se generó ni publicó una build; A06 y la ruta pública siguen sin una ejecución nueva.
 
 ## Ficha que debe completar cada ejecución
 
