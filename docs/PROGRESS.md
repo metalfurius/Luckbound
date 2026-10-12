@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D06: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D06: Verified; A06 y D07: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -69,7 +69,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D04 | Inventario y botín | D03 | Verified |
 | D05 | Taberna y preparación | D04 | Verified |
 | D06 | Custodio provisional | D05 | Verified |
-| D07 | Muerte, extracción y liquidación | D06 | Pending |
+| D07 | Muerte, extracción y liquidación | D06 | InProgress |
 | D08 | Perfil y ajustes con respaldo | D07 | Pending |
 | D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | Pending |
 | E01 | Materiales y bolsa | D09 | Pending |
@@ -462,6 +462,12 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Escenario físico:** `D06_RealCombatCustodianTwoPhases`, semilla `31415927`, informe `Logs/Scenarios/D06/20261012T171349900Z_D06_RealCombatCustodianTwoPhases_08f8e4ea/scenario-report.json`. `passed=true`, siete aserciones y cero errores. Unity `6000.6.5f1`, WindowsEditor, dispositivo Null. Resultado `Victory`: 91 impactos de melee, 5 impactos recibidos, 44/100 de salud final del jugador; observó 6 cortes, 6 ondas, 6 cargas, seis ondas adicionales de fase dos y la transición de 120 ticks. El jugador sobrevivió y causó la muerte del jefe.
 - **Aceptación postcommit:** commit `cb7b7ba` (`feat(boss): implement D06 Custodian encounter`). EditMode `67/67` y PlayMode `45/45`; cero fallos, omitidos o inconclusos. La prueba de idempotencia del generador también pasa. GUID `.meta` y comprobación `git diff --check` limpios. El `sourceHash` del escenario es `91ca0140f984187689ef2cd87820faa9b4fba632465daec9c75be485a408b53a`.
 - **Resultado:** D06 `Verified`; D07 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 sigue `InProgress`.
+
+## Ejecución D07 — Muerte, extracción y liquidación (InProgress)
+
+- **Contrato:** resultados Death, Extracted, FinalVictory y Abandoned aplican las reglas de Renombre y conversión de botín de la sección 3.13. La misma liquidación no puede otorgarse dos veces para un `RunId`; el estado persistente del perfil se incorpora en D08.
+- **Dependencia comprobada:** D06 `Verified`, implementación `cb7b7badb0a2e8330922362c0fdac15a9f815683` y evidencia postcommit en `1215833`.
+- **Resultado:** trabajo en curso; registrar aquí implementación, escenario, suites y limitaciones antes de cerrar la tarea.
 
 ## Ficha que debe completar cada ejecución
 
