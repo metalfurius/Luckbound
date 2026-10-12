@@ -47,6 +47,8 @@ namespace Luckbound.Tests.Editor
             "Assets/Resources/Luckbound/Data/Rooms.meta",
             "Assets/Resources/Luckbound/Data/Rooms/D01PrototypeRoom.json",
             "Assets/Resources/Luckbound/Data/Rooms/D01PrototypeRoom.json.meta",
+            "Assets/Resources/Luckbound/Data/Rooms/RouteTemplates.json",
+            "Assets/Resources/Luckbound/Data/Rooms/RouteTemplates.json.meta",
             "Assets/Resources/Luckbound/Rooms.meta",
             "Assets/Resources/Luckbound/Rooms/PrototypeFloorTile.asset",
             "Assets/Resources/Luckbound/Rooms/PrototypeFloorTile.asset.meta",

@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 1.9 — 12 de octubre de 2026.
+**Versión del documento:** 2.0 — 12 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -337,6 +337,14 @@ Dominios:
 
 Abrir una interfaz, reproducir un sonido o repetir una recompensa no cambiará el recorrido. Los rangos enteros utilizarán rechazo para evitar sesgo de módulo.
 
+Contrato implementable de la versión 1:
+
+- El `Xorshift32` mantiene estado `uint` no nulo y aplica exactamente los tres desplazamientos anteriores con desbordamiento sin signo controlado. Un estado cero se normaliza a `0x6D2B79F5`.
+- `NextInt(min, max)` incluye `min` y excluye `max`. El generador xorshift tiene `2^32 − 1` estados: se resta uno a cada salida para obtener el dominio `[0, 2^32 − 2]` y se descarta el prefijo incompleto antes de aplicar el módulo.
+- Una semilla hija se deriva con FNV-1a de 32 bits sobre UTF-8. La forma canónica es `luckbound-rng-v1|<generationVersion>|<seed-normalizada-en-X8>|<longitud>:<dominio>|<número-de-identificadores>|<longitud>:<identificador>...`. Las longitudes y números usan cultura invariante; el campo de longitud evita colisiones por separadores dentro de identificadores.
+- El generador de rutas usa `generationVersion = 1`, la semilla normalizada, y flujos independientes `route.special.order`, `route.templates.combat` + sector y `route.templates.exploration` + sector. No usa el estado aleatorio global de Unity ni deriva aleatoriedad de animaciones, UI o sonido.
+- El plan de ruta conserva un formato canónico ordenado y su huella FNV-1a para comparar repeticiones. Cambiar algoritmo, orden, identificadores o contenido que altere su selección exige incrementar la versión de generación.
+
 Se garantizará reproducibilidad de distribución y recompensas para la misma versión de generación y contenido. No se exigirá que la física produzca resultados idénticos entre Windows y WebGL.
 
 ### 2.8. Guardado y transacciones
@@ -420,6 +428,12 @@ Las salas especiales principales de los tres sectores incluirán una de tesoro, 
 Después de los dos primeros guardianes habrá un descanso. Tras el tercer guardián se accederá al jefe final.
 
 Resultado: **21 localizaciones obligatorias y hasta tres adicionales**. La taberna y el tutorial quedan fuera de este cómputo.
+
+El catálogo lógico vive en `Assets/Resources/Luckbound/Data/Rooms/RouteTemplates.json`. Incluye las 30 plantillas de combate, exploración y salas especiales, más el identificador de arena de cada guardián, los descansos y la arena final. No afirma que esas salas ya tengan geometría o prefab: las plantillas físicas se materializan en las tareas H correspondientes. El prototipo D01 es una plantilla separada y no se usa como sustituto de estas salas.
+
+Para cada sector se barajan sus cinco plantillas C con un flujo propio: las tres primeras ocupan las posiciones de combate principales, la cuarta constituye la rama opcional y la quinta queda sin usar en esa expedición. E1/E2 se elige mediante otro flujo independiente. Un tercer flujo asigna una vez cada especial T, P y N a los tres sectores. El orden principal permanece `Combate → Exploración → Combate → Especial → Combate → Guardián`; se intercala un descanso después de los dos primeros guardianes y la arena final después del tercero.
+
+Cada rama se ofrece después del segundo combate del sector y vuelve a la sala especial. El grafo conserva también la conexión directa del recorrido principal, por lo que la sala opcional se puede saltar. D02 emite nodos y conexiones lógicos con los puertos estables `port.entry.west` y `port.exit.east`; D03 conectará las transiciones de ejecución, y las tareas H comprobarán los puertos contra las salas físicas. Las 21 localizaciones obligatorias forman una cadena de 20 conexiones; las tres salas opcionales añaden seis conexiones alternativas.
 
 La generación seleccionará y conectará plantillas diseñadas. No generará geometría arbitraria. Dentro de cada sector no se repetirá una plantilla ya elegida en esa expedición.
 

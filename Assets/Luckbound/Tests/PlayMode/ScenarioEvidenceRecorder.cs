@@ -27,8 +27,11 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Prefabs/CombatArena/SlimePrototype.prefab",
             "Assets/Luckbound/Prefabs/CombatArena/HuesoguardiaPrototype.prefab",
             "Assets/Resources/Luckbound/Data/Encounters/C08Arena.json",
+            "Assets/Resources/Luckbound/Data/Rooms/RouteTemplates.json",
             "Assets/Resources/Luckbound/InputSystem_Actions.inputactions",
             "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+            "Assets/Luckbound/Scripts/Core/Randomness/Xorshift32.cs",
+            "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
             "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
             "Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
             "Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
@@ -66,6 +69,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Gameplay/Combat/Projectile2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Combat/RoomProjectileScope.cs",
             "Assets/Luckbound/Scripts/Content/SkillCatalogJsonLoader.cs",
+            "Assets/Luckbound/Scripts/Content/ExpeditionRouteCatalogJsonLoader.cs",
             "Assets/Luckbound/Scripts/Content/CombatEncounterJsonLoader.cs",
             "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
             "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
@@ -77,6 +81,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Presentation/PlayerVisualStatePresenter.cs",
             "Assets/Luckbound/Scripts/Presentation/RoomCameraRig2D.cs",
             "Assets/Luckbound/Editor/ProjectDevelopmentChecks.cs",
+            "Assets/Luckbound/Editor/Luckbound.Editor.asmdef",
             "Assets/Luckbound/Editor/ProjectScaffoldGenerator.cs",
             "Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs",
             "Assets/Luckbound/Editor/CombatArenaScaffoldGenerator.cs",
@@ -105,6 +110,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/HuesoguardiaTests.cs",
             "Assets/Luckbound/Tests/PlayMode/PlayerHudConsumableTests.cs",
             "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/ExpeditionRouteGenerationTests.cs",
             "Assets/Resources/Luckbound/Data/Skills.json"
         };
 

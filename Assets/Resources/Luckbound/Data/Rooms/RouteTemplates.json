@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "generationVersion": 1,
+  "restTemplateId": "room.hub.rest",
+  "finalBossTemplateId": "room.final.arena",
+  "sectors": [
+    {
+      "sectorId": "patio",
+      "combatTemplateIds": ["room.patio.c1", "room.patio.c2", "room.patio.c3", "room.patio.c4", "room.patio.c5"],
+      "explorationTemplateIds": ["room.patio.e1", "room.patio.e2"],
+      "treasureTemplateId": "room.patio.t",
+      "pactTemplateId": "room.patio.p",
+      "narrativeTemplateId": "room.patio.n",
+      "guardianTemplateId": "room.patio.guardian"
+    },
+    {
+      "sectorId": "archivo",
+      "combatTemplateIds": ["room.archivo.c1", "room.archivo.c2", "room.archivo.c3", "room.archivo.c4", "room.archivo.c5"],
+      "explorationTemplateIds": ["room.archivo.e1", "room.archivo.e2"],
+      "treasureTemplateId": "room.archivo.t",
+      "pactTemplateId": "room.archivo.p",
+      "narrativeTemplateId": "room.archivo.n",
+      "guardianTemplateId": "room.archivo.guardian"
+    },
+    {
+      "sectorId": "forjas",
+      "combatTemplateIds": ["room.forjas.c1", "room.forjas.c2", "room.forjas.c3", "room.forjas.c4", "room.forjas.c5"],
+      "explorationTemplateIds": ["room.forjas.e1", "room.forjas.e2"],
+      "treasureTemplateId": "room.forjas.t",
+      "pactTemplateId": "room.forjas.p",
+      "narrativeTemplateId": "room.forjas.n",
+      "guardianTemplateId": "room.forjas.guardian"
+    }
+  ]
+}

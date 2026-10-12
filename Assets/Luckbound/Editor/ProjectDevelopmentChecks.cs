@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Luckbound.App;
 using Luckbound.Content;
+using Luckbound.Core.Expeditions;
 using Luckbound.Gameplay.Movement;
 using Luckbound.Gameplay.Rooms;
 using Luckbound.Presentation;
@@ -66,6 +67,7 @@ namespace Luckbound.Editor
 
             ValidateCombatArena(errors);
             ValidateRoomTemplate(errors);
+            ValidateExpeditionRouteCatalog(errors);
 
             return errors;
         }
@@ -292,10 +294,10 @@ namespace Luckbound.Editor
             {
                 errors.Add("Luckbound.App must compose the Core, Content, Gameplay and Presentation assemblies.");
             }
-            if (editor != null && (!References(editor, "Luckbound.App") ||
+            if (editor != null && (!References(editor, "Luckbound.App") || !References(editor, "Luckbound.Core") ||
                 editor.includePlatforms == null || !editor.includePlatforms.Contains("Editor")))
             {
-                errors.Add("Luckbound.Editor must be Editor-only and reference Luckbound.App.");
+                errors.Add("Luckbound.Editor must be Editor-only and reference Luckbound.App and Luckbound.Core.");
             }
         }
 
@@ -535,6 +537,33 @@ namespace Luckbound.Editor
             catch (Exception exception)
             {
                 errors.Add("D01 room template or generated prefab is invalid: " + exception.Message);
+            }
+        }
+
+        private static void ValidateExpeditionRouteCatalog(List<string> errors)
+        {
+            const string catalogPath = "Assets/Resources/Luckbound/Data/Rooms/RouteTemplates.json";
+            TextAsset source = AssetDatabase.LoadAssetAtPath<TextAsset>(catalogPath);
+            if (source == null)
+            {
+                errors.Add("D02 expedition route catalog could not be imported from " + catalogPath + ".");
+                return;
+            }
+
+            try
+            {
+                ExpeditionRouteCatalog catalog = ExpeditionRouteCatalogJsonLoader.Load(source.text);
+                ExpeditionRoutePlan route = ExpeditionRouteGenerator.Generate(17320508u, catalog);
+                IReadOnlyList<string> routeErrors = route.Validate();
+                foreach (string error in routeErrors) errors.Add("D02 generated route is invalid: " + error);
+                if (route.Nodes.Count != 24 || route.MandatoryNodeIds.Count != 21 || route.Connections.Count != 26)
+                {
+                    errors.Add("D02 route must contain 21 mandatory locations, three optional rooms and 26 connections.");
+                }
+            }
+            catch (Exception exception)
+            {
+                errors.Add("D02 expedition route catalog is invalid: " + exception.Message);
             }
         }
 
