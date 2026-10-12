@@ -24,6 +24,16 @@ namespace Luckbound.Tests.Editor
             "Assets/Luckbound/Scenes/Expedition.unity.meta",
             "Assets/Resources/Luckbound/PlayerVisualStates.controller",
             "Assets/Resources/Luckbound/PlayerVisualStates.controller.meta",
+            "Assets/Luckbound/Art.meta",
+            "Assets/Luckbound/Art/Prototypes.meta",
+            "Assets/Luckbound/Art/Prototypes/MovementDemo.meta",
+            "Assets/Luckbound/Art/Prototypes/MovementDemo/BellatorPrototype.png",
+            "Assets/Luckbound/Art/Prototypes/MovementDemo/BellatorPrototype.png.meta",
+            "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png",
+            "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png.meta",
+            "Assets/Luckbound/Prefabs.meta",
+            "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab",
+            "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab.meta",
             "ProjectSettings/EditorBuildSettings.asset",
             "ProjectSettings/ProjectSettings.asset"
         };

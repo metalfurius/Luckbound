@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 1.1 — 12 de octubre de 2026.
+**Versión del documento:** 1.2 — 12 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -1011,6 +1011,8 @@ Importación:
 
 Cada recurso registrará identificador, origen, prompt, referencia utilizada, dimensiones, hash y estado `Prototype` o `Final`.
 
+En B07 solo se permiten recursos `Prototype` identificados: un Bellator estático y una sala de entrenamiento de bloques pixelados. F03 los sustituirá por el sprite y animaciones finales del jugador; F05 retirará la geometría provisional de las primeras salas. Ningún recurso provisional llegará a la muestra F10/0.3.
+
 Se utilizará la generación de imágenes disponible en Codex y sus instrucciones aplicables. Si una herramienta no está disponible, el agente registrará el bloqueo y continuará con tareas independientes. No sustituirá recursos finales por cajas ni contratará servicios.
 
 ### 4.3. Música
@@ -1268,7 +1270,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 | B04 | Salto variable, buffer y coyote | Salto completo alcanza 3,0 ± 0,3 unidades en 0,40 ± 0,05 s; soltar lo reduce; salto almacenado dentro de 0,12 s se ejecuta al aterrizar; salto tras coyote de 0,10 s se rechaza |
 | B05 | Esquiva y recarga a 60 Hz | Escenario `B05_Dodge` confirma 12 u/s, duración 0,18 ± un tick, invulnerabilidad 0,12 ± un tick, recarga desde activación de 0,80 ± un tick, dirección fija, rechazo durante la recarga y colisión con pared |
 | B06 | Cámara, límites y estados visuales | A 60 Hz y 320×180/16 PPU la cámara sigue y confina el encuadre a la sala; Animator ejecuta Idle, Moving, Airborne y Dodging según estado de Gameplay mediante contratos Core |
-| B07 | Demo de movimiento 0.1 | Recorrido completo mediante entradas; build para primera revisión de Fran |
+| B07 | Demo de movimiento 0.1 | Desde Menu, el botón de demo abre Expedition; entradas simuladas de teclado recorren tres obstáculos físicos, registran al menos tres saltos y una esquiva, activan el portal y regresan al menú; velocidad, colisión y cámara cumplen los contratos B03–B06. EditMode/PlayMode pasan y se generan builds Windows x64 y WebGL con procedencia, sin publicar. |
 
 ### C. Combate inicial
 

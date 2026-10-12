@@ -61,6 +61,10 @@ namespace Luckbound.Gameplay.Movement
 
         public bool IsInvulnerable { get; private set; }
 
+        public int SuccessfulJumpCount { get; private set; }
+
+        public int DodgeActivationCount { get; private set; }
+
         public bool IsDodgeReady => !_dodgeActive && _dodgeCooldownRemaining <= 0f;
 
         public float CoyoteTimeRemaining => _coyoteTimeRemaining;
@@ -211,6 +215,7 @@ namespace Luckbound.Gameplay.Movement
                 _dodgeElapsed = 0f;
                 _dodgeDirection = Mathf.Abs(input) > MovementDeadZone ? Mathf.Sign(input) : _facingDirection;
                 _dodgeCooldownRemaining = DodgeCooldownDuration;
+                DodgeActivationCount++;
             }
 
             float targetSpeed = input * MaximumHorizontalSpeed;
@@ -252,6 +257,7 @@ namespace Luckbound.Gameplay.Movement
                     _jumpBufferRemaining = 0f;
                     _coyoteTimeRemaining = 0f;
                     IsGrounded = false;
+                    SuccessfulJumpCount++;
                 }
 
                 if (command.WasReleased(PlayerAction.Jump) && velocity.y > 0f)

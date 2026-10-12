@@ -19,6 +19,7 @@ namespace Luckbound.Presentation
         private static readonly int FacingXHash = Animator.StringToHash(FacingXParameter);
 
         private Animator _animator;
+        private SpriteRenderer _spriteRenderer;
         private IPlayerVisualStateSource _source;
 
         public PlayerVisualState CurrentState { get; private set; }
@@ -31,6 +32,7 @@ namespace Luckbound.Presentation
             }
 
             _animator = GetComponent<Animator>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
             if (_animator == null)
             {
                 throw new InvalidOperationException("PlayerVisualStatePresenter requires an Animator.");
@@ -77,6 +79,10 @@ namespace Luckbound.Presentation
             _animator.SetFloat(VelocityXHash, snapshot.VelocityX);
             _animator.SetFloat(VelocityYHash, snapshot.VelocityY);
             _animator.SetFloat(FacingXHash, snapshot.FacingX);
+            if (_spriteRenderer != null && Mathf.Abs(snapshot.FacingX) > 0.001f)
+            {
+                _spriteRenderer.flipX = snapshot.FacingX < 0f;
+            }
         }
     }
 }

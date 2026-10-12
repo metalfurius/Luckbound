@@ -84,6 +84,7 @@ namespace Luckbound.Editor
 
             EnsurePlayerVisualController();
             EnsureExpeditionCameraRig();
+            MovementDemoScaffoldGenerator.EnsureGenerated();
 
             if (createdScenes > 0)
             {

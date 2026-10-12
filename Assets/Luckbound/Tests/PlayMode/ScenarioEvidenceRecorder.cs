@@ -21,6 +21,7 @@ namespace Luckbound.Tests.PlayMode
             "ProjectSettings/TimeManager.asset",
             "Assets/Luckbound/Scenes/Bootstrap.unity",
             "Assets/Luckbound/Scenes/Menu.unity",
+            "Assets/Luckbound/Scenes/Expedition.unity",
             "Assets/Resources/Luckbound/InputSystem_Actions.inputactions",
             "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
             "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
@@ -30,11 +31,18 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Gameplay/Luckbound.Gameplay.asmdef",
             "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
             "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+            "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
+            "Assets/Luckbound/Scripts/App/MovementDemoComposition.cs",
+            "Assets/Luckbound/Scripts/App/MovementDemoGoalTrigger.cs",
             "Assets/Luckbound/Scripts/Presentation/Luckbound.Presentation.asmdef",
             "Assets/Luckbound/Scripts/Presentation/PlayerVisualStatePresenter.cs",
             "Assets/Luckbound/Scripts/Presentation/RoomCameraRig2D.cs",
             "Assets/Luckbound/Editor/ProjectDevelopmentChecks.cs",
             "Assets/Luckbound/Editor/ProjectScaffoldGenerator.cs",
+            "Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs",
+            "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab",
+            "Assets/Luckbound/Art/Prototypes/MovementDemo/BellatorPrototype.png",
+            "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png",
             "Assets/Resources/Luckbound/PlayerVisualStates.controller",
             "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
             "Assets/Luckbound/Tests/PlayMode/ScenarioEvidenceRecorder.cs",
@@ -42,7 +50,8 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/PlayerPresentationTests.cs",
             "Assets/Luckbound/Tests/PlayMode/PlayerDodgeTests.cs",
             "Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs"
+            "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs"
         };
 
         private readonly string _projectRoot;

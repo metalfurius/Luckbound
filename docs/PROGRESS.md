@@ -8,12 +8,12 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B06: Verified; A06: InProgress; B07: InProgress; B08–J09: Pending.
+- A01–A05, A07–A08, B01–B07: Verified; A06: InProgress; B08–J09: Pending. C01 queda habilitada y es la siguiente tarea técnica.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
-- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 queda habilitada.
+- A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
 
 ## Estados y dependencias
 
@@ -43,8 +43,8 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | B04 | Salto variable, buffer y coyote | B03 | Verified |
 | B05 | Esquiva y recarga | B04 | Verified |
 | B06 | Cámara, límites y estados visuales | B05 | Verified |
-| B07 | Demo de movimiento 0.1 | B06 | InProgress |
-| C01 | Estadísticas y resolución de daño | B07 | Pending |
+| B07 | Demo de movimiento 0.1 | B06 | Verified |
+| C01 | Estadísticas y resolución de daño | B07 | InProgress |
 | C02 | Ataques cuerpo a cuerpo y secuencia | C01 | Pending |
 | C03 | Proyectiles y sistema de habilidades | C02 | Pending |
 | C04 | Daño recibido, empuje y muerte | C03 | Pending |
@@ -287,6 +287,17 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - `unity test . --mode EditMode --output Logs\B06-editmode-final.xml --timeout 1200 -- -nographics` → 14/14 pasan; `unity test . --mode PlayMode --output Logs\B06-playmode-final.xml --timeout 1200 -- -nographics` → 11/11 pasan, incluyendo las regresiones B03–B05. La serialización YAML usa cadenas vacías explícitas para los campos nulos de Unity; el Editor las importó, el Animator ejecutó los siete estados y el generador ya solo guarda su controlador cuando añade o corrige contenido.
 - `ProjectDevelopmentChecks` valida assemblies, 60 Hz, nombre y tag de la cámara, Pixel Perfect, Cinemachine y contrato Animator. La prueba de generador confirma que la segunda reconciliación no altera las escenas ni el controlador. `git diff --check` pasa; 84 GUID `.meta`, todos únicos. No se generó ni publicó una build en este subpaso.
 - **Aceptación B06 satisfecha; estado Verified.** B07 queda habilitada. El controlador conserva estados sin clips para que F03 los sustituya por animación pixel art manteniendo IDs y parámetros.
+
+## Evidencia B07 — Demo de movimiento 0.1
+
+- `MenuNavigationController` conecta el botón de demo con `Expedition`. `MovementDemoComposition` compone el input, el prefab, el motor, la cámara, el HUD y el botón de retorno; `MovementDemoGoalTrigger` registra contacto físico y solo muestra la finalización después de tres saltos iniciados por Gameplay y una esquiva.
+- Los recursos provisionales están confinados a `Assets/Luckbound/Art/Prototypes/MovementDemo/`: Bellator estático de 32×48 píxeles y piedra de 16×16, ambos a 16 PPU. `Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab` conserva el collider y el Animator con los IDs de B06. El generador no sustituye escenas existentes, repara solo su prefab provisional incompleto y pasa su prueba de idempotencia.
+- `B07_MovementDemoFlow`, semilla `31415926`, Unity `6000.6.5f1`, WindowsEditor, source hash `3300d89cf675507bb6fe2eb4fe5731a75d97ce117e0c1f30d6d5b60e98c266a8`: el botón abre Expedition; entrada de teclado simulado desplaza al actor por física y supera los obstáculos en `x=-20`, `0` y `20`; el contador pasa `0→1→2→3`, la esquiva se activa una vez, el contacto abre el portal y el botón de retorno carga Menu. Aserciones y log: `Logs/Scenarios/B07/20261012T104612393Z_B07_MovementDemoFlow_c31c57c0/scenario-report.json` y `scenario.log`. Captura visual no disponible en batch con dispositivo gráfico Null.
+- `unity test . --mode EditMode --output Logs\B07-editmode-final.xml --timeout 1200 -- -nographics` → 14/14; `unity test . --mode PlayMode --output Logs\B07-playmode-final.xml --timeout 1200 -- -nographics` → 12/12. El driver `ProjectDevelopmentChecks` pasó y el caso `StartupSceneGenerator_IsIdempotentAndLeavesNoProjectDiff` confirmó que las escenas, el prefab y los ajustes administrados no cambian en la segunda reconciliación.
+- Windows x64: build `success`, Unity `6000.6.5f1`, ejecutable `Builds/B07/Windows/Luckbound.exe` (667.136 bytes), SHA-256 `001AEEBFB92718F8B49F0C0E0A03E313C54669552B08E952B2FEE3DDD143683A`, procedencia `Builds/B07/Windows/Luckbound.provenance.json`.
+- WebGL: perfil `Assets/Settings/Build Profiles/WebGL.asset`, build `success`, Unity `6000.6.5f1`, salida `Builds/B07/WebGL`, procedencia `Builds/B07/WebGL/unity-build.provenance.json`; `WebGL.wasm.br` 7.984.491 bytes y `WebGL.data.br` 2.849.209 bytes. Unity registró advertencias del paquete por compatibilidad de WebGPU en versiones antiguas de Firefox, un símbolo JS obsoleto y renovación local de licencia sin token; el resultado fue código 0. La build añadió dos combinaciones de variantes de luces 2D a `Assets/Settings/UniversalRP.asset` para conservarlas al compilar.
+- Ambas builds corresponden al working tree basado en `3edbb3d` y no se publicaron. Ningún workflow remoto, `gh-pages` ni ruta pública fue modificado. `git diff --check` pasa y los 96 GUID `.meta` son únicos. El SHA-256 actual del plan v1.2 es `53e55d97cc768355f3c95634e573e82399d93f362faf91d3341bf648962cdf23`.
+- **Aceptación B07 satisfecha; estado Verified.** Fran conserva pendiente la revisión de Movimiento 0.1; C01 empieza con el contrato de combate y estadísticas fijado en el plan.
 
 ## Ficha que debe completar cada ejecución
 

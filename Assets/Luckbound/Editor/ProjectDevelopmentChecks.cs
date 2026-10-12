@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Luckbound.App;
+using Luckbound.Gameplay.Movement;
 using Luckbound.Presentation;
 using Unity.Cinemachine;
 using UnityEditor;
@@ -10,6 +11,8 @@ using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -362,11 +365,13 @@ namespace Luckbound.Editor
                 {
                     ValidateMenuText(objects, "LuckboundTitle", "LUCKBOUND", errors);
                     ValidateMenuText(objects, "MenuVersion", "PREPRODUCCIÓN  ·  0.1.0", errors);
+                    ValidateMenuMovementEntry(objects, errors);
                 }
 
                 if (sceneName == "Expedition")
                 {
                     ValidateExpeditionCamera(objects, errors);
+                    ValidateMovementDemo(objects, errors);
                 }
             }
             catch (Exception exception)
@@ -383,6 +388,100 @@ namespace Luckbound.Editor
                 {
                     EditorSceneManager.CloseScene(scene, true);
                 }
+            }
+        }
+
+        private static void ValidateMenuMovementEntry(List<GameObject> objects, List<string> errors)
+        {
+            Button startButton = objects.FirstOrDefault(gameObject => gameObject.name == "StartMovementDemoButton")
+                ?.GetComponent<Button>();
+            Text buttonLabel = startButton == null ? null : startButton.GetComponentInChildren<Text>(true);
+            if (startButton == null || buttonLabel == null || buttonLabel.text != "JUGAR DEMO 0.1")
+            {
+                errors.Add("Menu must expose the JUGAR DEMO 0.1 button.");
+            }
+
+            if (objects.Count(gameObject => gameObject.GetComponent<MenuNavigationController>() != null) != 1)
+            {
+                errors.Add("Menu must contain exactly one MenuNavigationController.");
+            }
+
+            if (objects.Count(gameObject => gameObject.GetComponent<EventSystem>() != null) != 1 ||
+                objects.Count(gameObject => gameObject.GetComponent<InputSystemUIInputModule>() != null) != 1)
+            {
+                errors.Add("Menu must contain one EventSystem using InputSystemUIInputModule.");
+            }
+        }
+
+        private static void ValidateMovementDemo(List<GameObject> objects, List<string> errors)
+        {
+            MovementDemoComposition[] compositions = objects
+                .SelectMany(gameObject => gameObject.GetComponents<MovementDemoComposition>())
+                .ToArray();
+            if (compositions.Length != 1)
+            {
+                errors.Add("Expedition must contain exactly one MovementDemoComposition; found " + compositions.Length + ".");
+                return;
+            }
+
+            MovementDemoComposition composition = compositions[0];
+            var compositionData = new SerializedObject(composition);
+            GameObject playerPrefab = compositionData.FindProperty("_playerPrefab").objectReferenceValue as GameObject;
+            Transform spawn = compositionData.FindProperty("_spawnPoint").objectReferenceValue as Transform;
+            Collider2D roomBounds = compositionData.FindProperty("_roomBounds").objectReferenceValue as Collider2D;
+            RoomCameraRig2D cameraRig = compositionData.FindProperty("_cameraRig").objectReferenceValue as RoomCameraRig2D;
+            Text telemetry = compositionData.FindProperty("_telemetryText").objectReferenceValue as Text;
+            Text courseText = compositionData.FindProperty("_courseText").objectReferenceValue as Text;
+            Button returnButton = compositionData.FindProperty("_returnToMenuButton").objectReferenceValue as Button;
+
+            if (playerPrefab == null || spawn == null || roomBounds == null || cameraRig == null ||
+                telemetry == null || courseText == null || returnButton == null)
+            {
+                errors.Add("MovementDemoComposition must serialize its player, spawn, bounds, camera and HUD references.");
+            }
+
+            if (roomBounds == null || roomBounds.bounds.size.x < 20f || roomBounds.bounds.size.y < 11.25f)
+            {
+                errors.Add("Movement-demo room bounds must contain the full B06 camera view.");
+            }
+
+            if (playerPrefab == null || playerPrefab.GetComponent<PlayerMotor2D>() == null ||
+                playerPrefab.GetComponent<PlayerVisualStatePresenter>() == null ||
+                playerPrefab.GetComponent<Rigidbody2D>() == null ||
+                playerPrefab.GetComponent<CapsuleCollider2D>() == null ||
+                playerPrefab.GetComponent<SpriteRenderer>()?.sprite == null ||
+                playerPrefab.GetComponent<Animator>()?.runtimeAnimatorController == null)
+            {
+                errors.Add("Movement-demo player prefab must include its motor, sprite, collider, Animator and visual presenter.");
+            }
+            else if (!Mathf.Approximately(playerPrefab.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit, 16f))
+            {
+                errors.Add("Movement-demo prototype sprite must use 16 PPU.");
+            }
+
+            string[] barriers = { "JumpBarrierOne", "JumpBarrierTwo", "JumpBarrierThree" };
+            foreach (string barrierName in barriers)
+            {
+                GameObject barrier = objects.FirstOrDefault(gameObject => gameObject.name == barrierName);
+                BoxCollider2D collider = barrier == null ? null : barrier.GetComponent<BoxCollider2D>();
+                if (collider == null || collider.isTrigger || collider.attachedRigidbody != null ||
+                    barrier.layer != LayerMask.NameToLayer("Ground"))
+                {
+                    errors.Add(barrierName + " must be a static solid obstacle on the Ground layer.");
+                }
+            }
+
+            MovementDemoGoalTrigger goal = objects.SelectMany(gameObject => gameObject.GetComponents<MovementDemoGoalTrigger>())
+                .FirstOrDefault();
+            if (goal == null || goal.Composition != composition || goal.GetComponent<Collider2D>()?.isTrigger != true)
+            {
+                errors.Add("Movement-demo portal must forward its real trigger contact to the scene composition.");
+            }
+
+            if (objects.Count(gameObject => gameObject.GetComponent<EventSystem>() != null) != 1 ||
+                objects.Count(gameObject => gameObject.GetComponent<InputSystemUIInputModule>() != null) != 1)
+            {
+                errors.Add("Expedition HUD must contain one EventSystem using InputSystemUIInputModule.");
             }
         }
 

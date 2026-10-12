@@ -5,7 +5,8 @@
     "Luckbound.Core",
     "Luckbound.Content",
     "Luckbound.Gameplay",
-    "Luckbound.Presentation"
+    "Luckbound.Presentation",
+    "Unity.ugui"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
