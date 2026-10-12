@@ -61,12 +61,13 @@ namespace Luckbound.Tests.PlayMode
                 RoomPositionMarker2D initialSpawn = controller.ActiveRoomRoot
                     .GetComponentsInChildren<RoomPositionMarker2D>(true).Single(marker => marker.Kind == "player_spawn");
                 bool initialPlayerSpawned = Vector3.Distance(sessionPlayer.transform.position, initialSpawn.transform.position) < 0.001f &&
+                    Vector3.Distance(sessionPlayerBody.position, initialSpawn.transform.position) < 0.001f &&
                     sessionPlayerBody.linearVelocity == Vector2.zero && Mathf.Abs(sessionPlayerBody.angularVelocity) < 0.001f;
                 transitionChecksPassed &= initialPlayerSpawned;
                 evidence.RecordAssertion("The persistent session player starts at the room player_spawn marker",
                     initialPlayerSpawned, initialSpawn.transform.position.ToString() + " with zero velocity",
                     sessionPlayer.transform.position.ToString() + "; velocity=" + sessionPlayerBody.linearVelocity +
-                    "; angular=" + sessionPlayerBody.angularVelocity);
+                    "; body=" + sessionPlayerBody.position + "; angular=" + sessionPlayerBody.angularVelocity);
 
                 int transitionsCompleted = 0;
                 for (int targetIndex = 1; targetIndex < route.MandatoryNodeIds.Count; targetIndex++)
@@ -102,7 +103,9 @@ namespace Luckbound.Tests.PlayMode
                     bool portsAligned = targetEntry != null &&
                         Vector3.Distance(sourceExitPosition, targetEntry.transform.position) < 0.001f;
                     bool playerAtEntry = targetEntry != null && Vector3.Distance(sessionPlayer.transform.position,
-                        targetEntry.transform.position + controller.ActiveRoomRoot.transform.right * 0.5f) < 0.001f;
+                        targetEntry.transform.position + controller.ActiveRoomRoot.transform.right * 0.5f) < 0.001f &&
+                        Vector3.Distance(sessionPlayerBody.position,
+                            targetEntry.transform.position + controller.ActiveRoomRoot.transform.right * 0.5f) < 0.001f;
                     bool playerVelocityCleared = sessionPlayerBody.linearVelocity == Vector2.zero &&
                         Mathf.Abs(sessionPlayerBody.angularVelocity) < 0.001f;
                     transitionChecksPassed &= transitioned && immediateCleanup && staleCallbackRejected &&

@@ -238,14 +238,13 @@ namespace Luckbound.App
             Rigidbody2D body = _sessionPlayer.GetComponent<Rigidbody2D>();
             if (body != null)
             {
-                body.position = position;
+                body.position = new Vector2(position.x, position.y);
                 body.linearVelocity = Vector2.zero;
                 body.angularVelocity = 0f;
             }
-            else
-            {
-                _sessionPlayer.position = position;
-            }
+
+            _sessionPlayer.SetPositionAndRotation(position, _sessionPlayer.rotation);
+            Physics2D.SyncTransforms();
         }
 
         private void RetireActiveRoom()
