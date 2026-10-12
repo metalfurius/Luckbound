@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D07: Verified; A06 y D08: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D08: Verified; A06 y D09: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -22,7 +22,8 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - D03 añade el cursor de ruta dirigida, transiciones preparadas antes de retirar la sala, colocación del jugador persistente entre puertos y ámbitos que liberan actores, suscripciones, recursos y coroutines. Veinte cambios terminan en `final.boss` sin acumulación; las suites finales postcommit pasan en `61653bc`.
 - D05 conecta Menú, Taberna y el inicio de una expedición. La taberna permite escoger una clase, exactamente dos habilidades compatibles y la única raza desbloqueada; `Items.json` v2 asigna equipo inicial por clase. Cada salida construye `RunId`, semilla, ruta de 24 nodos, inventario nuevo, equipo, dos pociones y las estadísticas iniciales. El escenario vuelve a la taberna, contamina deliberadamente el primer inventario con oro/materiales y demuestra que Venator inicia con equipo, habilidades e inventario independientes. Ambas suites postcommit pasan en `fabcbcb`.
 - D06 añade al Custodio provisional con Corte, Onda y Carga físicos, transición de 120 ticks al 50 %, doble onda en fase dos y derrota por impactos cuerpo a cuerpo reales. El escenario dirigido y ambas suites postcommit pasan en `cb7b7ba`.
-- D07 añade liquidación por resultado y deduplicación por `RunId`: muerte conserva el 25 % redondeado hacia abajo, extracción y victoria conservan Renombre y convierten botín, y abandono no paga. El ledger mantiene Renombre y liquidaciones procesadas en memoria hasta D08; sus suites y escenario pasan en `dd0a707`.
+- D07 añade liquidación por resultado y deduplicación por `RunId`: muerte conserva el 25 % redondeado hacia abajo, extracción y victoria conservan Renombre y convierten botín, y abandono no paga. D08 persiste ahora el saldo y las liquidaciones procesadas; las suites y el escenario D07 pasan en `dd0a707`.
+- D08 persiste perfil y ajustes por separado con sobre versionado, checksum SHA-256, respaldo recuperable, escrituras temporales y sincronización WebGL confirmada por callback de IndexedDB. La recarga, corrupción, esquema futuro, escritura reintentable y retención de expediente están cubiertos; el arranque bloquea nuevas expediciones si el perfil no se puede recuperar.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -71,8 +72,8 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D05 | Taberna y preparación | D04 | Verified |
 | D06 | Custodio provisional | D05 | Verified |
 | D07 | Muerte, extracción y liquidación | D06 | Verified |
-| D08 | Perfil y ajustes con respaldo | D07 | InProgress |
-| D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | Pending |
+| D08 | Perfil y ajustes con respaldo | D07 | Verified |
+| D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | InProgress |
 | E01 | Materiales y bolsa | D09 | Pending |
 | E02 | Fabricación | E01 | Pending |
 | E03 | Comercio, herrería y descanso | E02 | Pending |
@@ -468,18 +469,28 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 
 - **Contrato:** resultados Death, Extracted, FinalVictory y Abandoned aplican las reglas de Renombre y conversión de botín de la sección 3.13. La misma liquidación no puede otorgarse dos veces para un `RunId`; el estado persistente del perfil se incorpora en D08.
 - **Dependencia comprobada:** D06 `Verified`, implementación `cb7b7badb0a2e8330922362c0fdac15a9f815683` y evidencia postcommit en `12158335197aab4a4ba8eecad5c604c3dc554ff9`.
-- **Implementación:** `ExpeditionSettlementLedger` aplica las cuatro salidas, calcula las conversiones de armas/armaduras por rareza, reliquias, materiales y oro, excluye pociones y las instancias exactas del equipo inicial, y registra cada `RunId` una sola vez. Una repetición devuelve premio cero sin reevaluar el inventario. El saldo y los IDs procesados son accesibles desde `ApplicationBootstrapper`; D08 los trasladará al sobre persistente.
+- **Implementación:** `ExpeditionSettlementLedger` aplica las cuatro salidas, calcula las conversiones de armas/armaduras por rareza, reliquias, materiales y oro, excluye pociones y las instancias exactas del equipo inicial, y registra cada `RunId` una sola vez. Una repetición devuelve premio cero sin reevaluar el inventario. D08 traslada el saldo y los IDs procesados al perfil persistente antes de confirmar la liquidación.
 - **Reglas cubiertas:** muerte conserva `floor(Renombre/4)` y pierde botín; extracción y victoria final conservan todo el Renombre y convierten botín; abandono concede cero y marca terminalmente el `RunId`. Los tests también cubren límite de saldo, duplicados restaurados desde perfil y retry sin mutación parcial por overflow.
 - **Escenario de integración:** `D07_ExtractionSettlementIsIdempotent`, semilla `16180339`, informe `Logs/Scenarios/D07/20261012T173133937Z_D07_ExtractionSettlementIsIdempotent_740d168d/scenario-report.json`. `passed=true`, tres aserciones y cero errores; Unity `6000.6.5f1`, WindowsEditor. Con equipo inicial de Bellator, arma rara, armadura épica, reliquia, 9 materiales y 39 de oro, convirtió 27 y pagó 240 (213 + 27), elevando el saldo de 12 a 252. Repetir la extracción para el mismo `RunId` pagó 0.
 - **Aceptación postcommit:** commit `dd0a7071fc5426ef3ef7109b7cede5f11f5304ef` (`feat(progression): add idempotent expedition settlement`). EditMode `79/79` y PlayMode `46/46`; cero fallos, omitidos o inconclusos. Los 227 GUID `.meta` son únicos y `git diff --check` pasa. El `sourceHash` del escenario es `e23049dd2ceabc7c3120f02d3c2def0d5c369a9319651f5acc50f936efe4d482`.
-- **Limitación deliberada:** el ledger de perfil aún es temporal en memoria. D08 implementa el archivo, el checksum, el respaldo y la recarga; el flujo persistente al cerrar/reabrir no se afirma aquí.
+- **Limitación histórica:** al aceptar el commit D07, el ledger aún era temporal en memoria. D08 añade el archivo, el checksum, el respaldo y la recarga; este apartado D07 no atribuye esa persistencia a su propio commit.
 - **Resultado:** D07 `Verified`; D08 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 sigue `InProgress`.
 
-## Ejecución D08 — Perfil y ajustes con respaldo (InProgress)
+## Evidencia D08 — Perfil y ajustes con respaldo
 
-- **Contrato:** el perfil y la expedición ocuparán bloques separados de un sobre versionado; los ajustes tendrán un documento independiente. El perfil cargará saldo, mejoras, desbloqueos, contratos, fragmentos, contadores e IDs de liquidación. Windows usará escritura temporal, respaldo y reemplazo. WebGL sincronizará con IndexedDB y solo confirmará después del callback de `FS.syncfs`.
+- **Contrato:** el perfil y la expedición ocupan bloques separados de un sobre versionado; los ajustes tienen un documento independiente. El perfil carga Renombre, mejoras, desbloqueos, contratos, fragmentos, contadores e IDs de liquidación. Windows escribe temporalmente, conserva el último perfil válido como respaldo y reemplaza el principal. WebGL lee persistencia antes de abrir el menú y espera el callback de `FS.syncfs` antes de confirmar cada escritura.
 - **Dependencia comprobada:** D07 `Verified`, implementación `dd0a7071fc5426ef3ef7109b7cede5f11f5304ef` y evidencia postcommit registrada en `b70ee86`.
-- **Resultado:** trabajo en curso; registrar reinicio, recuperación, rechazo de esquemas nuevos y resultado del adaptador WebGL antes de cerrar la tarea.
+- **Implementación:** `Luckbound.Core.Saves` contiene DTOs y validadores sin referencias a Unity. `SaveRepository` crea sobres con esquema, contenido, generación, secuencia, fecha y checksum SHA-256; los documentos de perfil y ajustes no se mezclan. `FileSaveStore` escribe UTF-8 a temporal, conserva el último principal que se validó y sincroniza tras reemplazar. WebGL usa un `.jslib` para `FS.syncfs` y devuelve los fallos al flujo `Task` de C#. La hidratación termina antes de cargar Menu; el perfil corrupto o incompatible bloquea nuevas expediciones y la taberna explica que los datos se preservaron. Las liquidaciones persistidas actualizan el ledger en memoria solo después de completar la escritura; los fallos de escritura retienen JSON pendiente y ofrecen APIs de reintento/exportación.
+- **Escenario reproducible:** `D08_ProfileRestartAndBackupRecovery`, semilla `14142135`, informe `Logs/Scenarios/D08/20261012T180555990Z_D08_ProfileRestartAndBackupRecovery_27a31201/scenario-report.json`. Unity `6000.6.5f1`, WindowsEditor y dispositivo Null. `passed=true`, tres aserciones y cero errores: dos escrituras restauran secuencia 2/Renombre 87 en una instancia nueva; el principal corrupto recupera Renombre 41; guardar lo recuperado conserva byte por byte el respaldo válido. `sourceHash`: `16ebc848c3bf76eb548a025ee1db94f6cdaf62ea26e7953ee3cff75ae75fa773`.
+- **Aceptación postcommit:** implementación `2b8d3e5e100a7e44c77d79a5e23b31fb4a091602`. EditMode `79/79` y PlayMode `56/56`; cero fallos, omitidos o inconclusos. La suite dirigida de guardado pasó `10/10`, incluyendo alteración de contenido con checksum obsoleto, recuperación, preservación de ambos archivos corruptos, esquema futuro, ajustes independientes, expediente y reintento de escritura. Hay 237 GUID `.meta`, todos únicos; `git diff --check` pasa.
+- **Build WebGL local:** `unity build . --profile WebGL --output-path Logs/Builds/D08-WebGL --no-tail`, Unity `6000.6.5f1`, resultado `success`, exit code 0. Compiló y enlazó el plugin `.jslib`. Unity informó avisos no bloqueantes de compilación JS/WebGPU y que no había token de actualización de Licensing Client; no hubo fallo de build. La procedencia de Unity CLI identifica revisión `2b8d3e5` y árbol sucio por archivos de referencia del usuario no añadidos al repositorio. No se probó la sincronización en un navegador WebGL ni se publicó esta build.
+- **Resultado:** D08 `Verified`; D09 queda habilitada. La build se guardó solo en `Logs/Builds/D08-WebGL`; no se ejecutó GitHub Actions ni se modificó la ruta pública. A06 continúa `InProgress`.
+
+## Ejecución D09 — Reanudar expedición en Windows y WebGL (InProgress)
+
+- **Contrato:** al entrar en combate se guarda el punto de entrada completo de la sala. Si la aplicación se cierra en combate, se restaura ese checkpoint y se descarta todo lo obtenido durante el intento interrumpido. Al completar sala se guarda el resultado y el botín pendiente; volver no regenera enemigos ni vuelve a entregar recompensas. Operaciones repetidas conservan su coste/premio único y el resultado de extracción no se confirma antes de persistir.
+- **Dependencia comprobada:** D08 `Verified`, implementación `2b8d3e5e100a7e44c77d79a5e23b31fb4a091602`, suites postcommit y build WebGL registrados arriba.
+- **Resultado:** implementación en curso; registrar la reanudación Windows/WebGL, recuperación de sala, deduplicación y evidencia de build antes de cerrar.
 
 ## Ficha que debe completar cada ejecución
 
