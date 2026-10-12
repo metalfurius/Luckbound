@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D02: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D02: Verified; A06 y D03: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -62,7 +62,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C08 | Arena de combate | C07 | Verified |
 | D01 | Sala, puertos y marcadores | C08 | Verified |
 | D02 | Generación por semilla | D01 | Verified |
-| D03 | Transición y limpieza | D02 | Pending |
+| D03 | Transición y limpieza | D02 | InProgress |
 | D04 | Inventario y botín | D03 | Pending |
 | D05 | Taberna y preparación | D04 | Pending |
 | D06 | Custodio provisional | D05 | Pending |

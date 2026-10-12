@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 2.0 — 12 de octubre de 2026.
+**Versión del documento:** 2.1 — 12 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -265,6 +265,15 @@ Al abandonar una sala:
 
 Una transición repetida o una respuesta tardía de una sala anterior no podrá modificar la sala actual.
 
+Contrato de implementación:
+
+- `Luckbound.Core.Expeditions.ExpeditionRouteTraversal` conserva el nodo lógico actual y solo permite aristas presentes en `ExpeditionRoutePlan`. Los desvíos opcionales y su conexión directa alternativa se eligen como destinos explícitos.
+- `Luckbound.App.ExpeditionRoomTransitionController` prepara la instancia destino mientras la sala actual sigue activa. Si falta el prefab o falla la preparación, conserva nodo, instancia y `RoomInstanceId` actuales. Al aceptar, verifica el `RoomInstanceId` de origen, avanza por la arista solicitada, dispone la sala previa y activa la nueva. Solo puede existir una sala activa.
+- Las salas de plataformas permanecen alineadas a ejes. La transición hace coincidir en mundo el puerto de salida del origen con el puerto de entrada destino y coloca el origen del jugador persistente a 0,5 unidades hacia el interior de la sala nueva; en el primer nodo usa su marcador `player_spawn`. Si faltan puertos compatibles o el marcador inicial, se rechaza la transición sin avanzar la ruta. Al colocar al jugador se reinicia su velocidad lineal y angular.
+- El actor de jugador pertenece a la expedición/sesión y persiste durante los cambios de sala. Los actores de encuentro pertenecen a `Luckbound.Gameplay.Rooms.RoomLifetimeScope`; no se destruye ni recrea el jugador al cambiar de sala.
+- `RoomLifetimeScope` ofrece `OwnActor`, `OwnSubscription`, `OwnResource` y `StartOwnedCoroutine`. `Dispose` es idempotente: detiene coroutines, libera recursos/suscripciones en orden inverso, desactiva y elimina actores propios. Las suscripciones a pools (incluido `RoomProjectileScope`) se registran como recursos descartables.
+- Las llamadas asíncronas incluyen el `RoomInstanceId` desde el que se originaron. `TryApplyToCurrentRoom` rechaza IDs antiguos antes de modificar la sala actual. No se resuelve al jugador con búsquedas globales.
+
 ### 2.5. Tiempo, entrada y combate
 
 La simulación utilizará ticks a **60 Hz**.
@@ -433,7 +442,7 @@ El catálogo lógico vive en `Assets/Resources/Luckbound/Data/Rooms/RouteTemplat
 
 Para cada sector se barajan sus cinco plantillas C con un flujo propio: las tres primeras ocupan las posiciones de combate principales, la cuarta constituye la rama opcional y la quinta queda sin usar en esa expedición. E1/E2 se elige mediante otro flujo independiente. Un tercer flujo asigna una vez cada especial T, P y N a los tres sectores. El orden principal permanece `Combate → Exploración → Combate → Especial → Combate → Guardián`; se intercala un descanso después de los dos primeros guardianes y la arena final después del tercero.
 
-Cada rama se ofrece después del segundo combate del sector y vuelve a la sala especial. El grafo conserva también la conexión directa del recorrido principal, por lo que la sala opcional se puede saltar. D02 emite nodos y conexiones lógicos con los puertos estables `port.entry.west` y `port.exit.east`; D03 conectará las transiciones de ejecución, y las tareas H comprobarán los puertos contra las salas físicas. Las 21 localizaciones obligatorias forman una cadena de 20 conexiones; las tres salas opcionales añaden seis conexiones alternativas.
+Cada rama se ofrece después del segundo combate del sector y vuelve a la sala especial. El grafo conserva también la conexión directa del recorrido principal, por lo que la sala opcional se puede saltar. D02 emite nodos y conexiones lógicos con los puertos estables `port.entry.west` y `port.exit.east`; D03 alinea esos puertos al cambiar la instancia de sala, y las tareas H comprobarán los puertos contra las salas físicas. Las 21 localizaciones obligatorias forman una cadena de 20 conexiones; las tres salas opcionales añaden seis conexiones alternativas.
 
 La generación seleccionará y conectará plantillas diseñadas. No generará geometría arbitraria. Dentro de cada sector no se repetirá una plantilla ya elegida en esa expedición.
 

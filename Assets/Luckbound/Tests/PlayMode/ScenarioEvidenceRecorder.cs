@@ -32,6 +32,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
             "Assets/Luckbound/Scripts/Core/Randomness/Xorshift32.cs",
             "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+            "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
             "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
             "Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
             "Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
@@ -59,6 +60,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Core/Presentation/PlayerVisualState.cs",
             "Assets/Luckbound/Scripts/Core/Presentation/PlayerHudState.cs",
             "Assets/Luckbound/Scripts/Gameplay/Luckbound.Gameplay.asmdef",
+            "Assets/Luckbound/Scripts/Gameplay/Rooms/RoomLifetimeScope.cs",
             "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
             "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Enemies/Slime2D.cs",
@@ -72,6 +74,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Content/ExpeditionRouteCatalogJsonLoader.cs",
             "Assets/Luckbound/Scripts/Content/CombatEncounterJsonLoader.cs",
             "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
+            "Assets/Luckbound/Scripts/App/ExpeditionRoomTransitionController.cs",
             "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
             "Assets/Luckbound/Scripts/App/MovementDemoComposition.cs",
             "Assets/Luckbound/Scripts/App/ExpeditionPauseController.cs",
@@ -99,6 +102,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs",
             "Assets/Luckbound/Tests/PlayMode/MeleeAttackMotorTests.cs",
             "Assets/Luckbound/Tests/EditMode/DamageResolverTests.cs",
+            "Assets/Luckbound/Tests/EditMode/ExpeditionRouteTraversalTests.cs",
             "Assets/Luckbound/Tests/EditMode/ActorDamageStateTests.cs",
             "Assets/Luckbound/Tests/EditMode/HealthPotionUseStateTests.cs",
             "Assets/Luckbound/Tests/EditMode/MeleeAttackTests.cs",
@@ -111,6 +115,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/PlayerHudConsumableTests.cs",
             "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
             "Assets/Luckbound/Tests/PlayMode/ExpeditionRouteGenerationTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/RoomTransitionLifecycleTests.cs",
             "Assets/Resources/Luckbound/Data/Skills.json"
         };
 
