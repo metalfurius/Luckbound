@@ -39,6 +39,23 @@ namespace Luckbound.Core.Combat
 
         public long ProtectedUntilTick { get; private set; }
 
+        public int RestoreHealth(int amount)
+        {
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(amount));
+            }
+
+            if (amount == 0 || IsDead)
+            {
+                return 0;
+            }
+
+            int previousHealth = CurrentHealth;
+            CurrentHealth = (int)Math.Min(Stats.MaximumHealth, (long)CurrentHealth + amount);
+            return CurrentHealth - previousHealth;
+        }
+
         public bool IsDirectImpactProtectedAt(long tick)
         {
             if (tick < 0)

@@ -12,7 +12,7 @@ namespace Luckbound.Gameplay.Movement
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
-    public sealed class PlayerMotor2D : MonoBehaviour, IPlayerVisualStateSource
+    public sealed class PlayerMotor2D : MonoBehaviour, IPlayerVisualStateSource, IPlayerHudStateSource
     {
         public const float MaximumHorizontalSpeed = 6f;
         public const float GroundAcceleration = 60f;
@@ -42,6 +42,8 @@ namespace Luckbound.Gameplay.Movement
         private MeleeAttackState _meleeAttackState;
         private MeleeAttackSnapshot _meleeAttackSnapshot;
         private ActorDamageState _damageState;
+        private HealthPotionUseState _healthPotionUseState;
+        private SkillUseState _skillUseState;
         private ActorId _actorId;
         private Collider2D _collider;
         private ContactFilter2D _groundContactFilter;
@@ -78,6 +80,19 @@ namespace Luckbound.Gameplay.Movement
         public int CurrentHealth => _damageState != null ? _damageState.CurrentHealth : 0;
 
         public CombatStats CombatStats => _damageState != null ? _damageState.Stats : null;
+
+        public SkillUseState SkillUses => _skillUseState;
+
+        public int CurrentEnergy => _skillUseState != null ? _skillUseState.CurrentEnergy : 0;
+
+        public int MaximumEnergy => _skillUseState != null ? _skillUseState.MaximumEnergy : 0;
+
+        public int HealthPotionCharges => _healthPotionUseState != null ? _healthPotionUseState.CurrentCharges : 0;
+
+        public bool IsPreparingHealthPotion => _healthPotionUseState != null && _healthPotionUseState.IsPreparing;
+
+        public int HealthPotionPreparationTicksRemaining =>
+            _healthPotionUseState != null ? _healthPotionUseState.PreparationTicksRemaining : 0;
 
         public ActorId ActorId => _actorId;
 
@@ -120,6 +135,19 @@ namespace Luckbound.Gameplay.Movement
             return new PlayerVisualSnapshot(state, velocity.x, velocity.y, _facingDirection);
         }
 
+        public PlayerHudSnapshot CaptureHudState()
+        {
+            CombatStats stats = CombatStats;
+            return new PlayerHudSnapshot(
+                CurrentHealth,
+                stats != null ? stats.MaximumHealth : 0,
+                CurrentEnergy,
+                MaximumEnergy,
+                HealthPotionCharges,
+                _healthPotionUseState != null ? _healthPotionUseState.MaximumCharges : 0,
+                HealthPotionPreparationTicksRemaining);
+        }
+
         public void Initialize(ActorId actorId, IPlayerInputSource inputSource, LayerMask groundLayers, CombatStats combatStats = null)
         {
             if (_initialized)
@@ -159,6 +187,8 @@ namespace Luckbound.Gameplay.Movement
             _damageState = new ActorDamageState(
                 combatStats ?? new CombatStats(maximumHealth: 100, maximumEnergy: 50, defense: 0),
                 DirectHitProtectionTicks);
+            _skillUseState = new SkillUseState(_damageState.Stats.MaximumEnergy, _damageState.Stats.MaximumEnergy);
+            _healthPotionUseState = new HealthPotionUseState();
             _meleeAttackState = new MeleeAttackState(
                 MeleeAttackProfile.BellatorWornSword,
                 MeleeComboSequence.CreateBellator());
@@ -217,6 +247,7 @@ namespace Luckbound.Gameplay.Movement
                 return outcome;
             }
 
+            _healthPotionUseState.CancelPreparation();
             _body.linearVelocity = knockbackVelocity;
             if (stunDurationTicks > 0 && !outcome.IsDead)
             {
@@ -252,12 +283,13 @@ namespace Luckbound.Gameplay.Movement
 
         private void FixedUpdate()
         {
-            if (!_initialized)
+            if (!_initialized || Time.timeScale <= 0f)
             {
                 return;
             }
 
-            PlayerCommand command = _inputSource.Consume(_tick++);
+            long tick = _tick++;
+            PlayerCommand command = _inputSource.Consume(tick);
             if (command.ActorId != _actorId)
             {
                 throw new InvalidOperationException("The input command belongs to a different actor.");
@@ -282,6 +314,8 @@ namespace Luckbound.Gameplay.Movement
 
             if (IsDead)
             {
+                _healthPotionUseState.Update(tick, requested: false, currentHealth: CurrentHealth,
+                    maximumHealth: CombatStats.MaximumHealth, interrupted: true);
                 InterruptActions();
                 ApplyRestrictedMotion(deltaTime);
                 return;
@@ -289,10 +323,24 @@ namespace Luckbound.Gameplay.Movement
 
             if (IsStunned)
             {
+                _healthPotionUseState.Update(tick, requested: false, currentHealth: CurrentHealth,
+                    maximumHealth: CombatStats.MaximumHealth, interrupted: true);
                 _stunTicksRemaining--;
                 InterruptActions();
                 ApplyRestrictedMotion(deltaTime);
                 return;
+            }
+
+            bool dodgeStartedThisTick = command.WasPressed(PlayerAction.Dodge) && IsDodgeReady;
+            HealthPotionUseOutcome potionOutcome = _healthPotionUseState.Update(
+                tick,
+                requested: command.WasPressed(PlayerAction.Consumable),
+                currentHealth: CurrentHealth,
+                maximumHealth: CombatStats.MaximumHealth,
+                interrupted: dodgeStartedThisTick);
+            if (potionOutcome.HealthRestored > 0)
+            {
+                _damageState.RestoreHealth(potionOutcome.HealthRestored);
             }
 
             if (command.WasPressed(PlayerAction.Jump))
@@ -310,7 +358,6 @@ namespace Luckbound.Gameplay.Movement
                 _facingDirection = Mathf.Sign(input);
             }
 
-            bool dodgeStartedThisTick = command.WasPressed(PlayerAction.Dodge) && IsDodgeReady;
             if (dodgeStartedThisTick)
             {
                 _dodgeActive = true;

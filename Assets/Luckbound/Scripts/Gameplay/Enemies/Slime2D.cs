@@ -159,7 +159,7 @@ namespace Luckbound.Gameplay.Enemies
 
         private void FixedUpdate()
         {
-            if (!_initialized || State == SlimeBehaviorState.Dead)
+            if (!_initialized || Time.timeScale <= 0f || State == SlimeBehaviorState.Dead)
             {
                 return;
             }

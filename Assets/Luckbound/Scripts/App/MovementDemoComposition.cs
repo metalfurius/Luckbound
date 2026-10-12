@@ -23,6 +23,8 @@ namespace Luckbound.App
         private GameObject _playerObject;
         private PlayerInputSource _inputSource;
         private PlayerMotor2D _playerMotor;
+        private PlayerHudPresenter _hudPresenter;
+        private ExpeditionPauseController _pauseController;
         private bool _insideGoal;
         private bool _completed;
 
@@ -33,6 +35,8 @@ namespace Luckbound.App
         public bool IsInsideGoal => _insideGoal;
 
         public bool IsCourseComplete => _completed;
+
+        public bool IsPaused => _pauseController != null && _pauseController.IsPaused;
 
         private void Start()
         {
@@ -57,6 +61,12 @@ namespace Luckbound.App
             _playerMotor.Initialize(actorId, _inputSource, LayerMask.GetMask("Ground"));
             visualPresenter.Initialize(_playerMotor);
 
+            _hudPresenter = gameObject.AddComponent<PlayerHudPresenter>();
+            _hudPresenter.Initialize(_playerMotor, _telemetryText);
+            _pauseController = gameObject.AddComponent<ExpeditionPauseController>();
+            _pauseController.Initialize(_courseText);
+            _inputSource.PausePressed += _pauseController.TogglePause;
+
             Transform cameraTarget = _playerObject.transform.Find("CameraTarget");
             _cameraRig.Bind(cameraTarget != null ? cameraTarget : _playerObject.transform, _roomBounds);
             _returnToMenuButton.onClick.AddListener(ReturnToMenu);
@@ -65,7 +75,7 @@ namespace Luckbound.App
 
         private void Update()
         {
-            if (_playerMotor != null)
+            if (_playerMotor != null && !IsPaused)
             {
                 RefreshHud();
             }
@@ -73,6 +83,11 @@ namespace Luckbound.App
 
         private void OnDestroy()
         {
+            if (_inputSource != null && _pauseController != null)
+            {
+                _inputSource.PausePressed -= _pauseController.TogglePause;
+            }
+
             if (_returnToMenuButton != null)
             {
                 _returnToMenuButton.onClick.RemoveListener(ReturnToMenu);
@@ -107,6 +122,11 @@ namespace Luckbound.App
 
         public void ReturnToMenu()
         {
+            if (_pauseController != null)
+            {
+                _pauseController.SetPaused(false);
+            }
+
             Time.timeScale = 1f;
             SceneManager.LoadScene("Menu", LoadSceneMode.Single);
         }
@@ -114,12 +134,6 @@ namespace Luckbound.App
         private void RefreshHud()
         {
             if (_playerMotor == null) return;
-
-            _telemetryText.text =
-                "A/D o ←/→  MOVER     ESPACIO  SALTAR     MAYÚS  ESQUIVAR\n" +
-                "Mando: stick izquierdo · A · RB\n" +
-                "VELOCIDAD " + Mathf.Abs(_playerMotor.Velocity.x).ToString("0.0") +
-                " u/s     SALTOS " + _playerMotor.SuccessfulJumpCount + "/3     ESQUIVAS " + _playerMotor.DodgeActivationCount + "/1";
 
             if (_completed)
             {

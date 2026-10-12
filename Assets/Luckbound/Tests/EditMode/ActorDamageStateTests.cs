@@ -80,6 +80,25 @@ namespace Luckbound.Tests.Core
             Assert.That(result.ProtectedUntilTick, Is.Zero);
         }
 
+        [Test]
+        public void HealingClampsAtMaximumAndCannotResurrectADeadActor()
+        {
+            var stats = new CombatStats(100, 50, 0);
+            var state = new ActorDamageState(stats, directImpactProtectionTicks: 0, initialHealth: 70);
+
+            int firstHeal = state.RestoreHealth(25);
+            int cappedHeal = state.RestoreHealth(25);
+
+            Assert.That(firstHeal, Is.EqualTo(25));
+            Assert.That(cappedHeal, Is.EqualTo(5));
+            Assert.That(state.CurrentHealth, Is.EqualTo(100));
+
+            state.ReceiveDirectImpact(HitId.New(), Request(stats, 100m), 1);
+            Assert.That(state.RestoreHealth(25), Is.Zero);
+            Assert.That(state.CurrentHealth, Is.Zero);
+            Assert.That(state.IsDead, Is.True);
+        }
+
         private static DamageCalculationRequest Request(CombatStats stats, decimal damage, bool targetIsInvulnerable = false)
         {
             return new DamageCalculationRequest(

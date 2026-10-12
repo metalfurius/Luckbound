@@ -166,7 +166,7 @@ namespace Luckbound.Gameplay.Enemies
 
         private void FixedUpdate()
         {
-            if (!_initialized || IsDead)
+            if (!_initialized || Time.timeScale <= 0f || IsDead)
             {
                 return;
             }

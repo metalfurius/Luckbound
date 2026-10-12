@@ -1,7 +1,7 @@
 {
   "name": "Luckbound.Presentation",
   "rootNamespace": "Luckbound.Presentation",
-  "references": ["Luckbound.Core", "Luckbound.Content", "Unity.Cinemachine", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Universal.2D.Runtime"],
+  "references": ["Luckbound.Core", "Luckbound.Content", "Unity.Cinemachine", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Universal.2D.Runtime", "Unity.ugui"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

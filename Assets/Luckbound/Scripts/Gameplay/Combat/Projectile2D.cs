@@ -117,7 +117,7 @@ namespace Luckbound.Gameplay.Combat
 
         private void FixedUpdate()
         {
-            if (!_initialized)
+            if (!_initialized || Time.timeScale <= 0f)
             {
                 return;
             }

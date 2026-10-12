@@ -22,6 +22,8 @@ namespace Luckbound.Gameplay.Input
         private readonly Dictionary<InputAction, PlayerAction> _buttonActions = new Dictionary<InputAction, PlayerAction>();
         private bool _disposed;
 
+        public event Action PausePressed;
+
         public PlayerInputSource(ActorId actorId, InputActionAsset actionAsset)
         {
             if (!actorId.IsValid)
@@ -115,7 +117,12 @@ namespace Luckbound.Gameplay.Input
 
         private void OnButtonPerformed(InputAction.CallbackContext context)
         {
-            _buffer.Press(_buttonActions[context.action]);
+            PlayerAction playerAction = _buttonActions[context.action];
+            _buffer.Press(playerAction);
+            if (playerAction == PlayerAction.Pause)
+            {
+                PausePressed?.Invoke();
+            }
         }
 
         private void OnButtonCanceled(InputAction.CallbackContext context)
