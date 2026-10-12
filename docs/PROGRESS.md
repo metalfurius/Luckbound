@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D06: Verified; A06 y D07: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D07: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -22,6 +22,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - D03 añade el cursor de ruta dirigida, transiciones preparadas antes de retirar la sala, colocación del jugador persistente entre puertos y ámbitos que liberan actores, suscripciones, recursos y coroutines. Veinte cambios terminan en `final.boss` sin acumulación; las suites finales postcommit pasan en `61653bc`.
 - D05 conecta Menú, Taberna y el inicio de una expedición. La taberna permite escoger una clase, exactamente dos habilidades compatibles y la única raza desbloqueada; `Items.json` v2 asigna equipo inicial por clase. Cada salida construye `RunId`, semilla, ruta de 24 nodos, inventario nuevo, equipo, dos pociones y las estadísticas iniciales. El escenario vuelve a la taberna, contamina deliberadamente el primer inventario con oro/materiales y demuestra que Venator inicia con equipo, habilidades e inventario independientes. Ambas suites postcommit pasan en `fabcbcb`.
 - D06 añade al Custodio provisional con Corte, Onda y Carga físicos, transición de 120 ticks al 50 %, doble onda en fase dos y derrota por impactos cuerpo a cuerpo reales. El escenario dirigido y ambas suites postcommit pasan en `cb7b7ba`.
+- D07 añade liquidación por resultado y deduplicación por `RunId`: muerte conserva el 25 % redondeado hacia abajo, extracción y victoria conservan Renombre y convierten botín, y abandono no paga. El ledger mantiene Renombre y liquidaciones procesadas en memoria hasta D08; sus suites y escenario pasan en `dd0a707`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -69,7 +70,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D04 | Inventario y botín | D03 | Verified |
 | D05 | Taberna y preparación | D04 | Verified |
 | D06 | Custodio provisional | D05 | Verified |
-| D07 | Muerte, extracción y liquidación | D06 | InProgress |
+| D07 | Muerte, extracción y liquidación | D06 | Verified |
 | D08 | Perfil y ajustes con respaldo | D07 | Pending |
 | D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | Pending |
 | E01 | Materiales y bolsa | D09 | Pending |
@@ -463,11 +464,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación postcommit:** commit `cb7b7ba` (`feat(boss): implement D06 Custodian encounter`). EditMode `67/67` y PlayMode `45/45`; cero fallos, omitidos o inconclusos. La prueba de idempotencia del generador también pasa. GUID `.meta` y comprobación `git diff --check` limpios. El `sourceHash` del escenario es `91ca0140f984187689ef2cd87820faa9b4fba632465daec9c75be485a408b53a`.
 - **Resultado:** D06 `Verified`; D07 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 sigue `InProgress`.
 
-## Ejecución D07 — Muerte, extracción y liquidación (InProgress)
+## Evidencia D07 — Muerte, extracción y liquidación
 
 - **Contrato:** resultados Death, Extracted, FinalVictory y Abandoned aplican las reglas de Renombre y conversión de botín de la sección 3.13. La misma liquidación no puede otorgarse dos veces para un `RunId`; el estado persistente del perfil se incorpora en D08.
-- **Dependencia comprobada:** D06 `Verified`, implementación `cb7b7badb0a2e8330922362c0fdac15a9f815683` y evidencia postcommit en `1215833`.
-- **Resultado:** trabajo en curso; registrar aquí implementación, escenario, suites y limitaciones antes de cerrar la tarea.
+- **Dependencia comprobada:** D06 `Verified`, implementación `cb7b7badb0a2e8330922362c0fdac15a9f815683` y evidencia postcommit en `12158335197aab4a4ba8eecad5c604c3dc554ff9`.
+- **Implementación:** `ExpeditionSettlementLedger` aplica las cuatro salidas, calcula las conversiones de armas/armaduras por rareza, reliquias, materiales y oro, excluye pociones y las instancias exactas del equipo inicial, y registra cada `RunId` una sola vez. Una repetición devuelve premio cero sin reevaluar el inventario. El saldo y los IDs procesados son accesibles desde `ApplicationBootstrapper`; D08 los trasladará al sobre persistente.
+- **Reglas cubiertas:** muerte conserva `floor(Renombre/4)` y pierde botín; extracción y victoria final conservan todo el Renombre y convierten botín; abandono concede cero y marca terminalmente el `RunId`. Los tests también cubren límite de saldo, duplicados restaurados desde perfil y retry sin mutación parcial por overflow.
+- **Escenario de integración:** `D07_ExtractionSettlementIsIdempotent`, semilla `16180339`, informe `Logs/Scenarios/D07/20261012T173133937Z_D07_ExtractionSettlementIsIdempotent_740d168d/scenario-report.json`. `passed=true`, tres aserciones y cero errores; Unity `6000.6.5f1`, WindowsEditor. Con equipo inicial de Bellator, arma rara, armadura épica, reliquia, 9 materiales y 39 de oro, convirtió 27 y pagó 240 (213 + 27), elevando el saldo de 12 a 252. Repetir la extracción para el mismo `RunId` pagó 0.
+- **Aceptación postcommit:** commit `dd0a7071fc5426ef3ef7109b7cede5f11f5304ef` (`feat(progression): add idempotent expedition settlement`). EditMode `79/79` y PlayMode `46/46`; cero fallos, omitidos o inconclusos. Los 227 GUID `.meta` son únicos y `git diff --check` pasa. El `sourceHash` del escenario es `e23049dd2ceabc7c3120f02d3c2def0d5c369a9319651f5acc50f936efe4d482`.
+- **Limitación deliberada:** el ledger de perfil aún es temporal en memoria. D08 implementa el archivo, el checksum, el respaldo y la recarga; el flujo persistente al cerrar/reabrir no se afirma aquí.
+- **Resultado:** D07 `Verified`; D08 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 sigue `InProgress`.
 
 ## Ficha que debe completar cada ejecución
 
