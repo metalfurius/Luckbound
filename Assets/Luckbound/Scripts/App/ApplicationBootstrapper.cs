@@ -11,10 +11,12 @@ namespace Luckbound.App
     public sealed class ApplicationBootstrapper : MonoBehaviour
     {
         private static ApplicationBootstrapper _instance;
+        private readonly ExpeditionSettlementLedger _settlementLedger = new ExpeditionSettlementLedger();
 
         public static ApplicationBootstrapper Instance => _instance;
 
         public ExpeditionRunConfiguration ActiveRun { get; private set; }
+        public ExpeditionSettlementLedger SettlementLedger => _settlementLedger;
 
         private void Awake()
         {
@@ -44,6 +46,13 @@ namespace Luckbound.App
         public void ClearActiveRun()
         {
             ActiveRun = null;
+        }
+
+        public ExpeditionSettlementReceipt SettleActiveRun(ExpeditionOutcome outcome, int accumulatedRenown)
+        {
+            if (ActiveRun == null) throw new System.InvalidOperationException("There is no active expedition to settle.");
+            return _settlementLedger.Settle(ActiveRun.RunId, outcome, accumulatedRenown,
+                ActiveRun.Inventory, ActiveRun.StartingEquipmentInstanceIds);
         }
 
         private void OnDestroy()

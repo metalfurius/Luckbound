@@ -18,6 +18,7 @@ namespace Luckbound.Core.Expeditions
         public const int InitialFortunaCharges = 2;
 
         private readonly ReadOnlyCollection<string> _skillIds;
+        private readonly ReadOnlyCollection<ItemInstanceId> _startingEquipmentInstanceIds;
 
         public ExpeditionRunConfiguration(
             RunId runId,
@@ -26,7 +27,8 @@ namespace Luckbound.Core.Expeditions
             IEnumerable<string> skillIds,
             uint seed,
             ExpeditionRoutePlan route,
-            ExpeditionInventory inventory)
+            ExpeditionInventory inventory,
+            IEnumerable<ItemInstanceId> startingEquipmentInstanceIds = null)
         {
             if (!runId.IsValid) throw new ArgumentException("A fresh expedition requires a valid RunId.", nameof(runId));
             if (classId != "class.bellator" && classId != "class.venator" && classId != "class.magus")
@@ -53,6 +55,14 @@ namespace Luckbound.Core.Expeditions
             Seed = route.Seed;
             Route = route;
             Inventory = inventory;
+
+            ItemInstanceId[] startingEquipment = startingEquipmentInstanceIds == null
+                ? Array.Empty<ItemInstanceId>()
+                : startingEquipmentInstanceIds.ToArray();
+            if (startingEquipment.Any(instanceId => !instanceId.IsValid) ||
+                startingEquipment.Distinct().Count() != startingEquipment.Length)
+                throw new ArgumentException("Starting equipment instance IDs must be valid and unique.", nameof(startingEquipmentInstanceIds));
+            _startingEquipmentInstanceIds = Array.AsReadOnly(startingEquipment);
         }
 
         public RunId RunId { get; }
@@ -62,6 +72,7 @@ namespace Luckbound.Core.Expeditions
         public uint Seed { get; }
         public ExpeditionRoutePlan Route { get; }
         public ExpeditionInventory Inventory { get; }
+        public IReadOnlyList<ItemInstanceId> StartingEquipmentInstanceIds => _startingEquipmentInstanceIds;
         public int StartingHealth => InitialHealth;
         public int StartingEnergy => InitialEnergy;
         public int StartingFortunaCharges => InitialFortunaCharges;

@@ -37,6 +37,7 @@ namespace Luckbound.Core.Inventory
         }
 
         public string ClassId { get; }
+        public ItemCatalog Catalog => _catalog;
         public int Gold => _gold;
         public IReadOnlyList<InventoryItemStack> Backpack => _backpackView;
         public InventoryItemStack Weapon => _weapon;

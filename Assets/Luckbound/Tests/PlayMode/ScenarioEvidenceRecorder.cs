@@ -40,6 +40,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
             "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
             "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+            "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
             "Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
             "Assets/Luckbound/Scripts/Core/Inventory/ItemRarity.cs",
             "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
@@ -153,9 +154,11 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Tests/PlayMode/ExpeditionRouteGenerationTests.cs",
             "Assets/Luckbound/Tests/PlayMode/RoomTransitionLifecycleTests.cs",
             "Assets/Luckbound/Tests/EditMode/Inventory/ExpeditionInventoryTests.cs",
+            "Assets/Luckbound/Tests/EditMode/ExpeditionSettlementTests.cs",
             "Assets/Luckbound/Tests/PlayMode/ItemCatalogAndPickupTests.cs",
             "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
             "Assets/Luckbound/Tests/PlayMode/CustodianBossTests.cs",
+            "Assets/Luckbound/Tests/PlayMode/ExpeditionSettlementFlowTests.cs",
             "Assets/Resources/Luckbound/Data/Skills.json"
         };
 

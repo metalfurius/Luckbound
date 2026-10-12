@@ -30,6 +30,8 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(run.Inventory.Armor.ItemId, Is.EqualTo(armorId));
             Assert.That(run.Inventory.QuickConsumable.ItemId, Is.EqualTo("consumable.health_potion"));
             Assert.That(run.Inventory.QuickConsumable.Quantity, Is.EqualTo(2));
+            Assert.That(run.StartingEquipmentInstanceIds, Is.EquivalentTo(new[]
+                { run.Inventory.Weapon.InstanceId, run.Inventory.Armor.InstanceId }));
             Assert.That(run.Route.Seed, Is.EqualTo(run.Seed));
             Assert.That(run.Route.Nodes.Count, Is.EqualTo(24));
             Assert.That(run.StartingHealth, Is.EqualTo(100));

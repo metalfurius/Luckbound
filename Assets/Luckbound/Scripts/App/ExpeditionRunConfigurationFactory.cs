@@ -43,7 +43,8 @@ namespace Luckbound.App
                 skillIds,
                 seed,
                 route,
-                inventory);
+                inventory,
+                new[] { inventory.Weapon.InstanceId, inventory.Armor.InstanceId });
         }
 
         private static ExpeditionInventory CreateStartingInventory(ItemCatalog catalog, string classId)
