@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 2.1 — 12 de octubre de 2026.
+**Versión del documento:** 2.2 — 12 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -598,6 +598,16 @@ Armas y armaduras podrán mejorarse hasta **+3** durante una expedición:
 | Épica | 10 % | ×1,30 | +2 |
 
 Los objetos generados tendrán identificador de instancia. Dos objetos con la misma definición podrán tener rareza y mejoras diferentes.
+
+Contrato de implementación D04:
+
+- `Luckbound.Core.Inventory` será independiente de Unity. El catálogo convierte IDs de contenido estables en definiciones inmutables; el estado mutable pertenece a una instancia de `ExpeditionInventory` con clase, equipo, mochila, materiales y oro.
+- Cada objeto de mochila o equipo tiene `ItemInstanceId`, ID de definición, rareza y mejora. Solo las armas y armaduras admiten mejoras de 0 a +3; consumibles usan rareza común y mejora cero. Las armas validan la clase compatible al equiparse.
+- La mochila tiene exactamente doce índices. Armas, armaduras y reliquias ocupan una unidad por índice. Un consumible ocupa un índice con máximo tres; recoger consumibles rellena pilas compatibles antes de ocupar índices vacíos. La bolsa de materiales mantiene exactamente los seis tipos de 3.9, cada uno entre cero y 99; el oro es un contador aparte.
+- Arma, armadura y las dos reliquias se mueven entre mochila y equipo. Al equipar desde un índice, el equipo anterior vuelve al mismo índice en una única operación. No se puede equipar la misma definición de reliquia en ambos espacios. El consumible rápido es una referencia a una pila de la mochila y no duplica ni retira sus unidades; si se sustituye o elimina esa pila, la referencia se limpia.
+- Cada orden de recoger, equipar, sustituir, añadir material u oro requiere un `TransactionId`. Repetirlo devuelve el resultado original y no vuelve a mutar el estado, también cuando el primer resultado fue un rechazo. Las operaciones rechazadas no cambian equipo, mochila, bolsa, oro ni instancias.
+- Si un botín no cabe ni puede apilarse, se conserva en el mundo. La sustitución explícita identifica un índice y retorna el contenido desplazado para dejarlo como botín del mundo. El componente de juego prepara primero ese botín desplazado sin activarlo; solo confirma la sustitución y activa el objeto desplazado cuando la operación de Core tiene éxito. Un fallo al preparar o validar no consume el botín entrante ni reemplaza el contenido anterior.
+- `Items.json` es la fuente autoritativa de ID, claves localizadas, categoría, límite de pila (tres para consumibles y 99 para materiales) y clases compatibles. `ItemCatalogJsonLoader` valida esquema, categorías, IDs únicos, seis materiales exactos y compatibilidades; Core no contiene Unity, física o referencias a archivos.
 
 ### 3.8. Armas y armaduras
 
@@ -1328,7 +1338,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 | D01 | Sala, puertos y marcadores | Validación de entrada, salida, suelo y posiciones |
 | D02 | Generación por semilla | Misma semilla produce recorrido equivalente; ruta obligatoria conectada |
 | D03 | Transición y limpieza | Veinte cambios de sala sin actores o suscripciones acumulados |
-| D04 | Inventario y botín | Recoger, equipar, cambiar y rechazar correctamente con mochila llena |
+| D04 | Inventario y botín | `Items.json` declara el equipo inicial de las tres clases, consumibles, una muestra de reliquias y los seis materiales; loader rechaza IDs duplicados, pilas incompatibles y materiales incompletos. EditMode comprueba 12 índices, clase y espacio de equipo, apilado de tres, materiales 0–99, oro separado e idempotencia de éxito/rechazo. PlayMode recoge un pickup mediante trigger 2D, equipa e intercambia, rechaza uno con mochila llena conservándolo, y solo reemplaza un índice si primero pudo preparar el pickup desplazado; cada fallo conserva ambos objetos. |
 | D05 | Taberna y preparación | Selecciones se aplican al comenzar; no se hereda estado de otra expedición |
 | D06 | Custodio provisional | Patrones, segunda fase y muerte mediante combate real |
 | D07 | Muerte, extracción y liquidación | Recompensa correcta y sin duplicación al repetir resultado |

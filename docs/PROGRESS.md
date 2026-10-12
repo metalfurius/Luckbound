@@ -8,7 +8,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D03: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D03: Verified; A06 y D04: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -64,7 +64,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D01 | Sala, puertos y marcadores | C08 | Verified |
 | D02 | Generación por semilla | D01 | Verified |
 | D03 | Transición y limpieza | D02 | Verified |
-| D04 | Inventario y botín | D03 | Pending |
+| D04 | Inventario y botín | D03 | InProgress |
 | D05 | Taberna y preparación | D04 | Pending |
 | D06 | Custodio provisional | D05 | Pending |
 | D07 | Muerte, extracción y liquidación | D06 | Pending |
@@ -429,6 +429,13 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación postcommit:** implementación en `0d68e5e6b86c467b33281ce6a011dc3262d3492d` y corrección en `61653bc001db6fe2559b123e5f1984d73bd26311`. `unity test . --mode EditMode --output Logs\D03-final-postcommit-editmode.xml --timeout 1200 -- -nographics` → 54/54; `unity test . --mode PlayMode --output Logs\D03-final-postcommit-playmode.xml --timeout 1200 -- -nographics` → 36/36. Cero fallos, omitidos o inconclusos. `git diff --check` pasa; hay 180 GUID `.meta`, todos únicos.
 - **Plan:** v2.1, SHA-256 `1D0B61073537211EF7B0C23C34F6958951F9E1DE5BB34070B2F01B4B2331C1C8`.
 - **Resultado:** aceptación D03 satisfecha; D04 queda habilitada. No se generó una build, no se ejecutó GitHub Actions y no se modificó la ruta pública; A06 continúa `InProgress`.
+
+## Ejecución D04 — Contrato y pasos
+
+- **Estado:** `InProgress`; dependencia D03 comprobada en `2ebf45b21651a255a72708f00397098f0bb131ab`.
+- **Contrato:** doce índices de mochila; equipo de arma, armadura y dos reliquias; consumible rápido como referencia a su pila; consumibles apilan hasta tres; seis materiales entre 0 y 99 y oro independiente. Armas validan compatibilidad de clase. Equipar una pieza devuelve la anterior al mismo índice. Sustituir un índice ocupado retorna el objeto desplazado como botín del mundo. Todas las órdenes usan `TransactionId`; reintentos reproducen el resultado inicial y los rechazos preservan el estado.
+- **Aceptación prevista:** validar `Items.json`, los seis materiales y compatibilidades; cubrir reglas e idempotencia con EditMode; en PlayMode recoger por trigger 2D, equipar e intercambiar, rechazar con mochila llena conservando el pickup y sustituir solo si se pudo preparar primero el botín desplazado.
+- **Límites:** no incluye arte final, UI de inventario ni persistencia, previstas en I03, F06 y D08/D09 respectivamente. No se modifica el workflow ni la publicación pública.
 
 ## Ficha que debe completar cada ejecución
 

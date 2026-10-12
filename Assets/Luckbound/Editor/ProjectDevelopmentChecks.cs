@@ -5,6 +5,7 @@ using System.Linq;
 using Luckbound.App;
 using Luckbound.Content;
 using Luckbound.Core.Expeditions;
+using Luckbound.Core.Inventory;
 using Luckbound.Gameplay.Movement;
 using Luckbound.Gameplay.Rooms;
 using Luckbound.Presentation;
@@ -68,6 +69,7 @@ namespace Luckbound.Editor
             ValidateCombatArena(errors);
             ValidateRoomTemplate(errors);
             ValidateExpeditionRouteCatalog(errors);
+            ValidateItemCatalog(errors);
 
             return errors;
         }
@@ -564,6 +566,36 @@ namespace Luckbound.Editor
             catch (Exception exception)
             {
                 errors.Add("D02 expedition route catalog is invalid: " + exception.Message);
+            }
+        }
+
+        private static void ValidateItemCatalog(List<string> errors)
+        {
+            const string catalogPath = "Assets/Resources/Luckbound/Data/Items/Items.json";
+            TextAsset source = AssetDatabase.LoadAssetAtPath<TextAsset>(catalogPath);
+            if (source == null)
+            {
+                errors.Add("D04 item catalog could not be imported from " + catalogPath + ".");
+                return;
+            }
+
+            try
+            {
+                ItemCatalog catalog = ItemCatalogJsonLoader.Load(source.text);
+                if (catalog.Count != 16)
+                {
+                    errors.Add("D04 starter item catalog must contain 16 item definitions including six materials; found " + catalog.Count + ".");
+                }
+                if (!catalog.Get("weapon.bellator.rusted_sword").IsCompatibleWithClass("class.bellator") ||
+                    !catalog.Get("weapon.venator.short_bow").IsCompatibleWithClass("class.venator") ||
+                    !catalog.Get("weapon.magus.ember_staff").IsCompatibleWithClass("class.magus"))
+                {
+                    errors.Add("D04 starter weapons must match the Bellator, Venator and Magus classes.");
+                }
+            }
+            catch (Exception exception)
+            {
+                errors.Add("D04 item catalog is invalid: " + exception.Message);
             }
         }
 

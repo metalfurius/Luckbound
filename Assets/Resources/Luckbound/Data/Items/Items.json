@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "weapon.bellator.rusted_sword",
+      "nameKey": "item.weapon.rusted_sword.name",
+      "descriptionKey": "item.weapon.rusted_sword.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.bellator"]
+    },
+    {
+      "id": "weapon.venator.short_bow",
+      "nameKey": "item.weapon.short_bow.name",
+      "descriptionKey": "item.weapon.short_bow.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.venator"]
+    },
+    {
+      "id": "weapon.magus.ember_staff",
+      "nameKey": "item.weapon.ember_staff.name",
+      "descriptionKey": "item.weapon.ember_staff.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.magus"]
+    },
+    {
+      "id": "armor.bellator.guild_cuirass",
+      "nameKey": "item.armor.guild_cuirass.name",
+      "descriptionKey": "item.armor.guild_cuirass.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "armor.venator.leather_vest",
+      "nameKey": "item.armor.leather_vest.name",
+      "descriptionKey": "item.armor.leather_vest.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "armor.magus.traveler_robe",
+      "nameKey": "item.armor.traveler_robe.name",
+      "descriptionKey": "item.armor.traveler_robe.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.marked_coin",
+      "nameKey": "item.relic.marked_coin.name",
+      "descriptionKey": "item.relic.marked_coin.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.hidden_pouch",
+      "nameKey": "item.relic.hidden_pouch.name",
+      "descriptionKey": "item.relic.hidden_pouch.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "consumable.health_potion",
+      "nameKey": "item.consumable.health_potion.name",
+      "descriptionKey": "item.consumable.health_potion.description",
+      "kind": "Consumable",
+      "maxStack": 3,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "consumable.energy_tonic",
+      "nameKey": "item.consumable.energy_tonic.name",
+      "descriptionKey": "item.consumable.energy_tonic.description",
+      "kind": "Consumable",
+      "maxStack": 3,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "material.shadow_wood",
+      "nameKey": "item.material.shadow_wood.name",
+      "descriptionKey": "item.material.shadow_wood.description",
+      "kind": "Material",
+      "maxStack": 99,
+      "compatibleClassIds": [],
+      "materialKind": "ShadowWood"
+    },
+    {
+      "id": "material.ore",
+      "nameKey": "item.material.ore.name",
+      "descriptionKey": "item.material.ore.description",
+      "kind": "Material",
+      "maxStack": 99,
+      "compatibleClassIds": [],
+      "materialKind": "Ore"
+    },
+    {
+      "id": "material.umbra_herb",
+      "nameKey": "item.material.umbra_herb.name",
+      "descriptionKey": "item.material.umbra_herb.description",
+      "kind": "Material",
+      "maxStack": 99,
+      "compatibleClassIds": [],
+      "materialKind": "UmbraHerb"
+    },
+    {
+      "id": "material.arcane_dust",
+      "nameKey": "item.material.arcane_dust.name",
+      "descriptionKey": "item.material.arcane_dust.description",
+      "kind": "Material",
+      "maxStack": 99,
+      "compatibleClassIds": [],
+      "materialKind": "ArcaneDust"
+    },
+    {
+      "id": "material.dark_resin",
+      "nameKey": "item.material.dark_resin.name",
+      "descriptionKey": "item.material.dark_resin.description",
+      "kind": "Material",
+      "maxStack": 99,
+      "compatibleClassIds": [],
+      "materialKind": "DarkResin"
+    },
+    {
+      "id": "material.vital_ember",
+      "nameKey": "item.material.vital_ember.name",
+      "descriptionKey": "item.material.vital_ember.description",
+      "kind": "Material",
+      "maxStack": 99,
+      "compatibleClassIds": [],
+      "materialKind": "VitalEmber"
+    }
+  ]
+}
