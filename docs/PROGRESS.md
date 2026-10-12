@@ -8,12 +8,13 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 ## Estado actual (12 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07 y C01–C05: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07 y C01–C06: Verified; A06: InProgress. Las demás tareas figuran Pending en la tabla inferior.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
 - C04 integra salud, protección tras impacto directo, empuje, aturdimiento opcional y bloqueo de acciones tras morir; ambas suites y los escenarios de aceptación pasan.
 - C05 añade al Slime con persecución a 60 Hz, aviso de 27 ticks, salto de ataque físico, daño de 8 una sola vez por `HitId` y derrota real mediante proyectil; ambas suites y los escenarios físicos pasan en el commit `1510320`.
+- C06 añade al Huesoguardia con guardia direccional, corte físico y recuperación vulnerable; el bono temporal de defensa se calcula en Core y ambas suites y escenarios pasan en el commit `5bc36a0`.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -52,7 +53,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | C03 | Proyectiles y sistema de habilidades | C02 | Verified |
 | C04 | Daño recibido, empuje y muerte | C03 | Verified |
 | C05 | Slime funcional | C04 | Verified |
-| C06 | Huesoguardia funcional | C05 | Pending |
+| C06 | Huesoguardia funcional | C05 | Verified |
 | C07 | HUD, pociones y pausa | C06 | Pending |
 | C08 | Arena de combate | C07 | Pending |
 | D01 | Sala, puertos y marcadores | C08 | Pending |
@@ -358,6 +359,18 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación:** Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null. Postcommit: `unity test . --mode EditMode --output Logs\C05-EditMode-commit.xml --timeout 1200 -- -nographics` → 38/38; `unity test . --mode PlayMode --output Logs\C05-PlayMode-commit.xml --timeout 1200 -- -nographics` → 23/23. Cero fallos, omitidos o inconclusos. `git diff --check` pasa.
 - **Plan:** v1.7, SHA-256 `94A80CEC311AA50743004A2EE3CB7C1C64633EA6D0D77D2E0810C67D69480446`.
 - **Resultado:** aceptación C05 satisfecha; C06 queda habilitada. No se generó ni publicó una build; A06 y la ruta pública siguen sin una ejecución nueva.
+
+## Ejecución C06 — Huesoguardia funcional
+
+- **Contrato:** Huesoguardia con 48 salud, 2 defensa base y 10 daño; detección a 8 unidades, avance a 1,5 u/s y alcance de corte de 1,4. Protege el semiplano frontal durante `Chase` y `Telegraph` con +4 defensa. Avisa durante 30 ticks, arremete a 5 u/s hasta colisionar o alcanzar 18 ticks y recupera durante 30 ticks sin guardia. Los impactos usan un `HitId` y resuelven defensa temporal antes de restar penetración.
+- **Dependencias comprobadas:** C05 `Verified`, commit `1510320921d21ec25875e25fa9db59f7a9847a10`; C01 `Verified`, commit `33d4659`.
+- **Estado:** `Verified`; implementación en `5bc36a0e3c794302af6ff64a7abc81c01c9d4bff` (`feat(enemies): implement C06 huesoguardia guard`).
+- **Cambios:** `Huesoguardia2D` implementa persecución, guardia direccional, aviso, corte con colisión y recuperación vulnerable. `DamageCalculationRequest` acepta un bono de defensa temporal, y `DamageResolver` lo suma antes de aplicar penetración; `ProjectileImpact` conserva la posición de lanzamiento para distinguir el frente del enemigo. Se añade y valida la capa `Enemies`, separada de `Ground`, para que los proyectiles alcancen su objetivo sin detenerse en el jugador o la geometría de sala.
+- **Guardia física:** `C06_FrontGuardAndRearDamage`, semilla `16180339`. Dos proyectiles físicos de 12 de daño producen 6 desde el frente (salud 48→42) y 10 desde atrás (42→32), mientras el enemigo encara al jugador y mantiene su guardia. Informe: `Logs/Scenarios/C06/20261012T124005623Z_C06_FrontGuardAndRearDamage_9602bad5/scenario-report.json`.
+- **Corte y recuperación:** `C06_CutAndRecovery`, semilla `14142135`. El corte espera 30 ticks, golpea por colisión real una vez y causa 10 de daño; durante `Recovery`, un proyectil frontal también causa 10 porque la guardia está desactivada. Tras completar los 30 ticks, vuelve a `Chase`. Informe: `Logs/Scenarios/C06/20261012T124003591Z_C06_CutAndRecovery_770075a0/scenario-report.json`. Ambos informes tienen `passed=true`, commit `5bc36a0e3c794302af6ff64a7abc81c01c9d4bff` y source hash `c59e89d015d152d16dd6c84a587b023a85e25c6f4b5c5dff54185446e2c68026`.
+- **Aceptación:** Unity `6000.6.5f1`, WindowsEditor, dispositivo gráfico Null. Postcommit: `unity test . --mode EditMode --output Logs\C06-EditMode-commit.xml --timeout 1200 -- -nographics` → 40/40; `unity test . --mode PlayMode --output Logs\C06-PlayMode-commit.xml --timeout 1200 -- -nographics` → 25/25. Cero fallos, omitidos o inconclusos. `git diff --check` pasa.
+- **Plan:** v1.8, SHA-256 `5012C0FB521837FE1141B426EEFBEE4FC4F3261967A6008374CBC35DC10AFD9A`.
+- **Resultado:** aceptación C06 satisfecha; C07 queda habilitada. No se generó ni publicó una build; A06 y la ruta pública siguen sin una ejecución nueva.
 
 ## Ficha que debe completar cada ejecución
 
