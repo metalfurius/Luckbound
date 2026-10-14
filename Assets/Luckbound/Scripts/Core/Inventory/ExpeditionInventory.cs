@@ -12,11 +12,13 @@ namespace Luckbound.Core.Inventory
     {
         public const int BackpackCapacity = 12;
         public const int MaximumMaterialCount = 99;
+        public const int SnapshotSchemaVersion = 2;
 
         private readonly ItemCatalog _catalog;
         private readonly InventoryItemStack[] _backpackSlots = new InventoryItemStack[BackpackCapacity];
         private readonly ReadOnlyCollection<InventoryItemStack> _backpackView;
         private readonly Dictionary<MaterialKind, int> _materials = new Dictionary<MaterialKind, int>();
+        private readonly Dictionary<MaterialKind, int> _worldMaterialRemainders = new Dictionary<MaterialKind, int>();
         private readonly Dictionary<TransactionId, CachedTransaction> _transactions = new Dictionary<TransactionId, CachedTransaction>();
         private InventoryItemStack _weapon;
         private InventoryItemStack _armor;
@@ -34,7 +36,11 @@ namespace Luckbound.Core.Inventory
             ClassId = classId;
             _gold = initialGold;
             _backpackView = Array.AsReadOnly(_backpackSlots);
-            foreach (MaterialKind materialKind in Enum.GetValues(typeof(MaterialKind))) _materials.Add(materialKind, 0);
+            foreach (MaterialKind materialKind in Enum.GetValues(typeof(MaterialKind)))
+            {
+                _materials.Add(materialKind, 0);
+                _worldMaterialRemainders.Add(materialKind, 0);
+            }
         }
 
         public string ClassId { get; }
@@ -63,8 +69,11 @@ namespace Luckbound.Core.Inventory
         {
             var materialSnapshots = Enum.GetValues(typeof(MaterialKind)).Cast<MaterialKind>()
                 .Select(kind => new MaterialCountSnapshot { kind = (int)kind, count = _materials[kind] }).ToArray();
+            var remainderSnapshots = Enum.GetValues(typeof(MaterialKind)).Cast<MaterialKind>()
+                .Select(kind => new WorldMaterialRemainderSnapshot { kind = (int)kind, remainder = _worldMaterialRemainders[kind] }).ToArray();
             return new ExpeditionInventorySnapshot
             {
+                snapshotVersion = SnapshotSchemaVersion,
                 classId = ClassId,
                 gold = _gold,
                 weapon = Snapshot(_weapon),
@@ -74,6 +83,7 @@ namespace Luckbound.Core.Inventory
                 backpackSlots = _backpackSlots.Select(Snapshot).ToArray(),
                 quickConsumableInstanceId = _quickConsumableId.IsValid ? _quickConsumableId.ToString() : string.Empty,
                 materials = materialSnapshots,
+                worldMaterialRemainders = remainderSnapshots,
                 transactions = _transactions.OrderBy(pair => pair.Key.ToString(), StringComparer.Ordinal)
                     .Select(pair => new InventoryTransactionSnapshot
                     {
@@ -90,6 +100,8 @@ namespace Luckbound.Core.Inventory
         {
             if (catalog == null) throw new ArgumentNullException(nameof(catalog));
             if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
+            if (snapshot.snapshotVersion < 0 || snapshot.snapshotVersion > SnapshotSchemaVersion)
+                throw new FormatException("Inventory snapshot version is unsupported.");
             if (snapshot.backpackSlots == null || snapshot.backpackSlots.Length != BackpackCapacity)
                 throw new FormatException("Inventory snapshot must contain exactly twelve backpack slots.");
             if (snapshot.materials == null || snapshot.materials.Length != Enum.GetValues(typeof(MaterialKind)).Length)
@@ -131,6 +143,28 @@ namespace Luckbound.Core.Inventory
                 restored._materials[kind] = material.count;
             }
 
+            // Snapshots written before E01 have no Dvergar progress field; their safe migration is six zero remainders.
+            if (snapshot.worldMaterialRemainders != null && snapshot.worldMaterialRemainders.Length > 0)
+            {
+                if (snapshot.worldMaterialRemainders.Length != Enum.GetValues(typeof(MaterialKind)).Length)
+                    throw new FormatException("Inventory snapshot must contain all six world-material remainders.");
+                var remainderKinds = new HashSet<MaterialKind>();
+                foreach (WorldMaterialRemainderSnapshot progress in snapshot.worldMaterialRemainders)
+                {
+                    if (progress == null || !Enum.IsDefined(typeof(MaterialKind), progress.kind))
+                        throw new FormatException("Inventory snapshot contains an unknown world-material kind.");
+                    MaterialKind kind = (MaterialKind)progress.kind;
+                    if (!remainderKinds.Add(kind)) throw new FormatException("Inventory snapshot repeats world-material progress for " + kind + ".");
+                    if (progress.remainder < 0 || progress.remainder >= DvergarWorldCollectionThreshold)
+                        throw new FormatException("Dvergar world-material remainder is outside 0–4 for " + kind + ".");
+                    restored._worldMaterialRemainders[kind] = progress.remainder;
+                }
+            }
+            else if (snapshot.snapshotVersion >= SnapshotSchemaVersion)
+            {
+                throw new FormatException("Current inventory snapshot is missing Dvergar world-material progress.");
+            }
+
             var transactionIds = new HashSet<TransactionId>();
             foreach (InventoryTransactionSnapshot transaction in snapshot.transactions)
             {
@@ -151,6 +185,12 @@ namespace Luckbound.Core.Inventory
         {
             if (!Enum.IsDefined(typeof(MaterialKind), materialKind)) throw new ArgumentOutOfRangeException(nameof(materialKind));
             return _materials[materialKind];
+        }
+
+        public int GetWorldMaterialRemainder(MaterialKind materialKind)
+        {
+            if (!Enum.IsDefined(typeof(MaterialKind), materialKind)) throw new ArgumentOutOfRangeException(nameof(materialKind));
+            return _worldMaterialRemainders[materialKind];
         }
 
         public InventoryOperationOutcome TryCollectItem(InventoryItemStack item, TransactionId transactionId)
@@ -279,6 +319,32 @@ namespace Luckbound.Core.Inventory
                 return Succeeded(transactionId, _catalog.GetMaterial(materialKind).Id);
             });
         }
+
+        public InventoryOperationOutcome TryCollectWorldMaterial(
+            MaterialKind materialKind,
+            int amount,
+            bool grantsDvergarBonus,
+            TransactionId transactionId)
+        {
+            string signature = "world-material|" + materialKind + "|" + amount.ToString(CultureInfo.InvariantCulture) + "|" + grantsDvergarBonus;
+            return Execute(transactionId, signature, () =>
+            {
+                if (!Enum.IsDefined(typeof(MaterialKind), materialKind)) return Rejected(transactionId, InventoryOperationStatus.RejectedInvalidMaterial);
+                if (amount <= 0) return Rejected(transactionId, InventoryOperationStatus.RejectedInvalidMaterial);
+
+                int remainder = _worldMaterialRemainders[materialKind];
+                long trackedWorldUnits = grantsDvergarBonus ? (long)remainder + amount : 0L;
+                long bonus = grantsDvergarBonus ? trackedWorldUnits / DvergarWorldCollectionThreshold : 0L;
+                long total = (long)_materials[materialKind] + amount + bonus;
+                if (total > MaximumMaterialCount) return Rejected(transactionId, InventoryOperationStatus.RejectedMaterialCapacity);
+
+                _materials[materialKind] = (int)total;
+                if (grantsDvergarBonus) _worldMaterialRemainders[materialKind] = (int)(trackedWorldUnits % DvergarWorldCollectionThreshold);
+                return Succeeded(transactionId, _catalog.GetMaterial(materialKind).Id);
+            });
+        }
+
+        private const int DvergarWorldCollectionThreshold = 5;
 
         public InventoryOperationOutcome TryAddGold(int amount, TransactionId transactionId)
         {

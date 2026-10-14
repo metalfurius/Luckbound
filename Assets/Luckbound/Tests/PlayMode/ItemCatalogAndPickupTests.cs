@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Luckbound.App;
 using Luckbound.Content;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
@@ -177,6 +179,96 @@ namespace Luckbound.Tests.PlayMode
             }
         }
 
+        [UnityTest]
+        public IEnumerator E01_PhysicalWorldMaterialPickupTracksDvergarBonusAndRejectsOverflowAtomically()
+        {
+            const int scenarioSeed = 16180340;
+            using (var evidence = new ScenarioEvidenceRecorder("E01", "E01_PhysicalWorldMaterialPickupAndBag", scenarioSeed))
+            {
+                var createdObjects = new List<GameObject>();
+                try
+                {
+                    ItemCatalog catalog = LoadCatalog();
+                    var inventory = new ExpeditionInventory(catalog, "class.bellator");
+                    CreateCollector("E01DvergarPlayer", Vector2.zero, inventory, catalog, createdObjects,
+                        out ItemCollector2D collector, out _, grantsDvergarBonus: true);
+
+                    WorldMaterialPickup2D first = CreateWorldMaterialPickup("E01OreA", MaterialKind.Ore, 3,
+                        Vector2.zero, catalog, createdObjects);
+                    Physics2D.SyncTransforms();
+                    evidence.RecordInput(0, "Physics2DTrigger", "Dvergar enters a world pickup containing 3 ore");
+                    yield return new WaitForFixedUpdate();
+                    bool firstCollected = first.IsConsumed && inventory.GetMaterialCount(MaterialKind.Ore) == 3 &&
+                        inventory.GetWorldMaterialRemainder(MaterialKind.Ore) == 3 && inventory.Backpack[0] == null;
+                    evidence.RecordAssertion("A material pickup enters the separate bag and carries Dvergar progress",
+                        firstCollected, "ore=3; remainder=3; backpack unchanged",
+                        "consumed=" + first.IsConsumed + "; ore=" + inventory.GetMaterialCount(MaterialKind.Ore) +
+                        "; remainder=" + inventory.GetWorldMaterialRemainder(MaterialKind.Ore));
+
+                    string snapshotJson = JsonUtility.ToJson(inventory.CreateSnapshot());
+                    ExpeditionInventory restored = ExpeditionInventory.Restore(catalog,
+                        JsonUtility.FromJson<ExpeditionInventorySnapshot>(snapshotJson));
+                    bool partialProgressPersisted = restored.GetMaterialCount(MaterialKind.Ore) == 3 &&
+                        restored.GetWorldMaterialRemainder(MaterialKind.Ore) == 3;
+                    evidence.RecordAssertion("Unity JSON save and restore retains the partial Dvergar world counter",
+                        partialProgressPersisted, "ore=3 and remainder=3 survive snapshot serialization",
+                        "ore=" + restored.GetMaterialCount(MaterialKind.Ore) +
+                        "; remainder=" + restored.GetWorldMaterialRemainder(MaterialKind.Ore));
+
+                    WorldMaterialPickup2D second = CreateWorldMaterialPickup("E01OreB", MaterialKind.Ore, 2,
+                        Vector2.zero, catalog, createdObjects);
+                    Physics2D.SyncTransforms();
+                    evidence.RecordInput(1, "Physics2DTrigger", "collect 2 more ore from the world");
+                    yield return new WaitForFixedUpdate();
+                    bool thresholdAwarded = second.IsConsumed && inventory.GetMaterialCount(MaterialKind.Ore) == 6 &&
+                        inventory.GetWorldMaterialRemainder(MaterialKind.Ore) == 0;
+                    evidence.RecordAssertion("Every five accepted world units award one additional unit of the same material",
+                        thresholdAwarded, "5 ore from world becomes 6; remainder resets to 0",
+                        "consumed=" + second.IsConsumed + "; ore=" + inventory.GetMaterialCount(MaterialKind.Ore) +
+                        "; remainder=" + inventory.GetWorldMaterialRemainder(MaterialKind.Ore));
+
+                    string bagSummary = ExpeditionRunSessionPresenter.FormatMaterialBagSummary(inventory);
+                    bool sixCountersDisplayed = new[] { "MADERA 0", "MINERAL 6", "HIERBA 0", "POLVO 0", "RESINA 0", "ASC. VITAL 0" }
+                        .All(bagSummary.Contains);
+                    evidence.RecordAssertion("The expedition summary displays all six independent material counters",
+                        sixCountersDisplayed, "each material appears as a separate bag counter",
+                        bagSummary.Replace("\n", " | "));
+
+                    Assert.That(inventory.TryAddMaterial(MaterialKind.ShadowWood, 95, TransactionId.New()).Succeeded, Is.True);
+                    WorldMaterialPickup2D fourWood = CreateWorldMaterialPickup("E01WoodProgress", MaterialKind.ShadowWood, 4,
+                        Vector2.zero, catalog, createdObjects);
+                    Physics2D.SyncTransforms();
+                    yield return new WaitForFixedUpdate();
+                    bool normalCapReached = fourWood.IsConsumed && inventory.GetMaterialCount(MaterialKind.ShadowWood) == 99 &&
+                        inventory.GetWorldMaterialRemainder(MaterialKind.ShadowWood) == 4;
+                    WorldMaterialPickup2D overflowingBonus = CreateWorldMaterialPickup("E01OverflowBonus", MaterialKind.ShadowWood, 1,
+                        Vector2.zero, catalog, createdObjects);
+                    Physics2D.SyncTransforms();
+                    evidence.RecordInput(2, "Physics2DTrigger", "Dvergar bonus would raise a capped material above 99");
+                    yield return new WaitForFixedUpdate();
+                    bool bonusOverflowPreservedPickup = normalCapReached && !overflowingBonus.IsConsumed &&
+                        overflowingBonus.gameObject.activeInHierarchy && inventory.GetMaterialCount(MaterialKind.ShadowWood) == 99 &&
+                        inventory.GetWorldMaterialRemainder(MaterialKind.ShadowWood) == 4 &&
+                        collector.LastOperationOutcome.Status == InventoryOperationStatus.RejectedMaterialCapacity;
+                    evidence.RecordAssertion("A Dvergar bonus overflow rejects the entire pickup without advancing its remainder",
+                        bonusOverflowPreservedPickup, "pickup remains in world; count=99; remainder=4",
+                        "consumed=" + overflowingBonus.IsConsumed + "; count=" + inventory.GetMaterialCount(MaterialKind.ShadowWood) +
+                        "; remainder=" + inventory.GetWorldMaterialRemainder(MaterialKind.ShadowWood) +
+                        "; status=" + collector.LastOperationOutcome.Status);
+
+                    int exitCode = evidence.Complete();
+                    Assert.That(exitCode, Is.Zero, "E01 material pickup scenario failed. Evidence: " + evidence.ReportPath);
+                }
+                finally
+                {
+                    foreach (GameObject createdObject in createdObjects)
+                    {
+                        if (createdObject != null) Object.Destroy(createdObject);
+                    }
+                }
+            }
+        }
+
         private static ItemCatalog LoadCatalog()
         {
             TextAsset source = Resources.Load<TextAsset>("Luckbound/Data/Items/Items");
@@ -196,7 +288,8 @@ namespace Luckbound.Tests.PlayMode
             ItemCatalog catalog,
             List<GameObject> createdObjects,
             out ItemCollector2D collector,
-            out LootPickupDropStager2D stager)
+            out LootPickupDropStager2D stager,
+            bool grantsDvergarBonus = false)
         {
             var player = new GameObject(objectName);
             player.transform.position = position;
@@ -209,7 +302,7 @@ namespace Luckbound.Tests.PlayMode
             stager = player.AddComponent<LootPickupDropStager2D>();
             stager.Configure(null);
             collector = player.AddComponent<ItemCollector2D>();
-            collector.Configure(inventory, catalog, stager);
+            collector.Configure(inventory, catalog, stager, grantsDvergarBonus);
             createdObjects.Add(player);
             return player;
         }
@@ -229,6 +322,26 @@ namespace Luckbound.Tests.PlayMode
             collider.radius = 0.25f;
             LootPickup2D pickup = pickupObject.AddComponent<LootPickup2D>();
             pickup.Initialize(item, catalog);
+            createdObjects.Add(pickupObject);
+            return pickup;
+        }
+
+        private static WorldMaterialPickup2D CreateWorldMaterialPickup(
+            string objectName,
+            MaterialKind materialKind,
+            int amount,
+            Vector2 position,
+            ItemCatalog catalog,
+            List<GameObject> createdObjects)
+        {
+            var pickupObject = new GameObject(objectName);
+            pickupObject.transform.position = position;
+            Rigidbody2D body = pickupObject.AddComponent<Rigidbody2D>();
+            body.bodyType = RigidbodyType2D.Kinematic;
+            CircleCollider2D collider = pickupObject.AddComponent<CircleCollider2D>();
+            collider.radius = 0.25f;
+            WorldMaterialPickup2D pickup = pickupObject.AddComponent<WorldMaterialPickup2D>();
+            pickup.Initialize(materialKind, amount, catalog);
             createdObjects.Add(pickupObject);
             return pickup;
         }

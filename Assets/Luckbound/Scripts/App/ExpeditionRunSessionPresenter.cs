@@ -48,6 +48,7 @@ namespace Luckbound.App
                 "\nPOCIONES · " + (quickConsumable == null ? 0 : quickConsumable.Quantity) +
                 "\nSALUD / ENERGÍA · " + currentHealth + " / " + currentEnergy +
                 "\nFORTUNA · " + currentFortuna +
+                "\n" + FormatMaterialBagSummary(run.Inventory) +
                 "\nRUTA · " + run.Route.Nodes.Count + " nodos · semilla " + run.Seed.ToString("X8") +
                 (saved == null ? string.Empty : "\nSALA · " + saved.currentNodeId + " · " + saved.completedRoomIds.Length + " completadas" +
                     (saved.completedRoomIds.Contains(saved.currentNodeId) ? " · resultado guardado" : " · checkpoint de entrada guardado")) +
@@ -81,6 +82,17 @@ namespace Luckbound.App
         {
             int separator = skillId == null ? -1 : skillId.LastIndexOf('.');
             return (separator >= 0 ? skillId.Substring(separator + 1) : skillId).Replace('_', ' ').ToUpperInvariant();
+        }
+
+        public static string FormatMaterialBagSummary(ExpeditionInventory inventory)
+        {
+            if (inventory == null) throw new ArgumentNullException(nameof(inventory));
+            return "BOLSA · MADERA " + inventory.GetMaterialCount(MaterialKind.ShadowWood) +
+                " · MINERAL " + inventory.GetMaterialCount(MaterialKind.Ore) +
+                " · HIERBA " + inventory.GetMaterialCount(MaterialKind.UmbraHerb) +
+                "\nPOLVO " + inventory.GetMaterialCount(MaterialKind.ArcaneDust) +
+                " · RESINA " + inventory.GetMaterialCount(MaterialKind.DarkResin) +
+                " · ASC. VITAL " + inventory.GetMaterialCount(MaterialKind.VitalEmber);
         }
     }
 }

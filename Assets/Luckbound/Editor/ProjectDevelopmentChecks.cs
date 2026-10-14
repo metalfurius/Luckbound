@@ -553,6 +553,18 @@ namespace Luckbound.Editor
                 if (presenter.FindProperty(propertyName)?.objectReferenceValue == null)
                     errors.Add("ExpeditionRunSessionPresenter must serialize " + propertyName + ".");
             }
+            Text summary = presenter.FindProperty("_summaryText")?.objectReferenceValue as Text;
+            Button returnButton = presenter.FindProperty("_returnToTavernButton")?.objectReferenceValue as Button;
+            if (summary != null && returnButton != null)
+            {
+                RectTransform summaryRect = summary.rectTransform;
+                RectTransform buttonRect = returnButton.GetComponent<RectTransform>();
+                if (summaryRect.sizeDelta.y < 136f)
+                    errors.Add("Expedition run summary must reserve 12 lines for the bag counters, checkpoint, and RunId.");
+                if (buttonRect != null && summaryRect.anchoredPosition.y - summaryRect.sizeDelta.y / 2f <=
+                    buttonRect.anchoredPosition.y + buttonRect.sizeDelta.y / 2f)
+                    errors.Add("Expedition run summary must remain above the ReturnToTavernButton.");
+            }
             MovementDemoComposition[] demos = objects.SelectMany(gameObject => gameObject.GetComponents<MovementDemoComposition>()).ToArray();
             if (demos.Length != 1)
             {

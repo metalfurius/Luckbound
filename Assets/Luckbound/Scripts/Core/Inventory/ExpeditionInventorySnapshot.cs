@@ -6,6 +6,7 @@ namespace Luckbound.Core.Inventory
     [Serializable]
     public sealed class ExpeditionInventorySnapshot
     {
+        public int snapshotVersion;
         public string classId;
         public int gold;
         public InventoryStackSnapshot weapon;
@@ -15,6 +16,7 @@ namespace Luckbound.Core.Inventory
         public InventoryStackSnapshot[] backpackSlots = Array.Empty<InventoryStackSnapshot>();
         public string quickConsumableInstanceId;
         public MaterialCountSnapshot[] materials = Array.Empty<MaterialCountSnapshot>();
+        public WorldMaterialRemainderSnapshot[] worldMaterialRemainders = Array.Empty<WorldMaterialRemainderSnapshot>();
         public InventoryTransactionSnapshot[] transactions = Array.Empty<InventoryTransactionSnapshot>();
     }
 
@@ -33,6 +35,13 @@ namespace Luckbound.Core.Inventory
     {
         public int kind;
         public int count;
+    }
+
+    [Serializable]
+    public sealed class WorldMaterialRemainderSnapshot
+    {
+        public int kind;
+        public int remainder;
     }
 
     [Serializable]

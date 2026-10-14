@@ -40,9 +40,9 @@ namespace Luckbound.Editor
                     Text title = HubPreparationScaffoldGenerator.CreateText("RunSessionTitle", "EXPEDICIÓN PREPARADA",
                         canvas.transform, new Vector2(0f, 61f), new Vector2(440f, 30f), 18, "#E8E3CD", FontStyle.Bold);
                     Text summary = HubPreparationScaffoldGenerator.CreateText("RunSessionSummary", "Esperando configuración…",
-                        canvas.transform, new Vector2(0f, -12f), new Vector2(428f, 116f), 9, "#BDC6CC", FontStyle.Normal);
+                        canvas.transform, new Vector2(0f, -18f), new Vector2(428f, 136f), 9, "#BDC6CC", FontStyle.Normal);
                     Button returnButton = HubPreparationScaffoldGenerator.CreateButton("ReturnToTavernButton", "VOLVER A LA TABERNA",
-                        canvas.transform, new Vector2(0f, -101f), new Vector2(198f, 28f), 9, "#10111B", "#F0C15A");
+                        canvas.transform, new Vector2(0f, -108f), new Vector2(198f, 28f), 9, "#10111B", "#F0C15A");
                     GameObject presenterObject = new GameObject("ExpeditionRunSession");
                     SceneManager.MoveGameObjectToScene(presenterObject, scene);
                     ExpeditionRunSessionPresenter presenter = presenterObject.AddComponent<ExpeditionRunSessionPresenter>();
@@ -54,9 +54,16 @@ namespace Luckbound.Editor
                     serialized.ApplyModifiedPropertiesWithoutUndo();
                     changed = true;
                 }
-                else if (HubPreparationScaffoldGenerator.FindObject(scene, "ExpeditionRunSession") == null)
+                else
                 {
-                    throw new InvalidOperationException("ExpeditionRunSessionCanvas exists without its presenter; the scene was left unchanged.");
+                    if (HubPreparationScaffoldGenerator.FindObject(scene, "ExpeditionRunSession") == null)
+                        throw new InvalidOperationException("ExpeditionRunSessionCanvas exists without its presenter; the scene was left unchanged.");
+                    Text summary = HubPreparationScaffoldGenerator.FindObject(scene, "RunSessionSummary")?.GetComponent<Text>();
+                    Button returnButton = HubPreparationScaffoldGenerator.FindObject(scene, "ReturnToTavernButton")?.GetComponent<Button>();
+                    if (summary == null || returnButton == null)
+                        throw new InvalidOperationException("The existing ExpeditionRunSessionCanvas must contain its summary and return button.");
+                    changed |= SetRect(summary.rectTransform, new Vector2(0f, -18f), new Vector2(428f, 136f));
+                    changed |= SetRect(returnButton.GetComponent<RectTransform>(), new Vector2(0f, -108f), new Vector2(198f, 28f));
                 }
 
                 if (changed)
@@ -79,6 +86,15 @@ namespace Luckbound.Editor
             if (property.objectReferenceValue == value) return false;
             property.objectReferenceValue = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
+            return true;
+        }
+
+        private static bool SetRect(RectTransform rect, Vector2 position, Vector2 size)
+        {
+            if (rect == null) return false;
+            if (rect.anchoredPosition == position && rect.sizeDelta == size) return false;
+            HubPreparationScaffoldGenerator.Place(rect, size, position);
+            EditorUtility.SetDirty(rect);
             return true;
         }
     }

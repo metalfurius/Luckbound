@@ -139,6 +139,77 @@ namespace Luckbound.Tests.Core
         }
 
         [Test]
+        public void DvergarWorldCollectionTracksEachMaterialAndAddsOnePerFiveAcceptedUnits()
+        {
+            var inventory = new ExpeditionInventory(CreateCatalog(), "class.bellator");
+            TransactionId firstPickup = TransactionId.New();
+            TransactionId secondPickup = TransactionId.New();
+
+            Assert.That(inventory.TryCollectWorldMaterial(MaterialKind.Ore, 3, true, firstPickup).Succeeded, Is.True);
+            InventoryOperationOutcome second = inventory.TryCollectWorldMaterial(MaterialKind.Ore, 2, true, secondPickup);
+            Assert.That(second.Succeeded, Is.True);
+            Assert.That(inventory.TryCollectWorldMaterial(MaterialKind.ShadowWood, 5, true, TransactionId.New()).Succeeded, Is.True);
+
+            Assert.That(inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(6));
+            Assert.That(inventory.GetMaterialCount(MaterialKind.ShadowWood), Is.EqualTo(6));
+            Assert.That(inventory.GetWorldMaterialRemainder(MaterialKind.Ore), Is.Zero);
+            Assert.That(inventory.GetWorldMaterialRemainder(MaterialKind.ShadowWood), Is.Zero);
+            Assert.That(inventory.TryCollectWorldMaterial(MaterialKind.Ore, 2, true, secondPickup), Is.SameAs(second));
+            Assert.That(inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(6));
+        }
+
+        [Test]
+        public void NonWorldMaterialSourcesAndOtherRacesDoNotReceiveDvergarProgressOrBonus()
+        {
+            var dvergarInventory = new ExpeditionInventory(CreateCatalog(), "class.bellator");
+            Assert.That(dvergarInventory.TryAddMaterial(MaterialKind.Ore, 4, TransactionId.New()).Succeeded, Is.True);
+            Assert.That(dvergarInventory.TryCollectWorldMaterial(MaterialKind.Ore, 1, true, TransactionId.New()).Succeeded, Is.True);
+            Assert.That(dvergarInventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(5));
+            Assert.That(dvergarInventory.GetWorldMaterialRemainder(MaterialKind.Ore), Is.EqualTo(1));
+            Assert.That(dvergarInventory.TryCollectWorldMaterial(MaterialKind.Ore, 4, true, TransactionId.New()).Succeeded, Is.True);
+            Assert.That(dvergarInventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(10));
+            Assert.That(dvergarInventory.GetWorldMaterialRemainder(MaterialKind.Ore), Is.Zero);
+
+            var humanInventory = new ExpeditionInventory(CreateCatalog(), "class.bellator");
+            Assert.That(humanInventory.TryCollectWorldMaterial(MaterialKind.Ore, 10, false, TransactionId.New()).Succeeded, Is.True);
+            Assert.That(humanInventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(10));
+            Assert.That(humanInventory.GetWorldMaterialRemainder(MaterialKind.Ore), Is.Zero);
+        }
+
+        [Test]
+        public void DvergarPickupRejectsAtomicallyWhenItsBonusWouldExceedNinetyNine()
+        {
+            var inventory = new ExpeditionInventory(CreateCatalog(), "class.bellator");
+            Assert.That(inventory.TryCollectWorldMaterial(MaterialKind.Ore, 4, true, TransactionId.New()).Succeeded, Is.True);
+            Assert.That(inventory.TryAddMaterial(MaterialKind.Ore, 95, TransactionId.New()).Succeeded, Is.True);
+
+            InventoryOperationOutcome overflow = inventory.TryCollectWorldMaterial(MaterialKind.Ore, 1, true, TransactionId.New());
+
+            Assert.That(overflow.Status, Is.EqualTo(InventoryOperationStatus.RejectedMaterialCapacity));
+            Assert.That(inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(99));
+            Assert.That(inventory.GetWorldMaterialRemainder(MaterialKind.Ore), Is.EqualTo(4));
+        }
+
+        [Test]
+        public void SnapshotPreservesDvergarRemaindersAndMigratesPreE01InventorySnapshots()
+        {
+            ItemCatalog catalog = CreateCatalog();
+            var inventory = new ExpeditionInventory(catalog, "class.bellator");
+            Assert.That(inventory.TryCollectWorldMaterial(MaterialKind.Ore, 3, true, TransactionId.New()).Succeeded, Is.True);
+
+            ExpeditionInventory restored = ExpeditionInventory.Restore(catalog, inventory.CreateSnapshot());
+            Assert.That(restored.GetWorldMaterialRemainder(MaterialKind.Ore), Is.EqualTo(3));
+            Assert.That(restored.TryCollectWorldMaterial(MaterialKind.Ore, 2, true, TransactionId.New()).Succeeded, Is.True);
+            Assert.That(restored.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(6));
+
+            ExpeditionInventorySnapshot legacy = inventory.CreateSnapshot();
+            legacy.snapshotVersion = 1;
+            legacy.worldMaterialRemainders = Array.Empty<WorldMaterialRemainderSnapshot>();
+            ExpeditionInventory migrated = ExpeditionInventory.Restore(catalog, legacy);
+            Assert.That(migrated.GetWorldMaterialRemainder(MaterialKind.Ore), Is.Zero);
+        }
+
+        [Test]
         public void FullBackpackRejectsPickupAndExplicitReplacementReturnsDisplacedInstance()
         {
             var inventory = new ExpeditionInventory(CreateCatalog(), "class.bellator");

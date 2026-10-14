@@ -14,14 +14,46 @@ namespace Luckbound.Gameplay.Inventory
         public ItemCatalog Catalog { get; private set; }
         public LootPickupInteractionStatus LastInteractionStatus { get; private set; }
         public InventoryOperationOutcome LastOperationOutcome { get; private set; }
+        public bool GrantsDvergarBonus { get; private set; }
 
-        public void Configure(ExpeditionInventory inventory, ItemCatalog catalog, LootPickupDropStager2D dropStager = null)
+        public void Configure(ExpeditionInventory inventory, ItemCatalog catalog, LootPickupDropStager2D dropStager = null,
+            bool grantsDvergarBonus = false)
         {
             Inventory = inventory;
             Catalog = catalog;
             _dropStager = dropStager;
+            GrantsDvergarBonus = grantsDvergarBonus;
             LastInteractionStatus = LootPickupInteractionStatus.None;
             LastOperationOutcome = null;
+        }
+
+        public bool TryCollectWorldMaterial(WorldMaterialPickup2D pickup)
+        {
+            if (pickup == null || pickup.IsConsumed)
+            {
+                LastInteractionStatus = LootPickupInteractionStatus.AlreadyConsumed;
+                return false;
+            }
+            if (Inventory == null || Catalog == null)
+            {
+                LastInteractionStatus = LootPickupInteractionStatus.NotConfigured;
+                return false;
+            }
+
+            InventoryOperationOutcome outcome = Inventory.TryCollectWorldMaterial(
+                pickup.MaterialKind, pickup.Amount, GrantsDvergarBonus, TransactionId.New());
+            LastOperationOutcome = outcome;
+            if (!outcome.Succeeded)
+            {
+                LastInteractionStatus = outcome.Status == InventoryOperationStatus.RejectedMaterialCapacity
+                    ? LootPickupInteractionStatus.RejectedFull
+                    : LootPickupInteractionStatus.Rejected;
+                return false;
+            }
+
+            pickup.MarkCollected();
+            LastInteractionStatus = LootPickupInteractionStatus.Collected;
+            return true;
         }
 
         public bool TryCollect(LootPickup2D pickup)

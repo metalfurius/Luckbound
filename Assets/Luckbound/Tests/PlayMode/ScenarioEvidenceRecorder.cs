@@ -89,6 +89,7 @@ namespace Luckbound.Tests.PlayMode
             "Assets/Luckbound/Scripts/Gameplay/Inventory/LootPickupDropStager2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Inventory/ItemCollector2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Inventory/LootPickup2D.cs",
+            "Assets/Luckbound/Scripts/Gameplay/Inventory/WorldMaterialPickup2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
             "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
             "Assets/Luckbound/Scripts/Gameplay/Enemies/Slime2D.cs",
