@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Luckbound.Content;
 using Luckbound.Core.Crafting;
@@ -30,10 +29,20 @@ namespace Luckbound.Tests.Crafting
 
             Assert.That(catalog.Count, Is.EqualTo(12));
             Assert.That(catalog.Definitions.Select(recipe => recipe.Id).Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(12));
-            Assert.That(_itemCatalog.TryGet("consumable.health_potion", out ItemDefinition health), Is.True);
-            Assert.That(_itemCatalog.TryGet("consumable.energy_tonic", out ItemDefinition energy), Is.True);
-            Assert.That(health.Kind, Is.EqualTo(ItemKind.Consumable));
-            Assert.That(energy.Kind, Is.EqualTo(ItemKind.Consumable));
+            foreach (string itemId in new[]
+            {
+                "consumable.health_potion",
+                "consumable.energy_tonic",
+                "consumable.antidote",
+                "consumable.bomb",
+                "consumable.fortune_brew",
+                "consumable.torch"
+            })
+            {
+                Assert.That(_itemCatalog.TryGet(itemId, out ItemDefinition item), Is.True, itemId);
+                Assert.That(item.Kind, Is.EqualTo(ItemKind.Consumable), itemId);
+                Assert.That(item.MaxStack, Is.EqualTo(3), itemId);
+            }
         }
 
         [Test]
@@ -171,25 +180,7 @@ namespace Luckbound.Tests.Crafting
         {
             TextAsset items = Resources.Load<TextAsset>("Luckbound/Data/Items/Items");
             Assert.That(items, Is.Not.Null, "Items.json must be available as a Resources asset.");
-            ItemCatalog baseCatalog = ItemCatalogJsonLoader.Load(items.text);
-            var definitions = new List<ItemDefinition>(baseCatalog.Definitions)
-            {
-                Consumable("consumable.antidote"),
-                Consumable("consumable.bomb"),
-                Consumable("consumable.fortune_brew"),
-                Consumable("consumable.torch")
-            };
-            return new ItemCatalog(definitions, baseCatalog.StartingLoadouts);
-        }
-
-        private static ItemDefinition Consumable(string id)
-        {
-            return new ItemDefinition(
-                id,
-                "item." + id + ".name",
-                "item." + id + ".description",
-                ItemKind.Consumable,
-                3);
+            return ItemCatalogJsonLoader.Load(items.text);
         }
 
         private static string ReplaceOnce(string input, string search, string replacement)
