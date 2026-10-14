@@ -2,14 +2,14 @@
 
 **Actualizado:** 14 de octubre de 2026.
 
-**Alcance vigente:** Fran reanudó el objetivo completo el 14 de octubre. E01 está consolidada; E02.DATA, F01 y F07 están asignadas a tres workers Luna independientes.
+**Alcance vigente:** Fran reanudó el desarrollo completo el 14 de octubre. E02.DATA está integrada; E02.TXN, una pista de F08 y E07 están en worktrees Luna independientes. F01 continúa en curso y F07 está verificada.
 
 Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, paquetes y grafo de ejecución: [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
 ## Estado actual (14 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08 y E01: Verified; A06: InProgress; D09: NeedsOwnerReview; E02, F01 y F07: InProgress con paquetes delimitados; las demás tareas figuran Pending en la tabla inferior.
-- Desarrollo reanudado por Fran el 14 de octubre. E02.DATA está asignado en un worktree aislado; el padre E02 sigue InProgress hasta integrar y verificar sus paquetes.
+- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01 y F07: Verified; A06: InProgress; D09: NeedsOwnerReview; E02 y F01: InProgress; las demás tareas figuran Pending en la tabla inferior.
+- Desarrollo reanudado por Fran el 14 de octubre. E02.DATA está integrada y probada; E02.TXN continúa en un worktree. F08 trabaja solo la pista de taberna y E07 Venator está aislado. La aceptación final de esos paquetes corresponde al coordinador.
 - Regla estricta de visibilidad del 14 de octubre: ninguna ventana, pestaña, panel, notificación ni previsualización debe aparecer en la pantalla de Fran salvo la interfaz mínima que requiera una decisión concreta suya. Toda ejecución interna permanece sin interfaz, oculta o en un sandbox/escritorio aislado; aplica también a subagentes, procesos secundarios y ventanas emergentes.
 - E01 está consolidada en el commit `fd3626f`; las cuatro referencias originales del usuario permanecen sin seguimiento y fuera del commit.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
@@ -30,7 +30,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, 
 - D09 restaura expediciones desde el checkpoint de entrada, conserva una sola resolución por sala, protege las escrituras nuevas frente a snapshots concurrentes obsoletos y vuelve a la misma partida al recargar WebGL. Suites, escenarios de reinicio y builds locales de Windows/WebGL pasan; su revisión de Fran sigue Pending.
 - E01 añade recogida física de materiales, seis contadores fuera de la mochila y el rasgo Dvergar con resto por material serializado, bonificación solo por unidades aceptadas desde el mundo y límite atómico de 99. Las suites, el escenario y las builds locales pasan.
 - Revisiones de builds: ninguna realizada.
-- El trabajo previo permanece en una rama local; el desarrollo está detenido. El workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
+- El desarrollo está activo en la rama local `codex/luckbound-reboot`. El workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
 
 ## Estados y dependencias
@@ -80,23 +80,23 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D08 | Perfil y ajustes con respaldo | D07 | Verified |
 | D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | NeedsOwnerReview |
 | E01 | Materiales y bolsa | D09 | Verified |
-| E02 | Fabricación | E01 | Pending |
+| E02 | Fabricación | E01 | InProgress |
 | E03 | Comercio, herrería y descanso | E02 | Pending |
 | E04 | Ofertas y Fortuna | D09, E01 | Pending |
 | E05 | Avaricia y Fervor | C01, E04 | Pending |
 | E06 | Renombre y mejoras permanentes | D07, D08 | Pending |
-| E07 | Venator completo | C03, C04, D05 | Pending |
+| E07 | Venator completo | C03, C04, D05 | InProgress |
 | E08 | Magus completo | C03, C04, D05 | Pending |
 | E09 | Clase, raza y kit | D05, E01, E06, E07, E08 | Pending |
 | E10 | Personajes, contratos y localización inicial | E02, E06, E09 | Pending |
-| F01 | Referencia maestra artística | B07 | Pending |
+| F01 | Referencia maestra artística | B07 | InProgress |
 | F02 | Importación y validación de sprites | F01, A07 | Pending |
 | F03 | Animaciones finales iniciales del Humano Bellator | F02, B07 | Pending |
 | F04 | Slime y Huesoguardia con arte final | F02, C06 | Pending |
 | F05 | Tiles del Patio y primeras salas acabadas | F02, D01 | Pending |
 | F06 | Taberna e interfaz inicial acabadas | F02, E09 | Pending |
-| F07 | Entorno de composición y síntesis | D09 | Pending |
-| F08 | Música nueva de taberna, Patio y Custodio; efectos esenciales | F07 | Pending |
+| F07 | Entorno de composición y síntesis | D09 | Verified |
+| F08 | Música nueva de taberna, Patio y Custodio; efectos esenciales | F07 | InProgress |
 | F09 | Tutorial y Custodio acabados; recorrido corto integrado | F03, F04, F05, F06, F08, E10 | Pending |
 | F10 | Muestra 0.3 | F09 | Pending |
 | G01 | Nueve armas | C03, D04 | Pending |
@@ -514,12 +514,25 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Prueba WebGL manual:** build servida localmente en `http://localhost:8082/`, siempre en pestaña oculta. La taberna inicia la expedición de Bellator; el recibo visible muestra los seis contadores, salud/energía, checkpoint y el `RunId` completo `8c50b7271a994f808747a387535cc276`. Dos recargas consecutivas conservan el mismo ID y el checkpoint. No se publicó esta build.
 - **Resultado:** E01 `Verified`; E02 queda técnicamente habilitada, pero no se inicia. Fran pidió el 13 de octubre optimizar el plan y parar antes de comenzar desarrollo nuevo. El progreso de D09 sigue en `NeedsOwnerReview`; A06 sigue `InProgress` a la espera de secretos y permisos para la ejecución real de GitHub Actions. No se modificó el remoto ni la ruta pública `/Luckbound/`.
 
-## Ejecución E02 — Fabricación (InProgress; paquete E02.DATA asignado)
+## Ejecución E02 — Fabricación (InProgress; paquete E02.TXN asignado)
 
 - **Contrato:** receta válida consume exactamente los materiales y oro y crea el resultado previsto. Una receta inválida, sin recursos, sin espacio o incompatible no cambia el inventario. Las mejoras de armas/armaduras son consecutivas; no se puede saltar directamente a +2 o +3.
 - **Dependencia técnica comprobada:** E01 `Verified`; D09 conserva `NeedsOwnerReview` con evidencia técnica suficiente para continuar.
-- **Paquete actual:** E02.DATA construye doce definiciones y un loader validado en su worktree. La transacción atómica y su adaptador duradero aún no se han implementado.
-- **Resultado:** pendiente de implementación y aceptación de E02.
+- **E02.DATA integrado:** commits `b1bae5b`, `0e405ff` y `9f92426`; doce recetas únicas, loader validado, cuatro consumibles integrados y catálogo total de veinte ítems. EditMode postintegración `Logs/E02-DATA-postintegration-editmode.xml` → 92/92; PlayMode `Logs/E02-DATA-postintegration-playmode.xml` → 59/59, sin fallos, omitidos ni inconclusos, Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`.
+- **Contrato de rechazo:** los cambios de juego de un rechazo son nulos. El snapshot puede añadir el recibo técnico del `TransactionId` al ledger para que el mismo resultado se reproduzca después de restaurar; las pruebas comparan individualmente todos los campos funcionales además de verificar ese recibo.
+- **Siguiente:** E02.TXN está en un worktree sobre `c4a7e08`; E02.ADAPTER y la aceptación integrada completa siguen pendientes.
+- **Resultado:** E02 continúa `InProgress` hasta conectar fabricación, confirmar guardado y pasar el escenario de recorrido descrito en la guía.
+
+## Ejecución F01 — Referencia maestra artística (InProgress)
+
+- **Integración:** commit `8a0d23f` añade `docs/art/F01_master_reference.png` (480×270), fuente original generada, guía/manifest y hashes; la comprobación técnica confirma dimensiones, paleta limitada a 32 colores y ausencia de transparencia.
+- **Revisión interna:** se distinguen las siete referencias y el contraste Bellator/amenazas/fondo es legible. La escala de Bellator aún no queda demostrada como celda literal de 32×48 píxeles; por ello F01 no se marca `Verified` y F02 no se inicia.
+
+## Ejecución F07 — Partitura y síntesis local (Verified)
+
+- **Integración:** commit `c4a7e08` contiene partitura de cuatro compases en Re dórico, sintetizador, validador, pruebas, WAV y reporte.
+- **Prueba repetida:** `python -m unittest discover -s Tools/Audio/tests -v` → 7/7; Python 3.14.7, NumPy 2.5.4 y SoundFile 0.14.0 en entorno virtual temporal.
+- **Señal maestra:** SHA-256 `65a9fafbdcc96145781a375f7346d71677c8c0adf55754d8f1a2917ff818b562`; 9,6 s, −20,00 dBFS RMS, pico −12,36 dBFS, sin clipping ni ventanas silenciosas de 100 ms, salto de bucle −240 dBFS. No se hizo escucha subjetiva ni se reprodujo `La Taberna.wav`.
 
 ## Optimización documental — Plan 3.0
 
@@ -536,15 +549,31 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Implementación consolidada:** commit `fd3626f` (`feat(inventory): add physical world material pickups`). Doce archivos de código, escena y tests; las referencias originales del usuario no se incluyeron.
 - **Evidencia anterior conservada:** suites completas EditMode `86/86` y PlayMode `59/59`; Windows y WebGL terminaron con código 0 en Unity `6000.6.5f1`.
 - **Aceptación dirigida repetida:** escenario `E01_PhysicalWorldMaterialPickupAndBag`, cinco aserciones aprobadas, hash actual exacto `22a1beca91fdaeba7e8648fc888db9e7c00eb08688c1d9860f6e57ff38fe1aea`; informe `Logs/Scenarios/E01/20261014T182416019Z_E01_PhysicalWorldMaterialPickupAndBag_2d41e8bf/scenario-report.json`. EditMode `16/16` en `Logs/E01-resume-editmode.xml`; PlayMode `1/1` en `Logs/E01-resume-playmode.xml`. Ambas se ejecutaron con Unity en `-batchmode -nographics`.
-- **Estado registrado en esta ficha:** E01 Verified y consolidada. En ese punto E02 seguía Pending; E02.DATA se asignó después, como registra la sección siguiente. No se ejecutó un nuevo build en esta reanudación.
+- **Estado registrado en esta ficha:** E01 Verified y consolidada. En el momento de esta ejecución E02 aún no se había iniciado; la asignación posterior de E02.DATA y su integración aparecen en las fichas siguientes. No se ejecutó un nuevo build en esta reanudación.
 
-## Asignaciones paralelas — 14 de octubre de 2026
+## Oleada inicial — 14 de octubre de 2026 (histórica)
 
 - **E02 / E02.DATA:** worktree `luckbound-e02-data`; catálogo/loader/validación de recetas.
 - **F01:** worktree `luckbound-f01-art`; lámina maestra y guía/manifiesto artístico con imagegen.
 - **F07:** worktree `luckbound-f07-audio`; partitura estructurada, síntesis y validación WAV local.
 - **Base común:** `184e363fa4b5cb0af7cf548f96c11563ceaa905c`. Cada paquete tiene rutas propias; las referencias originales no están dentro de los worktrees y no se incluyen.
-- **Verificación:** pendiente de entrega de los workers e integración en el checkout principal. Un worker no puede declarar Verified. No correrán Unity en paralelo; estos tres paquetes pueden preparar código, imágenes y audio de forma aislada.
+- **Resultado:** los tres entregables quedaron integrados y se registran en las fichas actuales de E02, F01 y F07. Un worker no declara Verified; la aceptación la confirma el coordinador.
+
+## Paquetes activos — 14 de octubre de 2026
+
+| Paquete | Worktree / rama | Base | Alcance | Verificación pendiente |
+|---|---|---|---|---|
+| E02.TXN | `luckbound-e02-data` / `codex/e02-txn` | `c4a7e08` | Fabricación atómica y recibos duraderos | Revisión del diff y una cola Unity del coordinador |
+| F08.Taberna | `luckbound-f07-audio` / `codex/f08-tavern` | `c4a7e08` | Una pista original de taberna, no el conjunto F08 | Commit `f8f4aba` integrado; corregir hash de partitura fallido en Windows |
+| E07 | `luckbound-f01-art` / `codex/e07-venator` | `c4a7e08` | Módulo y pruebas Core de Venator | Revisión, conexión del coordinador y aceptación integrada |
+
+### F08.Taberna — entrega en revisión
+
+- **Commit aislado:** `7066cfe10494c0879851019e1c82da89f8bebbc9`; cinco archivos nuevos, todos limitados a la partitura, maestro WAV, reporte, manifiesto y test de la pista.
+- **Contrato:** 92 BPM, Re dórico, 4/4, 24 compases/96 tiempos; WAV mono PCM_24 de 44,1 kHz y 62,6087 s.
+- **Validación inicial del trabajador:** tres pruebas dirigidas y reporte de audio pasan en su worktree. El coordinador integró como `f8f4aba` y ejecutó las diez pruebas; nueve pasan y falla `test_report_and_manifest_hashes_match_committed_assets` porque el hash de la partitura del reporte (`a961…`) no coincide con el archivo integrado (`ba977…`). El problema aparece después de checkout/normalización de finales de línea.
+- **Corrección activa:** paquete devuelto al mismo dueño como `FIX-F08-1`; F08 sigue `InProgress` hasta regenerar metadatos, pasar las diez pruebas en la rama integrada y revisar el commit correctivo.
+- **Métricas WAV repetidas:** 0 clipping, 0 ventanas silenciosas de 100 ms y bucle aprobado (salto −138,47 dBFS). Hash WAV `af5e34ae67a485440cad5f912a944b9b764b9d5d366a5a4932fd33e1ca1f7c47`. No se escuchó ni reprodujo audio; la pieza no acredita las dos pistas restantes ni efectos de F08.
 
 ## Regla de visibilidad — 14 de octubre de 2026
 

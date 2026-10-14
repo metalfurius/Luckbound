@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.3 — 14 de octubre de 2026.
+**Versión del documento:** 3.4 — 14 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -12,9 +12,9 @@ El registro de ejecución se conserva en [PROGRESS.md](PROGRESS.md). La guía br
 
 La organización de trabajo, el grafo explícito de las 111 tareas y los paquetes para subagentes **GPT-6 Luna en max** están en [AGENT_EXECUTION.md](AGENT_EXECUTION.md). La versión 3.0 cambia la ejecución y las dependencias artificiales; conserva el alcance, las reglas, la arquitectura y los criterios de aceptación del juego.
 
-La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajena a una decisión necesaria de Fran debe permanecer oculta o en un entorno aislado, conforme a [5.6](#56-ejecución-invisible-y-decisiones-de-fran). La versión 3.2 registra que Fran reanudó el objetivo completo el 14 de octubre. La versión 3.3 aclara que ninguna ventana auxiliar, notificación ni previsualización puede aparecerle: solo la interfaz mínima que requiera una decisión suya.
+La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajena a una decisión necesaria de Fran debe permanecer oculta o en un entorno aislado, conforme a [5.6](#56-ejecución-invisible-y-decisiones-de-fran). La versión 3.2 registra que Fran reanudó el objetivo completo el 14 de octubre. La versión 3.3 aclara que ninguna ventana auxiliar, notificación ni previsualización puede aparecerle: solo la interfaz mínima que requiera una decisión suya. La versión 3.4 actualiza la instrucción operativa y aclara que los recibos de idempotencia son metadatos técnicos: un rechazo no altera el estado de juego, aunque su recibo se guarde para responder igual tras restaurar.
 
-**Instrucción vigente (14 de octubre):** Fran reanudó el desarrollo completo. E01 quedó consolidada; continuar con E02.DATA, F01 y F07 según las asignaciones y dependencias de [AGENT_EXECUTION.md](AGENT_EXECUTION.md) y el estado real de [PROGRESS.md](PROGRESS.md). El registro de progreso describe cada tarea ejecutada; este plan por sí solo no acredita su implementación.
+**Instrucción vigente (14 de octubre):** Fran reanudó el desarrollo completo. E02.DATA está integrada y aceptada técnicamente; E02.TXN continúa la fabricación. F07 está verificada; F08 prepara la música de taberna. E07 avanza Venator. F01 permanece en curso hasta comprobar la escala exacta del Bellator. Continúa los paquetes independientes que figuran en [PROGRESS.md](PROGRESS.md), priorizando el hito jugable F10 y respetando sus dependencias. El registro describe el estado y las evidencias reales; este plan por sí solo no acredita implementación.
 
 ## Índice
 
@@ -611,7 +611,7 @@ Contrato de implementación D04:
 - Cada objeto de mochila o equipo tiene `ItemInstanceId`, ID de definición, rareza y mejora. Solo las armas y armaduras admiten mejoras de 0 a +3; consumibles usan rareza común y mejora cero. Las armas validan la clase compatible al equiparse.
 - La mochila tiene exactamente doce índices. Armas, armaduras y reliquias ocupan una unidad por índice. Un consumible ocupa un índice con máximo tres; recoger consumibles rellena pilas compatibles antes de ocupar índices vacíos. La bolsa de materiales mantiene exactamente los seis tipos de 3.9, cada uno entre cero y 99; el oro es un contador aparte. La bolsa y el resto por material del rasgo Dvergar se serializan con el inventario y se validan al cargarlo.
 - Arma, armadura y las dos reliquias se mueven entre mochila y equipo. Al equipar desde un índice, el equipo anterior vuelve al mismo índice en una única operación. No se puede equipar la misma definición de reliquia en ambos espacios. El consumible rápido es una referencia a una pila de la mochila y no duplica ni retira sus unidades; si se sustituye o elimina esa pila, la referencia se limpia.
-- Cada orden de recoger, equipar, sustituir, añadir material u oro requiere un `TransactionId`. Repetirlo devuelve el resultado original y no vuelve a mutar el estado, también cuando el primer resultado fue un rechazo. Las operaciones rechazadas no cambian equipo, mochila, bolsa, oro ni instancias.
+- Cada orden de recoger, equipar, sustituir, añadir material u oro requiere un `TransactionId`. Repetirlo devuelve el resultado original y no vuelve a mutar el estado, también cuando el primer resultado fue un rechazo. Las operaciones rechazadas no cambian equipo, mochila, bolsa, oro ni instancias; el snapshot sí conserva el recibo técnico de idempotencia para repetir el mismo resultado tras restaurar.
 - Si un botín no cabe ni puede apilarse, se conserva en el mundo. La sustitución explícita identifica un índice y retorna el contenido desplazado para dejarlo como botín del mundo. El componente de juego prepara primero ese botín desplazado sin activarlo; solo confirma la sustitución y activa el objeto desplazado cuando la operación de Core tiene éxito. Un fallo al preparar o validar no consume el botín entrante ni reemplaza el contenido anterior.
 - `Items.json` es la fuente autoritativa de ID, claves localizadas, categoría, límite de pila (tres para consumibles y 99 para materiales) y clases compatibles. `ItemCatalogJsonLoader` valida esquema, categorías, IDs únicos, seis materiales exactos y compatibilidades; Core no contiene Unity, física o referencias a archivos.
 

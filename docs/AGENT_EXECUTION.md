@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 1.3 · 14 de octubre de 2026.
+**Versión:** 1.4 · 14 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -12,10 +12,11 @@ Este documento convierte las 111 tareas del producto en trabajo distribuible par
 
 La edición documental del 13 de octubre detuvo el desarrollo antes de E02. Fran reactivó el objetivo completo el 14 de octubre. El coordinador continúa desde el estado registrado abajo; preparar esta guía no acredita tareas del producto.
 
-Estado inicial confirmado al reanudar el 14 de octubre; el avance posterior está en [PROGRESS.md](PROGRESS.md):
+Estado inicial confirmado al reanudar el 14 de octubre; el avance posterior y asignaciones vigentes están en [PROGRESS.md](PROGRESS.md):
 
 - E01 está consolidada en `fd3626f`. El escenario de recogida física y los tests dirigidos de esta reanudación constan en PROGRESS.md; conservar su hash de origen junto con la evidencia.
-- E02 estaba `Pending` al reanudar y ahora está `InProgress`; E02.DATA está asignado en un worktree, mientras la integración y aceptación del padre siguen pendientes.
+- E02 está `InProgress`: E02.DATA ya está integrada y las suites postintegración pasan; E02.TXN está asignado y E02.ADAPTER sigue reservado al coordinador.
+- F07 está `Verified`; F08 avanza solo la pista de taberna. F01 sigue `InProgress` porque falta comprobar la escala exacta 32×48 del Bellator. E07 Venator avanza en módulo aislado.
 - A06 tiene un bloqueo de acceso/secretos para ejecutar Actions; no se atribuye al workflow una ejecución remota inexistente.
 - Las cinco revisiones de Fran siguen pendientes. Permiten trabajo técnico independiente, pero no equivalen a aprobación.
 - Editor fijado: Unity `6000.6.5f1`. Mantener paquetes y módulos ya comprobados.
@@ -320,7 +321,7 @@ Cada paquete hereda la aceptación de su tarea. Las rutas nuevas siguientes son 
 4. Repetir el mismo `TransactionId` devuelve el resultado previo. No activar Dvergar por fabricar/devolver materiales.
 5. Serializar lo necesario para que un reintento tras restaurar no fabrique ni cobre otra vez; conservar migración anterior.
 
-**Aceptación:** éxito exacto, recursos insuficientes, mochila llena, ID desconocido, clase/objetivo inválido, nivel incorrecto, límite +3, doble llamada y restauración. Toda operación rechazada conserva el snapshot completo. No basta comparar solo oro.
+**Aceptación:** éxito exacto, recursos insuficientes, mochila llena, ID desconocido, clase/objetivo inválido, nivel incorrecto, límite +3, doble llamada y restauración. Un rechazo conserva todos los campos funcionales del snapshot (equipo, mochila, materiales/restos, oro, instancias, cantidades y niveles); el único cambio permitido es su recibo en el ledger técnico de transacciones, necesario para repetir el mismo resultado tras restaurar. Comprobar cada campo, no basta comparar solo oro.
 
 ### E02.ADAPTER — Operación duradera y escenario
 
@@ -589,19 +590,19 @@ Si predominan conflictos, reducir escritores y separar contratos; si predomina e
 
 Éxito de esta optimización: 111 tareas conservadas, grafo sin ciclos, decisiones fijas, próximos paquetes ejecutables, integración segura y aceptación demostrable. No se mide por número de agentes creados ni por cantidad de código generado.
 
-**Estado al guardar:** desarrollo detenido antes de E02; se espera una nueva orden de comenzar.
+**Estado al guardar:** Fran reanudó el desarrollo completo el 14 de octubre. E02.DATA ya se integró; consultar PROGRESS.md para el estado real, paquetes activos y evidencias.
 
-Prompt de reanudación listo para usar cuando Fran lo decida:
+Prompt genérico de reanudación para futuras sesiones:
 
 ```text
 Empieza/retoma el desarrollo de Luckbound siguiendo AGENTS.md,
 docs/DEVELOPMENT_PLAN.md, docs/AGENT_EXECUTION.md y docs/PROGRESS.md.
 Usa hasta tres trabajadores gpt-6-luna con esfuerzo max y contexto
 nuevo, más el coordinador; respeta archivos exclusivos y una cola
-Unity por máquina. Consolida primero E01 y sus evidencias sin incluir
-referencias originales ni cambios ajenos. Despacha después E02.DATA,
-F01 y F07, y rellena plazas con paquetes técnicamente listos hasta
-el alcance solicitado. Integra, ejecuta aceptación real y registra
+Unity por máquina. Lee el estado real y continúa desde el siguiente
+paquete técnicamente listo, sin repetir entregas verificadas ni incluir
+referencias originales. Usa plazas disponibles para paquetes independientes
+que acerquen F10. Integra, ejecuta aceptación real y registra
 progreso; no pidas aprobación por cada microtarea. Conserva las cinco
 revisiones de Fran y el pipeline público. Toda ejecución y previsualización
 debe permanecer oculta o en un entorno aislado; solo muestra una interfaz
