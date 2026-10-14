@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "title": "Original motif - four bars",
+  "mode": "D_dorian",
+  "time_signature": "4/4",
+  "tempo_bpm": 100,
+  "sample_rate_hz": 44100,
+  "loop": true,
+  "target_peak_dbfs": -3.0,
+  "target_rms_dbfs": -20.0,
+  "instruments": [
+    { "id": "strings", "preset": "plucked_strings", "gain": 0.8 },
+    { "id": "flute", "preset": "soft_flute", "gain": 0.3 }
+  ],
+  "bars": [
+    {
+      "number": 1,
+      "tracks": [
+        { "instrument": "strings", "notes": [
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.8 },
+          { "pitch": "A4", "duration_beats": 1.0, "velocity": 0.8 },
+          { "pitch": "F4", "duration_beats": 0.5, "velocity": 0.8 },
+          { "pitch": "E4", "duration_beats": 0.5, "velocity": 0.8 },
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.8 }
+        ] },
+        { "instrument": "flute", "notes": [
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.42 },
+          { "pitch": "A4", "duration_beats": 1.0, "velocity": 0.42 },
+          { "pitch": "F4", "duration_beats": 0.5, "velocity": 0.42 },
+          { "pitch": "E4", "duration_beats": 0.5, "velocity": 0.42 },
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.42 }
+        ] }
+      ]
+    },
+    {
+      "number": 2,
+      "tracks": [
+        { "instrument": "strings", "notes": [
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.8 },
+          { "pitch": "A4", "duration_beats": 1.0, "velocity": 0.8 },
+          { "pitch": "F4", "duration_beats": 0.5, "velocity": 0.8 },
+          { "pitch": "E4", "duration_beats": 0.5, "velocity": 0.8 },
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.8 }
+        ] },
+        { "instrument": "flute", "notes": [
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.42 },
+          { "pitch": "A4", "duration_beats": 1.0, "velocity": 0.42 },
+          { "pitch": "F4", "duration_beats": 0.5, "velocity": 0.42 },
+          { "pitch": "E4", "duration_beats": 0.5, "velocity": 0.42 },
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.42 }
+        ] }
+      ]
+    },
+    {
+      "number": 3,
+      "tracks": [
+        { "instrument": "strings", "notes": [
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.8 },
+          { "pitch": "A4", "duration_beats": 1.0, "velocity": 0.8 },
+          { "pitch": "F4", "duration_beats": 0.5, "velocity": 0.8 },
+          { "pitch": "E4", "duration_beats": 0.5, "velocity": 0.8 },
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.8 }
+        ] },
+        { "instrument": "flute", "notes": [
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.42 },
+          { "pitch": "A4", "duration_beats": 1.0, "velocity": 0.42 },
+          { "pitch": "F4", "duration_beats": 0.5, "velocity": 0.42 },
+          { "pitch": "E4", "duration_beats": 0.5, "velocity": 0.42 },
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.42 }
+        ] }
+      ]
+    },
+    {
+      "number": 4,
+      "tracks": [
+        { "instrument": "strings", "notes": [
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.8 },
+          { "pitch": "A4", "duration_beats": 1.0, "velocity": 0.8 },
+          { "pitch": "F4", "duration_beats": 0.5, "velocity": 0.8 },
+          { "pitch": "E4", "duration_beats": 0.5, "velocity": 0.8 },
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.8 }
+        ] },
+        { "instrument": "flute", "notes": [
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.42 },
+          { "pitch": "A4", "duration_beats": 1.0, "velocity": 0.42 },
+          { "pitch": "F4", "duration_beats": 0.5, "velocity": 0.42 },
+          { "pitch": "E4", "duration_beats": 0.5, "velocity": 0.42 },
+          { "pitch": "D4", "duration_beats": 1.0, "velocity": 0.42 }
+        ] }
+      ]
+    }
+  ]
+}

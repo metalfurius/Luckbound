@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://luckbound.local/schemas/audio-score-v1.schema.json",
+  "title": "Luckbound structured audio score v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "title", "mode", "time_signature", "tempo_bpm",
+    "sample_rate_hz", "loop", "target_peak_dbfs", "target_rms_dbfs",
+    "instruments", "bars"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "mode": {
+      "enum": ["D_minor", "D_dorian", "F_harmonic_minor", "A_phrygian", "D_major"]
+    },
+    "time_signature": { "const": "4/4" },
+    "tempo_bpm": { "type": "number", "minimum": 40, "maximum": 180 },
+    "sample_rate_hz": { "enum": [44100, 48000] },
+    "loop": { "type": "boolean" },
+    "target_peak_dbfs": { "type": "number", "minimum": -12, "maximum": -1 },
+    "target_rms_dbfs": { "type": "number", "minimum": -40, "maximum": -12 },
+    "instruments": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "preset", "gain"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,31}$" },
+          "preset": {
+            "enum": ["plucked_strings", "soft_flute", "simple_bass", "light_percussion", "sustained_pad"]
+          },
+          "gain": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "bars": {
+      "type": "array", "minItems": 1, "maxItems": 64,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["number", "tracks"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "tracks": {
+            "type": "array", "minItems": 1,
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["instrument", "notes"],
+              "properties": {
+                "instrument": { "type": "string" },
+                "notes": {
+                  "type": "array", "minItems": 1,
+                  "items": {
+                    "type": "object", "additionalProperties": false,
+                    "required": ["pitch", "duration_beats", "velocity"],
+                    "properties": {
+                      "pitch": { "type": "string", "pattern": "^[A-G](?:#|b)?[0-8]$" },
+                      "duration_beats": { "type": "number", "exclusiveMinimum": 0, "maximum": 4, "multipleOf": 0.25 },
+                      "velocity": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
