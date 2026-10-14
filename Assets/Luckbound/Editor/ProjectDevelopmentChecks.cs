@@ -787,9 +787,9 @@ namespace Luckbound.Editor
             try
             {
                 ItemCatalog catalog = ItemCatalogJsonLoader.Load(source.text);
-                if (catalog.Count != 16)
+                if (catalog.Count != 20)
                 {
-                    errors.Add("D04 starter item catalog must contain 16 item definitions including six materials; found " + catalog.Count + ".");
+                    errors.Add("D04/E02 item catalog must contain 20 definitions: three class weapons, three armors, two relics, six consumables and six materials; found " + catalog.Count + ".");
                 }
                 if (!catalog.Get("weapon.bellator.rusted_sword").IsCompatibleWithClass("class.bellator") ||
                     !catalog.Get("weapon.venator.short_bow").IsCompatibleWithClass("class.venator") ||
