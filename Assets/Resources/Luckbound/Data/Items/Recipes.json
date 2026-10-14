@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "recipes": [
+    {
+      "id": "recipe.consumable.health_potion",
+      "materialCosts": [
+        { "materialKind": "UmbraHerb", "quantity": 2 },
+        { "materialKind": "DarkResin", "quantity": 1 }
+      ],
+      "goldCost": 0,
+      "resultKind": "Consumable",
+      "resultItemId": "consumable.health_potion",
+      "resultQuantity": 1
+    },
+    {
+      "id": "recipe.consumable.energy_tonic",
+      "materialCosts": [
+        { "materialKind": "UmbraHerb", "quantity": 2 },
+        { "materialKind": "ArcaneDust", "quantity": 1 }
+      ],
+      "goldCost": 0,
+      "resultKind": "Consumable",
+      "resultItemId": "consumable.energy_tonic",
+      "resultQuantity": 1
+    },
+    {
+      "id": "recipe.consumable.antidote",
+      "materialCosts": [
+        { "materialKind": "UmbraHerb", "quantity": 1 },
+        { "materialKind": "ArcaneDust", "quantity": 1 }
+      ],
+      "goldCost": 0,
+      "resultKind": "Consumable",
+      "resultItemId": "consumable.antidote",
+      "resultQuantity": 1
+    },
+    {
+      "id": "recipe.consumable.bomb",
+      "materialCosts": [
+        { "materialKind": "Ore", "quantity": 2 },
+        { "materialKind": "VitalEmber", "quantity": 1 }
+      ],
+      "goldCost": 0,
+      "resultKind": "Consumable",
+      "resultItemId": "consumable.bomb",
+      "resultQuantity": 1
+    },
+    {
+      "id": "recipe.consumable.fortune_brew",
+      "materialCosts": [
+        { "materialKind": "ArcaneDust", "quantity": 2 },
+        { "materialKind": "VitalEmber", "quantity": 1 }
+      ],
+      "goldCost": 0,
+      "resultKind": "Consumable",
+      "resultItemId": "consumable.fortune_brew",
+      "resultQuantity": 1
+    },
+    {
+      "id": "recipe.consumable.torch",
+      "materialCosts": [
+        { "materialKind": "ShadowWood", "quantity": 1 },
+        { "materialKind": "DarkResin", "quantity": 1 }
+      ],
+      "goldCost": 0,
+      "resultKind": "Consumable",
+      "resultItemId": "consumable.torch",
+      "resultQuantity": 1
+    },
+    {
+      "id": "recipe.upgrade.weapon.1",
+      "materialCosts": [
+        { "materialKind": "Ore", "quantity": 2 },
+        { "materialKind": "ShadowWood", "quantity": 1 }
+      ],
+      "goldCost": 10,
+      "resultKind": "Upgrade",
+      "upgradeTargetKind": "Weapon",
+      "requiredCurrentUpgradeLevel": 0,
+      "resultUpgradeLevel": 1
+    },
+    {
+      "id": "recipe.upgrade.weapon.2",
+      "materialCosts": [
+        { "materialKind": "Ore", "quantity": 3 },
+        { "materialKind": "ArcaneDust", "quantity": 1 }
+      ],
+      "goldCost": 20,
+      "resultKind": "Upgrade",
+      "upgradeTargetKind": "Weapon",
+      "requiredCurrentUpgradeLevel": 1,
+      "resultUpgradeLevel": 2
+    },
+    {
+      "id": "recipe.upgrade.weapon.3",
+      "materialCosts": [
+        { "materialKind": "Ore", "quantity": 3 },
+        { "materialKind": "VitalEmber", "quantity": 1 }
+      ],
+      "goldCost": 40,
+      "resultKind": "Upgrade",
+      "upgradeTargetKind": "Weapon",
+      "requiredCurrentUpgradeLevel": 2,
+      "resultUpgradeLevel": 3
+    },
+    {
+      "id": "recipe.upgrade.armor.1",
+      "materialCosts": [
+        { "materialKind": "Ore", "quantity": 2 },
+        { "materialKind": "DarkResin", "quantity": 1 }
+      ],
+      "goldCost": 10,
+      "resultKind": "Upgrade",
+      "upgradeTargetKind": "Armor",
+      "requiredCurrentUpgradeLevel": 0,
+      "resultUpgradeLevel": 1
+    },
+    {
+      "id": "recipe.upgrade.armor.2",
+      "materialCosts": [
+        { "materialKind": "Ore", "quantity": 3 },
+        { "materialKind": "ArcaneDust", "quantity": 1 }
+      ],
+      "goldCost": 20,
+      "resultKind": "Upgrade",
+      "upgradeTargetKind": "Armor",
+      "requiredCurrentUpgradeLevel": 1,
+      "resultUpgradeLevel": 2
+    },
+    {
+      "id": "recipe.upgrade.armor.3",
+      "materialCosts": [
+        { "materialKind": "Ore", "quantity": 3 },
+        { "materialKind": "VitalEmber", "quantity": 1 }
+      ],
+      "goldCost": 40,
+      "resultKind": "Upgrade",
+      "upgradeTargetKind": "Armor",
+      "requiredCurrentUpgradeLevel": 2,
+      "resultUpgradeLevel": 3
+    }
+  ]
+}
