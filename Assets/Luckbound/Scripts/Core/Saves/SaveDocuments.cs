@@ -4,13 +4,14 @@ using System.Globalization;
 using System.Linq;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
+using Luckbound.Core.Progression;
 
 namespace Luckbound.Core.Saves
 {
     public static class SaveFormat
     {
         public const int SchemaVersion = 1;
-        public const int ContentVersion = 1;
+        public const int ContentVersion = 2;
         public const int Generation = 1;
     }
 
@@ -28,6 +29,7 @@ namespace Luckbound.Core.Saves
         public string[] readStoryFragmentIds = Array.Empty<string>();
         public ContractCounterSaveData[] contractCounters = Array.Empty<ContractCounterSaveData>();
         public string[] processedSettlementRunIds = Array.Empty<string>();
+        public PermanentUpgradePurchaseSaveData[] progressionPurchaseTransactions = Array.Empty<PermanentUpgradePurchaseSaveData>();
 
         public static ProfileSaveData CreateNewProfile()
         {
@@ -58,7 +60,9 @@ namespace Luckbound.Core.Saves
                 readStoryFragmentIds = Copy(readStoryFragmentIds),
                 contractCounters = contractCounters == null ? null : contractCounters
                     .Select(counter => counter == null ? null : counter.Clone()).ToArray(),
-                processedSettlementRunIds = Copy(processedSettlementRunIds)
+                processedSettlementRunIds = Copy(processedSettlementRunIds),
+                progressionPurchaseTransactions = progressionPurchaseTransactions == null ? null : progressionPurchaseTransactions
+                    .Select(transaction => transaction == null ? null : transaction.Clone()).ToArray()
             };
         }
 
@@ -70,6 +74,11 @@ namespace Luckbound.Core.Saves
             claimedContractIds = Sort(claimedContractIds);
             readStoryFragmentIds = Sort(readStoryFragmentIds);
             processedSettlementRunIds = Sort(processedSettlementRunIds);
+            progressionPurchaseTransactions = progressionPurchaseTransactions == null
+                ? Array.Empty<PermanentUpgradePurchaseSaveData>()
+                : progressionPurchaseTransactions
+                    .OrderBy(transaction => transaction == null ? string.Empty : transaction.transactionId, StringComparer.Ordinal)
+                    .Select(transaction => transaction == null ? null : transaction.Clone()).ToArray();
             if (contractCounters != null)
             {
                 contractCounters = contractCounters.OrderBy(counter => counter == null ? string.Empty : counter.contractId,
@@ -88,6 +97,21 @@ namespace Luckbound.Core.Saves
         public int progress;
 
         public ContractCounterSaveData Clone() => new ContractCounterSaveData { contractId = contractId, progress = progress };
+    }
+
+    [Serializable]
+    public sealed class PermanentUpgradePurchaseSaveData
+    {
+        public string transactionId;
+        public int kind;
+        public int cost;
+
+        public PermanentUpgradePurchaseSaveData Clone() => new PermanentUpgradePurchaseSaveData
+        {
+            transactionId = transactionId,
+            kind = kind,
+            cost = cost
+        };
     }
 
     [Serializable]
@@ -308,6 +332,28 @@ namespace Luckbound.Core.Saves
                 foreach (string value in profile.processedSettlementRunIds)
                 {
                     if (!RunId.TryParse(value, out _)) errors.Add("Invalid processed settlement RunId: " + value + ".");
+                }
+            }
+            if (profile.progressionPurchaseTransactions == null)
+            {
+                errors.Add("Progression purchase transactions cannot be null.");
+            }
+            else
+            {
+                var transactionIds = new HashSet<string>(StringComparer.Ordinal);
+                foreach (PermanentUpgradePurchaseSaveData transaction in profile.progressionPurchaseTransactions)
+                {
+                    if (transaction == null || !TransactionId.TryParse(transaction.transactionId, out _))
+                    {
+                        errors.Add("Progression purchase transactions require a valid transaction ID.");
+                        continue;
+                    }
+                    if (!transactionIds.Add(transaction.transactionId))
+                        errors.Add("Progression purchase transaction IDs must be unique.");
+                    if (!Enum.IsDefined(typeof(PermanentUpgradeKind), transaction.kind))
+                        errors.Add("Progression purchase transaction has an unknown upgrade kind.");
+                    if (transaction.cost <= 0)
+                        errors.Add("Progression purchase transaction cost must be positive.");
                 }
             }
             if (profile.contractCounters == null) errors.Add("Contract counters cannot be null.");

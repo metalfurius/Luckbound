@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
+using Luckbound.Core.Progression;
 using Luckbound.Core.Saves;
 
 namespace Luckbound.App
@@ -23,6 +24,7 @@ namespace Luckbound.App
         private ProfileSaveData _profileData = ProfileSaveData.CreateNewProfile();
         private GameSettingsSaveData _settingsData = new GameSettingsSaveData();
         private PendingSettlement _pendingSettlement;
+        private PendingPermanentUpgradePurchase _pendingPermanentUpgradePurchase;
         private readonly SemaphoreSlim _profileMutationGate = new SemaphoreSlim(1, 1);
         private ExpeditionSaveData _activeExpedition;
         private long _activeExpeditionRevision;
@@ -48,13 +50,145 @@ namespace Luckbound.App
         public SaveLoadStatus SettingsLoadStatus { get; private set; } = SaveLoadStatus.Missing;
         public string SettingsLoadMessage { get; private set; } = string.Empty;
         public bool HasPendingSettlement => _pendingSettlement != null;
+        public bool HasPendingPermanentUpgradePurchase => _pendingPermanentUpgradePurchase != null;
+        public PermanentUpgradeKind? PendingPermanentUpgradeKind => _pendingPermanentUpgradePurchase == null
+            ? (PermanentUpgradeKind?)null
+            : _pendingPermanentUpgradePurchase.Purchase.Kind;
         public bool HasActiveExpedition => _activeExpedition != null;
         public bool HasPendingExpeditionWrite => _pendingExpeditionCandidate != null;
         public bool CanStartNewExpedition => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
-            !HasPendingSettlement && !HasPendingExpeditionWrite && !HasActiveExpedition;
+            !HasPendingSettlement && !HasPendingPermanentUpgradePurchase && !HasPendingExpeditionWrite && !HasActiveExpedition;
         public bool CanContinueExpedition => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
             !HasPendingSettlement && !HasPendingExpeditionWrite && HasActiveExpedition && string.IsNullOrEmpty(_activeExpeditionLoadError);
         public string PendingProfileExport => _saveRepository == null ? null : _saveRepository.ExportPendingJson(SaveDocument.Profile);
+
+        public async Task<ProgressionPurchaseCommitResult> PurchasePermanentUpgradeAsync(
+            PermanentUpgradeKind kind, TransactionId transactionId)
+        {
+            await _profileMutationGate.WaitAsync();
+            try
+            {
+                if (_pendingPermanentUpgradePurchase != null)
+                {
+                    if (_pendingPermanentUpgradePurchase.Purchase.TransactionId != transactionId ||
+                        _pendingPermanentUpgradePurchase.Purchase.Kind != kind)
+                    {
+                        return new ProgressionPurchaseCommitResult(_pendingPermanentUpgradePurchase.Purchase,
+                            persisted: false, pending: true,
+                            "A different permanent-upgrade purchase is waiting for its exact save retry.");
+                    }
+                    return await RetryPendingPermanentUpgradeUnderGateAsync();
+                }
+
+                PermanentUpgradeSnapshot current = CreatePermanentUpgradeSnapshot(_profileData);
+                bool inTavern = SceneManager.GetActiveScene().name == "Hub";
+                if (!inTavern)
+                {
+                    PermanentUpgradePurchaseResult unavailable = PermanentUpgradeRules.PreparePurchase(
+                        current, kind, transactionId, isInTavern: false);
+                    return new ProgressionPurchaseCommitResult(unavailable, persisted: false, pending: false,
+                        "Permanent upgrades can only be bought in the tavern.");
+                }
+                if (!SaveDataReady || !IsUsableProfileStatus(ProfileLoadStatus) || !CanStartNewExpedition)
+                {
+                    string reason = !SaveDataReady
+                        ? "Profile data has not finished loading."
+                        : !IsUsableProfileStatus(ProfileLoadStatus)
+                            ? "The profile could not be loaded safely; its existing data is preserved."
+                            : HasActiveExpedition
+                                ? "Permanent upgrades cannot be bought while an expedition is active."
+                                : "Resolve the pending profile write before buying another permanent upgrade.";
+                    return new ProgressionPurchaseCommitResult(null, persisted: false, pending: false, reason);
+                }
+
+                PermanentUpgradePurchaseResult purchase = PermanentUpgradeRules.PreparePurchase(
+                    current, kind, transactionId, inTavern);
+                if (!purchase.ChangesProfile)
+                {
+                    bool repeated = purchase.Status == PermanentUpgradePurchaseStatus.AlreadyProcessed;
+                    return new ProgressionPurchaseCommitResult(purchase, persisted: repeated, pending: false,
+                        repeated ? "This transaction was already committed." : purchase.Status.ToString());
+                }
+
+                ProfileSaveData candidate = _profileData.Clone();
+                ApplyPermanentUpgradeSnapshot(candidate, purchase.Snapshot);
+                SaveWriteResult save = await _saveRepository.SaveProfileAsync(candidate);
+                if (save.Succeeded)
+                {
+                    CommitPermanentUpgradeProfile(candidate);
+                    return new ProgressionPurchaseCommitResult(purchase, persisted: true, pending: false, save.Message);
+                }
+
+                if (_saveRepository.ExportPendingJson(SaveDocument.Profile) != null)
+                    _pendingPermanentUpgradePurchase = new PendingPermanentUpgradePurchase(candidate, purchase);
+                return new ProgressionPurchaseCommitResult(purchase, persisted: false,
+                    pending: _pendingPermanentUpgradePurchase != null, save.Message);
+            }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        public async Task<ProgressionPurchaseCommitResult> RetryPendingPermanentUpgradePurchaseAsync()
+        {
+            await _profileMutationGate.WaitAsync();
+            try { return await RetryPendingPermanentUpgradeUnderGateAsync(); }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        private async Task<ProgressionPurchaseCommitResult> RetryPendingPermanentUpgradeUnderGateAsync()
+        {
+            if (_pendingPermanentUpgradePurchase == null)
+                return new ProgressionPurchaseCommitResult(null, persisted: false, pending: false,
+                    "There is no pending permanent-upgrade purchase.");
+
+            SaveWriteResult save = await _saveRepository.RetryPendingAsync(SaveDocument.Profile);
+            if (!save.Succeeded)
+                return new ProgressionPurchaseCommitResult(_pendingPermanentUpgradePurchase.Purchase,
+                    persisted: false, pending: true, save.Message);
+
+            PendingPermanentUpgradePurchase pending = _pendingPermanentUpgradePurchase;
+            CommitPermanentUpgradeProfile(pending.Profile);
+            _pendingPermanentUpgradePurchase = null;
+            return new ProgressionPurchaseCommitResult(pending.Purchase, persisted: true, pending: false, save.Message);
+        }
+
+        private void CommitPermanentUpgradeProfile(ProfileSaveData profile)
+        {
+            _profileData = profile.Clone();
+            _settlementLedger = new ExpeditionSettlementLedger(_profileData.availableRenown,
+                _profileData.processedSettlementRunIds.Select(RunId.Parse));
+        }
+
+        private static PermanentUpgradeSnapshot CreatePermanentUpgradeSnapshot(ProfileSaveData profile)
+        {
+            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            PermanentUpgradePurchaseSaveData[] savedTransactions = profile.progressionPurchaseTransactions ??
+                Array.Empty<PermanentUpgradePurchaseSaveData>();
+            PermanentUpgradePurchaseRecord[] records = savedTransactions.Select(transaction =>
+            {
+                if (transaction == null || !TransactionId.TryParse(transaction.transactionId, out TransactionId id) ||
+                    !Enum.IsDefined(typeof(PermanentUpgradeKind), transaction.kind))
+                    throw new FormatException("The saved permanent-upgrade transaction ledger is invalid.");
+                return new PermanentUpgradePurchaseRecord(id, (PermanentUpgradeKind)transaction.kind, transaction.cost);
+            }).ToArray();
+            return new PermanentUpgradeSnapshot(profile.availableRenown, profile.healthUpgradeLevel,
+                profile.energyUpgradeLevel, profile.additionalPotionUpgradeLevel, records);
+        }
+
+        private static void ApplyPermanentUpgradeSnapshot(ProfileSaveData profile, PermanentUpgradeSnapshot snapshot)
+        {
+            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
+            profile.availableRenown = snapshot.AvailableRenown;
+            profile.healthUpgradeLevel = snapshot.HealthUpgradeLevel;
+            profile.energyUpgradeLevel = snapshot.EnergyUpgradeLevel;
+            profile.additionalPotionUpgradeLevel = snapshot.AdditionalPotionUpgradeLevel;
+            profile.progressionPurchaseTransactions = snapshot.PurchaseRecords.Select(record => new PermanentUpgradePurchaseSaveData
+            {
+                transactionId = record.TransactionId.ToString(),
+                kind = (int)record.Kind,
+                cost = record.Cost
+            }).ToArray();
+        }
 
         private void Awake()
         {
@@ -451,6 +585,18 @@ namespace Luckbound.App
             public ExpeditionSettlementLedger Ledger { get; }
             public ProfileSaveData Profile { get; }
             public ExpeditionSettlementReceipt Receipt { get; }
+        }
+
+        private sealed class PendingPermanentUpgradePurchase
+        {
+            public PendingPermanentUpgradePurchase(ProfileSaveData profile, PermanentUpgradePurchaseResult purchase)
+            {
+                Profile = profile.Clone();
+                Purchase = purchase;
+            }
+
+            public ProfileSaveData Profile { get; }
+            public PermanentUpgradePurchaseResult Purchase { get; }
         }
     }
 }

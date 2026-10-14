@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Progression;
 using Luckbound.Core.Randomness;
 
 namespace Luckbound.Core.Expeditions
@@ -28,7 +29,10 @@ namespace Luckbound.Core.Expeditions
             uint seed,
             ExpeditionRoutePlan route,
             ExpeditionInventory inventory,
-            IEnumerable<ItemInstanceId> startingEquipmentInstanceIds = null)
+            IEnumerable<ItemInstanceId> startingEquipmentInstanceIds = null,
+            int healthUpgradeLevel = 0,
+            int energyUpgradeLevel = 0,
+            int additionalPotionUpgradeLevel = 0)
         {
             if (!runId.IsValid) throw new ArgumentException("A fresh expedition requires a valid RunId.", nameof(runId));
             if (classId != "class.bellator" && classId != "class.venator" && classId != "class.magus")
@@ -47,6 +51,12 @@ namespace Luckbound.Core.Expeditions
             if (inventory == null) throw new ArgumentNullException(nameof(inventory));
             if (!string.Equals(inventory.ClassId, classId, StringComparison.Ordinal))
                 throw new ArgumentException("The expedition inventory must belong to the selected class.", nameof(inventory));
+            if (healthUpgradeLevel < 0 || healthUpgradeLevel > PermanentUpgradeSnapshot.MaximumHealthUpgradeLevel)
+                throw new ArgumentOutOfRangeException(nameof(healthUpgradeLevel));
+            if (energyUpgradeLevel < 0 || energyUpgradeLevel > PermanentUpgradeSnapshot.MaximumEnergyUpgradeLevel)
+                throw new ArgumentOutOfRangeException(nameof(energyUpgradeLevel));
+            if (additionalPotionUpgradeLevel < 0 || additionalPotionUpgradeLevel > PermanentUpgradeSnapshot.MaximumPotionUpgradeLevel)
+                throw new ArgumentOutOfRangeException(nameof(additionalPotionUpgradeLevel));
 
             RunId = runId;
             ClassId = classId;
@@ -55,6 +65,9 @@ namespace Luckbound.Core.Expeditions
             Seed = route.Seed;
             Route = route;
             Inventory = inventory;
+            HealthUpgradeLevel = healthUpgradeLevel;
+            EnergyUpgradeLevel = energyUpgradeLevel;
+            AdditionalPotionUpgradeLevel = additionalPotionUpgradeLevel;
 
             ItemInstanceId[] startingEquipment = startingEquipmentInstanceIds == null
                 ? Array.Empty<ItemInstanceId>()
@@ -72,9 +85,13 @@ namespace Luckbound.Core.Expeditions
         public uint Seed { get; }
         public ExpeditionRoutePlan Route { get; }
         public ExpeditionInventory Inventory { get; }
+        public int HealthUpgradeLevel { get; }
+        public int EnergyUpgradeLevel { get; }
+        public int AdditionalPotionUpgradeLevel { get; }
         public IReadOnlyList<ItemInstanceId> StartingEquipmentInstanceIds => _startingEquipmentInstanceIds;
-        public int StartingHealth => InitialHealth;
-        public int StartingEnergy => InitialEnergy;
+        public int StartingHealth => PermanentUpgradeRules.ApplyFivePercentPerLevel(InitialHealth, HealthUpgradeLevel);
+        public int StartingEnergy => PermanentUpgradeRules.ApplyFivePercentPerLevel(InitialEnergy, EnergyUpgradeLevel);
+        public int StartingHealthPotions => InitialHealthPotions + AdditionalPotionUpgradeLevel;
         public int StartingFortunaCharges => InitialFortunaCharges;
     }
 }

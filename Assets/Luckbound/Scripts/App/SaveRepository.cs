@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Saves;
+using Luckbound.Core.Progression;
 using UnityEngine;
 
 namespace Luckbound.App
@@ -392,7 +393,19 @@ namespace Luckbound.App
             if (!envelope.hasActiveExpedition) envelope.activeExpedition = null;
             DecodeStatus versionStatus = CheckVersion(envelope.schemaVersion, envelope.contentVersion);
             if (versionStatus != DecodeStatus.Valid) return versionStatus;
-            if (!string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal)) return DecodeStatus.Corrupted;
+            if (envelope.contentVersion == 1)
+            {
+                if (!string.Equals(envelope.checksum, ComputeLegacyProfileChecksum(envelope), StringComparison.Ordinal))
+                    return DecodeStatus.Corrupted;
+                if (envelope.profile != null && envelope.profile.progressionPurchaseTransactions == null)
+                    envelope.profile.progressionPurchaseTransactions = Array.Empty<PermanentUpgradePurchaseSaveData>();
+                envelope.contentVersion = SaveFormat.ContentVersion;
+                envelope.checksum = ComputeChecksum(envelope);
+            }
+            else if (!string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal))
+            {
+                return DecodeStatus.Corrupted;
+            }
             return SaveDataValidation.Validate(envelope).Count == 0 ? DecodeStatus.Valid : DecodeStatus.Corrupted;
         }
 
@@ -406,14 +419,49 @@ namespace Luckbound.App
             DecodeStatus versionStatus = CheckVersion(envelope.schemaVersion, envelope.contentVersion);
             if (versionStatus != DecodeStatus.Valid) return versionStatus;
             if (!string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal)) return DecodeStatus.Corrupted;
+            if (envelope.contentVersion == 1)
+            {
+                envelope.contentVersion = SaveFormat.ContentVersion;
+                envelope.checksum = ComputeChecksum(envelope);
+            }
             return SaveDataValidation.Validate(envelope).Count == 0 ? DecodeStatus.Valid : DecodeStatus.Corrupted;
         }
 
         private static DecodeStatus CheckVersion(int schema, int content)
         {
             if (schema > SaveFormat.SchemaVersion || content > SaveFormat.ContentVersion) return DecodeStatus.Incompatible;
-            if (schema != SaveFormat.SchemaVersion || content != SaveFormat.ContentVersion) return DecodeStatus.Incompatible;
+            if (schema != SaveFormat.SchemaVersion || content < 1) return DecodeStatus.Incompatible;
             return DecodeStatus.Valid;
+        }
+
+        private static string ComputeLegacyProfileChecksum(ProfileSaveEnvelope source)
+        {
+            var legacy = new LegacyProfileSaveEnvelopeV1
+            {
+                schemaVersion = source.schemaVersion,
+                contentVersion = source.contentVersion,
+                generation = source.generation,
+                sequence = source.sequence,
+                savedAtUtc = source.savedAtUtc,
+                checksum = string.Empty,
+                profile = source.profile == null ? null : new LegacyProfileSaveDataV1
+                {
+                    availableRenown = source.profile.availableRenown,
+                    healthUpgradeLevel = source.profile.healthUpgradeLevel,
+                    energyUpgradeLevel = source.profile.energyUpgradeLevel,
+                    additionalPotionUpgradeLevel = source.profile.additionalPotionUpgradeLevel,
+                    unlockedRaceIds = source.profile.unlockedRaceIds,
+                    unlockedStartingKitIds = source.profile.unlockedStartingKitIds,
+                    acceptedContractIds = source.profile.acceptedContractIds,
+                    claimedContractIds = source.profile.claimedContractIds,
+                    readStoryFragmentIds = source.profile.readStoryFragmentIds,
+                    contractCounters = source.profile.contractCounters,
+                    processedSettlementRunIds = source.profile.processedSettlementRunIds
+                },
+                hasActiveExpedition = source.hasActiveExpedition,
+                activeExpedition = source.activeExpedition
+            };
+            return Hash(JsonUtility.ToJson(legacy, false));
         }
 
         private static string ComputeChecksum(ProfileSaveEnvelope source)
@@ -446,6 +494,36 @@ namespace Luckbound.App
                 settings = source.settings
             };
             return Hash(JsonUtility.ToJson(canonical, false));
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileSaveEnvelopeV1
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public LegacyProfileSaveDataV1 profile;
+            public bool hasActiveExpedition;
+            public ExpeditionSaveData activeExpedition;
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileSaveDataV1
+        {
+            public int availableRenown;
+            public int healthUpgradeLevel;
+            public int energyUpgradeLevel;
+            public int additionalPotionUpgradeLevel;
+            public string[] unlockedRaceIds;
+            public string[] unlockedStartingKitIds;
+            public string[] acceptedContractIds;
+            public string[] claimedContractIds;
+            public string[] readStoryFragmentIds;
+            public ContractCounterSaveData[] contractCounters;
+            public string[] processedSettlementRunIds;
         }
 
         private static string Hash(string value)

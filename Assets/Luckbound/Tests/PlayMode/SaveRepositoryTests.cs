@@ -1,7 +1,10 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 using Luckbound.App;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
@@ -252,6 +255,85 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [Test]
+        public void ContentVersionOneProfileMigratesPurchaseLedgerWithoutDiscardingRenownOrUpgrades()
+        {
+            Directory.CreateDirectory(_directory);
+            FileSaveStore store = NewFileStore();
+            ProfileSaveData oldProfile = ProfileSaveData.CreateNewProfile();
+            oldProfile.availableRenown = 247;
+            oldProfile.healthUpgradeLevel = 1;
+            oldProfile.energyUpgradeLevel = 2;
+            oldProfile.additionalPotionUpgradeLevel = 1;
+            oldProfile.processedSettlementRunIds = new[] { RunId.New().ToString() };
+            string legacyJson = EncodeLegacyProfileV1(oldProfile);
+            File.WriteAllText(store.GetPrimaryPath(SaveDocument.Profile), legacyJson, new UTF8Encoding(false));
+
+            var repository = new SaveRepository(store);
+            SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(repository.LoadProfileAsync());
+
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+            Assert.That(loaded.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
+            Assert.That(loaded.Data.profile.availableRenown, Is.EqualTo(247));
+            Assert.That(loaded.Data.profile.healthUpgradeLevel, Is.EqualTo(1));
+            Assert.That(loaded.Data.profile.energyUpgradeLevel, Is.EqualTo(2));
+            Assert.That(loaded.Data.profile.additionalPotionUpgradeLevel, Is.EqualTo(1));
+            Assert.That(loaded.Data.profile.processedSettlementRunIds, Is.EqualTo(oldProfile.processedSettlementRunIds));
+            Assert.That(loaded.Data.profile.progressionPurchaseTransactions, Is.Empty);
+
+            Assert.That(Wait(repository.SaveProfileAsync(loaded.Data.profile)).Succeeded, Is.True);
+            var restarted = new SaveRepository(store);
+            SaveLoadResult<ProfileSaveEnvelope> afterRestart = Wait(restarted.LoadProfileAsync());
+            Assert.That(afterRestart.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), afterRestart.Message);
+            Assert.That(afterRestart.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
+            Assert.That(afterRestart.Data.profile.availableRenown, Is.EqualTo(247));
+        }
+
+        [Test]
+        public void ContentVersionOneSettingsMigrateWithoutChangingPlayerChoices()
+        {
+            Directory.CreateDirectory(_directory);
+            FileSaveStore store = NewFileStore();
+            var legacy = new SettingsSaveEnvelope
+            {
+                schemaVersion = SaveFormat.SchemaVersion,
+                contentVersion = 1,
+                generation = 1,
+                sequence = 4,
+                savedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                settings = new GameSettingsSaveData
+                {
+                    languageId = "en",
+                    masterVolume = 0.31f,
+                    musicVolume = 0.46f,
+                    effectsVolume = 0.72f
+                }
+            };
+            using (SHA256 sha = SHA256.Create())
+                legacy.checksum = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(JsonUtility.ToJson(legacy, false))))
+                    .Replace("-", string.Empty).ToLowerInvariant();
+            File.WriteAllText(store.GetPrimaryPath(SaveDocument.Settings), JsonUtility.ToJson(legacy, true),
+                new UTF8Encoding(false));
+
+            var repository = new SaveRepository(store);
+            SaveLoadResult<SettingsSaveEnvelope> loaded = Wait(repository.LoadSettingsAsync());
+
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+            Assert.That(loaded.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
+            Assert.That(loaded.Data.sequence, Is.EqualTo(4));
+            Assert.That(loaded.Data.settings.languageId, Is.EqualTo("en"));
+            Assert.That(loaded.Data.settings.masterVolume, Is.EqualTo(0.31f).Within(0.0001f));
+            Assert.That(loaded.Data.settings.musicVolume, Is.EqualTo(0.46f).Within(0.0001f));
+            Assert.That(loaded.Data.settings.effectsVolume, Is.EqualTo(0.72f).Within(0.0001f));
+
+            Assert.That(Wait(repository.SaveSettingsAsync(loaded.Data.settings)).Succeeded, Is.True);
+            var restarted = new SaveRepository(store);
+            SaveLoadResult<SettingsSaveEnvelope> afterRestart = Wait(restarted.LoadSettingsAsync());
+            Assert.That(afterRestart.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
+            Assert.That(afterRestart.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
+            Assert.That(afterRestart.Data.settings.musicVolume, Is.EqualTo(0.46f).Within(0.0001f));
+        }
+
+        [Test]
         public void FailedWriteKeepsOnePayloadForExplicitRetry()
         {
             var store = new FailOnceSaveStore(NewFileStore());
@@ -382,6 +464,69 @@ namespace Luckbound.Tests.PlayMode
         private FileSaveStore NewFileStore() => new FileSaveStore(_directory, null);
 
         private static T Wait<T>(Task<T> task) => task.GetAwaiter().GetResult();
+
+        private static string EncodeLegacyProfileV1(ProfileSaveData source)
+        {
+            var envelope = new LegacyProfileEnvelopeV1
+            {
+                schemaVersion = SaveFormat.SchemaVersion,
+                contentVersion = 1,
+                generation = 1,
+                sequence = 1,
+                savedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                checksum = string.Empty,
+                profile = new LegacyProfileDataV1
+                {
+                    availableRenown = source.availableRenown,
+                    healthUpgradeLevel = source.healthUpgradeLevel,
+                    energyUpgradeLevel = source.energyUpgradeLevel,
+                    additionalPotionUpgradeLevel = source.additionalPotionUpgradeLevel,
+                    unlockedRaceIds = source.unlockedRaceIds,
+                    unlockedStartingKitIds = source.unlockedStartingKitIds,
+                    acceptedContractIds = source.acceptedContractIds,
+                    claimedContractIds = source.claimedContractIds,
+                    readStoryFragmentIds = source.readStoryFragmentIds,
+                    contractCounters = source.contractCounters,
+                    processedSettlementRunIds = source.processedSettlementRunIds
+                },
+                hasActiveExpedition = false,
+                activeExpedition = null
+            };
+            using (SHA256 sha = SHA256.Create())
+                envelope.checksum = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(JsonUtility.ToJson(envelope, false))))
+                    .Replace("-", string.Empty).ToLowerInvariant();
+            return JsonUtility.ToJson(envelope, true);
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileEnvelopeV1
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public LegacyProfileDataV1 profile;
+            public bool hasActiveExpedition;
+            public ExpeditionSaveData activeExpedition;
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileDataV1
+        {
+            public int availableRenown;
+            public int healthUpgradeLevel;
+            public int energyUpgradeLevel;
+            public int additionalPotionUpgradeLevel;
+            public string[] unlockedRaceIds;
+            public string[] unlockedStartingKitIds;
+            public string[] acceptedContractIds;
+            public string[] claimedContractIds;
+            public string[] readStoryFragmentIds;
+            public ContractCounterSaveData[] contractCounters;
+            public string[] processedSettlementRunIds;
+        }
 
         private sealed class FailOnceSaveStore : ISaveStore
         {

@@ -4,6 +4,8 @@ using System.Linq;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
+using Luckbound.Core.Identifiers;
+using Luckbound.Core.Progression;
 using Luckbound.Core.Saves;
 using UnityEngine;
 using UnityEngine.Events;
@@ -26,16 +28,31 @@ namespace Luckbound.App
         [SerializeField] private Button _returnToMenuButton;
         [SerializeField] private Text _selectionSummaryText;
         [SerializeField] private Text _statusText;
+        [SerializeField] private Button _openUpgradesButton;
+        [SerializeField] private GameObject _upgradePanel;
+        [SerializeField] private Text _upgradeBalanceText;
+        [SerializeField] private Text _upgradeStatusText;
+        [SerializeField] private Button _healthUpgradeButton;
+        [SerializeField] private Button _energyUpgradeButton;
+        [SerializeField] private Button _potionUpgradeButton;
+        [SerializeField] private Button _closeUpgradesButton;
 
         private readonly List<string> _selectedSkillIds = new List<string>(2);
         private UnityAction[] _classButtonHandlers;
         private UnityAction[] _skillButtonHandlers;
+        private UnityAction _openUpgradesHandler;
+        private UnityAction _closeUpgradesHandler;
+        private UnityAction _healthUpgradeHandler;
+        private UnityAction _energyUpgradeHandler;
+        private UnityAction _potionUpgradeHandler;
         private SkillCatalog _skillCatalog;
         private List<SkillDefinition> _classSkills = new List<SkillDefinition>(3);
         private int _selectedClassIndex;
         private string _statusMessage;
         private string _profileStatusMessage;
         private bool _startingExpedition;
+        private bool _purchasingUpgrade;
+        private string _upgradeStatusMessage;
 
         public string SelectedClassId => PlayableClasses[_selectedClassIndex];
         public string SelectedRaceId => ExpeditionRunConfiguration.HumanRaceId;
@@ -61,6 +78,16 @@ namespace Luckbound.App
             _humanRaceButton.onClick.AddListener(SelectHumanRace);
             _startExpeditionButton.onClick.AddListener(StartExpedition);
             _returnToMenuButton.onClick.AddListener(ReturnToMenu);
+            _openUpgradesHandler = OpenUpgradePanel;
+            _closeUpgradesHandler = CloseUpgradePanel;
+            _healthUpgradeHandler = () => PurchasePermanentUpgrade(PermanentUpgradeKind.MaximumHealth);
+            _energyUpgradeHandler = () => PurchasePermanentUpgrade(PermanentUpgradeKind.MaximumEnergy);
+            _potionUpgradeHandler = () => PurchasePermanentUpgrade(PermanentUpgradeKind.AdditionalHealthPotion);
+            if (_openUpgradesButton != null) _openUpgradesButton.onClick.AddListener(_openUpgradesHandler);
+            if (_closeUpgradesButton != null) _closeUpgradesButton.onClick.AddListener(_closeUpgradesHandler);
+            if (_healthUpgradeButton != null) _healthUpgradeButton.onClick.AddListener(_healthUpgradeHandler);
+            if (_energyUpgradeButton != null) _energyUpgradeButton.onClick.AddListener(_energyUpgradeHandler);
+            if (_potionUpgradeButton != null) _potionUpgradeButton.onClick.AddListener(_potionUpgradeHandler);
         }
 
         private void Start()
@@ -73,6 +100,7 @@ namespace Luckbound.App
                 RefreshProfileStatus();
                 SelectClass(0);
                 SelectHumanRace();
+                if (_upgradePanel != null) _upgradePanel.SetActive(false);
                 RefreshView();
             }
             catch (Exception exception)
@@ -94,6 +122,11 @@ namespace Luckbound.App
             if (_humanRaceButton != null) _humanRaceButton.onClick.RemoveListener(SelectHumanRace);
             if (_startExpeditionButton != null) _startExpeditionButton.onClick.RemoveListener(StartExpedition);
             if (_returnToMenuButton != null) _returnToMenuButton.onClick.RemoveListener(ReturnToMenu);
+            if (_openUpgradesButton != null && _openUpgradesHandler != null) _openUpgradesButton.onClick.RemoveListener(_openUpgradesHandler);
+            if (_closeUpgradesButton != null && _closeUpgradesHandler != null) _closeUpgradesButton.onClick.RemoveListener(_closeUpgradesHandler);
+            if (_healthUpgradeButton != null && _healthUpgradeHandler != null) _healthUpgradeButton.onClick.RemoveListener(_healthUpgradeHandler);
+            if (_energyUpgradeButton != null && _energyUpgradeHandler != null) _energyUpgradeButton.onClick.RemoveListener(_energyUpgradeHandler);
+            if (_potionUpgradeButton != null && _potionUpgradeHandler != null) _potionUpgradeButton.onClick.RemoveListener(_potionUpgradeHandler);
         }
 
         public void SelectClass(int classIndex)
@@ -218,8 +251,12 @@ namespace Luckbound.App
 
             try
             {
+                ProfileSaveData profile = app.Profile;
                 ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
-                    SelectedClassId, SelectedRaceId, _selectedSkillIds);
+                    SelectedClassId, SelectedRaceId, _selectedSkillIds,
+                    profile.healthUpgradeLevel,
+                    profile.energyUpgradeLevel,
+                    profile.additionalPotionUpgradeLevel);
                 _startingExpedition = true;
                 RefreshView();
                 SaveWriteResult save = await app.BeginExpeditionAsync(run);
@@ -248,6 +285,63 @@ namespace Luckbound.App
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        }
+
+        public void OpenUpgradePanel()
+        {
+            if (_upgradePanel == null) return;
+            _upgradeStatusMessage = string.Empty;
+            _upgradePanel.SetActive(true);
+            RefreshView();
+        }
+
+        public void CloseUpgradePanel()
+        {
+            if (_upgradePanel == null) return;
+            _upgradePanel.SetActive(false);
+        }
+
+        public async void PurchasePermanentUpgrade(PermanentUpgradeKind kind)
+        {
+            if (_purchasingUpgrade) return;
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null)
+            {
+                _upgradeStatusMessage = "El perfil no está disponible.";
+                RefreshView();
+                return;
+            }
+
+            _purchasingUpgrade = true;
+            RefreshView();
+            try
+            {
+                ProgressionPurchaseCommitResult result;
+                if (app.HasPendingPermanentUpgradePurchase)
+                {
+                    if (app.PendingPermanentUpgradeKind != kind)
+                    {
+                        _upgradeStatusMessage = "Reintenta primero la compra pendiente.";
+                        return;
+                    }
+                    result = await app.RetryPendingPermanentUpgradePurchaseAsync();
+                }
+                else
+                {
+                    result = await app.PurchasePermanentUpgradeAsync(kind, TransactionId.New());
+                }
+
+                _upgradeStatusMessage = FormatPurchaseStatus(result);
+            }
+            catch (Exception exception)
+            {
+                _upgradeStatusMessage = "No se pudo guardar la mejora: " + exception.Message;
+            }
+            finally
+            {
+                _purchasingUpgrade = false;
+                RefreshView();
+            }
         }
 
         private void RefreshView()
@@ -302,10 +396,11 @@ namespace Luckbound.App
                 _selectionSummaryText.text = "CLASE  " + ClassLabels[_selectedClassIndex] +
                     "     RAZA  HUMANO\nHABILIDADES  " + (selected.Length == 0 ? "elige dos" : selected);
             }
+            RefreshUpgradeControls();
             if (_statusText != null)
             {
                 string selectionStatus = string.IsNullOrEmpty(_statusMessage)
-                    ? (_selectedSkillIds.Count == 2 ? "Preparación lista · 100 SALUD · 50 ENERGÍA · 2 pociones" : "Elige exactamente dos habilidades (" + _selectedSkillIds.Count + "/2).")
+                    ? (_selectedSkillIds.Count == 2 ? StartingStatsStatus() : "Elige exactamente dos habilidades (" + _selectedSkillIds.Count + "/2).")
                     : _statusMessage;
                 _statusText.text = string.IsNullOrEmpty(_profileStatusMessage) ? selectionStatus : _profileStatusMessage;
             }
@@ -319,6 +414,68 @@ namespace Luckbound.App
                 _startExpeditionButton.interactable = !_startingExpedition && (retrySettlement || canRetry || canContinue ||
                     (_selectedSkillIds.Count == 2 && app != null && app.CanStartNewExpedition));
             }
+        }
+
+        private void RefreshUpgradeControls()
+        {
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null) return;
+            ProfileSaveData profile = app.Profile;
+            int renown = profile.availableRenown;
+            bool pending = app.HasPendingPermanentUpgradePurchase;
+            if (_upgradeBalanceText != null) _upgradeBalanceText.text = "RENOMBRE DISPONIBLE · " + renown;
+            if (_upgradeStatusText != null) _upgradeStatusText.text = _upgradeStatusMessage ?? string.Empty;
+            SetUpgradeButton(_healthUpgradeButton, app, PermanentUpgradeKind.MaximumHealth,
+                profile.healthUpgradeLevel, PermanentUpgradeSnapshot.MaximumHealthUpgradeLevel,
+                renown, "SALUD MÁXIMA · +5 %", pending);
+            SetUpgradeButton(_energyUpgradeButton, app, PermanentUpgradeKind.MaximumEnergy,
+                profile.energyUpgradeLevel, PermanentUpgradeSnapshot.MaximumEnergyUpgradeLevel,
+                renown, "ENERGÍA MÁXIMA · +5 %", pending);
+            SetUpgradeButton(_potionUpgradeButton, app, PermanentUpgradeKind.AdditionalHealthPotion,
+                profile.additionalPotionUpgradeLevel, PermanentUpgradeSnapshot.MaximumPotionUpgradeLevel,
+                renown, "POCIÓN INICIAL · +1", pending);
+        }
+
+        private void SetUpgradeButton(Button button, ApplicationBootstrapper app, PermanentUpgradeKind kind,
+            int level, int maximumLevel, int renown, string label, bool pending)
+        {
+            if (button == null) return;
+            bool retry = pending && app.PendingPermanentUpgradeKind == kind;
+            int cost = PermanentUpgradeRules.GetNextCost(kind, level);
+            string detail = level >= maximumLevel ? "COMPLETA" : cost + " RENOMBRE";
+            SetLabel(button, (retry ? "REINTENTAR · " : "") + label + " · " + level + "/" + maximumLevel + " · " + detail);
+            button.interactable = !_purchasingUpgrade && (retry || (!pending && app.CanStartNewExpedition &&
+                level < maximumLevel && renown >= cost));
+        }
+
+        private static string StartingStatsStatus()
+        {
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            ProfileSaveData profile = app == null ? ProfileSaveData.CreateNewProfile() : app.Profile;
+            int health = PermanentUpgradeRules.ApplyFivePercentPerLevel(ExpeditionRunConfiguration.InitialHealth,
+                profile.healthUpgradeLevel);
+            int energy = PermanentUpgradeRules.ApplyFivePercentPerLevel(ExpeditionRunConfiguration.InitialEnergy,
+                profile.energyUpgradeLevel);
+            int potions = ExpeditionRunConfiguration.InitialHealthPotions + profile.additionalPotionUpgradeLevel;
+            return "Preparación lista · " + health + " SALUD · " + energy + " ENERGÍA · " + potions + " pociones";
+        }
+
+        private static string FormatPurchaseStatus(ProgressionPurchaseCommitResult result)
+        {
+            if (result == null) return "No se recibió resultado de compra.";
+            if (result.Pending) return "Guardado pendiente. Pulsa la mejora marcada para reintentar.";
+            if (result.Purchase == null) return result.Message;
+            if (result.Purchase.Status == PermanentUpgradePurchaseStatus.AlreadyProcessed && result.Persisted)
+                return "Esta compra ya estaba guardada; no se volvió a cobrar.";
+            if (result.Purchase.Status == PermanentUpgradePurchaseStatus.Purchased && result.Persisted)
+                return "Mejora guardada. Renombre disponible: " + result.Purchase.Snapshot.AvailableRenown + ".";
+            if (result.Purchase.Status == PermanentUpgradePurchaseStatus.RejectedInsufficientRenown)
+                return "Renombre insuficiente. Coste: " + result.Purchase.Cost + ".";
+            if (result.Purchase.Status == PermanentUpgradePurchaseStatus.RejectedMaximumLevel)
+                return "Esta mejora ya está completa.";
+            if (result.Purchase.Status == PermanentUpgradePurchaseStatus.RejectedNotInTavern)
+                return "Solo puedes comprar mejoras en la taberna.";
+            return result.Message;
         }
 
         private void RefreshProfileStatus()

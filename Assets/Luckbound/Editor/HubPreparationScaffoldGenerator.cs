@@ -94,6 +94,9 @@ namespace Luckbound.Editor
                     throw new InvalidOperationException("HubPreparationCanvas exists but its controller is missing; the scene was left unchanged.");
                 }
 
+                HubPreparationController existingController = FindComponent<HubPreparationController>(scene, "HubPreparation");
+                if (existingController != null) changed |= EnsureUpgradePanel(scene, canvasObject, existingController);
+
                 if (changed)
                 {
                     EditorSceneManager.MarkSceneDirty(scene);
@@ -104,6 +107,127 @@ namespace Luckbound.Editor
             {
                 RestoreScene(scene, previousActiveScene);
             }
+        }
+
+        private static bool EnsureUpgradePanel(Scene scene, GameObject canvasObject, HubPreparationController controller)
+        {
+            bool changed = false;
+            Transform canvas = canvasObject.transform;
+
+            Button openButton = FindComponent<Button>(scene, "OpenPermanentUpgradesButton");
+            if (openButton == null)
+            {
+                openButton = CreateButton("OpenPermanentUpgradesButton", "MEJORAS", canvas,
+                    new Vector2(48f, -121f), new Vector2(94f, 22f), 8, "#10111B", "#AA7DC2");
+                changed = true;
+            }
+            changed |= SetRect(openButton.GetComponent<RectTransform>(), new Vector2(48f, -121f), new Vector2(94f, 22f));
+            changed |= SetButtonLabel(openButton, "MEJORAS");
+            Text selectionSummary = FindComponent<Text>(scene, "PreparationSelectionSummary");
+            if (selectionSummary != null)
+                changed |= SetRect(selectionSummary.GetComponent<RectTransform>(), new Vector2(-127f, -118f), new Vector2(180f, 24f));
+            Text hubStatus = FindComponent<Text>(scene, "HubPreparationStatus");
+            if (hubStatus != null)
+                changed |= SetRect(hubStatus.GetComponent<RectTransform>(), new Vector2(-127f, -135f), new Vector2(190f, 10f));
+
+            Image panel = FindComponent<Image>(scene, "PermanentUpgradePanel");
+            if (panel == null)
+            {
+                panel = CreateImage("PermanentUpgradePanel", canvas, "#10111B");
+                panel.raycastTarget = true;
+                changed = true;
+            }
+            changed |= SetRect(panel.rectTransform, Vector2.zero, new Vector2(390f, 238f));
+            if (panel.gameObject.activeSelf)
+            {
+                panel.gameObject.SetActive(false);
+                changed = true;
+            }
+
+            Text title = EnsurePanelText(scene, "PermanentUpgradeTitle", "MEJORAS PERMANENTES · RENOMBRE",
+                panel.transform, new Vector2(0f, 94f), new Vector2(340f, 20f), 12, "#F0C15A", FontStyle.Bold, ref changed);
+            Text balance = EnsurePanelText(scene, "PermanentUpgradeBalance", "RENOMBRE DISPONIBLE · 0",
+                panel.transform, new Vector2(0f, 71f), new Vector2(330f, 18f), 9, "#E8E3CD", FontStyle.Normal, ref changed);
+            Text status = EnsurePanelText(scene, "PermanentUpgradeStatus", string.Empty,
+                panel.transform, new Vector2(0f, -101f), new Vector2(350f, 16f), 8, "#F0C15A", FontStyle.Bold, ref changed);
+            Button health = EnsurePanelButton(scene, "PermanentHealthUpgradeButton", "SALUD MÁXIMA · +5 %",
+                panel.transform, new Vector2(0f, 41f), ref changed);
+            Button energy = EnsurePanelButton(scene, "PermanentEnergyUpgradeButton", "ENERGÍA MÁXIMA · +5 %",
+                panel.transform, new Vector2(0f, 5f), ref changed);
+            Button potion = EnsurePanelButton(scene, "PermanentPotionUpgradeButton", "POCIÓN INICIAL · +1",
+                panel.transform, new Vector2(0f, -31f), ref changed);
+            Button close = FindComponent<Button>(scene, "ClosePermanentUpgradesButton");
+            if (close == null)
+            {
+                close = CreateButton("ClosePermanentUpgradesButton", "VOLVER", panel.transform,
+                    new Vector2(0f, -72f), new Vector2(118f, 23f), 8, "#E8E3CD", "#32251F");
+                changed = true;
+            }
+            changed |= SetRect(close.GetComponent<RectTransform>(), new Vector2(0f, -72f), new Vector2(118f, 23f));
+            changed |= SetButtonLabel(close, "VOLVER");
+
+            changed |= SetObjectReference(controller, "_openUpgradesButton", openButton);
+            changed |= SetObjectReference(controller, "_upgradePanel", panel.gameObject);
+            changed |= SetObjectReference(controller, "_upgradeBalanceText", balance);
+            changed |= SetObjectReference(controller, "_upgradeStatusText", status);
+            changed |= SetObjectReference(controller, "_healthUpgradeButton", health);
+            changed |= SetObjectReference(controller, "_energyUpgradeButton", energy);
+            changed |= SetObjectReference(controller, "_potionUpgradeButton", potion);
+            changed |= SetObjectReference(controller, "_closeUpgradesButton", close);
+            return changed;
+        }
+
+        private static Text EnsurePanelText(Scene scene, string name, string value, Transform parent, Vector2 position,
+            Vector2 size, int fontSize, string color, FontStyle style, ref bool changed)
+        {
+            Text text = FindComponent<Text>(scene, name);
+            if (text == null)
+            {
+                text = CreateText(name, value, parent, position, size, fontSize, color, style);
+                changed = true;
+            }
+            if (text.transform.parent != parent)
+            {
+                text.transform.SetParent(parent, false);
+                changed = true;
+            }
+            changed |= SetRect(text.GetComponent<RectTransform>(), position, size);
+            if (text.text != value)
+            {
+                text.text = value;
+                EditorUtility.SetDirty(text);
+                changed = true;
+            }
+            return text;
+        }
+
+        private static Button EnsurePanelButton(Scene scene, string name, string label, Transform parent,
+            Vector2 position, ref bool changed)
+        {
+            Button button = FindComponent<Button>(scene, name);
+            if (button == null)
+            {
+                button = CreateButton(name, label, parent, position, new Vector2(338f, 28f),
+                    8, "#E8E3CD", "#32251F");
+                changed = true;
+            }
+            if (button.transform.parent != parent)
+            {
+                button.transform.SetParent(parent, false);
+                changed = true;
+            }
+            changed |= SetRect(button.GetComponent<RectTransform>(), position, new Vector2(338f, 28f));
+            changed |= SetButtonLabel(button, label);
+            return button;
+        }
+
+        private static bool SetButtonLabel(Button button, string value)
+        {
+            Text label = button == null ? null : button.GetComponentInChildren<Text>(true);
+            if (label == null || label.text == value) return false;
+            label.text = value;
+            EditorUtility.SetDirty(label);
+            return true;
         }
 
         private static void EnsureMenuEntry()

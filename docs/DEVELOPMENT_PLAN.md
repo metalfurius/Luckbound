@@ -843,6 +843,8 @@ Desbloqueos narrativos, fragmentos y objetivos de contrato válidos se conservar
 
 Coste total: 510 de Renombre. El aumento acumulado de los dos niveles será 10 %, no dos multiplicaciones sucesivas.
 
+Cada nivel de salud o energía añade cinco puntos porcentuales sobre la estadística base; se calcula una sola vez como `base × (100 + 5 × nivel) / 100`, con enteros redondeados al más cercano y los medios hacia arriba. Por tanto, 100 de salud pasa a 105 y 110; 50 de energía pasa a 53 y 55. Las compras solo se permiten en la taberna, sin una expedición activa. Cada intento lleva un `TransactionId` persistente y su recibo se escribe atómicamente en el mismo perfil que el Renombre y los niveles: no se confirma una compra antes de guardar, un fallo conserva el estado anterior y permite reintentar el mismo payload, y repetir una transacción ya guardada no vuelve a cobrarla. La mejora afecta a expediciones nuevas; una partida activa conserva sus estadísticas.
+
 Las demás recompensas serán opciones de kit, razas y reconocimiento narrativo.
 
 ### 3.14. Contratos
