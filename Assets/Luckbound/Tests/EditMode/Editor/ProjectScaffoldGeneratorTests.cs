@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using NUnit.Framework;
 using Luckbound.Editor;
 using UnityEditor;
@@ -110,7 +111,14 @@ namespace Luckbound.Tests.Editor
                 {
                     string path = Path.Combine(projectRoot, relativePath.Replace('/', Path.DirectorySeparatorChar));
                     Assert.That(File.Exists(path), Is.True, "Expected generated file is missing: " + relativePath);
-                    byte[] hash = sha256.ComputeHash(File.ReadAllBytes(path));
+                    byte[] contents = File.ReadAllBytes(path);
+                    if (Path.GetExtension(path) != ".png")
+                    {
+                        // Unity may resave text assets with LF on Windows; image fixtures remain byte-exact.
+                        string text = Encoding.UTF8.GetString(contents);
+                        contents = Encoding.UTF8.GetBytes(text.Replace("\r\n", "\n").Replace("\r", "\n"));
+                    }
+                    byte[] hash = sha256.ComputeHash(contents);
                     hashes.Add(relativePath, string.Concat(hash.Select(value => value.ToString("x2"))));
                 }
             }

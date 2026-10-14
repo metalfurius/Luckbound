@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.4 — 14 de octubre de 2026.
+**Versión del documento:** 3.5 — 14 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -14,7 +14,9 @@ La organización de trabajo, el grafo explícito de las 111 tareas y los paquete
 
 La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajena a una decisión necesaria de Fran debe permanecer oculta o en un entorno aislado, conforme a [5.6](#56-ejecución-invisible-y-decisiones-de-fran). La versión 3.2 registra que Fran reanudó el objetivo completo el 14 de octubre. La versión 3.3 aclara que ninguna ventana auxiliar, notificación ni previsualización puede aparecerle: solo la interfaz mínima que requiera una decisión suya. La versión 3.4 actualiza la instrucción operativa y aclara que los recibos de idempotencia son metadatos técnicos: un rechazo no altera el estado de juego, aunque su recibo se guarde para responder igual tras restaurar.
 
-**Instrucción vigente (14 de octubre):** Fran reanudó el desarrollo completo. E02.DATA está integrada y aceptada técnicamente; E02.TXN continúa la fabricación. F07 está verificada; F08 prepara la música de taberna. E07 avanza Venator. F01 permanece en curso hasta comprobar la escala exacta del Bellator. Continúa los paquetes independientes que figuran en [PROGRESS.md](PROGRESS.md), priorizando el hito jugable F10 y respetando sus dependencias. El registro describe el estado y las evidencias reales; este plan por sí solo no acredita implementación.
+**Instrucción vigente (14 de octubre):** Fran reanudó el desarrollo completo. E02.DATA y el núcleo transaccional E02.TXN están integrados, pero fabricación sigue `InProgress` hasta conectar el adaptador y completar su recorrido de juego. E06 está verificada técnicamente. F07 está verificada; F08 tiene una pista de taberna validada y conserva pendientes las otras pistas y efectos. El núcleo de reglas de Venator está integrado, pero E07 requiere motor, proyectiles/trampa y aceptación de clase. F01 permanece en curso hasta comprobar la escala exacta del Bellator. Continúa los paquetes independientes que figuran en [PROGRESS.md](PROGRESS.md), priorizando el hito jugable F10 y respetando sus dependencias. El registro describe el estado y las evidencias reales; este plan por sí solo no acredita implementación.
+
+La versión 3.5 concreta el redondeo de las mejoras E06 para estadísticas enteras y fija compra en taberna, recibos transaccionales persistentes, escritura atómica, reintento idéntico tras fallo y aplicación solo a expediciones nuevas.
 
 ## Índice
 

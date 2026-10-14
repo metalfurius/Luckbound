@@ -2,14 +2,14 @@
 
 **Actualizado:** 14 de octubre de 2026.
 
-**Alcance vigente:** Fran reanudó el desarrollo completo el 14 de octubre. E02.DATA está integrada; E02.TXN, una pista de F08 y E07 están en worktrees Luna independientes. F01 continúa en curso y F07 está verificada.
+**Alcance vigente:** Fran reanudó el desarrollo completo el 14 de octubre. E02.DATA y E02.TXN están integrados; E06 está verificada. F08 tiene una pista de taberna validada y F01 continúa en curso. E07 conserva una entrega Core parcial; F07 está verificada.
 
 Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, paquetes y grafo de ejecución: [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
 ## Estado actual (14 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01 y F07: Verified; A06: InProgress; D09: NeedsOwnerReview; E02 y F01: InProgress; las demás tareas figuran Pending en la tabla inferior.
-- Desarrollo reanudado por Fran el 14 de octubre. E02.DATA está integrada y probada; E02.TXN continúa en un worktree. F08 trabaja solo la pista de taberna y E07 Venator está aislado. La aceptación final de esos paquetes corresponde al coordinador.
+- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01, E06 y F07: Verified; A06: InProgress; D09: NeedsOwnerReview; E02, E07, F01 y F08: InProgress; las demás tareas figuran Pending en la tabla inferior.
+- Desarrollo reanudado por Fran el 14 de octubre. E02.DATA y E02.TXN están integrados, pero fabricación sigue pendiente de su adaptador y recorrido de juego. F08 tiene una pista de taberna validada; otras pistas y efectos siguen pendientes. E07 incluye su primer módulo Core de Venator, aún sin integración completa en Gameplay. EditMode postintegración 121/121 y PlayMode 62/62 pasan en Unity `6000.6.5f1`, WindowsEditor, batchmode y Null graphics.
 - Regla estricta de visibilidad del 14 de octubre: ninguna ventana, pestaña, panel, notificación ni previsualización debe aparecer en la pantalla de Fran salvo la interfaz mínima que requiera una decisión concreta suya. Toda ejecución interna permanece sin interfaz, oculta o en un sandbox/escritorio aislado; aplica también a subagentes, procesos secundarios y ventanas emergentes.
 - E01 está consolidada en el commit `fd3626f`; las cuatro referencias originales del usuario permanecen sin seguimiento y fuera del commit.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
@@ -29,6 +29,10 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, 
 - D08 persiste perfil y ajustes por separado con sobre versionado, checksum SHA-256, respaldo recuperable, escrituras temporales y sincronización WebGL confirmada por callback de IndexedDB. La recarga, corrupción, esquema futuro, escritura reintentable y retención de expediente están cubiertos; el arranque bloquea nuevas expediciones si el perfil no se puede recuperar.
 - D09 restaura expediciones desde el checkpoint de entrada, conserva una sola resolución por sala, protege las escrituras nuevas frente a snapshots concurrentes obsoletos y vuelve a la misma partida al recargar WebGL. Suites, escenarios de reinicio y builds locales de Windows/WebGL pasan; su revisión de Fran sigue Pending.
 - E01 añade recogida física de materiales, seis contadores fuera de la mochila y el rasgo Dvergar con resto por material serializado, bonificación solo por unidades aceptadas desde el mundo y límite atómico de 99. Las suites, el escenario y las builds locales pasan.
+- E06 añade tres mejoras permanentes comprables en la taberna, recibos `TransactionId` persistentes y compras atómicas antes de confirmar; perfiles de contenido v1 migran a v2. Las estadísticas enteras redondean mitades hacia arriba. E06 pasa sus pruebas dedicadas y forma parte de la regresión combinada (121/121 EditMode, 62/62 PlayMode).
+- E02.TXN integra crafting Core con consumo/resultado y recibos idempotentes en `e5f567a`; quedan pendientes E02.ADAPTER y el recorrido jugable.
+- E07 integra las reglas Core del ataque básico gratuito y las tres habilidades de Venator en `707354c`; la conexión al motor, proyectiles, trampa y aceptación de clase siguen pendientes.
+- La entrega parcial F08.Taberna y su corrección de hashes están integradas (`f8f4aba`, `a066ece`): diez pruebas de audio pasan y el validador independiente devuelve `passed`, sin reproducir ni escuchar el WAV de referencia del usuario.
 - Revisiones de builds: ninguna realizada.
 - El desarrollo está activo en la rama local `codex/luckbound-reboot`. El workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
@@ -84,7 +88,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | E03 | Comercio, herrería y descanso | E02 | Pending |
 | E04 | Ofertas y Fortuna | D09, E01 | Pending |
 | E05 | Avaricia y Fervor | C01, E04 | Pending |
-| E06 | Renombre y mejoras permanentes | D07, D08 | Pending |
+| E06 | Renombre y mejoras permanentes | D07, D08 | Verified |
 | E07 | Venator completo | C03, C04, D05 | InProgress |
 | E08 | Magus completo | C03, C04, D05 | Pending |
 | E09 | Clase, raza y kit | D05, E01, E06, E07, E08 | Pending |
@@ -520,8 +524,22 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Dependencia técnica comprobada:** E01 `Verified`; D09 conserva `NeedsOwnerReview` con evidencia técnica suficiente para continuar.
 - **E02.DATA integrado:** commits `b1bae5b`, `0e405ff` y `9f92426`; doce recetas únicas, loader validado, cuatro consumibles integrados y catálogo total de veinte ítems. EditMode postintegración `Logs/E02-DATA-postintegration-editmode.xml` → 92/92; PlayMode `Logs/E02-DATA-postintegration-playmode.xml` → 59/59, sin fallos, omitidos ni inconclusos, Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`.
 - **Contrato de rechazo:** los cambios de juego de un rechazo son nulos. El snapshot puede añadir el recibo técnico del `TransactionId` al ledger para que el mismo resultado se reproduzca después de restaurar; las pruebas comparan individualmente todos los campos funcionales además de verificar ese recibo.
-- **Siguiente:** E02.TXN está en un worktree sobre `c4a7e08`; E02.ADAPTER y la aceptación integrada completa siguen pendientes.
-- **Resultado:** E02 continúa `InProgress` hasta conectar fabricación, confirmar guardado y pasar el escenario de recorrido descrito en la guía.
+- **E02.TXN integrado:** commit `e5f567a` añade resultado tipado, cambios atómicos de inventario y recibos transaccionales para fabricación; `CraftingTransactionTests` cubre rechazo, consumo, producción, espacio, mejoras consecutivas, duplicados y conflictos. La regresión combinada postintegración pasa EditMode 121/121 y PlayMode 62/62, cero fallos, omitidos o inconclusos, Unity `6000.6.5f1`, `-batchmode -nographics`.
+- **Siguiente:** E02.ADAPTER, conexión de recetas/mesa de fabricación, confirmación de guardado y recorrido demostrable siguen pendientes.
+- **Resultado:** E02 continúa `InProgress` hasta completar su aceptación de juego según la guía.
+
+## Evidencia E06 — Renombre y mejoras permanentes (Verified)
+
+- **Implementación:** commit `9607751` añade reglas Core para salud, energía y poción inicial; panel de mejoras en la taberna; compras con `TransactionId`, ledger duradero, escritura atómica del perfil, reintento del mismo payload tras un fallo y migración de perfiles v1 a contenido v2. El perfil anterior solo cambia en memoria después de persistir. Las mejoras afectan expediciones nuevas, nunca una partida activa.
+- **Decisiones fijadas:** salud y energía aumentan 5 % por nivel de forma aditiva; 100 de salud pasa a 105/110 y 50 de energía a 53/55 por redondeo de mitades hacia arriba. Costes 60/120 por estadística, 150 por poción adicional y 510 total. Solo se compra en la taberna, sin expedición activa.
+- **Pruebas dedicadas previas:** EditMode `Logs/E06-editmode-retry.xml` → 102/102; PlayMode `Logs/E06-playmode.xml` → 61/61. El flujo prueba clics UI, fallo/reintento de guardado, reinicio, repetición gratuita de una transacción y estado inicial de 110 salud / 55 energía / 3 pociones.
+- **Aceptación integrada:** Unity `6000.6.5f1`, WindowsEditor, Null graphics, `-batchmode -nographics`: EditMode `Logs/coordinator-postmerge-editmode.xml` → 121/121 y PlayMode `Logs/coordinator-postmerge-playmode.xml` → 62/62, cero fallos, omitidos o inconclusos. La migración de ajustes de contenido v1 conserva idioma y volúmenes después de guardar y reiniciar.
+- **Resultado:** E06 `Verified`; la regresión incluye también E02.TXN y el núcleo Core de E07. No se generó ni publicó una build; A06 y la ruta pública permanecen intactas.
+
+## Evidencia parcial E07 — Core de Venator (InProgress)
+
+- **Integración:** commit `707354c` añade estado Core para ataque básico gratuito y activación de Piercing Arrow, Triple Shot y Root Trap, selección de exactamente dos habilidades y resultados tipados de interrupción/energía. Sus pruebas están dentro de EditMode `121/121`.
+- **Pendiente:** conexión al motor/proyectiles del juego, trampa física y demostración de impactos, energía, cancelación y limpieza según la aceptación E07. E07 permanece `InProgress`.
 
 ## Ejecución F01 — Referencia maestra artística (InProgress)
 
@@ -561,24 +579,25 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 
 ## Paquetes activos — 14 de octubre de 2026
 
-| Paquete | Worktree / rama | Base | Alcance | Verificación pendiente |
+| Paquete | Estado integrado | Base | Alcance | Siguiente trabajo |
 |---|---|---|---|---|
-| E02.TXN | `luckbound-e02-data` / `codex/e02-txn` | `c4a7e08` | Fabricación atómica y recibos duraderos | Revisión del diff y una cola Unity del coordinador |
-| F08.Taberna | `luckbound-f07-audio` / `codex/f08-tavern` | `c4a7e08` | Una pista original de taberna, no el conjunto F08 | Commit `f8f4aba` integrado; corregir hash de partitura fallido en Windows |
-| E07 | `luckbound-f01-art` / `codex/e07-venator` | `c4a7e08` | Módulo y pruebas Core de Venator | Revisión, conexión del coordinador y aceptación integrada |
+| E02.TXN | `e5f567a` integrado; suites conjuntas pasan | `c4a7e08` | Fabricación atómica y recibos duraderos | E02.ADAPTER y recorrido jugable |
+| F08.Taberna | `f8f4aba` + `a066ece`; 10/10 pruebas y validador pasan | `c4a7e08` | Una pista original de taberna, no el conjunto F08 | Las otras dos pistas y efectos esenciales |
+| E07 | `707354c` integrado; Core dentro de 121/121 EditMode | `c4a7e08` | Módulo y pruebas Core de Venator | Conexión a Gameplay, proyectiles/trampa y aceptación integrada |
 
-### F08.Taberna — entrega en revisión
+### F08.Taberna — entrega parcial verificada
 
 - **Commit aislado:** `7066cfe10494c0879851019e1c82da89f8bebbc9`; cinco archivos nuevos, todos limitados a la partitura, maestro WAV, reporte, manifiesto y test de la pista.
 - **Contrato:** 92 BPM, Re dórico, 4/4, 24 compases/96 tiempos; WAV mono PCM_24 de 44,1 kHz y 62,6087 s.
-- **Validación inicial del trabajador:** tres pruebas dirigidas y reporte de audio pasan en su worktree. El coordinador integró como `f8f4aba` y ejecutó las diez pruebas; nueve pasan y falla `test_report_and_manifest_hashes_match_committed_assets` porque el hash de la partitura del reporte (`a961…`) no coincide con el archivo integrado (`ba977…`). El problema aparece después de checkout/normalización de finales de línea.
-- **Corrección activa:** paquete devuelto al mismo dueño como `FIX-F08-1`; F08 sigue `InProgress` hasta regenerar metadatos, pasar las diez pruebas en la rama integrada y revisar el commit correctivo.
-- **Métricas WAV repetidas:** 0 clipping, 0 ventanas silenciosas de 100 ms y bucle aprobado (salto −138,47 dBFS). Hash WAV `af5e34ae67a485440cad5f912a944b9b764b9d5d366a5a4932fd33e1ca1f7c47`. No se escuchó ni reprodujo audio; la pieza no acredita las dos pistas restantes ni efectos de F08.
+- **Contrato:** 92 BPM, Re dórico, 4/4, 24 compases/96 tiempos; WAV mono PCM_24 de 44,1 kHz y 62,6087 s.
+- **Integración y corrección:** commit original `f8f4aba`; `a066ece` regenera los metadatos afectados por normalización de finales de línea. Las diez pruebas pasan en el checkout de integración: siete de contrato/síntesis y tres de aceptación de taberna.
+- **Validación independiente:** `synthesize.py validate` devuelve `status=passed`; cero clipping y ventanas silenciosas, unión de bucle aprobada. Hash WAV `af5e34ae67a485440cad5f912a944b9b764b9d5d366a5a4932fd33e1ca1f7c47`. No se escuchó ni reprodujo el WAV del usuario.
+- **Resultado parcial:** la pista de taberna queda técnicamente verificada. F08 permanece `InProgress`: faltan Patio, Custodio y efectos esenciales.
 
 ## Regla de visibilidad — 14 de octubre de 2026
 
 - **Petición:** Fran no verá ninguna ventana salvo la interfaz mínima necesaria para que tome una decisión concreta.
-- **Documentos actualizados:** AGENTS.md, plan 3.3 y guía de ejecución 1.3; la regla se incluye en las instrucciones vigentes para agentes.
+- **Documentos actualizados:** AGENTS.md, plan 3.5 y guía de ejecución; la regla se incluye en las instrucciones vigentes para agentes.
 - **Aplicación:** ejecución sin interfaz, procesos/pestañas ocultos o sandbox/escritorio aislado que no pueda aparecer en su pantalla; comprobar procesos secundarios, notificaciones y ventanas emergentes.
 - **Si no se puede aislar:** no abrir la herramienta en su escritorio; registrar el bloqueo y continuar con una alternativa o trabajo independiente, sin atribuirle una prueba.
 - **Resultado:** preferencia estricta guardada para futuras sesiones. Las asignaciones actuales usan worktrees separados y herramientas sin ventanas visibles; no se abre una ventana por el mero hecho de guardar o enseñar resultados.

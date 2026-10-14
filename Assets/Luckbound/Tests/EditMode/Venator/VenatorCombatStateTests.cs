@@ -35,7 +35,7 @@ namespace Luckbound.Tests.Core
             Assert.That(loadout.Skill1.Id, Is.EqualTo(VenatorSkillLoadout.RootTrapId));
             Assert.That(loadout.Skill2.Id, Is.EqualTo(VenatorSkillLoadout.PiercingArrowId));
             Assert.That(loadout.Contains(VenatorSkillLoadout.TripleShotId), Is.False);
-            Assert.That(() => loadout.GetSkill(PlayerAction.Attack), Throws.ArgumentOutOfRangeException);
+            Assert.That(() => loadout.GetSkill(PlayerAction.Attack), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]

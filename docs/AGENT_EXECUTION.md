@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 1.4 · 14 de octubre de 2026.
+**Versión:** 1.5 · 14 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -15,8 +15,10 @@ La edición documental del 13 de octubre detuvo el desarrollo antes de E02. Fran
 Estado inicial confirmado al reanudar el 14 de octubre; el avance posterior y asignaciones vigentes están en [PROGRESS.md](PROGRESS.md):
 
 - E01 está consolidada en `fd3626f`. El escenario de recogida física y los tests dirigidos de esta reanudación constan en PROGRESS.md; conservar su hash de origen junto con la evidencia.
-- E02 está `InProgress`: E02.DATA ya está integrada y las suites postintegración pasan; E02.TXN está asignado y E02.ADAPTER sigue reservado al coordinador.
-- F07 está `Verified`; F08 avanza solo la pista de taberna. F01 sigue `InProgress` porque falta comprobar la escala exacta 32×48 del Bellator. E07 Venator avanza en módulo aislado.
+- E02 está `InProgress`: E02.DATA y E02.TXN están integrados (`e5f567a`); E02.ADAPTER sigue reservado al coordinador tras verificar su dependencia.
+- E06 está `Verified` en `9607751`; sus decisiones de economía, redondeo, guardado y reintento están fijadas en DEVELOPMENT_PLAN.md §3.13.
+- F07 está `Verified`; F08 tiene su pista de taberna integrada y verificada (`f8f4aba`, `a066ece`), pero Patio, Custodio y efectos siguen pendientes. F01 sigue `InProgress` porque falta comprobar la escala exacta 32×48 del Bellator. E07 tiene el módulo Core de Venator integrado (`707354c`), aún sin conexión completa a Gameplay.
+- Regresión coordinada tras integración: EditMode 121/121 y PlayMode 62/62, cero fallos u omitidos, Unity `6000.6.5f1`, batchmode y Null graphics.
 - A06 tiene un bloqueo de acceso/secretos para ejecutar Actions; no se atribuye al workflow una ejecución remota inexistente.
 - Las cinco revisiones de Fran siguen pendientes. Permiten trabajo técnico independiente, pero no equivalen a aprobación.
 - Editor fijado: Unity `6000.6.5f1`. Mantener paquetes y módulos ya comprobados.
