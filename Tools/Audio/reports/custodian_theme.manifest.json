@@ -1,0 +1,74 @@
+{
+  "acceptance": {
+    "checks": {
+      "duration_matches_score": true,
+      "loop_join": {
+        "boundary_slope_jump_dbfs": -117.6459443,
+        "boundary_step_dbfs": -138.47379801,
+        "boundary_step_limit_dbfs": -60.0,
+        "checked": true,
+        "end_sample": -1.1920928955078125e-07,
+        "passed": true,
+        "start_sample": 0.0
+      },
+      "no_clipping": true,
+      "no_silent_100ms_windows": true,
+      "nonempty_wav": true,
+      "peak_at_or_below_minus_1_dbfs": true,
+      "schema_valid": true
+    },
+    "metrics": {
+      "clipped_sample_count": 0,
+      "duration_seconds": 60.0,
+      "expected_duration_seconds": 60.0,
+      "frames": 2646000,
+      "min_100ms_window_rms_dbfs": -22.15250582,
+      "peak_dbfs": -7.17561446,
+      "rms_dbfs": -18.0,
+      "silent_100ms_window_count": 0
+    },
+    "status": "passed"
+  },
+  "asset_id": "custodian_theme",
+  "files": {
+    "master": {
+      "bytes": 7938044,
+      "format": "WAV PCM_24 mono",
+      "path": "Tools/Audio/masters/custodian_theme.wav",
+      "sample_rate_hz": 44100,
+      "sha256": "b8e63a15ebcc44749bbe2bae3b58ce5a9fbafdb22a3236bc165648faebd7abab"
+    },
+    "report": {
+      "bytes": 2752,
+      "path": "Tools/Audio/reports/custodian_theme.report.json",
+      "sha256": "2987a3c25aa41986a8540820a45e27e288369e554c26fcf387e908c0dd42f2e6"
+    },
+    "score": {
+      "bytes": 111538,
+      "path": "Tools/Audio/scores/custodian_theme.json",
+      "sha256": "96fc44aef278815d7a00739e93630e25fb5e8a3ae193db5e74661e3081cbb3dc"
+    }
+  },
+  "hash_policy": "SHA-256 covers exact stored bytes; the Audio .gitattributes rules pin JSON files to LF across checkouts.",
+  "manifest_version": 1,
+  "renderer": {
+    "name": "luckbound-offline-audio",
+    "requirements_sha256": "b3ca2adde5fb4cec4bc84b0cdabe4a059679b525276646fc18d41c8c28594e36",
+    "runtime": {
+      "numpy": "2.5.4",
+      "python": "3.14.7",
+      "soundfile": "0.14.0"
+    },
+    "source_sha256": "7b917da7c07866dd416788745396fa449a4e1da571c56b53308a1a96f6586a35",
+    "synthesis_version": "1.0.0"
+  },
+  "score_contract": {
+    "bars": 32,
+    "duration_seconds": 60.0,
+    "loop": true,
+    "mode": "D_minor",
+    "tempo_bpm": 128,
+    "time_signature": "4/4",
+    "total_beats": 128
+  }
+}

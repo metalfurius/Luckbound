@@ -1,0 +1,96 @@
+{
+  "audio": {
+    "bytes": 7938044,
+    "channels": 1,
+    "clipped_sample_count": 0,
+    "duration_seconds": 60.0,
+    "expected_duration_seconds": 60.0,
+    "file": "Tools\\Audio\\masters\\custodian_theme.wav",
+    "frames": 2646000,
+    "min_100ms_window_rms_dbfs": -22.15250582,
+    "peak_dbfs": -7.17561446,
+    "rms_dbfs": -18.0,
+    "sample_rate_hz": 44100,
+    "sha256": "b8e63a15ebcc44749bbe2bae3b58ce5a9fbafdb22a3236bc165648faebd7abab",
+    "silent_100ms_window_count": 0
+  },
+  "checks": {
+    "duration_matches_score": true,
+    "loop_join": {
+      "boundary_slope_jump_dbfs": -117.6459443,
+      "boundary_step_dbfs": -138.47379801,
+      "boundary_step_limit_dbfs": -60.0,
+      "checked": true,
+      "end_sample": -1.1920928955078125e-07,
+      "passed": true,
+      "start_sample": 0.0
+    },
+    "no_clipping": true,
+    "no_silent_100ms_windows": true,
+    "nonempty_wav": true,
+    "peak_at_or_below_minus_1_dbfs": true,
+    "schema_valid": true
+  },
+  "report_version": 1,
+  "runtime": {
+    "numpy": "2.5.4",
+    "python": "3.14.7",
+    "soundfile": "0.14.0"
+  },
+  "score": {
+    "bars": 32,
+    "instrument_count": 5,
+    "instruments": [
+      {
+        "gain": 0.62,
+        "id": "ostinato",
+        "preset": "plucked_strings"
+      },
+      {
+        "gain": 0.34,
+        "id": "melody",
+        "preset": "soft_flute"
+      },
+      {
+        "gain": 0.38,
+        "id": "foundation",
+        "preset": "simple_bass"
+      },
+      {
+        "gain": 0.13,
+        "id": "strikes",
+        "preset": "light_percussion"
+      },
+      {
+        "gain": 0.16,
+        "id": "undertone",
+        "preset": "sustained_pad"
+      }
+    ],
+    "loop": true,
+    "mode": "D_minor",
+    "sha256": "96fc44aef278815d7a00739e93630e25fb5e8a3ae193db5e74661e3081cbb3dc",
+    "synthesis_parameters": {
+      "channels": 1,
+      "normalization": "global RMS target, capped by requested peak",
+      "note_timing": "rounded absolute beat positions; no cumulative per-note rounding drift",
+      "sample_rate_hz": 44100,
+      "subtype": "PCM_24",
+      "target_peak_dbfs": -1.0,
+      "target_rms_dbfs": -18.0
+    },
+    "tempo_bpm": 128,
+    "time_signature": "4/4",
+    "title": "Custodian's Vigil - original boss theme",
+    "total_beats": 128
+  },
+  "status": "passed",
+  "tool": {
+    "name": "luckbound-offline-audio",
+    "requirements_sha256": "b3ca2adde5fb4cec4bc84b0cdabe4a059679b525276646fc18d41c8c28594e36",
+    "schema_sha256": "81d2f74bc9e62eeb4574e12a13d115ea13fad16e3f15ac2256e07965ff9542a5",
+    "schema_validator_sha256": "cb627944f6446ba5be3ee11b54a1735f526938ee368078145240d72bf35c6861",
+    "source_sha256": "7b917da7c07866dd416788745396fa449a4e1da571c56b53308a1a96f6586a35",
+    "synthesis_version": "1.0.0"
+  }
+}

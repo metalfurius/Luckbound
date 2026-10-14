@@ -1,0 +1,4670 @@
+{
+  "schema_version": 1,
+  "title": "Custodian's Vigil - original boss theme",
+  "mode": "D_minor",
+  "time_signature": "4/4",
+  "tempo_bpm": 128,
+  "sample_rate_hz": 44100,
+  "loop": true,
+  "target_peak_dbfs": -1.0,
+  "target_rms_dbfs": -18.0,
+  "instruments": [
+    {
+      "id": "ostinato",
+      "preset": "plucked_strings",
+      "gain": 0.62
+    },
+    {
+      "id": "melody",
+      "preset": "soft_flute",
+      "gain": 0.34
+    },
+    {
+      "id": "foundation",
+      "preset": "simple_bass",
+      "gain": 0.38
+    },
+    {
+      "id": "strikes",
+      "preset": "light_percussion",
+      "gain": 0.13
+    },
+    {
+      "id": "undertone",
+      "preset": "sustained_pad",
+      "gain": 0.16
+    }
+  ],
+  "bars": [
+    {
+      "number": 1,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.58
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.47
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.4
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.56
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.42
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.61
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 2,
+              "velocity": 0.43
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.58
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.47
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.4
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.56
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.42
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.47
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.42
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.58
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.47
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.4
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.56
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.42
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.61
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 1,
+              "velocity": 0.42
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.58
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.47
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.4
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.56
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.42
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.47
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.42
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.58
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.47
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.4
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.56
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.42
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.47
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "G1",
+              "duration_beats": 2,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 2,
+              "velocity": 0.43
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.58
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.47
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.4
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.56
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.42
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.61
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.42
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.58
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.47
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.4
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.56
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.42
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.47
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 1.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.42
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.58
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.47
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.4
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.56
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.49
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.57
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.42
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "F3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "F2",
+              "duration_beats": 1.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "C2",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "C2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "F3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "F3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "F3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "F3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.645
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 1,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "C2",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 2,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 2,
+              "velocity": 0.46499999999999997
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 2,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 2,
+              "velocity": 0.46499999999999997
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "C6",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D6",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "F6",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "E6",
+              "duration_beats": 1,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "D6",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "F6",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "E6",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D6",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "C6",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "C6",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 1,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "C2",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "E6",
+              "duration_beats": 1,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "G6",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "F6",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "E6",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "C6",
+              "duration_beats": 1,
+              "velocity": 0.645
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 2,
+              "velocity": 0.46499999999999997
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "C6",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "C6",
+              "duration_beats": 0.5,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "E6",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 2,
+              "velocity": 0.46499999999999997
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.615
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.43500000000000005
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.42500000000000004
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.495
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.44499999999999995
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.5950000000000001
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.525
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.645
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.605
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.46499999999999997
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.555
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.45499999999999996
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.5
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.32999999999999996
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.35
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.595
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.485
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.41500000000000004
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.47500000000000003
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.425
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.5750000000000001
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.435
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.625
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.535
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.435
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration_beats": 0.5,
+              "velocity": 0.595
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.485
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.41500000000000004
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.47500000000000003
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.425
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.5750000000000001
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.435
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.625
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.485
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 2,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 2,
+              "velocity": 0.445
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.595
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.485
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.41500000000000004
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.47500000000000003
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.425
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.5750000000000001
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.435
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.625
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 1,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "Bb1",
+              "duration_beats": 1,
+              "velocity": 0.535
+            },
+            {
+              "pitch": "F2",
+              "duration_beats": 1,
+              "velocity": 0.435
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "Bb3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 28,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.595
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.485
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.41500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.47500000000000003
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.425
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.5750000000000001
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.435
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.625
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.485
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 1.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.535
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.435
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.595
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.485
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.41500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "Bb3",
+              "duration_beats": 0.5,
+              "velocity": 0.47500000000000003
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.425
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.5750000000000001
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.435
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1,
+              "velocity": 0.625
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.485
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "G1",
+              "duration_beats": 1,
+              "velocity": 0.535
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.435
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.595
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.485
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.41500000000000004
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.47500000000000003
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.425
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.5750000000000001
+            },
+            {
+              "pitch": "Bb4",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.435
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.625
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 2,
+              "velocity": 0.445
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.595
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.485
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.41500000000000004
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.47500000000000003
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.425
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.5750000000000001
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.505
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.435
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.625
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.485
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.535
+            },
+            {
+              "pitch": "E2",
+              "duration_beats": 1,
+              "velocity": 0.435
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "tracks": [
+        {
+          "instrument": "ostinato",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.595
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.485
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.41500000000000004
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.405
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 0.5,
+              "velocity": 0.47500000000000003
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.425
+            }
+          ]
+        },
+        {
+          "instrument": "melody",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.5750000000000001
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.505
+            }
+          ]
+        },
+        {
+          "instrument": "foundation",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 1.5,
+              "velocity": 0.585
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 0.5,
+              "velocity": 0.445
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1,
+              "velocity": 0.535
+            },
+            {
+              "pitch": "A1",
+              "duration_beats": 1,
+              "velocity": 0.435
+            }
+          ]
+        },
+        {
+          "instrument": "strikes",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.46
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.29
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "undertone",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration_beats": 2,
+              "velocity": 0.24
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 2,
+              "velocity": 0.21
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
