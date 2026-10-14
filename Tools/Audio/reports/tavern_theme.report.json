@@ -1,0 +1,96 @@
+{
+  "audio": {
+    "bytes": 8283174,
+    "channels": 1,
+    "clipped_sample_count": 0,
+    "duration_seconds": 62.60868481,
+    "expected_duration_seconds": 62.60869565,
+    "file": "Tools\\Audio\\masters\\tavern_theme.wav",
+    "frames": 2761043,
+    "min_100ms_window_rms_dbfs": -27.05669154,
+    "peak_dbfs": -7.78290726,
+    "rms_dbfs": -20.0,
+    "sample_rate_hz": 44100,
+    "sha256": "af5e34ae67a485440cad5f912a944b9b764b9d5d366a5a4932fd33e1ca1f7c47",
+    "silent_100ms_window_count": 0
+  },
+  "checks": {
+    "duration_matches_score": true,
+    "loop_join": {
+      "boundary_slope_jump_dbfs": -110.51499783,
+      "boundary_step_dbfs": -138.47379801,
+      "boundary_step_limit_dbfs": -60.0,
+      "checked": true,
+      "end_sample": -1.1920928955078125e-07,
+      "passed": true,
+      "start_sample": 0.0
+    },
+    "no_clipping": true,
+    "no_silent_100ms_windows": true,
+    "nonempty_wav": true,
+    "peak_at_or_below_minus_1_dbfs": true,
+    "schema_valid": true
+  },
+  "report_version": 1,
+  "runtime": {
+    "numpy": "2.5.4",
+    "python": "3.14.7",
+    "soundfile": "0.14.0"
+  },
+  "score": {
+    "bars": 24,
+    "instrument_count": 5,
+    "instruments": [
+      {
+        "gain": 0.76,
+        "id": "lute",
+        "preset": "plucked_strings"
+      },
+      {
+        "gain": 0.31,
+        "id": "flute",
+        "preset": "soft_flute"
+      },
+      {
+        "gain": 0.42,
+        "id": "bass",
+        "preset": "simple_bass"
+      },
+      {
+        "gain": 0.12,
+        "id": "percussion",
+        "preset": "light_percussion"
+      },
+      {
+        "gain": 0.17,
+        "id": "warmth",
+        "preset": "sustained_pad"
+      }
+    ],
+    "loop": true,
+    "mode": "D_dorian",
+    "sha256": "a961e5e36ccd6d97f9edb6e457743a4ee08e7130d48964568671af9e7b88678e",
+    "synthesis_parameters": {
+      "channels": 1,
+      "normalization": "global RMS target, capped by requested peak",
+      "note_timing": "rounded absolute beat positions; no cumulative per-note rounding drift",
+      "sample_rate_hz": 44100,
+      "subtype": "PCM_24",
+      "target_peak_dbfs": -1.0,
+      "target_rms_dbfs": -20.0
+    },
+    "tempo_bpm": 92,
+    "time_signature": "4/4",
+    "title": "Atrium Gloriam - original tavern theme",
+    "total_beats": 96
+  },
+  "status": "passed",
+  "tool": {
+    "name": "luckbound-offline-audio",
+    "requirements_sha256": "b3ca2adde5fb4cec4bc84b0cdabe4a059679b525276646fc18d41c8c28594e36",
+    "schema_sha256": "81d2f74bc9e62eeb4574e12a13d115ea13fad16e3f15ac2256e07965ff9542a5",
+    "schema_validator_sha256": "cb627944f6446ba5be3ee11b54a1735f526938ee368078145240d72bf35c6861",
+    "source_sha256": "7b917da7c07866dd416788745396fa449a4e1da571c56b53308a1a96f6586a35",
+    "synthesis_version": "1.0.0"
+  }
+}

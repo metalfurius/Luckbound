@@ -1,0 +1,3095 @@
+{
+  "schema_version": 1,
+  "title": "Atrium Gloriam - original tavern theme",
+  "mode": "D_dorian",
+  "time_signature": "4/4",
+  "tempo_bpm": 92,
+  "sample_rate_hz": 44100,
+  "loop": true,
+  "target_peak_dbfs": -1.0,
+  "target_rms_dbfs": -20.0,
+  "instruments": [
+    {
+      "id": "lute",
+      "preset": "plucked_strings",
+      "gain": 0.76
+    },
+    {
+      "id": "flute",
+      "preset": "soft_flute",
+      "gain": 0.31
+    },
+    {
+      "id": "bass",
+      "preset": "simple_bass",
+      "gain": 0.42
+    },
+    {
+      "id": "percussion",
+      "preset": "light_percussion",
+      "gain": 0.12
+    },
+    {
+      "id": "warmth",
+      "preset": "sustained_pad",
+      "gain": 0.17
+    }
+  ],
+  "bars": [
+    {
+      "number": 1,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.4
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "B3",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.4
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E3",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.4
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "B3",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E3",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "B3",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.4
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 1.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 1.0,
+              "velocity": 0.32
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 1.0,
+              "velocity": 0.37
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 1.0,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 1.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 1.0,
+              "velocity": 0.32
+            },
+            {
+              "pitch": "C2",
+              "duration_beats": 1.0,
+              "velocity": 0.37
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 1.0,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 1.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 1.0,
+              "velocity": 0.32
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1.0,
+              "velocity": 0.37
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 1.0,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 1.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E3",
+              "duration_beats": 1.0,
+              "velocity": 0.32
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 1.0,
+              "velocity": 0.37
+            },
+            {
+              "pitch": "E3",
+              "duration_beats": 1.0,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "B3",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.38
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 1.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 1.0,
+              "velocity": 0.32
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 1.0,
+              "velocity": 0.37
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 1.0,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 1.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 1.0,
+              "velocity": 0.32
+            },
+            {
+              "pitch": "D2",
+              "duration_beats": 1.0,
+              "velocity": 0.37
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 1.0,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 1.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 1.0,
+              "velocity": 0.32
+            },
+            {
+              "pitch": "C2",
+              "duration_beats": 1.0,
+              "velocity": 0.37
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 1.0,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.38
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 1.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E3",
+              "duration_beats": 1.0,
+              "velocity": 0.32
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 1.0,
+              "velocity": 0.37
+            },
+            {
+              "pitch": "E3",
+              "duration_beats": 1.0,
+              "velocity": 0.31
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 1,
+              "velocity": 0.4
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "B3",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "G2",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E3",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.4
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "B3",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "G3",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D3",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "C4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A3",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E3",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "tracks": [
+        {
+          "instrument": "lute",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.61
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 0.5,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 0.5,
+              "velocity": 0.52
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 0.5,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 0.5,
+              "velocity": 0.41
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 0.5,
+              "velocity": 0.3
+            }
+          ]
+        },
+        {
+          "instrument": "flute",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.41
+            }
+          ]
+        },
+        {
+          "instrument": "bass",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 2.0,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "A2",
+              "duration_beats": 2.0,
+              "velocity": 0.33
+            }
+          ]
+        },
+        {
+          "instrument": "percussion",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1.0,
+              "velocity": 0.49
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1.0,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "A5",
+              "duration_beats": 1.0,
+              "velocity": 0.25
+            }
+          ]
+        },
+        {
+          "instrument": "warmth",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4.0,
+              "velocity": 0.24
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

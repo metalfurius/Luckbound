@@ -1,0 +1,73 @@
+{
+  "acceptance": {
+    "checks": {
+      "duration_matches_score": true,
+      "loop_join": {
+        "boundary_slope_jump_dbfs": -110.51499783,
+        "boundary_step_dbfs": -138.47379801,
+        "boundary_step_limit_dbfs": -60.0,
+        "checked": true,
+        "end_sample": -1.1920928955078125e-07,
+        "passed": true,
+        "start_sample": 0.0
+      },
+      "no_clipping": true,
+      "no_silent_100ms_windows": true,
+      "nonempty_wav": true,
+      "peak_at_or_below_minus_1_dbfs": true,
+      "schema_valid": true
+    },
+    "metrics": {
+      "clipped_sample_count": 0,
+      "duration_seconds": 62.60868481,
+      "expected_duration_seconds": 62.60869565,
+      "frames": 2761043,
+      "min_100ms_window_rms_dbfs": -27.05669154,
+      "peak_dbfs": -7.78290726,
+      "rms_dbfs": -20.0,
+      "silent_100ms_window_count": 0
+    },
+    "status": "passed"
+  },
+  "asset_id": "tavern_theme",
+  "files": {
+    "master": {
+      "bytes": 8283174,
+      "format": "WAV PCM_24 mono",
+      "path": "Tools/Audio/masters/tavern_theme.wav",
+      "sample_rate_hz": 44100,
+      "sha256": "af5e34ae67a485440cad5f912a944b9b764b9d5d366a5a4932fd33e1ca1f7c47"
+    },
+    "report": {
+      "bytes": 2847,
+      "path": "Tools/Audio/reports/tavern_theme.report.json",
+      "sha256": "de7b4ab5a3fe56f47e9e6395f949e74edb08f688c03189be9cc2ce10e05418bf"
+    },
+    "score": {
+      "bytes": 74275,
+      "path": "Tools/Audio/scores/tavern_theme.json",
+      "sha256": "a961e5e36ccd6d97f9edb6e457743a4ee08e7130d48964568671af9e7b88678e"
+    }
+  },
+  "manifest_version": 1,
+  "renderer": {
+    "name": "luckbound-offline-audio",
+    "requirements_sha256": "b3ca2adde5fb4cec4bc84b0cdabe4a059679b525276646fc18d41c8c28594e36",
+    "runtime": {
+      "numpy": "2.5.4",
+      "python": "3.14.7",
+      "soundfile": "0.14.0"
+    },
+    "source_sha256": "7b917da7c07866dd416788745396fa449a4e1da571c56b53308a1a96f6586a35",
+    "synthesis_version": "1.0.0"
+  },
+  "score_contract": {
+    "bars": 24,
+    "duration_seconds": 62.60868481,
+    "loop": true,
+    "mode": "D_dorian",
+    "tempo_bpm": 92,
+    "time_signature": "4/4",
+    "total_beats": 96
+  }
+}
