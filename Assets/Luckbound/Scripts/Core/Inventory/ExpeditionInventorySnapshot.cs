@@ -52,5 +52,8 @@ namespace Luckbound.Core.Inventory
         public int status;
         public string itemId;
         public InventoryStackSnapshot displacedItem;
+        public int craftingStatus;
+        public string craftingRecipeId;
+        public InventoryStackSnapshot[] craftingResultStacks = Array.Empty<InventoryStackSnapshot>();
     }
 }

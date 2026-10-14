@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using Luckbound.Core.Crafting;
 using Luckbound.Core.Identifiers;
 
 namespace Luckbound.Core.Inventory
@@ -12,7 +13,7 @@ namespace Luckbound.Core.Inventory
     {
         public const int BackpackCapacity = 12;
         public const int MaximumMaterialCount = 99;
-        public const int SnapshotSchemaVersion = 2;
+        public const int SnapshotSchemaVersion = 3;
 
         private readonly ItemCatalog _catalog;
         private readonly InventoryItemStack[] _backpackSlots = new InventoryItemStack[BackpackCapacity];
@@ -91,7 +92,16 @@ namespace Luckbound.Core.Inventory
                         signature = pair.Value.Signature,
                         status = (int)pair.Value.Outcome.Status,
                         itemId = pair.Value.Outcome.ItemId,
-                        displacedItem = Snapshot(pair.Value.Outcome.DisplacedItem)
+                        displacedItem = Snapshot(pair.Value.Outcome.DisplacedItem),
+                        craftingStatus = pair.Value.CraftingOutcome == null
+                            ? (int)CraftingOperationStatus.Unknown
+                            : (int)pair.Value.CraftingOutcome.Status,
+                        craftingRecipeId = pair.Value.CraftingOutcome == null
+                            ? string.Empty
+                            : pair.Value.CraftingOutcome.RecipeId,
+                        craftingResultStacks = pair.Value.CraftingOutcome == null
+                            ? Array.Empty<InventoryStackSnapshot>()
+                            : pair.Value.CraftingOutcome.ResultStacks.Select(Snapshot).ToArray()
                     }).ToArray()
             };
         }
@@ -176,7 +186,35 @@ namespace Luckbound.Core.Inventory
                 InventoryItemStack displaced = RestoreStack(restored, transaction.displacedItem, null, "transaction result");
                 var outcome = new InventoryOperationOutcome(id, (InventoryOperationStatus)transaction.status,
                     displaced, transaction.itemId);
-                restored._transactions.Add(id, new CachedTransaction(transaction.signature, outcome));
+                CraftingOutcome craftingOutcome = null;
+                bool isCraftingTransaction = transaction.signature.StartsWith("craft|", StringComparison.Ordinal);
+                if (transaction.craftingStatus != (int)CraftingOperationStatus.Unknown)
+                {
+                    if (!Enum.IsDefined(typeof(CraftingOperationStatus), transaction.craftingStatus) ||
+                        !isCraftingTransaction || transaction.craftingRecipeId == null || transaction.craftingResultStacks == null)
+                        throw new FormatException("Inventory crafting transaction history contains an invalid entry.");
+
+                    var resultStacks = new List<InventoryItemStack>(transaction.craftingResultStacks.Length);
+                    foreach (InventoryStackSnapshot resultSnapshot in transaction.craftingResultStacks)
+                    {
+                        InventoryItemStack resultStack = RestoreStack(restored, resultSnapshot, null, "crafting transaction result");
+                        if (resultStack == null)
+                            throw new FormatException("Inventory crafting transaction contains an empty result stack.");
+                        resultStacks.Add(resultStack);
+                    }
+
+                    CraftingOperationStatus craftingStatus = (CraftingOperationStatus)transaction.craftingStatus;
+                    if (craftingStatus == CraftingOperationStatus.Succeeded && resultStacks.Count == 0 ||
+                        craftingStatus != CraftingOperationStatus.Succeeded && resultStacks.Count != 0)
+                        throw new FormatException("Inventory crafting transaction result does not match its status.");
+                    craftingOutcome = new CraftingOutcome(id, transaction.craftingRecipeId, craftingStatus, resultStacks);
+                }
+                else if (isCraftingTransaction)
+                {
+                    throw new FormatException("Inventory crafting transaction history is missing its crafting result status.");
+                }
+
+                restored._transactions.Add(id, new CachedTransaction(transaction.signature, outcome, craftingOutcome));
             }
             return restored;
         }
@@ -358,6 +396,243 @@ namespace Luckbound.Core.Inventory
                 _gold += amount;
                 return Succeeded(transactionId, "currency.gold");
             });
+        }
+
+        /// <summary>
+        /// Crafts a consumable or upgrades one owned equipment instance as a single inventory transaction.
+        /// A failed craft leaves gameplay state untouched; its idempotency receipt is still recorded.
+        /// </summary>
+        public CraftingOutcome TryCraft(
+            RecipeCatalog recipeCatalog,
+            string recipeId,
+            TransactionId transactionId,
+            ItemInstanceId upgradeTargetInstanceId = default)
+        {
+            if (recipeCatalog == null) throw new ArgumentNullException(nameof(recipeCatalog));
+
+            string targetId = upgradeTargetInstanceId.IsValid ? upgradeTargetInstanceId.ToString() : string.Empty;
+            string signature = "craft|" + (recipeId ?? string.Empty) + "|" + targetId;
+            return ExecuteCrafting(transactionId, signature,
+                () => Craft(recipeCatalog, recipeId, transactionId, upgradeTargetInstanceId));
+        }
+
+        private CraftingOutcome Craft(
+            RecipeCatalog recipeCatalog,
+            string recipeId,
+            TransactionId transactionId,
+            ItemInstanceId upgradeTargetInstanceId)
+        {
+            if (!recipeCatalog.TryGet(recipeId, out RecipeDefinition recipe))
+                return CraftingRejected(transactionId, recipeId, CraftingOperationStatus.RejectedUnknownRecipe);
+
+            InventoryItemStack upgradeTarget = null;
+            ItemDefinition consumableDefinition = null;
+            if (recipe.ResultKind == CraftingResultKind.Consumable)
+            {
+                if (upgradeTargetInstanceId.IsValid)
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedUnexpectedTarget);
+
+                if (!_catalog.TryGet(recipe.ResultItemId, out consumableDefinition) ||
+                    consumableDefinition.Kind != ItemKind.Consumable || recipe.ResultQuantity < 1 ||
+                    recipe.ResultQuantity > consumableDefinition.MaxStack)
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedInvalidRecipe);
+
+                if (!CanFitCraftedConsumable(consumableDefinition, recipe.ResultQuantity))
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedBackpackFull);
+            }
+            else if (recipe.ResultKind == CraftingResultKind.Upgrade)
+            {
+                if (!upgradeTargetInstanceId.IsValid || (upgradeTarget = FindByInstanceId(upgradeTargetInstanceId)) == null)
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedMissingTarget);
+
+                if (!_catalog.TryGet(upgradeTarget.ItemId, out ItemDefinition targetDefinition))
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedInvalidRecipe);
+                if (targetDefinition.Kind != recipe.UpgradeTargetKind)
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedWrongTargetKind);
+                if (targetDefinition.Kind == ItemKind.Weapon && !targetDefinition.IsCompatibleWithClass(ClassId))
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedIncompatibleClass);
+                if (upgradeTarget.UpgradeLevel >= 3)
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedUpgradeLimit);
+                if (upgradeTarget.UpgradeLevel != recipe.RequiredCurrentUpgradeLevel ||
+                    recipe.ResultUpgradeLevel != upgradeTarget.UpgradeLevel + 1)
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedInvalidUpgradeLevel);
+            }
+            else
+            {
+                return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedInvalidRecipe);
+            }
+
+            foreach (RecipeMaterialCost cost in recipe.MaterialCosts)
+            {
+                if (GetMaterialCount(cost.MaterialKind) < cost.Quantity)
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedInsufficientMaterials);
+            }
+            if (_gold < recipe.GoldCost)
+                return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedInsufficientGold);
+
+            var changedSlots = new List<ConsumableStackChange>();
+            var resultStacks = new List<InventoryItemStack>();
+            InventoryItemStack upgradedStack = null;
+            if (recipe.ResultKind == CraftingResultKind.Consumable)
+            {
+                if (!TryPlanCraftedConsumable(consumableDefinition, recipe.ResultQuantity, changedSlots))
+                    return CraftingRejected(transactionId, recipe.Id, CraftingOperationStatus.RejectedBackpackFull);
+
+                var createdIds = new HashSet<ItemInstanceId>();
+                for (int index = 0; index < changedSlots.Count; index++)
+                {
+                    ConsumableStackChange change = changedSlots[index];
+                    InventoryItemStack changedStack;
+                    if (change.ExistingStack == null)
+                    {
+                        ItemInstanceId instanceId;
+                        do
+                        {
+                            instanceId = ItemInstanceId.New();
+                        }
+                        while (ContainsInstanceId(instanceId) || !createdIds.Add(instanceId));
+
+                        changedStack = new InventoryItemStack(instanceId, consumableDefinition.Id,
+                            ItemRarity.Common, 0, change.Quantity);
+                    }
+                    else
+                    {
+                        changedStack = change.ExistingStack.WithQuantity(change.ExistingStack.Quantity + change.Quantity);
+                    }
+                    changedSlots[index] = change.WithResult(changedStack);
+                    resultStacks.Add(changedStack);
+                }
+            }
+            else
+            {
+                upgradedStack = new InventoryItemStack(upgradeTarget.InstanceId, upgradeTarget.ItemId,
+                    upgradeTarget.Rarity, recipe.ResultUpgradeLevel, upgradeTarget.Quantity);
+                resultStacks.Add(upgradedStack);
+            }
+
+            foreach (RecipeMaterialCost cost in recipe.MaterialCosts)
+                _materials[cost.MaterialKind] -= cost.Quantity;
+            _gold -= recipe.GoldCost;
+            if (recipe.ResultKind == CraftingResultKind.Consumable)
+            {
+                foreach (ConsumableStackChange change in changedSlots)
+                    _backpackSlots[change.Index] = change.ResultStack;
+            }
+            else
+            {
+                ReplaceOwnedStack(upgradeTargetInstanceId, upgradedStack);
+            }
+
+            return new CraftingOutcome(transactionId, recipe.Id, CraftingOperationStatus.Succeeded, resultStacks);
+        }
+
+        private CraftingOutcome ExecuteCrafting(
+            TransactionId transactionId,
+            string signature,
+            Func<CraftingOutcome> operation)
+        {
+            if (!transactionId.IsValid)
+                return CraftingRejected(transactionId, string.Empty, CraftingOperationStatus.RejectedInvalidTransaction);
+            if (_transactions.TryGetValue(transactionId, out CachedTransaction cached))
+            {
+                if (string.Equals(cached.Signature, signature, StringComparison.Ordinal) && cached.CraftingOutcome != null)
+                    return cached.CraftingOutcome;
+                return CraftingRejected(transactionId, string.Empty, CraftingOperationStatus.RejectedTransactionConflict);
+            }
+
+            CraftingOutcome outcome = operation();
+            string resultItemId = outcome.ResultStacks.Count > 0 ? outcome.ResultStacks[0].ItemId : string.Empty;
+            var inventoryOutcome = new InventoryOperationOutcome(transactionId,
+                MapCraftingStatus(outcome.Status), null, resultItemId);
+            _transactions.Add(transactionId, new CachedTransaction(signature, inventoryOutcome, outcome));
+            return outcome;
+        }
+
+        private bool CanFitCraftedConsumable(ItemDefinition definition, int quantity)
+        {
+            int capacity = 0;
+            for (int index = 0; index < _backpackSlots.Length; index++)
+            {
+                InventoryItemStack existing = _backpackSlots[index];
+                if (existing == null) capacity += definition.MaxStack;
+                else if (existing.ItemId == definition.Id && existing.Rarity == ItemRarity.Common && existing.UpgradeLevel == 0)
+                    capacity += definition.MaxStack - existing.Quantity;
+            }
+            return capacity >= quantity;
+        }
+
+        private bool TryPlanCraftedConsumable(
+            ItemDefinition definition,
+            int quantity,
+            List<ConsumableStackChange> changes)
+        {
+            int remaining = quantity;
+            for (int index = 0; index < _backpackSlots.Length && remaining > 0; index++)
+            {
+                InventoryItemStack existing = _backpackSlots[index];
+                if (existing == null || existing.ItemId != definition.Id || existing.Rarity != ItemRarity.Common ||
+                    existing.UpgradeLevel != 0 || existing.Quantity >= definition.MaxStack)
+                    continue;
+
+                int addedQuantity = Math.Min(remaining, definition.MaxStack - existing.Quantity);
+                changes.Add(new ConsumableStackChange(index, existing, addedQuantity));
+                remaining -= addedQuantity;
+            }
+
+            for (int index = 0; index < _backpackSlots.Length && remaining > 0; index++)
+            {
+                if (_backpackSlots[index] != null) continue;
+                int addedQuantity = Math.Min(remaining, definition.MaxStack);
+                changes.Add(new ConsumableStackChange(index, null, addedQuantity));
+                remaining -= addedQuantity;
+            }
+
+            return remaining == 0;
+        }
+
+        private void ReplaceOwnedStack(ItemInstanceId instanceId, InventoryItemStack replacement)
+        {
+            for (int index = 0; index < _backpackSlots.Length; index++)
+            {
+                if (_backpackSlots[index]?.InstanceId != instanceId) continue;
+                _backpackSlots[index] = replacement;
+                return;
+            }
+
+            if (_weapon?.InstanceId == instanceId) _weapon = replacement;
+            else if (_armor?.InstanceId == instanceId) _armor = replacement;
+            else if (_relicOne?.InstanceId == instanceId) _relicOne = replacement;
+            else if (_relicTwo?.InstanceId == instanceId) _relicTwo = replacement;
+        }
+
+        private static CraftingOutcome CraftingRejected(
+            TransactionId transactionId,
+            string recipeId,
+            CraftingOperationStatus status)
+        {
+            return new CraftingOutcome(transactionId, recipeId, status);
+        }
+
+        private static InventoryOperationStatus MapCraftingStatus(CraftingOperationStatus status)
+        {
+            switch (status)
+            {
+                case CraftingOperationStatus.Succeeded: return InventoryOperationStatus.Succeeded;
+                case CraftingOperationStatus.RejectedInvalidTransaction: return InventoryOperationStatus.RejectedInvalidTransaction;
+                case CraftingOperationStatus.RejectedTransactionConflict: return InventoryOperationStatus.RejectedTransactionConflict;
+                case CraftingOperationStatus.RejectedUnknownRecipe: return InventoryOperationStatus.RejectedUnknownItem;
+                case CraftingOperationStatus.RejectedInvalidRecipe: return InventoryOperationStatus.RejectedInvalidItem;
+                case CraftingOperationStatus.RejectedInsufficientMaterials: return InventoryOperationStatus.RejectedInvalidMaterial;
+                case CraftingOperationStatus.RejectedInsufficientGold: return InventoryOperationStatus.RejectedInvalidGold;
+                case CraftingOperationStatus.RejectedBackpackFull: return InventoryOperationStatus.RejectedFull;
+                case CraftingOperationStatus.RejectedMissingTarget:
+                case CraftingOperationStatus.RejectedUnexpectedTarget: return InventoryOperationStatus.RejectedInvalidSlot;
+                case CraftingOperationStatus.RejectedWrongTargetKind: return InventoryOperationStatus.RejectedWrongEquipmentSlot;
+                case CraftingOperationStatus.RejectedIncompatibleClass: return InventoryOperationStatus.RejectedIncompatibleClass;
+                case CraftingOperationStatus.RejectedInvalidUpgradeLevel:
+                case CraftingOperationStatus.RejectedUpgradeLimit: return InventoryOperationStatus.RejectedInvalidItem;
+                default: throw new ArgumentOutOfRangeException(nameof(status));
+            }
         }
 
         private InventoryOperationOutcome Execute(TransactionId transactionId, string signature, Func<InventoryOperationOutcome> operation)
@@ -562,13 +837,36 @@ namespace Luckbound.Core.Inventory
 
         private readonly struct CachedTransaction
         {
-            public CachedTransaction(string signature, InventoryOperationOutcome outcome)
+            public CachedTransaction(string signature, InventoryOperationOutcome outcome, CraftingOutcome craftingOutcome = null)
             {
                 Signature = signature;
                 Outcome = outcome;
+                CraftingOutcome = craftingOutcome;
             }
             public string Signature { get; }
             public InventoryOperationOutcome Outcome { get; }
+            public CraftingOutcome CraftingOutcome { get; }
+        }
+
+        private readonly struct ConsumableStackChange
+        {
+            public ConsumableStackChange(int index, InventoryItemStack existingStack, int quantity, InventoryItemStack resultStack = null)
+            {
+                Index = index;
+                ExistingStack = existingStack;
+                Quantity = quantity;
+                ResultStack = resultStack;
+            }
+
+            public int Index { get; }
+            public InventoryItemStack ExistingStack { get; }
+            public int Quantity { get; }
+            public InventoryItemStack ResultStack { get; }
+
+            public ConsumableStackChange WithResult(InventoryItemStack resultStack)
+            {
+                return new ConsumableStackChange(Index, ExistingStack, Quantity, resultStack);
+            }
         }
     }
 }
