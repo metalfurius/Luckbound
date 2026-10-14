@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 1.5 · 14 de octubre de 2026.
+**Versión:** 1.7 · 14 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -10,9 +10,9 @@ Este documento convierte las 111 tareas del producto en trabajo distribuible par
 
 ## 1. Punto de partida y límite de esta petición
 
-La edición documental del 13 de octubre detuvo el desarrollo antes de E02. Fran reactivó el objetivo completo el 14 de octubre. El coordinador continúa desde el estado registrado abajo; preparar esta guía no acredita tareas del producto.
+La orden explícita de Fran del 14 de octubre retoma el desarrollo completo. El coordinador parte del estado verificado de [PROGRESS.md](PROGRESS.md), implementa E02.ADAPTER como siguiente paquete y selecciona hasta tres tareas independientes listas según el grafo. Se mantienen los contratos de integración, las pruebas sin interfaz y la regla de visibilidad.
 
-Estado inicial confirmado al reanudar el 14 de octubre; el avance posterior y asignaciones vigentes están en [PROGRESS.md](PROGRESS.md):
+Estado técnico vigente al retomar el 14 de octubre; los cambios verificados y sus evidencias están en [PROGRESS.md](PROGRESS.md):
 
 - E01 está consolidada en `fd3626f`. El escenario de recogida física y los tests dirigidos de esta reanudación constan en PROGRESS.md; conservar su hash de origen junto con la evidencia.
 - E02 está `InProgress`: E02.DATA y E02.TXN están integrados (`e5f567a`); E02.ADAPTER sigue reservado al coordinador tras verificar su dependencia.

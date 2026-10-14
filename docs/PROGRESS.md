@@ -2,14 +2,14 @@
 
 **Actualizado:** 14 de octubre de 2026.
 
-**Alcance vigente:** Fran reanudó el desarrollo completo el 14 de octubre. E02.DATA y E02.TXN están integrados; E06 está verificada. F08 tiene una pista de taberna validada y F01 continúa en curso. E07 conserva una entrega Core parcial; F07 está verificada.
+**Alcance vigente:** Fran autorizó retomar el desarrollo completo el 14 de octubre. E02.DATA y E02.TXN están integrados; E02.ADAPTER es el próximo paquete del coordinador. E06 y F07 están verificadas. F08 tiene las pistas de taberna y Patio validadas; F01 continúa en curso. E04, E07 y E08 conservan entregas Core parciales por integrar y verificar.
 
 Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, paquetes y grafo de ejecución: [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
 ## Estado actual (14 de octubre de 2026)
 
 - A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01, E06 y F07: Verified; A06: InProgress; D09: NeedsOwnerReview; E02, E07, F01 y F08: InProgress; las demás tareas figuran Pending en la tabla inferior.
-- Desarrollo reanudado por Fran el 14 de octubre. E02.DATA y E02.TXN están integrados, pero fabricación sigue pendiente de su adaptador y recorrido de juego. F08 tiene una pista de taberna validada; otras pistas y efectos siguen pendientes. E07 incluye su primer módulo Core de Venator, aún sin integración completa en Gameplay. EditMode postintegración 121/121 y PlayMode 62/62 pasan en Unity `6000.6.5f1`, WindowsEditor, batchmode y Null graphics.
+- Fran ordenó retomar el desarrollo completo. E02.DATA y E02.TXN están integrados; fabricación sigue pendiente de su adaptador y recorrido de juego. E02.ADAPTER es el siguiente paquete del coordinador. F08 tiene pistas de taberna y Patio validadas; falta Custodio y efectos. E04 incluye una entrega Core de Fortuna, y E07/E08 entregas Core de Venator/Magus: siguen pendientes de integración completa, aceptación y verificación del coordinador. La regresión previa 121/121 EditMode y 62/62 PlayMode pasó en Unity `6000.6.5f1`, WindowsEditor, batchmode y Null graphics; se repetirá tras integrar nuevos paquetes.
 - Regla estricta de visibilidad del 14 de octubre: ninguna ventana, pestaña, panel, notificación ni previsualización debe aparecer en la pantalla de Fran salvo la interfaz mínima que requiera una decisión concreta suya. Toda ejecución interna permanece sin interfaz, oculta o en un sandbox/escritorio aislado; aplica también a subagentes, procesos secundarios y ventanas emergentes.
 - E01 está consolidada en el commit `fd3626f`; las cuatro referencias originales del usuario permanecen sin seguimiento y fuera del commit.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
@@ -34,7 +34,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, 
 - E07 integra las reglas Core del ataque básico gratuito y las tres habilidades de Venator en `707354c`; la conexión al motor, proyectiles, trampa y aceptación de clase siguen pendientes.
 - La entrega parcial F08.Taberna y su corrección de hashes están integradas (`f8f4aba`, `a066ece`): diez pruebas de audio pasan y el validador independiente devuelve `passed`, sin reproducir ni escuchar el WAV de referencia del usuario.
 - Revisiones de builds: ninguna realizada.
-- El desarrollo está activo en la rama local `codex/luckbound-reboot`. El workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
+- La rama local `codex/luckbound-reboot` conserva el trabajo integrado hasta la reanudación. El workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
 
 ## Estados y dependencias

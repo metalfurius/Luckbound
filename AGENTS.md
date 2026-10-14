@@ -23,4 +23,4 @@ Las cinco revisiones de Fran están indicadas en el plan. Una revisión pendient
 
 El presupuesto no incluye compras de recursos o servicios. Si una herramienta o cuenta bloquea una tarea, registra el fallo concreto y continúa con trabajo independiente. Respeta las instrucciones directas posteriores del usuario cuando modifiquen el plan.
 
-La petición documental del 13 de octubre pausó el desarrollo antes de E02. Fran reactivó el objetivo completo el 14 de octubre; el estado actual y la siguiente oleada se registran en docs/PROGRESS.md. Una nueva petición de pausa o parada detiene el trabajo dentro de su alcance.
+La orden explícita de Fran del 14 de octubre retoma el desarrollo completo. El coordinador continuará desde el estado de [PROGRESS.md](docs/PROGRESS.md), priorizará E02.ADAPTER y el siguiente hito jugable, y podrá repartir hasta tres paquetes listos entre trabajadores Luna `max` según el grafo. Una futura petición documental o de pausa volverá a limitar el alcance.
