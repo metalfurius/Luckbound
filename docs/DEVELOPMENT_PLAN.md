@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 2.2 — 12 de octubre de 2026.
+**Versión del documento:** 3.2 — 14 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -9,6 +9,12 @@
 Este documento es la especificación principal para desarrollar Luckbound mediante agentes de IA. Conserva las decisiones acordadas y establece reglas, arquitectura, contenido, dependencias y pruebas. Debe permitir que un agente de ejecución, incluido GPT-6 Luna en max, avance sin volver a diseñar los fundamentos del juego.
 
 El registro de ejecución se conserva en [PROGRESS.md](PROGRESS.md). La guía breve para agentes está en [AGENTS.md](../AGENTS.md). Este documento define el producto; el registro describe lo que realmente se ha implementado y comprobado.
+
+La organización de trabajo, el grafo explícito de las 111 tareas y los paquetes para subagentes **GPT-6 Luna en max** están en [AGENT_EXECUTION.md](AGENT_EXECUTION.md). La versión 3.0 cambia la ejecución y las dependencias artificiales; conserva el alcance, las reglas, la arquitectura y los criterios de aceptación del juego.
+
+La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajena a una decisión necesaria de Fran debe permanecer oculta o en un entorno aislado, conforme a [5.6](#56-ejecución-invisible-y-decisiones-de-fran). La versión 3.2 registra que Fran reanudó el objetivo completo el 14 de octubre.
+
+**Instrucción vigente (14 de octubre):** Fran reanudó el desarrollo completo. El coordinador continúa desde E01, consolida su evidencia y despacha los paquetes independientes listos conforme a [AGENT_EXECUTION.md](AGENT_EXECUTION.md). El registro de progreso describe cada tarea ejecutada; este plan por sí solo no acredita su implementación.
 
 ## Índice
 
@@ -570,7 +576,7 @@ El catálogo fuente será `Assets/Resources/Luckbound/Data/Skills.json`, con ver
 | Alvari | 5 % menos de coste de habilidades | Contrato de historia |
 | Dvergar | Una unidad adicional del material recogido por cada cinco unidades obtenidas del mundo | Contrato de fabricación |
 
-Las cuatro razas compartirán animaciones, controles y dimensiones de colisión. El rasgo Dvergar no contará compras, devoluciones ni materiales fabricados.
+Las cuatro razas compartirán animaciones, controles y dimensiones de colisión. El rasgo Dvergar no contará compras, devoluciones ni materiales fabricados. Para resolver el contador de forma determinista, el progreso se acumulará por tipo de material dentro de la expedición: cada cinco unidades de un mismo material aceptadas desde el mundo conceden una unidad adicional de ese material. El resto de cero a cuatro unidades se conserva entre recogidas y en el guardado. Una compra, fabricación, venta, devolución u otra alta que no venga de un pickup del mundo no cambia ese resto. La recogida es atómica: si su cantidad más el bono excede 99, no se añade ninguna unidad ni avanza el resto.
 
 ### 3.7. Equipo e inventario
 
@@ -603,7 +609,7 @@ Contrato de implementación D04:
 
 - `Luckbound.Core.Inventory` será independiente de Unity. El catálogo convierte IDs de contenido estables en definiciones inmutables; el estado mutable pertenece a una instancia de `ExpeditionInventory` con clase, equipo, mochila, materiales y oro.
 - Cada objeto de mochila o equipo tiene `ItemInstanceId`, ID de definición, rareza y mejora. Solo las armas y armaduras admiten mejoras de 0 a +3; consumibles usan rareza común y mejora cero. Las armas validan la clase compatible al equiparse.
-- La mochila tiene exactamente doce índices. Armas, armaduras y reliquias ocupan una unidad por índice. Un consumible ocupa un índice con máximo tres; recoger consumibles rellena pilas compatibles antes de ocupar índices vacíos. La bolsa de materiales mantiene exactamente los seis tipos de 3.9, cada uno entre cero y 99; el oro es un contador aparte.
+- La mochila tiene exactamente doce índices. Armas, armaduras y reliquias ocupan una unidad por índice. Un consumible ocupa un índice con máximo tres; recoger consumibles rellena pilas compatibles antes de ocupar índices vacíos. La bolsa de materiales mantiene exactamente los seis tipos de 3.9, cada uno entre cero y 99; el oro es un contador aparte. La bolsa y el resto por material del rasgo Dvergar se serializan con el inventario y se validan al cargarlo.
 - Arma, armadura y las dos reliquias se mueven entre mochila y equipo. Al equipar desde un índice, el equipo anterior vuelve al mismo índice en una única operación. No se puede equipar la misma definición de reliquia en ambos espacios. El consumible rápido es una referencia a una pila de la mochila y no duplica ni retira sus unidades; si se sustituye o elimina esa pila, la referencia se limpia.
 - Cada orden de recoger, equipar, sustituir, añadir material u oro requiere un `TransactionId`. Repetirlo devuelve el resultado original y no vuelve a mutar el estado, también cuando el primer resultado fue un rechazo. Las operaciones rechazadas no cambian equipo, mochila, bolsa, oro ni instancias.
 - Si un botín no cabe ni puede apilarse, se conserva en el mundo. La sustitución explícita identifica un índice y retorna el contenido desplazado para dejarlo como botín del mundo. El componente de juego prepara primero ese botín desplazado sin activarlo; solo confirma la sustitución y activa el objeto desplazado cuando la operación de Core tiene éxito. Un fallo al preparar o validar no consume el botín entrante ni reemplaza el contenido anterior.
@@ -1176,17 +1182,16 @@ Accesibilidad:
 
 ### 5.1. Cómo deberá trabajar el agente
 
-Al comenzar una ejecución:
+Al comenzar una ejecución autorizada de desarrollo:
 
-1. Leer este documento, el progreso y el estado de Git.
-2. Elegir la primera tarea pendiente con dependencias verificadas.
-3. Leer las especificaciones que corresponden a esa tarea.
-4. Implementar el resultado concreto.
-5. Ejecutar sus comprobaciones.
-6. Guardar evidencias.
-7. Actualizar el progreso.
-8. Crear un commit con el identificador de tarea cuando el trabajo autorizado incluya desarrollo y registro en Git.
-9. Continuar con la siguiente tarea disponible dentro del alcance autorizado.
+1. Leer la instrucción vigente, este índice, el estado actual del progreso y el estado de Git; leer completas las secciones del contrato asignado.
+2. El coordinador selecciona paquetes cuyas dependencias técnicas estén satisfechas según [AGENT_EXECUTION.md](AGENT_EXECUTION.md). La posición de una fila no crea una dependencia.
+3. Usar subagentes Luna en `max` para paquetes acotados, con contexto nuevo, commit base, archivos permitidos, resultado esperado y aceptación explícita. El límite inicial es un coordinador y tres trabajadores activos; adaptarlo al límite real de herramientas.
+4. Dar un único dueño a cada archivo compartido. Aislar escritores en worktrees cuando estén disponibles. Una sola ejecución de Unity por máquina; el coordinador controla su cola y el checkout de integración.
+5. Los trabajadores implementan solo el contrato y entregan cambios revisables y comprobaciones reales. El coordinador integra secuencialmente, valida referencias y ejecuta los escenarios pertinentes sobre el contenido integrado.
+6. Guardar evidencia identificada por commit o hash, actualizar el progreso y crear commits dirigidos cuando la sesión autorice registro en Git. El estado de un trabajador no modifica por sí solo el estado de una tarea del producto.
+7. Continuar rellenando las plazas con trabajo listo, priorizando el siguiente hito jugable y los desbloqueos. Una tarea pendiente del propietario o de una herramienta no detiene trabajos independientes.
+8. Al recibir una petición de parar antes de desarrollar, conservar el estado y detenerse. No interpretar este plan, un presupuesto disponible ni una casilla pendiente como autorización para empezar.
 
 No deberá volver a diseñar los fundamentos del juego al comenzar cada sesión. Una petición de documentación no inicia las tareas de desarrollo. Las tareas pendientes indican trabajo futuro, no trabajo ya realizado.
 
@@ -1204,6 +1209,8 @@ Cada ficha tendrá:
 
 Si una tarea requiere demasiados cambios para una ejecución, se dividirá en subpasos del mismo ID, sin alterar su objetivo. Cada canción, enemigo o recurso de un lote tendrá su propia casilla de progreso.
 
+El detalle operativo está en [AGENT_EXECUTION.md](AGENT_EXECUTION.md): contiene la asignación de archivos, los contratos de colaboración, los primeros paquetes, las plantillas para todo el contenido restante, los prompts de despacho y la política de pruebas. Los trabajadores no reescribirán este documento ni el progreso central; entregarán un informe breve al coordinador.
+
 Estados:
 
 `Pending → InProgress → Verified → Accepted`
@@ -1219,60 +1226,33 @@ Para cada tarea de desarrollo, la secuencia mínima será: implementación acota
 
 ### 5.2. Herramienta de desarrollo
 
-Se implementará `Tools/dev.ps1`, relativa a la raíz del repositorio. En este equipo su ruta será:
+La base existente usa **Unity CLI**, generadores de `Luckbound.Editor` y tests/escenarios Unity. A07 fue verificada con esas herramientas. La ruta propuesta antiguamente `Tools/dev.ps1` no existe en la inspección del 13 de octubre; no es un requisito para empezar y no se creará un segundo driver genérico por anticipado.
 
-`C:\Users\Fran\Documents\GitHub\Luckbound\Tools\dev.ps1`
-
-| Acción | Resultado |
+| Operación | Entrada existente |
 |---|---|
-| `VerifyEnvironment` | Comprueba editor, módulos, dependencias y configuración |
-| `Generate` | Genera únicamente los recursos declarados |
-| `Validate` | Comprueba datos, referencias y recursos |
-| `Test` | Ejecuta pruebas pertinentes y produce resultados |
-| `Build` | Construye Windows o WebGL |
-| `Smoke` | Ejecuta un escenario con entradas reales o simuladas |
-| `Capture` | Captura imágenes del escenario ejecutado |
-| `Package` | Empaqueta build, metadatos y resultados |
+| Generar | Método `EnsureGenerated` de la familia concreta o `ProjectScaffoldGenerator.GenerateStartupScenes`, mediante APIs de Editor |
+| Validar | `Luckbound.Editor.ProjectDevelopmentChecks.RunAll` con `-executeMethod` |
+| Test dirigido | `unity test . --mode EditMode --filter <nombre> --output Logs/<paquete>-edit.xml --timeout 1200 -- -nographics` y equivalente PlayMode |
+| Suite | Las dos plataformas de tests por separado; la CLI local no admite `--mode All` |
+| Build Windows | `unity build . --target StandaloneWindows64 --output-path Logs/Builds/<hito>/Windows/Luckbound.exe --no-tail` |
+| Build WebGL | `unity build . --profile WebGL --output-path Logs/Builds/<hito>/WebGL --no-tail` |
+| Escenario | Test PlayMode con entradas y `ScenarioEvidenceRecorder`; resultado en `Logs/Scenarios/` |
+| Captura | Navegador oculto o escenario gráfico en un entorno aislado; guardar la evidencia sin abrir ventanas o previsualizaciones a Fran |
+| Empaquetar | Workflow existente `.github/workflows/build.yml`; conservar tests, ambas builds, releases y ruta pública |
 
-Parámetros: tarea, plataforma, escenario, semilla, clase y raza cuando correspondan.
+Los nombres entre `<...>` son parámetros que debe resolver el paquete, no comandos ya ejecutados. El coordinador comprueba la ayuda de la versión instalada si cambia la CLI. Cada salida debe contener comprobaciones reales y al menos un test seleccionado. Reutilizar las herramientas existentes; añadir un generador/validador específico solo cuando un entregable lo necesite.
 
-Códigos de salida:
-
-- Cero: éxito.
-- Uno: fallo de implementación o validación.
-- Dos: bloqueo externo.
-
-Estos comandos todavía deberán crearse. Un comando que devuelve éxito sin ejecutar comprobaciones no será una prueba válida.
+Las pruebas y builds se agrupan según el nivel de riesgo y el siguiente hito, como define [la política de validación](AGENT_EXECUTION.md#8-pruebas-y-builds-sin-trabajo-duplicado). Nunca lanzar Unity simultáneamente en dos checkouts de esta máquina ni compartir `Library`, `Temp` o archivos de guardado de tests.
 
 Las evidencias registrarán tarea, commit o hash de los archivos comprobados, versión del editor, plataforma, semilla, entradas, resultado y archivos producidos. Los tests Unity producirán resultados de test; los escenarios producirán `Logs/Scenarios/<tarea>/<ejecución>/scenario-report.json` y un `scenario.log` con eventos, entradas y aserciones. El reporte conserva su código de dominio `0` si pasa y `1` si falla; la CLI del motor debe propagar cualquier resultado fallido como código de proceso distinto de cero. `screen.png` se captura en sesiones interactivas; los runs batch/headless registran claramente que no hay captura y conservan logs y reporte. El workflow sube los resultados de test y esos archivos incluso si falla la suite. Una selección de tests vacía no contará como éxito.
 
 ### 5.3. Dependencias
 
-Dentro de cada bloque, cada tarea dependerá de la anterior salvo estas excepciones:
+El [grafo de AGENT_EXECUTION.md](AGENT_EXECUTION.md#4-grafo-canónico-de-las-111-tareas) es la fuente de las dependencias de ejecución y [PROGRESS.md](PROGRESS.md) conserva su copia junto al estado real. Todas las filas son explícitas; **se retira la regla de depender por defecto de la fila anterior**. Cambiar una dependencia no reduce la aceptación ni atribuye ejecución a una tarea pendiente.
 
-- A07 depende de A04.
-- A08 depende de A05 y A07.
-- B01 depende de A08.
-- C01 depende de B07.
-- D01 depende de C08.
-- E01 depende de D09.
-- F01 depende de B07.
-- F02 depende de F01 y A07.
-- F03 depende de F02 y B07.
-- F04 depende de F02 y C06.
-- F05 depende de F02 y D01.
-- F06 depende de F02 y E09.
-- F07 depende de D09.
-- F08 depende de F07.
-- F09 depende de F03, F04, F05, F06, F08 y E10.
-- F10 depende de F09.
-- G01 depende de E10.
-- H01a depende de G08 y F10.
-- I01 depende de H12.
-- J01 depende de I09.
-- J09 depende de J08 y A06.
+Los sistemas E, las familias de catálogos G, las salas y enemigos independientes H y el acabado I pueden avanzar por separado tras sus prerrequisitos. Los contratos compartidos y el dueño de archivos siguen siendo obligatorios. F09 une la primera muestra jugable; H10 une la campaña completa; I09 reúne el acabado; J07/J09 conservan las barreras de verificación y publicación.
 
-A01 no tiene dependencias. El registro de progreso explicita las dependencias de cada fila para evitar que el agente tenga que deducirlas.
+H11 se implementa y verifica como arena propia después de los patrones de H05/H08 y antes de su integración en H10. H10 depende de H11: no se declara una campaña completa con el jefe final todavía pendiente. Las tareas H de navegación pueden verificar geometría con referencias de enemigos pendientes explícitas; su combate completo se exige al cerrar H10.
 
 Una dependencia de hito exige verificación técnica. La publicación final exige además las revisiones acordadas. Una tarea `NeedsOwnerReview` satisface dependencias técnicas únicamente si sus comprobaciones ya están registradas.
 
@@ -1292,6 +1272,26 @@ Una dependencia de hito exige verificación técnica. La publicación final exig
 | J | Sección 6 y reglas relevantes de cada escenario |
 
 Las siguientes tablas son los contratos mínimos de las tareas. Antes de implementar, se copiará el contrato correspondiente al registro de ejecución junto con sus pasos concretos; no se modificarán los criterios para convertir un fallo en éxito.
+
+### 5.5. Ejecución optimizada para Luna
+
+La asignación inicial será Luna `gpt-6-luna`, esfuerzo `max`, con tres trabajadores independientes. Se dividirán por contratos y familias de archivos, no por instrucciones vagas de «terminar el juego». El coordinador conserva la arquitectura acordada, las uniones entre dominios, la cola Unity y el progreso; los trabajadores devuelven entregables pequeños y evidencia compacta.
+
+La primera oleada tras una nueva orden de comenzar será E02 (recetas), F01 (referencia artística) y F07 (síntesis de audio), después de consolidar el trabajo local ya comprobado de E01. E04, E06, E07, E08 y G01 también están técnicamente disponibles, pero se despachan solo con archivos disjuntos o después de integrar el contrato que comparten.
+
+No se añade infraestructura de agentes, servicios de pago o un SDK de orquestación al juego. Se usan las capacidades de colaboración del entorno que ejecute la tarea. Las plantillas y el protocolo completo están en [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
+
+### 5.6. Ejecución invisible y decisiones de Fran
+
+**Fran solo debe ver una ventana cuando NECESITE tomar una decisión.** La regla se aplica al coordinador y a todos los subagentes, a cualquier herramienta y a toda ejecución interna, no solo a WebGL.
+
+- Ejecutar tests, builds, servidores y herramientas sin interfaz visible. Navegadores/pestañas ocultos; Unity, juegos Windows y comprobaciones gráficas en procesos ocultos o en un entorno aislado con su propio escritorio cuando necesiten renderizado.
+- No abrir, enfocar ni traer al frente ventanas, terminales, Explorador, pestañas o paneles de archivos para enseñar trabajo técnico. No navegar las pestañas de Fran. Minimizar o dejar una ventana detrás de otra no equivale a aislamiento.
+- Guardar capturas, resultados, audio y documentos como evidencia; comunicar el resultado brevemente sin abrir previsualizaciones automáticamente.
+- Solo mostrar la interfaz mínima para una decisión real de Fran, una autorización imprescindible o una de las cinco revisiones acordadas, indicando qué debe decidir. Una prueba técnica rutinaria no requiere su presencia.
+- Si la herramienta no puede funcionar sin ventanas visibles ni en un entorno aislado, no ejecutarla en el escritorio de Fran. Registrar el bloqueo concreto y usar una alternativa o continuar con trabajo independiente; no presentar una prueba no ejecutada como aprobada.
+
+Las revisiones de Fran mantienen sus criterios y builds; no se abren demostraciones por adelantado ni ventanas auxiliares sin una decisión que necesite tomar.
 
 ### A. Conservación, entorno y herramientas
 
@@ -1349,7 +1349,7 @@ Las siguientes tablas son los contratos mínimos de las tareas. Antes de impleme
 
 | ID | Entregable | Aceptación demostrable |
 |---|---|---|
-| E01 | Materiales y bolsa | Recolección, máximos y rasgo Dvergar sin generar recursos por compra |
+| E01 | Materiales y bolsa | Pickup físico fuera de los doce espacios; seis contadores independientes limitados a 99; Dvergar acumula por tipo, concede +1 por cada cinco unidades recogidas del mundo y guarda el resto; compras, fabricación, ventas y devoluciones no lo activan; un exceso rechaza la recogida completa |
 | E02 | Fabricación | Receta válida consume exactamente; fallida no consume |
 | E03 | Comercio, herrería y descanso | Stock persistente, mejoras consecutivas y recuperación una vez |
 | E04 | Ofertas y Fortuna | Elegir y repetir; recarga mantiene oferta y coste |

@@ -1,14 +1,15 @@
 # Luckbound — Guía para agentes
 
-La especificación del producto está en [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md). El estado real de ejecución está en [docs/PROGRESS.md](docs/PROGRESS.md).
+La especificación del producto está en [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md). El reparto, los contratos y las dependencias para agentes Luna están en [docs/AGENT_EXECUTION.md](docs/AGENT_EXECUTION.md). El estado real de ejecución está en [docs/PROGRESS.md](docs/PROGRESS.md).
 
 Antes de desarrollar:
 
-1. Lee el plan y el progreso. Comprueba el estado de Git y las instrucciones aplicables.
+1. Lee la instrucción vigente, el índice del plan, el estado/tabla de progreso y la guía de ejecución. Comprueba Git. Lee completas las secciones y evidencias pertinentes a la tarea; no hace falta cargar todo el historial para cada paquete.
 2. Sigue el alcance de la petición actual del usuario. Una solicitud de documentación no inicia el desarrollo del juego.
-3. Cuando se solicite desarrollar, selecciona la primera tarea pendiente con dependencias verificadas y lee las reglas que le corresponden.
-4. Implementa el resultado fijado, ejecuta su aceptación y conserva evidencias del contenido comprobado.
-5. Actualiza el progreso con cambios, resultados, bloqueos y commit cuando corresponda. Continúa con tareas disponibles dentro del alcance autorizado.
+3. Cuando Fran solicite empezar/retomar desarrollo, el coordinador selecciona paquetes listos según el grafo explícito y prioriza el siguiente hito jugable. Se autoriza ese reparto con hasta tres trabajadores gpt-6-luna en max, contexto nuevo y sin delegación recursiva; la posición de una fila no crea una dependencia.
+4. Da un solo dueño a cada archivo; aísla escritores y deja integración, escenas, guardado y configuración compartida al coordinador salvo cesión concreta. Los trabajadores reciben una ficha y secciones acotadas, implementan su contrato y entregan cambios revisables.
+5. El coordinador integra, ejecuta la aceptación real y conserva evidencias del contenido comprobado. Solo una ejecución Unity por máquina; nadie modifica el checkout de integración mientras se prueba o construye.
+6. Solo el coordinador actualiza el progreso central con cambios, resultados, bloqueos y commit cuando corresponda. Una entrega de trabajador no verifica por sí sola la tarea padre. Continúa con paquetes independientes dentro del alcance autorizado.
 
 Las decisiones de producto, arquitectura, guardado, economía y contenido están fijadas en el plan. No las rediseñes al iniciar una sesión. Los ajustes de equilibrio seguirán los límites y el registro definidos allí.
 
@@ -16,6 +17,10 @@ Conserva el prototipo y sus referencias antes de reemplazarlo. Mantén las build
 
 Las pruebas de juego deben utilizar acciones reales o entradas simuladas; no fuerces victorias ni ocultes fallos con invulnerabilidad. Los recursos provisionales solo son válidos en las etapas que los permiten.
 
+**Regla general de visibilidad:** Fran solo debe ver una ventana cuando NECESITE tomar una decisión. Toda ejecución interna —Unity, juegos Windows/WebGL, navegadores, terminales, servidores, herramientas, capturas y previsualizaciones de archivos— se realiza sin abrir, enfocar ni traer ventanas, pestañas o paneles al escritorio de Fran. Usa ejecución sin interfaz, procesos/pestañas ocultos o un entorno aislado con su propio escritorio. Minimizar una ventana no cumple esta regla. Solo muestra la interfaz mínima necesaria para una decisión real, autorización imprescindible o revisión acordada, explicando qué debe decidir. Si no puedes ocultar o aislar una herramienta, no la abras en su escritorio: registra la limitación y continúa con una alternativa o trabajo independiente. Esta regla también obliga a todos los subagentes.
+
 Las cinco revisiones de Fran están indicadas en el plan. Una revisión pendiente permite continuar con tareas técnicas disponibles, pero el silencio no constituye aprobación.
 
 El presupuesto no incluye compras de recursos o servicios. Si una herramienta o cuenta bloquea una tarea, registra el fallo concreto y continúa con trabajo independiente. Respeta las instrucciones directas posteriores del usuario cuando modifiquen el plan.
+
+La petición documental del 13 de octubre pausó el desarrollo antes de E02. Fran reactivó el objetivo completo el 14 de octubre; el estado actual y la siguiente oleada se registran en docs/PROGRESS.md. Una nueva petición de pausa o parada detiene el trabajo dentro de su alcance.

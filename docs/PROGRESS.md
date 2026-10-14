@@ -1,14 +1,17 @@
 # Luckbound — Registro de progreso
 
-**Actualizado:** 12 de octubre de 2026.
+**Actualizado:** 14 de octubre de 2026.
 
-**Alcance de esta ejecución:** desarrollar Luckbound por las tareas verificables del plan, conservando el prototipo, las builds y la ruta pública.
+**Alcance vigente:** Fran reanudó el objetivo completo el 14 de octubre. E01 está consolidada y su aceptación dirigida fue repetida; continuar con los paquetes E02.DATA, F01 y F07 mediante trabajadores aislados.
 
-Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
+Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, paquetes y grafo de ejecución: [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
-## Estado actual (12 de octubre de 2026)
+## Estado actual (14 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08 y D01–D08: Verified; A06: InProgress; D09: NeedsOwnerReview; E01: InProgress. Las demás tareas figuran Pending en la tabla inferior.
+- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08 y E01: Verified; A06: InProgress; D09: NeedsOwnerReview; E02: Pending. Las demás tareas figuran Pending en la tabla inferior.
+- Desarrollo reanudado por Fran el 14 de octubre. E02 solo tenía una ficha preparatoria, sin implementación; permanece Pending hasta iniciar su primer paquete.
+- Regla de visibilidad del 14 de octubre: Fran solo ve una ventana si necesita tomar una decisión. Toda ejecución interna se realiza sin interfaz, oculta o en un entorno aislado; aplica también a subagentes y previsualizaciones.
+- E01 está consolidada en el commit `fd3626f`; las cuatro referencias originales del usuario permanecen sin seguimiento y fuera del commit.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
 - C03 añade el catálogo de nueve habilidades y proyectiles físicos reutilizables; su contrato Core y sus pruebas de colisión, penetración, caducidad y salida de sala están verificados.
@@ -25,8 +28,9 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 - D07 añade liquidación por resultado y deduplicación por `RunId`: muerte conserva el 25 % redondeado hacia abajo, extracción y victoria conservan Renombre y convierten botín, y abandono no paga. D08 persiste ahora el saldo y las liquidaciones procesadas; las suites y el escenario D07 pasan en `dd0a707`.
 - D08 persiste perfil y ajustes por separado con sobre versionado, checksum SHA-256, respaldo recuperable, escrituras temporales y sincronización WebGL confirmada por callback de IndexedDB. La recarga, corrupción, esquema futuro, escritura reintentable y retención de expediente están cubiertos; el arranque bloquea nuevas expediciones si el perfil no se puede recuperar.
 - D09 restaura expediciones desde el checkpoint de entrada, conserva una sola resolución por sala, protege las escrituras nuevas frente a snapshots concurrentes obsoletos y vuelve a la misma partida al recargar WebGL. Suites, escenarios de reinicio y builds locales de Windows/WebGL pasan; su revisión de Fran sigue Pending.
+- E01 añade recogida física de materiales, seis contadores fuera de la mochila y el rasgo Dvergar con resto por material serializado, bonificación solo por unidades aceptadas desde el mundo y límite atómico de 99. Las suites, el escenario y las builds locales pasan.
 - Revisiones de builds: ninguna realizada.
-- El desarrollo continúa en una rama local; el workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
+- El trabajo previo permanece en una rama local; el desarrollo está detenido. El workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
 
 ## Estados y dependencias
@@ -39,7 +43,7 @@ Registrar un bloqueo no cambia las dependencias. Buscar una tarea independiente 
 
 ## Hoja de ejecución
 
-Las pruebas y entregables completos están en el plan. Esta tabla explicita el estado y las dependencias de las 111 tareas.
+Las pruebas y entregables completos están en el plan. Esta tabla explicita el estado y las dependencias de las 111 tareas; las dependencias reproducen el grafo de AGENT_EXECUTION.md. La posición de una fila no obliga a ejecutar la anterior. Un paquete parcial no verifica su tarea padre.
 
 | ID | Tarea | Depende de | Estado |
 |---|---|---|---|
@@ -75,16 +79,16 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D07 | Muerte, extracción y liquidación | D06 | Verified |
 | D08 | Perfil y ajustes con respaldo | D07 | Verified |
 | D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | NeedsOwnerReview |
-| E01 | Materiales y bolsa | D09 | InProgress |
+| E01 | Materiales y bolsa | D09 | Verified |
 | E02 | Fabricación | E01 | Pending |
 | E03 | Comercio, herrería y descanso | E02 | Pending |
-| E04 | Ofertas y Fortuna | E03 | Pending |
-| E05 | Avaricia y Fervor | E04 | Pending |
-| E06 | Renombre y mejoras permanentes | E05 | Pending |
-| E07 | Venator completo | E06 | Pending |
-| E08 | Magus completo | E07 | Pending |
-| E09 | Clase, raza y kit | E08 | Pending |
-| E10 | Personajes, contratos y localización inicial | E09 | Pending |
+| E04 | Ofertas y Fortuna | D09, E01 | Pending |
+| E05 | Avaricia y Fervor | C01, E04 | Pending |
+| E06 | Renombre y mejoras permanentes | D07, D08 | Pending |
+| E07 | Venator completo | C03, C04, D05 | Pending |
+| E08 | Magus completo | C03, C04, D05 | Pending |
+| E09 | Clase, raza y kit | D05, E01, E06, E07, E08 | Pending |
+| E10 | Personajes, contratos y localización inicial | E02, E06, E09 | Pending |
 | F01 | Referencia maestra artística | B07 | Pending |
 | F02 | Importación y validación de sprites | F01, A07 | Pending |
 | F03 | Animaciones finales iniciales del Humano Bellator | F02, B07 | Pending |
@@ -95,63 +99,63 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | F08 | Música nueva de taberna, Patio y Custodio; efectos esenciales | F07 | Pending |
 | F09 | Tutorial y Custodio acabados; recorrido corto integrado | F03, F04, F05, F06, F08, E10 | Pending |
 | F10 | Muestra 0.3 | F09 | Pending |
-| G01 | Nueve armas | E10 | Pending |
-| G02 | Seis armaduras, seis consumibles y doce recetas | G01 | Pending |
-| G03 | Ocho reliquias de combate | G02 | Pending |
-| G04 | Ocho reliquias de apoyo | G03 | Pending |
-| G05 | Ocho reliquias de Fortuna | G04 | Pending |
-| G06 | Ocho pactos | G05 | Pending |
-| G07 | Doce contratos | G06 | Pending |
-| G08 | Auditoría de catálogos disponibles | G07 | Pending |
-| H01a | Patio C1 y C2 | G08, F10 | Pending |
-| H01b | Patio C3 y C4 | H01a | Pending |
-| H01c | Patio C5 y E1 | H01b | Pending |
-| H01d | Patio E2 y tesoro | H01c | Pending |
-| H01e | Patio pacto y narrativa | H01d | Pending |
-| H02a | Folletillo Luminoso | H01e | Pending |
-| H02b | Murciélago de Corteza | H02a | Pending |
-| H03a | Tiles y fondo del Archivo | H02b | Pending |
-| H03b | Archivo C1 y C2 | H03a | Pending |
-| H03c | Archivo C3 y C4 | H03b | Pending |
-| H03d | Archivo C5 y E1 | H03c | Pending |
-| H03e | Archivo E2 y tesoro | H03d | Pending |
-| H03f | Archivo pacto y narrativa | H03e | Pending |
-| H04a | Vigilante Arcano | H03f | Pending |
-| H04b | Archivista Corrupto | H04a | Pending |
-| H04c | Armadura Errante | H04b | Pending |
-| H04d | Tejedor de Sombras | H04c | Pending |
-| H05 | Magíster y arena | H04d | Pending |
-| H06a | Tiles y fondo de Forjas | H05 | Pending |
-| H06b | Forjas C1 y C2 | H06a | Pending |
-| H06c | Forjas C3 y C4 | H06b | Pending |
-| H06d | Forjas C5 y E1 | H06c | Pending |
-| H06e | Forjas E2 y tesoro | H06d | Pending |
-| H06f | Forjas pacto y narrativa | H06e | Pending |
-| H07a | Forjador Hueco | H06f | Pending |
-| H07b | Gólem de Escoria | H07a | Pending |
-| H07c | Sabueso de Brasas | H07b | Pending |
-| H07d | Raíz Corrupta | H07c | Pending |
-| H08 | Maestro de Forja y arena | H07d | Pending |
-| H09 | Dos descansos completos | H08 | Pending |
-| H10 | Expedición completa por tres sectores | H09 | Pending |
-| H11 | Eco de Ignis y arena final | H10 | Pending |
-| H12 | Introducción, doce fragmentos y epílogos, versión 0.6 | H11 | Pending |
-| I01 | Arte de Orcini, Alvari y Dvergar | H12 | Pending |
-| I02 | Apariencia de las nueve armas y ataques | I01 | Pending |
-| I03 | Iconos de equipo, consumibles y materiales | I02 | Pending |
-| I04 | Iconos de reliquias, pactos y contratos | I03 | Pending |
-| I05 | Completar las diez composiciones | I04 | Pending |
-| I06 | Tres ambientes y 36 efectos | I05 | Pending |
-| I07 | Cinco personajes y retratos | I06 | Pending |
-| I08 | Menús, mapa, resultados y créditos | I07 | Pending |
-| I09 | Auditoría 0.8 | I08 | Pending |
+| G01 | Nueve armas | C03, D04 | Pending |
+| G02 | Seis armaduras, seis consumibles y doce recetas | E02, E03 | Pending |
+| G03 | Ocho reliquias de combate | D04, E05, E07, E08 | Pending |
+| G04 | Ocho reliquias de apoyo | D04, E03, E07, E08 | Pending |
+| G05 | Ocho reliquias de Fortuna | D04, E03, E04, E05 | Pending |
+| G06 | Ocho pactos | E04, E05 | Pending |
+| G07 | Doce contratos | E10 | Pending |
+| G08 | Auditoría de catálogos disponibles | G01, G02, G03, G04, G05, G06, G07 | Pending |
+| H01a | Patio C1 y C2 | F05, F10 | Pending |
+| H01b | Patio C3 y C4 | F05, F10 | Pending |
+| H01c | Patio C5 y E1 | F05, F10 | Pending |
+| H01d | Patio E2 y tesoro | F05, F10, E04 | Pending |
+| H01e | Patio pacto y narrativa | F05, F10, G06, E10 | Pending |
+| H02a | Folletillo Luminoso | F04 | Pending |
+| H02b | Murciélago de Corteza | F04 | Pending |
+| H03a | Tiles y fondo del Archivo | F02, F05 | Pending |
+| H03b | Archivo C1 y C2 | H03a, F10, D03 | Pending |
+| H03c | Archivo C3 y C4 | H03a, F10, D03 | Pending |
+| H03d | Archivo C5 y E1 | H03a, F10, D03 | Pending |
+| H03e | Archivo E2 y tesoro | H03a, F10, D03, E04 | Pending |
+| H03f | Archivo pacto y narrativa | H03a, F10, D03, G06, E10 | Pending |
+| H04a | Vigilante Arcano | H03a, C03, C04 | Pending |
+| H04b | Archivista Corrupto | H03a, C03, C04 | Pending |
+| H04c | Armadura Errante | H03a, C03, C04 | Pending |
+| H04d | Tejedor de Sombras | H03a, C03, C04 | Pending |
+| H05 | Magíster y arena | H03a, D06, E09 | Pending |
+| H06a | Tiles y fondo de Forjas | F02, F05 | Pending |
+| H06b | Forjas C1 y C2 | H06a, F10, D03 | Pending |
+| H06c | Forjas C3 y C4 | H06a, F10, D03 | Pending |
+| H06d | Forjas C5 y E1 | H06a, F10, D03 | Pending |
+| H06e | Forjas E2 y tesoro | H06a, F10, D03, E04 | Pending |
+| H06f | Forjas pacto y narrativa | H06a, F10, D03, G06, E10 | Pending |
+| H07a | Forjador Hueco | H06a, C03, C04 | Pending |
+| H07b | Gólem de Escoria | H06a, C03, C04 | Pending |
+| H07c | Sabueso de Brasas | H06a, C03, C04 | Pending |
+| H07d | Raíz Corrupta | H06a, C03, C04 | Pending |
+| H08 | Maestro de Forja y arena | H06a, D06, E09 | Pending |
+| H09 | Dos descansos completos | E03, F06, F10, D03, D07 | Pending |
+| H10 | Expedición completa por tres sectores | F10, G08, H01a, H01b, H01c, H01d, H01e, H02a, H02b, H03b, H03c, H03d, H03e, H03f, H04a, H04b, H04c, H04d, H05, H06b, H06c, H06d, H06e, H06f, H07a, H07b, H07c, H07d, H08, H09, H11 | Pending |
+| H11 | Eco de Ignis y arena final | D06, H05, H08, D07, E09 | Pending |
+| H12 | Introducción, doce fragmentos y epílogos, versión 0.6 | H10, E10 | Pending |
+| I01 | Arte de Orcini, Alvari y Dvergar | F03, E09 | Pending |
+| I02 | Apariencia de las nueve armas y ataques | F03, G01 | Pending |
+| I03 | Iconos de equipo, consumibles y materiales | F02, G01, G02, E01 | Pending |
+| I04 | Iconos de reliquias, pactos y contratos | F02, G08 | Pending |
+| I05 | Completar las diez composiciones | F08 | Pending |
+| I06 | Tres ambientes y 36 efectos | F07, C07 | Pending |
+| I07 | Cinco personajes y retratos | F02, F06, E10 | Pending |
+| I08 | Menús, mapa, resultados y créditos | F06, G08, E10, I03, I04, I07 | Pending |
+| I09 | Auditoría 0.8 | H12, I01, I02, I03, I04, I05, I06, I07, I08 | Pending |
 | J01 | Regresión de reglas y transacciones | I09 | Pending |
-| J02 | Validación de mil semillas y treinta salas | J01 | Pending |
-| J03 | Matriz de clases, razas y mejoras | J02 | Pending |
-| J04 | Equilibrio de combate, economía y duración | J03 | Pending |
+| J02 | Validación de mil semillas y treinta salas | I09 | Pending |
+| J03 | Matriz de clases, razas y mejoras | I09 | Pending |
+| J04 | Equilibrio de combate, economía y duración | J01, J02, J03 | Pending |
 | J05 | Optimización medida | J04 | Pending |
-| J06 | Accesibilidad y compatibilidad | J05 | Pending |
-| J07 | Builds limpias y ensayo de restauración web | J06 | Pending |
+| J06 | Accesibilidad y compatibilidad | I09 | Pending |
+| J07 | Builds limpias y ensayo de restauración web | J05, J06, A06 | Pending |
 | J08 | Candidata 0.9 y correcciones | J07 | Pending |
 | J09 | Publicación 1.0 | J08, A06 | Pending |
 
@@ -498,6 +502,49 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Builds locales:** Windows Standalone64 y WebGL terminaron con `success`, exit code 0, en Unity `6000.6.5f1`. Evidencia Windows: `Logs/build-StandaloneWindows64-1791832848718.log` y `Logs/Builds/D09-Windows/Luckbound.provenance.json`; WebGL: `Logs/build-WebGL-1791833025263.log` y `Logs/Builds/D09-WebGL/unity-build.provenance.json`. Los avisos del Licensing Client y JS/WebGPU fueron no bloqueantes. Las procedencias registran la revisión previa `de7710a` y el árbol modificado; estas builds son locales y no se publicaron.
 - **Prueba WebGL en navegador:** desde una página limpia se inició Bellator, se guardó la expedición y se recargó `http://localhost:8081/`. Tras recargar se mostró el mismo `RunId` `2bca1e4555bb4b2290782886910ad640`, sala `patio.combat.01`, ruta de 24 nodos, checkpoint de entrada y valores 100 salud / 50 energía / 2 pociones / 2 Fortuna / cero Renombre y oro. La pestaña se mantuvo oculta durante la prueba.
 - **Resultado:** aceptación técnica D09 satisfecha; estado `NeedsOwnerReview` porque la revisión de Fran «Ciclo y persistencia 0.2» sigue `Pending`. La dependencia técnica habilita E01, que comienza a continuación. No se ejecutó GitHub Actions ni se modificó la ruta pública `/Luckbound/`; A06 sigue `InProgress` porque faltan secretos/permisos del repositorio.
+
+## Evidencia E01 — Materiales y bolsa (Verified)
+
+- **Plan:** v2.3, SHA-256 `526ECF3DBF009F0484CC93003AF6E0199D81E618F913B2CA568EE492D42E48DF`. La regla Dvergar quedó definida sin ambigüedad: contador por material y expedición; cada cinco unidades aceptadas de ese tipo desde el mundo añade una unidad del mismo tipo; resto 0–4 persistente; fuentes genéricas como compra/fabricación/devolución no suman; un desbordamiento rechaza todo sin mutar el resto.
+- **Dependencia técnica comprobada:** D09 `NeedsOwnerReview`, con evidencia de reinicio Windows/WebGL arriba. La revisión de Fran continúa `Pending`; la regla de dependencias permite E01 porque la aceptación técnica está demostrada.
+- **Implementación:** `ExpeditionInventory.TryCollectWorldMaterial` es una transacción idempotente separada de `TryAddMaterial`, mantiene seis cantidades 0–99 y seis restos Dvergar. El snapshot versionado v2 serializa restos y migra snapshots anteriores a cero. `WorldMaterialPickup2D` entrega por trigger 2D y solo se consume tras una operación exitosa. `ExpeditionRunSessionPresenter` presenta los seis contadores independientes de la mochila; el scaffold reserva espacio para ellos, el checkpoint y el `RunId`.
+- **Escenario:** `E01_PhysicalWorldMaterialPickupAndBag`, semilla `16180340`, informe `Logs/Scenarios/E01/20261012T200612403Z_E01_PhysicalWorldMaterialPickupAndBag_d36e5327/scenario-report.json`. `passed=true`, cinco aserciones y cero errores. Demuestra trigger real con 3+2 unidades de mineral → 6 para Dvergar; `JsonUtility` conserva el resto 3; los seis contadores aparecen separados; con bolsa a 99, el pickup cuyo bono subiría a 101 permanece en el mundo y mantiene el resto 4. `sourceHash`: `f88aed004dd4fd1b4764e4dbcd959916fff2d7d4bb025a571920cbae86154078`.
+- **Pruebas finales:** `Logs/E01-editmode-final.xml` → 86/86; `Logs/E01-playmode-final.xml` → 59/59; cero fallos, omitidos o inconclusos. Incluyen límites, material por tipo, idempotencia, exclusión de altas genéricas, migración y trigger físico.
+- **Validación y builds:** `ProjectDevelopmentChecks.RunAll` pasó en Unity `6000.6.5f1`, log `Logs/Unity-E01-ProjectChecks.log`. Windows Standalone64 y WebGL terminaron con exit code 0; procedencias: `Logs/Builds/E01-Windows/Luckbound.provenance.json` y `Logs/Builds/E01-WebGL/unity-build.provenance.json`; logs `Logs/build-StandaloneWindows64-1791835294340.log` y `Logs/build-WebGL-1791835337834.log`. Solo hubo avisos no bloqueantes de Licensing Client y JS/WebGPU.
+- **Prueba WebGL manual:** build servida localmente en `http://localhost:8082/`, siempre en pestaña oculta. La taberna inicia la expedición de Bellator; el recibo visible muestra los seis contadores, salud/energía, checkpoint y el `RunId` completo `8c50b7271a994f808747a387535cc276`. Dos recargas consecutivas conservan el mismo ID y el checkpoint. No se publicó esta build.
+- **Resultado:** E01 `Verified`; E02 queda técnicamente habilitada, pero no se inicia. Fran pidió el 13 de octubre optimizar el plan y parar antes de comenzar desarrollo nuevo. El progreso de D09 sigue en `NeedsOwnerReview`; A06 sigue `InProgress` a la espera de secretos y permisos para la ejecución real de GitHub Actions. No se modificó el remoto ni la ruta pública `/Luckbound/`.
+
+## Preparación E02 — Fabricación (Pending; sin implementación)
+
+- **Contrato:** receta válida consume exactamente los materiales y oro y crea el resultado previsto. Una receta inválida, sin recursos, sin espacio o incompatible no cambia el inventario. Las mejoras de armas/armaduras son consecutivas; no se puede saltar directamente a +2 o +3.
+- **Dependencia técnica comprobada:** E01 `Verified`; D09 conserva `NeedsOwnerReview` con evidencia técnica suficiente para continuar.
+- **Alcance previsto:** paquetes E02.DATA, E02.TXN y E02.ADAPTER de AGENT_EXECUTION.md: doce recetas, operación atómica y confirmación persistente/acceso por intención del jugador. No se ha comenzado su implementación.
+- **Resultado:** pendiente de implementación y aceptación de E02.
+
+## Optimización documental — Plan 3.0
+
+- **Petición:** preparar el desarrollo para trabajadores `gpt-6-luna` en `max` y parar antes de comenzar.
+- **Cambios:** grafo explícito de 111 tareas sin dependencias automáticas entre filas; coordinador y hasta tres trabajadores, contexto nuevo por contrato, propiedad de archivos, integración serial, una cola Unity y paquetes de aceptación demostrable.
+- **Próxima oleada prevista:** consolidar primero E01; después E02.DATA, F01 y F07. La oleada necesita una nueva orden de comenzar.
+- **Preproducción conservada:** no se cambian reglas, economía, arquitectura, contenidos, conteos ni aceptaciones. H11 se verifica antes de unir la campaña H10; acabado artístico/sonoro y sistemas independientes pueden avanzar antes.
+- **Reducción estructural:** niveles de dependencia pendientes de 68 a 15; supone duraciones uniformes y no es una predicción de tiempo o coste.
+- **Verificación documental:** 111 IDs únicos en producto/grafo/progreso, dependencias sincronizadas y sin ciclos, 28 enlaces locales válidos, `git diff --check` limpio. Los hashes de 450 archivos de código/configuración y referencias originales coinciden con el inicio de esta optimización. Informe local: `Logs/Documentation/plan-3.0-validation.json`. No se ejecutó Unity para comprobar documentos.
+- **Resultado:** documentación guardada el 13 de octubre; ese día no se inició implementación, generación de recursos, prueba Unity, build ni publicación. La reanudación posterior se registra en las fichas siguientes. Cinco revisiones de Fran aún `Pending`.
+
+## Reanudación — consolidación de E01 (14 de octubre de 2026)
+
+- **Implementación consolidada:** commit `fd3626f` (`feat(inventory): add physical world material pickups`). Doce archivos de código, escena y tests; las referencias originales del usuario no se incluyeron.
+- **Evidencia anterior conservada:** suites completas EditMode `86/86` y PlayMode `59/59`; Windows y WebGL terminaron con código 0 en Unity `6000.6.5f1`.
+- **Aceptación dirigida repetida:** escenario `E01_PhysicalWorldMaterialPickupAndBag`, cinco aserciones aprobadas, hash actual exacto `22a1beca91fdaeba7e8648fc888db9e7c00eb08688c1d9860f6e57ff38fe1aea`; informe `Logs/Scenarios/E01/20261014T182416019Z_E01_PhysicalWorldMaterialPickupAndBag_2d41e8bf/scenario-report.json`. EditMode `16/16` en `Logs/E01-resume-editmode.xml`; PlayMode `1/1` en `Logs/E01-resume-playmode.xml`. Ambas se ejecutaron con Unity en `-batchmode -nographics`.
+- **Estado:** E01 Verified y consolidada; E02 aún Pending hasta despachar E02.DATA. No se ejecutó un nuevo build en esta reanudación.
+
+## Regla de visibilidad — 14 de octubre de 2026
+
+- **Petición:** ninguna ventana visible salvo que Fran necesite tomar una decisión.
+- **Documentos actualizados:** AGENTS.md, plan 3.1 y guía de ejecución 1.1; regla transmitida en los prompts de despacho y reanudación.
+- **Aplicación:** ejecución sin interfaz, procesos/pestañas ocultos o entorno aislado con escritorio propio; no abrir ni enfocar demos, herramientas, terminales o previsualizaciones automáticamente.
+- **Si no se puede aislar:** registrar el bloqueo y continuar con una alternativa o trabajo independiente, sin mostrar la ventana ni atribuirle una prueba.
+- **Resultado:** preferencia guardada para futuras sesiones. No se ha iniciado desarrollo ni se han abierto herramientas gráficas para esta petición; E02 sigue Pending.
 
 ## Ficha que debe completar cada ejecución
 
