@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 1.2 · 14 de octubre de 2026.
+**Versión:** 1.3 · 14 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -12,16 +12,16 @@ Este documento convierte las 111 tareas del producto en trabajo distribuible par
 
 La edición documental del 13 de octubre detuvo el desarrollo antes de E02. Fran reactivó el objetivo completo el 14 de octubre. El coordinador continúa desde el estado registrado abajo; preparar esta guía no acredita tareas del producto.
 
-Estado inicial que deberá comprobar el coordinador al retomar:
+Estado inicial confirmado al reanudar el 14 de octubre; el avance posterior está en [PROGRESS.md](PROGRESS.md):
 
 - E01 está consolidada en `fd3626f`. El escenario de recogida física y los tests dirigidos de esta reanudación constan en PROGRESS.md; conservar su hash de origen junto con la evidencia.
-- E02 vuelve a `Pending`: existía una ficha de intención, pero no una implementación.
+- E02 estaba `Pending` al reanudar y ahora está `InProgress`; E02.DATA está asignado en un worktree, mientras la integración y aceptación del padre siguen pendientes.
 - A06 tiene un bloqueo de acceso/secretos para ejecutar Actions; no se atribuye al workflow una ejecución remota inexistente.
 - Las cinco revisiones de Fran siguen pendientes. Permiten trabajo técnico independiente, pero no equivalen a aprobación.
 - Editor fijado: Unity `6000.6.5f1`. Mantener paquetes y módulos ya comprobados.
 - El recorrido de `Expedition` existente incluye un recibo de sesión/checkpoint; no demuestra por sí mismo una campaña jugable. F09 debe conectar jugador, salas, combate y resultados reales.
 
-**Oleada al reanudar:** releer el estado de Git y las fichas D09/E01; después de consolidar E01, despachar E02.DATA, F01 y F07. Si una evidencia posterior difiere por contenido, repetir la comprobación pertinente. No rehacer automáticamente todas las builds ni añadir las cuatro referencias originales del usuario a un commit de código.
+**Oleada ejecutada al reanudar:** releer el estado de Git y las fichas D09/E01; después de consolidar E01, despachar E02.DATA, F01 y F07. El estado de cada entrega e integración se mantiene en PROGRESS.md. Si una evidencia posterior difiere por contenido, repetir la comprobación pertinente. No rehacer automáticamente todas las builds ni añadir las cuatro referencias originales del usuario a un commit de código.
 
 ## 2. Modelos, plazas y responsabilidades
 
@@ -110,15 +110,15 @@ Verificación WebGL en pestaña oculta (`visible:false` cuando la API lo ofrezca
 
 ### 3.5. Regla general de visibilidad
 
-**Fran solo debe ver una ventana cuando NECESITE tomar una decisión.** Aplica a coordinador y trabajadores, y a todas las ventanas, pestañas y paneles: Unity, juegos Windows/WebGL, terminales, navegadores, herramientas y previsualizaciones.
+**Fran no debe ver ninguna ventana salvo cuando su intervención sea necesaria para tomar una decisión concreta.** Aplica al coordinador y a los trabajadores, a todas las aplicaciones y a toda la interfaz: ventanas auxiliares, pestañas, paneles, diálogos, notificaciones y previsualizaciones, incluidas las de Codex/ChatGPT, Unity, juegos Windows/WebGL, terminales, navegadores y herramientas.
 
-1. Antes de lanzar una herramienta, comprobar que su ejecución y procesos secundarios no abrirán UI visible en el escritorio de Fran.
-2. Preferir ejecución sin interfaz; para navegador, pestañas ocultas; para una prueba con renderizado, proceso oculto o entorno aislado con escritorio propio. Al usar `Start-Process` en Windows, aplicar `-WindowStyle Hidden` cuando corresponda y verificar que la aplicación no cree otra ventana visible. No crear un entorno de pago.
-3. No abrir ni enfocar terminales, demos, archivos, capturas o resultados para mostrar avances. Guardar evidencia y comunicar resultados breves. Minimizar una ventana o dejarla en segundo plano no satisface la regla.
-4. Solo mostrar la interfaz mínima si Fran debe realizar una elección, una autorización imprescindible o una revisión acordada; explicar qué debe decidir. No convertir una comprobación técnica en una petición de presencia o aprobación.
-5. Si no hay ejecución oculta/aislada disponible, no abrir la herramienta en su escritorio. Registrar la operación bloqueada y continuar con una alternativa o tarea independiente, conservando pendiente su comprobación.
+1. Antes de lanzar una herramienta, comprobar que la aplicación, procesos secundarios, avisos y ventanas emergentes no aparecerán en la pantalla de Fran.
+2. Preferir ejecución sin interfaz; para navegador, pestañas ocultas; para una prueba con renderizado, proceso oculto o sandbox/escritorio aislado que no pueda mostrarse en su escritorio. Al usar `Start-Process` en Windows, aplicar `-WindowStyle Hidden` cuando corresponda y verificar que la aplicación no cree otra ventana visible. No crear un entorno de pago.
+3. No abrir, enfocar ni dejar visibles terminales, demos, archivos, capturas, paneles o resultados para mostrar avances. Guardar evidencia y comunicar resultados breves. Minimizar una ventana o dejarla en segundo plano no satisface la regla.
+4. Solo mostrar la interfaz mínima que Fran deba usar para una decisión concreta, y solo mientras la toma. Una autorización imprescindible o revisión acordada cuenta únicamente si requiere esa decisión. No convertir una comprobación técnica en una petición de presencia o aprobación.
+5. Si no se puede garantizar ejecución oculta o aislada, no abrir la herramienta en el escritorio de Fran. Registrar la operación bloqueada y continuar con una alternativa o tarea independiente, conservando pendiente su comprobación.
 
-El coordinador incluye esta regla en cada despacho. Las cinco revisiones se preparan sin ventanas y se muestran únicamente cuando corresponda la decisión de Fran. No abrir siquiera estos documentos automáticamente al guardarlos.
+El coordinador incluye esta regla en cada despacho y verifica que los trabajadores la reciban. Las cinco revisiones se preparan ocultas y solo se presenta su interfaz mínima cuando Fran deba tomar la decisión correspondiente. No abrir siquiera estos documentos automáticamente al guardarlos.
 
 ## 4. Grafo canónico de las 111 tareas
 
@@ -554,7 +554,7 @@ no publiques y no rediseñes el sistema.
 Toda herramienta debe ejecutarse sin ventanas visibles para Fran:
 sin interfaz, oculta o en un entorno aislado. No abras demos, terminales
 ni previsualizaciones; si no puedes aislarlas, registra el bloqueo.
-El coordinador gestiona la interfaz mínima para decisiones de Fran.
+El coordinador solo muestra a Fran la interfaz mínima que requiera una decisión concreta; todo lo demás permanece oculto o aislado.
 Entrega un diff/commit dirigido, tests pertinentes y un informe breve:
 archivos, comportamiento, comprobaciones realmente ejecutadas,
 evidencias y bloqueos. Si no ejecutaste un test, indícalo.

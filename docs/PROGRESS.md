@@ -2,15 +2,15 @@
 
 **Actualizado:** 14 de octubre de 2026.
 
-**Alcance vigente:** Fran reanudó el objetivo completo el 14 de octubre. E01 está consolidada y su aceptación dirigida fue repetida; continuar con los paquetes E02.DATA, F01 y F07 mediante trabajadores aislados.
+**Alcance vigente:** Fran reanudó el objetivo completo el 14 de octubre. E01 está consolidada; E02.DATA, F01 y F07 están asignadas a tres workers Luna independientes.
 
 Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, paquetes y grafo de ejecución: [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
 ## Estado actual (14 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08 y E01: Verified; A06: InProgress; D09: NeedsOwnerReview; E02: Pending. Las demás tareas figuran Pending en la tabla inferior.
-- Desarrollo reanudado por Fran el 14 de octubre. E02 solo tenía una ficha preparatoria, sin implementación; permanece Pending hasta iniciar su primer paquete.
-- Regla de visibilidad del 14 de octubre: Fran solo ve una ventana si necesita tomar una decisión. Toda ejecución interna se realiza sin interfaz, oculta o en un entorno aislado; aplica también a subagentes y previsualizaciones.
+- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08 y E01: Verified; A06: InProgress; D09: NeedsOwnerReview; E02, F01 y F07: InProgress con paquetes delimitados; las demás tareas figuran Pending en la tabla inferior.
+- Desarrollo reanudado por Fran el 14 de octubre. E02.DATA está asignado en un worktree aislado; el padre E02 sigue InProgress hasta integrar y verificar sus paquetes.
+- Regla estricta de visibilidad del 14 de octubre: ninguna ventana, pestaña, panel, notificación ni previsualización debe aparecer en la pantalla de Fran salvo la interfaz mínima que requiera una decisión concreta suya. Toda ejecución interna permanece sin interfaz, oculta o en un sandbox/escritorio aislado; aplica también a subagentes, procesos secundarios y ventanas emergentes.
 - E01 está consolidada en el commit `fd3626f`; las cuatro referencias originales del usuario permanecen sin seguimiento y fuera del commit.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
@@ -514,11 +514,11 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Prueba WebGL manual:** build servida localmente en `http://localhost:8082/`, siempre en pestaña oculta. La taberna inicia la expedición de Bellator; el recibo visible muestra los seis contadores, salud/energía, checkpoint y el `RunId` completo `8c50b7271a994f808747a387535cc276`. Dos recargas consecutivas conservan el mismo ID y el checkpoint. No se publicó esta build.
 - **Resultado:** E01 `Verified`; E02 queda técnicamente habilitada, pero no se inicia. Fran pidió el 13 de octubre optimizar el plan y parar antes de comenzar desarrollo nuevo. El progreso de D09 sigue en `NeedsOwnerReview`; A06 sigue `InProgress` a la espera de secretos y permisos para la ejecución real de GitHub Actions. No se modificó el remoto ni la ruta pública `/Luckbound/`.
 
-## Preparación E02 — Fabricación (Pending; sin implementación)
+## Ejecución E02 — Fabricación (InProgress; paquete E02.DATA asignado)
 
 - **Contrato:** receta válida consume exactamente los materiales y oro y crea el resultado previsto. Una receta inválida, sin recursos, sin espacio o incompatible no cambia el inventario. Las mejoras de armas/armaduras son consecutivas; no se puede saltar directamente a +2 o +3.
 - **Dependencia técnica comprobada:** E01 `Verified`; D09 conserva `NeedsOwnerReview` con evidencia técnica suficiente para continuar.
-- **Alcance previsto:** paquetes E02.DATA, E02.TXN y E02.ADAPTER de AGENT_EXECUTION.md: doce recetas, operación atómica y confirmación persistente/acceso por intención del jugador. No se ha comenzado su implementación.
+- **Paquete actual:** E02.DATA construye doce definiciones y un loader validado en su worktree. La transacción atómica y su adaptador duradero aún no se han implementado.
 - **Resultado:** pendiente de implementación y aceptación de E02.
 
 ## Optimización documental — Plan 3.0
@@ -536,15 +536,23 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Implementación consolidada:** commit `fd3626f` (`feat(inventory): add physical world material pickups`). Doce archivos de código, escena y tests; las referencias originales del usuario no se incluyeron.
 - **Evidencia anterior conservada:** suites completas EditMode `86/86` y PlayMode `59/59`; Windows y WebGL terminaron con código 0 en Unity `6000.6.5f1`.
 - **Aceptación dirigida repetida:** escenario `E01_PhysicalWorldMaterialPickupAndBag`, cinco aserciones aprobadas, hash actual exacto `22a1beca91fdaeba7e8648fc888db9e7c00eb08688c1d9860f6e57ff38fe1aea`; informe `Logs/Scenarios/E01/20261014T182416019Z_E01_PhysicalWorldMaterialPickupAndBag_2d41e8bf/scenario-report.json`. EditMode `16/16` en `Logs/E01-resume-editmode.xml`; PlayMode `1/1` en `Logs/E01-resume-playmode.xml`. Ambas se ejecutaron con Unity en `-batchmode -nographics`.
-- **Estado:** E01 Verified y consolidada; E02 aún Pending hasta despachar E02.DATA. No se ejecutó un nuevo build en esta reanudación.
+- **Estado registrado en esta ficha:** E01 Verified y consolidada. En ese punto E02 seguía Pending; E02.DATA se asignó después, como registra la sección siguiente. No se ejecutó un nuevo build en esta reanudación.
+
+## Asignaciones paralelas — 14 de octubre de 2026
+
+- **E02 / E02.DATA:** worktree `luckbound-e02-data`; catálogo/loader/validación de recetas.
+- **F01:** worktree `luckbound-f01-art`; lámina maestra y guía/manifiesto artístico con imagegen.
+- **F07:** worktree `luckbound-f07-audio`; partitura estructurada, síntesis y validación WAV local.
+- **Base común:** `184e363fa4b5cb0af7cf548f96c11563ceaa905c`. Cada paquete tiene rutas propias; las referencias originales no están dentro de los worktrees y no se incluyen.
+- **Verificación:** pendiente de entrega de los workers e integración en el checkout principal. Un worker no puede declarar Verified. No correrán Unity en paralelo; estos tres paquetes pueden preparar código, imágenes y audio de forma aislada.
 
 ## Regla de visibilidad — 14 de octubre de 2026
 
-- **Petición:** ninguna ventana visible salvo que Fran necesite tomar una decisión.
-- **Documentos actualizados:** AGENTS.md, plan 3.1 y guía de ejecución 1.1; regla transmitida en los prompts de despacho y reanudación.
-- **Aplicación:** ejecución sin interfaz, procesos/pestañas ocultos o entorno aislado con escritorio propio; no abrir ni enfocar demos, herramientas, terminales o previsualizaciones automáticamente.
-- **Si no se puede aislar:** registrar el bloqueo y continuar con una alternativa o trabajo independiente, sin mostrar la ventana ni atribuirle una prueba.
-- **Resultado:** preferencia guardada para futuras sesiones. No se ha iniciado desarrollo ni se han abierto herramientas gráficas para esta petición; E02 sigue Pending.
+- **Petición:** Fran no verá ninguna ventana salvo la interfaz mínima necesaria para que tome una decisión concreta.
+- **Documentos actualizados:** AGENTS.md, plan 3.3 y guía de ejecución 1.3; la regla se incluye en las instrucciones vigentes para agentes.
+- **Aplicación:** ejecución sin interfaz, procesos/pestañas ocultos o sandbox/escritorio aislado que no pueda aparecer en su pantalla; comprobar procesos secundarios, notificaciones y ventanas emergentes.
+- **Si no se puede aislar:** no abrir la herramienta en su escritorio; registrar el bloqueo y continuar con una alternativa o trabajo independiente, sin atribuirle una prueba.
+- **Resultado:** preferencia estricta guardada para futuras sesiones. Las asignaciones actuales usan worktrees separados y herramientas sin ventanas visibles; no se abre una ventana por el mero hecho de guardar o enseñar resultados.
 
 ## Ficha que debe completar cada ejecución
 

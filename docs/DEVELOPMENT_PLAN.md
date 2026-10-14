@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.2 — 14 de octubre de 2026.
+**Versión del documento:** 3.3 — 14 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -12,9 +12,9 @@ El registro de ejecución se conserva en [PROGRESS.md](PROGRESS.md). La guía br
 
 La organización de trabajo, el grafo explícito de las 111 tareas y los paquetes para subagentes **GPT-6 Luna en max** están en [AGENT_EXECUTION.md](AGENT_EXECUTION.md). La versión 3.0 cambia la ejecución y las dependencias artificiales; conserva el alcance, las reglas, la arquitectura y los criterios de aceptación del juego.
 
-La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajena a una decisión necesaria de Fran debe permanecer oculta o en un entorno aislado, conforme a [5.6](#56-ejecución-invisible-y-decisiones-de-fran). La versión 3.2 registra que Fran reanudó el objetivo completo el 14 de octubre.
+La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajena a una decisión necesaria de Fran debe permanecer oculta o en un entorno aislado, conforme a [5.6](#56-ejecución-invisible-y-decisiones-de-fran). La versión 3.2 registra que Fran reanudó el objetivo completo el 14 de octubre. La versión 3.3 aclara que ninguna ventana auxiliar, notificación ni previsualización puede aparecerle: solo la interfaz mínima que requiera una decisión suya.
 
-**Instrucción vigente (14 de octubre):** Fran reanudó el desarrollo completo. El coordinador continúa desde E01, consolida su evidencia y despacha los paquetes independientes listos conforme a [AGENT_EXECUTION.md](AGENT_EXECUTION.md). El registro de progreso describe cada tarea ejecutada; este plan por sí solo no acredita su implementación.
+**Instrucción vigente (14 de octubre):** Fran reanudó el desarrollo completo. E01 quedó consolidada; continuar con E02.DATA, F01 y F07 según las asignaciones y dependencias de [AGENT_EXECUTION.md](AGENT_EXECUTION.md) y el estado real de [PROGRESS.md](PROGRESS.md). El registro de progreso describe cada tarea ejecutada; este plan por sí solo no acredita su implementación.
 
 ## Índice
 
@@ -1283,12 +1283,12 @@ No se añade infraestructura de agentes, servicios de pago o un SDK de orquestac
 
 ### 5.6. Ejecución invisible y decisiones de Fran
 
-**Fran solo debe ver una ventana cuando NECESITE tomar una decisión.** La regla se aplica al coordinador y a todos los subagentes, a cualquier herramienta y a toda ejecución interna, no solo a WebGL.
+**Fran no debe ver ninguna ventana salvo cuando su intervención sea necesaria para tomar una decisión concreta.** La regla se aplica al coordinador y a todos los subagentes, a toda interfaz y ejecución interna, no solo a WebGL. Abarca también ventanas auxiliares, paneles de Codex/ChatGPT, pestañas, notificaciones, diálogos y previsualizaciones.
 
-- Ejecutar tests, builds, servidores y herramientas sin interfaz visible. Navegadores/pestañas ocultos; Unity, juegos Windows y comprobaciones gráficas en procesos ocultos o en un entorno aislado con su propio escritorio cuando necesiten renderizado.
-- No abrir, enfocar ni traer al frente ventanas, terminales, Explorador, pestañas o paneles de archivos para enseñar trabajo técnico. No navegar las pestañas de Fran. Minimizar o dejar una ventana detrás de otra no equivale a aislamiento.
+- Ejecutar tests, builds, servidores y herramientas sin interfaz visible. Navegadores/pestañas ocultos; Unity, juegos Windows y comprobaciones gráficas en procesos ocultos o en un sandbox/escritorio aislado que no pueda aparecer en la pantalla de Fran cuando necesiten renderizado.
+- No abrir, enfocar, traer al frente ni dejar visibles ventanas, terminales, Explorador, pestañas, paneles, diálogos o previsualizaciones para enseñar trabajo técnico. No navegar las pestañas de Fran. Comprobar ventanas emergentes y procesos secundarios. Minimizar o dejar una ventana detrás de otra no equivale a aislamiento.
 - Guardar capturas, resultados, audio y documentos como evidencia; comunicar el resultado brevemente sin abrir previsualizaciones automáticamente.
-- Solo mostrar la interfaz mínima para una decisión real de Fran, una autorización imprescindible o una de las cinco revisiones acordadas, indicando qué debe decidir. Una prueba técnica rutinaria no requiere su presencia.
+- Solo mostrar la interfaz mínima que Fran deba usar para una decisión concreta, y solo mientras la toma. Una autorización o una de las cinco revisiones acordadas justifica mostrarla únicamente si requiere esa decisión. Una prueba técnica rutinaria no requiere su presencia.
 - Si la herramienta no puede funcionar sin ventanas visibles ni en un entorno aislado, no ejecutarla en el escritorio de Fran. Registrar el bloqueo concreto y usar una alternativa o continuar con trabajo independiente; no presentar una prueba no ejecutada como aprobada.
 
 Las revisiones de Fran mantienen sus criterios y builds; no se abren demostraciones por adelantado ni ventanas auxiliares sin una decisión que necesite tomar.
