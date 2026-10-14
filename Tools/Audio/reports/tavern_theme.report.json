@@ -69,7 +69,7 @@
     ],
     "loop": true,
     "mode": "D_dorian",
-    "sha256": "a961e5e36ccd6d97f9edb6e457743a4ee08e7130d48964568671af9e7b88678e",
+    "sha256": "ba977ad17ef7c050040fd5bc6a465d556f4b69eb95df95e054ea4f0856cb53db",
     "synthesis_parameters": {
       "channels": 1,
       "normalization": "global RMS target, capped by requested peak",

@@ -39,16 +39,17 @@
       "sha256": "af5e34ae67a485440cad5f912a944b9b764b9d5d366a5a4932fd33e1ca1f7c47"
     },
     "report": {
-      "bytes": 2847,
+      "bytes": 2751,
       "path": "Tools/Audio/reports/tavern_theme.report.json",
-      "sha256": "de7b4ab5a3fe56f47e9e6395f949e74edb08f688c03189be9cc2ce10e05418bf"
+      "sha256": "1dcdd46399ec3858b83dc441c9566056ba054dd697d6a3399d661f314cdd21d4"
     },
     "score": {
-      "bytes": 74275,
+      "bytes": 71180,
       "path": "Tools/Audio/scores/tavern_theme.json",
-      "sha256": "a961e5e36ccd6d97f9edb6e457743a4ee08e7130d48964568671af9e7b88678e"
+      "sha256": "ba977ad17ef7c050040fd5bc6a465d556f4b69eb95df95e054ea4f0856cb53db"
     }
   },
+  "hash_policy": "SHA-256 covers exact stored bytes; the Audio .gitattributes rules pin JSON files to LF across checkouts.",
   "manifest_version": 1,
   "renderer": {
     "name": "luckbound-offline-audio",
