@@ -1,0 +1,96 @@
+{
+  "audio": {
+    "bytes": 10160684,
+    "channels": 1,
+    "clipped_sample_count": 0,
+    "duration_seconds": 76.8,
+    "expected_duration_seconds": 76.8,
+    "file": "Tools\\Audio\\masters\\patio_theme.wav",
+    "frames": 3386880,
+    "min_100ms_window_rms_dbfs": -24.92094469,
+    "peak_dbfs": -8.03368973,
+    "rms_dbfs": -20.0,
+    "sample_rate_hz": 44100,
+    "sha256": "c0349eaaf0f5b2fbf8fa84e0837ae97b8c85907031ebfd4da3b898641050fb70",
+    "silent_100ms_window_count": 0
+  },
+  "checks": {
+    "duration_matches_score": true,
+    "loop_join": {
+      "boundary_slope_jump_dbfs": -114.95197282,
+      "boundary_step_dbfs": -240.0,
+      "boundary_step_limit_dbfs": -60.0,
+      "checked": true,
+      "end_sample": 0.0,
+      "passed": true,
+      "start_sample": 0.0
+    },
+    "no_clipping": true,
+    "no_silent_100ms_windows": true,
+    "nonempty_wav": true,
+    "peak_at_or_below_minus_1_dbfs": true,
+    "schema_valid": true
+  },
+  "report_version": 1,
+  "runtime": {
+    "numpy": "2.5.4",
+    "python": "3.14.7",
+    "soundfile": "0.14.0"
+  },
+  "score": {
+    "bars": 32,
+    "instrument_count": 5,
+    "instruments": [
+      {
+        "gain": 0.74,
+        "id": "lyre",
+        "preset": "plucked_strings"
+      },
+      {
+        "gain": 0.33,
+        "id": "breeze",
+        "preset": "soft_flute"
+      },
+      {
+        "gain": 0.4,
+        "id": "root",
+        "preset": "simple_bass"
+      },
+      {
+        "gain": 0.08,
+        "id": "stone_tick",
+        "preset": "light_percussion"
+      },
+      {
+        "gain": 0.19,
+        "id": "haze",
+        "preset": "sustained_pad"
+      }
+    ],
+    "loop": true,
+    "mode": "D_dorian",
+    "sha256": "b0ad2b545404388bd00cc0b0514a0b16a1f7e7dc6a52f7612cc5714993c66286",
+    "synthesis_parameters": {
+      "channels": 1,
+      "normalization": "global RMS target, capped by requested peak",
+      "note_timing": "rounded absolute beat positions; no cumulative per-note rounding drift",
+      "sample_rate_hz": 44100,
+      "subtype": "PCM_24",
+      "target_peak_dbfs": -1.0,
+      "target_rms_dbfs": -20.0
+    },
+    "tempo_bpm": 100,
+    "time_signature": "4/4",
+    "title": "The Petrified Atrium - original courtyard exploration",
+    "total_beats": 128
+  },
+  "status": "passed",
+  "tool": {
+    "name": "luckbound-offline-audio",
+    "requirements_sha256": "b3ca2adde5fb4cec4bc84b0cdabe4a059679b525276646fc18d41c8c28594e36",
+    "schema_sha256": "81d2f74bc9e62eeb4574e12a13d115ea13fad16e3f15ac2256e07965ff9542a5",
+    "schema_validator_sha256": "cb627944f6446ba5be3ee11b54a1735f526938ee368078145240d72bf35c6861",
+    "source_sha256": "7b917da7c07866dd416788745396fa449a4e1da571c56b53308a1a96f6586a35",
+    "synthesis_version": "1.0.0"
+  }
+}

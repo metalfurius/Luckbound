@@ -1,0 +1,74 @@
+{
+  "acceptance": {
+    "checks": {
+      "duration_matches_score": true,
+      "loop_join": {
+        "boundary_slope_jump_dbfs": -114.95197282,
+        "boundary_step_dbfs": -240.0,
+        "boundary_step_limit_dbfs": -60.0,
+        "checked": true,
+        "end_sample": 0.0,
+        "passed": true,
+        "start_sample": 0.0
+      },
+      "no_clipping": true,
+      "no_silent_100ms_windows": true,
+      "nonempty_wav": true,
+      "peak_at_or_below_minus_1_dbfs": true,
+      "schema_valid": true
+    },
+    "metrics": {
+      "clipped_sample_count": 0,
+      "duration_seconds": 76.8,
+      "expected_duration_seconds": 76.8,
+      "frames": 3386880,
+      "min_100ms_window_rms_dbfs": -24.92094469,
+      "peak_dbfs": -8.03368973,
+      "rms_dbfs": -20.0,
+      "silent_100ms_window_count": 0
+    },
+    "status": "passed"
+  },
+  "asset_id": "patio_theme",
+  "files": {
+    "master": {
+      "bytes": 10160684,
+      "format": "WAV PCM_24 mono",
+      "path": "Tools/Audio/masters/patio_theme.wav",
+      "sample_rate_hz": 44100,
+      "sha256": "c0349eaaf0f5b2fbf8fa84e0837ae97b8c85907031ebfd4da3b898641050fb70"
+    },
+    "report": {
+      "bytes": 2725,
+      "path": "Tools/Audio/reports/patio_theme.report.json",
+      "sha256": "a059a45f6cb4e7dd38709047f8ce7d727cddd0c4ff5cd3ab9624b8214a1a0df0"
+    },
+    "score": {
+      "bytes": 49399,
+      "path": "Tools/Audio/scores/patio_theme.json",
+      "sha256": "b0ad2b545404388bd00cc0b0514a0b16a1f7e7dc6a52f7612cc5714993c66286"
+    }
+  },
+  "hash_policy": "SHA-256 covers exact stored bytes; the Audio .gitattributes rules pin JSON files to LF across checkouts.",
+  "manifest_version": 1,
+  "renderer": {
+    "name": "luckbound-offline-audio",
+    "requirements_sha256": "b3ca2adde5fb4cec4bc84b0cdabe4a059679b525276646fc18d41c8c28594e36",
+    "runtime": {
+      "numpy": "2.5.4",
+      "python": "3.14.7",
+      "soundfile": "0.14.0"
+    },
+    "source_sha256": "7b917da7c07866dd416788745396fa449a4e1da571c56b53308a1a96f6586a35",
+    "synthesis_version": "1.0.0"
+  },
+  "score_contract": {
+    "bars": 32,
+    "duration_seconds": 76.8,
+    "loop": true,
+    "mode": "D_dorian",
+    "tempo_bpm": 100,
+    "time_signature": "4/4",
+    "total_beats": 128
+  }
+}

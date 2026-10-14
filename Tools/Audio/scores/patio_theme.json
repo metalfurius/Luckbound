@@ -1,0 +1,2325 @@
+{
+  "schema_version": 1,
+  "title": "The Petrified Atrium - original courtyard exploration",
+  "mode": "D_dorian",
+  "time_signature": "4/4",
+  "tempo_bpm": 100,
+  "sample_rate_hz": 44100,
+  "loop": true,
+  "target_peak_dbfs": -1.0,
+  "target_rms_dbfs": -20.0,
+  "instruments": [
+    {
+      "id": "lyre",
+      "preset": "plucked_strings",
+      "gain": 0.74
+    },
+    {
+      "id": "breeze",
+      "preset": "soft_flute",
+      "gain": 0.33
+    },
+    {
+      "id": "root",
+      "preset": "simple_bass",
+      "gain": 0.4
+    },
+    {
+      "id": "stone_tick",
+      "preset": "light_percussion",
+      "gain": 0.08
+    },
+    {
+      "id": "haze",
+      "preset": "sustained_pad",
+      "gain": 0.19
+    }
+  ],
+  "bars": [
+    {
+      "number": 1,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.328
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.306
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "E4",
+              "duration_beats": 1,
+              "velocity": 0.324
+            },
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.355
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.324
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.355
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "E2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.328
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.306
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.324
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 2,
+              "velocity": 0.355
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "F2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "F5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.324
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 2,
+              "velocity": 0.355
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.39
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.324
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.355
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.34
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.413
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.348
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.357
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.321
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.257
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.282
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.238
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.254
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "E2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.26
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.238
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.254
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.26
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 2,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.243
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.257
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 2,
+              "velocity": 0.282
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 1,
+              "velocity": 0.238
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.254
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.257
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 2,
+              "velocity": 0.282
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.243
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "F2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "F5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.26
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.238
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.254
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.257
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.282
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.27
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 2,
+              "velocity": 0.243
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.329
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.276
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.284
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.25
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.267
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.357
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.391
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.334
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 2,
+              "velocity": 0.357
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.357
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.391
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.334
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.357
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "E2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.357
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 2,
+              "velocity": 0.391
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "F5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.334
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.357
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "F2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "F5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.361
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.342
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.357
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.391
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.334
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.357
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "F4",
+              "duration_beats": 2,
+              "velocity": 0.361
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.334
+            },
+            {
+              "pitch": "F5",
+              "duration_beats": 2,
+              "velocity": 0.357
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "F2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "F5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.43
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.357
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.391
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.38
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.334
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.357
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "E2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.456
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.378
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 2,
+              "velocity": 0.414
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.399
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.351
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.375
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 2,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.302
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.279
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 2,
+              "velocity": 0.328
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.273
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 2,
+              "velocity": 0.291
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.302
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.273
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.291
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "C2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 28,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.328
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 2,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.279
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 4,
+              "velocity": 0.36
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4,
+              "velocity": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.328
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "E5",
+              "duration_beats": 1,
+              "velocity": 0.273
+            },
+            {
+              "pitch": "G5",
+              "duration_beats": 2,
+              "velocity": 0.291
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "E2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "E5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 2,
+              "velocity": 0.328
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "B4",
+              "duration_beats": 1,
+              "velocity": 0.273
+            },
+            {
+              "pitch": "G4",
+              "duration_beats": 2,
+              "velocity": 0.291
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "G2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "G5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "D4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.36
+            },
+            {
+              "pitch": "A4",
+              "duration_beats": 1,
+              "velocity": 0.299
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.328
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.31
+            },
+            {
+              "pitch": "C5",
+              "duration_beats": 1,
+              "velocity": 0.273
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 1,
+              "velocity": 0.291
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "A2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "A5",
+              "duration_beats": 4,
+              "velocity": 0.12
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "tracks": [
+        {
+          "instrument": "lyre",
+          "notes": [
+            {
+              "pitch": "A4",
+              "duration_beats": 2,
+              "velocity": 0.317
+            },
+            {
+              "pitch": "D5",
+              "duration_beats": 2,
+              "velocity": 0.266
+            }
+          ]
+        },
+        {
+          "instrument": "breeze",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 4,
+              "velocity": 0.26
+            }
+          ]
+        },
+        {
+          "instrument": "root",
+          "notes": [
+            {
+              "pitch": "D2",
+              "duration_beats": 4,
+              "velocity": 0.32
+            }
+          ]
+        },
+        {
+          "instrument": "stone_tick",
+          "notes": [
+            {
+              "pitch": "D5",
+              "duration_beats": 4,
+              "velocity": 0.24
+            }
+          ]
+        },
+        {
+          "instrument": "haze",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration_beats": 4,
+              "velocity": 0.19
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
