@@ -38,11 +38,16 @@ namespace Luckbound.Editor
                     Image rule = HubPreparationScaffoldGenerator.CreateImage("RunSessionRule", canvas.transform, "#D68F32");
                     HubPreparationScaffoldGenerator.Place(rule.rectTransform, new Vector2(164f, 2f), new Vector2(0f, 83f));
                     Text title = HubPreparationScaffoldGenerator.CreateText("RunSessionTitle", "EXPEDICIÓN PREPARADA",
-                        canvas.transform, new Vector2(0f, 61f), new Vector2(440f, 30f), 18, "#E8E3CD", FontStyle.Bold);
+                        canvas.transform, new Vector2(0f, 100f), new Vector2(440f, 26f), 16, "#E8E3CD", FontStyle.Bold);
                     Text summary = HubPreparationScaffoldGenerator.CreateText("RunSessionSummary", "Esperando configuración…",
-                        canvas.transform, new Vector2(0f, -18f), new Vector2(428f, 136f), 9, "#BDC6CC", FontStyle.Normal);
+                        canvas.transform, new Vector2(0f, 10f), new Vector2(428f, 144f), 8, "#BDC6CC", FontStyle.Normal);
                     Button returnButton = HubPreparationScaffoldGenerator.CreateButton("ReturnToTavernButton", "VOLVER A LA TABERNA",
-                        canvas.transform, new Vector2(0f, -108f), new Vector2(198f, 28f), 9, "#10111B", "#F0C15A");
+                        canvas.transform, new Vector2(110f, -112f), new Vector2(180f, 26f), 8, "#10111B", "#F0C15A");
+                    Button craftButton = HubPreparationScaffoldGenerator.CreateButton("CraftHealthPotionButton",
+                        "FABRICAR POCIÓN · 2 HIERBAS + 1 RESINA", canvas.transform,
+                        new Vector2(-110f, -112f), new Vector2(220f, 26f), 8, "#E8E3CD", "#32251F");
+                    Text craftStatus = HubPreparationScaffoldGenerator.CreateText("RunSessionCraftStatus", string.Empty,
+                        canvas.transform, new Vector2(0f, -86f), new Vector2(420f, 16f), 8, "#F0C15A", FontStyle.Bold);
                     GameObject presenterObject = new GameObject("ExpeditionRunSession");
                     SceneManager.MoveGameObjectToScene(presenterObject, scene);
                     ExpeditionRunSessionPresenter presenter = presenterObject.AddComponent<ExpeditionRunSessionPresenter>();
@@ -51,6 +56,8 @@ namespace Luckbound.Editor
                     serialized.FindProperty("_titleText").objectReferenceValue = title;
                     serialized.FindProperty("_summaryText").objectReferenceValue = summary;
                     serialized.FindProperty("_returnToTavernButton").objectReferenceValue = returnButton;
+                    serialized.FindProperty("_craftHealthPotionButton").objectReferenceValue = craftButton;
+                    serialized.FindProperty("_craftStatusText").objectReferenceValue = craftStatus;
                     serialized.ApplyModifiedPropertiesWithoutUndo();
                     changed = true;
                 }
@@ -59,11 +66,38 @@ namespace Luckbound.Editor
                     if (HubPreparationScaffoldGenerator.FindObject(scene, "ExpeditionRunSession") == null)
                         throw new InvalidOperationException("ExpeditionRunSessionCanvas exists without its presenter; the scene was left unchanged.");
                     Text summary = HubPreparationScaffoldGenerator.FindObject(scene, "RunSessionSummary")?.GetComponent<Text>();
+                    Text title = HubPreparationScaffoldGenerator.FindObject(scene, "RunSessionTitle")?.GetComponent<Text>();
                     Button returnButton = HubPreparationScaffoldGenerator.FindObject(scene, "ReturnToTavernButton")?.GetComponent<Button>();
-                    if (summary == null || returnButton == null)
-                        throw new InvalidOperationException("The existing ExpeditionRunSessionCanvas must contain its summary and return button.");
-                    changed |= SetRect(summary.rectTransform, new Vector2(0f, -18f), new Vector2(428f, 136f));
-                    changed |= SetRect(returnButton.GetComponent<RectTransform>(), new Vector2(0f, -108f), new Vector2(198f, 28f));
+                    if (summary == null || title == null || returnButton == null)
+                        throw new InvalidOperationException("The existing ExpeditionRunSessionCanvas must contain its title, summary and return button.");
+
+                    Button craftButton = HubPreparationScaffoldGenerator.FindObject(scene, "CraftHealthPotionButton")?.GetComponent<Button>();
+                    if (craftButton == null)
+                    {
+                        craftButton = HubPreparationScaffoldGenerator.CreateButton("CraftHealthPotionButton",
+                            "FABRICAR POCIÓN · 2 HIERBAS + 1 RESINA", canvasObject.transform,
+                            new Vector2(-110f, -112f), new Vector2(220f, 26f), 8, "#E8E3CD", "#32251F");
+                        changed = true;
+                    }
+                    Text craftStatus = HubPreparationScaffoldGenerator.FindObject(scene, "RunSessionCraftStatus")?.GetComponent<Text>();
+                    if (craftStatus == null)
+                    {
+                        craftStatus = HubPreparationScaffoldGenerator.CreateText("RunSessionCraftStatus", string.Empty,
+                            canvasObject.transform, new Vector2(0f, -86f), new Vector2(420f, 16f), 8, "#F0C15A", FontStyle.Bold);
+                        changed = true;
+                    }
+
+                    changed |= SetRect(title.rectTransform, new Vector2(0f, 100f), new Vector2(440f, 26f));
+                    changed |= SetRect(summary.rectTransform, new Vector2(0f, 10f), new Vector2(428f, 144f));
+                    changed |= SetRect(returnButton.GetComponent<RectTransform>(), new Vector2(110f, -112f), new Vector2(180f, 26f));
+                    changed |= SetRect(craftButton.GetComponent<RectTransform>(), new Vector2(-110f, -112f), new Vector2(220f, 26f));
+                    changed |= SetRect(craftStatus.rectTransform, new Vector2(0f, -86f), new Vector2(420f, 16f));
+
+                    ExpeditionRunSessionPresenter presenter = HubPreparationScaffoldGenerator.FindComponent<ExpeditionRunSessionPresenter>(scene, "ExpeditionRunSession");
+                    if (presenter == null)
+                        throw new InvalidOperationException("The existing ExpeditionRunSessionCanvas is missing its presenter; the scene was left unchanged.");
+                    changed |= SetObjectReference(presenter, "_craftHealthPotionButton", craftButton);
+                    changed |= SetObjectReference(presenter, "_craftStatusText", craftStatus);
                 }
 
                 if (changed)

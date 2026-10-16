@@ -5,8 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Luckbound.Content;
+using Luckbound.Core.Crafting;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
+using Luckbound.Core.Inventory;
 using Luckbound.Core.Progression;
 using Luckbound.Core.Saves;
 
@@ -25,6 +28,7 @@ namespace Luckbound.App
         private GameSettingsSaveData _settingsData = new GameSettingsSaveData();
         private PendingSettlement _pendingSettlement;
         private PendingPermanentUpgradePurchase _pendingPermanentUpgradePurchase;
+        private PendingCraft _pendingCraft;
         private readonly SemaphoreSlim _profileMutationGate = new SemaphoreSlim(1, 1);
         private ExpeditionSaveData _activeExpedition;
         private long _activeExpeditionRevision;
@@ -51,6 +55,7 @@ namespace Luckbound.App
         public string SettingsLoadMessage { get; private set; } = string.Empty;
         public bool HasPendingSettlement => _pendingSettlement != null;
         public bool HasPendingPermanentUpgradePurchase => _pendingPermanentUpgradePurchase != null;
+        public bool HasPendingCraftingWrite => _pendingCraft != null;
         public PermanentUpgradeKind? PendingPermanentUpgradeKind => _pendingPermanentUpgradePurchase == null
             ? (PermanentUpgradeKind?)null
             : _pendingPermanentUpgradePurchase.Purchase.Kind;
@@ -287,20 +292,98 @@ namespace Luckbound.App
             await _profileMutationGate.WaitAsync();
             try
             {
-                if (_pendingExpeditionCandidate == null)
-                    return new SaveWriteResult(false, "There is no pending expedition write.");
-                SaveWriteResult result = await _saveRepository.RetryPendingAsync(SaveDocument.Profile);
-                if (result.Succeeded)
-                {
-                    _activeExpedition = _pendingExpeditionCandidate.Clone();
-                    _activeExpeditionRevision++;
-                    if (_pendingExpeditionRun != null) ActiveRun = _pendingExpeditionRun;
-                    _pendingExpeditionCandidate = null;
-                    _pendingExpeditionRun = null;
-                }
-                return result;
+                return await RetryPendingExpeditionWriteUnderGateAsync();
             }
             finally { _profileMutationGate.Release(); }
+        }
+
+        public async Task<CraftingCommitResult> CraftActiveExpeditionAsync(
+            string recipeId, TransactionId transactionId, ItemInstanceId upgradeTargetInstanceId = default)
+        {
+            await _profileMutationGate.WaitAsync();
+            try
+            {
+                if (_pendingCraft != null)
+                {
+                    if (_pendingCraft.TransactionId != transactionId ||
+                        !string.Equals(_pendingCraft.RecipeId, recipeId, StringComparison.Ordinal) ||
+                        _pendingCraft.UpgradeTargetInstanceId != upgradeTargetInstanceId)
+                    {
+                        return new CraftingCommitResult(_pendingCraft.Outcome, persisted: false, pending: true,
+                            "A different crafting operation is waiting for its exact save retry.");
+                    }
+                    return await RetryPendingCraftingUnderGateAsync();
+                }
+
+                if (_pendingExpeditionCandidate != null)
+                    return new CraftingCommitResult(null, persisted: false, pending: true,
+                        "Retry the pending expedition write before starting another crafting operation.");
+                if (!CanContinueExpedition || ActiveRun == null || _activeExpedition == null)
+                    return new CraftingCommitResult(null, persisted: false, pending: false,
+                        "There is no safely resumable active expedition to craft in.");
+
+                RecipeCatalog recipeCatalog = RecipeCatalogJsonLoader.Load(
+                    LoadRequired("Luckbound/Data/Items/Recipes").text, ActiveRun.Inventory.Catalog);
+                ExpeditionInventory candidateInventory = ExpeditionInventory.Restore(
+                    ActiveRun.Inventory.Catalog, ActiveRun.Inventory.CreateSnapshot());
+                CraftingOutcome outcome = candidateInventory.TryCraft(
+                    recipeCatalog, recipeId, transactionId, upgradeTargetInstanceId);
+                ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);
+                ExpeditionSaveData candidateSave = _activeExpedition.Clone();
+                candidateSave.inventorySnapshotJson = JsonUtility.ToJson(candidateInventory.CreateSnapshot());
+                InventoryItemStack quickConsumable = candidateInventory.QuickConsumable;
+                candidateSave.healthPotionCharges = quickConsumable == null ? 0 : quickConsumable.Quantity;
+
+                SaveWriteResult save = await SaveExpeditionCandidateUnderGateAsync(
+                    candidateSave, _activeExpeditionRevision, candidateRun);
+                if (save.Succeeded)
+                    return new CraftingCommitResult(outcome, persisted: true, pending: false, save.Message);
+
+                if (HasPendingExpeditionWrite)
+                {
+                    _pendingCraft = new PendingCraft(recipeId, transactionId, upgradeTargetInstanceId, outcome);
+                    return new CraftingCommitResult(outcome, persisted: false, pending: true, save.Message);
+                }
+                return new CraftingCommitResult(outcome, persisted: false, pending: false, save.Message);
+            }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        public async Task<CraftingCommitResult> RetryPendingCraftingAsync()
+        {
+            await _profileMutationGate.WaitAsync();
+            try { return await RetryPendingCraftingUnderGateAsync(); }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        private async Task<CraftingCommitResult> RetryPendingCraftingUnderGateAsync()
+        {
+            if (_pendingCraft == null)
+                return new CraftingCommitResult(null, persisted: false, pending: false,
+                    "There is no pending crafting operation to retry.");
+
+            PendingCraft pending = _pendingCraft;
+            SaveWriteResult save = await RetryPendingExpeditionWriteUnderGateAsync();
+            return new CraftingCommitResult(pending.Outcome, persisted: save.Succeeded,
+                pending: !save.Succeeded && HasPendingExpeditionWrite, save.Message);
+        }
+
+        private async Task<SaveWriteResult> RetryPendingExpeditionWriteUnderGateAsync()
+        {
+            if (_pendingExpeditionCandidate == null)
+                return new SaveWriteResult(false, "There is no pending expedition write.");
+
+            SaveWriteResult result = await _saveRepository.RetryPendingAsync(SaveDocument.Profile);
+            if (result.Succeeded)
+            {
+                _activeExpedition = _pendingExpeditionCandidate.Clone();
+                _activeExpeditionRevision++;
+                if (_pendingExpeditionRun != null) ActiveRun = _pendingExpeditionRun;
+                _pendingExpeditionCandidate = null;
+                _pendingExpeditionRun = null;
+                _pendingCraft = null;
+            }
+            return result;
         }
 
         /// <summary>Commits a complete in-room snapshot while preserving the immutable room-entry rollback point.</summary>
@@ -350,34 +433,47 @@ namespace Luckbound.App
         private async Task<SaveWriteResult> SaveExpeditionCandidateAsync(ExpeditionSaveData candidate, long expectedRevision)
         {
             await _profileMutationGate.WaitAsync();
-            try
-            {
-                if (_activeExpedition == null || !SameExpeditionIdentity(_activeExpedition, candidate))
-                    return new SaveWriteResult(false, "The active expedition changed before this update could be saved.");
-                if (_activeExpeditionRevision != expectedRevision)
-                    return ExpeditionStatesEqual(_activeExpedition, candidate)
-                        ? new SaveWriteResult(true, "This expedition snapshot was already committed.")
-                        : new SaveWriteResult(false, "A newer expedition snapshot was committed before this update could be saved.");
-                if (HasPendingSettlement)
-                    return new SaveWriteResult(false, "A settlement is pending; expedition progress cannot be overwritten.");
-                if (HasPendingExpeditionWrite)
-                    return new SaveWriteResult(false, "An expedition write is already pending; retry that exact payload before making another change.");
-                if (SaveDataValidation.Validate(candidate).Count != 0)
-                    return new SaveWriteResult(false, string.Join(" ", SaveDataValidation.Validate(candidate)));
-                SaveWriteResult result = await _saveRepository.SaveProfileAsync(_profileData, candidate);
-                if (result.Succeeded)
-                {
-                    _activeExpedition = candidate.Clone();
-                    _activeExpeditionRevision++;
-                }
-                else if (_saveRepository.ExportPendingJson(SaveDocument.Profile) != null)
-                {
-                    _pendingExpeditionCandidate = candidate.Clone();
-                    _pendingExpeditionRun = ActiveRun;
-                }
-                return result;
-            }
+            try { return await SaveExpeditionCandidateUnderGateAsync(candidate, expectedRevision, null); }
             finally { _profileMutationGate.Release(); }
+        }
+
+        private async Task<SaveWriteResult> SaveExpeditionCandidateUnderGateAsync(
+            ExpeditionSaveData candidate, long expectedRevision, ExpeditionRunConfiguration runToCommit)
+        {
+            if (_activeExpedition == null || !SameExpeditionIdentity(_activeExpedition, candidate))
+                return new SaveWriteResult(false, "The active expedition changed before this update could be saved.");
+            if (_activeExpeditionRevision != expectedRevision)
+                return ExpeditionStatesEqual(_activeExpedition, candidate)
+                    ? new SaveWriteResult(true, "This expedition snapshot was already committed.")
+                    : new SaveWriteResult(false, "A newer expedition snapshot was committed before this update could be saved.");
+            if (HasPendingSettlement)
+                return new SaveWriteResult(false, "A settlement is pending; expedition progress cannot be overwritten.");
+            if (HasPendingExpeditionWrite)
+                return new SaveWriteResult(false, "An expedition write is already pending; retry that exact payload before making another change.");
+            IReadOnlyList<string> errors = SaveDataValidation.Validate(candidate);
+            if (errors.Count != 0) return new SaveWriteResult(false, string.Join(" ", errors));
+
+            SaveWriteResult result = await _saveRepository.SaveProfileAsync(_profileData, candidate);
+            if (result.Succeeded)
+            {
+                _activeExpedition = candidate.Clone();
+                _activeExpeditionRevision++;
+                if (runToCommit != null) ActiveRun = runToCommit;
+            }
+            else if (_saveRepository.ExportPendingJson(SaveDocument.Profile) != null)
+            {
+                _pendingExpeditionCandidate = candidate.Clone();
+                _pendingExpeditionRun = runToCommit ?? ActiveRun;
+            }
+            return result;
+        }
+
+        private static TextAsset LoadRequired(string resourcePath)
+        {
+            TextAsset asset = Resources.Load<TextAsset>(resourcePath);
+            if (asset == null)
+                throw new InvalidOperationException("Required application data is missing: Resources/" + resourcePath + ".");
+            return asset;
         }
 
         private static bool SameExpeditionIdentity(ExpeditionSaveData left, ExpeditionSaveData right)
@@ -597,6 +693,23 @@ namespace Luckbound.App
 
             public ProfileSaveData Profile { get; }
             public PermanentUpgradePurchaseResult Purchase { get; }
+        }
+
+        private sealed class PendingCraft
+        {
+            public PendingCraft(string recipeId, TransactionId transactionId,
+                ItemInstanceId upgradeTargetInstanceId, CraftingOutcome outcome)
+            {
+                RecipeId = recipeId;
+                TransactionId = transactionId;
+                UpgradeTargetInstanceId = upgradeTargetInstanceId;
+                Outcome = outcome;
+            }
+
+            public string RecipeId { get; }
+            public TransactionId TransactionId { get; }
+            public ItemInstanceId UpgradeTargetInstanceId { get; }
+            public CraftingOutcome Outcome { get; }
         }
     }
 }

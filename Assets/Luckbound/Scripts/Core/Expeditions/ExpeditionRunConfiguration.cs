@@ -93,5 +93,11 @@ namespace Luckbound.Core.Expeditions
         public int StartingEnergy => PermanentUpgradeRules.ApplyFivePercentPerLevel(InitialEnergy, EnergyUpgradeLevel);
         public int StartingHealthPotions => InitialHealthPotions + AdditionalPotionUpgradeLevel;
         public int StartingFortunaCharges => InitialFortunaCharges;
+
+        public ExpeditionRunConfiguration WithInventory(ExpeditionInventory inventory)
+        {
+            return new ExpeditionRunConfiguration(RunId, ClassId, RaceId, _skillIds, Seed, Route, inventory,
+                _startingEquipmentInstanceIds, HealthUpgradeLevel, EnergyUpgradeLevel, AdditionalPotionUpgradeLevel);
+        }
     }
 }

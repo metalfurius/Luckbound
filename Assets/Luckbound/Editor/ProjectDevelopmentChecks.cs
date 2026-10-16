@@ -548,22 +548,40 @@ namespace Luckbound.Editor
                 return;
             }
             SerializedObject presenter = new SerializedObject(presenters[0]);
-            foreach (string propertyName in new[] { "_overlayRoot", "_titleText", "_summaryText", "_returnToTavernButton" })
+            foreach (string propertyName in new[]
+            {
+                "_overlayRoot", "_titleText", "_summaryText", "_returnToTavernButton",
+                "_craftHealthPotionButton", "_craftStatusText"
+            })
             {
                 if (presenter.FindProperty(propertyName)?.objectReferenceValue == null)
                     errors.Add("ExpeditionRunSessionPresenter must serialize " + propertyName + ".");
             }
             Text summary = presenter.FindProperty("_summaryText")?.objectReferenceValue as Text;
             Button returnButton = presenter.FindProperty("_returnToTavernButton")?.objectReferenceValue as Button;
-            if (summary != null && returnButton != null)
+            Button craftButton = presenter.FindProperty("_craftHealthPotionButton")?.objectReferenceValue as Button;
+            Text craftStatus = presenter.FindProperty("_craftStatusText")?.objectReferenceValue as Text;
+            if (summary != null && returnButton != null && craftButton != null && craftStatus != null)
             {
                 RectTransform summaryRect = summary.rectTransform;
-                RectTransform buttonRect = returnButton.GetComponent<RectTransform>();
+                RectTransform returnRect = returnButton.GetComponent<RectTransform>();
+                RectTransform craftRect = craftButton.GetComponent<RectTransform>();
+                RectTransform statusRect = craftStatus.rectTransform;
                 if (summaryRect.sizeDelta.y < 136f)
                     errors.Add("Expedition run summary must reserve 12 lines for the bag counters, checkpoint, and RunId.");
-                if (buttonRect != null && summaryRect.anchoredPosition.y - summaryRect.sizeDelta.y / 2f <=
-                    buttonRect.anchoredPosition.y + buttonRect.sizeDelta.y / 2f)
-                    errors.Add("Expedition run summary must remain above the ReturnToTavernButton.");
+                if (returnRect != null && summaryRect.anchoredPosition.y - summaryRect.sizeDelta.y / 2f <=
+                    returnRect.anchoredPosition.y + returnRect.sizeDelta.y / 2f)
+                    errors.Add("Expedition run summary must remain above the bottom action row.");
+                if (statusRect != null && craftRect != null &&
+                    (summaryRect.anchoredPosition.y - summaryRect.sizeDelta.y / 2f <=
+                        statusRect.anchoredPosition.y + statusRect.sizeDelta.y / 2f ||
+                     statusRect.anchoredPosition.y - statusRect.sizeDelta.y / 2f <=
+                        craftRect.anchoredPosition.y + craftRect.sizeDelta.y / 2f))
+                    errors.Add("Expedition craft status must fit between the summary and the bottom action row.");
+                if (returnRect != null && craftRect != null &&
+                    craftRect.anchoredPosition.x + craftRect.sizeDelta.x / 2f >=
+                        returnRect.anchoredPosition.x - returnRect.sizeDelta.x / 2f)
+                    errors.Add("Expedition craft and return buttons must not overlap.");
             }
             MovementDemoComposition[] demos = objects.SelectMany(gameObject => gameObject.GetComponents<MovementDemoComposition>()).ToArray();
             if (demos.Length != 1)
