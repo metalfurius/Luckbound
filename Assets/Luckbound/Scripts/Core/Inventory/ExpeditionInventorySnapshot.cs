@@ -1,4 +1,5 @@
 using System;
+using Luckbound.Core.Economy;
 
 namespace Luckbound.Core.Inventory
 {
@@ -17,6 +18,9 @@ namespace Luckbound.Core.Inventory
         public string quickConsumableInstanceId;
         public MaterialCountSnapshot[] materials = Array.Empty<MaterialCountSnapshot>();
         public WorldMaterialRemainderSnapshot[] worldMaterialRemainders = Array.Empty<WorldMaterialRemainderSnapshot>();
+        public string merchantRunId = string.Empty;
+        public MerchantStockSnapshot[] merchantStocks = Array.Empty<MerchantStockSnapshot>();
+        public RestStopUseSnapshot[] restStops = Array.Empty<RestStopUseSnapshot>();
         public InventoryTransactionSnapshot[] transactions = Array.Empty<InventoryTransactionSnapshot>();
     }
 
@@ -55,5 +59,13 @@ namespace Luckbound.Core.Inventory
         public int craftingStatus;
         public string craftingRecipeId;
         public InventoryStackSnapshot[] craftingResultStacks = Array.Empty<InventoryStackSnapshot>();
+        public bool smithingRejectedNonUpgradeRecipe;
+        public int economyStatus;
+        public string economyItemInstanceId;
+        public int economyQuantity;
+        public int economyGoldDelta;
+        public int economyResultingHealth;
+        public int economyHealthRestored;
+        public string economyRoomInstanceId;
     }
 }

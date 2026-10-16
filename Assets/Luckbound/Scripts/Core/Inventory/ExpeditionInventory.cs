@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using Luckbound.Core.Crafting;
+using Luckbound.Core.Economy;
 using Luckbound.Core.Identifiers;
 
 namespace Luckbound.Core.Inventory
@@ -13,7 +14,7 @@ namespace Luckbound.Core.Inventory
     {
         public const int BackpackCapacity = 12;
         public const int MaximumMaterialCount = 99;
-        public const int SnapshotSchemaVersion = 3;
+        public const int SnapshotSchemaVersion = 4;
 
         private readonly ItemCatalog _catalog;
         private readonly InventoryItemStack[] _backpackSlots = new InventoryItemStack[BackpackCapacity];
@@ -21,12 +22,15 @@ namespace Luckbound.Core.Inventory
         private readonly Dictionary<MaterialKind, int> _materials = new Dictionary<MaterialKind, int>();
         private readonly Dictionary<MaterialKind, int> _worldMaterialRemainders = new Dictionary<MaterialKind, int>();
         private readonly Dictionary<TransactionId, CachedTransaction> _transactions = new Dictionary<TransactionId, CachedTransaction>();
+        private readonly Dictionary<string, MerchantStockSnapshot> _merchantStocks = new Dictionary<string, MerchantStockSnapshot>(StringComparer.Ordinal);
+        private readonly Dictionary<string, RestStopUseSnapshot> _restStops = new Dictionary<string, RestStopUseSnapshot>(StringComparer.Ordinal);
         private InventoryItemStack _weapon;
         private InventoryItemStack _armor;
         private InventoryItemStack _relicOne;
         private InventoryItemStack _relicTwo;
         private ItemInstanceId _quickConsumableId;
         private int _gold;
+        private string _merchantRunId = string.Empty;
 
         public ExpeditionInventory(ItemCatalog catalog, string classId, int initialGold = 0)
         {
@@ -66,6 +70,37 @@ namespace Luckbound.Core.Inventory
             return new ReadOnlyDictionary<MaterialKind, int>(new Dictionary<MaterialKind, int>(_materials));
         }
 
+        /// <summary>Creates a rest stop's stock once, or returns its current stock without refreshing it.</summary>
+        public MerchantStockSnapshot EnsureMerchantStock(RunId runId, RoomInstanceId roomInstanceId)
+        {
+            if (!runId.IsValid) throw new ArgumentException("Merchant stock requires a valid run ID.", nameof(runId));
+            if (!roomInstanceId.IsValid) throw new ArgumentException("Merchant stock requires a valid room instance ID.", nameof(roomInstanceId));
+
+            string runIdText = runId.ToString();
+            if (_merchantRunId.Length > 0 && !string.Equals(_merchantRunId, runIdText, StringComparison.Ordinal))
+                throw new InvalidOperationException("Merchant stock belongs to another expedition run.");
+
+            string roomIdText = roomInstanceId.ToString();
+            if (_merchantStocks.TryGetValue(roomIdText, out MerchantStockSnapshot existing)) return existing.Clone();
+
+            MerchantStockSnapshot created = MerchantService.CreateInitialStock(_catalog, ClassId, roomInstanceId);
+            _merchantRunId = runIdText;
+            _merchantStocks.Add(roomIdText, created);
+            return created.Clone();
+        }
+
+        public MerchantStockSnapshot GetMerchantStock(RunId runId, RoomInstanceId roomInstanceId)
+        {
+            if (!runId.IsValid) throw new ArgumentException("Merchant stock requires a valid run ID.", nameof(runId));
+            if (!roomInstanceId.IsValid) throw new ArgumentException("Merchant stock requires a valid room instance ID.", nameof(roomInstanceId));
+            if (_merchantRunId.Length == 0) return null;
+            if (!string.Equals(_merchantRunId, runId.ToString(), StringComparison.Ordinal))
+                throw new InvalidOperationException("Merchant stock belongs to another expedition run.");
+            return _merchantStocks.TryGetValue(roomInstanceId.ToString(), out MerchantStockSnapshot stock)
+                ? stock.Clone()
+                : null;
+        }
+
         public ExpeditionInventorySnapshot CreateSnapshot()
         {
             var materialSnapshots = Enum.GetValues(typeof(MaterialKind)).Cast<MaterialKind>()
@@ -85,14 +120,23 @@ namespace Luckbound.Core.Inventory
                 quickConsumableInstanceId = _quickConsumableId.IsValid ? _quickConsumableId.ToString() : string.Empty,
                 materials = materialSnapshots,
                 worldMaterialRemainders = remainderSnapshots,
+                merchantRunId = _merchantRunId,
+                merchantStocks = _merchantStocks.OrderBy(pair => pair.Key, StringComparer.Ordinal)
+                    .Select(pair => pair.Value.Clone()).ToArray(),
+                restStops = _restStops.OrderBy(pair => pair.Key, StringComparer.Ordinal)
+                    .Select(pair => pair.Value.Clone()).ToArray(),
                 transactions = _transactions.OrderBy(pair => pair.Key.ToString(), StringComparer.Ordinal)
                     .Select(pair => new InventoryTransactionSnapshot
                     {
                         transactionId = pair.Key.ToString(),
                         signature = pair.Value.Signature,
-                        status = (int)pair.Value.Outcome.Status,
-                        itemId = pair.Value.Outcome.ItemId,
-                        displacedItem = Snapshot(pair.Value.Outcome.DisplacedItem),
+                        status = pair.Value.Outcome == null
+                            ? (int)InventoryOperationStatus.Unknown
+                            : (int)pair.Value.Outcome.Status,
+                        itemId = pair.Value.EconomyOutcome != null
+                            ? pair.Value.EconomyOutcome.ItemId
+                            : pair.Value.Outcome == null ? string.Empty : pair.Value.Outcome.ItemId,
+                        displacedItem = pair.Value.Outcome == null ? null : Snapshot(pair.Value.Outcome.DisplacedItem),
                         craftingStatus = pair.Value.CraftingOutcome == null
                             ? (int)CraftingOperationStatus.Unknown
                             : (int)pair.Value.CraftingOutcome.Status,
@@ -101,7 +145,22 @@ namespace Luckbound.Core.Inventory
                             : pair.Value.CraftingOutcome.RecipeId,
                         craftingResultStacks = pair.Value.CraftingOutcome == null
                             ? Array.Empty<InventoryStackSnapshot>()
-                            : pair.Value.CraftingOutcome.ResultStacks.Select(Snapshot).ToArray()
+                            : pair.Value.CraftingOutcome.ResultStacks.Select(Snapshot).ToArray(),
+                        smithingRejectedNonUpgradeRecipe = pair.Value.SmithingOutcome != null &&
+                            pair.Value.SmithingOutcome.RejectedNonUpgradeRecipe,
+                        economyStatus = pair.Value.EconomyOutcome == null
+                            ? (int)EconomyOperationStatus.Unknown
+                            : (int)pair.Value.EconomyOutcome.Status,
+                        economyItemInstanceId = pair.Value.EconomyOutcome != null && pair.Value.EconomyOutcome.ItemInstanceId.IsValid
+                            ? pair.Value.EconomyOutcome.ItemInstanceId.ToString()
+                            : string.Empty,
+                        economyQuantity = pair.Value.EconomyOutcome == null ? 0 : pair.Value.EconomyOutcome.Quantity,
+                        economyGoldDelta = pair.Value.EconomyOutcome == null ? 0 : pair.Value.EconomyOutcome.GoldDelta,
+                        economyResultingHealth = pair.Value.EconomyOutcome == null ? -1 : pair.Value.EconomyOutcome.ResultingHealth,
+                        economyHealthRestored = pair.Value.EconomyOutcome == null ? 0 : pair.Value.EconomyOutcome.HealthRestored,
+                        economyRoomInstanceId = pair.Value.EconomyOutcome == null
+                            ? string.Empty
+                            : pair.Value.EconomyOutcome.RoomInstanceId
                     }).ToArray()
             };
         }
@@ -170,9 +229,42 @@ namespace Luckbound.Core.Inventory
                     restored._worldMaterialRemainders[kind] = progress.remainder;
                 }
             }
-            else if (snapshot.snapshotVersion >= SnapshotSchemaVersion)
+            else if (snapshot.snapshotVersion >= 3)
             {
                 throw new FormatException("Current inventory snapshot is missing Dvergar world-material progress.");
+            }
+
+            if (snapshot.snapshotVersion >= 4)
+            {
+                if (snapshot.merchantStocks == null || snapshot.restStops == null || snapshot.merchantRunId == null)
+                    throw new FormatException("Current inventory snapshot is missing E03 merchant or rest-stop state.");
+
+                if (snapshot.merchantRunId.Length > 0 && !RunId.TryParse(snapshot.merchantRunId, out _))
+                    throw new FormatException("Merchant stock run ID is invalid.");
+                if (snapshot.merchantStocks.Length == 0 && snapshot.merchantRunId.Length > 0 ||
+                    snapshot.merchantStocks.Length > 0 && snapshot.merchantRunId.Length == 0)
+                    throw new FormatException("Merchant stock run ID does not match the stored stock entries.");
+
+                restored._merchantRunId = snapshot.merchantRunId;
+                foreach (MerchantStockSnapshot market in snapshot.merchantStocks)
+                {
+                    MerchantStockSnapshot validated = MerchantService.ValidateAndClone(catalog, restored.ClassId, market);
+                    if (!restored._merchantStocks.TryAdd(validated.roomInstanceId, validated))
+                        throw new FormatException("Inventory snapshot repeats merchant stock for room " + validated.roomInstanceId + ".");
+                }
+
+                foreach (RestStopUseSnapshot rest in snapshot.restStops)
+                {
+                    if (rest == null || !RoomInstanceId.TryParse(rest.roomInstanceId, out RoomInstanceId roomId) ||
+                        rest.entryHealthRestored < 0 || rest.entryHealthRestored > RestStopService.EntryHealingAmount ||
+                        rest.taliaHealthRestored < 0 || rest.taliaHealthRestored > RestStopService.TaliaHealingAmount ||
+                        !rest.entered && rest.entryHealthRestored != 0 ||
+                        !rest.taliaUsed && (rest.taliaHealthRestored != 0 || rest.taliaHealthAfter != 0) ||
+                        rest.taliaUsed && !rest.entered || rest.taliaUsed && rest.taliaHealthAfter <= 0)
+                        throw new FormatException("Rest-stop usage state is invalid.");
+                    if (!restored._restStops.TryAdd(roomId.ToString(), rest.Clone()))
+                        throw new FormatException("Inventory snapshot repeats rest-stop usage for room " + roomId + ".");
+                }
             }
 
             var transactionIds = new HashSet<TransactionId>();
@@ -183,15 +275,38 @@ namespace Luckbound.Core.Inventory
                     !Enum.IsDefined(typeof(InventoryOperationStatus), transaction.status))
                     throw new FormatException("Inventory transaction history contains an invalid entry.");
                 if (!transactionIds.Add(id)) throw new FormatException("Inventory transaction history repeats " + id + ".");
+                bool isEconomyTransaction = transaction.economyStatus != (int)EconomyOperationStatus.Unknown;
+                bool hasEconomySignature = transaction.signature.StartsWith("economy|", StringComparison.Ordinal);
+                if (isEconomyTransaction != hasEconomySignature)
+                    throw new FormatException("Inventory economy transaction signature does not match its receipt.");
+                if (isEconomyTransaction && ((InventoryOperationStatus)transaction.status != InventoryOperationStatus.Unknown ||
+                    !Enum.IsDefined(typeof(EconomyOperationStatus), transaction.economyStatus) ||
+                    (EconomyOperationStatus)transaction.economyStatus == EconomyOperationStatus.RejectedInvalidTransaction ||
+                    (EconomyOperationStatus)transaction.economyStatus == EconomyOperationStatus.RejectedTransactionConflict ||
+                    (EconomyOperationStatus)transaction.economyStatus == EconomyOperationStatus.Succeeded &&
+                        transaction.economyQuantity <= 0 ||
+                    (EconomyOperationStatus)transaction.economyStatus == EconomyOperationStatus.Succeeded &&
+                        transaction.signature.StartsWith("economy|buy|", StringComparison.Ordinal) &&
+                        string.IsNullOrWhiteSpace(transaction.itemId) ||
+                    transaction.economyQuantity < 0 || transaction.economyHealthRestored < 0))
+                    throw new FormatException("Inventory economy transaction receipt is invalid.");
+                if (!isEconomyTransaction && (InventoryOperationStatus)transaction.status == InventoryOperationStatus.Unknown)
+                    throw new FormatException("Inventory transaction is missing its operation result.");
+
                 InventoryItemStack displaced = RestoreStack(restored, transaction.displacedItem, null, "transaction result");
                 var outcome = new InventoryOperationOutcome(id, (InventoryOperationStatus)transaction.status,
                     displaced, transaction.itemId);
                 CraftingOutcome craftingOutcome = null;
                 bool isCraftingTransaction = transaction.signature.StartsWith("craft|", StringComparison.Ordinal);
+                bool isSmithingTransaction = transaction.signature.StartsWith("smith|", StringComparison.Ordinal);
+                if ((isCraftingTransaction || isSmithingTransaction) && isEconomyTransaction ||
+                    transaction.smithingRejectedNonUpgradeRecipe && !isSmithingTransaction)
+                    throw new FormatException("A transaction cannot mix crafting, smithing, and economy results.");
                 if (transaction.craftingStatus != (int)CraftingOperationStatus.Unknown)
                 {
                     if (!Enum.IsDefined(typeof(CraftingOperationStatus), transaction.craftingStatus) ||
-                        !isCraftingTransaction || transaction.craftingRecipeId == null || transaction.craftingResultStacks == null)
+                        !(isCraftingTransaction || isSmithingTransaction) || transaction.craftingRecipeId == null ||
+                        transaction.craftingResultStacks == null)
                         throw new FormatException("Inventory crafting transaction history contains an invalid entry.");
 
                     var resultStacks = new List<InventoryItemStack>(transaction.craftingResultStacks.Length);
@@ -209,12 +324,41 @@ namespace Luckbound.Core.Inventory
                         throw new FormatException("Inventory crafting transaction result does not match its status.");
                     craftingOutcome = new CraftingOutcome(id, transaction.craftingRecipeId, craftingStatus, resultStacks);
                 }
-                else if (isCraftingTransaction)
+                else if (isCraftingTransaction || isSmithingTransaction)
                 {
-                    throw new FormatException("Inventory crafting transaction history is missing its crafting result status.");
+                    throw new FormatException("Inventory crafting or smithing transaction history is missing its result status.");
                 }
 
-                restored._transactions.Add(id, new CachedTransaction(transaction.signature, outcome, craftingOutcome));
+                SmithingOutcome smithingOutcome = null;
+                if (isSmithingTransaction)
+                {
+                    if (craftingOutcome == null || transaction.smithingRejectedNonUpgradeRecipe &&
+                        craftingOutcome.Status != CraftingOperationStatus.RejectedInvalidRecipe)
+                        throw new FormatException("Inventory smithing transaction receipt is invalid.");
+                    smithingOutcome = new SmithingOutcome(craftingOutcome, transaction.smithingRejectedNonUpgradeRecipe);
+                }
+
+                EconomyTransactionOutcome economyOutcome = null;
+                if (isEconomyTransaction)
+                {
+                    ItemInstanceId itemInstanceId = default;
+                    if (!string.IsNullOrEmpty(transaction.economyItemInstanceId) &&
+                        !ItemInstanceId.TryParse(transaction.economyItemInstanceId, out itemInstanceId))
+                        throw new FormatException("Inventory economy transaction has an invalid item instance ID.");
+                    if (!string.IsNullOrEmpty(transaction.economyRoomInstanceId) &&
+                        !RoomInstanceId.TryParse(transaction.economyRoomInstanceId, out _))
+                        throw new FormatException("Inventory economy transaction has an invalid room instance ID.");
+                    if (transaction.craftingStatus != (int)CraftingOperationStatus.Unknown)
+                        throw new FormatException("An economy transaction cannot contain a crafting result.");
+
+                    economyOutcome = new EconomyTransactionOutcome(id, (EconomyOperationStatus)transaction.economyStatus,
+                        transaction.itemId, itemInstanceId, transaction.economyQuantity, transaction.economyGoldDelta,
+                        transaction.economyResultingHealth, transaction.economyHealthRestored,
+                        transaction.economyRoomInstanceId);
+                }
+
+                restored._transactions.Add(id, new CachedTransaction(
+                    transaction.signature, outcome, craftingOutcome, economyOutcome, smithingOutcome));
             }
             return restored;
         }
@@ -398,6 +542,80 @@ namespace Luckbound.Core.Inventory
             });
         }
 
+        public EconomyTransactionOutcome TryPurchase(
+            RunId runId,
+            RoomInstanceId roomInstanceId,
+            string itemId,
+            int quantity,
+            int discountPercent,
+            TransactionId transactionId)
+        {
+            string signature = "economy|buy|" + runId + "|" + roomInstanceId + "|" + (itemId ?? string.Empty) + "|" +
+                quantity.ToString(CultureInfo.InvariantCulture) + "|" + discountPercent.ToString(CultureInfo.InvariantCulture);
+            return ExecuteEconomy(transactionId, signature,
+                () => Purchase(runId, roomInstanceId, itemId, quantity, discountPercent, transactionId));
+        }
+
+        public EconomyTransactionOutcome TrySellItem(
+            RunId runId,
+            RoomInstanceId roomInstanceId,
+            ItemInstanceId itemInstanceId,
+            int quantity,
+            TransactionId transactionId)
+        {
+            string signature = "economy|sell-item|" + runId + "|" + roomInstanceId + "|" +
+                (itemInstanceId.IsValid ? itemInstanceId.ToString() : string.Empty) + "|" + quantity.ToString(CultureInfo.InvariantCulture);
+            return ExecuteEconomy(transactionId, signature,
+                () => SellItem(runId, roomInstanceId, itemInstanceId, quantity, transactionId));
+        }
+
+        public EconomyTransactionOutcome TrySellMaterial(
+            RunId runId,
+            RoomInstanceId roomInstanceId,
+            MaterialKind materialKind,
+            int quantity,
+            TransactionId transactionId)
+        {
+            string signature = "economy|sell-material|" + runId + "|" + roomInstanceId + "|" + materialKind + "|" +
+                quantity.ToString(CultureInfo.InvariantCulture);
+            return ExecuteEconomy(transactionId, signature,
+                () => SellMaterial(runId, roomInstanceId, materialKind, quantity, transactionId));
+        }
+
+        public RestStopOutcome TryEnterRest(RoomInstanceId roomInstanceId, int currentHealth, int maximumHealth)
+        {
+            if (!roomInstanceId.IsValid)
+                return new RestStopOutcome(roomInstanceId, EconomyOperationStatus.RejectedInvalidRoom, currentHealth, 0);
+            if (maximumHealth <= 0 || currentHealth < 0 || currentHealth > maximumHealth)
+                return new RestStopOutcome(roomInstanceId, EconomyOperationStatus.RejectedInvalidHealth, currentHealth, 0);
+            if (currentHealth == 0)
+                return new RestStopOutcome(roomInstanceId, EconomyOperationStatus.RejectedDead, currentHealth, 0);
+
+            string roomIdText = roomInstanceId.ToString();
+            if (_restStops.TryGetValue(roomIdText, out RestStopUseSnapshot existing) && existing.entered)
+                return new RestStopOutcome(roomInstanceId, EconomyOperationStatus.RejectedAlreadyUsed, currentHealth, 0);
+
+            int restored = Math.Min(RestStopService.EntryHealingAmount, maximumHealth - currentHealth);
+            _restStops[roomIdText] = new RestStopUseSnapshot
+            {
+                roomInstanceId = roomIdText,
+                entered = true,
+                entryHealthRestored = restored
+            };
+            return new RestStopOutcome(roomInstanceId, EconomyOperationStatus.Succeeded, currentHealth + restored, restored);
+        }
+
+        public EconomyTransactionOutcome TryUseTalia(
+            RoomInstanceId roomInstanceId,
+            int currentHealth,
+            int maximumHealth,
+            TransactionId transactionId)
+        {
+            string signature = "economy|talia|" + (roomInstanceId.IsValid ? roomInstanceId.ToString() : string.Empty);
+            return ExecuteEconomy(transactionId, signature,
+                () => UseTalia(roomInstanceId, currentHealth, maximumHealth, transactionId));
+        }
+
         /// <summary>
         /// Crafts a consumable or upgrades one owned equipment instance as a single inventory transaction.
         /// A failed craft leaves gameplay state untouched; its idempotency receipt is still recorded.
@@ -414,6 +632,362 @@ namespace Luckbound.Core.Inventory
             string signature = "craft|" + (recipeId ?? string.Empty) + "|" + targetId;
             return ExecuteCrafting(transactionId, signature,
                 () => Craft(recipeCatalog, recipeId, transactionId, upgradeTargetInstanceId));
+        }
+
+        /// <summary>Applies only an equipment-upgrade recipe through the inventory's atomic crafting rules and ledger.</summary>
+        public SmithingOutcome TryUpgrade(
+            RecipeCatalog recipeCatalog,
+            string recipeId,
+            ItemInstanceId targetInstanceId,
+            TransactionId transactionId)
+        {
+            if (recipeCatalog == null) throw new ArgumentNullException(nameof(recipeCatalog));
+
+            string targetId = targetInstanceId.IsValid ? targetInstanceId.ToString() : string.Empty;
+            string signature = "smith|" + (recipeId ?? string.Empty) + "|" + targetId;
+            return ExecuteSmithing(transactionId, signature, () =>
+            {
+                if (!recipeCatalog.TryGet(recipeId, out RecipeDefinition recipe))
+                    return new SmithingOutcome(CraftingRejected(
+                        transactionId, recipeId, CraftingOperationStatus.RejectedUnknownRecipe));
+
+                if (recipe.ResultKind != CraftingResultKind.Upgrade)
+                    return new SmithingOutcome(CraftingRejected(
+                        transactionId, recipe.Id, CraftingOperationStatus.RejectedInvalidRecipe),
+                        rejectedNonUpgradeRecipe: true);
+
+                return new SmithingOutcome(Craft(recipeCatalog, recipeId, transactionId, targetInstanceId));
+            });
+        }
+
+        private EconomyTransactionOutcome Purchase(
+            RunId runId,
+            RoomInstanceId roomInstanceId,
+            string itemId,
+            int quantity,
+            int discountPercent,
+            TransactionId transactionId)
+        {
+            EconomyOperationStatus marketStatus = ValidateMerchant(runId, roomInstanceId, out MerchantStockSnapshot stock);
+            if (marketStatus != EconomyOperationStatus.Succeeded)
+                return EconomyRejected(transactionId, marketStatus, itemId);
+            if (string.IsNullOrWhiteSpace(itemId) || !TryGetOffer(stock, itemId, out MerchantOfferSnapshot offer))
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedUnknownOffer, itemId);
+            if (quantity <= 0) return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidQuantity, itemId);
+            if (discountPercent < 0) return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidDiscount, itemId);
+            if (offer.remainingQuantity < quantity)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedOutOfStock, itemId);
+            if (!_catalog.TryGet(itemId, out ItemDefinition definition))
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedUnknownItem, itemId);
+
+            int totalPrice;
+            try
+            {
+                int unitPrice = MerchantPricing.GetPurchaseUnitPrice(definition, (ItemRarity)offer.rarity, discountPercent);
+                totalPrice = MerchantPricing.GetTotalPrice(unitPrice, quantity);
+            }
+            catch (OverflowException)
+            {
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidQuantity, itemId);
+            }
+
+            if (definition.Kind == ItemKind.Weapon && !definition.IsCompatibleWithClass(ClassId))
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedIncompatibleClass, itemId);
+
+            EconomyOperationStatus capacityStatus = CanStorePurchasedItem(definition, (ItemRarity)offer.rarity, quantity);
+            if (capacityStatus != EconomyOperationStatus.Succeeded)
+                return EconomyRejected(transactionId, capacityStatus, itemId);
+            if (_gold < totalPrice)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInsufficientGold, itemId);
+
+            ItemInstanceId purchasedInstanceId = StorePurchasedItem(definition, (ItemRarity)offer.rarity, quantity);
+            _gold -= totalPrice;
+            offer.remainingQuantity -= quantity;
+            return new EconomyTransactionOutcome(transactionId, EconomyOperationStatus.Succeeded,
+                itemId, purchasedInstanceId, quantity, -totalPrice);
+        }
+
+        private EconomyTransactionOutcome SellItem(
+            RunId runId,
+            RoomInstanceId roomInstanceId,
+            ItemInstanceId itemInstanceId,
+            int quantity,
+            TransactionId transactionId)
+        {
+            EconomyOperationStatus marketStatus = ValidateMerchant(runId, roomInstanceId, out _);
+            if (marketStatus != EconomyOperationStatus.Succeeded)
+                return EconomyRejected(transactionId, marketStatus);
+            if (!itemInstanceId.IsValid || quantity <= 0)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidQuantity);
+
+            InventoryItemStack item = FindByInstanceId(itemInstanceId);
+            if (item == null) return EconomyRejected(transactionId, EconomyOperationStatus.RejectedNotOwned);
+            if (quantity > item.Quantity)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInsufficientQuantity, item.ItemId, itemInstanceId);
+            if (!_catalog.TryGet(item.ItemId, out ItemDefinition definition) || definition.Kind == ItemKind.Material)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedUnknownItem, item.ItemId, itemInstanceId);
+
+            bool equipped = IsEquipped(itemInstanceId);
+            if (equipped && quantity != item.Quantity)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidQuantity, item.ItemId, itemInstanceId);
+
+            int totalValue;
+            try
+            {
+                totalValue = MerchantPricing.GetTotalPrice(
+                    MerchantPricing.GetSaleUnitPrice(definition, item.Rarity), quantity);
+            }
+            catch (OverflowException)
+            {
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidQuantity, item.ItemId, itemInstanceId);
+            }
+            if ((long)_gold + totalValue > int.MaxValue)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedGoldCapacity, item.ItemId, itemInstanceId);
+
+            RemoveOwnedItem(itemInstanceId, quantity);
+            _gold += totalValue;
+            return new EconomyTransactionOutcome(transactionId, EconomyOperationStatus.Succeeded,
+                item.ItemId, itemInstanceId, quantity, totalValue);
+        }
+
+        private EconomyTransactionOutcome SellMaterial(
+            RunId runId,
+            RoomInstanceId roomInstanceId,
+            MaterialKind materialKind,
+            int quantity,
+            TransactionId transactionId)
+        {
+            EconomyOperationStatus marketStatus = ValidateMerchant(runId, roomInstanceId, out _);
+            if (marketStatus != EconomyOperationStatus.Succeeded)
+                return EconomyRejected(transactionId, marketStatus);
+            if (!Enum.IsDefined(typeof(MaterialKind), materialKind) || quantity <= 0)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidQuantity);
+            if (_materials[materialKind] < quantity)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInsufficientQuantity,
+                    _catalog.GetMaterial(materialKind).Id);
+
+            ItemDefinition definition = _catalog.GetMaterial(materialKind);
+            int totalValue;
+            try
+            {
+                totalValue = MerchantPricing.GetTotalPrice(
+                    MerchantPricing.GetSaleUnitPrice(definition, ItemRarity.Common), quantity);
+            }
+            catch (OverflowException)
+            {
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidQuantity, definition.Id);
+            }
+            if ((long)_gold + totalValue > int.MaxValue)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedGoldCapacity, definition.Id);
+
+            _materials[materialKind] -= quantity;
+            _gold += totalValue;
+            return new EconomyTransactionOutcome(transactionId, EconomyOperationStatus.Succeeded,
+                definition.Id, default, quantity, totalValue);
+        }
+
+        private EconomyTransactionOutcome UseTalia(
+            RoomInstanceId roomInstanceId,
+            int currentHealth,
+            int maximumHealth,
+            TransactionId transactionId)
+        {
+            if (!roomInstanceId.IsValid)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidRoom);
+            if (maximumHealth <= 0 || currentHealth < 0 || currentHealth > maximumHealth)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidHealth, roomInstanceId: roomInstanceId.ToString());
+            if (currentHealth == 0)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedDead, roomInstanceId: roomInstanceId.ToString());
+            if (!_restStops.TryGetValue(roomInstanceId.ToString(), out RestStopUseSnapshot rest) || !rest.entered)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedRestNotEntered, roomInstanceId: roomInstanceId.ToString());
+            if (rest.taliaUsed)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedAlreadyUsed, roomInstanceId: roomInstanceId.ToString());
+            if (currentHealth >= maximumHealth)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedFullHealth, roomInstanceId: roomInstanceId.ToString());
+            if (_gold < RestStopService.TaliaGoldCost)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInsufficientGold, roomInstanceId: roomInstanceId.ToString());
+
+            int restored = Math.Min(RestStopService.TaliaHealingAmount, maximumHealth - currentHealth);
+            int healthAfter = currentHealth + restored;
+            _gold -= RestStopService.TaliaGoldCost;
+            rest.taliaUsed = true;
+            rest.taliaHealthRestored = restored;
+            rest.taliaHealthAfter = healthAfter;
+            return new EconomyTransactionOutcome(transactionId, EconomyOperationStatus.Succeeded,
+                quantity: 1,
+                goldDelta: -RestStopService.TaliaGoldCost,
+                resultingHealth: healthAfter,
+                healthRestored: restored,
+                roomInstanceId: roomInstanceId.ToString());
+        }
+
+        private EconomyOperationStatus ValidateMerchant(RunId runId, RoomInstanceId roomInstanceId, out MerchantStockSnapshot stock)
+        {
+            stock = null;
+            if (!runId.IsValid || !roomInstanceId.IsValid)
+                return EconomyOperationStatus.RejectedStockNotInitialized;
+            if (_merchantRunId.Length == 0 || !_merchantStocks.TryGetValue(roomInstanceId.ToString(), out stock))
+                return EconomyOperationStatus.RejectedStockNotInitialized;
+            if (!string.Equals(_merchantRunId, runId.ToString(), StringComparison.Ordinal))
+                return EconomyOperationStatus.RejectedWrongRun;
+            return EconomyOperationStatus.Succeeded;
+        }
+
+        private static bool TryGetOffer(MerchantStockSnapshot stock, string itemId, out MerchantOfferSnapshot offer)
+        {
+            foreach (MerchantOfferSnapshot candidate in stock.offers)
+            {
+                if (!string.Equals(candidate.itemId, itemId, StringComparison.Ordinal)) continue;
+                offer = candidate;
+                return true;
+            }
+            offer = null;
+            return false;
+        }
+
+        private EconomyOperationStatus CanStorePurchasedItem(ItemDefinition definition, ItemRarity rarity, int quantity)
+        {
+            if (definition.Kind == ItemKind.Material)
+            {
+                long total = (long)_materials[definition.MaterialKind.Value] + quantity;
+                return total <= MaximumMaterialCount
+                    ? EconomyOperationStatus.Succeeded
+                    : EconomyOperationStatus.RejectedMaterialCapacity;
+            }
+
+            if (definition.Kind == ItemKind.Consumable)
+            {
+                int capacity = 0;
+                for (int index = 0; index < _backpackSlots.Length; index++)
+                {
+                    InventoryItemStack existing = _backpackSlots[index];
+                    if (existing == null) capacity += definition.MaxStack;
+                    else if (existing.ItemId == definition.Id && existing.Rarity == rarity && existing.UpgradeLevel == 0)
+                        capacity += definition.MaxStack - existing.Quantity;
+                }
+                return capacity >= quantity
+                    ? EconomyOperationStatus.Succeeded
+                    : EconomyOperationStatus.RejectedBackpackFull;
+            }
+
+            if (quantity != 1) return EconomyOperationStatus.RejectedInvalidQuantity;
+            return FindEmptySlot() >= 0
+                ? EconomyOperationStatus.Succeeded
+                : EconomyOperationStatus.RejectedBackpackFull;
+        }
+
+        private ItemInstanceId StorePurchasedItem(ItemDefinition definition, ItemRarity rarity, int quantity)
+        {
+            if (definition.Kind == ItemKind.Material)
+            {
+                _materials[definition.MaterialKind.Value] += quantity;
+                return default;
+            }
+
+            if (definition.Kind == ItemKind.Consumable)
+            {
+                int remaining = quantity;
+                ItemInstanceId firstChangedInstanceId = default;
+                for (int index = 0; index < _backpackSlots.Length && remaining > 0; index++)
+                {
+                    InventoryItemStack existing = _backpackSlots[index];
+                    if (existing == null || existing.ItemId != definition.Id || existing.Rarity != rarity ||
+                        existing.UpgradeLevel != 0 || existing.Quantity >= definition.MaxStack)
+                        continue;
+                    int moved = Math.Min(remaining, definition.MaxStack - existing.Quantity);
+                    _backpackSlots[index] = existing.WithQuantity(existing.Quantity + moved);
+                    if (!firstChangedInstanceId.IsValid) firstChangedInstanceId = existing.InstanceId;
+                    remaining -= moved;
+                }
+
+                for (int index = 0; index < _backpackSlots.Length && remaining > 0; index++)
+                {
+                    if (_backpackSlots[index] != null) continue;
+                    int moved = Math.Min(remaining, definition.MaxStack);
+                    ItemInstanceId instanceId = CreateUniqueItemInstanceId();
+                    _backpackSlots[index] = new InventoryItemStack(instanceId, definition.Id, rarity, 0, moved);
+                    if (!firstChangedInstanceId.IsValid) firstChangedInstanceId = instanceId;
+                    remaining -= moved;
+                }
+                return firstChangedInstanceId;
+            }
+
+            ItemInstanceId newInstanceId = CreateUniqueItemInstanceId();
+            _backpackSlots[FindEmptySlot()] = new InventoryItemStack(newInstanceId, definition.Id, rarity, 0, 1);
+            return newInstanceId;
+        }
+
+        private ItemInstanceId CreateUniqueItemInstanceId()
+        {
+            ItemInstanceId instanceId;
+            do
+            {
+                instanceId = ItemInstanceId.New();
+            }
+            while (ContainsInstanceId(instanceId));
+            return instanceId;
+        }
+
+        private bool IsEquipped(ItemInstanceId instanceId)
+        {
+            return _weapon?.InstanceId == instanceId || _armor?.InstanceId == instanceId ||
+                _relicOne?.InstanceId == instanceId || _relicTwo?.InstanceId == instanceId;
+        }
+
+        private void RemoveOwnedItem(ItemInstanceId instanceId, int quantity)
+        {
+            for (int index = 0; index < _backpackSlots.Length; index++)
+            {
+                InventoryItemStack existing = _backpackSlots[index];
+                if (existing == null || existing.InstanceId != instanceId) continue;
+                if (existing.Quantity == quantity)
+                {
+                    _backpackSlots[index] = null;
+                    if (_quickConsumableId == instanceId) _quickConsumableId = default;
+                }
+                else
+                {
+                    _backpackSlots[index] = existing.WithQuantity(existing.Quantity - quantity);
+                }
+                return;
+            }
+
+            if (_weapon?.InstanceId == instanceId) _weapon = null;
+            else if (_armor?.InstanceId == instanceId) _armor = null;
+            else if (_relicOne?.InstanceId == instanceId) _relicOne = null;
+            else if (_relicTwo?.InstanceId == instanceId) _relicTwo = null;
+        }
+
+        private EconomyTransactionOutcome ExecuteEconomy(
+            TransactionId transactionId,
+            string signature,
+            Func<EconomyTransactionOutcome> operation)
+        {
+            if (!transactionId.IsValid)
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidTransaction);
+            if (_transactions.TryGetValue(transactionId, out CachedTransaction cached))
+            {
+                if (string.Equals(cached.Signature, signature, StringComparison.Ordinal) && cached.EconomyOutcome != null)
+                    return cached.EconomyOutcome;
+                return EconomyRejected(transactionId, EconomyOperationStatus.RejectedTransactionConflict);
+            }
+
+            EconomyTransactionOutcome outcome = operation();
+            var inventoryOutcome = new InventoryOperationOutcome(
+                transactionId, InventoryOperationStatus.Unknown, itemId: outcome.ItemId);
+            _transactions.Add(transactionId, new CachedTransaction(signature, inventoryOutcome, economyOutcome: outcome));
+            return outcome;
+        }
+
+        private static EconomyTransactionOutcome EconomyRejected(
+            TransactionId transactionId,
+            EconomyOperationStatus status,
+            string itemId = null,
+            ItemInstanceId itemInstanceId = default,
+            string roomInstanceId = null)
+        {
+            return new EconomyTransactionOutcome(transactionId, status, itemId, itemInstanceId,
+                roomInstanceId: roomInstanceId);
         }
 
         private CraftingOutcome Craft(
@@ -535,7 +1109,8 @@ namespace Luckbound.Core.Inventory
                 return CraftingRejected(transactionId, string.Empty, CraftingOperationStatus.RejectedInvalidTransaction);
             if (_transactions.TryGetValue(transactionId, out CachedTransaction cached))
             {
-                if (string.Equals(cached.Signature, signature, StringComparison.Ordinal) && cached.CraftingOutcome != null)
+                if (string.Equals(cached.Signature, signature, StringComparison.Ordinal) &&
+                    cached.CraftingOutcome != null && cached.SmithingOutcome == null)
                     return cached.CraftingOutcome;
                 return CraftingRejected(transactionId, string.Empty, CraftingOperationStatus.RejectedTransactionConflict);
             }
@@ -546,6 +1121,32 @@ namespace Luckbound.Core.Inventory
                 MapCraftingStatus(outcome.Status), null, resultItemId);
             _transactions.Add(transactionId, new CachedTransaction(signature, inventoryOutcome, outcome));
             return outcome;
+        }
+
+        private SmithingOutcome ExecuteSmithing(
+            TransactionId transactionId,
+            string signature,
+            Func<SmithingOutcome> operation)
+        {
+            if (!transactionId.IsValid)
+                return new SmithingOutcome(CraftingRejected(
+                    transactionId, string.Empty, CraftingOperationStatus.RejectedInvalidTransaction));
+            if (_transactions.TryGetValue(transactionId, out CachedTransaction cached))
+            {
+                if (string.Equals(cached.Signature, signature, StringComparison.Ordinal) && cached.SmithingOutcome != null)
+                    return cached.SmithingOutcome;
+                return new SmithingOutcome(CraftingRejected(
+                    transactionId, string.Empty, CraftingOperationStatus.RejectedTransactionConflict));
+            }
+
+            SmithingOutcome smithingOutcome = operation();
+            CraftingOutcome craftingOutcome = smithingOutcome.CraftingOutcome;
+            string resultItemId = craftingOutcome.ResultStacks.Count > 0 ? craftingOutcome.ResultStacks[0].ItemId : string.Empty;
+            var inventoryOutcome = new InventoryOperationOutcome(transactionId,
+                MapCraftingStatus(craftingOutcome.Status), null, resultItemId);
+            _transactions.Add(transactionId, new CachedTransaction(
+                signature, inventoryOutcome, craftingOutcome, smithingOutcome: smithingOutcome));
+            return smithingOutcome;
         }
 
         private bool CanFitCraftedConsumable(ItemDefinition definition, int quantity)
@@ -640,7 +1241,8 @@ namespace Luckbound.Core.Inventory
             if (!transactionId.IsValid) return Rejected(transactionId, InventoryOperationStatus.RejectedInvalidTransaction);
             if (_transactions.TryGetValue(transactionId, out CachedTransaction cached))
             {
-                return string.Equals(cached.Signature, signature, StringComparison.Ordinal)
+                return string.Equals(cached.Signature, signature, StringComparison.Ordinal) &&
+                    cached.Outcome != null && cached.EconomyOutcome == null && cached.SmithingOutcome == null
                     ? cached.Outcome
                     : Rejected(transactionId, InventoryOperationStatus.RejectedTransactionConflict);
             }
@@ -837,15 +1439,24 @@ namespace Luckbound.Core.Inventory
 
         private readonly struct CachedTransaction
         {
-            public CachedTransaction(string signature, InventoryOperationOutcome outcome, CraftingOutcome craftingOutcome = null)
+            public CachedTransaction(
+                string signature,
+                InventoryOperationOutcome outcome,
+                CraftingOutcome craftingOutcome = null,
+                EconomyTransactionOutcome economyOutcome = null,
+                SmithingOutcome smithingOutcome = null)
             {
                 Signature = signature;
                 Outcome = outcome;
                 CraftingOutcome = craftingOutcome;
+                EconomyOutcome = economyOutcome;
+                SmithingOutcome = smithingOutcome;
             }
             public string Signature { get; }
             public InventoryOperationOutcome Outcome { get; }
             public CraftingOutcome CraftingOutcome { get; }
+            public EconomyTransactionOutcome EconomyOutcome { get; }
+            public SmithingOutcome SmithingOutcome { get; }
         }
 
         private readonly struct ConsumableStackChange
