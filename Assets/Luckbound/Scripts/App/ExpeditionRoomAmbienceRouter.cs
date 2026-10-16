@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Luckbound.App
 {
-    /// <summary>Routes room activation events to the ambience director owned by the application.</summary>
+    /// <summary>Routes room activation events through the application audio request seam.</summary>
     public sealed class ExpeditionRoomAmbienceRouter : MonoBehaviour, IDisposable
     {
         private const string PatioTemplatePrefix = "room.patio.";
@@ -15,30 +15,30 @@ namespace Luckbound.App
         private const string ForjasTemplatePrefix = "room.forjas.";
 
         private ExpeditionRoomTransitionController _roomTransitions;
-        private RuntimeAmbienceDirector _ambienceDirector;
+        private ApplicationAudioRouter _audioRouter;
         private bool _disposed;
 
         public string CurrentRoomTemplateId { get; private set; }
         public string CurrentAmbienceId { get; private set; }
 
         /// <summary>
-        /// Connects this router to one explicit room transition source and ambience director.
+        /// Connects this router to one explicit room transition source and application audio router.
         /// Rebinding the same pair is a no-op; replacing the pair releases the previous request.
         /// </summary>
-        public void Bind(ExpeditionRoomTransitionController roomTransitions, RuntimeAmbienceDirector ambienceDirector)
+        public void Bind(ExpeditionRoomTransitionController roomTransitions, ApplicationAudioRouter audioRouter)
         {
             if (_disposed) throw new ObjectDisposedException(nameof(ExpeditionRoomAmbienceRouter));
             if (roomTransitions == null) throw new ArgumentNullException(nameof(roomTransitions));
-            if (ambienceDirector == null) throw new ArgumentNullException(nameof(ambienceDirector));
+            if (audioRouter == null) throw new ArgumentNullException(nameof(audioRouter));
 
-            if (ReferenceEquals(_roomTransitions, roomTransitions) && ReferenceEquals(_ambienceDirector, ambienceDirector))
+            if (ReferenceEquals(_roomTransitions, roomTransitions) && ReferenceEquals(_audioRouter, audioRouter))
             {
                 return;
             }
 
-            Unbind(stopAmbience: true);
+            Unbind(clearOverride: true);
             _roomTransitions = roomTransitions;
-            _ambienceDirector = ambienceDirector;
+            _audioRouter = audioRouter;
             _roomTransitions.RoomActivated += OnRoomActivated;
 
             // Binding can happen after initialization; reflect the current room as well as later events.
@@ -67,31 +67,24 @@ namespace Luckbound.App
         {
             if (_disposed) return;
             _disposed = true;
-            Unbind(stopAmbience: true);
+            Unbind(clearOverride: true);
         }
 
         private void OnRoomActivated(RoomLifetimeScope room)
         {
-            if (_disposed || _ambienceDirector == null) return;
+            if (_disposed || _audioRouter == null) return;
 
             CurrentRoomTemplateId = room == null || room.IsDisposed ? null : room.TemplateId;
-            string ambienceId = ResolveAmbienceId(CurrentRoomTemplateId);
-            if (ambienceId == null || !_ambienceDirector.PlayAmbience(ambienceId))
-            {
-                _ambienceDirector.StopAmbience();
-                CurrentAmbienceId = null;
-                return;
-            }
-
-            CurrentAmbienceId = ambienceId;
+            CurrentAmbienceId = ResolveAmbienceId(CurrentRoomTemplateId);
+            _audioRouter.SetRoomAmbienceOverride(CurrentAmbienceId);
         }
 
-        private void Unbind(bool stopAmbience)
+        private void Unbind(bool clearOverride)
         {
             ExpeditionRoomTransitionController previousTransitions = _roomTransitions;
-            RuntimeAmbienceDirector previousDirector = _ambienceDirector;
+            ApplicationAudioRouter previousAudioRouter = _audioRouter;
             _roomTransitions = null;
-            _ambienceDirector = null;
+            _audioRouter = null;
 
             if (!ReferenceEquals(previousTransitions, null))
             {
@@ -100,9 +93,9 @@ namespace Luckbound.App
 
             CurrentRoomTemplateId = null;
             CurrentAmbienceId = null;
-            if (stopAmbience && previousDirector != null)
+            if (clearOverride && previousAudioRouter != null)
             {
-                previousDirector.StopAmbience();
+                previousAudioRouter.ClearRoomAmbienceOverride();
             }
         }
 

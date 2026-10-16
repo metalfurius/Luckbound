@@ -373,6 +373,81 @@ namespace Luckbound.Tests.PlayMode.Magus
         }
 
         [UnityTest]
+        public IEnumerator MagusCooldownSurvivesRoomRebindingAtItsExactReadyTick()
+        {
+            MotorFixture fixture = CreateFixture(MagusSkillLoadout.FireballId, MagusSkillLoadout.FrostNovaId);
+            yield return ActivateSkill(fixture, PlayerAction.Skill1);
+
+            SkillUseOutcome initialActivation = fixture.Motor.LastMagusCombatResult.SkillOutcome;
+            long readyAtTick = initialActivation.ReadyAtTick;
+            int activationsBeforeRebind = fixture.Motor.MagusSkillActivationCount;
+            Assert.That(initialActivation.SkillId, Is.EqualTo(MagusSkillLoadout.FireballId));
+            Assert.That(readyAtTick, Is.EqualTo(fixture.Motor.SimulationTick + 240),
+                "Fireball retains its four-second cooldown on the authoritative 60 Hz tick schedule.");
+
+            RoomLifetimeScope disposedRoom = fixture.Room;
+            RoomProjectileScope disposedProjectileScope = fixture.ProjectileScope;
+            fixture.RebindToFreshRoom();
+
+            Assert.That(disposedRoom.IsDisposed, Is.True);
+            Assert.That(disposedProjectileScope.IsDisposed, Is.True);
+            Assert.That(fixture.Room, Is.Not.SameAs(disposedRoom));
+            Assert.That(fixture.ProjectileScope, Is.Not.SameAs(disposedProjectileScope));
+            Assert.That(fixture.Motor.IsMagus, Is.True, "The same player motor retains its Magus loadout across room bindings.");
+            Assert.That(fixture.Motor.IsMagusSkillReady(MagusSkillLoadout.FireballId), Is.False,
+                "Disposing the previous room must not clear the active skill's cooldown.");
+
+            while (fixture.Motor.SimulationTick < readyAtTick - 2)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            Assert.That(fixture.Motor.SimulationTick, Is.EqualTo(readyAtTick - 2));
+            int energyBeforeEarlyRetry = fixture.Motor.CurrentEnergy;
+            fixture.Input.Press(PlayerAction.Skill1);
+            yield return new WaitForFixedUpdate();
+
+            SkillUseOutcome earlyRetry = fixture.Motor.LastMagusCombatResult.SkillOutcome;
+            Assert.That(fixture.Motor.SimulationTick, Is.EqualTo(readyAtTick - 1));
+            Assert.That(earlyRetry.Status, Is.EqualTo(SkillUseStatus.RejectedCooldown));
+            Assert.That(earlyRetry.SkillId, Is.EqualTo(MagusSkillLoadout.FireballId));
+            Assert.That(earlyRetry.ReadyAtTick, Is.EqualTo(readyAtTick));
+            Assert.That(earlyRetry.EnergySpent, Is.Zero);
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(energyBeforeEarlyRetry),
+                "A cooldown rejection on the replacement room must not spend energy.");
+            Assert.That(fixture.Motor.MagusSkillActivationCount, Is.EqualTo(activationsBeforeRebind));
+            Assert.That(fixture.Motor.IsMagusSkillReady(MagusSkillLoadout.FireballId), Is.False);
+
+            // Release and re-press before the next input command so the retry is evaluated exactly at ReadyAtTick.
+            fixture.Input.Release(PlayerAction.Skill1);
+            fixture.Input.Press(PlayerAction.Skill1);
+            yield return new WaitForFixedUpdate();
+
+            SkillUseOutcome boundaryRetry = fixture.Motor.LastMagusCombatResult.SkillOutcome;
+            int energyAtBoundary = fixture.Motor.CurrentEnergy;
+            Assert.That(fixture.Motor.SimulationTick, Is.EqualTo(readyAtTick));
+            Assert.That(fixture.Motor.IsMagusSkillReady(MagusSkillLoadout.FireballId), Is.True);
+            Assert.That(boundaryRetry.Status, Is.EqualTo(SkillUseStatus.Preparing),
+                "The same skill must begin preparation on its exact ready tick after room rebinding.");
+            Assert.That(boundaryRetry.SkillId, Is.EqualTo(MagusSkillLoadout.FireballId));
+            Assert.That(boundaryRetry.EnergySpent, Is.Zero);
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(energyAtBoundary),
+                "Energy is spent when preparation completes, not when the ready-tick request starts.");
+
+            fixture.Input.Release(PlayerAction.Skill1);
+            for (int tick = 0; tick < 9; tick++) yield return new WaitForFixedUpdate();
+
+            SkillUseOutcome secondActivation = fixture.Motor.LastMagusCombatResult.SkillOutcome;
+            Assert.That(secondActivation.Status, Is.EqualTo(SkillUseStatus.Activated));
+            Assert.That(secondActivation.SkillId, Is.EqualTo(MagusSkillLoadout.FireballId));
+            Assert.That(secondActivation.EnergySpent, Is.EqualTo(8));
+            Assert.That(secondActivation.ReadyAtTick, Is.EqualTo(fixture.Motor.SimulationTick + 240),
+                "The next cooldown starts on the tick the skill activation completes.");
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(energyAtBoundary - 8));
+            Assert.That(fixture.Motor.MagusSkillActivationCount, Is.EqualTo(activationsBeforeRebind + 1));
+        }
+
+        [UnityTest]
         public IEnumerator LeavingRoomClearsMotorBoundSealFreezeAndFlyingProjectile()
         {
             MotorFixture fixture = CreateFixture(MagusSkillLoadout.FrostNovaId, MagusSkillLoadout.ArcaneSealId);
@@ -545,8 +620,9 @@ namespace Luckbound.Tests.PlayMode.Magus
 
             TextAsset skillsJson = Resources.Load<TextAsset>("Luckbound/Data/Skills");
             Assert.That(skillsJson, Is.Not.Null, "The authoritative Skills.json resource is required.");
+            SkillCatalog catalog = SkillCatalogJsonLoader.Load(skillsJson.text);
             motor.ConfigureMagus(
-                SkillCatalogJsonLoader.Load(skillsJson.text),
+                catalog,
                 selectedSkillIds,
                 projectilePool,
                 projectileScope,
@@ -563,6 +639,10 @@ namespace Luckbound.Tests.PlayMode.Magus
                 motor,
                 input,
                 projectileScope,
+                catalog,
+                selectedSkillIds,
+                projectilePool,
+                enemyLayers,
                 enemyLayer,
                 actorId);
             _fixtures.Add(fixture);
@@ -576,6 +656,10 @@ namespace Luckbound.Tests.PlayMode.Magus
             private readonly GameObject _poolObject;
             private readonly GameObject _projectilePrefab;
             private readonly int _enemyLayer;
+            private readonly SkillCatalog _skillCatalog;
+            private readonly string[] _selectedSkillIds;
+            private readonly ProjectilePool2D _projectilePool;
+            private readonly LayerMask _enemyLayers;
             private readonly List<GameObject> _persistentTargets = new List<GameObject>();
             private bool _disposed;
 
@@ -588,6 +672,10 @@ namespace Luckbound.Tests.PlayMode.Magus
                 PlayerMotor2D motor,
                 PlayerInputBuffer input,
                 RoomProjectileScope projectileScope,
+                SkillCatalog skillCatalog,
+                string[] selectedSkillIds,
+                ProjectilePool2D projectilePool,
+                LayerMask enemyLayers,
                 int enemyLayer,
                 ActorId actorId)
             {
@@ -599,6 +687,10 @@ namespace Luckbound.Tests.PlayMode.Magus
                 Motor = motor;
                 Input = input;
                 ProjectileScope = projectileScope;
+                _skillCatalog = skillCatalog;
+                _selectedSkillIds = (string[])selectedSkillIds.Clone();
+                _projectilePool = projectilePool;
+                _enemyLayers = enemyLayers;
                 _enemyLayer = enemyLayer;
                 ActorId = actorId;
             }
@@ -609,9 +701,9 @@ namespace Luckbound.Tests.PlayMode.Magus
 
             public PlayerInputBuffer Input { get; }
 
-            public RoomProjectileScope ProjectileScope { get; }
+            public RoomProjectileScope ProjectileScope { get; private set; }
 
-            public RoomLifetimeScope Room { get; }
+            public RoomLifetimeScope Room { get; private set; }
 
             public ProjectileImpactTarget2D CreateTarget(string name, Vector2 position, int colliderCount = 1)
             {
@@ -674,6 +766,31 @@ namespace Luckbound.Tests.PlayMode.Magus
                     maximumX: 10f);
                 Room.OwnActor(waveObject);
                 Physics2D.SyncTransforms();
+            }
+
+            public void RebindToFreshRoom()
+            {
+                RoomLifetimeScope previousRoom = Room;
+                previousRoom.Dispose();
+                Object.Destroy(previousRoom.gameObject);
+
+                var roomObject = new GameObject("Magus Player Replacement Room Lifetime");
+                Room = roomObject.AddComponent<RoomLifetimeScope>();
+                Room.Initialize(RoomInstanceId.New(), "room.test.magus.player.replacement");
+
+                var projectileScopeObject = new GameObject("Magus Player Replacement Room Projectiles");
+                ProjectileScope = projectileScopeObject.AddComponent<RoomProjectileScope>();
+                ProjectileScope.Initialize(EntityId.New(), _projectilePool);
+                Room.OwnActor(projectileScopeObject);
+                Room.OwnResource(ProjectileScope);
+
+                Motor.ConfigureMagus(
+                    _skillCatalog,
+                    _selectedSkillIds,
+                    _projectilePool,
+                    ProjectileScope,
+                    Room,
+                    _enemyLayers);
             }
 
             public void Dispose()

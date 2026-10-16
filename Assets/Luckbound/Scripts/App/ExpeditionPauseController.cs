@@ -12,6 +12,7 @@ namespace Luckbound.App
         private SimulationMode2D _resumePhysicsSimulationMode = SimulationMode2D.FixedUpdate;
         private bool _initialized;
         private bool _pauseOnFocusLoss;
+        private PauseAudioSettingsPanel _audioSettingsPanel;
 
         public bool IsPaused { get; private set; }
 
@@ -32,6 +33,17 @@ namespace Luckbound.App
             _pauseLabel = pauseLabel;
             _pauseOnFocusLoss = pauseOnFocusLoss;
             _initialized = true;
+
+            Canvas canvas = pauseLabel.GetComponentInParent<Canvas>();
+            ApplicationBootstrapper application = ApplicationBootstrapper.Instance;
+            if (canvas != null && canvas.isActiveAndEnabled && application != null && application.SaveDataReady)
+            {
+                GameObject panelObject = new GameObject("PauseAudioSettingsPanel", typeof(RectTransform));
+                panelObject.transform.SetParent(canvas.transform, false);
+                _audioSettingsPanel = panelObject.AddComponent<PauseAudioSettingsPanel>();
+                _audioSettingsPanel.Initialize(application);
+                _audioSettingsPanel.SetVisible(false);
+            }
         }
 
         public void TogglePause()
@@ -54,12 +66,14 @@ namespace Luckbound.App
                 Time.timeScale = 0f;
                 Physics2D.simulationMode = SimulationMode2D.Script;
                 _pauseLabel.text = "PAUSA\nPulsa ESC o MENU para continuar";
+                if (_audioSettingsPanel != null) _audioSettingsPanel.SetVisible(true);
             }
             else
             {
                 Physics2D.simulationMode = _resumePhysicsSimulationMode;
                 Time.timeScale = _resumeTimeScale > 0f ? _resumeTimeScale : 1f;
                 _pauseLabel.text = string.Empty;
+                if (_audioSettingsPanel != null) _audioSettingsPanel.SetVisible(false);
             }
 
             PauseChanged?.Invoke(IsPaused);
@@ -80,6 +94,12 @@ namespace Luckbound.App
 
         private void OnDestroy()
         {
+            if (_audioSettingsPanel != null)
+            {
+                Destroy(_audioSettingsPanel.gameObject);
+                _audioSettingsPanel = null;
+            }
+
             if (IsPaused)
             {
                 Physics2D.simulationMode = _resumePhysicsSimulationMode;

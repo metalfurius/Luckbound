@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace Luckbound.App
 {
-    /// <summary>Routes music on the persistent application root after browser-safe user input.</summary>
+    /// <summary>Routes application music and ambience requests after browser-safe user input.</summary>
     [DisallowMultipleComponent]
     public sealed class ApplicationAudioRouter : MonoBehaviour
     {
@@ -15,11 +15,14 @@ namespace Luckbound.App
         private RuntimeAmbienceDirector _ambienceDirector;
         private IDisposable _inputSubscription;
         private string _requestedMusicTrackId;
-        private string _requestedAmbienceId;
+        private string _sceneAmbienceId;
+        private string _roomAmbienceId;
+        private bool _hasRoomAmbienceOverride;
         private bool _userGestureObserved;
 
         public string RequestedMusicTrackId => _requestedMusicTrackId;
-        public string RequestedAmbienceId => _requestedAmbienceId;
+        public string RequestedAmbienceId => _hasRoomAmbienceOverride ? _roomAmbienceId : _sceneAmbienceId;
+        public bool HasRoomAmbienceOverride => _hasRoomAmbienceOverride;
         public bool UserGestureObserved => _userGestureObserved;
 
         private void Awake()
@@ -46,10 +49,31 @@ namespace Luckbound.App
         public bool SetSceneContext(string sceneName)
         {
             bool hasMusic = TryResolveMusicTrack(sceneName, out _requestedMusicTrackId);
-            TryResolveAmbience(sceneName, out _requestedAmbienceId);
+            TryResolveAmbience(sceneName, out _sceneAmbienceId);
             ApplyRequestedMusic();
             ApplyRequestedAmbience();
             return hasMusic;
+        }
+
+        /// <summary>
+        /// Gives the active expedition room priority over the scene ambience. A null
+        /// value is an explicit silent room and still suppresses the scene fallback.
+        /// Playback remains behind the same first-input gate as scene ambience.
+        /// </summary>
+        public void SetRoomAmbienceOverride(string ambienceId)
+        {
+            _roomAmbienceId = ambienceId;
+            _hasRoomAmbienceOverride = true;
+            ApplyRequestedAmbience();
+        }
+
+        /// <summary>Releases the active room request and restores the current scene fallback.</summary>
+        public void ClearRoomAmbienceOverride()
+        {
+            if (!_hasRoomAmbienceOverride) return;
+            _roomAmbienceId = null;
+            _hasRoomAmbienceOverride = false;
+            ApplyRequestedAmbience();
         }
 
         /// <summary>Call from a real or simulated input event to unlock WebGL audio playback.</summary>
@@ -122,13 +146,14 @@ namespace Luckbound.App
         private void ApplyRequestedAmbience()
         {
             if (!_userGestureObserved || _ambienceDirector == null) return;
-            if (string.IsNullOrEmpty(_requestedAmbienceId))
+            string ambienceId = RequestedAmbienceId;
+            if (string.IsNullOrEmpty(ambienceId))
             {
                 _ambienceDirector.StopAmbience();
                 return;
             }
 
-            _ambienceDirector.PlayAmbience(_requestedAmbienceId);
+            _ambienceDirector.PlayAmbience(ambienceId);
         }
     }
 }
