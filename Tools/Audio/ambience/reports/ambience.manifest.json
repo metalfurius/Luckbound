@@ -26,11 +26,11 @@
     },
     "renderer": {
       "path": "render_ambience.py",
-      "sha256": "a6f573c3ca6f502fbb0582d1ec9fed0d31913fd2b8609afdb5894df1f480818b"
+      "sha256": "857222f8b4e613dbf1e4b65d73e7496320459acadfada287e854b3b025d8297e"
     },
     "validator": {
       "path": "validate_ambience.py",
-      "sha256": "50e392618362452d6d8522f0bb69009b2f172b910bef7f2b9d9081aee14bea81"
+      "sha256": "cd004c1daf8e1b7fd4451e3b66ddf47094d4f587d2c4256397281fcb708e1887"
     }
   },
   "manifest_version": 1,

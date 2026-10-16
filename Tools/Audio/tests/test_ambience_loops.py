@@ -62,6 +62,21 @@ class AmbienceLoopTests(unittest.TestCase):
                     self.assertEqual(hashlib.sha256(generated.read_bytes()).hexdigest(),
                                      hashlib.sha256(delivered.read_bytes()).hexdigest())
 
+    def test_manifest_and_report_use_platform_independent_lf_bytes(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="luckbound-ambience-json-") as temporary_directory:
+            output_root = Path(temporary_directory)
+            render_bundle(output_root, AMBIENCE_ROOT / "parameters.json")
+            validate_bundle(output_root, AMBIENCE_ROOT / "parameters.json", write_report=True)
+
+            for relative_path in (
+                "reports/ambience.manifest.json",
+                "reports/ambience.report.json",
+            ):
+                with self.subTest(path=relative_path):
+                    data = (output_root / relative_path).read_bytes()
+                    self.assertNotIn(b"\r", data)
+                    self.assertTrue(data.endswith(b"\n"))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

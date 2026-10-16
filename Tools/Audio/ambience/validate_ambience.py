@@ -235,8 +235,8 @@ def validate_bundle(root: Path = ROOT, parameters_path: Path | None = None,
     if write_report:
         report_path = root / "reports" / "ambience.report.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-                               encoding="utf-8")
+        with report_path.open("w", encoding="utf-8", newline="\n") as stream:
+            stream.write(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
     return report
 
 
