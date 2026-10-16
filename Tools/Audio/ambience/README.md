@@ -12,6 +12,19 @@ Este paquete genera tres capas loopables originales: patio forestal húmedo, arc
 
 Los IDs son `forest_courtyard`, `archive` y `forge`. No se usan referencias sonoras personales, muestras descargadas ni análisis atribuido a ellas.
 
+## Unity Resources
+
+Desde la raíz del repositorio, importa y valida los masters PCM exactos con el importador de biblioteca estándar:
+
+```powershell
+python Tools/Audio/ambience/import_unity_ambience.py sync
+python Tools/Audio/ambience/import_unity_ambience.py validate
+python Tools/Audio/ambience/import_unity_ambience.py verify-idempotence
+python -m unittest Tools/Audio/tests/test_unity_ambience_assets.py -v
+```
+
+Antes de copiar bytes a `Assets/Resources/Luckbound/Audio/Ambience/`, el importador comprueba el reporte técnico, manifiesto, procedencia, hashes de fuentes/masters, formato PCM y continuidad del bucle. Genera GUID de Unity estables a partir de las rutas y conserva las muestras WAV. La validación mantiene `auditory_review: pending` y `final_status: not_approved`; no atribuye escucha ni aprobación final.
+
 ## Comandos
 
 Desde la raíz del repositorio y con las dependencias fijadas instaladas:
