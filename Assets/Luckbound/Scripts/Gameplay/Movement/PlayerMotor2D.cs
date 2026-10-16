@@ -47,6 +47,7 @@ namespace Luckbound.Gameplay.Movement
         private static readonly float MagusAimAssistMinimumDot = Mathf.Cos(MagusAimAssistConeDegrees * Mathf.Deg2Rad);
 
         private readonly RaycastHit2D[] _groundHits = new RaycastHit2D[4];
+        private readonly RaycastHit2D[] _magusLineOfSightHits = new RaycastHit2D[1];
         private readonly Collider2D[] _meleeOverlaps = new Collider2D[16];
         private Collider2D[] _magusAimOverlaps = new Collider2D[16];
 
@@ -1075,8 +1076,12 @@ namespace Luckbound.Gameplay.Movement
                 float facingDot = Vector2.Dot(fallback, direction);
                 if (facingDot <= 0f || facingDot < MagusAimAssistMinimumDot) continue;
 
-                RaycastHit2D obstruction = Physics2D.Linecast(origin, targetPoint, _groundContactFilter);
-                if (obstruction.collider != null) continue;
+                int obstructionCount = Physics2D.Linecast(
+                    origin,
+                    targetPoint,
+                    _groundContactFilter,
+                    _magusLineOfSightHits);
+                if (obstructionCount > 0 && _magusLineOfSightHits[0].collider != null) continue;
 
                 if (foundTarget && !IsPreferredAimCandidate(
                         distanceSquared,
