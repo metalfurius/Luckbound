@@ -104,8 +104,8 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | E05 | Avaricia y Fervor | C01, E04 | Pending |
 | E06 | Renombre y mejoras permanentes | D07, D08 | Verified |
 | E07 | Venator completo | C03, C04, D05 | Verified |
-| E08 | Magus completo | C03, C04, D05 | InProgress |
-| E09 | Clase, raza y kit | D05, E01, E06, E07, E08 | Pending |
+| E08 | Magus completo | C03, C04, D05 | Verified |
+| E09 | Clase, raza y kit | D05, E01, E06, E07, E08 | InProgress |
 | E10 | Personajes, contratos y localización inicial | E02, E06, E09 | Pending |
 | F01 | Referencia maestra artística | B07 | InProgress |
 | F02 | Importación y validación de sprites | F01, A07 | Pending |
@@ -577,12 +577,13 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación coordinada:** Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`; `Logs/Coordinator-20261016-playmode-final.xml` → 82/82, cero fallos, omitidos o inconclusos. Pasan el ataque básico físico, las tres habilidades, energía insuficiente, cancelación, muerte, limpieza de sala y `PiercingArrowDamagesThreeActorsOnceDespiteSiblingColliders`.
 - **Resultado:** E07 `Verified`. La ejecución fue headless; no se hizo validación visual ni build.
 
-## E08 — Magus en Gameplay (InProgress)
+## E08 — Magus en Gameplay (Verified)
 
 - **Integración de módulos:** `ccfd1d8` añade adaptador de combate, proyectil de fuego, Nova, Sello y efectos de sala; `34ea575` conecta los pulsos de quemadura a la cola normal de impactos de Slime, Huesoguardia y Custodio, respetando sus resolutores de salud. `807a816` consolida la conexión a `PlayerMotor2D`, la exclusión mutua con Venator y las pruebas por entrada. Ataque básico, Bola de fuego y habilidades usan entrada y física reales.
 - **Pruebas dirigidas previas:** `Logs/Coordinator-20261016-playmode-magus.xml` → 10/10, cubre ataque básico, Bola de fuego, Nova/Sello, quemadura física y limpieza de sala.
 - **Apuntado dirigido:** `25c9109` y `bf9ab36` añaden selección determinista por cercanía/ActorId dentro del cono de 35° y línea de visión. `MagusPlayerMotorTests` → 12/12 en `Logs/Coordinator-20261016-magus-aim-targeted-r2.xml`; regresión EditMode 175/175 y PlayMode 99/99 en logs coordinados actuales.
-- **Pendiente:** aceptación integral desde el jugador en escena jugable y validación de límites de recarga al reconfigurar una sala. Las pruebas actuales son headless y no constituyen validación visual ni build.
+- **Aceptación coordinada:** Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`; las pruebas Magus dirigidas pasan EditMode `13/13` en `Logs/Coordinator-20261017-magus-editmode-acceptance-r2.xml` y PlayMode `21/21` en `Logs/Coordinator-20261017-magus-acceptance.xml`. La regresión PlayMode completa del mismo checkout pasa `129/129` en `Logs/Coordinator-20261017-f08-e08-playmode-r2.xml`; las tres ejecuciones terminan con cero fallos, omitidos o inconclusos. Los fixtures usan entrada simulada, `PlayerMotor2D`, física 2D y resolutores de Slime/Huesoguardia/Custodio; incluyen habilidades, estados alterados, muerte/interrupción, limpieza y enfriamiento exacto tras reconfigurar sala.
+- **Resultado:** E08 `Verified` por su contrato de clase y combate en `PlayerMotor2D`. La composición productiva del recorrido y las escenas sigue siendo F09; no se atribuye a E08 ni se afirma validación visual o build.
 
 ## F08 — Música y efectos parciales (InProgress)
 
@@ -697,7 +698,7 @@ La orden explícita posterior de Fran del 16 de octubre reanudó el desarrollo c
 - **F08, ambiente por sala:** `ApplicationAudioRouter` conserva una solicitud explícita de sala con prioridad sobre el ambiente de escena y detrás del gate WebGL del primer gesto. Un valor nulo silencia una sala sin mapeo; limpiar el override restaura el fallback actual. `ExpeditionRoomAmbienceRouter` usa este seam, conserva los mapeos Patio/Archivo/Forjas y limpia su suscripción y override al rebindearse o destruirse. No existe aún un callsite productivo para enlazar `ExpeditionRoomTransitionController` con el router persistente; esa composición pertenece a F09 y no se declara completada aquí.
 - **E08, borde de enfriamiento:** la prueba `MagusCooldownSurvivesRoomRebindingAtItsExactReadyTick` reconfigura el mismo motor/loadout con una sala nueva, rechaza la habilidad en `ReadyAtTick - 1` sin consumir energía y permite iniciar la preparación en `ReadyAtTick`; después confirma consumo al activar y el siguiente cooldown desde el tick real de activación.
 - **Validación del coordinador:** EditMode `197/197`, cero fallos/omitidos/inconclusos, en `Logs/Coordinator-20261016-f08-e08-editmode.xml`. El primer PlayMode detectó dos defectos en las nuevas pruebas (expectativa del tick de cooldown y sincronización de la escena Bootstrap/Menu); se corrigieron. La repetición completa pasa `129/129`, cero fallos/omitidos/inconclusos, en `Logs/Coordinator-20261017-f08-e08-playmode-r2.xml`. Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`, código 0 y `MainWindowHandle=0`; no quedaron procesos Unity activos. `git diff --check` pasa y los 418 GUID de recursos inspeccionados no tienen duplicados.
-- **Límites verificados:** no se ejecutó una build WebGL, una publicación ni una escucha/revisión subjetiva de audio. No se abrió ninguna interfaz para Fran. F08 sigue `InProgress`; E08 también permanece `InProgress` hasta aceptación desde la composición jugable. Las cuatro referencias originales sin seguimiento se conservaron fuera del cambio.
+- **Límites verificados:** no se ejecutó una build WebGL, una publicación ni una escucha/revisión subjetiva de audio. No se abrió ninguna interfaz para Fran. F08 sigue `InProgress`; E08 se cerró mediante sus pruebas de motor/combate, y F09 conserva la composición productiva del recorrido. Las cuatro referencias originales sin seguimiento se conservaron fuera del cambio.
 
 ## Ficha que debe completar cada ejecución
 
