@@ -14,6 +14,7 @@ using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
 using Luckbound.Core.Progression;
 using Luckbound.Core.Saves;
+using Luckbound.Presentation.Audio;
 
 namespace Luckbound.App
 {
@@ -228,6 +229,7 @@ namespace Luckbound.App
         {
             if (SceneManager.GetActiveScene().name == "Bootstrap")
             {
+                EnsureRuntimeAudio();
                 try
                 {
                     await LoadSaveDataAsync();
@@ -246,6 +248,14 @@ namespace Luckbound.App
                 }
                 SceneManager.LoadScene(ActiveRun == null ? "Menu" : "Expedition", LoadSceneMode.Single);
             }
+        }
+
+        private void EnsureRuntimeAudio()
+        {
+            if (GetComponent<RuntimeAudioDirector>() == null)
+                gameObject.AddComponent<RuntimeAudioDirector>();
+            if (GetComponent<ApplicationAudioRouter>() == null)
+                gameObject.AddComponent<ApplicationAudioRouter>();
         }
 
         public async Task<SaveWriteResult> BeginExpeditionAsync(ExpeditionRunConfiguration run)

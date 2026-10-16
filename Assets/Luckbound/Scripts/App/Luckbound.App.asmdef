@@ -6,6 +6,7 @@
     "Luckbound.Content",
     "Luckbound.Gameplay",
     "Luckbound.Presentation",
+    "Unity.InputSystem",
     "Unity.ugui"
   ],
   "includePlatforms": [],
