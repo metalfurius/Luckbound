@@ -65,5 +65,65 @@ namespace Luckbound.Tests.PlayMode
             Object.Destroy(owner);
             yield return null;
         }
+
+        [UnityTest, Timeout(5000)]
+        public IEnumerator ReversingMusicCrossfadeReusesTheLoadedTrackVoice()
+        {
+            var owner = new GameObject("RuntimeAudioDirector_ReverseCrossfade");
+            RuntimeAudioDirector director = owner.AddComponent<RuntimeAudioDirector>();
+            director.MusicCrossfadeSeconds = 0.6f;
+
+            Assert.That(director.PlayMusic(RuntimeAudioDirector.TavernTrackId), Is.True);
+            yield return new WaitUntil(() => director.ActiveMusicTrackId == RuntimeAudioDirector.TavernTrackId);
+
+            Assert.That(director.PlayMusic(RuntimeAudioDirector.PatioTrackId), Is.True);
+            yield return new WaitUntil(() => director.ActiveMusicTrackId == RuntimeAudioDirector.PatioTrackId &&
+                                             director.ActiveMusicSourceCount == 2);
+            yield return new WaitForSecondsRealtime(0.4f);
+            Assert.That(director.ActiveMusicSourceCount, Is.EqualTo(2));
+
+            AudioClip tavernClip = Resources.Load<AudioClip>("Luckbound/Audio/Music/tavern_theme");
+            Assert.That(tavernClip, Is.Not.Null);
+            Assert.That(CountPlayingClip(owner, tavernClip), Is.EqualTo(1));
+            Assert.That(director.PlayMusic(RuntimeAudioDirector.TavernTrackId), Is.True);
+
+            Assert.That(director.ActiveMusicTrackId, Is.EqualTo(RuntimeAudioDirector.TavernTrackId));
+            Assert.That(tavernClip.loadState, Is.EqualTo(AudioDataLoadState.Loaded));
+            Assert.That(CountPlayingClip(owner, tavernClip), Is.EqualTo(1));
+            yield return new WaitForSecondsRealtime(0.7f);
+            Assert.That(director.ActiveMusicSourceCount, Is.EqualTo(1));
+            Assert.That(CountPlayingClip(owner, tavernClip), Is.EqualTo(1));
+
+            Object.Destroy(owner);
+            yield return null;
+        }
+
+        [Test]
+        public void PlayEffectRejectsCallsAfterTheDirectorIsDisabled()
+        {
+            var owner = new GameObject("RuntimeAudioDirector_DisabledEffects");
+            RuntimeAudioDirector director = owner.AddComponent<RuntimeAudioDirector>();
+            director.MaximumOneShotSources = 1;
+
+            Assert.That(director.PlayEffect("stone_step"), Is.True);
+            director.enabled = false;
+
+            Assert.That(director.PlayEffect("ui_confirm"), Is.False);
+            Assert.That(director.OneShotSourceCount, Is.EqualTo(1));
+            Assert.That(director.ActiveOneShotSourceCount, Is.EqualTo(0));
+
+            Object.DestroyImmediate(owner);
+        }
+
+        private static int CountPlayingClip(GameObject owner, AudioClip clip)
+        {
+            int count = 0;
+            AudioSource[] sources = owner.GetComponentsInChildren<AudioSource>();
+            for (int index = 0; index < sources.Length; index++)
+            {
+                if (sources[index].isPlaying && sources[index].clip == clip) count++;
+            }
+            return count;
+        }
     }
 }

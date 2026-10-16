@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import sys
 import tempfile
 import unittest
@@ -12,6 +13,22 @@ import import_unity_music  # noqa: E402
 
 
 class UnityMusicAssetImportTests(unittest.TestCase):
+    def _copy_music_source_project(self, project_root: Path) -> Path:
+        source_root = import_unity_music.PROJECT_ROOT / "Tools/Audio"
+        for directory in ("scores", "masters", "reports"):
+            (project_root / "Tools/Audio" / directory).mkdir(parents=True, exist_ok=True)
+        for track_id in import_unity_music.EXPECTED_TRACKS:
+            for directory, suffixes in (
+                ("scores", (".json",)),
+                ("masters", (".wav",)),
+                ("reports", (".manifest.json", ".report.json")),
+            ):
+                for suffix in suffixes:
+                    filename = f"{track_id}{suffix}"
+                    shutil.copyfile(source_root / directory / filename,
+                                    project_root / "Tools/Audio" / directory / filename)
+        return project_root
+
     def test_runtime_catalog_covers_only_the_three_completed_looping_tracks(self) -> None:
         result = import_unity_music.validate_assets()
         catalog_path = import_unity_music.PROJECT_ROOT / import_unity_music.CATALOG_PATH
@@ -51,6 +68,20 @@ class UnityMusicAssetImportTests(unittest.TestCase):
                 self.assertIn("    compressionFormat: 1\n", metadata)
                 self.assertIn("    preloadAudioData: 0\n", metadata)
                 self.assertIn("    loadInBackground: 1\n", metadata)
+
+    def test_rejects_a_master_rendered_from_an_older_score(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="luckbound-music-stale-score-") as temp_name:
+            project_root = self._copy_music_source_project(Path(temp_name))
+            score_path = project_root / "Tools/Audio/scores/tavern_theme.json"
+            score = json.loads(score_path.read_text(encoding="utf-8"))
+            score["target_rms_dbfs"] = -19.5
+            score_path.write_text(json.dumps(score, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                import_unity_music.MusicImportError,
+                "score hash does not match the source manifest",
+            ):
+                import_unity_music.read_sources(project_root)
 
 
 if __name__ == "__main__":

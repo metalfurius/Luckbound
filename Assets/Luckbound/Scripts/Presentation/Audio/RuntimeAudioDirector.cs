@@ -168,6 +168,7 @@ namespace Luckbound.Presentation.Audio
                 CancelPendingMusicLoad();
                 return true;
             }
+            if (TryReverseMusicTransition(trackId)) return true;
 
             AudioClip clip = Resources.Load<AudioClip>(definition.ResourcePath);
             if (clip == null) return false;
@@ -204,6 +205,7 @@ namespace Luckbound.Presentation.Audio
             if (_activeMusicIndex < 0 || !IsSourcePlaying(_activeMusicIndex))
             {
                 StopAllMusicVoices();
+                if (!EnsureMusicClipLoadedOrWait(trackId, definition, clip)) return;
                 StartMusicImmediately(0, trackId, clip);
                 return;
             }
@@ -211,6 +213,8 @@ namespace Luckbound.Presentation.Audio
             int fromIndex = _activeMusicIndex;
             int toIndex = 1 - fromIndex;
             StopMusicVoice(toIndex);
+            if (!EnsureMusicClipLoadedOrWait(trackId, definition, clip)) return;
+
             AudioSource target = _musicSources[toIndex];
             target.clip = clip;
             target.loop = definition.Loop;
@@ -229,9 +233,71 @@ namespace Luckbound.Presentation.Audio
             }
             else
             {
-                _musicTransition = StartCoroutine(CrossfadeMusic(fromIndex, toIndex, fromEnvelope, duration));
+                _musicTransition = StartCoroutine(CrossfadeMusic(fromIndex, toIndex, fromEnvelope, 0f, duration));
             }
             ApplySourceVolumes();
+        }
+
+        private bool EnsureMusicClipLoadedOrWait(string trackId, MusicDefinition definition, AudioClip clip)
+        {
+            if (clip.loadState == AudioDataLoadState.Unloaded && !clip.LoadAudioData() &&
+                clip.loadState != AudioDataLoadState.Loaded && clip.loadState != AudioDataLoadState.Loading)
+            {
+                return false;
+            }
+            if (clip.loadState == AudioDataLoadState.Failed) return false;
+            if (clip.loadState == AudioDataLoadState.Loaded) return true;
+
+            _pendingMusicId = trackId;
+            _pendingMusicClip = clip;
+            _musicLoadCoroutine = StartCoroutine(WaitForMusicLoadThenPlay(trackId, definition, clip));
+            return false;
+        }
+
+        private bool TryReverseMusicTransition(string trackId)
+        {
+            if (_musicTransition == null || string.IsNullOrEmpty(_requestedMusicId) ||
+                _musicSources == null || _musicSourceTrackIds == null || _activeMusicIndex < 0)
+            {
+                return false;
+            }
+
+            int targetIndex = -1;
+            for (int index = 0; index < _musicSources.Length; index++)
+            {
+                if (index != _activeMusicIndex && IsSourcePlaying(index) &&
+                    string.Equals(_musicSourceTrackIds[index], trackId, StringComparison.Ordinal))
+                {
+                    targetIndex = index;
+                    break;
+                }
+            }
+            if (targetIndex < 0) return false;
+
+            AudioClip targetClip = _musicSources[targetIndex].clip;
+            if (targetClip == null || targetClip.loadState != AudioDataLoadState.Loaded) return false;
+
+            CancelPendingMusicLoad();
+            StopCoroutine(_musicTransition);
+            _musicTransition = null;
+
+            int fromIndex = _activeMusicIndex;
+            float fromEnvelope = _musicEnvelopes[fromIndex];
+            float toEnvelope = _musicEnvelopes[targetIndex];
+            _activeMusicIndex = targetIndex;
+            _requestedMusicId = trackId;
+            float duration = ClampNonNegative(_musicCrossfadeSeconds);
+            if (duration <= 0f)
+            {
+                CompleteMusicCrossfade(fromIndex, targetIndex);
+            }
+            else
+            {
+                _musicTransition = StartCoroutine(
+                    CrossfadeMusic(fromIndex, targetIndex, fromEnvelope, toEnvelope, duration));
+            }
+            ApplySourceVolumes();
+            return true;
         }
 
         /// <summary>Fades out and releases every music voice owned by this scene instance.</summary>
@@ -275,7 +341,8 @@ namespace Luckbound.Presentation.Audio
         /// </summary>
         public bool PlayEffect(string effectId, float gain = 1f)
         {
-            if (string.IsNullOrEmpty(effectId) || !EnsureEffectCatalog() || !_effects.TryGetValue(effectId, out EffectDefinition definition))
+            if (!isActiveAndEnabled || string.IsNullOrEmpty(effectId) || !EnsureEffectCatalog() ||
+                !_effects.TryGetValue(effectId, out EffectDefinition definition))
             {
                 return false;
             }
@@ -550,7 +617,8 @@ namespace Luckbound.Presentation.Audio
             ApplySourceVolumes();
         }
 
-        private IEnumerator CrossfadeMusic(int fromIndex, int toIndex, float fromStartEnvelope, float duration)
+        private IEnumerator CrossfadeMusic(int fromIndex, int toIndex, float fromStartEnvelope,
+                                           float toStartEnvelope, float duration)
         {
             float elapsed = 0f;
             while (elapsed < duration)
@@ -559,7 +627,7 @@ namespace Luckbound.Presentation.Audio
                 elapsed += Time.unscaledDeltaTime;
                 float progress = Mathf.Clamp01(elapsed / duration);
                 _musicEnvelopes[fromIndex] = Mathf.Lerp(fromStartEnvelope, 0f, progress);
-                _musicEnvelopes[toIndex] = progress;
+                _musicEnvelopes[toIndex] = Mathf.Lerp(toStartEnvelope, 1f, progress);
                 ApplySourceVolumes();
             }
             CompleteMusicCrossfade(fromIndex, toIndex);

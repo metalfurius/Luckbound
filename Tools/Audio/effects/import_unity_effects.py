@@ -172,14 +172,68 @@ def ensure_folder_metas(output_root: Path, folder: PurePosixPath) -> None:
 def read_sources(project_root: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     source_root = project_root / EFFECTS_SOURCE
     parameters_path = source_root / "parameters.json"
+    renderer_path = source_root / "render_effects.py"
     manifest_path = source_root / "reports" / "sample_effects.manifest.json"
     report_path = source_root / "reports" / "sample_effects.report.json"
     try:
-        parameters = json.loads(parameters_path.read_text(encoding="utf-8"))
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        report = json.loads(report_path.read_text(encoding="utf-8"))
+        parameters_bytes = parameters_path.read_bytes()
+        manifest_bytes = manifest_path.read_bytes()
+        report_bytes = report_path.read_bytes()
+        renderer_bytes = renderer_path.read_bytes()
+        parameters = json.loads(parameters_bytes.decode("utf-8"))
+        manifest = json.loads(manifest_bytes.decode("utf-8"))
+        report = json.loads(report_bytes.decode("utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise ImportValidationError(f"Cannot read effect source data: {exc}") from exc
+    except UnicodeDecodeError as exc:
+        raise ImportValidationError(f"Cannot decode effect source data: {exc}") from exc
+    if not all(isinstance(document, dict) for document in (parameters, manifest, report)):
+        raise ImportValidationError("Effect parameters, manifest, and report must be JSON objects.")
+
+    parameter_hash = sha256_bytes(parameters_bytes)
+    report_hash = sha256_bytes(report_bytes)
+    renderer_hash = sha256_bytes(renderer_bytes)
+    manifest_files = manifest.get("files")
+    if not isinstance(manifest_files, dict):
+        raise ImportValidationError("Effect manifest has no file provenance.")
+    manifest_parameters = manifest_files.get("parameters")
+    if not isinstance(manifest_parameters, dict) or \
+            manifest_parameters.get("path") != "parameters.json" or \
+            manifest_parameters.get("sha256") != parameter_hash:
+        raise ImportValidationError("Effect manifest parameter hash is stale.")
+    report_parameters = report.get("parameters")
+    if not isinstance(report_parameters, dict) or \
+            report_parameters.get("file") != "parameters.json" or \
+            report_parameters.get("sha256") != parameter_hash:
+        raise ImportValidationError("Effect validation report parameter hash is stale.")
+
+    manifest_report = manifest_files.get("report")
+    if not isinstance(manifest_report, dict) or \
+            manifest_report.get("path") != "reports/sample_effects.report.json" or \
+            manifest_report.get("sha256") != report_hash:
+        raise ImportValidationError("Effect validation report does not match its manifest provenance.")
+    manifest_renderer = manifest_files.get("renderer")
+    report_generator = report.get("generator")
+    if not isinstance(manifest_renderer, dict) or \
+            manifest_renderer.get("path") != "render_effects.py" or \
+            manifest_renderer.get("sha256") != renderer_hash or \
+            not isinstance(report_generator, dict) or \
+            report_generator.get("file") != "render_effects.py" or \
+            report_generator.get("sha256") != renderer_hash:
+        raise ImportValidationError("Effect renderer provenance is stale.")
+
+    report_checks = report.get("checks")
+    manifest_acceptance = manifest.get("acceptance")
+    manifest_checks = manifest_acceptance.get("checks") if isinstance(manifest_acceptance, dict) else None
+    if report.get("status") != "passed" or not isinstance(report_checks, dict) or not report_checks or \
+            not all(value is True for value in report_checks.values()):
+        raise ImportValidationError("Effect validation report has failed or non-passing checks.")
+    if not isinstance(manifest_acceptance, dict) or manifest_acceptance.get("status") != "passed" or \
+            not isinstance(manifest_checks, dict) or manifest_checks != report_checks or \
+            not all(value is True for value in manifest_checks.values()):
+        raise ImportValidationError("Effect manifest acceptance has failed or stale checks.")
+    if manifest.get("package") != "F08.Effects.complete" or report.get("package") != "F08.Effects.complete":
+        raise ImportValidationError("Effect manifest and report do not identify the F08 effect package.")
 
     effects = parameters.get("effects")
     if not isinstance(effects, list) or len(effects) != 36:
@@ -206,6 +260,8 @@ def read_sources(project_root: Path) -> tuple[dict[str, Any], list[dict[str, Any
     report_by_id = {item.get("id"): item for item in report_effects if isinstance(item, dict)}
     if set(manifest_masters) != set(ids) or set(report_by_id) != set(ids):
         raise ImportValidationError("Parameters, report, and manifest must contain the same 36 effect IDs.")
+    if manifest.get("group_counts") != EXPECTED_GROUP_COUNTS or report.get("group_counts") != EXPECTED_GROUP_COUNTS:
+        raise ImportValidationError("Effect report or manifest group counts do not pass the F08 contract.")
 
     source_samples: list[dict[str, Any]] = []
     for effect in effects:
@@ -225,6 +281,10 @@ def read_sources(project_root: Path) -> tuple[dict[str, Any], list[dict[str, Any
             raise ImportValidationError(f"{effect_id}: a previously shipped master hash has changed.")
 
         report_entry = report_by_id[effect_id]
+        report_effect_checks = report_entry.get("checks")
+        if report_entry.get("status") != "passed" or not isinstance(report_effect_checks, dict) or \
+                not report_effect_checks or not all(value is True for value in report_effect_checks.values()):
+            raise ImportValidationError(f"{effect_id}: validation report has failed or non-passing checks.")
         if report_entry.get("sha256") != source_hash:
             raise ImportValidationError(f"{effect_id}: source master does not match the validation report hash.")
         duration_ms = effect.get("duration_ms")

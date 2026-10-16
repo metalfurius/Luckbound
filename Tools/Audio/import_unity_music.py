@@ -172,9 +172,18 @@ def read_sources(project_root: Path = PROJECT_ROOT) -> list[dict[str, Any]]:
         master_path = PurePosixPath("Tools/Audio/masters") / f"{track_id}.wav"
         manifest_path = PurePosixPath("Tools/Audio/reports") / f"{track_id}.manifest.json"
         report_path = PurePosixPath("Tools/Audio/reports") / f"{track_id}.report.json"
-        score = read_json(project_root.joinpath(*score_path.parts), f"{track_id} score")
+        score_file = project_root.joinpath(*score_path.parts)
+        score = read_json(score_file, f"{track_id} score")
         manifest = read_json(project_root.joinpath(*manifest_path.parts), f"{track_id} manifest")
         report = read_json(project_root.joinpath(*report_path.parts), f"{track_id} report")
+        score_hash = sha256_file(score_file)
+        score_entry = manifest.get("files", {}).get("score")
+        if not isinstance(score_entry, dict) or score_entry.get("path") != score_path.as_posix() or \
+                score_entry.get("sha256") != score_hash:
+            raise MusicImportError(f"{track_id}: score hash does not match the source manifest.")
+        report_score = report.get("score")
+        if not isinstance(report_score, dict) or report_score.get("sha256") != score_hash:
+            raise MusicImportError(f"{track_id}: score hash does not match the validation report.")
         score_contract = manifest.get("score_contract")
         if not isinstance(score_contract, dict):
             raise MusicImportError(f"{track_id}: manifest has no score contract.")
@@ -242,7 +251,7 @@ def read_sources(project_root: Path = PROJECT_ROOT) -> list[dict[str, Any]]:
             "id": track_id,
             "title": actual["title"],
             "score_path": score_path.as_posix(),
-            "score_sha256": sha256_file(project_root.joinpath(*score_path.parts)),
+            "score_sha256": score_hash,
             "master_path": master_path.as_posix(),
             "master_sha256": master_hash,
             "master_bytes": len(master_bytes),
