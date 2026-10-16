@@ -73,9 +73,18 @@ namespace Luckbound.Tests.PlayMode.Venator
             VenatorFixture fixture = CreateFixture(
                 VenatorSkillLoadout.PiercingArrowId,
                 VenatorSkillLoadout.RootTrapId);
-            VenatorTestImpactActor2D first = fixture.CreateTarget("Piercing Target 1", new Vector2(2.4f, 1.75f), multipleColliders: true);
-            VenatorTestImpactActor2D second = fixture.CreateTarget("Piercing Target 2", new Vector2(4f, 1.75f), multipleColliders: true);
-            VenatorTestImpactActor2D third = fixture.CreateTarget("Piercing Target 3", new Vector2(5.6f, 1.75f), multipleColliders: true);
+            fixture.Motor.transform.position = new Vector2(0f, 0.75f);
+            Physics2D.SyncTransforms();
+            for (int tick = 0; tick < 5 && !fixture.Motor.IsGrounded; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            Assert.That(fixture.Motor.IsGrounded, Is.True, "The player must be settled on the test floor before the prepared shot begins.");
+            VenatorTestImpactActor2D first = fixture.CreateTarget("Piercing Target 1", new Vector2(2.4f, 1f), multipleColliders: true);
+            VenatorTestImpactActor2D second = fixture.CreateTarget("Piercing Target 2", new Vector2(4f, 1f), multipleColliders: true);
+            VenatorTestImpactActor2D third = fixture.CreateTarget("Piercing Target 3", new Vector2(5.6f, 1f), multipleColliders: true);
+            Physics2D.SyncTransforms();
 
             fixture.Input.Press(PlayerAction.Skill1);
             SkillUseOutcome activation = default;
