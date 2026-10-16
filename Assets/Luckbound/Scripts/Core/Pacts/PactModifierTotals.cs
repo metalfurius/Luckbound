@@ -23,6 +23,13 @@ namespace Luckbound.Core.Pacts
         public int MaximumHealthReductionPercent { get; }
         public int SkillCostIncreasePercent { get; }
 
+        /// <summary>Applies the summed basic-attack damage bonus without rounding fractional damage.</summary>
+        public decimal ApplyBasicAttackDamage(decimal baseDamage)
+        {
+            if (baseDamage < 0m) throw new ArgumentOutOfRangeException(nameof(baseDamage));
+            return baseDamage * (100m + BasicAttackDamageBonusPercent) / 100m;
+        }
+
         /// <summary>Sums each percentage category after validating a unique, supported pact set.</summary>
         public static PactModifierTotals Sum(IEnumerable<string> pactIds)
         {

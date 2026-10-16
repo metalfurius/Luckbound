@@ -24,7 +24,7 @@ namespace Luckbound.Tests.Core
             Assert.That(fervor.BasicAttackDamageBonusPercent, Is.EqualTo(20));
             Assert.That(fervor.MaximumHealthReductionPercent, Is.Zero);
             Assert.That(fervor.SkillCostIncreasePercent, Is.EqualTo(25));
-            Assert.That(fervor.BasicAttackDamageBonusPercent, Is.EqualTo(20));
+            Assert.That(fervor.ApplyBasicAttackDamage(24m), Is.EqualTo(28.8m));
             Assert.That(fervor.ApplySkillCost(5), Is.EqualTo(7));
         }
 
@@ -84,8 +84,19 @@ namespace Luckbound.Tests.Core
             Assert.That(combined.ApplySkillCost(3), Is.EqualTo(4), "3 × 1.25 = 3.75 rounds up.");
             Assert.That(combined.ApplyGoldReward(3), Is.EqualTo(4), "3 × 1.35 = 4.05 rounds down.");
             Assert.That(combined.BasicAttackDamageBonusPercent, Is.EqualTo(20));
+            Assert.That(combined.ApplyBasicAttackDamage(24m), Is.EqualTo(28.8m));
             Assert.That(combined.ApplySkillCost(1), Is.EqualTo(2));
             Assert.That(combined.ApplyGoldReward(0), Is.Zero);
+        }
+
+        [Test]
+        public void BasicAttackDamagePreservesFractionalResultsAndRejectsNegativeDamage()
+        {
+            PactModifierTotals fervor = PactModifierTotals.Sum(new[] { PactIds.Fervor });
+
+            Assert.That(fervor.ApplyBasicAttackDamage(24m), Is.EqualTo(28.8m));
+            Assert.That(fervor.ApplyBasicAttackDamage(0m), Is.Zero);
+            Assert.Throws<ArgumentOutOfRangeException>(() => fervor.ApplyBasicAttackDamage(-1m));
         }
 
         [Test]

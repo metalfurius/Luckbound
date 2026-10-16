@@ -1,5 +1,6 @@
 using System;
 using Luckbound.Core.Combat;
+using Luckbound.Core.Pacts;
 using NUnit.Framework;
 
 namespace Luckbound.Tests.Core
@@ -48,6 +49,64 @@ namespace Luckbound.Tests.Core
             Assert.That(state.CurrentEnergy, Is.EqualTo(7));
             Assert.That(state.IsReady(skill.Id, 1), Is.True);
             Assert.That(state.IsPreparing, Is.False);
+        }
+
+        [Test]
+        public void FervorIncreasesSkillCostForAvailabilityAndEnergyConsumption()
+        {
+            var pacts = new PactState(baseMaximumHealth: 100, currentHealth: 100);
+            Assert.That(pacts.Accept(PactIds.Fervor).Status, Is.EqualTo(PactOperationStatus.Accepted));
+            SkillDefinition skill = CreateSkill("skill.bellator.cut", 8, 240);
+            var insufficientState = new SkillUseState(maximumEnergy: 50, initialEnergy: 9, pactModifiers: pacts.Modifiers);
+
+            SkillUseOutcome insufficient = insufficientState.Update(0, skill, actionValid: true, interrupted: false);
+
+            Assert.That(insufficient.Status, Is.EqualTo(SkillUseStatus.RejectedInsufficientEnergy));
+            Assert.That(insufficientState.CurrentEnergy, Is.EqualTo(9));
+            Assert.That(insufficientState.IsPreparing, Is.False);
+
+            var activationState = new SkillUseState(maximumEnergy: 50, initialEnergy: 10, pactModifiers: pacts.Modifiers);
+            SkillUseOutcome start = activationState.Update(0, skill, actionValid: true, interrupted: false);
+            SkillUseOutcome activated = activationState.Update(9, null, actionValid: true, interrupted: false);
+
+            Assert.That(start.Status, Is.EqualTo(SkillUseStatus.Preparing));
+            Assert.That(activated.Status, Is.EqualTo(SkillUseStatus.Activated));
+            Assert.That(activated.EnergySpent, Is.EqualTo(10));
+            Assert.That(activationState.CurrentEnergy, Is.Zero);
+        }
+
+        [Test]
+        public void FervorCostIsRecheckedWhenPreparedEffectBegins()
+        {
+            var pacts = new PactState(baseMaximumHealth: 100, currentHealth: 100);
+            pacts.Accept(PactIds.Fervor);
+            var state = new SkillUseState(maximumEnergy: 50, initialEnergy: 10, pactModifiers: pacts.Modifiers);
+            SkillDefinition skill = CreateSkill("skill.bellator.cut", 8, 240);
+            state.Update(0, skill, actionValid: true, interrupted: false);
+            state.SetCurrentEnergy(9);
+
+            SkillUseOutcome result = state.Update(9, null, actionValid: true, interrupted: false);
+
+            Assert.That(result.Status, Is.EqualTo(SkillUseStatus.RejectedInsufficientEnergy));
+            Assert.That(result.EnergySpent, Is.Zero);
+            Assert.That(state.CurrentEnergy, Is.EqualTo(9));
+            Assert.That(state.IsReady(skill.Id, 9), Is.True);
+            Assert.That(state.IsPreparing, Is.False);
+        }
+
+        [Test]
+        public void PactModifiersAreOptionalAndExistingConstructorKeepsBaseEnergyCosts()
+        {
+            var state = new SkillUseState(maximumEnergy: 50, initialEnergy: 8);
+            SkillDefinition skill = CreateSkill("skill.bellator.cut", 8, 240);
+
+            SkillUseOutcome start = state.Update(0, skill, actionValid: true, interrupted: false);
+            SkillUseOutcome activated = state.Update(9, null, actionValid: true, interrupted: false);
+
+            Assert.That(start.Status, Is.EqualTo(SkillUseStatus.Preparing));
+            Assert.That(activated.Status, Is.EqualTo(SkillUseStatus.Activated));
+            Assert.That(activated.EnergySpent, Is.EqualTo(8));
+            Assert.That(state.CurrentEnergy, Is.Zero);
         }
 
         [Test]

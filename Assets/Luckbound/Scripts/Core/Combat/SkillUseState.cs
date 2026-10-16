@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Luckbound.Core.Pacts;
 
 namespace Luckbound.Core.Combat
 {
@@ -10,8 +11,14 @@ namespace Luckbound.Core.Combat
         private long _lastTick = -1;
         private SkillDefinition _preparingSkill;
         private long _preparationStartTick;
+        private readonly PactModifierTotals _pactModifiers;
 
         public SkillUseState(int maximumEnergy, int initialEnergy)
+            : this(maximumEnergy, initialEnergy, default(PactModifierTotals))
+        {
+        }
+
+        public SkillUseState(int maximumEnergy, int initialEnergy, PactModifierTotals pactModifiers)
         {
             if (maximumEnergy < 0)
             {
@@ -25,6 +32,7 @@ namespace Luckbound.Core.Combat
 
             MaximumEnergy = maximumEnergy;
             CurrentEnergy = initialEnergy;
+            _pactModifiers = pactModifiers;
         }
 
         public int MaximumEnergy { get; }
@@ -73,18 +81,19 @@ namespace Luckbound.Core.Combat
                     return new SkillUseOutcome(SkillUseStatus.Preparing, preparingId, 0, 0);
                 }
 
-                if (CurrentEnergy < _preparingSkill.EnergyCost)
+                int preparedSkillCost = GetSkillCost(_preparingSkill);
+                if (CurrentEnergy < preparedSkillCost)
                 {
                     ClearPreparation();
                     return new SkillUseOutcome(SkillUseStatus.RejectedInsufficientEnergy, preparingId, 0, 0);
                 }
 
                 SkillDefinition activatedSkill = _preparingSkill;
-                CurrentEnergy -= activatedSkill.EnergyCost;
+                CurrentEnergy -= preparedSkillCost;
                 long readyAtTick = tick + activatedSkill.CooldownTicks;
                 _readyAtTicks[activatedSkill.Id] = readyAtTick;
                 ClearPreparation();
-                return new SkillUseOutcome(SkillUseStatus.Activated, activatedSkill.Id, activatedSkill.EnergyCost, readyAtTick);
+                return new SkillUseOutcome(SkillUseStatus.Activated, activatedSkill.Id, preparedSkillCost, readyAtTick);
             }
 
             if (requestedSkill == null)
@@ -102,7 +111,7 @@ namespace Luckbound.Core.Combat
                 return new SkillUseOutcome(SkillUseStatus.RejectedCooldown, requestedSkill.Id, 0, readyAt);
             }
 
-            if (CurrentEnergy < requestedSkill.EnergyCost)
+            if (CurrentEnergy < GetSkillCost(requestedSkill))
             {
                 return new SkillUseOutcome(SkillUseStatus.RejectedInsufficientEnergy, requestedSkill.Id, 0, 0);
             }
@@ -126,6 +135,11 @@ namespace Luckbound.Core.Combat
         {
             _preparingSkill = null;
             _preparationStartTick = 0;
+        }
+
+        private int GetSkillCost(SkillDefinition skill)
+        {
+            return _pactModifiers.ApplySkillCost(skill.EnergyCost);
         }
     }
 }
