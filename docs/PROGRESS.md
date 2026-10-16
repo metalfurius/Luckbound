@@ -585,6 +585,13 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación coordinada:** Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`; las pruebas Magus dirigidas pasan EditMode `13/13` en `Logs/Coordinator-20261017-magus-editmode-acceptance-r2.xml` y PlayMode `21/21` en `Logs/Coordinator-20261017-magus-acceptance.xml`. La regresión PlayMode completa del mismo checkout pasa `129/129` en `Logs/Coordinator-20261017-f08-e08-playmode-r2.xml`; las tres ejecuciones terminan con cero fallos, omitidos o inconclusos. Los fixtures usan entrada simulada, `PlayerMotor2D`, física 2D y resolutores de Slime/Huesoguardia/Custodio; incluyen habilidades, estados alterados, muerte/interrupción, limpieza y enfriamiento exacto tras reconfigurar sala.
 - **Resultado:** E08 `Verified` por su contrato de clase y combate en `PlayerMotor2D`. La composición productiva del recorrido y las escenas sigue siendo F09; no se atribuye a E08 ni se afirma validación visual o build.
 
+## E09 — Clase, raza y kit (InProgress)
+
+- **Dependencias:** D05, E01, E06, E07 y E08 están `Verified`; E09 queda habilitada por el grafo.
+- **Brechas de inicio:** la preparación de taberna aún selecciona siempre Human y bloquea las otras tres razas sin consultar `Profile.unlockedRaceIds`; `ExpeditionRunConfiguration` rechaza IDs distintos de `race.human`. El kit/clase/habilidades, mejoras de perfil y guardado antes de entrar ya tienen componentes previos, pero falta su aceptación integrada desde la taberna.
+- **Paquetes Luna asignados sobre `d9c5e25`:** `E09.RACE.SELECT` modifica solo `HubPreparationController`, la validación de IDs de `ExpeditionRunConfiguration` y `HubPreparationTests`; `E09.RACE.RULES` añade un contrato Core puro para rasgos fijos y pruebas EditMode; `E09.PROFILE.ACCEPTANCE` añade un test PlayMode separado para mejoras guardadas aplicadas desde la taberna. Los tres trabajan en worktrees disjuntos; sus pruebas Unity quedan pendientes del coordinador.
+- **Coordinación:** el coordinador conserva `ApplicationBootstrapper`, guardado, escenas, composición y aceptación integrada. El helper Dvergar de E01 ya persiste el resto por material; la integración de rasgos a actores y recogidas de la composición jugable se acepta junto con su consumidor, no por la entrega de un helper aislado.
+
 ## F08 — Música y efectos parciales (InProgress)
 
 - **Música:** `8b92cfd` añade Patio; `b4704cf` añade tema de Custodio. El tema de taberna ya está registrado en la ficha histórica F08.Taberna. Los tres WAV tienen catálogo Resources y `RuntimeAudioDirector` con crossfade y voces acotadas, pero el servicio aún no está conectado a la aplicación ni a escenas.
