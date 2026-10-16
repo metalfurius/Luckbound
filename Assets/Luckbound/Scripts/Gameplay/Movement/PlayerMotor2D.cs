@@ -1,9 +1,13 @@
 using System;
+using System.Collections.Generic;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Presentation;
+using Luckbound.Content;
 using Luckbound.Gameplay.Combat;
+using Luckbound.Gameplay.Combat.Venator;
+using Luckbound.Gameplay.Rooms;
 using UnityEngine;
 
 namespace Luckbound.Gameplay.Movement
@@ -46,6 +50,11 @@ namespace Luckbound.Gameplay.Movement
         private ActorDamageState _damageState;
         private HealthPotionUseState _healthPotionUseState;
         private SkillUseState _skillUseState;
+        private VenatorCombatState _venatorCombatState;
+        private VenatorSkillLoadout _venatorSkillLoadout;
+        private VenatorCombatResult _lastVenatorCombatResult;
+        private VenatorBasicAttackSnapshot _venatorBasicAttackSnapshot;
+        private VenatorRoomBinding _venatorRoomBinding;
         private ActorId _actorId;
         private Collider2D _collider;
         private ContactFilter2D _groundContactFilter;
@@ -62,11 +71,13 @@ namespace Luckbound.Gameplay.Movement
         private float _dodgeElapsed;
         private float _facingDirection = 1f;
         private float _jumpBufferRemaining;
+        private LayerMask _venatorTargetLayers;
         private bool _dodgeActive;
         private bool _dodgeInvulnerabilityActive;
         private bool _dodgeSpeedRecoveryPending;
         private int _stunTicksRemaining;
         private long _tick;
+        private long _nextVenatorEnergyRecoveryTick;
 
         public bool IsGrounded { get; private set; }
 
@@ -86,6 +97,22 @@ namespace Luckbound.Gameplay.Movement
         public CombatStats CombatStats => _damageState != null ? _damageState.Stats : null;
 
         public SkillUseState SkillUses => _skillUseState;
+
+        public bool IsVenator => _venatorCombatState != null;
+
+        public bool IsPreparingVenatorSkill => IsVenator && _skillUseState.IsPreparing;
+
+        public VenatorCombatResult LastVenatorCombatResult => _lastVenatorCombatResult;
+
+        public VenatorBasicAttackSnapshot CurrentVenatorBasicAttack => _venatorBasicAttackSnapshot;
+
+        public int VenatorBasicAttackActivationCount { get; private set; }
+
+        public int VenatorSkillActivationCount { get; private set; }
+
+        public int VenatorProjectileSpawnCount { get; private set; }
+
+        public int VenatorRootTrapSpawnCount { get; private set; }
 
         public int CurrentEnergy => _skillUseState != null ? _skillUseState.CurrentEnergy : 0;
 
@@ -225,6 +252,114 @@ namespace Luckbound.Gameplay.Movement
             _initialized = true;
         }
 
+        /// <summary>
+        /// Binds the Venator combat adapter to this initialized actor and one live room.
+        /// Skill values always come from the authoritative Skills.json catalog.
+        /// </summary>
+        public void ConfigureVenator(
+            IEnumerable<string> selectedSkillIds,
+            ProjectilePool2D projectilePool,
+            RoomProjectileScope projectileScope,
+            RoomLifetimeScope roomLifetimeScope,
+            LayerMask enemyLayers = default)
+        {
+            TextAsset catalogAsset = Resources.Load<TextAsset>("Luckbound/Data/Skills");
+            if (catalogAsset == null)
+            {
+                throw new InvalidOperationException("The authoritative Skills.json catalog is missing from Resources.");
+            }
+
+            ConfigureVenator(
+                SkillCatalogJsonLoader.Load(catalogAsset.text),
+                selectedSkillIds,
+                projectilePool,
+                projectileScope,
+                roomLifetimeScope,
+                enemyLayers);
+        }
+
+        /// <summary>Test and composition overload for a catalog already loaded from Skills.json.</summary>
+        public void ConfigureVenator(
+            SkillCatalog catalog,
+            IEnumerable<string> selectedSkillIds,
+            ProjectilePool2D projectilePool,
+            RoomProjectileScope projectileScope,
+            RoomLifetimeScope roomLifetimeScope,
+            LayerMask enemyLayers = default)
+        {
+            if (!_initialized)
+            {
+                throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring Venator combat.");
+            }
+
+            if (catalog == null) throw new ArgumentNullException(nameof(catalog));
+            if (projectilePool == null) throw new ArgumentNullException(nameof(projectilePool));
+            if (projectileScope == null) throw new ArgumentNullException(nameof(projectileScope));
+            if (roomLifetimeScope == null) throw new ArgumentNullException(nameof(roomLifetimeScope));
+            if (projectileScope.IsDisposed || projectileScope.Pool != projectilePool)
+            {
+                throw new ArgumentException("Venator projectiles require a live room scope attached to the supplied pool.", nameof(projectileScope));
+            }
+
+            LayerMask targetLayers = enemyLayers.value != 0 ? enemyLayers : _meleeTargetLayers;
+            if (targetLayers.value == 0)
+            {
+                throw new ArgumentException("Venator projectiles and traps require at least one enemy layer.", nameof(enemyLayers));
+            }
+
+            var loadout = new VenatorSkillLoadout(catalog, selectedSkillIds);
+            if (_venatorSkillLoadout != null &&
+                (!string.Equals(_venatorSkillLoadout.Skill1.Id, loadout.Skill1.Id, StringComparison.Ordinal) ||
+                 !string.Equals(_venatorSkillLoadout.Skill2.Id, loadout.Skill2.Id, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException("A Venator loadout cannot change during an expedition.");
+            }
+
+            if (_venatorRoomBinding != null && !_venatorRoomBinding.IsDisposed)
+            {
+                throw new InvalidOperationException("The previous Venator room must be disposed before binding another room.");
+            }
+
+            var trapPoolObject = new GameObject("Venator Root Trap Pool");
+            VenatorRootTrapPool2D trapPool = trapPoolObject.AddComponent<VenatorRootTrapPool2D>();
+            trapPool.Initialize(_actorId, targetLayers);
+            VenatorRoomBinding binding = null;
+            try
+            {
+                roomLifetimeScope.OwnActor(trapPoolObject);
+                binding = new VenatorRoomBinding(this, projectileScope, trapPool);
+                roomLifetimeScope.OwnResource(binding);
+            }
+            catch
+            {
+                if (binding != null) binding.Dispose();
+                else trapPool.Dispose();
+                Destroy(trapPoolObject);
+                throw;
+            }
+
+            if (_venatorCombatState == null)
+            {
+                _venatorSkillLoadout = loadout;
+                _venatorCombatState = new VenatorCombatState(_actorId, loadout, _skillUseState);
+                _nextVenatorEnergyRecoveryTick = _tick + 60;
+            }
+
+            _venatorRoomBinding = binding;
+            _venatorTargetLayers = targetLayers;
+            _venatorBasicAttackSnapshot = default;
+            _lastVenatorCombatResult = default;
+            _meleeAttackState.Interrupt();
+            _meleeAttackSnapshot = default;
+            IsAttacking = false;
+        }
+
+        public bool IsVenatorSkillReady(string skillId)
+        {
+            return IsVenator && _venatorSkillLoadout.Contains(skillId) &&
+                _skillUseState.IsReady(skillId, SimulationTick);
+        }
+
         public DirectImpactOutcome ReceiveDirectImpact(
             HitId hitId,
             DamageCalculationRequest request,
@@ -259,6 +394,11 @@ namespace Luckbound.Gameplay.Movement
             }
 
             _healthPotionUseState.CancelPreparation();
+            if (_venatorCombatState != null && _skillUseState.IsPreparing)
+            {
+                _venatorCombatState.Interrupt();
+            }
+
             _body.linearVelocity = knockbackVelocity;
             if (stunDurationTicks > 0 && !outcome.IsDead)
             {
@@ -277,6 +417,12 @@ namespace Luckbound.Gameplay.Movement
 
         private void OnDestroy()
         {
+            if (_venatorRoomBinding != null)
+            {
+                _venatorRoomBinding.Dispose();
+                _venatorRoomBinding = null;
+            }
+
             if (_movementMaterial == null)
             {
                 return;
@@ -328,6 +474,7 @@ namespace Luckbound.Gameplay.Movement
                 _healthPotionUseState.Update(tick, requested: false, currentHealth: CurrentHealth,
                     maximumHealth: CombatStats.MaximumHealth, interrupted: true);
                 InterruptActions();
+                TickVenatorCommand(command, canAct: false);
                 ApplyRestrictedMotion(deltaTime);
                 return;
             }
@@ -338,6 +485,7 @@ namespace Luckbound.Gameplay.Movement
                     maximumHealth: CombatStats.MaximumHealth, interrupted: true);
                 _stunTicksRemaining--;
                 InterruptActions();
+                TickVenatorCommand(command, canAct: false);
                 ApplyRestrictedMotion(deltaTime);
                 return;
             }
@@ -378,14 +526,28 @@ namespace Luckbound.Gameplay.Movement
                 DodgeActivationCount++;
             }
 
-            _meleeAttackSnapshot = _meleeAttackState.Tick(
-                command.Tick,
-                attackPressed: command.WasPressed(PlayerAction.Attack) && !_dodgeActive,
-                dodgeAccepted: dodgeStartedThisTick);
-            IsAttacking = _meleeAttackSnapshot.IsAttacking && !_dodgeActive;
-            if (_meleeAttackSnapshot.WasStartedThisTick)
+            float attackMovementMultiplier;
+            if (IsVenator)
             {
-                MeleeAttackActivationCount++;
+                bool higherPriorityActionActive = potionOutcome.Status == HealthPotionUseStatus.Preparing ||
+                    potionOutcome.Status == HealthPotionUseStatus.Healed;
+                TickVenatorCommand(command, canAct: !_dodgeActive && !higherPriorityActionActive);
+                attackMovementMultiplier = IsAttacking ? (float)_venatorBasicAttackSnapshot.MovementSpeedMultiplier : 1f;
+                _meleeAttackSnapshot = default;
+            }
+            else
+            {
+                _meleeAttackSnapshot = _meleeAttackState.Tick(
+                    command.Tick,
+                    attackPressed: command.WasPressed(PlayerAction.Attack) && !_dodgeActive,
+                    dodgeAccepted: dodgeStartedThisTick);
+                IsAttacking = _meleeAttackSnapshot.IsAttacking && !_dodgeActive;
+                if (_meleeAttackSnapshot.WasStartedThisTick)
+                {
+                    MeleeAttackActivationCount++;
+                }
+
+                attackMovementMultiplier = IsAttacking ? (float)_meleeAttackSnapshot.MovementSpeedMultiplier : 1f;
             }
 
             if (_meleeAttackSnapshot.HitWindow != null && _meleeTargetLayers.value != 0)
@@ -393,7 +555,6 @@ namespace Luckbound.Gameplay.Movement
                 CollectMeleeImpacts(_meleeAttackSnapshot.HitWindow);
             }
 
-            float attackMovementMultiplier = IsAttacking ? (float)_meleeAttackSnapshot.MovementSpeedMultiplier : 1f;
             float targetSpeed = input * MaximumHorizontalSpeed * attackMovementMultiplier;
             float acceleration = Mathf.Abs(input) > MovementDeadZone ? GroundAcceleration : GroundBraking;
             if (!IsGrounded)
@@ -454,12 +615,129 @@ namespace Luckbound.Gameplay.Movement
             }
 
             _meleeAttackSnapshot = default;
+            if (_venatorCombatState != null)
+            {
+                _venatorCombatState.Interrupt();
+            }
+
+            _venatorBasicAttackSnapshot = default;
             IsDodging = false;
             IsAttacking = false;
             _dodgeActive = false;
             _dodgeInvulnerabilityActive = false;
             _dodgeSpeedRecoveryPending = false;
             _jumpBufferRemaining = 0f;
+        }
+
+        private void TickVenatorCommand(PlayerCommand command, bool canAct)
+        {
+            if (_venatorCombatState == null) return;
+
+            bool roomReady = _venatorRoomBinding != null && !_venatorRoomBinding.IsDisposed;
+            VenatorCombatResult result = _venatorCombatState.Tick(command, isAlive: canAct && roomReady);
+            _lastVenatorCombatResult = result;
+            _venatorBasicAttackSnapshot = result.BasicAttack;
+            IsAttacking = result.BasicAttack.IsAttacking && canAct && roomReady && !_dodgeActive;
+
+            if (result.SkillOutcome.EnergySpent > 0)
+            {
+                _nextVenatorEnergyRecoveryTick = command.Tick + 60;
+            }
+            else if (roomReady && !IsDead)
+            {
+                RecoverVenatorEnergy(command.Tick);
+            }
+
+            if (result.BasicAttack.WasStartedThisTick)
+            {
+                SpawnVenatorProjectile(
+                    VenatorBasicAttackProfile.Shortbow.Projectile,
+                    0m);
+                VenatorBasicAttackActivationCount++;
+            }
+
+            VenatorSkillActivation activation = result.SkillActivation;
+            if (activation == null) return;
+
+            VenatorSkillActivationCount++;
+            if (activation.EffectKind == SkillEffectKind.RootTrap)
+            {
+                _venatorRoomBinding.RootTrapPool.Spawn(
+                    activation.RootTrap,
+                    RootTrapPosition());
+                VenatorRootTrapSpawnCount++;
+                return;
+            }
+
+            for (int index = 0; index < activation.Projectiles.Count; index++)
+            {
+                VenatorProjectileShot shot = activation.Projectiles[index];
+                SpawnVenatorProjectile(shot.Definition, shot.AngleOffsetDegrees);
+            }
+        }
+
+        private void RecoverVenatorEnergy(long tick)
+        {
+            if (_skillUseState.CurrentEnergy >= _skillUseState.MaximumEnergy)
+            {
+                _nextVenatorEnergyRecoveryTick = tick + 12;
+                return;
+            }
+
+            if (tick < _nextVenatorEnergyRecoveryTick) return;
+
+            long elapsedRecoveryTicks = tick - _nextVenatorEnergyRecoveryTick;
+            int recoveryAmount = 1 + (int)(elapsedRecoveryTicks / 12);
+            _skillUseState.SetCurrentEnergy(Math.Min(
+                _skillUseState.MaximumEnergy,
+                _skillUseState.CurrentEnergy + recoveryAmount));
+            _nextVenatorEnergyRecoveryTick += recoveryAmount * 12L;
+        }
+
+        private void SpawnVenatorProjectile(ProjectileDefinition definition, decimal angleOffsetDegrees)
+        {
+            if (_venatorRoomBinding == null || _venatorRoomBinding.IsDisposed)
+            {
+                throw new InvalidOperationException("Venator projectiles require a live room binding.");
+            }
+
+            Vector2 direction = new Vector2(_facingDirection, 0f);
+            float radians = (float)angleOffsetDegrees * Mathf.Deg2Rad;
+            float cosine = Mathf.Cos(radians);
+            float sine = Mathf.Sin(radians);
+            direction = new Vector2(
+                (direction.x * cosine) - (direction.y * sine),
+                (direction.x * sine) + (direction.y * cosine));
+            Vector2 spawnPosition = new Vector2(
+                transform.position.x + (_facingDirection * 0.55f),
+                transform.position.y + 0.25f);
+
+            _venatorRoomBinding.ProjectileScope.Pool.Spawn(
+                definition,
+                EntityId.New(),
+                _actorId,
+                spawnPosition,
+                direction,
+                _venatorTargetLayers,
+                _venatorRoomBinding.ProjectileScope);
+            VenatorProjectileSpawnCount++;
+        }
+
+        private Vector2 RootTrapPosition()
+        {
+            return new Vector2(
+                transform.position.x + (_facingDirection * 1.2f),
+                transform.position.y - 0.65f);
+        }
+
+        internal void OnVenatorRoomDisposed(VenatorRoomBinding binding)
+        {
+            if (_venatorRoomBinding != binding) return;
+
+            _venatorCombatState?.Interrupt();
+            _venatorRoomBinding = null;
+            _venatorBasicAttackSnapshot = default;
+            IsAttacking = false;
         }
 
         private void CollectMeleeImpacts(MeleeHitWindow hitWindow)
