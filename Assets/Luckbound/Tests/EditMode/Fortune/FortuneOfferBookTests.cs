@@ -99,10 +99,82 @@ namespace Luckbound.Tests.Core
         }
 
         [Test]
+        public void InitialOfferWithFewerThanThreeEligibleOptionsIsRejectedWithoutCreatingState()
+        {
+            var book = new FortuneOfferBook(1, 223u, FortuneOfferBook.HumanRaceId);
+            int priorCharges = book.CurrentCharges;
+
+            FortuneOfferResult result = book.CreateOffer("patio.special", "patio.special", ConsumableIds.Take(2));
+
+            Assert.That(result.Status, Is.EqualTo(FortuneOperationStatus.RejectedInsufficientOptions));
+            Assert.That(result.Offer, Is.Null);
+            Assert.That(book.GetOffer("patio.special"), Is.Null);
+            Assert.That(book.CreateSnapshot().offers, Is.Empty);
+            Assert.That(book.CurrentCharges, Is.EqualTo(priorCharges));
+        }
+
+        [Test]
+        public void ReusingAnOfferIdWithDifferentContextOrPoolCannotReplaceItsSavedOffer()
+        {
+            var book = new FortuneOfferBook(1, 7381u, FortuneOfferBook.HumanRaceId);
+            FortuneOffer original = Create(book, "patio.special", "patio.special");
+            string[] originalOptions = original.OptionIds.ToArray();
+            int priorCharges = book.CurrentCharges;
+
+            FortuneOfferResult changedContext = book.CreateOffer(original.OfferId, "archivo.special", ConsumableIds);
+            FortuneOfferResult changedPool = book.CreateOffer(original.OfferId, original.ContextId,
+                ConsumableIds.Concat(new[] { "relic.marked_coin" }));
+
+            Assert.That(changedContext.Status, Is.EqualTo(FortuneOperationStatus.RejectedConflict));
+            Assert.That(changedPool.Status, Is.EqualTo(FortuneOperationStatus.RejectedConflict));
+            Assert.That(book.CurrentCharges, Is.EqualTo(priorCharges));
+            AssertOfferEqual(original, book.GetOffer(original.OfferId));
+            CollectionAssert.AreEqual(originalOptions, book.GetOffer(original.OfferId).OptionIds);
+        }
+
+        [Test]
+        public void ChosenOfferRejectsRerollsAndKeepsItsChoiceAndChargeBalance()
+        {
+            var book = new FortuneOfferBook(1, 947u, FortuneOfferBook.HumanRaceId);
+            FortuneOffer offer = Create(book, "archivo.guardian", "archivo.guardian");
+            string selectedOption = offer.OptionIds[0];
+            Assert.That(book.Choose(offer.OfferId, selectedOption).Status,
+                Is.EqualTo(FortuneOperationStatus.Succeeded));
+            int priorCharges = book.CurrentCharges;
+
+            FortuneRerollResult reroll = book.Reroll(offer.OfferId);
+
+            Assert.That(reroll.Status, Is.EqualTo(FortuneOperationStatus.RejectedConflict));
+            Assert.That(reroll.Offer.SelectedOptionId, Is.EqualTo(selectedOption));
+            Assert.That(reroll.Offer.RerollCount, Is.Zero);
+            Assert.That(book.CurrentCharges, Is.EqualTo(priorCharges));
+        }
+
+        [Test]
+        public void SnapshotCopiesOfferHistoryAndRestoreRejectsRepeatedOptions()
+        {
+            var book = new FortuneOfferBook(1, 125u, FortuneOfferBook.HumanRaceId);
+            FortuneOffer offer = Create(book, "forjas.special", "forjas.special");
+            string[] originalOptions = offer.OptionIds.ToArray();
+            FortuneOfferBookSnapshot snapshot = book.CreateSnapshot();
+
+            snapshot.offers[0].history[0].optionIds[0] = "relic.tampered";
+
+            CollectionAssert.AreEqual(originalOptions, book.GetOffer(offer.OfferId).OptionIds);
+            FortuneOfferBookSnapshot invalidSnapshot = book.CreateSnapshot();
+            invalidSnapshot.offers[0].history[0].optionIds[1] = invalidSnapshot.offers[0].history[0].optionIds[0];
+
+            Assert.Throws<FormatException>(() => FortuneOfferBook.Restore(invalidSnapshot));
+            CollectionAssert.AreEqual(originalOptions, FortuneOfferBook.Restore(book.CreateSnapshot())
+                .GetOffer(offer.OfferId).OptionIds);
+        }
+
+        [Test]
         public void HumanStartsWithTwoChargesGuardianGrantCapsAtThreeAndRerollConsumesOne()
         {
             var book = new FortuneOfferBook(1, 443u, FortuneOfferBook.HumanRaceId);
             Assert.That(book.CurrentCharges, Is.EqualTo(2));
+            Assert.That(new FortuneOfferBook(1, 443u, "race.dvergar").CurrentCharges, Is.EqualTo(1));
             Assert.That(book.GrantGuardianCharge("patio.guardian").CurrentCharges, Is.EqualTo(3));
 
             FortuneChargeResult atCapacity = book.GrantGuardianCharge("archivo.guardian");
