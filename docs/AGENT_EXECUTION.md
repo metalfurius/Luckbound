@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 1.9 · 16 de octubre de 2026.
+**Versión:** 1.9 · 17 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -114,7 +114,7 @@ Verificación WebGL en pestaña oculta (`visible:false` cuando la API lo ofrezca
 
 ### 3.5. Regla general de visibilidad
 
-**Regla absoluta de Fran, reafirmada el 16 de octubre de 2026:** **CUALQUIER ventana, pestaña, panel, diálogo, notificación o previsualización que Fran no necesite usar personalmente en ese momento para tomar una decisión concreta debe permanecer completamente fuera de su vista.** No basta con que esté relacionada con Luckbound, facilite el desarrollo, sirva para verificar el resultado o sea útil para enseñarlo. Todo lo que Fran no necesite para decidir se ejecuta sin interfaz o dentro de un sandbox/escritorio verdaderamente aislado e inaccesible visualmente para él. Solo se muestra la interfaz mínima durante la decisión que necesite tomar. La regla obliga al coordinador y a todos los trabajadores, y cubre todas las aplicaciones, procesos secundarios y ventanas emergentes, incluidas las de Codex/ChatGPT, Unity, juegos Windows/WebGL, terminales, navegadores y herramientas. Una ventana detrás de otra o sin foco sigue siendo visible para este propósito; minimizarla no la aísla. **Las herramientas que publiquen imágenes, audio, vídeo u otra previsualización directamente en el chat también cuentan como contenido visible; no deben usarse si no hacen falta para una decisión concreta de Fran.**
+**Regla absoluta de Fran, reafirmada el 17 de octubre de 2026:** **CUALQUIER ventana, pestaña, panel, diálogo, notificación o previsualización que Fran no necesite usar personalmente en ese momento para tomar una decisión concreta debe permanecer completamente fuera de su vista.** No basta con que esté relacionada con Luckbound, facilite el desarrollo, sirva para verificar el resultado o sea útil para enseñarlo. Todo lo que Fran no necesite para decidir se ejecuta sin interfaz o dentro de un sandbox/escritorio verdaderamente aislado e inaccesible visualmente para él. Solo se muestra la interfaz mínima durante la decisión que necesite tomar. La regla obliga al coordinador y a todos los trabajadores, y cubre todas las aplicaciones, procesos secundarios y ventanas emergentes, incluidas las de Codex/ChatGPT, Unity, juegos Windows/WebGL, terminales, navegadores y herramientas. Una ventana detrás de otra o sin foco sigue siendo visible para este propósito; minimizarla no la aísla. **Las herramientas que publiquen imágenes, audio, vídeo u otra previsualización directamente en el chat también cuentan como contenido visible; no deben usarse si no hacen falta para una decisión concreta de Fran.**
 
 1. Antes de lanzar una herramienta, comprobar que la aplicación, procesos secundarios, avisos y ventanas emergentes no aparecerán en la pantalla de Fran.
 2. Preferir ejecución sin interfaz; usar un navegador/contexto oculto que no aparezca en una ventana de Fran; para una prueba con renderizado, usar proceso realmente oculto o sandbox/escritorio aislado que no pueda mostrarse en su escritorio. Al usar `Start-Process` en Windows, aplicar `-WindowStyle Hidden` cuando corresponda y verificar que la aplicación ni sus procesos secundarios creen otra ventana visible. No crear un entorno de pago.
