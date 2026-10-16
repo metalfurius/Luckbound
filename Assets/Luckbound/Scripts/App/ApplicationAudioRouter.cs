@@ -12,16 +12,20 @@ namespace Luckbound.App
     public sealed class ApplicationAudioRouter : MonoBehaviour
     {
         private RuntimeAudioDirector _audioDirector;
+        private RuntimeAmbienceDirector _ambienceDirector;
         private IDisposable _inputSubscription;
         private string _requestedMusicTrackId;
+        private string _requestedAmbienceId;
         private bool _userGestureObserved;
 
         public string RequestedMusicTrackId => _requestedMusicTrackId;
+        public string RequestedAmbienceId => _requestedAmbienceId;
         public bool UserGestureObserved => _userGestureObserved;
 
         private void Awake()
         {
             _audioDirector = GetComponent<RuntimeAudioDirector>();
+            _ambienceDirector = GetComponent<RuntimeAmbienceDirector>();
         }
 
         private void OnEnable()
@@ -42,7 +46,9 @@ namespace Luckbound.App
         public bool SetSceneContext(string sceneName)
         {
             bool hasMusic = TryResolveMusicTrack(sceneName, out _requestedMusicTrackId);
+            TryResolveAmbience(sceneName, out _requestedAmbienceId);
             ApplyRequestedMusic();
+            ApplyRequestedAmbience();
             return hasMusic;
         }
 
@@ -54,6 +60,7 @@ namespace Luckbound.App
             _inputSubscription?.Dispose();
             _inputSubscription = null;
             ApplyRequestedMusic();
+            ApplyRequestedAmbience();
         }
 
         public static bool TryResolveMusicTrack(string sceneName, out string trackId)
@@ -72,6 +79,20 @@ namespace Luckbound.App
                     return true;
                 default:
                     trackId = null;
+                    return false;
+            }
+        }
+
+        public static bool TryResolveAmbience(string sceneName, out string ambienceId)
+        {
+            switch (sceneName)
+            {
+                case "Expedition":
+                case "CombatArena":
+                    ambienceId = RuntimeAmbienceDirector.ForestCourtyardId;
+                    return true;
+                default:
+                    ambienceId = null;
                     return false;
             }
         }
@@ -96,6 +117,18 @@ namespace Luckbound.App
             }
 
             _audioDirector.PlayMusic(_requestedMusicTrackId);
+        }
+
+        private void ApplyRequestedAmbience()
+        {
+            if (!_userGestureObserved || _ambienceDirector == null) return;
+            if (string.IsNullOrEmpty(_requestedAmbienceId))
+            {
+                _ambienceDirector.StopAmbience();
+                return;
+            }
+
+            _ambienceDirector.PlayAmbience(_requestedAmbienceId);
         }
     }
 }

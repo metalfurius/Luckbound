@@ -254,6 +254,8 @@ namespace Luckbound.App
         {
             if (GetComponent<RuntimeAudioDirector>() == null)
                 gameObject.AddComponent<RuntimeAudioDirector>();
+            if (GetComponent<RuntimeAmbienceDirector>() == null)
+                gameObject.AddComponent<RuntimeAmbienceDirector>();
             if (GetComponent<ApplicationAudioRouter>() == null)
                 gameObject.AddComponent<ApplicationAudioRouter>();
         }
