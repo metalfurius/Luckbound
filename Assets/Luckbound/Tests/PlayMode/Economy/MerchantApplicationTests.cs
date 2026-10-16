@@ -160,9 +160,85 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                     .remainingQuantity, Is.EqualTo(1), "Re-entering the same rest room must not replenish fixed stock.");
 
+                evidence.RecordInput(4, "SellItemToMerchantAsync", "Fail then repeat the exact sale of the owned health-potion stack");
+                InventoryItemStack potionStack = FindBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion");
+                Assert.That(potionStack.Quantity, Is.EqualTo(3));
+                ItemInstanceId potionStackId = potionStack.InstanceId;
+                const int potionSaleQuantity = 3;
+                const int expectedPotionSaleGold = 12; // 18 base gold × 25%, floored to 4 per potion.
+                TransactionId potionSaleId = TransactionId.New();
+                store.FailNextProfileWrite();
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> failedPotionSale =
+                    app.SellItemToMerchantAsync(roomId, potionStackId, potionSaleQuantity, potionSaleId);
+                while (!failedPotionSale.IsCompleted) yield return null;
+                Assert.That(failedPotionSale.Result.Persisted, Is.False);
+                Assert.That(failedPotionSale.Result.Pending, Is.True);
+                Assert.That(failedPotionSale.Result.Outcome.Succeeded, Is.True);
+                Assert.That(failedPotionSale.Result.Outcome.ItemId, Is.EqualTo("consumable.health_potion"));
+                Assert.That(failedPotionSale.Result.Outcome.ItemInstanceId, Is.EqualTo(potionStackId));
+                Assert.That(failedPotionSale.Result.Outcome.Quantity, Is.EqualTo(potionSaleQuantity));
+                Assert.That(failedPotionSale.Result.Outcome.GoldDelta, Is.EqualTo(expectedPotionSaleGold));
+                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(154),
+                    "A failed profile write cannot publish the sale proceeds.");
+                Assert.That(FindBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion").Quantity,
+                    Is.EqualTo(potionSaleQuantity), "A failed profile write cannot remove the owned item.");
+                evidence.RecordAssertion("Failed item-sale write leaves the committed gold and item stack unchanged",
+                    app.ActiveRun.Inventory.Gold == 154 &&
+                    FindBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion").Quantity == potionSaleQuantity,
+                    "gold 154 and all three owned health potions remain visible",
+                    "gold=" + app.ActiveRun.Inventory.Gold + "; potions=" +
+                    FindBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion").Quantity);
+
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> retriedPotionSale =
+                    app.SellItemToMerchantAsync(roomId, potionStackId, potionSaleQuantity, potionSaleId);
+                while (!retriedPotionSale.IsCompleted) yield return null;
+                Assert.That(retriedPotionSale.Result.Persisted, Is.True, retriedPotionSale.Result.Message);
+                Assert.That(retriedPotionSale.Result.Outcome.Succeeded, Is.True);
+                Assert.That(retriedPotionSale.Result.Outcome.TransactionId, Is.EqualTo(potionSaleId));
+                Assert.That(retriedPotionSale.Result.Outcome.ItemId, Is.EqualTo("consumable.health_potion"));
+                Assert.That(retriedPotionSale.Result.Outcome.ItemInstanceId, Is.EqualTo(potionStackId));
+                Assert.That(retriedPotionSale.Result.Outcome.Quantity, Is.EqualTo(potionSaleQuantity));
+                Assert.That(retriedPotionSale.Result.Outcome.GoldDelta, Is.EqualTo(expectedPotionSaleGold));
+                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(166));
+                Assert.That(HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"), Is.False,
+                    "A confirmed sale removes the entire owned potion stack.");
+                evidence.RecordAssertion("Confirmed item sale credits the floored value and removes the stack",
+                    app.ActiveRun.Inventory.Gold == 166 &&
+                    !HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion") &&
+                    retriedPotionSale.Result.Outcome.GoldDelta == expectedPotionSaleGold,
+                    "gold 166, no health-potion stack and sale proceeds of 12 (4 per potion)",
+                    "gold=" + app.ActiveRun.Inventory.Gold + "; hasPotions=" +
+                    HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion") +
+                    "; saleGold=" + retriedPotionSale.Result.Outcome.GoldDelta);
+
+                evidence.RecordInput(5, "SellItemToMerchantAsync", "Attempt to sell an invalid item instance and preserve committed gameplay state");
+                TransactionId rejectedSaleId = TransactionId.New();
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> rejectedSale =
+                    app.SellItemToMerchantAsync(roomId, default(ItemInstanceId), 1, rejectedSaleId);
+                while (!rejectedSale.IsCompleted) yield return null;
+                Assert.That(rejectedSale.Result.Persisted, Is.True, rejectedSale.Result.Message);
+                Assert.That(rejectedSale.Result.Outcome.Succeeded, Is.False);
+                Assert.That(rejectedSale.Result.Outcome.Status, Is.EqualTo(EconomyOperationStatus.RejectedInvalidQuantity));
+                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(166));
+                Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(2));
+                Assert.That(app.ActiveRun.Inventory.Weapon.InstanceId, Is.EqualTo(weaponInstanceId));
+                Assert.That(app.ActiveRun.Inventory.Weapon.UpgradeLevel, Is.EqualTo(2));
+                Assert.That(HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"), Is.False);
+                evidence.RecordAssertion("Rejected item sale leaves functional inventory and gold unchanged",
+                    !rejectedSale.Result.Outcome.Succeeded && app.ActiveRun.Inventory.Gold == 166 &&
+                    app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore) == 2 &&
+                    app.ActiveRun.Inventory.Weapon.InstanceId == weaponInstanceId &&
+                    app.ActiveRun.Inventory.Weapon.UpgradeLevel == 2 &&
+                    !HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"),
+                    "invalid-quantity rejection, gold 166, ore 2, same weapon at +2 and no health-potion stack",
+                    rejectedSale.Result.Outcome.Status + "; gold=" + app.ActiveRun.Inventory.Gold +
+                    "; ore=" + app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore) +
+                    "; weaponUpgrade=" + app.ActiveRun.Inventory.Weapon.UpgradeLevel +
+                    "; hasPotions=" + HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"));
+
                 string runId = app.ActiveRun.RunId.ToString();
                 string nodeId = app.ActiveExpedition.currentNodeId;
-                evidence.RecordInput(4, "ProcessRestart", "Resume the saved rest room and verify its confirmed merchant and smithing transactions");
+                evidence.RecordInput(6, "ProcessRestart", "Resume the saved rest room and verify confirmed merchant sales and smithing transactions");
                 UnityEngine.Object.Destroy(app.gameObject);
                 yield return null;
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
@@ -178,29 +254,29 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveExpedition.currentNodeId, Is.EqualTo(nodeId));
                 Assert.That(app.ActiveRoomInstanceId, Is.EqualTo(roomId));
                 Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(40));
-                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(154));
+                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(166));
                 Assert.That(app.ActiveRun.Inventory.Weapon.InstanceId, Is.EqualTo(weaponInstanceId));
                 Assert.That(app.ActiveRun.Inventory.Weapon.UpgradeLevel, Is.EqualTo(2));
                 Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(2));
-                Assert.That(FindBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion").Quantity, Is.EqualTo(3));
+                Assert.That(HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"), Is.False);
                 MerchantStockSnapshot stockAfterRestart = app.GetActiveMerchantStock();
                 Assert.That(stockAfterRestart, Is.Not.Null);
                 Assert.That(stockAfterRestart.offers.Single(offer => offer.itemId == "consumable.health_potion").remainingQuantity,
                     Is.EqualTo(1));
                 Assert.That(stockAfterRestart.roomInstanceId, Is.EqualTo(roomId.ToString()));
                 evidence.RecordAssertion("Confirmed rest-room commerce, smithing and fixed stock survive restart",
-                    app.ActiveExpedition.currentHealth == 40 && app.ActiveRun.Inventory.Gold == 154 &&
+                    app.ActiveExpedition.currentHealth == 40 && app.ActiveRun.Inventory.Gold == 166 &&
                     app.ActiveRun.Inventory.Weapon.InstanceId == weaponInstanceId &&
                     app.ActiveRun.Inventory.Weapon.UpgradeLevel == 2 &&
                     app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore) == 2 &&
-                    FindBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion").Quantity == 3 &&
+                    !HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion") &&
                     stockAfterRestart.offers.Single(offer => offer.itemId == "consumable.health_potion").remainingQuantity == 1,
-                    "health 40, gold 154, same weapon at +2, three owned potions and one remaining in stock",
+                    "health 40, gold 166, same weapon at +2, no owned potions and one remaining in stock",
                     "health=" + app.ActiveExpedition.currentHealth + "; gold=" + app.ActiveRun.Inventory.Gold +
                     "; weapon=" + app.ActiveRun.Inventory.Weapon.InstanceId + "+" + app.ActiveRun.Inventory.Weapon.UpgradeLevel +
                     "; stock=" + stockAfterRestart.offers.Single(offer => offer.itemId == "consumable.health_potion").remainingQuantity);
 
-                evidence.RecordInput(5, "ReplayTransactions", "Replay the same purchase, sale and upgrade transaction IDs after restart");
+                evidence.RecordInput(7, "ReplayTransactions", "Replay the same purchase, sales and upgrade transaction IDs after restart");
                 Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> replayedPurchase = app.PurchaseFromMerchantAsync(
                     roomId, "consumable.health_potion", 1, 0, purchaseId);
                 while (!replayedPurchase.IsCompleted) yield return null;
@@ -214,25 +290,37 @@ namespace Luckbound.Tests.PlayMode.Economy
                     roomId, "recipe.upgrade.weapon.2", weaponInstanceId, secondUpgradeId);
                 while (!replayedSecondUpgrade.IsCompleted) yield return null;
 
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> replayedPotionSale = app.SellItemToMerchantAsync(
+                    roomId, potionStackId, potionSaleQuantity, potionSaleId);
+                while (!replayedPotionSale.IsCompleted) yield return null;
+
                 Assert.That(replayedPurchase.Result.Persisted, Is.True);
                 Assert.That(replayedSale.Result.Persisted, Is.True);
                 Assert.That(replayedFirstUpgrade.Result.Persisted, Is.True);
                 Assert.That(replayedSecondUpgrade.Result.Persisted, Is.True);
-                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(154));
+                Assert.That(replayedPotionSale.Result.Persisted, Is.True);
+                Assert.That(replayedPotionSale.Result.Outcome.Succeeded, Is.True);
+                Assert.That(replayedPotionSale.Result.Outcome.ItemId, Is.EqualTo("consumable.health_potion"));
+                Assert.That(replayedPotionSale.Result.Outcome.TransactionId, Is.EqualTo(potionSaleId));
+                Assert.That(replayedPotionSale.Result.Outcome.ItemInstanceId, Is.EqualTo(potionStackId));
+                Assert.That(replayedPotionSale.Result.Outcome.Quantity, Is.EqualTo(potionSaleQuantity));
+                Assert.That(replayedPotionSale.Result.Outcome.GoldDelta, Is.EqualTo(expectedPotionSaleGold));
+                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(166));
                 Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(2));
                 Assert.That(app.ActiveRun.Inventory.Weapon.UpgradeLevel, Is.EqualTo(2));
-                Assert.That(FindBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion").Quantity, Is.EqualTo(3));
+                Assert.That(HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"), Is.False);
                 Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                     .remainingQuantity, Is.EqualTo(1));
-                bool replayWasIdempotent = app.ActiveRun.Inventory.Gold == 154 &&
+                bool replayWasIdempotent = app.ActiveRun.Inventory.Gold == 166 &&
                     app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore) == 2 &&
                     app.ActiveRun.Inventory.Weapon.UpgradeLevel == 2 &&
-                    FindBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion").Quantity == 3 &&
+                    !HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion") &&
                     app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion").remainingQuantity == 1;
-                evidence.RecordAssertion("Replayed transaction IDs preserve committed balances, stock and upgrade level",
-                    replayWasIdempotent, "gold 154, ore 2, weapon +2, three owned potions and one in stock",
+                evidence.RecordAssertion("Replayed transaction IDs preserve committed balances, sales, stock and upgrade level",
+                    replayWasIdempotent, "gold 166, ore 2, weapon +2, no owned potions and one in stock",
                     "gold=" + app.ActiveRun.Inventory.Gold + "; ore=" + app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore) +
-                    "; weaponUpgrade=" + app.ActiveRun.Inventory.Weapon.UpgradeLevel);
+                    "; weaponUpgrade=" + app.ActiveRun.Inventory.Weapon.UpgradeLevel +
+                    "; hasPotions=" + HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"));
 
                 Assert.That(evidence.Complete(), Is.Zero, "E03 merchant application scenario failed. Evidence: " + evidence.ReportPath);
             }
@@ -288,6 +376,11 @@ namespace Luckbound.Tests.PlayMode.Economy
         private static InventoryItemStack FindBackpackItem(ExpeditionInventory inventory, string itemId)
         {
             return inventory.Backpack.Single(item => item != null && string.Equals(item.ItemId, itemId, StringComparison.Ordinal));
+        }
+
+        private static bool HasBackpackItem(ExpeditionInventory inventory, string itemId)
+        {
+            return inventory.Backpack.Any(item => item != null && string.Equals(item.ItemId, itemId, StringComparison.Ordinal));
         }
 
         private static void RequireSuccess(InventoryOperationOutcome outcome, string action)
