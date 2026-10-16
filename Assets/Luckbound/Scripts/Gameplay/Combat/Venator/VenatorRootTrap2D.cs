@@ -4,6 +4,7 @@ using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Gameplay.Combat;
 using UnityEngine;
+using EntityId = Luckbound.Core.Identifiers.EntityId;
 
 namespace Luckbound.Gameplay.Combat.Venator
 {

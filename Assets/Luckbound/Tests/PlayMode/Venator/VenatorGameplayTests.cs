@@ -12,6 +12,7 @@ using Luckbound.Gameplay.Rooms;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using EntityId = Luckbound.Core.Identifiers.EntityId;
 
 namespace Luckbound.Tests.PlayMode.Venator
 {

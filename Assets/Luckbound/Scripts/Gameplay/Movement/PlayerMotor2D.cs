@@ -9,6 +9,7 @@ using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Combat.Venator;
 using Luckbound.Gameplay.Rooms;
 using UnityEngine;
+using EntityId = Luckbound.Core.Identifiers.EntityId;
 
 namespace Luckbound.Gameplay.Movement
 {
