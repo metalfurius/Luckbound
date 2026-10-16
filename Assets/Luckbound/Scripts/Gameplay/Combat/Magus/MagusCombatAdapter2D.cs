@@ -5,6 +5,7 @@ using Luckbound.Core.Input;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Rooms;
 using UnityEngine;
+using EntityId = Luckbound.Core.Identifiers.EntityId;
 
 namespace Luckbound.Gameplay.Combat.Magus
 {

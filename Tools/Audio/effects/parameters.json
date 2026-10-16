@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "package": "F08.SampleEffects.partial",
+  "schema_version": 2,
+  "package": "F08.Effects.complete",
   "sample_rate_hz": 44100,
   "channels": 1,
   "wav_subtype": "PCM_24",
@@ -10,12 +10,246 @@
   "effects": [
     {
       "id": "stone_step",
-      "label_es": "Paso de piedra",
+      "label_es": "Paso de piedra A",
       "duration_ms": 180,
       "events": [
-        {"kind": "noise", "start_ms": 0, "duration_ms": 105, "gain": 0.72, "seed": 101, "attack_ms": 2, "release_ms": 48, "decay_ms": 38},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 180, "gain": 0.78, "frequency_start_hz": 118, "frequency_end_hz": 72, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.1, "gain": 0.24}], "attack_ms": 1, "release_ms": 45, "decay_ms": 83},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 22, "gain": 0.17, "frequency_start_hz": 1420, "frequency_end_hz": 780, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 0, "release_ms": 16, "decay_ms": 12}
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 105,
+          "gain": 0.72,
+          "seed": 101,
+          "attack_ms": 2,
+          "release_ms": 48,
+          "decay_ms": 38
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 180,
+          "gain": 0.78,
+          "frequency_start_hz": 118,
+          "frequency_end_hz": 72,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.1,
+              "gain": 0.24
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 45,
+          "decay_ms": 83
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 22,
+          "gain": 0.17,
+          "frequency_start_hz": 1420,
+          "frequency_end_hz": 780,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 16,
+          "decay_ms": 12
+        }
+      ],
+      "group": "movement",
+      "signal_design": "Dry grit impact with a low, short stone body; retained from the Bellator set."
+    },
+    {
+      "id": "stone_step_b",
+      "label_es": "Paso de piedra B",
+      "group": "movement",
+      "signal_design": "A heavier stone variant with a lower body and a brighter, later grit click.",
+      "duration_ms": 185,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 110,
+          "gain": 0.72,
+          "seed": 201,
+          "attack_ms": 2,
+          "release_ms": 30,
+          "decay_ms": 40
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 185,
+          "gain": 0.78,
+          "frequency_start_hz": 148,
+          "frequency_end_hz": 82,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.35,
+              "gain": 0.23
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 35,
+          "decay_ms": 70
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 30,
+          "gain": 0.17,
+          "frequency_start_hz": 1760,
+          "frequency_end_hz": 840,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 35,
+          "decay_ms": 15
+        }
+      ]
+    },
+    {
+      "id": "wood_step_a",
+      "label_es": "Paso de madera A",
+      "group": "movement",
+      "signal_design": "A hollow wooden knock with a higher, inharmonic plank ring.",
+      "duration_ms": 210,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 75,
+          "gain": 0.46,
+          "seed": 202,
+          "attack_ms": 0,
+          "release_ms": 34,
+          "decay_ms": 34
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 210,
+          "gain": 0.72,
+          "frequency_start_hz": 184,
+          "frequency_end_hz": 112,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 3.15,
+              "gain": 0.27
+            },
+            {
+              "ratio": 4.8,
+              "gain": 0.09
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 56,
+          "decay_ms": 128
+        },
+        {
+          "kind": "tone",
+          "start_ms": 5,
+          "duration_ms": 155,
+          "gain": 0.22,
+          "frequency_start_hz": 790,
+          "frequency_end_hz": 420,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 52,
+          "decay_ms": 98
+        }
+      ]
+    },
+    {
+      "id": "wood_step_b",
+      "label_es": "Paso de madera B",
+      "group": "movement",
+      "signal_design": "A slightly higher wooden knock with a shorter, sharper plank ring.",
+      "duration_ms": 220,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 82,
+          "gain": 0.48,
+          "seed": 203,
+          "attack_ms": 0,
+          "release_ms": 38,
+          "decay_ms": 38
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 220,
+          "gain": 0.72,
+          "frequency_start_hz": 207,
+          "frequency_end_hz": 126,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.92,
+              "gain": 0.3
+            },
+            {
+              "ratio": 4.35,
+              "gain": 0.1
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 60,
+          "decay_ms": 132
+        },
+        {
+          "kind": "tone",
+          "start_ms": 7,
+          "duration_ms": 148,
+          "gain": 0.21,
+          "frequency_start_hz": 680,
+          "frequency_end_hz": 365,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.04,
+              "gain": 0.1
+            }
+          ],
+          "attack_ms": 2,
+          "release_ms": 54,
+          "decay_ms": 92
+        }
       ]
     },
     {
@@ -23,36 +257,437 @@
       "label_es": "Salto",
       "duration_ms": 330,
       "events": [
-        {"kind": "tone", "start_ms": 0, "duration_ms": 330, "gain": 0.82, "frequency_start_hz": 165, "frequency_end_hz": 590, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2, "gain": 0.16}], "attack_ms": 5, "release_ms": 62, "decay_ms": 190},
-        {"kind": "noise", "start_ms": 0, "duration_ms": 115, "gain": 0.2, "seed": 102, "attack_ms": 2, "release_ms": 76, "decay_ms": 42}
-      ]
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 330,
+          "gain": 0.82,
+          "frequency_start_hz": 165,
+          "frequency_end_hz": 590,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.16
+            }
+          ],
+          "attack_ms": 5,
+          "release_ms": 62,
+          "decay_ms": 190
+        },
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 115,
+          "gain": 0.2,
+          "seed": 102,
+          "attack_ms": 2,
+          "release_ms": 76,
+          "decay_ms": 42
+        }
+      ],
+      "group": "movement",
+      "signal_design": "Rising compact tone with a soft air burst; retained from the Bellator set."
     },
     {
       "id": "landing",
       "label_es": "Aterrizaje",
       "duration_ms": 250,
       "events": [
-        {"kind": "tone", "start_ms": 0, "duration_ms": 250, "gain": 0.9, "frequency_start_hz": 94, "frequency_end_hz": 48, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.7, "gain": 0.18}], "attack_ms": 1, "release_ms": 68, "decay_ms": 110},
-        {"kind": "noise", "start_ms": 0, "duration_ms": 125, "gain": 0.48, "seed": 103, "attack_ms": 1, "release_ms": 64, "decay_ms": 48}
-      ]
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 250,
+          "gain": 0.9,
+          "frequency_start_hz": 94,
+          "frequency_end_hz": 48,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.7,
+              "gain": 0.18
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 68,
+          "decay_ms": 110
+        },
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 125,
+          "gain": 0.48,
+          "seed": 103,
+          "attack_ms": 1,
+          "release_ms": 64,
+          "decay_ms": 48
+        }
+      ],
+      "group": "movement",
+      "signal_design": "Low descending impact with a short broadband contact; retained from the Bellator set."
     },
     {
       "id": "sword_swing",
       "label_es": "Espada al aire",
       "duration_ms": 300,
       "events": [
-        {"kind": "noise", "start_ms": 0, "duration_ms": 300, "gain": 0.77, "seed": 104, "attack_ms": 9, "release_ms": 58, "decay_ms": 145},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 300, "gain": 0.44, "frequency_start_hz": 1050, "frequency_end_hz": 230, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 1.5, "gain": 0.12}], "attack_ms": 8, "release_ms": 60, "decay_ms": 145}
-      ]
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 300,
+          "gain": 0.77,
+          "seed": 104,
+          "attack_ms": 9,
+          "release_ms": 58,
+          "decay_ms": 145
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 300,
+          "gain": 0.44,
+          "frequency_start_hz": 1050,
+          "frequency_end_hz": 230,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.5,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 8,
+          "release_ms": 60,
+          "decay_ms": 145
+        }
+      ],
+      "group": "combat",
+      "signal_design": "Fast descending air sweep with broadband edge; retained from the Bellator set."
     },
     {
       "id": "sword_impact",
       "label_es": "Impacto de espada",
       "duration_ms": 230,
       "events": [
-        {"kind": "noise", "start_ms": 0, "duration_ms": 145, "gain": 0.63, "seed": 105, "attack_ms": 0, "release_ms": 58, "decay_ms": 47},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 230, "gain": 0.84, "frequency_start_hz": 430, "frequency_end_hz": 205, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.73, "gain": 0.31}, {"ratio": 4.2, "gain": 0.11}], "attack_ms": 0, "release_ms": 65, "decay_ms": 95},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 35, "gain": 0.26, "frequency_start_hz": 2260, "frequency_end_hz": 1180, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 0, "release_ms": 27, "decay_ms": 19}
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 145,
+          "gain": 0.63,
+          "seed": 105,
+          "attack_ms": 0,
+          "release_ms": 58,
+          "decay_ms": 47
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 230,
+          "gain": 0.84,
+          "frequency_start_hz": 430,
+          "frequency_end_hz": 205,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.73,
+              "gain": 0.31
+            },
+            {
+              "ratio": 4.2,
+              "gain": 0.11
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 65,
+          "decay_ms": 95
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 35,
+          "gain": 0.26,
+          "frequency_start_hz": 2260,
+          "frequency_end_hz": 1180,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 27,
+          "decay_ms": 19
+        }
+      ],
+      "group": "combat",
+      "signal_design": "Low inharmonic metal strike with a brief high edge; retained from the Bellator set."
+    },
+    {
+      "id": "bow_shot",
+      "label_es": "Disparo de arco",
+      "group": "combat",
+      "signal_design": "A taut string release followed by a short descending air tail.",
+      "duration_ms": 330,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 90,
+          "gain": 0.54,
+          "seed": 204,
+          "attack_ms": 1,
+          "release_ms": 56,
+          "decay_ms": 58
+        },
+        {
+          "kind": "tone",
+          "start_ms": 2,
+          "duration_ms": 328,
+          "gain": 0.72,
+          "frequency_start_hz": 960,
+          "frequency_end_hz": 325,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.16
+            }
+          ],
+          "attack_ms": 4,
+          "release_ms": 76,
+          "decay_ms": 196
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 38,
+          "gain": 0.14,
+          "frequency_start_hz": 1880,
+          "frequency_end_hz": 970,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 30,
+          "decay_ms": 20
+        }
+      ]
+    },
+    {
+      "id": "arrow_impact",
+      "label_es": "Impacto de flecha",
+      "group": "combat",
+      "signal_design": "A narrow shaft click over a firm low target impact.",
+      "duration_ms": 245,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 112,
+          "gain": 0.69,
+          "seed": 205,
+          "attack_ms": 0,
+          "release_ms": 0,
+          "decay_ms": 52
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 245,
+          "gain": 0.8,
+          "frequency_start_hz": 330,
+          "frequency_end_hz": 145,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.52,
+              "gain": 0.23
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 20,
+          "decay_ms": 90
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 34,
+          "gain": 0.2,
+          "frequency_start_hz": 2380,
+          "frequency_end_hz": 1320,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 20,
+          "decay_ms": 16
+        }
+      ]
+    },
+    {
+      "id": "magic_cast",
+      "label_es": "Lanzamiento de magia",
+      "group": "combat",
+      "signal_design": "A rising harmonic core with two bright spark layers and a soft airy bed.",
+      "duration_ms": 480,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 480,
+          "gain": 0.18,
+          "seed": 206,
+          "attack_ms": 55,
+          "release_ms": 95,
+          "decay_ms": 620
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 480,
+          "gain": 0.66,
+          "frequency_start_hz": 265,
+          "frequency_end_hz": 680,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.3
+            },
+            {
+              "ratio": 3.02,
+              "gain": 0.1
+            }
+          ],
+          "attack_ms": 32,
+          "release_ms": 100,
+          "decay_ms": 780
+        },
+        {
+          "kind": "tone",
+          "start_ms": 20,
+          "duration_ms": 430,
+          "gain": 0.22,
+          "frequency_start_hz": 520,
+          "frequency_end_hz": 1460,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.5,
+              "gain": 0.08
+            }
+          ],
+          "attack_ms": 28,
+          "release_ms": 92,
+          "decay_ms": 570
+        },
+        {
+          "kind": "tone",
+          "start_ms": 150,
+          "duration_ms": 230,
+          "gain": 0.16,
+          "frequency_start_hz": 1540,
+          "frequency_end_hz": 2180,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 2,
+          "release_ms": 72,
+          "decay_ms": 220
+        }
+      ]
+    },
+    {
+      "id": "magic_impact",
+      "label_es": "Impacto mágico",
+      "group": "combat",
+      "signal_design": "A rounded low hit with a descending, glassy magical resonance.",
+      "duration_ms": 370,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 132,
+          "gain": 0.58,
+          "seed": 207,
+          "attack_ms": 0,
+          "release_ms": 62,
+          "decay_ms": 62
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 370,
+          "gain": 0.78,
+          "frequency_start_hz": 138,
+          "frequency_end_hz": 68,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.04,
+              "gain": 0.25
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 78,
+          "decay_ms": 194
+        },
+        {
+          "kind": "tone",
+          "start_ms": 26,
+          "duration_ms": 315,
+          "gain": 0.39,
+          "frequency_start_hz": 1040,
+          "frequency_end_hz": 210,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.7,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 86,
+          "decay_ms": 190
+        }
       ]
     },
     {
@@ -60,17 +695,136 @@
       "label_es": "Esquiva",
       "duration_ms": 270,
       "events": [
-        {"kind": "noise", "start_ms": 0, "duration_ms": 270, "gain": 0.73, "seed": 106, "attack_ms": 10, "release_ms": 56, "decay_ms": 165},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 270, "gain": 0.48, "frequency_start_hz": 760, "frequency_end_hz": 185, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 8, "release_ms": 62, "decay_ms": 145}
-      ]
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 270,
+          "gain": 0.73,
+          "seed": 106,
+          "attack_ms": 10,
+          "release_ms": 56,
+          "decay_ms": 165
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 270,
+          "gain": 0.48,
+          "frequency_start_hz": 760,
+          "frequency_end_hz": 185,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 8,
+          "release_ms": 62,
+          "decay_ms": 145
+        }
+      ],
+      "group": "combat",
+      "signal_design": "Quick descending air sweep with a rounded body; retained from the Bellator set."
     },
     {
       "id": "player_damage",
       "label_es": "Daño del jugador",
       "duration_ms": 340,
       "events": [
-        {"kind": "noise", "start_ms": 0, "duration_ms": 185, "gain": 0.5, "seed": 107, "attack_ms": 0, "release_ms": 75, "decay_ms": 80},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 340, "gain": 0.82, "frequency_start_hz": 220, "frequency_end_hz": 105, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 1.43, "gain": 0.34}], "attack_ms": 0, "release_ms": 80, "decay_ms": 155}
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 185,
+          "gain": 0.5,
+          "seed": 107,
+          "attack_ms": 0,
+          "release_ms": 75,
+          "decay_ms": 80
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 340,
+          "gain": 0.82,
+          "frequency_start_hz": 220,
+          "frequency_end_hz": 105,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.43,
+              "gain": 0.34
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 80,
+          "decay_ms": 155
+        }
+      ],
+      "group": "combat",
+      "signal_design": "Low descending hit with rough contact; retained from the Bellator set."
+    },
+    {
+      "id": "enemy_damage",
+      "label_es": "Daño de enemigo",
+      "group": "combat",
+      "signal_design": "A rough midrange enemy hit, brighter and shorter than player damage.",
+      "duration_ms": 300,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 155,
+          "gain": 0.58,
+          "seed": 208,
+          "attack_ms": 0,
+          "release_ms": 68,
+          "decay_ms": 75
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 300,
+          "gain": 0.82,
+          "frequency_start_hz": 315,
+          "frequency_end_hz": 172,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.61,
+              "gain": 0.3
+            },
+            {
+              "ratio": 2.8,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 72,
+          "decay_ms": 152
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 44,
+          "gain": 0.15,
+          "frequency_start_hz": 1260,
+          "frequency_end_hz": 640,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 35,
+          "decay_ms": 24
+        }
       ]
     },
     {
@@ -78,8 +832,113 @@
       "label_es": "Muerte de enemigo",
       "duration_ms": 590,
       "events": [
-        {"kind": "tone", "start_ms": 0, "duration_ms": 590, "gain": 0.83, "frequency_start_hz": 310, "frequency_end_hz": 62, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 1.49, "gain": 0.27}, {"ratio": 2.02, "gain": 0.12}], "attack_ms": 2, "release_ms": 120, "decay_ms": 330},
-        {"kind": "noise", "start_ms": 0, "duration_ms": 245, "gain": 0.31, "seed": 108, "attack_ms": 1, "release_ms": 95, "decay_ms": 110}
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 590,
+          "gain": 0.83,
+          "frequency_start_hz": 310,
+          "frequency_end_hz": 62,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.49,
+              "gain": 0.27
+            },
+            {
+              "ratio": 2.02,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 2,
+          "release_ms": 120,
+          "decay_ms": 330
+        },
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 245,
+          "gain": 0.31,
+          "seed": 108,
+          "attack_ms": 1,
+          "release_ms": 95,
+          "decay_ms": 110
+        }
+      ],
+      "group": "combat",
+      "signal_design": "Long low descending body with rough transient; retained from the Bellator set."
+    },
+    {
+      "id": "burn",
+      "label_es": "Quemadura",
+      "group": "combat",
+      "signal_design": "A sustained descending ember tone under three deterministic crackle bursts.",
+      "duration_ms": 620,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 620,
+          "gain": 0.22,
+          "seed": 209,
+          "attack_ms": 15,
+          "release_ms": 78,
+          "decay_ms": 760
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 620,
+          "gain": 0.48,
+          "frequency_start_hz": 570,
+          "frequency_end_hz": 92,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.18
+            }
+          ],
+          "attack_ms": 4,
+          "release_ms": 105,
+          "decay_ms": 430
+        },
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 88,
+          "gain": 0.43,
+          "seed": 210,
+          "attack_ms": 0,
+          "release_ms": 42,
+          "decay_ms": 64
+        },
+        {
+          "kind": "noise",
+          "start_ms": 236,
+          "duration_ms": 76,
+          "gain": 0.4,
+          "seed": 211,
+          "attack_ms": 0,
+          "release_ms": 36,
+          "decay_ms": 53
+        },
+        {
+          "kind": "noise",
+          "start_ms": 462,
+          "duration_ms": 104,
+          "gain": 0.42,
+          "seed": 212,
+          "attack_ms": 0,
+          "release_ms": 46,
+          "decay_ms": 70
+        }
       ]
     },
     {
@@ -87,20 +946,118 @@
       "label_es": "Poción",
       "duration_ms": 560,
       "events": [
-        {"kind": "tone", "start_ms": 0, "duration_ms": 195, "gain": 0.62, "frequency_start_hz": 540, "frequency_end_hz": 690, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.24}], "attack_ms": 3, "release_ms": 38, "decay_ms": 175},
-        {"kind": "tone", "start_ms": 150, "duration_ms": 190, "gain": 0.69, "frequency_start_hz": 690, "frequency_end_hz": 845, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.22}], "attack_ms": 3, "release_ms": 38, "decay_ms": 175},
-        {"kind": "tone", "start_ms": 300, "duration_ms": 245, "gain": 0.75, "frequency_start_hz": 845, "frequency_end_hz": 1020, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.25}], "attack_ms": 3, "release_ms": 66, "decay_ms": 235},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 560, "gain": 0.22, "frequency_start_hz": 176, "frequency_end_hz": 216, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 0, "release_ms": 105, "decay_ms": 430}
-      ]
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 195,
+          "gain": 0.62,
+          "frequency_start_hz": 540,
+          "frequency_end_hz": 690,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.24
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 38,
+          "decay_ms": 175
+        },
+        {
+          "kind": "tone",
+          "start_ms": 150,
+          "duration_ms": 190,
+          "gain": 0.69,
+          "frequency_start_hz": 690,
+          "frequency_end_hz": 845,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.22
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 38,
+          "decay_ms": 175
+        },
+        {
+          "kind": "tone",
+          "start_ms": 300,
+          "duration_ms": 245,
+          "gain": 0.75,
+          "frequency_start_hz": 845,
+          "frequency_end_hz": 1020,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.25
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 66,
+          "decay_ms": 235
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 560,
+          "gain": 0.22,
+          "frequency_start_hz": 176,
+          "frequency_end_hz": 216,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 105,
+          "decay_ms": 430
+        }
+      ],
+      "group": "combat",
+      "signal_design": "Three rising glassy tones; retained from the Bellator set."
     },
     {
-      "id": "loot_pickup",
-      "label_es": "Botín y recogida",
-      "duration_ms": 430,
+      "id": "ui_focus",
+      "label_es": "Foco de interfaz",
+      "group": "ui",
+      "signal_design": "A single clean, bright upward tick for keyboard or controller focus.",
+      "duration_ms": 110,
       "events": [
-        {"kind": "tone", "start_ms": 0, "duration_ms": 175, "gain": 0.62, "frequency_start_hz": 660, "frequency_end_hz": 770, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.2}], "attack_ms": 2, "release_ms": 36, "decay_ms": 155},
-        {"kind": "tone", "start_ms": 125, "duration_ms": 190, "gain": 0.72, "frequency_start_hz": 880, "frequency_end_hz": 990, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.22}], "attack_ms": 2, "release_ms": 42, "decay_ms": 165},
-        {"kind": "tone", "start_ms": 265, "duration_ms": 165, "gain": 0.38, "frequency_start_hz": 1320, "frequency_end_hz": 1180, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 2, "release_ms": 54, "decay_ms": 130}
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 110,
+          "gain": 0.76,
+          "frequency_start_hz": 760,
+          "frequency_end_hz": 1120,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.16
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 28,
+          "decay_ms": 108
+        }
       ]
     },
     {
@@ -108,17 +1065,494 @@
       "label_es": "Confirmación de interfaz",
       "duration_ms": 190,
       "events": [
-        {"kind": "tone", "start_ms": 0, "duration_ms": 95, "gain": 0.68, "frequency_start_hz": 730, "frequency_end_hz": 820, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2, "gain": 0.12}], "attack_ms": 1, "release_ms": 18, "decay_ms": 100},
-        {"kind": "tone", "start_ms": 74, "duration_ms": 116, "gain": 0.78, "frequency_start_hz": 980, "frequency_end_hz": 1120, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2, "gain": 0.13}], "attack_ms": 1, "release_ms": 31, "decay_ms": 105}
-      ]
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 95,
+          "gain": 0.68,
+          "frequency_start_hz": 730,
+          "frequency_end_hz": 820,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 18,
+          "decay_ms": 100
+        },
+        {
+          "kind": "tone",
+          "start_ms": 74,
+          "duration_ms": 116,
+          "gain": 0.78,
+          "frequency_start_hz": 980,
+          "frequency_end_hz": 1120,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.13
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 31,
+          "decay_ms": 105
+        }
+      ],
+      "group": "ui",
+      "signal_design": "Two bright ascending confirmation notes; retained from the Bellator set."
     },
     {
       "id": "ui_cancel",
       "label_es": "Cancelación de interfaz",
       "duration_ms": 190,
       "events": [
-        {"kind": "tone", "start_ms": 0, "duration_ms": 112, "gain": 0.76, "frequency_start_hz": 620, "frequency_end_hz": 510, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.12}], "attack_ms": 1, "release_ms": 23, "decay_ms": 112},
-        {"kind": "tone", "start_ms": 79, "duration_ms": 111, "gain": 0.61, "frequency_start_hz": 495, "frequency_end_hz": 420, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.1}], "attack_ms": 1, "release_ms": 30, "decay_ms": 103}
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 112,
+          "gain": 0.76,
+          "frequency_start_hz": 620,
+          "frequency_end_hz": 510,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 23,
+          "decay_ms": 112
+        },
+        {
+          "kind": "tone",
+          "start_ms": 79,
+          "duration_ms": 111,
+          "gain": 0.61,
+          "frequency_start_hz": 495,
+          "frequency_end_hz": 420,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.1
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 30,
+          "decay_ms": 103
+        }
+      ],
+      "group": "ui",
+      "signal_design": "Two descending cancellation notes; retained from the Bellator set."
+    },
+    {
+      "id": "ui_open",
+      "label_es": "Abrir interfaz",
+      "group": "ui",
+      "signal_design": "A warm two-step upward motion with a soft low supporting note.",
+      "duration_ms": 285,
+      "events": [
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 285,
+          "gain": 0.28,
+          "frequency_start_hz": 275,
+          "frequency_end_hz": 335,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 4,
+          "release_ms": 55,
+          "decay_ms": 340
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 168,
+          "gain": 0.52,
+          "frequency_start_hz": 385,
+          "frequency_end_hz": 590,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 4,
+          "release_ms": 38,
+          "decay_ms": 175
+        },
+        {
+          "kind": "tone",
+          "start_ms": 82,
+          "duration_ms": 203,
+          "gain": 0.58,
+          "frequency_start_hz": 545,
+          "frequency_end_hz": 825,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.1
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 48,
+          "decay_ms": 215
+        }
+      ]
+    },
+    {
+      "id": "ui_close",
+      "label_es": "Cerrar interfaz",
+      "group": "ui",
+      "signal_design": "A two-step falling motion with a low, restrained closing body.",
+      "duration_ms": 275,
+      "events": [
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 275,
+          "gain": 0.3,
+          "frequency_start_hz": 315,
+          "frequency_end_hz": 250,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 58,
+          "decay_ms": 330
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 170,
+          "gain": 0.55,
+          "frequency_start_hz": 820,
+          "frequency_end_hz": 540,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.11
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 46,
+          "decay_ms": 190
+        },
+        {
+          "kind": "tone",
+          "start_ms": 82,
+          "duration_ms": 193,
+          "gain": 0.58,
+          "frequency_start_hz": 590,
+          "frequency_end_hz": 355,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.08
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 52,
+          "decay_ms": 205
+        }
+      ]
+    },
+    {
+      "id": "ui_buy",
+      "label_es": "Comprar",
+      "group": "ui",
+      "signal_design": "Three bright coin-like clinks over a quiet sustained metallic bed.",
+      "duration_ms": 405,
+      "events": [
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 405,
+          "gain": 0.2,
+          "frequency_start_hz": 235,
+          "frequency_end_hz": 245,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 8,
+          "release_ms": 70,
+          "decay_ms": 520
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 112,
+          "gain": 0.73,
+          "frequency_start_hz": 1360,
+          "frequency_end_hz": 1180,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.4,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 47,
+          "decay_ms": 110
+        },
+        {
+          "kind": "tone",
+          "start_ms": 118,
+          "duration_ms": 125,
+          "gain": 0.76,
+          "frequency_start_hz": 1680,
+          "frequency_end_hz": 1490,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.14
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 50,
+          "decay_ms": 120
+        },
+        {
+          "kind": "tone",
+          "start_ms": 254,
+          "duration_ms": 140,
+          "gain": 0.8,
+          "frequency_start_hz": 2030,
+          "frequency_end_hz": 1740,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 62,
+          "decay_ms": 135
+        }
+      ]
+    },
+    {
+      "id": "ui_craft",
+      "label_es": "Fabricar",
+      "group": "ui",
+      "signal_design": "A three-step assembly rhythm: low bench knock, middle clink, and bright finish.",
+      "duration_ms": 635,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 635,
+          "gain": 0.13,
+          "seed": 213,
+          "attack_ms": 4,
+          "release_ms": 30,
+          "decay_ms": 400
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 635,
+          "gain": 0.42,
+          "frequency_start_hz": 148,
+          "frequency_end_hz": 114,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.76,
+              "gain": 0.16
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 30,
+          "decay_ms": 400
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 112,
+          "gain": 0.64,
+          "frequency_start_hz": 420,
+          "frequency_end_hz": 300,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.2,
+              "gain": 0.1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 30,
+          "decay_ms": 105
+        },
+        {
+          "kind": "tone",
+          "start_ms": 185,
+          "duration_ms": 142,
+          "gain": 0.68,
+          "frequency_start_hz": 760,
+          "frequency_end_hz": 590,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.03,
+              "gain": 0.11
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 30,
+          "decay_ms": 138
+        },
+        {
+          "kind": "tone",
+          "start_ms": 412,
+          "duration_ms": 190,
+          "gain": 0.72,
+          "frequency_start_hz": 1180,
+          "frequency_end_hz": 1580,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.08
+            }
+          ],
+          "attack_ms": 1,
+          "release_ms": 30,
+          "decay_ms": 180
+        }
+      ]
+    },
+    {
+      "id": "ui_error",
+      "label_es": "Error de interfaz",
+      "group": "ui",
+      "signal_design": "A compact dissonant double buzz with a dry noisy edge.",
+      "duration_ms": 390,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 145,
+          "gain": 0.32,
+          "seed": 214,
+          "attack_ms": 0,
+          "release_ms": 55,
+          "decay_ms": 110
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 390,
+          "gain": 0.66,
+          "frequency_start_hz": 278,
+          "frequency_end_hz": 225,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.42,
+              "gain": 0.42
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 74,
+          "decay_ms": 300
+        },
+        {
+          "kind": "tone",
+          "start_ms": 62,
+          "duration_ms": 260,
+          "gain": 0.48,
+          "frequency_start_hz": 365,
+          "frequency_end_hz": 302,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.37,
+              "gain": 0.24
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 70,
+          "decay_ms": 210
+        }
       ]
     },
     {
@@ -126,10 +1560,819 @@
       "label_es": "Puerta",
       "duration_ms": 820,
       "events": [
-        {"kind": "noise", "start_ms": 0, "duration_ms": 790, "gain": 0.32, "seed": 109, "attack_ms": 8, "release_ms": 120, "decay_ms": 750},
-        {"kind": "tone", "start_ms": 0, "duration_ms": 820, "gain": 0.62, "frequency_start_hz": 150, "frequency_end_hz": 86, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 1.51, "gain": 0.3}, {"ratio": 2.97, "gain": 0.12}], "attack_ms": 12, "release_ms": 125, "decay_ms": 680},
-        {"kind": "tone", "start_ms": 32, "duration_ms": 715, "gain": 0.16, "frequency_start_hz": 580, "frequency_end_hz": 190, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 18, "release_ms": 105, "decay_ms": 600}
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 790,
+          "gain": 0.32,
+          "seed": 109,
+          "attack_ms": 8,
+          "release_ms": 120,
+          "decay_ms": 750
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 820,
+          "gain": 0.62,
+          "frequency_start_hz": 150,
+          "frequency_end_hz": 86,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.51,
+              "gain": 0.3
+            },
+            {
+              "ratio": 2.97,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 12,
+          "release_ms": 125,
+          "decay_ms": 680
+        },
+        {
+          "kind": "tone",
+          "start_ms": 32,
+          "duration_ms": 715,
+          "gain": 0.16,
+          "frequency_start_hz": 580,
+          "frequency_end_hz": 190,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 18,
+          "release_ms": 105,
+          "decay_ms": 600
+        }
+      ],
+      "group": "environment",
+      "signal_design": "Slow wooden low resonance with a creaking upper layer; retained from the Bellator set."
+    },
+    {
+      "id": "portal",
+      "label_es": "Portal",
+      "group": "environment",
+      "signal_design": "A wide, low two-tone dimensional drone with an airy upper resonance.",
+      "duration_ms": 1040,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 1040,
+          "gain": 0.14,
+          "seed": 215,
+          "attack_ms": 95,
+          "release_ms": 155,
+          "decay_ms": 1480
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 1040,
+          "gain": 0.58,
+          "frequency_start_hz": 72,
+          "frequency_end_hz": 136,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.22
+            }
+          ],
+          "attack_ms": 130,
+          "release_ms": 165,
+          "decay_ms": 1700
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 1040,
+          "gain": 0.42,
+          "frequency_start_hz": 108,
+          "frequency_end_hz": 214,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.51,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 155,
+          "release_ms": 170,
+          "decay_ms": 1600
+        },
+        {
+          "kind": "tone",
+          "start_ms": 80,
+          "duration_ms": 930,
+          "gain": 0.24,
+          "frequency_start_hz": 410,
+          "frequency_end_hz": 275,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2,
+              "gain": 0.08
+            }
+          ],
+          "attack_ms": 95,
+          "release_ms": 160,
+          "decay_ms": 1320
+        }
+      ]
+    },
+    {
+      "id": "torch",
+      "label_es": "Antorcha",
+      "group": "environment",
+      "signal_design": "A warm low flame bed with three crisp, high-frequency ember crackles.",
+      "duration_ms": 900,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 900,
+          "gain": 0.25,
+          "seed": 216,
+          "attack_ms": 25,
+          "release_ms": 100,
+          "decay_ms": 1150
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 900,
+          "gain": 0.28,
+          "frequency_start_hz": 118,
+          "frequency_end_hz": 142,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.03,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 36,
+          "release_ms": 110,
+          "decay_ms": 1300
+        },
+        {
+          "kind": "tone",
+          "start_ms": 112,
+          "duration_ms": 76,
+          "gain": 0.42,
+          "frequency_start_hz": 2260,
+          "frequency_end_hz": 1290,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 42,
+          "decay_ms": 65
+        },
+        {
+          "kind": "noise",
+          "start_ms": 108,
+          "duration_ms": 72,
+          "gain": 0.46,
+          "seed": 217,
+          "attack_ms": 0,
+          "release_ms": 38,
+          "decay_ms": 62
+        },
+        {
+          "kind": "tone",
+          "start_ms": 430,
+          "duration_ms": 84,
+          "gain": 0.4,
+          "frequency_start_hz": 1920,
+          "frequency_end_hz": 1040,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 46,
+          "decay_ms": 74
+        },
+        {
+          "kind": "noise",
+          "start_ms": 425,
+          "duration_ms": 82,
+          "gain": 0.45,
+          "seed": 218,
+          "attack_ms": 0,
+          "release_ms": 42,
+          "decay_ms": 69
+        },
+        {
+          "kind": "tone",
+          "start_ms": 716,
+          "duration_ms": 92,
+          "gain": 0.45,
+          "frequency_start_hz": 2480,
+          "frequency_end_hz": 1170,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 50,
+          "decay_ms": 82
+        },
+        {
+          "kind": "noise",
+          "start_ms": 710,
+          "duration_ms": 96,
+          "gain": 0.48,
+          "seed": 219,
+          "attack_ms": 0,
+          "release_ms": 44,
+          "decay_ms": 75
+        }
+      ]
+    },
+    {
+      "id": "water",
+      "label_es": "Agua",
+      "group": "environment",
+      "signal_design": "A soft flowing noise bed with descending liquid tones and three separated droplets.",
+      "duration_ms": 940,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 940,
+          "gain": 0.32,
+          "seed": 220,
+          "attack_ms": 75,
+          "release_ms": 140,
+          "decay_ms": 1480
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 940,
+          "gain": 0.33,
+          "frequency_start_hz": 480,
+          "frequency_end_hz": 230,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.99,
+              "gain": 0.13
+            }
+          ],
+          "attack_ms": 65,
+          "release_ms": 145,
+          "decay_ms": 1550
+        },
+        {
+          "kind": "tone",
+          "start_ms": 82,
+          "duration_ms": 160,
+          "gain": 0.38,
+          "frequency_start_hz": 1620,
+          "frequency_end_hz": 760,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 60,
+          "decay_ms": 130
+        },
+        {
+          "kind": "tone",
+          "start_ms": 398,
+          "duration_ms": 180,
+          "gain": 0.41,
+          "frequency_start_hz": 1840,
+          "frequency_end_hz": 840,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 66,
+          "decay_ms": 150
+        },
+        {
+          "kind": "tone",
+          "start_ms": 716,
+          "duration_ms": 174,
+          "gain": 0.4,
+          "frequency_start_hz": 1480,
+          "frequency_end_hz": 690,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 64,
+          "decay_ms": 143
+        }
+      ]
+    },
+    {
+      "id": "forge",
+      "label_es": "Forja",
+      "group": "environment",
+      "signal_design": "A hard iron strike with a deep anvil body and two inharmonic ringing modes.",
+      "duration_ms": 790,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 160,
+          "gain": 0.7,
+          "seed": 221,
+          "attack_ms": 0,
+          "release_ms": 70,
+          "decay_ms": 96
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 790,
+          "gain": 0.64,
+          "frequency_start_hz": 168,
+          "frequency_end_hz": 71,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.74,
+              "gain": 0.28
+            },
+            {
+              "ratio": 4.61,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 145,
+          "decay_ms": 520
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 680,
+          "gain": 0.44,
+          "frequency_start_hz": 412,
+          "frequency_end_hz": 238,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.71,
+              "gain": 0.18
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 138,
+          "decay_ms": 420
+        },
+        {
+          "kind": "tone",
+          "start_ms": 52,
+          "duration_ms": 570,
+          "gain": 0.2,
+          "frequency_start_hz": 1030,
+          "frequency_end_hz": 775,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 0,
+          "release_ms": 125,
+          "decay_ms": 370
+        }
+      ]
+    },
+    {
+      "id": "murmur",
+      "label_es": "Murmullo",
+      "group": "environment",
+      "signal_design": "A quiet, close three-note choir-like resonance with slow beating and soft air.",
+      "duration_ms": 980,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 980,
+          "gain": 0.13,
+          "seed": 222,
+          "attack_ms": 110,
+          "release_ms": 175,
+          "decay_ms": 1820
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 980,
+          "gain": 0.55,
+          "frequency_start_hz": 164,
+          "frequency_end_hz": 167,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.08
+            }
+          ],
+          "attack_ms": 135,
+          "release_ms": 190,
+          "decay_ms": 2050
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 980,
+          "gain": 0.34,
+          "frequency_start_hz": 219,
+          "frequency_end_hz": 216,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.5,
+              "gain": 0.06
+            }
+          ],
+          "attack_ms": 175,
+          "release_ms": 180,
+          "decay_ms": 1900
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 980,
+          "gain": 0.24,
+          "frequency_start_hz": 292,
+          "frequency_end_hz": 295,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 195,
+          "release_ms": 185,
+          "decay_ms": 1800
+        }
+      ]
+    },
+    {
+      "id": "loot_pickup",
+      "label_es": "Botín",
+      "duration_ms": 430,
+      "events": [
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 175,
+          "gain": 0.62,
+          "frequency_start_hz": 660,
+          "frequency_end_hz": 770,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.2
+            }
+          ],
+          "attack_ms": 2,
+          "release_ms": 36,
+          "decay_ms": 155
+        },
+        {
+          "kind": "tone",
+          "start_ms": 125,
+          "duration_ms": 190,
+          "gain": 0.72,
+          "frequency_start_hz": 880,
+          "frequency_end_hz": 990,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.22
+            }
+          ],
+          "attack_ms": 2,
+          "release_ms": 42,
+          "decay_ms": 165
+        },
+        {
+          "kind": "tone",
+          "start_ms": 265,
+          "duration_ms": 165,
+          "gain": 0.38,
+          "frequency_start_hz": 1320,
+          "frequency_end_hz": 1180,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            }
+          ],
+          "attack_ms": 2,
+          "release_ms": 54,
+          "decay_ms": 130
+        }
+      ],
+      "group": "progress",
+      "signal_design": "Short upward multi-note reward chime; retained from the Bellator set."
+    },
+    {
+      "id": "boss_appear",
+      "label_es": "Aparición de jefe",
+      "group": "progress",
+      "signal_design": "A slow ominous rise from a low drone into a dissonant warning resonance.",
+      "duration_ms": 1250,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 1250,
+          "gain": 0.15,
+          "seed": 223,
+          "attack_ms": 280,
+          "release_ms": 35,
+          "decay_ms": 1300
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 1250,
+          "gain": 0.7,
+          "frequency_start_hz": 56,
+          "frequency_end_hz": 142,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.24
+            }
+          ],
+          "attack_ms": 285,
+          "release_ms": 35,
+          "decay_ms": 1300
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 1250,
+          "gain": 0.42,
+          "frequency_start_hz": 84,
+          "frequency_end_hz": 214,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.49,
+              "gain": 0.16
+            }
+          ],
+          "attack_ms": 330,
+          "release_ms": 35,
+          "decay_ms": 1300
+        },
+        {
+          "kind": "tone",
+          "start_ms": 300,
+          "duration_ms": 900,
+          "gain": 0.22,
+          "frequency_start_hz": 325,
+          "frequency_end_hz": 475,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.03,
+              "gain": 0.07
+            }
+          ],
+          "attack_ms": 145,
+          "release_ms": 35,
+          "decay_ms": 1330
+        }
+      ]
+    },
+    {
+      "id": "boss_death",
+      "label_es": "Muerte de jefe",
+      "group": "progress",
+      "signal_design": "A broad descending final fall with a low body and a fading rough edge.",
+      "duration_ms": 1450,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 1450,
+          "gain": 0.2,
+          "seed": 224,
+          "attack_ms": 2,
+          "release_ms": 35,
+          "decay_ms": 980
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 1450,
+          "gain": 0.78,
+          "frequency_start_hz": 225,
+          "frequency_end_hz": 38,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.5,
+              "gain": 0.24
+            },
+            {
+              "ratio": 2.03,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 3,
+          "release_ms": 35,
+          "decay_ms": 980
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 1180,
+          "gain": 0.28,
+          "frequency_start_hz": 445,
+          "frequency_end_hz": 104,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.71,
+              "gain": 0.08
+            }
+          ],
+          "attack_ms": 5,
+          "release_ms": 35,
+          "decay_ms": 1080
+        }
+      ]
+    },
+    {
+      "id": "pact",
+      "label_es": "Pacto",
+      "group": "progress",
+      "signal_design": "A measured arcane vow: two low rising notes followed by a clear upper seal.",
+      "duration_ms": 890,
+      "events": [
+        {
+          "kind": "noise",
+          "start_ms": 0,
+          "duration_ms": 890,
+          "gain": 0.12,
+          "seed": 225,
+          "attack_ms": 170,
+          "release_ms": 180,
+          "decay_ms": 1480
+        },
+        {
+          "kind": "tone",
+          "start_ms": 0,
+          "duration_ms": 890,
+          "gain": 0.49,
+          "frequency_start_hz": 115,
+          "frequency_end_hz": 265,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.18
+            }
+          ],
+          "attack_ms": 150,
+          "release_ms": 180,
+          "decay_ms": 1450
+        },
+        {
+          "kind": "tone",
+          "start_ms": 115,
+          "duration_ms": 580,
+          "gain": 0.34,
+          "frequency_start_hz": 232,
+          "frequency_end_hz": 392,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 1.5,
+              "gain": 0.12
+            }
+          ],
+          "attack_ms": 120,
+          "release_ms": 145,
+          "decay_ms": 930
+        },
+        {
+          "kind": "tone",
+          "start_ms": 474,
+          "duration_ms": 405,
+          "gain": 0.5,
+          "frequency_start_hz": 760,
+          "frequency_end_hz": 610,
+          "partials": [
+            {
+              "ratio": 1,
+              "gain": 1
+            },
+            {
+              "ratio": 2.01,
+              "gain": 0.1
+            }
+          ],
+          "attack_ms": 12,
+          "release_ms": 115,
+          "decay_ms": 450
+        }
       ]
     }
-  ]
+  ],
+  "expected_group_counts": {
+    "movement": 6,
+    "combat": 12,
+    "ui": 8,
+    "environment": 6,
+    "progress": 4
+  }
 }

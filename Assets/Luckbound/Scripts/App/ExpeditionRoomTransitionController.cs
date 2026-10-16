@@ -13,6 +13,7 @@ namespace Luckbound.App
     {
         private ExpeditionRoutePlan _route;
         private ExpeditionRouteTraversal _traversal;
+        private RunId _runId;
         private Func<string, GameObject> _prefabResolver;
         private Transform _sessionPlayer;
         private GameObject _activeRoomRoot;
@@ -31,20 +32,23 @@ namespace Luckbound.App
         public bool IsDisposed => _disposed;
         public string LastTransitionError { get; private set; } = string.Empty;
 
-        public void Initialize(ExpeditionRoutePlan route, Func<string, GameObject> prefabResolver, Transform sessionPlayer)
+        public void Initialize(RunId runId, ExpeditionRoutePlan route, Func<string, GameObject> prefabResolver,
+            Transform sessionPlayer)
         {
             if (route == null) throw new ArgumentNullException(nameof(route));
-            Initialize(route, prefabResolver, sessionPlayer, new[] { route.MandatoryNodeIds[0] });
+            Initialize(runId, route, prefabResolver, sessionPlayer, new[] { route.MandatoryNodeIds[0] });
         }
 
-        public void Initialize(ExpeditionRoutePlan route, Func<string, GameObject> prefabResolver, Transform sessionPlayer,
-            IEnumerable<string> visitedNodeIds)
+        public void Initialize(RunId runId, ExpeditionRoutePlan route, Func<string, GameObject> prefabResolver,
+            Transform sessionPlayer, IEnumerable<string> visitedNodeIds)
         {
             if (_initialized) throw new InvalidOperationException("ExpeditionRoomTransitionController can only be initialized once.");
+            if (!runId.IsValid) throw new ArgumentException("Room transitions require a valid expedition RunId.", nameof(runId));
             if (route == null) throw new ArgumentNullException(nameof(route));
             if (prefabResolver == null) throw new ArgumentNullException(nameof(prefabResolver));
             if (sessionPlayer == null) throw new ArgumentNullException(nameof(sessionPlayer));
 
+            _runId = runId;
             _route = route;
             _prefabResolver = prefabResolver;
             _sessionPlayer = sessionPlayer;
@@ -139,6 +143,7 @@ namespace Luckbound.App
             _sessionPlayer = null;
             _traversal = null;
             _route = null;
+            _runId = default;
         }
 
         private ExpeditionRouteNode FindNode(string nodeId)
@@ -178,7 +183,7 @@ namespace Luckbound.App
                 content.transform.localRotation = Quaternion.identity;
                 content.transform.localScale = Vector3.one;
                 RoomLifetimeScope stagedScope = stagedRoot.AddComponent<RoomLifetimeScope>();
-                stagedScope.Initialize(RoomInstanceId.New(), node.TemplateId);
+                stagedScope.Initialize(ExpeditionRoomIdentity.ForNode(_runId, node.NodeId), node.TemplateId);
                 roomRoot = stagedRoot;
                 scope = stagedScope;
                 LastTransitionError = string.Empty;

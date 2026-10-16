@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Luckbound.Core.Expeditions;
+using Luckbound.Core.Fortune;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Progression;
 
@@ -11,7 +12,7 @@ namespace Luckbound.Core.Saves
     public static class SaveFormat
     {
         public const int SchemaVersion = 1;
-        public const int ContentVersion = 2;
+        public const int ContentVersion = 3;
         public const int Generation = 1;
     }
 
@@ -139,11 +140,21 @@ namespace Luckbound.Core.Saves
         public int healthPotionCharges = 2;
         public int accumulatedRenown;
         public string[] pactIds = Array.Empty<string>();
-        public int fortunaCharges;
-        public string[] pendingOfferIds = Array.Empty<string>();
-        public int[] offerRerollCounts = Array.Empty<int>();
+        public FortuneOfferBookSnapshot fortuneOfferBookSnapshot;
         public string[] collectedItemIds = Array.Empty<string>();
         public string[] claimedRewardIds = Array.Empty<string>();
+
+        // Kept as an in-memory bridge for existing callers; the canonical saved value lives in the book snapshot.
+        public int fortunaCharges
+        {
+            get => fortuneOfferBookSnapshot == null ? 0 : fortuneOfferBookSnapshot.charges;
+            set
+            {
+                if (fortuneOfferBookSnapshot == null)
+                    throw new InvalidOperationException("Fortuna charges require a canonical offer-book snapshot.");
+                fortuneOfferBookSnapshot.charges = value;
+            }
+        }
 
         public ExpeditionSaveData Clone() => new ExpeditionSaveData
         {
@@ -170,14 +181,52 @@ namespace Luckbound.Core.Saves
             healthPotionCharges = healthPotionCharges,
             accumulatedRenown = accumulatedRenown,
             pactIds = Copy(pactIds),
-            fortunaCharges = fortunaCharges,
-            pendingOfferIds = Copy(pendingOfferIds),
-            offerRerollCounts = offerRerollCounts == null ? null : (int[])offerRerollCounts.Clone(),
+            fortuneOfferBookSnapshot = Clone(fortuneOfferBookSnapshot),
             collectedItemIds = Copy(collectedItemIds),
             claimedRewardIds = Copy(claimedRewardIds)
         };
 
         private static string[] Copy(string[] values) => values == null ? null : (string[])values.Clone();
+
+        private static FortuneOfferBookSnapshot Clone(FortuneOfferBookSnapshot source)
+        {
+            if (source == null) return null;
+            return new FortuneOfferBookSnapshot
+            {
+                snapshotVersion = source.snapshotVersion,
+                generationVersion = source.generationVersion,
+                seed = source.seed,
+                raceId = source.raceId,
+                charges = source.charges,
+                processedGuardianIds = Copy(source.processedGuardianIds),
+                rerollReceipts = source.rerollReceipts == null ? null : source.rerollReceipts
+                    .Select(receipt => receipt == null ? null : new FortuneRerollReceiptSnapshot
+                    {
+                        transactionId = receipt.transactionId,
+                        offerId = receipt.offerId,
+                        status = receipt.status,
+                        contextId = receipt.contextId,
+                        optionIds = Copy(receipt.optionIds),
+                        selectedOptionId = receipt.selectedOptionId,
+                        rerollCount = receipt.rerollCount,
+                        claimed = receipt.claimed,
+                        remainingCharges = receipt.remainingCharges,
+                        hasOffer = receipt.hasOffer
+                    }).ToArray(),
+                offers = source.offers == null ? null : source.offers.Select(offer => offer == null ? null : new FortuneOfferSnapshot
+                {
+                    offerId = offer.offerId,
+                    contextId = offer.contextId,
+                    eligibleOptionIds = Copy(offer.eligibleOptionIds),
+                    selectedOptionId = offer.selectedOptionId,
+                    claimed = offer.claimed,
+                    history = offer.history == null ? null : offer.history.Select(entry => entry == null ? null : new FortuneOfferHistorySnapshot
+                    {
+                        optionIds = Copy(entry.optionIds)
+                    }).ToArray()
+                }).ToArray()
+            };
+        }
     }
 
     [Serializable]
@@ -191,10 +240,8 @@ namespace Luckbound.Core.Saves
         public int currentEnergy;
         public int healthPotionCharges;
         public int accumulatedRenown;
-        public int fortunaCharges;
+        public FortuneOfferBookSnapshot fortuneOfferBookSnapshot;
         public string[] pactIds = Array.Empty<string>();
-        public string[] pendingOfferIds = Array.Empty<string>();
-        public int[] offerRerollCounts = Array.Empty<int>();
         public string[] collectedItemIds = Array.Empty<string>();
         public string[] claimedRewardIds = Array.Empty<string>();
     }
@@ -265,6 +312,8 @@ namespace Luckbound.Core.Saves
             if (envelope == null) return new[] { "Profile save envelope is missing." };
             ValidateCommon(envelope.schemaVersion, envelope.contentVersion, envelope.generation,
                 envelope.sequence, envelope.savedAtUtc, envelope.checksum, errors);
+            if (envelope.hasActiveExpedition != (envelope.activeExpedition != null))
+                errors.Add("Active expedition marker must match the saved expedition payload.");
             ValidateProfile(envelope.profile, errors);
             ValidateExpedition(envelope.activeExpedition, errors);
             return errors.AsReadOnly();
@@ -428,18 +477,37 @@ namespace Luckbound.Core.Saves
             if (string.IsNullOrWhiteSpace(expedition.inventorySnapshotJson))
                 errors.Add("Active expedition inventory snapshot is missing.");
             if (expedition.accumulatedRenown < 0) errors.Add("Active expedition Renown cannot be negative.");
-            if (expedition.fortunaCharges < 0) errors.Add("Active expedition Fortuna charges cannot be negative.");
+            ValidateFortuneBook(expedition.fortuneOfferBookSnapshot, expedition.seed,
+                expedition.generationVersion, expedition.raceId, "Active expedition", errors);
             if (expedition.maximumHealth < 1 || expedition.currentHealth < 0 || expedition.currentHealth > expedition.maximumHealth)
                 errors.Add("Active expedition health must be within its positive maximum.");
             if (expedition.maximumEnergy < 0 || expedition.currentEnergy < 0 || expedition.currentEnergy > expedition.maximumEnergy)
                 errors.Add("Active expedition energy must be within its maximum.");
             if (expedition.healthPotionCharges < 0) errors.Add("Active expedition potion charges cannot be negative.");
             ValidateIds(expedition.pactIds, "active expedition pact IDs", errors);
-            ValidateIds(expedition.pendingOfferIds, "pending offer IDs", errors);
             ValidateIds(expedition.collectedItemIds, "collected item IDs", errors);
             ValidateIds(expedition.claimedRewardIds, "claimed reward IDs", errors);
-            if (expedition.offerRerollCounts == null || expedition.offerRerollCounts.Any(count => count < 0))
-                errors.Add("Offer reroll counts must be present and non-negative.");
+        }
+
+        private static void ValidateFortuneBook(FortuneOfferBookSnapshot snapshot, uint seed, int generationVersion,
+            string raceId, string label, List<string> errors)
+        {
+            if (snapshot == null)
+            {
+                errors.Add(label + " Fortuna offer book snapshot is missing.");
+                return;
+            }
+            try
+            {
+                FortuneOfferBook.Restore(snapshot);
+                if (snapshot.seed != seed || snapshot.generationVersion != generationVersion ||
+                    !string.Equals(snapshot.raceId, raceId, StringComparison.Ordinal))
+                    errors.Add(label + " Fortuna offer book identity does not match the expedition seed, generation version, and race.");
+            }
+            catch (Exception exception)
+            {
+                errors.Add(label + " Fortuna offer book snapshot is invalid: " + exception.Message);
+            }
         }
 
         private static void ValidateRoomResults(ExpeditionSaveData expedition, List<string> errors)

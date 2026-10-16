@@ -6,6 +6,7 @@ using Luckbound.Core.Input;
 using Luckbound.Core.Presentation;
 using Luckbound.Content;
 using Luckbound.Gameplay.Combat;
+using Luckbound.Gameplay.Combat.Magus;
 using Luckbound.Gameplay.Combat.Venator;
 using Luckbound.Gameplay.Rooms;
 using UnityEngine;
@@ -56,6 +57,11 @@ namespace Luckbound.Gameplay.Movement
         private VenatorCombatResult _lastVenatorCombatResult;
         private VenatorBasicAttackSnapshot _venatorBasicAttackSnapshot;
         private VenatorRoomBinding _venatorRoomBinding;
+        private MagusCombatState _magusCombatState;
+        private MagusSkillLoadout _magusSkillLoadout;
+        private MagusCombatResult _lastMagusCombatResult;
+        private MagusBasicAttackSnapshot _magusBasicAttackSnapshot;
+        private MagusRoomBinding _magusRoomBinding;
         private ActorId _actorId;
         private Collider2D _collider;
         private ContactFilter2D _groundContactFilter;
@@ -73,12 +79,14 @@ namespace Luckbound.Gameplay.Movement
         private float _facingDirection = 1f;
         private float _jumpBufferRemaining;
         private LayerMask _venatorTargetLayers;
+        private LayerMask _magusTargetLayers;
         private bool _dodgeActive;
         private bool _dodgeInvulnerabilityActive;
         private bool _dodgeSpeedRecoveryPending;
         private int _stunTicksRemaining;
         private long _tick;
         private long _nextVenatorEnergyRecoveryTick;
+        private long _nextMagusEnergyRecoveryTick;
 
         public bool IsGrounded { get; private set; }
 
@@ -101,6 +109,8 @@ namespace Luckbound.Gameplay.Movement
 
         public bool IsVenator => _venatorCombatState != null;
 
+        public bool IsMagus => _magusCombatState != null;
+
         public bool IsPreparingVenatorSkill => IsVenator && _skillUseState.IsPreparing;
 
         public VenatorCombatResult LastVenatorCombatResult => _lastVenatorCombatResult;
@@ -114,6 +124,18 @@ namespace Luckbound.Gameplay.Movement
         public int VenatorProjectileSpawnCount { get; private set; }
 
         public int VenatorRootTrapSpawnCount { get; private set; }
+
+        public bool IsPreparingMagusSkill => IsMagus && _skillUseState.IsPreparing;
+
+        public MagusCombatResult LastMagusCombatResult => _lastMagusCombatResult;
+
+        public MagusBasicAttackSnapshot CurrentMagusBasicAttack => _magusBasicAttackSnapshot;
+
+        public int MagusBasicAttackActivationCount { get; private set; }
+
+        public int MagusSkillActivationCount { get; private set; }
+
+        public int MagusBasicAttackProjectileSpawnCount { get; private set; }
 
         public int CurrentEnergy => _skillUseState != null ? _skillUseState.CurrentEnergy : 0;
 
@@ -293,6 +315,11 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring Venator combat.");
             }
 
+            if (_magusCombatState != null)
+            {
+                throw new InvalidOperationException("A player cannot use Venator and Magus combat in the same expedition.");
+            }
+
             if (catalog == null) throw new ArgumentNullException(nameof(catalog));
             if (projectilePool == null) throw new ArgumentNullException(nameof(projectilePool));
             if (projectileScope == null) throw new ArgumentNullException(nameof(projectileScope));
@@ -355,9 +382,140 @@ namespace Luckbound.Gameplay.Movement
             IsAttacking = false;
         }
 
+        /// <summary>
+        /// Binds the Magus combat adapter to this initialized actor and one live room.
+        /// Skill values always come from the authoritative Skills.json catalog.
+        /// </summary>
+        public void ConfigureMagus(
+            IEnumerable<string> selectedSkillIds,
+            ProjectilePool2D projectilePool,
+            RoomProjectileScope projectileScope,
+            RoomLifetimeScope roomLifetimeScope,
+            LayerMask enemyLayers = default)
+        {
+            TextAsset catalogAsset = Resources.Load<TextAsset>("Luckbound/Data/Skills");
+            if (catalogAsset == null)
+            {
+                throw new InvalidOperationException("The authoritative Skills.json catalog is missing from Resources.");
+            }
+
+            ConfigureMagus(
+                SkillCatalogJsonLoader.Load(catalogAsset.text),
+                selectedSkillIds,
+                projectilePool,
+                projectileScope,
+                roomLifetimeScope,
+                enemyLayers);
+        }
+
+        /// <summary>Test and composition overload for a catalog already loaded from Skills.json.</summary>
+        public void ConfigureMagus(
+            SkillCatalog catalog,
+            IEnumerable<string> selectedSkillIds,
+            ProjectilePool2D projectilePool,
+            RoomProjectileScope projectileScope,
+            RoomLifetimeScope roomLifetimeScope,
+            LayerMask enemyLayers = default)
+        {
+            if (!_initialized)
+            {
+                throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring Magus combat.");
+            }
+
+            if (_venatorCombatState != null)
+            {
+                throw new InvalidOperationException("A player cannot use Magus and Venator combat in the same expedition.");
+            }
+
+            if (catalog == null) throw new ArgumentNullException(nameof(catalog));
+            if (projectilePool == null) throw new ArgumentNullException(nameof(projectilePool));
+            if (projectileScope == null) throw new ArgumentNullException(nameof(projectileScope));
+            if (roomLifetimeScope == null) throw new ArgumentNullException(nameof(roomLifetimeScope));
+            if (projectileScope.IsDisposed || projectileScope.Pool != projectilePool)
+            {
+                throw new ArgumentException("Magus projectiles require a live room scope attached to the supplied pool.", nameof(projectileScope));
+            }
+
+            LayerMask targetLayers = enemyLayers.value != 0 ? enemyLayers : _meleeTargetLayers;
+            if (targetLayers.value == 0)
+            {
+                throw new ArgumentException("Magus effects require at least one enemy layer.", nameof(enemyLayers));
+            }
+
+            var loadout = new MagusSkillLoadout(catalog, selectedSkillIds);
+            if (_magusSkillLoadout != null &&
+                (!string.Equals(_magusSkillLoadout.Skill1.Id, loadout.Skill1.Id, StringComparison.Ordinal) ||
+                 !string.Equals(_magusSkillLoadout.Skill2.Id, loadout.Skill2.Id, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException("A Magus loadout cannot change during an expedition.");
+            }
+
+            if (_magusRoomBinding != null && !_magusRoomBinding.IsDisposed)
+            {
+                throw new InvalidOperationException("The previous Magus room must be disposed before binding another room.");
+            }
+
+            MagusCombatState combatState = _magusCombatState ?? new MagusCombatState(_actorId, loadout, _skillUseState);
+            MagusCombatAdapter2D adapter = null;
+            MagusRoomBinding binding = null;
+            try
+            {
+                adapter = new MagusCombatAdapter2D(
+                    _actorId,
+                    combatState,
+                    projectilePool,
+                    projectileScope,
+                    roomLifetimeScope,
+                    targetLayers);
+                adapter.BasicAttackRequested += HandleMagusBasicAttackRequested;
+                binding = new MagusRoomBinding(this, adapter, projectileScope);
+                roomLifetimeScope.OwnResource(binding);
+            }
+            catch
+            {
+                if (binding != null)
+                {
+                    binding.Dispose();
+                }
+                else
+                {
+                    if (adapter != null)
+                    {
+                        adapter.BasicAttackRequested -= HandleMagusBasicAttackRequested;
+                        adapter.Dispose();
+                    }
+
+                    projectileScope.Dispose();
+                }
+
+                throw;
+            }
+
+            if (_magusCombatState == null)
+            {
+                _magusSkillLoadout = loadout;
+                _magusCombatState = combatState;
+                _nextMagusEnergyRecoveryTick = _tick + 60;
+            }
+
+            _magusRoomBinding = binding;
+            _magusTargetLayers = targetLayers;
+            _magusBasicAttackSnapshot = default;
+            _lastMagusCombatResult = default;
+            _meleeAttackState.Interrupt();
+            _meleeAttackSnapshot = default;
+            IsAttacking = false;
+        }
+
         public bool IsVenatorSkillReady(string skillId)
         {
             return IsVenator && _venatorSkillLoadout.Contains(skillId) &&
+                _skillUseState.IsReady(skillId, SimulationTick);
+        }
+
+        public bool IsMagusSkillReady(string skillId)
+        {
+            return IsMagus && _magusSkillLoadout.Contains(skillId) &&
                 _skillUseState.IsReady(skillId, SimulationTick);
         }
 
@@ -395,9 +553,10 @@ namespace Luckbound.Gameplay.Movement
             }
 
             _healthPotionUseState.CancelPreparation();
-            if (_venatorCombatState != null && _skillUseState.IsPreparing)
+            if ((_venatorCombatState != null || _magusCombatState != null) && _skillUseState.IsPreparing)
             {
-                _venatorCombatState.Interrupt();
+                _venatorCombatState?.Interrupt();
+                _magusCombatState?.Interrupt();
             }
 
             _body.linearVelocity = knockbackVelocity;
@@ -422,6 +581,12 @@ namespace Luckbound.Gameplay.Movement
             {
                 _venatorRoomBinding.Dispose();
                 _venatorRoomBinding = null;
+            }
+
+            if (_magusRoomBinding != null)
+            {
+                _magusRoomBinding.Dispose();
+                _magusRoomBinding = null;
             }
 
             if (_movementMaterial == null)
@@ -476,6 +641,7 @@ namespace Luckbound.Gameplay.Movement
                     maximumHealth: CombatStats.MaximumHealth, interrupted: true);
                 InterruptActions();
                 TickVenatorCommand(command, canAct: false);
+                TickMagusCommand(command, canAct: false);
                 ApplyRestrictedMotion(deltaTime);
                 return;
             }
@@ -487,6 +653,7 @@ namespace Luckbound.Gameplay.Movement
                 _stunTicksRemaining--;
                 InterruptActions();
                 TickVenatorCommand(command, canAct: false);
+                TickMagusCommand(command, canAct: false);
                 ApplyRestrictedMotion(deltaTime);
                 return;
             }
@@ -534,6 +701,14 @@ namespace Luckbound.Gameplay.Movement
                     potionOutcome.Status == HealthPotionUseStatus.Healed;
                 TickVenatorCommand(command, canAct: !_dodgeActive && !higherPriorityActionActive);
                 attackMovementMultiplier = IsAttacking ? (float)_venatorBasicAttackSnapshot.MovementSpeedMultiplier : 1f;
+                _meleeAttackSnapshot = default;
+            }
+            else if (IsMagus)
+            {
+                bool higherPriorityActionActive = potionOutcome.Status == HealthPotionUseStatus.Preparing ||
+                    potionOutcome.Status == HealthPotionUseStatus.Healed;
+                TickMagusCommand(command, canAct: !_dodgeActive && !higherPriorityActionActive);
+                attackMovementMultiplier = IsAttacking ? (float)_magusBasicAttackSnapshot.MovementSpeedMultiplier : 1f;
                 _meleeAttackSnapshot = default;
             }
             else
@@ -621,7 +796,13 @@ namespace Luckbound.Gameplay.Movement
                 _venatorCombatState.Interrupt();
             }
 
+            if (_magusCombatState != null)
+            {
+                _magusCombatState.Interrupt();
+            }
+
             _venatorBasicAttackSnapshot = default;
+            _magusBasicAttackSnapshot = default;
             IsDodging = false;
             IsAttacking = false;
             _dodgeActive = false;
@@ -695,6 +876,105 @@ namespace Luckbound.Gameplay.Movement
             _nextVenatorEnergyRecoveryTick += recoveryAmount * 12L;
         }
 
+        private void TickMagusCommand(PlayerCommand command, bool canAct)
+        {
+            if (_magusCombatState == null) return;
+
+            bool roomReady = _magusRoomBinding != null && !_magusRoomBinding.IsDisposed;
+            MagusCombatResult result;
+            if (roomReady)
+            {
+                Vector2 aimDirection = new Vector2(_facingDirection, 0f);
+                result = _magusRoomBinding.Adapter.Tick(
+                    command,
+                    isAlive: canAct,
+                    interrupted: !canAct,
+                    actorPosition: transform.position,
+                    projectileOrigin: MagusProjectileOrigin(),
+                    aimDirection: aimDirection);
+            }
+            else
+            {
+                result = _magusCombatState.Tick(command, isAlive: false, interrupted: true);
+            }
+
+            _lastMagusCombatResult = result;
+            _magusBasicAttackSnapshot = result.BasicAttack;
+            IsAttacking = result.BasicAttack.IsAttacking && canAct && roomReady && !_dodgeActive;
+
+            if (result.SkillOutcome.EnergySpent > 0)
+            {
+                _nextMagusEnergyRecoveryTick = command.Tick + 60;
+            }
+            else if (roomReady && !IsDead)
+            {
+                RecoverMagusEnergy(command.Tick);
+            }
+
+            if (result.BasicAttack.WasStartedThisTick)
+            {
+                MagusBasicAttackActivationCount++;
+            }
+
+            if (result.SkillActivation != null)
+            {
+                MagusSkillActivationCount++;
+            }
+        }
+
+        private void RecoverMagusEnergy(long tick)
+        {
+            if (_skillUseState.CurrentEnergy >= _skillUseState.MaximumEnergy)
+            {
+                _nextMagusEnergyRecoveryTick = tick + 12;
+                return;
+            }
+
+            if (tick < _nextMagusEnergyRecoveryTick) return;
+
+            long elapsedRecoveryTicks = tick - _nextMagusEnergyRecoveryTick;
+            int recoveryAmount = 1 + (int)(elapsedRecoveryTicks / 12);
+            _skillUseState.SetCurrentEnergy(Math.Min(
+                _skillUseState.MaximumEnergy,
+                _skillUseState.CurrentEnergy + recoveryAmount));
+            _nextMagusEnergyRecoveryTick += recoveryAmount * 12L;
+        }
+
+        private Vector2 MagusProjectileOrigin()
+        {
+            return new Vector2(
+                transform.position.x + (_facingDirection * 0.55f),
+                transform.position.y + 0.25f);
+        }
+
+        private void HandleMagusBasicAttackRequested(MagusBasicAttackRequest request)
+        {
+            if (request.ActorId != _actorId)
+            {
+                throw new InvalidOperationException("Magus basic-attack request belongs to a different actor.");
+            }
+
+            if (_magusRoomBinding == null || _magusRoomBinding.IsDisposed)
+            {
+                throw new InvalidOperationException("Magus basic attacks require a live room binding.");
+            }
+
+            if (request.Snapshot.Projectile == null)
+            {
+                throw new InvalidOperationException("An accepted Magus basic attack must include its weapon projectile definition.");
+            }
+
+            _magusRoomBinding.ProjectileScope.Pool.Spawn(
+                request.Snapshot.Projectile,
+                EntityId.New(),
+                request.ActorId,
+                request.Origin,
+                request.Direction,
+                _magusTargetLayers,
+                _magusRoomBinding.ProjectileScope);
+            MagusBasicAttackProjectileSpawnCount++;
+        }
+
         private void SpawnVenatorProjectile(ProjectileDefinition definition, decimal angleOffsetDegrees)
         {
             if (_venatorRoomBinding == null || _venatorRoomBinding.IsDisposed)
@@ -738,6 +1018,16 @@ namespace Luckbound.Gameplay.Movement
             _venatorCombatState?.Interrupt();
             _venatorRoomBinding = null;
             _venatorBasicAttackSnapshot = default;
+            IsAttacking = false;
+        }
+
+        internal void OnMagusRoomDisposed(MagusRoomBinding binding)
+        {
+            if (_magusRoomBinding != binding) return;
+
+            _magusCombatState?.Interrupt();
+            _magusRoomBinding = null;
+            _magusBasicAttackSnapshot = default;
             IsAttacking = false;
         }
 

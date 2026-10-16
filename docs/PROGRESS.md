@@ -1,16 +1,21 @@
 # Luckbound — Registro de progreso
 
-**Actualizado:** 14 de octubre de 2026.
+**Actualizado:** 16 de octubre de 2026.
 
-**Alcance vigente:** Fran autorizó retomar el desarrollo completo el 14 de octubre. E02.DATA y E02.TXN están integrados; E02.ADAPTER es el próximo paquete del coordinador. E06 y F07 están verificadas. F08 tiene las pistas de taberna y Patio validadas; F01 continúa en curso. E04, E07 y E08 conservan entregas Core parciales por integrar y verificar.
+**Alcance vigente:** Fran reanudó el desarrollo completo el 16 de octubre. E02 y E07 están verificados; E03 ya tiene integración App durable y cobertura PlayMode parcial; E04 tiene mapper y mutaciones persistentes, pero falta conectar ofertas/recompensas al juego; E08 tiene Magus conectado parcialmente al motor y le faltan casos de aceptación por entrada. F10 sigue siendo el siguiente hito jugable. Todos los trabajos mantienen la regla estricta de visibilidad.
 
 Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, paquetes y grafo de ejecución: [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
-## Estado actual (14 de octubre de 2026)
+## Estado actual (16 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01, E06 y F07: Verified; A06: InProgress; D09: NeedsOwnerReview; E02, E07, F01 y F08: InProgress; las demás tareas figuran Pending en la tabla inferior.
-- Fran ordenó retomar el desarrollo completo. E02.DATA y E02.TXN están integrados; fabricación sigue pendiente de su adaptador y recorrido de juego. E02.ADAPTER es el siguiente paquete del coordinador. F08 tiene pistas de taberna y Patio validadas; falta Custodio y efectos. E04 incluye una entrega Core de Fortuna, y E07/E08 entregas Core de Venator/Magus: siguen pendientes de integración completa, aceptación y verificación del coordinador. La regresión previa 121/121 EditMode y 62/62 PlayMode pasó en Unity `6000.6.5f1`, WindowsEditor, batchmode y Null graphics; se repetirá tras integrar nuevos paquetes.
-- Regla estricta de visibilidad del 14 de octubre: ninguna ventana, pestaña, panel, notificación ni previsualización debe aparecer en la pantalla de Fran salvo la interfaz mínima que requiera una decisión concreta suya. Toda ejecución interna permanece sin interfaz, oculta o en un sandbox/escritorio aislado; aplica también a subagentes, procesos secundarios y ventanas emergentes.
+- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01, E02, E06, E07 y F07: Verified; E03, E04, E08, F01 y F08: InProgress; A06: InProgress; D09: NeedsOwnerReview; las demás tareas figuran Pending.
+- E02.ADAPTER está integrado en `99ea5e9`. El escenario físico `E02_PhysicalCraftCommitRetryAndRestart` pasa con nueve aserciones en `Logs/Scenarios/E02/20261016T143835626Z_E02_PhysicalCraftCommitRetryAndRestart_b5c4a425/scenario-report.json`. La regresión coordinada revalidada incluye E02.
+- E03 Core y la integración App durable están presentes: compra con fallo/reintento, stock fijo, venta de material, mejoras y restauración pasan en un escenario PlayMode. La lectura de stock mantiene el estado confirmado mientras espera el reintento; faltan la venta de objetos y UI accesible.
+- E04 integra Core, mapper y mutaciones persistentes del libro de Fortuna. La clave de creación canonicaliza el conjunto de opciones para permitir reintentos con distinto orden; su prueba dirigida pasa y la regresión EditMode completa pasa 175/175. Siguen pendientes UI/encuentros, aplicación idempotente de recompensas y aceptación PlayMode con reinicio.
+- E07 quedó reparado en `58d715f`; la prueba `PiercingArrowDamagesThreeActorsOnceDespiteSiblingColliders` pasa dentro de la regresión completa PlayMode 93/93. E07 sigue `Verified`.
+- E08 conecta el motor del jugador y las tres habilidades Magus a los módulos de combate; la regresión PlayMode pasa 93/93. Sigue faltando asistencia de apuntado hacia objetivos y una aceptación integral desde el jugador.
+- F08 incluye tres pistas, catálogo de 36 efectos, director de audio aislado con prueba PlayMode y tres ambientes loopables de fuente. Las herramientas de audio pasan 30/30; falta conectar música/efectos a escenas, integrar los ambientes y hacer revisión auditiva.
+- **Regla obligatoria de visibilidad, reafirmada por Fran (16 de octubre de 2026):** Fran no debe ver ninguna ventana, pestaña, panel, diálogo, notificación ni previsualización salvo que necesite usar personalmente esa interfaz para tomar una decisión concreta en ese momento. Que una ventana esté relacionada con el trabajo no basta; por defecto no se le muestra ninguna interfaz. Cualquier otra UI se ejecuta sin interfaz o en un sandbox/escritorio verdaderamente separado e inaccesible para él. No vale abrirla en su escritorio y dejarla detrás, sin foco o minimizada. La regla cubre al coordinador, subagentes, aplicaciones y procesos secundarios; si no se puede garantizar el aislamiento, no se lanza.
 - E01 está consolidada en el commit `fd3626f`; las cuatro referencias originales del usuario permanecen sin seguimiento y fuera del commit.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
@@ -34,7 +39,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, 
 - E07 integra las reglas Core del ataque básico gratuito y las tres habilidades de Venator en `707354c`; la conexión al motor, proyectiles, trampa y aceptación de clase siguen pendientes.
 - La entrega parcial F08.Taberna y su corrección de hashes están integradas (`f8f4aba`, `a066ece`): diez pruebas de audio pasan y el validador independiente devuelve `passed`, sin reproducir ni escuchar el WAV de referencia del usuario.
 - Revisiones de builds: ninguna realizada.
-- La rama local `codex/luckbound-reboot` conserva el trabajo integrado hasta la reanudación. El workflow está preparado, pero aún no se ha publicado ni ejecutado en GitHub Actions y no se ha modificado la web.
+- La rama local `codex/luckbound-reboot` contiene los commits de integración enumerados en las fichas siguientes. No se ha ejecutado GitHub Actions ni se ha modificado o publicado la web; las builds de esta reanudación no se han vuelto a ejecutar.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
 
 ## Estados y dependencias
@@ -84,13 +89,13 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D08 | Perfil y ajustes con respaldo | D07 | Verified |
 | D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | NeedsOwnerReview |
 | E01 | Materiales y bolsa | D09 | Verified |
-| E02 | Fabricación | E01 | InProgress |
-| E03 | Comercio, herrería y descanso | E02 | Pending |
-| E04 | Ofertas y Fortuna | D09, E01 | Pending |
+| E02 | Fabricación | E01 | Verified |
+| E03 | Comercio, herrería y descanso | E02 | InProgress |
+| E04 | Ofertas y Fortuna | D09, E01 | InProgress |
 | E05 | Avaricia y Fervor | C01, E04 | Pending |
 | E06 | Renombre y mejoras permanentes | D07, D08 | Verified |
-| E07 | Venator completo | C03, C04, D05 | InProgress |
-| E08 | Magus completo | C03, C04, D05 | Pending |
+| E07 | Venator completo | C03, C04, D05 | Verified |
+| E08 | Magus completo | C03, C04, D05 | InProgress |
 | E09 | Clase, raza y kit | D05, E01, E06, E07, E08 | Pending |
 | E10 | Personajes, contratos y localización inicial | E02, E06, E09 | Pending |
 | F01 | Referencia maestra artística | B07 | InProgress |
@@ -518,15 +523,34 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Prueba WebGL manual:** build servida localmente en `http://localhost:8082/`, siempre en pestaña oculta. La taberna inicia la expedición de Bellator; el recibo visible muestra los seis contadores, salud/energía, checkpoint y el `RunId` completo `8c50b7271a994f808747a387535cc276`. Dos recargas consecutivas conservan el mismo ID y el checkpoint. No se publicó esta build.
 - **Resultado:** E01 `Verified`; E02 queda técnicamente habilitada, pero no se inicia. Fran pidió el 13 de octubre optimizar el plan y parar antes de comenzar desarrollo nuevo. El progreso de D09 sigue en `NeedsOwnerReview`; A06 sigue `InProgress` a la espera de secretos y permisos para la ejecución real de GitHub Actions. No se modificó el remoto ni la ruta pública `/Luckbound/`.
 
-## Ejecución E02 — Fabricación (InProgress; paquete E02.TXN asignado)
+## Ejecución E02 — Fabricación (Verified)
 
 - **Contrato:** receta válida consume exactamente los materiales y oro y crea el resultado previsto. Una receta inválida, sin recursos, sin espacio o incompatible no cambia el inventario. Las mejoras de armas/armaduras son consecutivas; no se puede saltar directamente a +2 o +3.
 - **Dependencia técnica comprobada:** E01 `Verified`; D09 conserva `NeedsOwnerReview` con evidencia técnica suficiente para continuar.
 - **E02.DATA integrado:** commits `b1bae5b`, `0e405ff` y `9f92426`; doce recetas únicas, loader validado, cuatro consumibles integrados y catálogo total de veinte ítems. EditMode postintegración `Logs/E02-DATA-postintegration-editmode.xml` → 92/92; PlayMode `Logs/E02-DATA-postintegration-playmode.xml` → 59/59, sin fallos, omitidos ni inconclusos, Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`.
 - **Contrato de rechazo:** los cambios de juego de un rechazo son nulos. El snapshot puede añadir el recibo técnico del `TransactionId` al ledger para que el mismo resultado se reproduzca después de restaurar; las pruebas comparan individualmente todos los campos funcionales además de verificar ese recibo.
-- **E02.TXN integrado:** commit `e5f567a` añade resultado tipado, cambios atómicos de inventario y recibos transaccionales para fabricación; `CraftingTransactionTests` cubre rechazo, consumo, producción, espacio, mejoras consecutivas, duplicados y conflictos. La regresión combinada postintegración pasa EditMode 121/121 y PlayMode 62/62, cero fallos, omitidos o inconclusos, Unity `6000.6.5f1`, `-batchmode -nographics`.
-- **Siguiente:** E02.ADAPTER, conexión de recetas/mesa de fabricación, confirmación de guardado y recorrido demostrable siguen pendientes.
-- **Resultado:** E02 continúa `InProgress` hasta completar su aceptación de juego según la guía.
+- **E02.TXN integrado:** commit `e5f567a` añade resultado tipado, cambios atómicos de inventario y recibos transaccionales para fabricación; `CraftingTransactionTests` cubre rechazo, consumo, producción, espacio, mejoras consecutivas, duplicados y conflictos.
+- **E02.ADAPTER integrado:** commit `99ea5e9` conecta el botón de fabricación, copias candidatas del inventario, escritura durable y publicación tras guardar. La escritura fallida conserva la operación exacta para reintento; clic repetido y replay de `TransactionId` no duplican el resultado. El rechazo conserva los campos funcionales del inventario.
+- **Pruebas completas:** EditMode `Logs/E02-ADAPTER-editmode-retry.xml` → 141/141; PlayMode previo a integrar E07 `Logs/E02-ADAPTER-playmode-full.xml` → 63/63, Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`.
+- **Recorrido físico:** `E02_PhysicalCraftCommitRetryAndRestart`, nueve aserciones, `passed=true`, cubre pickups por física, botón, primer fallo de escritura, reintento del mismo payload, rechazo sin materiales y reinicio desde checkpoint de sala. Evidencia: `Logs/Scenarios/E02/20261016T143835626Z_E02_PhysicalCraftCommitRetryAndRestart_b5c4a425/scenario-report.json`; SHA-256 de código comprobado `78ce12132d766b3939c2198b0426c43c7f97870ebf1554076c377eb883f333d7`. `sourceCommit` quedó vacío en esa ejecución anterior al commit.
+- **Regresión posterior a E07 (histórica):** `Logs/E02-ADAPTER-playmode-after-venator-retry3.xml` registró 71/72; la ficha E07 documenta la reparación y la regresión actual 82/82.
+- **Herramientas de proyecto:** `ProjectDevelopmentChecks.RunAll` pasó tras integrar el adaptador. La corrección de aserciones antiguas y `.meta` faltantes de Fortune/Magus está en `959817e`.
+- **Resultado:** E02 `Verified`. No se generó una build en esta ejecución; A06 y la ruta pública permanecen intactas.
+
+## E03 — Comercio, herrería y descanso (InProgress)
+
+- **Core integrado:** commit `661c7a0` añade servicios para ofertas/stock fijo, compra/venta, mejoras consecutivas de instancias y los servicios de descanso/Talia. Inventario sigue siendo la autoridad para oro, materiales, objetos, recibos y reintentos.
+- **Cobertura EditMode:** dentro de `Logs/Coordinator-20261016-editmode.xml` (156/156) pasan precios/descuentos sin arbitraje, rechazo sin mutación por falta de espacio/oro, venta con redondeo hacia abajo, persistencia del stock al cerrar/reabrir/restaurar, servicios de uso único, mejoras sobre la instancia compatible y recibos propios para rechazo de recetas consumibles.
+- **Integración y cobertura actual:** el acceso de lectura al stock conserva el último estado confirmado mientras una operación espera reintento. El recorrido `E03_PersistsMerchantTransactionsAndConsecutiveUpgradesAcrossRetryAndRestRestart` pasa 1/1: compra con fallo/reintento, stock fijo, venta de material, mejoras consecutivas y restauración tras reinicio; el inventario inicial conserva las dos pociones previstas.
+- **Pendiente:** la venta de objetos aún necesita aceptación PlayMode y el comercio/herrería/descanso todavía necesitan interacción accesible de juego. E03 sigue `InProgress`.
+
+## E04 — Ofertas reproducibles y Fortuna (InProgress)
+
+- **Core integrado:** `92cb77d`; ampliación de pruebas `3e79061`. `FortuneOfferBook` mantiene tres opciones únicas, flujos aleatorios separados de la ruta, cargas limitadas, rerolls sin coste al rechazarse y reclamación idempotente.
+- **Cobertura EditMode:** dentro de `Logs/Coordinator-20261016-editmode.xml` (156/156) pasan generación por semilla y restauración, repetición distinta con coste, independencia del RNG de ruta, pool insuficiente sin gasto, conflictos por reutilización del ID y elección/recompensa reclamables una sola vez incluso después de restaurar.
+- **App y persistencia:** `ExpeditionSaveMapper` serializa/restaura el libro y `ApplicationBootstrapper.Fortune.cs` confirma sus mutaciones durables con reintento. La clave de creación canonicaliza el conjunto de IDs elegibles, pues Core normaliza orden y duplicados; `FailedOfferCreationRetriesWithTheSameOptionSetInAnyOrder` pasa 1/1 (`Logs/Coordinator-20261016-fortune-order-targeted-r1.xml`).
+- **Pendiente:** UI/encuentros, un consumidor de `ClaimId` que aplique la recompensa sin duplicarla y aceptación PlayMode de recarga/reinicio. E04 sigue `InProgress`.
+- **Compatibilidad antes de distribuir:** la migración conserva el archivo y rechaza con fallo seguro expedientes legados que contengan resúmenes de oferta no vacíos, porque no puede reconstruir el libro nuevo sin inventar datos. La prueba `ExpeditionFortuneSaveTests` fija ese resultado; falta verificarlo con un guardado legado real antes de distribuir esta migración.
 
 ## Evidencia E06 — Renombre y mejoras permanentes (Verified)
 
@@ -536,10 +560,38 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aceptación integrada:** Unity `6000.6.5f1`, WindowsEditor, Null graphics, `-batchmode -nographics`: EditMode `Logs/coordinator-postmerge-editmode.xml` → 121/121 y PlayMode `Logs/coordinator-postmerge-playmode.xml` → 62/62, cero fallos, omitidos o inconclusos. La migración de ajustes de contenido v1 conserva idioma y volúmenes después de guardar y reiniciar.
 - **Resultado:** E06 `Verified`; la regresión incluye también E02.TXN y el núcleo Core de E07. No se generó ni publicó una build; A06 y la ruta pública permanecen intactas.
 
-## Evidencia parcial E07 — Core de Venator (InProgress)
+## E07 — Venator en Gameplay (Verified)
 
-- **Integración:** commit `707354c` añade estado Core para ataque básico gratuito y activación de Piercing Arrow, Triple Shot y Root Trap, selección de exactamente dos habilidades y resultados tipados de interrupción/energía. Sus pruebas están dentro de EditMode `121/121`.
-- **Pendiente:** conexión al motor/proyectiles del juego, trampa física y demostración de impactos, energía, cancelación y limpieza según la aceptación E07. E07 permanece `InProgress`.
+- **Integración:** `12e99f4` conecta ataque básico, dos habilidades seleccionadas, proyectiles, trampa y energía al `PlayerMotor2D`; el ajuste `e56f6b5` desambigua `EntityId` frente a `UnityEngine.EntityId` en Unity 6.
+- **Reparación:** `58d715f` corrige el fixture físico de la flecha para que los tres actores de aceptación estén apoyados y alineados con su trayectoria.
+- **Aceptación coordinada:** Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`; `Logs/Coordinator-20261016-playmode-final.xml` → 82/82, cero fallos, omitidos o inconclusos. Pasan el ataque básico físico, las tres habilidades, energía insuficiente, cancelación, muerte, limpieza de sala y `PiercingArrowDamagesThreeActorsOnceDespiteSiblingColliders`.
+- **Resultado:** E07 `Verified`. La ejecución fue headless; no se hizo validación visual ni build.
+
+## E08 — Magus en Gameplay (InProgress)
+
+- **Integración de módulos:** `ccfd1d8` añade adaptador de combate, proyectil de fuego, Nova, Sello y efectos de sala; `34ea575` conecta los pulsos de quemadura a la cola normal de impactos de Slime, Huesoguardia y Custodio, respetando sus resolutores de salud. La conexión actual a `PlayerMotor2D`, la exclusión mutua con Venator y las pruebas nuevas están en el checkout con cambios locales aún sin commit; ataque básico y Bola de fuego usan entrada y física reales.
+- **Pruebas dirigidas:** `Logs/Coordinator-20261016-playmode-magus.xml` → 10/10, cero fallos, omitidos o inconclusos. Incluye la prueba de Huesoguardia de producción, ataque básico desde input, Bola de fuego desde input y cola física de quemadura, Nova/Sello del adaptador y limpieza de efectos al cambiar de sala.
+- **Regresión:** `Logs/Coordinator-20261016-editmode.xml` → 156/156 y `Logs/Coordinator-20261016-playmode-final.xml` → 82/82 en Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`.
+- **Revisión independiente:** se confirmó que los ataques a distancia de Magus apuntan horizontalmente y no cumplen la asistencia al enemigo cercano dentro del cono de 35° y con línea de visión definida en §3.3 del plan. Se añadirá selección de objetivo y prueba física; E08 sigue `InProgress`.
+- **Pendiente:** aceptación integral desde el jugador en escena jugable y validación de límites de recarga al reconfigurar una sala. Las pruebas actuales son headless y no constituyen validación visual ni build.
+
+## F08 — Música y efectos parciales (InProgress)
+
+- **Música:** `8b92cfd` añade Patio; `b4704cf` añade tema de Custodio. El tema de taberna ya está registrado en la ficha histórica F08.Taberna. Los tres WAV tienen catálogo Resources y `RuntimeAudioDirector` con crossfade y voces acotadas, pero el servicio aún no está conectado a la aplicación ni a escenas.
+- **Efectos:** `7e9f90e` añade 13 cues originales del Bellator con parámetros, renderizador reproducible, informes y hashes; cubre un subconjunto de los efectos previstos.
+- **Pruebas:** `Tools/Audio/tests` pasa 21/21 en el entorno aislado definido por `Tools/Audio/requirements.txt`, incluyendo Custodio, Patio, taberna y efectos Bellator. No se hizo escucha subjetiva ni se usó `La Taberna.wav`.
+- **Ambientes:** tres fuentes loopables (Patio/bosque, Archivo y Forjas) tienen receta reproducible, hashes y validador; la prueba aislada pasa 3/3. La suite completa de herramientas de audio pasa 30/30 en `Logs/Coordinator-20261016-audio-suite.log`.
+- **Revisión independiente:** la transición A→B→A durante un crossfade puede reutilizar una pista descargada; falta cubrir y corregir esa reversión. Los importadores tampoco rechazan manifiestos/reportes obsoletos cuando cambian partitura o parámetros sin regenerar el WAV, y `PlayEffect` no rechaza llamadas posteriores a desactivar el componente.
+- **Pendiente:** importar ambientes al catálogo/runtime, conectar música y ambiente a escenas/salas, integrar efectos en eventos reales, verificar volúmenes y reproducción WebGL tras interacción. No se hizo revisión auditiva; F08 sigue `InProgress`.
+
+## Revalidación coordinada — 16 de octubre de 2026
+
+- Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`: EditMode `175/175` en `Logs/Coordinator-20261016-editmode-regression-r3.xml`; PlayMode `93/93` en `Logs/Coordinator-20261016-playmode-regression-r3.xml`. Ambas suites terminan con cero fallos, omitidos o inconclusos.
+- La prueba de perfil v1 `ContentVersionOneProfileMigratesRenownAndUpgradesWithoutInventingPurchaseReceipts` pasa 1/1 en `Logs/Coordinator-20261016-migration-targeted-r2.xml`; el fixture refleja ahora el DTO de expedición del formato legado. No se cambió la migración de producción.
+- El test E03 dirigido pasa 1/1 en `Logs/Coordinator-20261016-e03-merchant-targeted-r2.xml`. El acceso de lectura al stock durante un reintento conserva el estado confirmado; la compra solo se refleja después de la escritura exitosa.
+- La prueba dirigida del director pasa 1/1 en `Logs/Coordinator-20261016-audio-targeted-r3.xml`; no aparece el aviso de descarga asíncrona visto antes. Esto valida el ciclo aislado del componente, no su integración a escenas.
+- La suite de audio con el entorno fijado en `Tools/Audio/requirements.txt` pasa 30/30 en `Logs/Coordinator-20261016-audio-suite.log`. Incluye tres pruebas nuevas de continuidad/reproducibilidad de ambientes, pero no valida su integración ni una escucha subjetiva.
+- No se ejecutaron builds Windows/WebGL, GitHub Actions ni publicación; no se modificó la ruta pública.
 
 ## Ejecución F01 — Referencia maestra artística (InProgress)
 
@@ -601,6 +653,16 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 - **Aplicación:** ejecución sin interfaz, procesos/pestañas ocultos o sandbox/escritorio aislado que no pueda aparecer en su pantalla; comprobar procesos secundarios, notificaciones y ventanas emergentes.
 - **Si no se puede aislar:** no abrir la herramienta en su escritorio; registrar el bloqueo y continuar con una alternativa o trabajo independiente, sin atribuirle una prueba.
 - **Resultado:** preferencia estricta guardada para futuras sesiones. Las asignaciones actuales usan worktrees separados y herramientas sin ventanas visibles; no se abre una ventana por el mero hecho de guardar o enseñar resultados.
+
+### Reafirmación — 16 de octubre de 2026
+
+**Reafirmación de Fran:** no debe ver ninguna ventana, pestaña, panel, diálogo, notificación ni previsualización salvo que necesite usar personalmente esa interfaz para tomar una decisión concreta en ese momento. **Que una ventana esté relacionada con el trabajo no basta; por defecto no se le muestra ninguna interfaz.** Cualquier otra UI se ejecuta sin interfaz o en un sandbox/escritorio verdaderamente aislado e inaccesible visualmente para él; solo se muestra la interfaz mínima mientras toma esa decisión. Enseñar, revisar o demostrar avances no justifica abrirla; dejarla minimizada, detrás de otra ventana o sin foco tampoco es aislamiento. La regla incluye coordinador, agentes, herramientas, aplicaciones y procesos auxiliares.
+
+Esta petición documental limita el alcance de la intervención. Los agentes de E03 y E07 se interrumpieron; no se inició Unity ni otra ejecución de juego para atenderla.
+
+**Alcance de esta reafirmación documental (16 de octubre de 2026):** se dejó explícito que el estado por defecto es no mostrar ninguna interfaz a Fran; toda ventana ajena a una decisión concreta que requiera su intervención debe ejecutarse sin UI o en un entorno verdaderamente aislado. No se ejecutaron Unity, tests ni builds, y esta actualización no verifica ni acepta ningún paquete técnico.
+
+La orden explícita posterior de Fran del 16 de octubre reanudó el desarrollo completo. El límite documental anterior ya no rige; el estado y las tareas retomadas se registran al inicio de este documento.
 
 ## Ficha que debe completar cada ejecución
 

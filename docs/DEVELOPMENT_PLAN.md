@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.7 — 14 de octubre de 2026.
+**Versión del documento:** 3.12 — 16 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -14,9 +14,9 @@ La organización de trabajo, el grafo explícito de las 111 tareas y los paquete
 
 La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajena a una decisión necesaria de Fran debe permanecer oculta o en un entorno aislado, conforme a [5.6](#56-ejecución-invisible-y-decisiones-de-fran). La versión 3.2 registra que Fran reanudó el objetivo completo el 14 de octubre. La versión 3.3 aclara que ninguna ventana auxiliar, notificación ni previsualización puede aparecerle: solo la interfaz mínima que requiera una decisión suya. La versión 3.4 actualiza la instrucción operativa y aclara que los recibos de idempotencia son metadatos técnicos: un rechazo no altera el estado de juego, aunque su recibo se guarde para responder igual tras restaurar.
 
-**Instrucción vigente (14 de octubre):** Fran autorizó retomar el desarrollo completo. E02.DATA y el núcleo transaccional E02.TXN están integrados; el siguiente paquete del coordinador es E02.ADAPTER, que debe conectar recetas, escritura durable y el recorrido demostrable. E06 está verificada técnicamente. F07 está verificada; F08 tiene una pista de taberna y otra de Patio validadas, con Custodio y efectos pendientes. El núcleo de reglas de Venator está integrado, pero E07 requiere conexión al motor, proyectiles/trampa y aceptación de clase. E04 y E08 tienen entregas Core parciales aún pendientes de integración y pruebas del coordinador. F01 permanece en curso hasta comprobar la escala exacta del Bellator. Continúa paquetes independientes con dependencias satisfechas, prioriza el hito jugable F10 y conserva las evidencias reales en [PROGRESS.md](PROGRESS.md); este plan por sí solo no acredita implementación.
+**Instrucción vigente (16 de octubre):** Fran volvió a ordenar el desarrollo completo. El coordinador reanuda desde el estado y las evidencias de [PROGRESS.md](PROGRESS.md), selecciona paquetes listos del grafo de [AGENT_EXECUTION.md](AGENT_EXECUTION.md) y prioriza el siguiente hito jugable F10. Una entrega de trabajador no cuenta como aceptación verificada; las decisiones de producto y la política estricta de visibilidad de [5.6](#56-ejecución-invisible-y-decisiones-de-fran) siguen vigentes.
 
-La versión 3.5 concreta el redondeo de las mejoras E06 para estadísticas enteras y fija compra en taberna, recibos transaccionales persistentes, escritura atómica, reintento idéntico tras fallo y aplicación solo a expediciones nuevas. La versión 3.6 reforzó la política de visibilidad en todos los niveles operativos. La versión 3.7 registra la nueva orden de Fran para retomar el desarrollo completo.
+La versión 3.5 concreta el redondeo de las mejoras E06 para estadísticas enteras y fija compra en taberna, recibos transaccionales persistentes, escritura atómica, reintento idéntico tras fallo y aplicación solo a expediciones nuevas. La versión 3.6 reforzó la política de visibilidad en todos los niveles operativos. La versión 3.7 registra la nueva orden de Fran para retomar el desarrollo completo. La versión 3.8 establece que solo se abre una interfaz si Fran necesita usarla para decidir; enseñar o demostrar avances nunca basta. La versión 3.9 registra que Fran reanudó el desarrollo completo el 16 de octubre. La versión 3.10 fija los datos de recorrido del proyectil básico de Báculo de ascua. La versión 3.11 registra la reafirmación de Fran: las ventanas que no requieran una decisión suya deben ejecutarse sin interfaz o en un entorno aislado que no pueda aparecer en su escritorio; dejarlas detrás, sin foco o minimizadas no cumple la regla. La versión 3.12 fija expresamente que ninguna interfaz se muestra por defecto y que solo puede mostrarse la interfaz mínima que Fran necesite para tomar una decisión concreta.
 
 ## Índice
 
@@ -638,6 +638,8 @@ El arma inicial de Bellator, Espada gastada, ataca cada 27 ticks (0,45 s). Cada 
 Durante el ataque se conserva el control horizontal al 65 % de la velocidad normal y se puede atacar en el aire. Una esquiva válida interrumpe el ataque actual y cierra su ventana para ticks futuros; los impactos del paso físico ya recogidos se resuelven antes de aceptar la esquiva. La recarga del arma no se borra al interrumpir el ataque. Si ataque y esquiva se pulsan en el mismo tick, solo se acepta la esquiva.
 
 Los ataques básicos de Venator y Magus no consumirán munición ni energía.
+
+El ataque básico de Báculo de ascua lanza un proyectil de fuego que causa 12 de daño, viaja a 10 unidades/s, caduca tras 180 ticks y puede impactar a un solo actor. Usa la envolvente de desplazamiento de Bola de fuego. Por sí solo no aplica quemadura; el pacto Ascua concede ese efecto.
 
 | Armadura | Defensa común | Modificador |
 |---|---:|---|
@@ -1287,15 +1289,15 @@ No se añade infraestructura de agentes, servicios de pago o un SDK de orquestac
 
 ### 5.6. Ejecución invisible y decisiones de Fran
 
-**Fran no debe ver ninguna ventana salvo cuando su intervención sea necesaria para tomar una decisión concreta.** La regla se aplica al coordinador y a todos los subagentes, a toda interfaz y ejecución interna, no solo a WebGL. Abarca también ventanas auxiliares, paneles de Codex/ChatGPT, pestañas, notificaciones, diálogos y previsualizaciones.
+**Regla de Fran, reafirmada el 16 de octubre de 2026:** Fran no debe ver **ninguna** ventana, pestaña, panel, diálogo, notificación ni previsualización salvo que necesite usar personalmente esa interfaz para tomar una decisión concreta en ese momento. **Que una ventana esté relacionada con el trabajo no basta; por defecto no se muestra ninguna interfaz.** Toda interfaz ajena a esa decisión se ejecuta sin UI o dentro de un sandbox/escritorio verdaderamente aislado e inaccesible visualmente para Fran; solo se muestra la interfaz mínima durante la decisión que necesite tomar. La mera utilidad de enseñar, revisar o demostrar trabajo no cuenta como necesidad. La regla se aplica al coordinador y a todos los subagentes, a toda interfaz y ejecución interna, no solo a WebGL. Abarca también ventanas auxiliares, paneles de Codex/ChatGPT, pestañas, notificaciones, diálogos, previsualizaciones, ventanas sin foco y ventanas detrás de otras.
 
-- Ejecutar tests, builds, servidores y herramientas sin interfaz visible. Navegadores/pestañas ocultos; Unity, juegos Windows y comprobaciones gráficas en procesos ocultos o en un sandbox/escritorio aislado que no pueda aparecer en la pantalla de Fran cuando necesiten renderizado.
-- No abrir, enfocar, traer al frente ni dejar visibles ventanas, terminales, Explorador, pestañas, paneles, diálogos o previsualizaciones para enseñar trabajo técnico. No navegar las pestañas de Fran. Comprobar ventanas emergentes y procesos secundarios. Minimizar o dejar una ventana detrás de otra no equivale a aislamiento.
+- Ejecutar tests, builds, servidores y herramientas sin interfaz visible. Los navegadores y sus pestañas deben permanecer fuera de las ventanas de Fran; Unity, juegos Windows y comprobaciones gráficas deben usar procesos realmente ocultos o un sandbox/escritorio aislado que no pueda aparecer en su pantalla cuando necesiten renderizado.
+- No abrir, enfocar, traer al frente ni dejar visibles ventanas, terminales, Explorador, pestañas, paneles, diálogos o previsualizaciones en el escritorio de Fran para enseñar trabajo técnico. No navegar las pestañas de Fran. Comprobar ventanas emergentes y procesos secundarios. Minimizar, quitar foco o dejar una ventana detrás de otra no equivale a aislamiento.
 - Guardar capturas, resultados, audio y documentos como evidencia; comunicar el resultado brevemente sin abrir previsualizaciones automáticamente.
-- Solo mostrar la interfaz mínima que Fran deba usar para una decisión concreta, y solo mientras la toma. Una autorización o una de las cinco revisiones acordadas justifica mostrarla únicamente si requiere esa decisión. Una prueba técnica rutinaria no requiere su presencia.
+- Solo mostrar la interfaz mínima que Fran deba usar para una decisión concreta, y solo mientras la toma; ocultarla al terminar. Una autorización o una de las cinco revisiones acordadas justifica mostrarla únicamente si requiere esa decisión. Una prueba técnica rutinaria no requiere su presencia.
 - Si la herramienta no puede funcionar sin ventanas visibles ni en un entorno aislado, no ejecutarla en el escritorio de Fran. Registrar el bloqueo concreto y usar una alternativa o continuar con trabajo independiente; no presentar una prueba no ejecutada como aprobada.
 
-Las revisiones de Fran mantienen sus criterios y builds; no se abren demostraciones por adelantado ni ventanas auxiliares sin una decisión que necesite tomar.
+Las revisiones de Fran mantienen sus criterios y builds; no se abren demostraciones por adelantado ni ventanas auxiliares sin una decisión que necesite tomar. No abrir una ventana en su escritorio para luego minimizarla, quitarle el foco o dejarla detrás de otra: ninguna de esas acciones constituye aislamiento. Si no se puede garantizar que la interfaz permanezca fuera de su vista, no se lanza.
 
 ### A. Conservación, entorno y herramientas
 

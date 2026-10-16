@@ -255,7 +255,7 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [Test]
-        public void ContentVersionOneProfileMigratesPurchaseLedgerWithoutDiscardingRenownOrUpgrades()
+        public void ContentVersionOneProfileMigratesRenownAndUpgradesWithoutInventingPurchaseReceipts()
         {
             Directory.CreateDirectory(_directory);
             FileSaveStore store = NewFileStore();
@@ -509,7 +509,7 @@ namespace Luckbound.Tests.PlayMode
             public string checksum;
             public LegacyProfileDataV1 profile;
             public bool hasActiveExpedition;
-            public ExpeditionSaveData activeExpedition;
+            public LegacyExpeditionSaveDataV2 activeExpedition;
         }
 
         [Serializable]
@@ -526,6 +526,38 @@ namespace Luckbound.Tests.PlayMode
             public string[] readStoryFragmentIds;
             public ContractCounterSaveData[] contractCounters;
             public string[] processedSettlementRunIds;
+        }
+
+        [Serializable]
+        private sealed class LegacyExpeditionSaveDataV2
+        {
+            public string runId;
+            public uint seed;
+            public int generationVersion;
+            public int contentVersion;
+            public string classId;
+            public string raceId;
+            public string[] selectedSkillIds = Array.Empty<string>();
+            public string[] startingEquipmentInstanceIds = Array.Empty<string>();
+            public string routeSnapshotJson;
+            public string currentNodeId;
+            public string[] visitedNodeIds = Array.Empty<string>();
+            public string[] completedRoomIds = Array.Empty<string>();
+            public ExpeditionRoomCompletionSaveData[] completedRoomResults = Array.Empty<ExpeditionRoomCompletionSaveData>();
+            public string roomEntryCheckpointJson;
+            public string inventorySnapshotJson;
+            public int maximumHealth = 100;
+            public int currentHealth = 100;
+            public int maximumEnergy = 50;
+            public int currentEnergy = 50;
+            public int healthPotionCharges = 2;
+            public int accumulatedRenown;
+            public string[] pactIds = Array.Empty<string>();
+            public int fortunaCharges;
+            public string[] pendingOfferIds = Array.Empty<string>();
+            public int[] offerRerollCounts = Array.Empty<int>();
+            public string[] collectedItemIds = Array.Empty<string>();
+            public string[] claimedRewardIds = Array.Empty<string>();
         }
 
         private sealed class FailOnceSaveStore : ISaveStore

@@ -8,12 +8,14 @@ namespace Luckbound.Core.Combat
             bool isAttacking,
             decimal baseDamage,
             string projectileElement,
+            ProjectileDefinition projectile,
             decimal movementSpeedMultiplier)
         {
             WasStartedThisTick = wasStartedThisTick;
             IsAttacking = isAttacking;
             BaseDamage = baseDamage;
             ProjectileElement = projectileElement ?? string.Empty;
+            Projectile = projectile;
             MovementSpeedMultiplier = movementSpeedMultiplier;
         }
 
@@ -26,6 +28,8 @@ namespace Luckbound.Core.Combat
 
         /// <summary>Element of the basic projectile to spawn when WasStartedThisTick is true.</summary>
         public string ProjectileElement { get; }
+
+        public ProjectileDefinition Projectile { get; }
 
         public decimal MovementSpeedMultiplier { get; }
     }

@@ -7,17 +7,24 @@ namespace Luckbound.Core.Combat
 
         private MagusBasicAttackProfile()
         {
+            Projectile = new ProjectileDefinition(
+                baseDamage: 12m,
+                speedUnitsPerSecond: 10m,
+                lifetimeTicks: 180,
+                maximumTargets: 1);
         }
 
         public const string WeaponId = "weapon.magus.ember_staff";
 
-        public decimal BaseDamage => 12m;
+        public ProjectileDefinition Projectile { get; }
+
+        public decimal BaseDamage => Projectile.BaseDamage;
 
         public int AttackIntervalTicks => 30;
 
         public decimal MovementSpeedMultiplier => 0.65m;
 
-        /// <summary>The weapon fires a fire projectile; travel parameters belong to Gameplay weapon data.</summary>
+        /// <summary>The weapon fires a single-target fire projectile using the fixed weapon profile.</summary>
         public string ProjectileElement => "fire";
     }
 }

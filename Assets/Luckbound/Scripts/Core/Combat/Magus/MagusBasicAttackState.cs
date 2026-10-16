@@ -43,6 +43,7 @@ namespace Luckbound.Core.Combat
                 isAttacking: active,
                 baseDamage: startedThisTick ? _profile.BaseDamage : 0m,
                 projectileElement: startedThisTick ? _profile.ProjectileElement : string.Empty,
+                projectile: startedThisTick ? _profile.Projectile : null,
                 movementSpeedMultiplier: active ? _profile.MovementSpeedMultiplier : 1m);
         }
     }

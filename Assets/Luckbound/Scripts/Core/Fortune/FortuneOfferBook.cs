@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Luckbound.Core.Identifiers;
 using Luckbound.Core.Randomness;
 
 namespace Luckbound.Core.Fortune
@@ -13,7 +14,8 @@ namespace Luckbound.Core.Fortune
     /// </summary>
     public sealed class FortuneOfferBook
     {
-        public const int SnapshotVersion = 1;
+        public const int SnapshotVersion = 2;
+        private const int LegacySnapshotVersion = 1;
         public const int MaximumCharges = 3;
         public const string HumanRaceId = "race.human";
         private const string OfferRandomDomain = "fortune.offers";
@@ -22,6 +24,8 @@ namespace Luckbound.Core.Fortune
 
         private readonly Dictionary<string, OfferRecord> _offers = new Dictionary<string, OfferRecord>(StringComparer.Ordinal);
         private readonly HashSet<string> _processedGuardianIds = new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, FortuneRerollReceiptSnapshot> _rerollReceipts =
+            new Dictionary<string, FortuneRerollReceiptSnapshot>(StringComparer.Ordinal);
 
         public FortuneOfferBook(int generationVersion, uint seed, string raceId)
             : this(generationVersion, seed, raceId, InitialChargesForRace(raceId))
@@ -94,6 +98,12 @@ namespace Luckbound.Core.Fortune
             return offerId != null && _offers.TryGetValue(offerId, out OfferRecord record) ? ToView(record) : null;
         }
 
+        public IReadOnlyList<FortuneOffer> GetOffers()
+        {
+            return Array.AsReadOnly(_offers.Values.OrderBy(record => record.OfferId, StringComparer.Ordinal)
+                .Select(ToView).ToArray());
+        }
+
         public FortuneRerollAvailability GetRerollAvailability(string offerId)
         {
             if (offerId == null || !_offers.TryGetValue(offerId, out OfferRecord record))
@@ -123,6 +133,36 @@ namespace Luckbound.Core.Fortune
             CurrentCharges--;
             record.History.Add(options);
             return new FortuneRerollResult(FortuneOperationStatus.Succeeded, ToView(record), CurrentCharges);
+        }
+
+        /// <summary>
+        /// Repeats an offer with a durable transaction receipt. Replaying the same transaction and
+        /// offer returns the original result without spending another charge; reusing its ID for a
+        /// different offer is a conflict. Rejections are also recorded so they remain stable after
+        /// later grants or reloads.
+        /// </summary>
+        public FortuneRerollResult Reroll(string offerId, TransactionId transactionId)
+        {
+            if (!transactionId.IsValid)
+                return new FortuneRerollResult(FortuneOperationStatus.RejectedInvalidRequest,
+                    offerId == null ? null : GetOffer(offerId), CurrentCharges);
+
+            string transactionKey = transactionId.ToString();
+            string requestedOfferId = offerId ?? string.Empty;
+            if (_rerollReceipts.TryGetValue(transactionKey, out FortuneRerollReceiptSnapshot existing))
+            {
+                if (!string.Equals(existing.offerId, requestedOfferId, StringComparison.Ordinal))
+                    return new FortuneRerollResult(FortuneOperationStatus.RejectedConflict,
+                        offerId == null ? null : GetOffer(offerId), CurrentCharges);
+                FortuneOperationStatus replayStatus = (FortuneOperationStatus)existing.status == FortuneOperationStatus.Succeeded
+                    ? FortuneOperationStatus.AlreadyApplied
+                    : (FortuneOperationStatus)existing.status;
+                return new FortuneRerollResult(replayStatus, OfferFromReceipt(existing), existing.remainingCharges);
+            }
+
+            FortuneRerollResult result = Reroll(offerId);
+            _rerollReceipts.Add(transactionKey, CreateReceipt(transactionKey, requestedOfferId, result));
+            return result;
         }
 
         public FortuneChoiceResult Choose(string offerId, string optionId)
@@ -184,17 +224,20 @@ namespace Luckbound.Core.Fortune
                 charges = CurrentCharges,
                 offers = _offers.Values.OrderBy(record => record.OfferId, StringComparer.Ordinal)
                     .Select(CreateSnapshot).ToArray(),
-                processedGuardianIds = _processedGuardianIds.OrderBy(id => id, StringComparer.Ordinal).ToArray()
+                processedGuardianIds = _processedGuardianIds.OrderBy(id => id, StringComparer.Ordinal).ToArray(),
+                rerollReceipts = _rerollReceipts.Values.OrderBy(receipt => receipt.transactionId, StringComparer.Ordinal)
+                    .Select(CloneReceipt).ToArray()
             };
         }
 
         public static FortuneOfferBook Restore(FortuneOfferBookSnapshot snapshot)
         {
             if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
-            if (snapshot.snapshotVersion != SnapshotVersion)
+            if (snapshot.snapshotVersion != SnapshotVersion && snapshot.snapshotVersion != LegacySnapshotVersion)
                 throw new FormatException("Fortune offer snapshot version is unsupported.");
             if (snapshot.generationVersion <= 0 || snapshot.seed == 0u || string.IsNullOrWhiteSpace(snapshot.raceId) ||
-                snapshot.charges < 0 || snapshot.charges > MaximumCharges || snapshot.offers == null || snapshot.processedGuardianIds == null)
+                snapshot.charges < 0 || snapshot.charges > MaximumCharges || snapshot.offers == null || snapshot.processedGuardianIds == null ||
+                (snapshot.snapshotVersion == SnapshotVersion && snapshot.rerollReceipts == null))
                 throw new FormatException("Fortune offer snapshot has invalid root state.");
 
             var restored = new FortuneOfferBook(snapshot.generationVersion, snapshot.seed, snapshot.raceId, snapshot.charges);
@@ -240,7 +283,95 @@ namespace Luckbound.Core.Fortune
                 restored._offers.Add(record.OfferId, record);
             }
 
+            FortuneRerollReceiptSnapshot[] receipts = snapshot.rerollReceipts ?? Array.Empty<FortuneRerollReceiptSnapshot>();
+            foreach (FortuneRerollReceiptSnapshot receipt in receipts)
+            {
+                if (!IsValidReceipt(receipt))
+                    throw new FormatException("Fortune snapshot contains an invalid reroll receipt.");
+                if (receipt.hasOffer && !restored._offers.ContainsKey(receipt.offerId))
+                    throw new FormatException("Fortune reroll receipt refers to an unknown offer.");
+                if (restored._rerollReceipts.ContainsKey(receipt.transactionId))
+                    throw new FormatException("Fortune snapshot repeats a reroll transaction ID.");
+                restored._rerollReceipts.Add(receipt.transactionId, CloneReceipt(receipt));
+            }
+
             return restored;
+        }
+
+        private static FortuneRerollReceiptSnapshot CreateReceipt(string transactionId, string offerId,
+            FortuneRerollResult result)
+        {
+            FortuneOffer offer = result.Offer;
+            return new FortuneRerollReceiptSnapshot
+            {
+                transactionId = transactionId,
+                offerId = offerId,
+                status = (int)result.Status,
+                contextId = offer == null ? string.Empty : offer.ContextId,
+                optionIds = offer == null ? Array.Empty<string>() : offer.OptionIds.ToArray(),
+                selectedOptionId = offer == null ? string.Empty : offer.SelectedOptionId,
+                rerollCount = offer == null ? 0 : offer.RerollCount,
+                claimed = offer != null && offer.IsClaimed,
+                remainingCharges = result.RemainingCharges,
+                hasOffer = offer != null
+            };
+        }
+
+        private static FortuneOffer OfferFromReceipt(FortuneRerollReceiptSnapshot receipt)
+        {
+            return receipt.hasOffer
+                ? new FortuneOffer(receipt.offerId, receipt.contextId, receipt.optionIds,
+                    receipt.selectedOptionId, receipt.rerollCount, receipt.claimed)
+                : null;
+        }
+
+        private static FortuneRerollReceiptSnapshot CloneReceipt(FortuneRerollReceiptSnapshot source)
+        {
+            return new FortuneRerollReceiptSnapshot
+            {
+                transactionId = source.transactionId,
+                offerId = source.offerId,
+                status = source.status,
+                contextId = source.contextId,
+                optionIds = source.optionIds == null ? null : (string[])source.optionIds.Clone(),
+                selectedOptionId = source.selectedOptionId,
+                rerollCount = source.rerollCount,
+                claimed = source.claimed,
+                remainingCharges = source.remainingCharges,
+                hasOffer = source.hasOffer
+            };
+        }
+
+        private static bool IsValidReceipt(FortuneRerollReceiptSnapshot receipt)
+        {
+            if (receipt == null || !TransactionId.TryParse(receipt.transactionId, out TransactionId parsedId) ||
+                !string.Equals(parsedId.ToString(), receipt.transactionId, StringComparison.Ordinal) || receipt.offerId == null ||
+                receipt.remainingCharges < 0 || receipt.remainingCharges > MaximumCharges || receipt.rerollCount < 0 ||
+                !Enum.IsDefined(typeof(FortuneOperationStatus), receipt.status))
+                return false;
+
+            FortuneOperationStatus status = (FortuneOperationStatus)receipt.status;
+            if (status == FortuneOperationStatus.AlreadyApplied || status == FortuneOperationStatus.RejectedInvalidRequest ||
+                status == FortuneOperationStatus.RejectedAtCapacity || status == FortuneOperationStatus.RejectedInvalidChoice ||
+                status == FortuneOperationStatus.RejectedNoChoice)
+                return false;
+            if (!receipt.hasOffer)
+                return status == FortuneOperationStatus.RejectedUnknownOffer && receipt.optionIds != null && receipt.optionIds.Length == 0;
+            if (status != FortuneOperationStatus.Succeeded && status != FortuneOperationStatus.RejectedInsufficientOptions &&
+                status != FortuneOperationStatus.RejectedNoCharges && status != FortuneOperationStatus.RejectedConflict)
+                return false;
+            if (string.IsNullOrWhiteSpace(receipt.offerId) || string.IsNullOrWhiteSpace(receipt.contextId) ||
+                receipt.optionIds == null || receipt.optionIds.Length != 3 ||
+                receipt.optionIds.Any(string.IsNullOrWhiteSpace) ||
+                receipt.optionIds.Distinct(StringComparer.Ordinal).Count() != 3 ||
+                receipt.remainingCharges < 0 || receipt.remainingCharges > MaximumCharges ||
+                (!string.IsNullOrEmpty(receipt.selectedOptionId) &&
+                    !receipt.optionIds.Contains(receipt.selectedOptionId, StringComparer.Ordinal)) ||
+                (receipt.claimed && string.IsNullOrEmpty(receipt.selectedOptionId)) ||
+                (status == FortuneOperationStatus.Succeeded && receipt.rerollCount == 0) ||
+                (status == FortuneOperationStatus.RejectedConflict && string.IsNullOrEmpty(receipt.selectedOptionId)))
+                return false;
+            return true;
         }
 
         private bool TryBuildRerollOptions(OfferRecord record, out string[] options)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Luckbound.Content;
 using Luckbound.Core.Crafting;
+using Luckbound.Core.Economy;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
@@ -19,7 +21,7 @@ namespace Luckbound.App
     /// Owns the application lifetime and routes a fresh launch to the main menu.
     /// </summary>
     [DefaultExecutionOrder(-1000)]
-    public sealed class ApplicationBootstrapper : MonoBehaviour
+    public sealed partial class ApplicationBootstrapper : MonoBehaviour
     {
         private static ApplicationBootstrapper _instance;
         private ExpeditionSettlementLedger _settlementLedger = new ExpeditionSettlementLedger();
@@ -29,6 +31,7 @@ namespace Luckbound.App
         private PendingSettlement _pendingSettlement;
         private PendingPermanentUpgradePurchase _pendingPermanentUpgradePurchase;
         private PendingCraft _pendingCraft;
+        private PendingEconomyMutation _pendingEconomyMutation;
         private readonly SemaphoreSlim _profileMutationGate = new SemaphoreSlim(1, 1);
         private ExpeditionSaveData _activeExpedition;
         private long _activeExpeditionRevision;
@@ -56,10 +59,17 @@ namespace Luckbound.App
         public bool HasPendingSettlement => _pendingSettlement != null;
         public bool HasPendingPermanentUpgradePurchase => _pendingPermanentUpgradePurchase != null;
         public bool HasPendingCraftingWrite => _pendingCraft != null;
+        public bool HasPendingEconomyMutation => _pendingEconomyMutation != null;
+        public string PendingEconomyOperationKey => _pendingEconomyMutation == null
+            ? string.Empty
+            : _pendingEconomyMutation.OperationKey;
         public PermanentUpgradeKind? PendingPermanentUpgradeKind => _pendingPermanentUpgradePurchase == null
             ? (PermanentUpgradeKind?)null
             : _pendingPermanentUpgradePurchase.Purchase.Kind;
         public bool HasActiveExpedition => _activeExpedition != null;
+        public RoomInstanceId ActiveRoomInstanceId => ActiveRun == null || _activeExpedition == null
+            ? default
+            : ExpeditionRoomIdentity.ForNode(ActiveRun.RunId, _activeExpedition.currentNodeId);
         public bool HasPendingExpeditionWrite => _pendingExpeditionCandidate != null;
         public bool CanStartNewExpedition => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
             !HasPendingSettlement && !HasPendingPermanentUpgradePurchase && !HasPendingExpeditionWrite && !HasActiveExpedition;
@@ -292,6 +302,9 @@ namespace Luckbound.App
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (_pendingEconomyMutation != null)
+                    return new SaveWriteResult(false,
+                        "Retry the exact pending merchant or rest-stop operation through its original action.");
                 return await RetryPendingExpeditionWriteUnderGateAsync();
             }
             finally { _profileMutationGate.Release(); }
@@ -366,6 +379,205 @@ namespace Luckbound.App
             SaveWriteResult save = await RetryPendingExpeditionWriteUnderGateAsync();
             return new CraftingCommitResult(pending.Outcome, persisted: save.Succeeded,
                 pending: !save.Succeeded && HasPendingExpeditionWrite, save.Message);
+        }
+
+        public MerchantStockSnapshot GetActiveMerchantStock()
+        {
+            // A failed write blocks new mutations, but the last committed expedition remains
+            // the authoritative read model while the exact pending operation awaits retry.
+            if (ActiveRun == null || _activeExpedition == null || !string.IsNullOrEmpty(_activeExpeditionLoadError))
+                return null;
+            return ActiveRun.Inventory.GetMerchantStock(ActiveRun.RunId, ActiveRoomInstanceId);
+        }
+
+        /// <summary>Persists fixed stock and the one-time entry recovery as one room-entry mutation.</summary>
+        public Task<ExpeditionMutationCommitResult<RestStopEntryCommitData>> EnterRestStopAsync(RoomInstanceId roomInstanceId)
+        {
+            string operationKey = "rest.enter|" + roomInstanceId;
+            return ExecuteEconomyMutationAsync(operationKey, roomInstanceId, requiresRestStop: true,
+                (run, inventory, candidateSave) =>
+                {
+                    MerchantStockSnapshot stock = MerchantService.EnsureStock(inventory, run.RunId, roomInstanceId);
+                    RestStopOutcome rest = RestStopService.Enter(inventory, roomInstanceId,
+                        candidateSave.currentHealth, candidateSave.maximumHealth);
+                    candidateSave.currentHealth = rest.HealthAfter;
+                    return new RestStopEntryCommitData(rest, stock);
+                });
+        }
+
+        public Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> PurchaseFromMerchantAsync(
+            RoomInstanceId roomInstanceId, string itemId, int quantity, int discountPercent, TransactionId transactionId)
+        {
+            string operationKey = string.Join("|", "merchant.buy", roomInstanceId, transactionId,
+                itemId ?? string.Empty, quantity.ToString(CultureInfo.InvariantCulture),
+                discountPercent.ToString(CultureInfo.InvariantCulture));
+            return ExecuteEconomyMutationAsync(operationKey, roomInstanceId, requiresRestStop: true,
+                (run, inventory, _) => MerchantService.TryPurchase(inventory, run.RunId, roomInstanceId,
+                    itemId, quantity, discountPercent, transactionId));
+        }
+
+        public Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> SellItemToMerchantAsync(
+            RoomInstanceId roomInstanceId, ItemInstanceId itemInstanceId, int quantity, TransactionId transactionId)
+        {
+            string operationKey = string.Join("|", "merchant.sell-item", roomInstanceId, transactionId,
+                itemInstanceId, quantity.ToString(CultureInfo.InvariantCulture));
+            return ExecuteEconomyMutationAsync(operationKey, roomInstanceId, requiresRestStop: true,
+                (run, inventory, _) => MerchantService.TrySellItem(inventory, run.RunId, roomInstanceId,
+                    itemInstanceId, quantity, transactionId));
+        }
+
+        public Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> SellMaterialToMerchantAsync(
+            RoomInstanceId roomInstanceId, MaterialKind materialKind, int quantity, TransactionId transactionId)
+        {
+            string operationKey = string.Join("|", "merchant.sell-material", roomInstanceId, transactionId,
+                materialKind, quantity.ToString(CultureInfo.InvariantCulture));
+            return ExecuteEconomyMutationAsync(operationKey, roomInstanceId, requiresRestStop: true,
+                (run, inventory, _) => MerchantService.TrySellMaterial(inventory, run.RunId, roomInstanceId,
+                    materialKind, quantity, transactionId));
+        }
+
+        public Task<ExpeditionMutationCommitResult<SmithingOutcome>> UpgradeEquipmentAsync(
+            RoomInstanceId roomInstanceId, string recipeId, ItemInstanceId targetInstanceId, TransactionId transactionId)
+        {
+            string operationKey = string.Join("|", "smith.upgrade", roomInstanceId, transactionId,
+                recipeId ?? string.Empty, targetInstanceId);
+            return ExecuteEconomyMutationAsync(operationKey, roomInstanceId, requiresRestStop: true,
+                (run, inventory, _) => SmithingService.TryUpgrade(inventory,
+                    LoadRecipeCatalog(run), recipeId, targetInstanceId, transactionId));
+        }
+
+        public Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> UseTaliaAsync(
+            RoomInstanceId roomInstanceId, TransactionId transactionId)
+        {
+            string operationKey = string.Join("|", "rest.talia", roomInstanceId, transactionId);
+            return ExecuteEconomyMutationAsync(operationKey, roomInstanceId, requiresRestStop: true,
+                (run, inventory, candidateSave) =>
+                {
+                    EconomyTransactionOutcome outcome = RestStopService.TryUseTalia(inventory, roomInstanceId,
+                        candidateSave.currentHealth, candidateSave.maximumHealth, transactionId);
+                    if (outcome.ResultingHealth >= 0) candidateSave.currentHealth = outcome.ResultingHealth;
+                    return outcome;
+                });
+        }
+
+        /// <summary>Retries only the exact pending economy operation and returns its original result.</summary>
+        public async Task<ExpeditionMutationCommitResult<T>> RetryPendingEconomyMutationAsync<T>(string operationKey)
+        {
+            await _profileMutationGate.WaitAsync();
+            try
+            {
+                if (_pendingEconomyMutation == null)
+                    return new ExpeditionMutationCommitResult<T>(default, false, false,
+                        "There is no pending economy mutation.");
+                if (!string.Equals(_pendingEconomyMutation.OperationKey, operationKey, StringComparison.Ordinal))
+                    return new ExpeditionMutationCommitResult<T>(default, false, true,
+                        "A different economy operation is waiting for its exact save retry.");
+                if (!(_pendingEconomyMutation.Outcome is T outcome))
+                    return new ExpeditionMutationCommitResult<T>(default, false, true,
+                        "The pending economy operation has a different result type.");
+
+                if (_pendingExpeditionCandidate == null)
+                {
+                    _pendingEconomyMutation = null;
+                    return new ExpeditionMutationCommitResult<T>(outcome, true, false,
+                        "The economy operation was already durably committed.");
+                }
+
+                SaveWriteResult save = await RetryPendingExpeditionWriteUnderGateAsync();
+                if (!save.Succeeded)
+                    return new ExpeditionMutationCommitResult<T>(outcome, false, HasPendingExpeditionWrite, save.Message);
+
+                _pendingEconomyMutation = null;
+                return new ExpeditionMutationCommitResult<T>(outcome, true, false, save.Message);
+            }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        private async Task<ExpeditionMutationCommitResult<T>> ExecuteEconomyMutationAsync<T>(
+            string operationKey,
+            RoomInstanceId roomInstanceId,
+            bool requiresRestStop,
+            Func<ExpeditionRunConfiguration, ExpeditionInventory, ExpeditionSaveData, T> mutation)
+        {
+            await _profileMutationGate.WaitAsync();
+            try
+            {
+                if (_pendingEconomyMutation != null)
+                {
+                    if (!string.Equals(_pendingEconomyMutation.OperationKey, operationKey, StringComparison.Ordinal))
+                        return new ExpeditionMutationCommitResult<T>(default, false, true,
+                            "A different economy operation is waiting for its exact save retry.");
+                    if (!(_pendingEconomyMutation.Outcome is T pendingOutcome))
+                        return new ExpeditionMutationCommitResult<T>(default, false, true,
+                            "The pending economy operation has a different result type.");
+                    return await RetryPendingEconomyMutationUnderGateAsync(pendingOutcome);
+                }
+                if (HasPendingExpeditionWrite)
+                    return new ExpeditionMutationCommitResult<T>(default, false, true,
+                        "Retry the pending expedition write before starting an economy operation.");
+                if (!CanContinueExpedition || ActiveRun == null || _activeExpedition == null)
+                    return new ExpeditionMutationCommitResult<T>(default, false, false,
+                        "There is no safely resumable active expedition for this operation.");
+                if (!roomInstanceId.IsValid || roomInstanceId != ActiveRoomInstanceId)
+                    return new ExpeditionMutationCommitResult<T>(default, false, false,
+                        "The operation does not belong to the current room instance.");
+                if (requiresRestStop && !IsCurrentRoomRestStop())
+                    return new ExpeditionMutationCommitResult<T>(default, false, false,
+                        "Merchant and rest-stop services are only available in a rest room.");
+
+                ExpeditionInventory candidateInventory = ExpeditionInventory.Restore(
+                    ActiveRun.Inventory.Catalog, ActiveRun.Inventory.CreateSnapshot());
+                ExpeditionSaveData candidateSave = _activeExpedition.Clone();
+                T outcome = mutation(ActiveRun, candidateInventory, candidateSave);
+                candidateSave.inventorySnapshotJson = JsonUtility.ToJson(candidateInventory.CreateSnapshot());
+                InventoryItemStack quickConsumable = candidateInventory.QuickConsumable;
+                candidateSave.healthPotionCharges = quickConsumable == null ? 0 : quickConsumable.Quantity;
+                ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);
+
+                if (string.Equals(candidateSave.inventorySnapshotJson, _activeExpedition.inventorySnapshotJson, StringComparison.Ordinal) &&
+                    candidateSave.currentHealth == _activeExpedition.currentHealth)
+                    return new ExpeditionMutationCommitResult<T>(outcome, true, false,
+                        "The operation was already represented by the saved expedition state.");
+
+                SaveWriteResult save = await SaveExpeditionCandidateUnderGateAsync(
+                    candidateSave, _activeExpeditionRevision, candidateRun);
+                if (save.Succeeded)
+                    return new ExpeditionMutationCommitResult<T>(outcome, true, false, save.Message);
+                if (HasPendingExpeditionWrite)
+                {
+                    _pendingEconomyMutation = new PendingEconomyMutation(operationKey, outcome);
+                    return new ExpeditionMutationCommitResult<T>(outcome, false, true, save.Message);
+                }
+                return new ExpeditionMutationCommitResult<T>(outcome, false, false, save.Message);
+            }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        private async Task<ExpeditionMutationCommitResult<T>> RetryPendingEconomyMutationUnderGateAsync<T>(T outcome)
+        {
+            if (_pendingExpeditionCandidate == null)
+            {
+                _pendingEconomyMutation = null;
+                return new ExpeditionMutationCommitResult<T>(outcome, true, false,
+                    "The economy operation was already durably committed.");
+            }
+            SaveWriteResult save = await RetryPendingExpeditionWriteUnderGateAsync();
+            if (save.Succeeded) _pendingEconomyMutation = null;
+            return new ExpeditionMutationCommitResult<T>(outcome, save.Succeeded,
+                !save.Succeeded && HasPendingExpeditionWrite, save.Message);
+        }
+
+        private bool IsCurrentRoomRestStop()
+        {
+            ExpeditionRouteNode node = ActiveRun.Route.Nodes.SingleOrDefault(candidate =>
+                string.Equals(candidate.NodeId, _activeExpedition.currentNodeId, StringComparison.Ordinal));
+            return node != null && node.Kind == ExpeditionRouteNodeKind.Rest;
+        }
+
+        private static RecipeCatalog LoadRecipeCatalog(ExpeditionRunConfiguration run)
+        {
+            if (run == null) throw new ArgumentNullException(nameof(run));
+            return RecipeCatalogJsonLoader.Load(LoadRequired("Luckbound/Data/Items/Recipes").text, run.Inventory.Catalog);
         }
 
         private async Task<SaveWriteResult> RetryPendingExpeditionWriteUnderGateAsync()
@@ -710,6 +922,18 @@ namespace Luckbound.App
             public TransactionId TransactionId { get; }
             public ItemInstanceId UpgradeTargetInstanceId { get; }
             public CraftingOutcome Outcome { get; }
+        }
+
+        private sealed class PendingEconomyMutation
+        {
+            public PendingEconomyMutation(string operationKey, object outcome)
+            {
+                OperationKey = operationKey ?? throw new ArgumentNullException(nameof(operationKey));
+                Outcome = outcome ?? throw new ArgumentNullException(nameof(outcome));
+            }
+
+            public string OperationKey { get; }
+            public object Outcome { get; }
         }
     }
 }

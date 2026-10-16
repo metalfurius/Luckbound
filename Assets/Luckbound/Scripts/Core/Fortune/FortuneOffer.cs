@@ -77,7 +77,7 @@ namespace Luckbound.Core.Fortune
         public FortuneOperationStatus Status { get; }
         public FortuneOffer Offer { get; }
         public int RemainingCharges { get; }
-        public bool Succeeded => Status == FortuneOperationStatus.Succeeded;
+        public bool Succeeded => Status == FortuneOperationStatus.Succeeded || Status == FortuneOperationStatus.AlreadyApplied;
     }
 
     public sealed class FortuneChoiceResult

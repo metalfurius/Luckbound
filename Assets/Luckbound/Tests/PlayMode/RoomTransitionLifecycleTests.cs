@@ -35,6 +35,7 @@ namespace Luckbound.Tests.PlayMode
 
                 var signalBus = new RoomSignalBus();
                 var roomActivity = new List<RoomActivity>();
+                RunId expeditionRunId = RunId.New();
                 GameObject transitionHost = new GameObject("D03TransitionHost");
                 ExpeditionRoomTransitionController controller = transitionHost.AddComponent<ExpeditionRoomTransitionController>();
                 GameObject sessionPlayer = new GameObject("SessionPlayer");
@@ -50,10 +51,16 @@ namespace Luckbound.Tests.PlayMode
                     scope.StartOwnedCoroutine(CountFrames(activity));
                 };
 
-                controller.Initialize(route, templateId =>
+                controller.Initialize(expeditionRunId, route, templateId =>
                     templatePrefabs.TryGetValue(templateId, out GameObject prefab) ? prefab : null, sessionPlayer.transform);
+                bool initialRoomIdentityIsStable = controller.CurrentRoomId ==
+                    ExpeditionRoomIdentity.ForNode(expeditionRunId, controller.CurrentNodeId);
+                bool transitionChecksPassed = initialRoomIdentityIsStable;
+                evidence.RecordAssertion("A room ID is derived from the persisted expedition and route node",
+                    initialRoomIdentityIsStable, ExpeditionRoomIdentity.ForNode(expeditionRunId, controller.CurrentNodeId).ToString(),
+                    controller.CurrentRoomId.ToString());
 
-                bool transitionChecksPassed = controller.ActiveRoomCount == 1 && signalBus.SubscriberCount == 1 &&
+                transitionChecksPassed &= controller.ActiveRoomCount == 1 && signalBus.SubscriberCount == 1 &&
                     controller.ActiveScope.OwnedActorCount == 1 && controller.ActiveScope.OwnedResourceCount == 1 &&
                     controller.ActiveScope.ActiveCoroutineCount == 1;
                 evidence.RecordAssertion("The first route node has one active room owner", transitionChecksPassed,
@@ -145,6 +152,21 @@ namespace Luckbound.Tests.PlayMode
                     finalRoomDisposed, "0 active rooms/listeners; session player remains active",
                     "rooms=" + controller.ActiveRoomCount + "; listeners=" + signalBus.SubscriberCount +
                     "; sessionPlayer=" + sessionPlayer.activeInHierarchy);
+
+                GameObject restoredTransitionHost = new GameObject("D03RestoredTransitionHost");
+                ExpeditionRoomTransitionController restoredController =
+                    restoredTransitionHost.AddComponent<ExpeditionRoomTransitionController>();
+                restoredController.Initialize(expeditionRunId, route, templateId =>
+                    templatePrefabs.TryGetValue(templateId, out GameObject prefab) ? prefab : null,
+                    sessionPlayer.transform, route.MandatoryNodeIds);
+                bool restoredRoomKeepsIdentity = restoredController.CurrentNodeId == "final.boss" &&
+                    restoredController.CurrentRoomId == finalRoomId;
+                transitionChecksPassed &= restoredRoomKeepsIdentity;
+                evidence.RecordAssertion("Restoring the same expedition at the same node reuses its room identity",
+                    restoredRoomKeepsIdentity, "final.boss / " + finalRoomId,
+                    restoredController.CurrentNodeId + " / " + restoredController.CurrentRoomId);
+                restoredController.Dispose();
+                UnityEngine.Object.Destroy(restoredTransitionHost);
                 evidence.Complete();
 
                 Assert.That(transitionsCompleted, Is.EqualTo(20));
@@ -167,7 +189,8 @@ namespace Luckbound.Tests.PlayMode
             var host = new GameObject("D03FailedTransitionHost");
             ExpeditionRoomTransitionController controller = host.AddComponent<ExpeditionRoomTransitionController>();
             var sessionPlayer = new GameObject("D03FailedTransitionSessionPlayer");
-            controller.Initialize(route, templateId => templateId == route.Nodes[0].TemplateId ? firstRoomPrefab : null,
+            controller.Initialize(RunId.New(), route,
+                templateId => templateId == route.Nodes[0].TemplateId ? firstRoomPrefab : null,
                 sessionPlayer.transform);
             RoomInstanceId roomId = controller.CurrentRoomId;
             GameObject roomRoot = controller.ActiveRoomRoot;

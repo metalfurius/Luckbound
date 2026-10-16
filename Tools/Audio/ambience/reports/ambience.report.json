@@ -1,0 +1,158 @@
+{
+  "ambiences": [
+    {
+      "bytes": 4608044,
+      "channels": 2,
+      "checks": {
+        "duration_matches_parameters": true,
+        "loop_join": {
+          "boundary_step_dbfs": -37.995668,
+          "boundary_step_limit_dbfs": -28.0,
+          "checked": true,
+          "curvature_ratio_limit": 2.5,
+          "curvature_to_interior_p999_ratio": 0.295815,
+          "passed": true,
+          "step_ratio_limit": 2.0,
+          "step_to_interior_p999_ratio": 0.29425
+        },
+        "no_clipping": true,
+        "no_silent_100ms_windows": true,
+        "peak_at_or_below_ceiling": true,
+        "rms_within_target_tolerance": true,
+        "wav_stereo_pcm24_48000": true
+      },
+      "clipped_sample_count": 0,
+      "design": "Aire grave húmedo, copas de hojas y gotas aisladas sobre piedra y vegetación.",
+      "duration_seconds": 16.0,
+      "format": "WAV",
+      "frames": 768000,
+      "id": "forest_courtyard",
+      "label_es": "Patio forestal húmedo",
+      "master": "masters/forest_courtyard.wav",
+      "minimum_100ms_window_rms_dbfs": -27.607841,
+      "peak_dbfs": -11.546832,
+      "rms_dbfs": -25.0,
+      "sample_rate_hz": 48000,
+      "sha256": "d469ad025d54c0820e0189861644781335d87631f779f1e9d35b026d1d5d1581",
+      "silent_100ms_window_count": 0,
+      "status": "passed",
+      "subtype": "PCM_24"
+    },
+    {
+      "bytes": 4608044,
+      "channels": 2,
+      "checks": {
+        "duration_matches_parameters": true,
+        "loop_join": {
+          "boundary_step_dbfs": -33.341608,
+          "boundary_step_limit_dbfs": -28.0,
+          "checked": true,
+          "curvature_ratio_limit": 2.5,
+          "curvature_to_interior_p999_ratio": 0.20054,
+          "passed": true,
+          "step_ratio_limit": 2.0,
+          "step_to_interior_p999_ratio": 0.5343
+        },
+        "no_clipping": true,
+        "no_silent_100ms_windows": true,
+        "peak_at_or_below_ceiling": true,
+        "rms_within_target_tolerance": true,
+        "wav_stereo_pcm24_48000": true
+      },
+      "clipped_sample_count": 0,
+      "design": "Aire de sala bajo, pliegues de papel suavizados y tres resonancias largas y discretas.",
+      "duration_seconds": 16.0,
+      "format": "WAV",
+      "frames": 768000,
+      "id": "archive",
+      "label_es": "Archivo con aire, papel y resonancia",
+      "master": "masters/archive.wav",
+      "minimum_100ms_window_rms_dbfs": -27.113078,
+      "peak_dbfs": -11.076951,
+      "rms_dbfs": -25.0,
+      "sample_rate_hz": 48000,
+      "sha256": "272952c3f041cd3952f451fdbc0e584120e85a2079b97304f366621a86ea13f3",
+      "silent_100ms_window_count": 0,
+      "status": "passed",
+      "subtype": "PCM_24"
+    },
+    {
+      "bytes": 4608044,
+      "channels": 2,
+      "checks": {
+        "duration_matches_parameters": true,
+        "loop_join": {
+          "boundary_step_dbfs": -41.820044,
+          "boundary_step_limit_dbfs": -28.0,
+          "checked": true,
+          "curvature_ratio_limit": 2.5,
+          "curvature_to_interior_p999_ratio": 0.185879,
+          "passed": true,
+          "step_ratio_limit": 2.0,
+          "step_to_interior_p999_ratio": 0.189322
+        },
+        "no_clipping": true,
+        "no_silent_100ms_windows": true,
+        "peak_at_or_below_ceiling": true,
+        "rms_within_target_tolerance": true,
+        "wav_stereo_pcm24_48000": true
+      },
+      "clipped_sample_count": 0,
+      "design": "Rumor cálido de horno, chispas graves y golpes metálicos muy espaciados con cola tonal.",
+      "duration_seconds": 16.0,
+      "format": "WAV",
+      "frames": 768000,
+      "id": "forge",
+      "label_es": "Forja con metal y brasas",
+      "master": "masters/forge.wav",
+      "minimum_100ms_window_rms_dbfs": -28.52354,
+      "peak_dbfs": -11.188085,
+      "rms_dbfs": -25.0,
+      "sample_rate_hz": 48000,
+      "sha256": "3e18918afd0455f15d5220543bee179dc98c744f782b424b1d2b47e7a3e63547",
+      "silent_100ms_window_count": 0,
+      "status": "passed",
+      "subtype": "PCM_24"
+    }
+  ],
+  "auditory_review": "pending",
+  "checks": {
+    "all_masters_pass_audio_checks": true,
+    "auditory_review_pending": true,
+    "expected_three_ambiences": true,
+    "final_status_not_approved": true,
+    "manifest_technical_status_matches": true,
+    "master_hashes": {
+      "archive_sha256_matches": true,
+      "forest_courtyard_sha256_matches": true,
+      "forge_sha256_matches": true
+    },
+    "provenance": {
+      "parameters_sha256_matches": true,
+      "renderer_sha256_matches": true,
+      "validator_sha256_matches": true
+    }
+  },
+  "final_status": "not_approved",
+  "manifest_sha256": "79cf24a42ad2b97eb6ce7072306b9eb820fd9423a0e6766216bed5c709883fd5",
+  "package": "F08.Ambience",
+  "parameters": {
+    "channels": 2,
+    "duration_seconds": 16,
+    "minimum_window_rms_dbfs": -60.0,
+    "path": "parameters.json",
+    "peak_ceiling_dbfs": -1.0,
+    "sample_rate_hz": 48000,
+    "sha256": "d5b385c342509fba1b3e141f46e0000ccd218c3d7e08b3a1fc5c3fcb54e0735f",
+    "subtype": "PCM_24",
+    "target_rms_dbfs": -25.0
+  },
+  "report_version": 1,
+  "runtime": {
+    "numpy_version": "2.5.4",
+    "python_version": "3.12.14",
+    "soundfile_version": "0.14.0"
+  },
+  "status": "passed",
+  "technical_validation": "passed"
+}

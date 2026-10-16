@@ -1,8 +1,9 @@
-"""Deterministic local synthesizer for the Bellator sample effects."""
+"""Deterministic local synthesizer for Luckbound's 36 original effects."""
 
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import hashlib
 import json
 import math
@@ -20,21 +21,15 @@ MASTERS_ROOT = EFFECTS_ROOT / "masters"
 REPORTS_ROOT = EFFECTS_ROOT / "reports"
 REPORT_PATH = REPORTS_ROOT / "sample_effects.report.json"
 MANIFEST_PATH = REPORTS_ROOT / "sample_effects.manifest.json"
-EXPECTED_EFFECT_IDS = (
-    "stone_step",
-    "jump",
-    "landing",
-    "sword_swing",
-    "sword_impact",
-    "dodge",
-    "player_damage",
-    "enemy_death",
-    "potion",
-    "loot_pickup",
-    "ui_confirm",
-    "ui_cancel",
-    "door",
-)
+EXPECTED_GROUP_IDS = {
+    "movement": ("stone_step", "stone_step_b", "wood_step_a", "wood_step_b", "jump", "landing"),
+    "combat": ("sword_swing", "sword_impact", "bow_shot", "arrow_impact", "magic_cast",
+               "magic_impact", "dodge", "player_damage", "enemy_damage", "enemy_death", "burn", "potion"),
+    "ui": ("ui_focus", "ui_confirm", "ui_cancel", "ui_open", "ui_close", "ui_buy", "ui_craft", "ui_error"),
+    "environment": ("door", "portal", "torch", "water", "forge", "murmur"),
+    "progress": ("loot_pickup", "boss_appear", "boss_death", "pact"),
+}
+EXPECTED_EFFECT_IDS = tuple(effect_id for ids in EXPECTED_GROUP_IDS.values() for effect_id in ids)
 
 
 class EffectValidationError(ValueError):
@@ -60,27 +55,54 @@ def load_parameters(path: Path = PARAMETERS_PATH) -> tuple[dict[str, Any], bytes
 
 
 def validate_parameters(parameters: dict[str, Any]) -> None:
-    if parameters.get("schema_version") != 1:
-        raise EffectValidationError("schema_version must be 1")
-    if parameters.get("package") != "F08.SampleEffects.partial":
-        raise EffectValidationError("package must identify the partial F08 sample effects")
+    if parameters.get("schema_version") != 2:
+        raise EffectValidationError("schema_version must be 2")
+    if parameters.get("package") != "F08.Effects.complete":
+        raise EffectValidationError("package must identify the complete F08 effects set")
     if parameters.get("sample_rate_hz") != 44100:
         raise EffectValidationError("sample_rate_hz must be 44100")
     if parameters.get("channels") != 1 or parameters.get("wav_subtype") != "PCM_24":
         raise EffectValidationError("masters must be mono WAV PCM_24")
     if parameters.get("window_ms") != 10:
         raise EffectValidationError("acceptance windows must be 10 ms")
+    if parameters.get("minimum_window_rms_dbfs") != -72.0:
+        raise EffectValidationError("minimum_window_rms_dbfs must be -72 dBFS")
 
     effects = parameters.get("effects")
     if not isinstance(effects, list):
         raise EffectValidationError("effects must be a list")
     ids = [effect.get("id") for effect in effects if isinstance(effect, dict)]
     if tuple(ids) != EXPECTED_EFFECT_IDS:
-        raise EffectValidationError("effect IDs/order do not match the Bellator sample contract")
+        raise EffectValidationError("effect IDs/order do not match the complete 36-cue plan")
+
+    expected_group_counts = {group: len(group_ids) for group, group_ids in EXPECTED_GROUP_IDS.items()}
+    if parameters.get("expected_group_counts") != expected_group_counts:
+        raise EffectValidationError("expected_group_counts do not match the plan")
+    expected_group_by_id = {
+        effect_id: group for group, effect_ids in EXPECTED_GROUP_IDS.items() for effect_id in effect_ids
+    }
+    actual_group_by_id = {
+        effect["id"]: effect.get("group") for effect in effects if isinstance(effect, dict)
+    }
+    if actual_group_by_id != expected_group_by_id:
+        raise EffectValidationError("effect IDs are assigned to the wrong plan groups")
+    group_counts = Counter(effect.get("group") for effect in effects if isinstance(effect, dict))
+    if dict(group_counts) != expected_group_counts:
+        raise EffectValidationError(f"effect groups do not match the plan: {dict(group_counts)}")
+
+    designs = [effect.get("signal_design") for effect in effects if isinstance(effect, dict)]
+    if any(not isinstance(design, str) or not design.strip() for design in designs):
+        raise EffectValidationError("every effect requires a declarative signal_design")
+    if len(set(designs)) != len(designs):
+        raise EffectValidationError("signal_design descriptions must be unique")
 
     for effect in effects:
+        if not isinstance(effect, dict):
+            raise EffectValidationError("every effect must be an object")
         if not isinstance(effect.get("label_es"), str) or not effect["label_es"]:
             raise EffectValidationError(f"{effect['id']}: label_es is required")
+        if effect.get("group") not in EXPECTED_GROUP_IDS:
+            raise EffectValidationError(f"{effect['id']}: unknown group")
         duration_ms = effect.get("duration_ms")
         if not isinstance(duration_ms, int) or duration_ms < 80:
             raise EffectValidationError(f"{effect['id']}: duration_ms must be an integer >= 80")
@@ -88,6 +110,8 @@ def validate_parameters(parameters: dict[str, Any]) -> None:
         if not isinstance(events, list) or not events:
             raise EffectValidationError(f"{effect['id']}: at least one event is required")
         for event in events:
+            if not isinstance(event, dict):
+                raise EffectValidationError(f"{effect['id']}: events must be objects")
             if event.get("kind") not in {"tone", "noise"}:
                 raise EffectValidationError(f"{effect['id']}: event kind must be tone or noise")
             start_ms = event.get("start_ms")
@@ -96,6 +120,13 @@ def validate_parameters(parameters: dict[str, Any]) -> None:
                 raise EffectValidationError(f"{effect['id']}: event times must be integer milliseconds")
             if start_ms < 0 or event_duration_ms <= 0 or start_ms + event_duration_ms > duration_ms:
                 raise EffectValidationError(f"{effect['id']}: event falls outside its master duration")
+            gain = event.get("gain", 1.0)
+            if not isinstance(gain, (int, float)) or not math.isfinite(gain) or gain < 0:
+                raise EffectValidationError(f"{effect['id']}: gain must be a finite nonnegative number")
+            for envelope_key in ("attack_ms", "release_ms"):
+                value = event.get(envelope_key, 0)
+                if not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+                    raise EffectValidationError(f"{effect['id']}: {envelope_key} must be nonnegative")
             if event["kind"] == "tone":
                 for key in ("frequency_start_hz", "frequency_end_hz"):
                     value = event.get(key)
@@ -104,8 +135,23 @@ def validate_parameters(parameters: dict[str, Any]) -> None:
                 partials = event.get("partials")
                 if not isinstance(partials, list) or not partials:
                     raise EffectValidationError(f"{effect['id']}: tone requires at least one partial")
-            if event["kind"] == "noise" and not isinstance(event.get("seed"), int):
-                raise EffectValidationError(f"{effect['id']}: noise requires an integer seed")
+                for partial in partials:
+                    if not isinstance(partial, dict):
+                        raise EffectValidationError(f"{effect['id']}: partials must be objects")
+                    ratio, partial_gain = partial.get("ratio"), partial.get("gain")
+                    if (not isinstance(ratio, (int, float)) or not math.isfinite(ratio) or ratio <= 0
+                            or not isinstance(partial_gain, (int, float)) or not math.isfinite(partial_gain)
+                            or partial_gain < 0):
+                        raise EffectValidationError(f"{effect['id']}: partial ratio/gain is invalid")
+            if event["kind"] == "noise":
+                seed = event.get("seed")
+                if not isinstance(seed, int) or seed < 0 or seed > 0xFFFFFFFF:
+                    raise EffectValidationError(f"{effect['id']}: noise requires a uint32 seed")
+            decay_ms = event.get("decay_ms")
+            if decay_ms is not None and (
+                not isinstance(decay_ms, (int, float)) or not math.isfinite(decay_ms) or decay_ms <= 0
+            ):
+                raise EffectValidationError(f"{effect['id']}: decay_ms must be positive")
 
 
 def _deterministic_noise(count: int, seed: int) -> np.ndarray:
@@ -228,6 +274,8 @@ def inspect_master(effect: dict[str, Any], master_path: Path,
     return {
         "id": effect["id"],
         "label_es": effect["label_es"],
+        "group": effect["group"],
+        "signal_design": effect["signal_design"],
         "master": f"masters/{effect['id']}.wav",
         "sha256": sha256_file(master_path),
         "duration_ms": effect["duration_ms"],
@@ -238,6 +286,7 @@ def inspect_master(effect: dict[str, Any], master_path: Path,
         "subtype": info.subtype,
         "peak_dbfs": round(_dbfs(peak), 4),
         "rms_dbfs": round(_dbfs(rms), 4),
+        "10ms_window_count": len(window_rms),
         "minimum_10ms_window_rms_dbfs": round(_dbfs(minimum_window_rms), 4),
         "clipped_samples": clipped_samples,
         "silent_10ms_windows": sum(value < minimum_window_threshold for value in window_rms),
@@ -267,15 +316,19 @@ def render_bundle() -> tuple[dict[str, Any], dict[str, Any]]:
         sf.write(str(master_path), first, sample_rate_hz, format="WAV", subtype="PCM_24")
         results.append(inspect_master(effect, master_path, parameters))
 
+    group_counts = Counter(effect["group"] for effect in parameters["effects"])
     all_checks = {
-        "expected_13_sample_cues": len(results) == 13,
+        "expected_36_effect_ids": len(results) == 36 and tuple(item["id"] for item in results) == EXPECTED_EFFECT_IDS,
+        "expected_plan_group_counts": dict(group_counts) == parameters["expected_group_counts"],
+        "distinct_master_signals": len({item["sha256"] for item in results}) == 36,
         "all_renderings_reproducible": all(reproducibility_checks),
         "all_masters_pass_audio_checks": all(result["status"] == "passed" for result in results),
     }
     report = {
-        "report_version": 1,
+        "report_version": 2,
         "package": parameters["package"],
-        "scope": "Selected Bellator sample cues only; this partial package does not cover all 36 planned effects or ambience.",
+        "scope": "All 36 planned effects across movement, combat, UI, environment, and progress; the three ambience loops remain separate content.",
+        "group_counts": dict(group_counts),
         "generator": {
             "file": "render_effects.py",
             "sha256": sha256_file(Path(__file__).resolve()),
@@ -302,9 +355,10 @@ def render_bundle() -> tuple[dict[str, Any], dict[str, Any]]:
     REPORT_PATH.write_bytes(report_bytes)
 
     manifest = {
-        "manifest_version": 1,
+        "manifest_version": 2,
         "package": parameters["package"],
-        "scope": "Partial F08 Bellator sample effects",
+        "scope": "Complete F08 set of 36 planned effects",
+        "group_counts": dict(group_counts),
         "files": {
             "parameters": {"path": "parameters.json", "sha256": sha256_file(PARAMETERS_PATH)},
             "renderer": {"path": "render_effects.py", "sha256": sha256_file(Path(__file__).resolve())},

@@ -13,6 +13,7 @@ namespace Luckbound.Core.Fortune
         public int charges;
         public FortuneOfferSnapshot[] offers = Array.Empty<FortuneOfferSnapshot>();
         public string[] processedGuardianIds = Array.Empty<string>();
+        public FortuneRerollReceiptSnapshot[] rerollReceipts = Array.Empty<FortuneRerollReceiptSnapshot>();
     }
 
     [Serializable]
@@ -30,5 +31,21 @@ namespace Luckbound.Core.Fortune
     public sealed class FortuneOfferHistorySnapshot
     {
         public string[] optionIds = Array.Empty<string>();
+    }
+
+    /// <summary>Durable replay data for a reroll transaction, including its original rejected result.</summary>
+    [Serializable]
+    public sealed class FortuneRerollReceiptSnapshot
+    {
+        public string transactionId;
+        public string offerId;
+        public int status;
+        public string contextId;
+        public string[] optionIds = Array.Empty<string>();
+        public string selectedOptionId;
+        public int rerollCount;
+        public bool claimed;
+        public int remainingCharges;
+        public bool hasOffer;
     }
 }

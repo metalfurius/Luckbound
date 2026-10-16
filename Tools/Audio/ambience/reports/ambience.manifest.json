@@ -1,0 +1,39 @@
+{
+  "acceptance": {
+    "auditory_review": "pending",
+    "final_status": "not_approved",
+    "technical_status": "passed"
+  },
+  "auditory_review": "pending",
+  "files": {
+    "masters": {
+      "archive": {
+        "path": "masters/archive.wav",
+        "sha256": "272952c3f041cd3952f451fdbc0e584120e85a2079b97304f366621a86ea13f3"
+      },
+      "forest_courtyard": {
+        "path": "masters/forest_courtyard.wav",
+        "sha256": "d469ad025d54c0820e0189861644781335d87631f779f1e9d35b026d1d5d1581"
+      },
+      "forge": {
+        "path": "masters/forge.wav",
+        "sha256": "3e18918afd0455f15d5220543bee179dc98c744f782b424b1d2b47e7a3e63547"
+      }
+    },
+    "parameters": {
+      "path": "parameters.json",
+      "sha256": "d5b385c342509fba1b3e141f46e0000ccd218c3d7e08b3a1fc5c3fcb54e0735f"
+    },
+    "renderer": {
+      "path": "render_ambience.py",
+      "sha256": "a6f573c3ca6f502fbb0582d1ec9fed0d31913fd2b8609afdb5894df1f480818b"
+    },
+    "validator": {
+      "path": "validate_ambience.py",
+      "sha256": "50e392618362452d6d8522f0bb69009b2f172b910bef7f2b9d9081aee14bea81"
+    }
+  },
+  "manifest_version": 1,
+  "package": "F08.Ambience",
+  "scope": "Three original technical ambience loops: wet forest courtyard, archive, and forge."
+}

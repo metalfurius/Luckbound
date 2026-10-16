@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 1.7 · 14 de octubre de 2026.
+**Versión:** 1.9 · 16 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -10,15 +10,16 @@ Este documento convierte las 111 tareas del producto en trabajo distribuible par
 
 ## 1. Punto de partida y límite de esta petición
 
-La orden explícita de Fran del 14 de octubre retoma el desarrollo completo. El coordinador parte del estado verificado de [PROGRESS.md](PROGRESS.md), implementa E02.ADAPTER como siguiente paquete y selecciona hasta tres tareas independientes listas según el grafo. Se mantienen los contratos de integración, las pruebas sin interfaz y la regla de visibilidad.
+La orden explícita de Fran del 16 de octubre retoma el desarrollo completo y supera el límite documental de la intervención anterior. El coordinador parte del estado de [PROGRESS.md](PROGRESS.md), prioriza el siguiente hito jugable F10 y puede repartir hasta tres paquetes listos e independientes entre trabajadores Luna `max` según el grafo. Mantiene los contratos de integración y todas las ejecuciones ocultas o aisladas.
 
-Estado técnico vigente al retomar el 14 de octubre; los cambios verificados y sus evidencias están en [PROGRESS.md](PROGRESS.md):
+Estado técnico vigente al 16 de octubre; los cambios y sus evidencias están en [PROGRESS.md](PROGRESS.md):
 
-- E01 está consolidada en `fd3626f`. El escenario de recogida física y los tests dirigidos de esta reanudación constan en PROGRESS.md; conservar su hash de origen junto con la evidencia.
-- E02 está `InProgress`: E02.DATA y E02.TXN están integrados (`e5f567a`); E02.ADAPTER sigue reservado al coordinador tras verificar su dependencia.
+- E01 y E02 están `Verified`; E02.ADAPTER quedó integrado en `99ea5e9` y el recorrido físico de fabricación pasa.
+- E03 Core y aplicación durable están integrados; el recorrido de transacción/rest/reinicio pasa, pero faltan la venta de objetos y la interacción accesible del juego. E04 Core, mapper y mutaciones durables están integrados; la clave de creación ya normaliza el orden del pool y su reintento pasa EditMode. Siguen pendientes UI, contenido de recompensas, unión a encuentros y aceptación PlayMode de reinicio. La migración falla sin sobrescribir archivos si un expediente legado contiene ofertas antiguas que no puede representar.
 - E06 está `Verified` en `9607751`; sus decisiones de economía, redondeo, guardado y reintento están fijadas en DEVELOPMENT_PLAN.md §3.13.
-- F07 está `Verified`; F08 tiene su pista de taberna integrada y verificada (`f8f4aba`, `a066ece`), pero Patio, Custodio y efectos siguen pendientes. F01 sigue `InProgress` porque falta comprobar la escala exacta 32×48 del Bellator. E07 tiene el módulo Core de Venator integrado (`707354c`), aún sin conexión completa a Gameplay.
-- Regresión coordinada tras integración: EditMode 121/121 y PlayMode 62/62, cero fallos u omitidos, Unity `6000.6.5f1`, batchmode y Null graphics.
+- E07 está `Verified` tras reparar la prueba de flecha en `58d715f`. E08 conecta las tres habilidades Magus al motor y tiene casos por entrada; una auditoría confirmó que el apuntado sigue siendo horizontal, sin la asistencia de objetivo fijada en el plan. Hay que corregirlo y volver a probar.
+- F07 está `Verified`; F08 contiene tres pistas, catálogo de 36 efectos y un `RuntimeAudioDirector` con prueba aislada, además de tres fuentes de ambiente loopables. Todavía faltan conexión a escenas/salas, importación de ambientes, resolución de la carrera A→B→A y revisión auditiva. F01 sigue `InProgress` porque falta comprobar la escala exacta 32×48 del Bellator.
+- Regresión coordinada revalidada: EditMode 175/175 en `Logs/Coordinator-20261016-editmode-regression-r3.xml` y PlayMode 93/93 en `Logs/Coordinator-20261016-playmode-regression-r3.xml`, cero fallos, omitidos o inconclusos; Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`. La prueba dirigida del director de audio pasa 1/1 y ya no produce el aviso de descarga asíncrona.
 - A06 tiene un bloqueo de acceso/secretos para ejecutar Actions; no se atribuye al workflow una ejecución remota inexistente.
 - Las cinco revisiones de Fran siguen pendientes. Permiten trabajo técnico independiente, pero no equivalen a aprobación.
 - Editor fijado: Unity `6000.6.5f1`. Mantener paquetes y módulos ya comprobados.
@@ -113,15 +114,15 @@ Verificación WebGL en pestaña oculta (`visible:false` cuando la API lo ofrezca
 
 ### 3.5. Regla general de visibilidad
 
-**Fran no debe ver ninguna ventana salvo cuando su intervención sea necesaria para tomar una decisión concreta.** Aplica al coordinador y a los trabajadores, a todas las aplicaciones y a toda la interfaz: ventanas auxiliares, pestañas, paneles, diálogos, notificaciones y previsualizaciones, incluidas las de Codex/ChatGPT, Unity, juegos Windows/WebGL, terminales, navegadores y herramientas.
+**Regla de Fran, reafirmada el 16 de octubre de 2026:** Fran no debe ver **ninguna** ventana, pestaña, panel, diálogo, notificación ni previsualización salvo que necesite usar personalmente esa interfaz para tomar una decisión concreta en ese momento. **Que una ventana esté relacionada con el trabajo no basta; por defecto no se le muestra ninguna interfaz.** Las demás interfaces se ejecutan sin UI o dentro de un sandbox/escritorio verdaderamente aislado e inaccesible visualmente para Fran. Solo se muestra la interfaz mínima durante la decisión que necesite tomar. No cuenta como necesidad que algo sea útil para enseñar, revisar o demostrar trabajo. La regla obliga al coordinador y a todos los trabajadores, y cubre todas las aplicaciones, procesos secundarios y ventanas emergentes, incluidas las de Codex/ChatGPT, Unity, juegos Windows/WebGL, terminales, navegadores y herramientas. Una ventana detrás de otra o sin foco sigue siendo visible para este propósito; minimizarla no la aísla.
 
 1. Antes de lanzar una herramienta, comprobar que la aplicación, procesos secundarios, avisos y ventanas emergentes no aparecerán en la pantalla de Fran.
-2. Preferir ejecución sin interfaz; para navegador, pestañas ocultas; para una prueba con renderizado, proceso oculto o sandbox/escritorio aislado que no pueda mostrarse en su escritorio. Al usar `Start-Process` en Windows, aplicar `-WindowStyle Hidden` cuando corresponda y verificar que la aplicación no cree otra ventana visible. No crear un entorno de pago.
+2. Preferir ejecución sin interfaz; usar un navegador/contexto oculto que no aparezca en una ventana de Fran; para una prueba con renderizado, usar proceso realmente oculto o sandbox/escritorio aislado que no pueda mostrarse en su escritorio. Al usar `Start-Process` en Windows, aplicar `-WindowStyle Hidden` cuando corresponda y verificar que la aplicación ni sus procesos secundarios creen otra ventana visible. No crear un entorno de pago.
 3. No abrir, enfocar ni dejar visibles terminales, demos, archivos, capturas, paneles o resultados para mostrar avances. Guardar evidencia y comunicar resultados breves. Minimizar una ventana o dejarla en segundo plano no satisface la regla.
-4. Solo mostrar la interfaz mínima que Fran deba usar para una decisión concreta, y solo mientras la toma. Una autorización imprescindible o revisión acordada cuenta únicamente si requiere esa decisión. No convertir una comprobación técnica en una petición de presencia o aprobación.
+4. Solo mostrar la interfaz mínima que Fran deba usar para una decisión concreta, y solo mientras la toma; ocultarla al terminar. Una autorización imprescindible o revisión acordada cuenta únicamente si requiere esa decisión. No convertir una comprobación técnica en una petición de presencia o aprobación.
 5. Si no se puede garantizar ejecución oculta o aislada, no abrir la herramienta en el escritorio de Fran. Registrar la operación bloqueada y continuar con una alternativa o tarea independiente, conservando pendiente su comprobación.
 
-El coordinador incluye esta regla en cada despacho y verifica que los trabajadores la reciban. Las cinco revisiones se preparan ocultas y solo se presenta su interfaz mínima cuando Fran deba tomar la decisión correspondiente. No abrir siquiera estos documentos automáticamente al guardarlos.
+El coordinador incluye esta regla en cada despacho y verifica que los trabajadores la reciban. Las cinco revisiones se preparan sin ventanas visibles para Fran; solo se presenta la interfaz mínima durante la decisión que deba tomar. No abrir siquiera estos documentos automáticamente al guardarlos. La reafirmación del 16 de octubre elimina cualquier excepción por conveniencia: si Fran no necesita interactuar para decidir, la interfaz debe permanecer en una ejecución sin UI o en un entorno que no pueda ver. Si no se puede garantizar, no se lanza.
 
 ## 4. Grafo canónico de las 111 tareas
 
@@ -555,8 +556,9 @@ el progreso central, escenas compartidas o configuración.
 No crees subagentes, no ejecutes Unity sin reserva del coordinador,
 no publiques y no rediseñes el sistema.
 Toda herramienta debe ejecutarse sin ventanas visibles para Fran:
-sin interfaz, oculta o en un entorno aislado. No abras demos, terminales
-ni previsualizaciones; si no puedes aislarlas, registra el bloqueo.
+sin interfaz, realmente oculta o en un entorno aislado. No abras demos,
+terminales ni previsualizaciones en su escritorio, ni siquiera detrás
+de otra ventana; si no puedes aislarlas, registra el bloqueo.
 El coordinador solo muestra a Fran la interfaz mínima que requiera una decisión concreta; todo lo demás permanece oculto o aislado.
 Entrega un diff/commit dirigido, tests pertinentes y un informe breve:
 archivos, comportamiento, comprobaciones realmente ejecutadas,

@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "package": "F08.Ambience",
+  "sample_rate_hz": 48000,
+  "channels": 2,
+  "duration_seconds": 16,
+  "wav_subtype": "PCM_24",
+  "target_rms_dbfs": -25.0,
+  "peak_ceiling_dbfs": -1.0,
+  "window_ms": 100,
+  "minimum_window_rms_dbfs": -60.0,
+  "loop_max_boundary_step_dbfs": -28.0,
+  "loop_max_step_to_p999_ratio": 2.0,
+  "loop_max_curvature_to_p999_ratio": 2.5,
+  "ambiences": [
+    {
+      "id": "forest_courtyard",
+      "label_es": "Patio forestal húmedo",
+      "design": "Aire grave húmedo, copas de hojas y gotas aisladas sobre piedra y vegetación.",
+      "layers": [
+        {
+          "id": "distant_air",
+          "kind": "noise",
+          "gain": 0.62,
+          "seed": 1201,
+          "band_hz": [28.0, 720.0],
+          "spectral_tilt": 1.35,
+          "modulation_terms": [
+            {"cycles": 2, "depth": 0.18, "phase_degrees": 22.0},
+            {"cycles": 5, "depth": 0.07, "phase_degrees": 114.0}
+          ]
+        },
+        {
+          "id": "wet_canopy",
+          "kind": "noise",
+          "gain": 0.24,
+          "seed": 1202,
+          "band_hz": [520.0, 10500.0],
+          "spectral_tilt": 0.82,
+          "modulation_terms": [
+            {"cycles": 3, "depth": 0.22, "phase_degrees": 71.0},
+            {"cycles": 7, "depth": 0.09, "phase_degrees": 201.0}
+          ]
+        },
+        {
+          "id": "runoff",
+          "kind": "noise",
+          "gain": 0.13,
+          "seed": 1203,
+          "band_hz": [130.0, 3200.0],
+          "spectral_tilt": 0.55,
+          "modulation_terms": [
+            {"cycles": 4, "depth": 0.15, "phase_degrees": 188.0}
+          ]
+        },
+        {
+          "id": "stone_drips",
+          "kind": "pulses",
+          "gain": 0.08,
+          "cycles_per_loop": 31040,
+          "phase_degrees": 31.0,
+          "center_fractions": [0.09, 0.31, 0.56, 0.79],
+          "sigma_seconds": 0.042
+        }
+      ]
+    },
+    {
+      "id": "archive",
+      "label_es": "Archivo con aire, papel y resonancia",
+      "design": "Aire de sala bajo, pliegues de papel suavizados y tres resonancias largas y discretas.",
+      "layers": [
+        {
+          "id": "room_air",
+          "kind": "noise",
+          "gain": 0.63,
+          "seed": 2301,
+          "band_hz": [24.0, 900.0],
+          "spectral_tilt": 1.45,
+          "modulation_terms": [
+            {"cycles": 2, "depth": 0.13, "phase_degrees": 49.0},
+            {"cycles": 3, "depth": 0.06, "phase_degrees": 170.0}
+          ]
+        },
+        {
+          "id": "paper_flutter",
+          "kind": "noise",
+          "gain": 0.29,
+          "seed": 2302,
+          "band_hz": [420.0, 9000.0],
+          "spectral_tilt": 0.96,
+          "modulation_terms": [
+            {"cycles": 3, "depth": 0.22, "phase_degrees": 15.0},
+            {"cycles": 5, "depth": 0.14, "phase_degrees": 138.0},
+            {"cycles": 8, "depth": 0.06, "phase_degrees": 276.0}
+          ]
+        },
+        {
+          "id": "shelf_resonance_low",
+          "kind": "tone",
+          "gain": 0.12,
+          "cycles_per_loop": 2208,
+          "phase_degrees": 38.0,
+          "modulation_terms": [
+            {"cycles": 2, "depth": 0.14, "phase_degrees": 9.0}
+          ]
+        },
+        {
+          "id": "shelf_resonance_mid",
+          "kind": "tone",
+          "gain": 0.075,
+          "cycles_per_loop": 3552,
+          "phase_degrees": 129.0,
+          "modulation_terms": [
+            {"cycles": 3, "depth": 0.12, "phase_degrees": 53.0}
+          ]
+        },
+        {
+          "id": "shelf_resonance_high",
+          "kind": "tone",
+          "gain": 0.038,
+          "cycles_per_loop": 6672,
+          "phase_degrees": 246.0,
+          "modulation_terms": []
+        }
+      ]
+    },
+    {
+      "id": "forge",
+      "label_es": "Forja con metal y brasas",
+      "design": "Rumor cálido de horno, chispas graves y golpes metálicos muy espaciados con cola tonal.",
+      "layers": [
+        {
+          "id": "furnace_body",
+          "kind": "noise",
+          "gain": 0.68,
+          "seed": 3401,
+          "band_hz": [26.0, 560.0],
+          "spectral_tilt": 1.4,
+          "modulation_terms": [
+            {"cycles": 2, "depth": 0.17, "phase_degrees": 94.0},
+            {"cycles": 4, "depth": 0.07, "phase_degrees": 233.0}
+          ]
+        },
+        {
+          "id": "ember_air",
+          "kind": "noise",
+          "gain": 0.2,
+          "seed": 3402,
+          "band_hz": [950.0, 11500.0],
+          "spectral_tilt": 0.62,
+          "modulation_terms": [
+            {"cycles": 5, "depth": 0.26, "phase_degrees": 44.0},
+            {"cycles": 9, "depth": 0.12, "phase_degrees": 193.0}
+          ]
+        },
+        {
+          "id": "iron_ring_low",
+          "kind": "pulses",
+          "gain": 0.18,
+          "cycles_per_loop": 8208,
+          "phase_degrees": 77.0,
+          "center_fractions": [0.16, 0.53, 0.84],
+          "sigma_seconds": 0.095
+        },
+        {
+          "id": "iron_ring_high",
+          "kind": "pulses",
+          "gain": 0.075,
+          "cycles_per_loop": 15200,
+          "phase_degrees": 212.0,
+          "center_fractions": [0.34, 0.72],
+          "sigma_seconds": 0.073
+        },
+        {
+          "id": "coal_resonance",
+          "kind": "tone",
+          "gain": 0.045,
+          "cycles_per_loop": 20240,
+          "phase_degrees": 163.0,
+          "modulation_terms": [
+            {"cycles": 2, "depth": 0.08, "phase_degrees": 28.0}
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,7 @@ using Luckbound.Gameplay.Rooms;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using EntityId = Luckbound.Core.Identifiers.EntityId;
 
 namespace Luckbound.Tests.PlayMode.Magus
 {
@@ -180,6 +181,9 @@ namespace Luckbound.Tests.PlayMode.Magus
                 MagusStatusEffectTarget2D status = target.GetComponent<MagusStatusEffectTarget2D>();
                 Assert.That(frost.SkillOutcome.Status, Is.EqualTo(SkillUseStatus.Activated));
                 Assert.That(status.IsFrozen, Is.True);
+                Assert.That(target.TryDequeueImpact(out ProjectileImpact frostImpact), Is.True,
+                    "The Frost Nova impact must be resolved from the target queue before waiting for Fireball.");
+                Assert.That(frostImpact.BaseDamage, Is.EqualTo(18m));
 
                 MagusCombatResult fireball = Cast(fixture, 10, PlayerAction.Skill2);
                 Assert.That(fireball.SkillOutcome.Status, Is.EqualTo(SkillUseStatus.Activated));

@@ -1,24 +1,43 @@
 {
-  "manifest_version": 1,
-  "package": "F08.SampleEffects.partial",
-  "scope": "Partial F08 Bellator sample effects",
+  "manifest_version": 2,
+  "package": "F08.Effects.complete",
+  "scope": "Complete F08 set of 36 planned effects",
+  "group_counts": {
+    "movement": 6,
+    "combat": 12,
+    "ui": 8,
+    "environment": 6,
+    "progress": 4
+  },
   "files": {
     "parameters": {
       "path": "parameters.json",
-      "sha256": "ebbce7922fa8c06369b5374683c9a3a39512921d8958efa6cef4da74294bab62"
+      "sha256": "3d726ca2edfd16704ed80d571cb40d069d4c2ff79767a42d116cf81b2ec22b54"
     },
     "renderer": {
       "path": "render_effects.py",
-      "sha256": "772858b07276bc4bdbd551f6d59cf5bb73300e6abdc4331447683d943634e914"
+      "sha256": "20667464490d7f5ab07b24527a94f736cf5ec62006e4776d736587f806c5c8b6"
     },
     "report": {
       "path": "reports/sample_effects.report.json",
-      "sha256": "ef351a7e99f607097bac646002f911ab2eb5e4ab5df55299babffc36df138829"
+      "sha256": "5b620953b6d5133cd467930a48d1020637df775cc6fdc86780a29f89ce23a301"
     },
     "masters": {
       "stone_step": {
         "path": "masters/stone_step.wav",
         "sha256": "f63cc8fad4b43faa58872fd727526dab6a252e08fa1e8430a5f99245064bfa36"
+      },
+      "stone_step_b": {
+        "path": "masters/stone_step_b.wav",
+        "sha256": "76cb2103b70790487fbd523b35f79aee7d962dc9ee216194b5deab4782c706b8"
+      },
+      "wood_step_a": {
+        "path": "masters/wood_step_a.wav",
+        "sha256": "846da1eded0d7d0d1734fc29ef06766e5789822d1617e6729e3a040240316a32"
+      },
+      "wood_step_b": {
+        "path": "masters/wood_step_b.wav",
+        "sha256": "7b9d50ddb07254cd0b758cb0d36a1be2197ffd4cbeb7bfa0237d7ff65988542a"
       },
       "jump": {
         "path": "masters/jump.wav",
@@ -36,6 +55,22 @@
         "path": "masters/sword_impact.wav",
         "sha256": "0be23c6b825a5b1ae0ce061fc146190c8d03a39b006447743bf546914fb7a7c5"
       },
+      "bow_shot": {
+        "path": "masters/bow_shot.wav",
+        "sha256": "7ae4be45d9ed8d8ca4f71ad2caa84816f85bec17e7ecafa6b0aef5a7a9a7d267"
+      },
+      "arrow_impact": {
+        "path": "masters/arrow_impact.wav",
+        "sha256": "196e3da4c328b06484d907c2481c7cabd8da20c1b1341da2c8e8fd102807ea70"
+      },
+      "magic_cast": {
+        "path": "masters/magic_cast.wav",
+        "sha256": "95571a4b8a875d84147477f089244378538bfd6c571a0318b4c51bbff66d7d64"
+      },
+      "magic_impact": {
+        "path": "masters/magic_impact.wav",
+        "sha256": "54d3e526a5e757c6255d13dc2b315c9589e979244e67fb0abccd89faa6830c65"
+      },
       "dodge": {
         "path": "masters/dodge.wav",
         "sha256": "167b7228f03b8456b957a254e476b81a36c2f853a5f223bd4e08ac1352c457f0"
@@ -44,17 +79,25 @@
         "path": "masters/player_damage.wav",
         "sha256": "fd8960542cd9839d64c98cb13b18538bd0aa3addb5808d137e3e4a78e6e91ad8"
       },
+      "enemy_damage": {
+        "path": "masters/enemy_damage.wav",
+        "sha256": "c062d45179ff08cb24296ce92da09bcc435ab26749070915af660e7804439a4d"
+      },
       "enemy_death": {
         "path": "masters/enemy_death.wav",
         "sha256": "7a7cd1bf7836997c3270c4121e14736896e4fc694ec7ad93acc52477ec75c4f0"
+      },
+      "burn": {
+        "path": "masters/burn.wav",
+        "sha256": "949a1b9c1cee0f59d8d2a0d39f54ecc494bc97e8fc470dade2087da92902d79d"
       },
       "potion": {
         "path": "masters/potion.wav",
         "sha256": "a7a3874ba273d75121179f7d320d5575200e4f5aa1bc8cf73544067611c1fe59"
       },
-      "loot_pickup": {
-        "path": "masters/loot_pickup.wav",
-        "sha256": "4d97af55f5aa9b9a469bb9aac35fd0a1f81a1a170e082e5ea66b821633328d3d"
+      "ui_focus": {
+        "path": "masters/ui_focus.wav",
+        "sha256": "78bd5dc53e8eb25093c1fb60008b7fad3ef7c21dbf6894b92895f79c35d07ca3"
       },
       "ui_confirm": {
         "path": "masters/ui_confirm.wav",
@@ -64,16 +107,74 @@
         "path": "masters/ui_cancel.wav",
         "sha256": "9751fcf806ed78827b5a441f645adda080a7530a125489ff238fab1f81b127e8"
       },
+      "ui_open": {
+        "path": "masters/ui_open.wav",
+        "sha256": "73eaf1aa8c4178b9004f55654397488e3840c509d592697989cf01d5bc8cc253"
+      },
+      "ui_close": {
+        "path": "masters/ui_close.wav",
+        "sha256": "64cf5ad9d166ebe1523a6a792454a78cce264e0b8c30a1287298162bc909399b"
+      },
+      "ui_buy": {
+        "path": "masters/ui_buy.wav",
+        "sha256": "9c553009af1348751a125e7697930a73d0b76fc7956503d0c09287c0b1ff060a"
+      },
+      "ui_craft": {
+        "path": "masters/ui_craft.wav",
+        "sha256": "8ef507ed46814df029eb07f40e8c05c82c2c6ba155ece36351513650d9160b92"
+      },
+      "ui_error": {
+        "path": "masters/ui_error.wav",
+        "sha256": "da037fa1e7e39730e6ea77a4805c72bdae50cb82006f208162bf924452fd5240"
+      },
       "door": {
         "path": "masters/door.wav",
         "sha256": "5f481ca3ce25019d81b5e43dce1959dcbe359ec15c5c8b7f0887a286ad69cbcf"
+      },
+      "portal": {
+        "path": "masters/portal.wav",
+        "sha256": "be356a5855b4c99af9f15276ecc5f2239232bdb74ff7179539806bd0ee46c57f"
+      },
+      "torch": {
+        "path": "masters/torch.wav",
+        "sha256": "bd5c24b57439d310934555408ec0d880b9abed9a714e67f32ae06db54bd7261c"
+      },
+      "water": {
+        "path": "masters/water.wav",
+        "sha256": "c12dd331bae34fffa41cd73c1e00620232bfa5603af0f01c89e4ae7edf6207fc"
+      },
+      "forge": {
+        "path": "masters/forge.wav",
+        "sha256": "19fb7c93e63672e01809471dbb216292d8efdd1acead43d8bc84b184e2141782"
+      },
+      "murmur": {
+        "path": "masters/murmur.wav",
+        "sha256": "86a24e166ada077c33b71e41f2b78f2c0d6177ad5efcb658a9ea1c209e475611"
+      },
+      "loot_pickup": {
+        "path": "masters/loot_pickup.wav",
+        "sha256": "4d97af55f5aa9b9a469bb9aac35fd0a1f81a1a170e082e5ea66b821633328d3d"
+      },
+      "boss_appear": {
+        "path": "masters/boss_appear.wav",
+        "sha256": "92c01a04b4ac6ae1077a95069629f3590e08531b9b98a4482a5d42864f5beb4d"
+      },
+      "boss_death": {
+        "path": "masters/boss_death.wav",
+        "sha256": "94e49d7873e3e5a49ba6774030447652bd0ae60c76cab4fe1e6e6f8dedacb0cc"
+      },
+      "pact": {
+        "path": "masters/pact.wav",
+        "sha256": "5ad115c88622f42171bd8256d5151c6e0e7a8ef1352c665c1266a02b77e2c1dd"
       }
     }
   },
   "acceptance": {
     "status": "passed",
     "checks": {
-      "expected_13_sample_cues": true,
+      "expected_36_effect_ids": true,
+      "expected_plan_group_counts": true,
+      "distinct_master_signals": true,
       "all_renderings_reproducible": true,
       "all_masters_pass_audio_checks": true
     }
