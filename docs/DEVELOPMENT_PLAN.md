@@ -1071,7 +1071,7 @@ Cada recurso registrará identificador, origen, prompt, referencia utilizada, di
 
 En B07 solo se permiten recursos `Prototype` identificados: un Bellator estático y una sala de entrenamiento de bloques pixelados. F03 los sustituirá por el sprite y animaciones finales del jugador; F05 retirará la geometría provisional de las primeras salas. Ningún recurso provisional llegará a la muestra F10/0.3.
 
-Se utilizará la generación de imágenes disponible en Codex y sus instrucciones aplicables. Si una herramienta no está disponible, el agente registrará el bloqueo y continuará con tareas independientes. No sustituirá recursos finales por cajas ni contratará servicios.
+Se utilizará generación de imágenes solo mediante un canal que garantice que el resultado permanece oculto para Fran y no se inserta automáticamente en el chat. Si la herramienta publica su resultado sin requerir una decisión de Fran, no se invoca. Se registrará el bloqueo y se continuará con arte programático u otras tareas independientes. No se sustituirán recursos finales por cajas ni se contratarán servicios.
 
 ### 4.3. Música
 
