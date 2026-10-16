@@ -428,6 +428,11 @@ namespace Luckbound.App
                     if (envelope == null || !string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal))
                         return DecodeStatus.Corrupted;
                     if (!envelope.hasActiveExpedition) envelope.activeExpedition = null;
+                    if (envelope.contentVersion < SaveFormat.ContentVersion)
+                    {
+                        envelope.contentVersion = SaveFormat.ContentVersion;
+                        envelope.checksum = ComputeChecksum(envelope);
+                    }
                 }
             }
             catch
@@ -441,17 +446,48 @@ namespace Luckbound.App
         {
             envelope = null;
             if (string.IsNullOrWhiteSpace(json)) return DecodeStatus.Missing;
-            try { envelope = JsonUtility.FromJson<SettingsSaveEnvelope>(json); }
+            SaveVersionHeader header;
+            try { header = JsonUtility.FromJson<SaveVersionHeader>(json); }
             catch { return DecodeStatus.Corrupted; }
-            if (envelope == null) return DecodeStatus.Corrupted;
-            DecodeStatus versionStatus = CheckVersion(envelope.schemaVersion, envelope.contentVersion);
+            if (header == null) return DecodeStatus.Corrupted;
+            DecodeStatus versionStatus = CheckVersion(header.schemaVersion, header.contentVersion);
             if (versionStatus != DecodeStatus.Valid) return versionStatus;
-            if (!string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal)) return DecodeStatus.Corrupted;
-            if (envelope.contentVersion < SaveFormat.ContentVersion)
+
+            if (header.contentVersion < SaveFormat.ContentVersion)
             {
-                envelope.contentVersion = SaveFormat.ContentVersion;
+                LegacySettingsSaveEnvelope legacy;
+                try { legacy = JsonUtility.FromJson<LegacySettingsSaveEnvelope>(json); }
+                catch { return DecodeStatus.Corrupted; }
+                if (legacy == null || legacy.settings == null ||
+                    !string.Equals(legacy.checksum, ComputeLegacySettingsChecksum(legacy), StringComparison.Ordinal))
+                    return DecodeStatus.Corrupted;
+
+                envelope = new SettingsSaveEnvelope
+                {
+                    schemaVersion = legacy.schemaVersion,
+                    contentVersion = SaveFormat.ContentVersion,
+                    generation = legacy.generation,
+                    sequence = legacy.sequence,
+                    savedAtUtc = legacy.savedAtUtc,
+                    settings = new GameSettingsSaveData
+                    {
+                        languageId = legacy.settings.languageId,
+                        masterVolume = legacy.settings.masterVolume,
+                        musicVolume = legacy.settings.musicVolume,
+                        effectsVolume = legacy.settings.effectsVolume,
+                        ambienceVolume = 0.45f
+                    }
+                };
                 envelope.checksum = ComputeChecksum(envelope);
             }
+            else
+            {
+                try { envelope = JsonUtility.FromJson<SettingsSaveEnvelope>(json); }
+                catch { return DecodeStatus.Corrupted; }
+                if (envelope == null || !string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal))
+                    return DecodeStatus.Corrupted;
+            }
+
             return SaveDataValidation.Validate(envelope).Count == 0 ? DecodeStatus.Valid : DecodeStatus.Corrupted;
         }
 
@@ -658,10 +694,46 @@ namespace Luckbound.App
             return Hash(JsonUtility.ToJson(canonical, false));
         }
 
+        private static string ComputeLegacySettingsChecksum(LegacySettingsSaveEnvelope source)
+        {
+            var canonical = new LegacySettingsSaveEnvelope
+            {
+                schemaVersion = source.schemaVersion,
+                contentVersion = source.contentVersion,
+                generation = source.generation,
+                sequence = source.sequence,
+                savedAtUtc = source.savedAtUtc,
+                checksum = string.Empty,
+                settings = source.settings
+            };
+            return Hash(JsonUtility.ToJson(canonical, false));
+        }
+
         private static string[] Copy(string[] values) => values == null ? null : (string[])values.Clone();
 
         [Serializable]
         private sealed class SaveVersionHeader { public int schemaVersion; public int contentVersion; }
+
+        [Serializable]
+        private sealed class LegacySettingsSaveEnvelope
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public LegacyGameSettingsSaveData settings;
+        }
+
+        [Serializable]
+        private sealed class LegacyGameSettingsSaveData
+        {
+            public string languageId;
+            public float masterVolume;
+            public float musicVolume;
+            public float effectsVolume;
+        }
 
         [Serializable]
         private sealed class LegacyProfileSaveEnvelopeV1

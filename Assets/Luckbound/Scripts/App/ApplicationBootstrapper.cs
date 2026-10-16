@@ -256,6 +256,8 @@ namespace Luckbound.App
                 gameObject.AddComponent<RuntimeAudioDirector>();
             if (GetComponent<RuntimeAmbienceDirector>() == null)
                 gameObject.AddComponent<RuntimeAmbienceDirector>();
+            if (GetComponent<ExpeditionRoomAmbienceRouter>() == null)
+                gameObject.AddComponent<ExpeditionRoomAmbienceRouter>();
             if (GetComponent<ApplicationAudioRouter>() == null)
                 gameObject.AddComponent<ApplicationAudioRouter>();
         }
@@ -813,13 +815,35 @@ namespace Luckbound.App
         {
             if (!SaveDataReady) throw new InvalidOperationException("Settings have not finished loading.");
             SaveWriteResult result = await _saveRepository.SaveSettingsAsync(settings);
-            if (result.Succeeded) _settingsData = settings.Clone();
+            if (result.Succeeded)
+            {
+                _settingsData = settings.Clone();
+                ApplyRuntimeAudioSettings();
+            }
             return result;
         }
 
-        public Task<SaveWriteResult> RetryPendingSettingsAsync()
+        public async Task<SaveWriteResult> RetryPendingSettingsAsync()
         {
-            return _saveRepository.RetryPendingAsync(SaveDocument.Settings);
+            SaveWriteResult result = await _saveRepository.RetryPendingAsync(SaveDocument.Settings);
+            if (result.Succeeded && _saveRepository.CurrentSettings?.settings != null)
+            {
+                _settingsData = _saveRepository.CurrentSettings.settings.Clone();
+                ApplyRuntimeAudioSettings();
+            }
+            return result;
+        }
+
+        private void ApplyRuntimeAudioSettings()
+        {
+            RuntimeAudioDirector audioDirector = GetComponent<RuntimeAudioDirector>();
+            if (audioDirector != null)
+                audioDirector.SetVolumes(_settingsData.masterVolume, _settingsData.musicVolume,
+                    _settingsData.effectsVolume, _settingsData.ambienceVolume);
+
+            RuntimeAmbienceDirector ambienceDirector = GetComponent<RuntimeAmbienceDirector>();
+            if (ambienceDirector != null)
+                ambienceDirector.SetVolumes(_settingsData.masterVolume, _settingsData.ambienceVolume);
         }
 
         private async Task LoadSaveDataAsync()
@@ -878,6 +902,8 @@ namespace Luckbound.App
                 SettingsLoadMessage = "Settings storage could not be read; existing files were preserved. " + exception.Message;
                 Debug.LogWarning(SettingsLoadMessage);
             }
+
+            ApplyRuntimeAudioSettings();
         }
 
         private static bool IsUsableProfileStatus(SaveLoadStatus status)

@@ -12,7 +12,7 @@ namespace Luckbound.Core.Saves
     public static class SaveFormat
     {
         public const int SchemaVersion = 1;
-        public const int ContentVersion = 3;
+        public const int ContentVersion = 4;
         public const int Generation = 1;
     }
 
@@ -280,15 +280,17 @@ namespace Luckbound.Core.Saves
     {
         public string languageId = "es";
         public float masterVolume = 1f;
-        public float musicVolume = 1f;
-        public float effectsVolume = 1f;
+        public float musicVolume = 0.65f;
+        public float effectsVolume = 0.8f;
+        public float ambienceVolume = 0.45f;
 
         public GameSettingsSaveData Clone() => new GameSettingsSaveData
         {
             languageId = languageId,
             masterVolume = masterVolume,
             musicVolume = musicVolume,
-            effectsVolume = effectsVolume
+            effectsVolume = effectsVolume,
+            ambienceVolume = ambienceVolume
         };
     }
 
@@ -549,6 +551,7 @@ namespace Luckbound.Core.Saves
             if (!IsVolume(settings.masterVolume)) errors.Add("Master volume must be between 0 and 1.");
             if (!IsVolume(settings.musicVolume)) errors.Add("Music volume must be between 0 and 1.");
             if (!IsVolume(settings.effectsVolume)) errors.Add("Effects volume must be between 0 and 1.");
+            if (!IsVolume(settings.ambienceVolume)) errors.Add("Ambience volume must be between 0 and 1.");
         }
 
         private static void ValidateIds(string[] values, string name, List<string> errors, bool allowEmpty = true)

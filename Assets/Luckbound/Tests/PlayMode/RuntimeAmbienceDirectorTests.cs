@@ -52,6 +52,29 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest, Timeout(5000)]
+        public IEnumerator MasterAndAmbienceCategoryVolumesMultiplyForCurrentAndFuturePlayback()
+        {
+            RuntimeAmbienceDirector director = CreateDirector();
+            director.CrossfadeSeconds = 0f;
+            director.SetVolumes(0.5f, 0.4f);
+
+            Assert.That(director.PlayAmbience(RuntimeAmbienceDirector.ForestCourtyardId), Is.True);
+            yield return new WaitUntil(() => director.ActiveSourceCount == 1);
+
+            AudioSource source = _owner.GetComponentInChildren<AudioSource>();
+            Assert.That(director.MasterVolume, Is.EqualTo(0.5f).Within(0.0001f));
+            Assert.That(director.AmbienceVolume, Is.EqualTo(0.4f).Within(0.0001f));
+            Assert.That(director.EffectiveAmbienceVolume, Is.EqualTo(0.2f).Within(0.0001f));
+            Assert.That(source.volume, Is.EqualTo(0.2f).Within(0.0001f));
+
+            director.SetVolumes(0f, 0.9f);
+            Assert.That(source.volume, Is.Zero);
+
+            director.SetVolumes(0.75f, 0.4f);
+            Assert.That(source.volume, Is.EqualTo(0.3f).Within(0.0001f));
+        }
+
+        [UnityTest, Timeout(5000)]
         public IEnumerator ContextChangesCrossfadeWithinTwoSourcesAndCanReverse()
         {
             RuntimeAmbienceDirector director = CreateDirector();

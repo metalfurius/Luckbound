@@ -75,6 +75,10 @@ namespace Luckbound.Tests.PlayMode
                     Assert.That(failure, Is.Zero, "Application root missing. Evidence: " + evidence.ReportPath);
                     yield break;
                 }
+
+                ExpeditionRoomAmbienceRouter roomAmbienceRouter = app.GetComponent<ExpeditionRoomAmbienceRouter>();
+                evidence.RecordAssertion("Bootstrap owns persistent room ambience routing", roomAmbienceRouter != null,
+                    "one ExpeditionRoomAmbienceRouter", roomAmbienceRouter == null ? "missing" : "present");
                 app.ClearActiveRun();
 
                 Button tavernButton = FindButton("StartTavernButton");

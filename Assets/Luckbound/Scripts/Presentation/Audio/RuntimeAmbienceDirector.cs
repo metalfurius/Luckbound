@@ -19,6 +19,7 @@ namespace Luckbound.Presentation.Audio
         private const float DefaultCrossfadeSeconds = 0.8f;
         private const float MaximumCrossfadeSeconds = 2f;
 
+        [SerializeField, Range(0f, 1f)] private float _masterVolume = 1f;
         [SerializeField, Range(0f, 1f)] private float _ambienceVolume = 0.45f;
         [SerializeField, Range(0f, MaximumCrossfadeSeconds)] private float _crossfadeSeconds = DefaultCrossfadeSeconds;
 
@@ -34,6 +35,18 @@ namespace Luckbound.Presentation.Audio
 
         /// <summary>The ambience currently playing or targeted by an active crossfade.</summary>
         public string CurrentAmbienceId => _requestedId;
+
+        public float MasterVolume
+        {
+            get => _masterVolume;
+            set
+            {
+                _masterVolume = ClampVolume(value);
+                ApplySourceVolumes();
+            }
+        }
+
+        public float EffectiveAmbienceVolume => _masterVolume * _ambienceVolume;
 
         public float AmbienceVolume
         {
@@ -148,6 +161,14 @@ namespace Luckbound.Presentation.Audio
         public void SetAmbienceVolume(float volume)
         {
             AmbienceVolume = volume;
+        }
+
+        /// <summary>Applies the master and ambience category volumes as a combined audible level.</summary>
+        public void SetVolumes(float master, float ambience)
+        {
+            _masterVolume = ClampVolume(master);
+            _ambienceVolume = ClampVolume(ambience);
+            ApplySourceVolumes();
         }
 
         private void OnDisable()
@@ -410,7 +431,7 @@ namespace Luckbound.Presentation.Audio
             {
                 if (_sources[index] != null)
                 {
-                    _sources[index].volume = _envelopes[index] * _ambienceVolume;
+                    _sources[index].volume = _envelopes[index] * EffectiveAmbienceVolume;
                 }
             }
         }

@@ -52,7 +52,8 @@ namespace Luckbound.Tests.PlayMode
                 languageId = "en",
                 masterVolume = 0.9f,
                 musicVolume = 0.4f,
-                effectsVolume = 0.7f
+                effectsVolume = 0.7f,
+                ambienceVolume = 0.3f
             };
             SaveWriteResult settingsWrite = Wait(repository.SaveSettingsAsync(settings));
             Assert.That(profileWrite.Succeeded, Is.True, profileWrite.Message);
@@ -71,6 +72,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(loadedSettings.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
             Assert.That(loadedSettings.Data.settings.languageId, Is.EqualTo("en"));
             Assert.That(loadedSettings.Data.settings.musicVolume, Is.EqualTo(0.4f).Within(0.0001f));
+            Assert.That(loadedSettings.Data.settings.ambienceVolume, Is.EqualTo(0.3f).Within(0.0001f));
             Assert.That(Path.GetFileName(NewFileStore().GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(FileSaveStore.ProfileFileName));
             Assert.That(Path.GetFileName(NewFileStore().GetPrimaryPath(SaveDocument.Settings)), Is.EqualTo(FileSaveStore.SettingsFileName));
         }
@@ -293,14 +295,14 @@ namespace Luckbound.Tests.PlayMode
         {
             Directory.CreateDirectory(_directory);
             FileSaveStore store = NewFileStore();
-            var legacy = new SettingsSaveEnvelope
+            var legacy = new LegacySettingsSaveEnvelope
             {
                 schemaVersion = SaveFormat.SchemaVersion,
                 contentVersion = 1,
                 generation = 1,
                 sequence = 4,
                 savedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
-                settings = new GameSettingsSaveData
+                settings = new LegacyGameSettingsSaveData
                 {
                     languageId = "en",
                     masterVolume = 0.31f,
@@ -324,6 +326,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(loaded.Data.settings.masterVolume, Is.EqualTo(0.31f).Within(0.0001f));
             Assert.That(loaded.Data.settings.musicVolume, Is.EqualTo(0.46f).Within(0.0001f));
             Assert.That(loaded.Data.settings.effectsVolume, Is.EqualTo(0.72f).Within(0.0001f));
+            Assert.That(loaded.Data.settings.ambienceVolume, Is.EqualTo(0.45f).Within(0.0001f));
 
             Assert.That(Wait(repository.SaveSettingsAsync(loaded.Data.settings)).Succeeded, Is.True);
             var restarted = new SaveRepository(store);
@@ -331,6 +334,75 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(afterRestart.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
             Assert.That(afterRestart.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
             Assert.That(afterRestart.Data.settings.musicVolume, Is.EqualTo(0.46f).Within(0.0001f));
+            Assert.That(afterRestart.Data.settings.ambienceVolume, Is.EqualTo(0.45f).Within(0.0001f));
+        }
+
+        [Test]
+        public void ContentVersionThreeSettingsMigrateWithThePlannedAmbienceDefault()
+        {
+            Directory.CreateDirectory(_directory);
+            FileSaveStore store = NewFileStore();
+            var legacy = new LegacySettingsSaveEnvelope
+            {
+                schemaVersion = SaveFormat.SchemaVersion,
+                contentVersion = 3,
+                generation = 2,
+                sequence = 11,
+                savedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                settings = new LegacyGameSettingsSaveData
+                {
+                    languageId = "es",
+                    masterVolume = 0.8f,
+                    musicVolume = 0.5f,
+                    effectsVolume = 0.6f
+                }
+            };
+            using (SHA256 sha = SHA256.Create())
+                legacy.checksum = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(JsonUtility.ToJson(legacy, false))))
+                    .Replace("-", string.Empty).ToLowerInvariant();
+            File.WriteAllText(store.GetPrimaryPath(SaveDocument.Settings), JsonUtility.ToJson(legacy, true),
+                new UTF8Encoding(false));
+
+            SaveLoadResult<SettingsSaveEnvelope> loaded = Wait(new SaveRepository(store).LoadSettingsAsync());
+
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+            Assert.That(loaded.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
+            Assert.That(loaded.Data.sequence, Is.EqualTo(11));
+            Assert.That(loaded.Data.settings.masterVolume, Is.EqualTo(0.8f).Within(0.0001f));
+            Assert.That(loaded.Data.settings.musicVolume, Is.EqualTo(0.5f).Within(0.0001f));
+            Assert.That(loaded.Data.settings.effectsVolume, Is.EqualTo(0.6f).Within(0.0001f));
+            Assert.That(loaded.Data.settings.ambienceVolume, Is.EqualTo(0.45f).Within(0.0001f));
+        }
+
+        [Test]
+        public void ContentVersionThreeProfileMigratesWithoutChangingItsPayload()
+        {
+            Directory.CreateDirectory(_directory);
+            FileSaveStore store = NewFileStore();
+            var legacy = new ProfileSaveEnvelope
+            {
+                schemaVersion = SaveFormat.SchemaVersion,
+                contentVersion = 3,
+                generation = 2,
+                sequence = 11,
+                savedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                profile = ProfileSaveData.CreateNewProfile(),
+                hasActiveExpedition = false,
+                activeExpedition = null
+            };
+            legacy.profile.availableRenown = 91;
+            using (SHA256 sha = SHA256.Create())
+                legacy.checksum = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(JsonUtility.ToJson(legacy, false))))
+                    .Replace("-", string.Empty).ToLowerInvariant();
+            File.WriteAllText(store.GetPrimaryPath(SaveDocument.Profile), JsonUtility.ToJson(legacy, true),
+                new UTF8Encoding(false));
+
+            SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(new SaveRepository(store).LoadProfileAsync());
+
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+            Assert.That(loaded.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
+            Assert.That(loaded.Data.sequence, Is.EqualTo(11));
+            Assert.That(loaded.Data.profile.availableRenown, Is.EqualTo(91));
         }
 
         [Test]
@@ -558,6 +630,27 @@ namespace Luckbound.Tests.PlayMode
             public int[] offerRerollCounts = Array.Empty<int>();
             public string[] collectedItemIds = Array.Empty<string>();
             public string[] claimedRewardIds = Array.Empty<string>();
+        }
+
+        [Serializable]
+        private sealed class LegacySettingsSaveEnvelope
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public LegacyGameSettingsSaveData settings;
+        }
+
+        [Serializable]
+        private sealed class LegacyGameSettingsSaveData
+        {
+            public string languageId;
+            public float masterVolume;
+            public float musicVolume;
+            public float effectsVolume;
         }
 
         private sealed class FailOnceSaveStore : ISaveStore
