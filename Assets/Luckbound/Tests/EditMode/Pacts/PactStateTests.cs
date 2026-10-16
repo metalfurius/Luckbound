@@ -52,6 +52,7 @@ namespace Luckbound.Tests.Core
             var fervorFirst = new PactState(100, 92);
             fervorFirst.Accept(PactIds.Fervor);
             fervorFirst.Accept(PactIds.Avarice);
+            Assert.That(avariceFirst.Accept(PactIds.Fervor).Status, Is.EqualTo(PactOperationStatus.Accepted));
             PactSnapshot firstSnapshot = avariceFirst.CreateSnapshot();
             PactSnapshot secondSnapshot = fervorFirst.CreateSnapshot();
             CollectionAssert.AreEqual(firstSnapshot.AcceptedPactIds, secondSnapshot.AcceptedPactIds);

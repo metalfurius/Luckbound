@@ -18,7 +18,8 @@ namespace Luckbound.Tests.PlayMode
         public void D04ItemCatalogLoadsStarterEquipmentConsumablesRelicsAndSixMaterials()
         {
             ItemCatalog catalog = LoadCatalog();
-            Assert.That(catalog.Count, Is.EqualTo(20));
+            Assert.That(catalog.Count, Is.EqualTo(26));
+            Assert.That(catalog.Definitions.Count(definition => definition.Kind == ItemKind.Weapon), Is.EqualTo(9));
             Assert.That(catalog.Get("weapon.bellator.rusted_sword").IsCompatibleWithClass("class.bellator"), Is.True);
             Assert.That(catalog.Get("weapon.venator.short_bow").IsCompatibleWithClass("class.bellator"), Is.False);
             Assert.That(catalog.GetStartingLoadout("class.bellator").WeaponItemId, Is.EqualTo("weapon.bellator.rusted_sword"));
