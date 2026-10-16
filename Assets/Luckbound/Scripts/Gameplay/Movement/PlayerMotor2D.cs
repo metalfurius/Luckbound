@@ -43,9 +43,12 @@ namespace Luckbound.Gameplay.Movement
         private const float GroundNormalThreshold = 0.65f;
         private const float GroundedVerticalSpeedLimit = 0.05f;
         private const float MovementDeadZone = 0.001f;
+        private const float MagusAimAssistConeDegrees = 35f;
+        private static readonly float MagusAimAssistMinimumDot = Mathf.Cos(MagusAimAssistConeDegrees * Mathf.Deg2Rad);
 
         private readonly RaycastHit2D[] _groundHits = new RaycastHit2D[4];
         private readonly Collider2D[] _meleeOverlaps = new Collider2D[16];
+        private Collider2D[] _magusAimOverlaps = new Collider2D[16];
 
         private MeleeAttackState _meleeAttackState;
         private MeleeAttackSnapshot _meleeAttackSnapshot;
@@ -66,6 +69,7 @@ namespace Luckbound.Gameplay.Movement
         private Collider2D _collider;
         private ContactFilter2D _groundContactFilter;
         private ContactFilter2D _meleeContactFilter;
+        private ContactFilter2D _magusAimContactFilter;
         private LayerMask _meleeTargetLayers;
         private bool _initialized;
         private IPlayerInputSource _inputSource;
@@ -500,6 +504,9 @@ namespace Luckbound.Gameplay.Movement
 
             _magusRoomBinding = binding;
             _magusTargetLayers = targetLayers;
+            _magusAimContactFilter = new ContactFilter2D();
+            _magusAimContactFilter.SetLayerMask(targetLayers);
+            _magusAimContactFilter.useTriggers = false;
             _magusBasicAttackSnapshot = default;
             _lastMagusCombatResult = default;
             _meleeAttackState.Interrupt();
@@ -884,13 +891,17 @@ namespace Luckbound.Gameplay.Movement
             MagusCombatResult result;
             if (roomReady)
             {
-                Vector2 aimDirection = new Vector2(_facingDirection, 0f);
+                Vector2 projectileOrigin = MagusProjectileOrigin();
+                Vector2 aimDirection = ResolveRequestedFireballAimDirection(
+                    command,
+                    projectileOrigin,
+                    new Vector2(_facingDirection, 0f));
                 result = _magusRoomBinding.Adapter.Tick(
                     command,
                     isAlive: canAct,
                     interrupted: !canAct,
                     actorPosition: transform.position,
-                    projectileOrigin: MagusProjectileOrigin(),
+                    projectileOrigin: projectileOrigin,
                     aimDirection: aimDirection);
             }
             else
@@ -964,15 +975,156 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("An accepted Magus basic attack must include its weapon projectile definition.");
             }
 
+            Vector2 aimDirection = ResolveMagusAimDirection(
+                request.Origin,
+                new Vector2(_facingDirection, 0f),
+                ProjectileTravelDistance(request.Snapshot.Projectile));
             _magusRoomBinding.ProjectileScope.Pool.Spawn(
                 request.Snapshot.Projectile,
                 EntityId.New(),
                 request.ActorId,
                 request.Origin,
-                request.Direction,
+                aimDirection,
                 _magusTargetLayers,
                 _magusRoomBinding.ProjectileScope);
             MagusBasicAttackProjectileSpawnCount++;
+        }
+
+        private Vector2 ResolveRequestedFireballAimDirection(
+            PlayerCommand command,
+            Vector2 projectileOrigin,
+            Vector2 fallbackDirection)
+        {
+            SkillDefinition fireballSkill = null;
+            if (_skillUseState.IsPreparing &&
+                string.Equals(_skillUseState.PreparingSkillId, MagusSkillLoadout.FireballId, StringComparison.Ordinal))
+            {
+                fireballSkill = GetSelectedMagusSkill(MagusSkillLoadout.FireballId);
+            }
+            else if (command.WasPressed(PlayerAction.Skill1) &&
+                     string.Equals(_magusSkillLoadout.Skill1.Id, MagusSkillLoadout.FireballId, StringComparison.Ordinal))
+            {
+                fireballSkill = _magusSkillLoadout.Skill1;
+            }
+            else if (command.WasPressed(PlayerAction.Skill2) &&
+                     string.Equals(_magusSkillLoadout.Skill2.Id, MagusSkillLoadout.FireballId, StringComparison.Ordinal))
+            {
+                fireballSkill = _magusSkillLoadout.Skill2;
+            }
+
+            if (fireballSkill == null) return fallbackDirection.normalized;
+
+            float projectileRange = ProjectileTravelDistance(
+                fireballSkill.ProjectileSpeed,
+                fireballSkill.ProjectileLifetimeTicks);
+            return ResolveMagusAimDirection(projectileOrigin, fallbackDirection, projectileRange);
+        }
+
+        private SkillDefinition GetSelectedMagusSkill(string skillId)
+        {
+            if (string.Equals(_magusSkillLoadout.Skill1.Id, skillId, StringComparison.Ordinal)) return _magusSkillLoadout.Skill1;
+            if (string.Equals(_magusSkillLoadout.Skill2.Id, skillId, StringComparison.Ordinal)) return _magusSkillLoadout.Skill2;
+            return null;
+        }
+
+        private Vector2 ResolveMagusAimDirection(Vector2 origin, Vector2 fallbackDirection, float maximumRange)
+        {
+            Vector2 fallback = new Vector2(_facingDirection, 0f);
+            if (fallbackDirection.sqrMagnitude > 0.000001f)
+            {
+                fallback = new Vector2(Mathf.Sign(fallbackDirection.x), 0f);
+            }
+
+            if (maximumRange <= 0f) return fallback;
+
+            int overlapCount = Physics2D.OverlapCircle(
+                origin,
+                maximumRange,
+                _magusAimContactFilter,
+                _magusAimOverlaps);
+            while (overlapCount >= _magusAimOverlaps.Length)
+            {
+                Array.Resize(ref _magusAimOverlaps, checked(_magusAimOverlaps.Length * 2));
+                overlapCount = Physics2D.OverlapCircle(
+                    origin,
+                    maximumRange,
+                    _magusAimContactFilter,
+                    _magusAimOverlaps);
+            }
+
+            float maximumRangeSquared = maximumRange * maximumRange;
+            float nearestDistanceSquared = float.PositiveInfinity;
+            ActorId nearestActorId = default;
+            Vector2 nearestPoint = default;
+            bool foundTarget = false;
+
+            for (int index = 0; index < overlapCount; index++)
+            {
+                Collider2D targetCollider = _magusAimOverlaps[index];
+                if (targetCollider == null) continue;
+
+                ProjectileImpactTarget2D target = targetCollider.GetComponentInParent<ProjectileImpactTarget2D>();
+                if (target == null || !target.IsInitialized || target.ActorId == _actorId) continue;
+
+                Vector2 targetPoint = targetCollider.ClosestPoint(origin);
+                Vector2 toTarget = targetPoint - origin;
+                float distanceSquared = toTarget.sqrMagnitude;
+                if (distanceSquared <= 0.000001f || distanceSquared > maximumRangeSquared) continue;
+
+                Vector2 direction = toTarget / Mathf.Sqrt(distanceSquared);
+                float facingDot = Vector2.Dot(fallback, direction);
+                if (facingDot <= 0f || facingDot < MagusAimAssistMinimumDot) continue;
+
+                RaycastHit2D obstruction = Physics2D.Linecast(origin, targetPoint, _groundContactFilter);
+                if (obstruction.collider != null) continue;
+
+                if (foundTarget && !IsPreferredAimCandidate(
+                        distanceSquared,
+                        target.ActorId,
+                        targetPoint,
+                        nearestDistanceSquared,
+                        nearestActorId,
+                        nearestPoint))
+                {
+                    continue;
+                }
+
+                nearestDistanceSquared = distanceSquared;
+                nearestActorId = target.ActorId;
+                nearestPoint = targetPoint;
+                foundTarget = true;
+            }
+
+            return foundTarget ? (nearestPoint - origin).normalized : fallback;
+        }
+
+        private static bool IsPreferredAimCandidate(
+            float candidateDistanceSquared,
+            ActorId candidateActorId,
+            Vector2 candidatePoint,
+            float nearestDistanceSquared,
+            ActorId nearestActorId,
+            Vector2 nearestPoint)
+        {
+            if (candidateDistanceSquared < nearestDistanceSquared) return true;
+            if (candidateDistanceSquared > nearestDistanceSquared) return false;
+
+            int actorOrder = candidateActorId.Value.CompareTo(nearestActorId.Value);
+            if (actorOrder != 0) return actorOrder < 0;
+            if (candidatePoint.x != nearestPoint.x) return candidatePoint.x < nearestPoint.x;
+            return candidatePoint.y < nearestPoint.y;
+        }
+
+        private static float ProjectileTravelDistance(ProjectileDefinition projectile)
+        {
+            return projectile == null
+                ? 0f
+                : ProjectileTravelDistance(projectile.SpeedUnitsPerSecond, projectile.LifetimeTicks);
+        }
+
+        private static float ProjectileTravelDistance(decimal speedUnitsPerSecond, int lifetimeTicks)
+        {
+            return (float)speedUnitsPerSecond * lifetimeTicks * Time.fixedDeltaTime;
         }
 
         private void SpawnVenatorProjectile(ProjectileDefinition definition, decimal angleOffsetDegrees)

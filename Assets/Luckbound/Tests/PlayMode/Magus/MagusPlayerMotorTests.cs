@@ -49,7 +49,7 @@ namespace Luckbound.Tests.PlayMode.Magus
         public IEnumerator EmberStaffBasicAttackUsesPlayerInputAndRealProjectileWithoutEnergyCost()
         {
             MotorFixture fixture = CreateFixture();
-            ProjectileImpactTarget2D target = fixture.CreateTarget("Magus_Basic_Target", new Vector2(2.2f, 1f));
+            ProjectileImpactTarget2D target = fixture.CreateTarget("Magus_Basic_Target", new Vector2(2.2f, 2f));
             Physics2D.SyncTransforms();
 
             fixture.Input.Press(PlayerAction.Attack);
@@ -87,10 +87,61 @@ namespace Luckbound.Tests.PlayMode.Magus
         }
 
         [UnityTest]
+        public IEnumerator EmberStaffChoosesNearestEligibleTargetInsideAimCone()
+        {
+            MotorFixture fixture = CreateFixture();
+            ProjectileImpactTarget2D nearest = fixture.CreateTarget("Magus_Aim_Nearest", new Vector2(1.5f, 1.7f));
+            ProjectileImpactTarget2D farther = fixture.CreateTarget("Magus_Aim_Farther", new Vector2(4f, 1f));
+            Physics2D.SyncTransforms();
+
+            fixture.Input.Press(PlayerAction.Attack);
+            yield return new WaitForFixedUpdate();
+            fixture.Input.Release(PlayerAction.Attack);
+
+            for (int tick = 0; tick < 40 && nearest.PendingImpactCount == 0 && farther.PendingImpactCount == 0; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            Assert.That(nearest.PendingImpactCount, Is.EqualTo(1),
+                "The closest visible target inside the 35-degree cone must receive the physical shot.");
+            Assert.That(farther.PendingImpactCount, Is.Zero,
+                "A farther eligible target must not win while the nearer target is available.");
+        }
+
+        [UnityTest]
+        public IEnumerator EmberStaffRejectsOutOfConeTargetAndFallsBackHorizontally()
+        {
+            MotorFixture fixture = CreateFixture();
+            ProjectileImpactTarget2D target = fixture.CreateTarget("Magus_Aim_Out_Of_Cone", new Vector2(2.2f, 3f));
+
+            yield return AssertBasicAttackFallsBackHorizontally(fixture, target);
+        }
+
+        [UnityTest]
+        public IEnumerator EmberStaffRejectsTargetBehindPlayerAndFallsBackHorizontally()
+        {
+            MotorFixture fixture = CreateFixture();
+            ProjectileImpactTarget2D target = fixture.CreateTarget("Magus_Aim_Behind", new Vector2(-2.2f, 1f));
+
+            yield return AssertBasicAttackFallsBackHorizontally(fixture, target);
+        }
+
+        [UnityTest]
+        public IEnumerator EmberStaffRejectsOccludedTargetAndFallsBackHorizontally()
+        {
+            MotorFixture fixture = CreateFixture();
+            ProjectileImpactTarget2D target = fixture.CreateTarget("Magus_Aim_Occluded", new Vector2(2.2f, 2f));
+            fixture.CreateGroundObstacle("Magus_Aim_Occluding_Wall", new Vector2(1.15f, 1.3f), new Vector2(0.16f, 0.7f));
+
+            yield return AssertBasicAttackFallsBackHorizontally(fixture, target);
+        }
+
+        [UnityTest]
         public IEnumerator SelectedFireballUsesPlayerInputPhysicalImpactAndBurnQueue()
         {
             MotorFixture fixture = CreateFixture();
-            ProjectileImpactTarget2D target = fixture.CreateTarget("Magus_Fireball_Target", new Vector2(2.2f, 1f));
+            ProjectileImpactTarget2D target = fixture.CreateTarget("Magus_Fireball_Target", new Vector2(2.2f, 2f));
             Physics2D.SyncTransforms();
 
             fixture.Input.Press(PlayerAction.Skill1);
@@ -383,6 +434,31 @@ namespace Luckbound.Tests.PlayMode.Magus
             Assert.That(target.PendingImpactCount, Is.Zero);
         }
 
+        private static IEnumerator AssertBasicAttackFallsBackHorizontally(
+            MotorFixture fixture,
+            ProjectileImpactTarget2D target)
+        {
+            Physics2D.SyncTransforms();
+            fixture.Input.Press(PlayerAction.Attack);
+            yield return new WaitForFixedUpdate();
+            fixture.Input.Release(PlayerAction.Attack);
+
+            Projectile2D projectile = fixture.ProjectileScope.GetComponentInChildren<Projectile2D>(includeInactive: true);
+            Assert.That(projectile, Is.Not.Null);
+            Assert.That(projectile.IsPooled, Is.False);
+            Vector2 velocity = projectile.GetComponent<Rigidbody2D>().linearVelocity;
+            Assert.That(velocity.x, Is.GreaterThan(0f), "The fallback shot must retain the player's forward direction.");
+            Assert.That(velocity.y, Is.EqualTo(0f).Within(0.0001f), "The fallback shot must remain horizontal.");
+
+            for (int tick = 0; tick < 30 && target.PendingImpactCount == 0; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            Assert.That(target.PendingImpactCount, Is.Zero,
+                "The physical horizontal projectile must not hit an invalid or occluded candidate above or behind it.");
+        }
+
         private static IEnumerator ActivateSkill(MotorFixture fixture, PlayerAction action)
         {
             int energyBeforePreparation = fixture.Motor.CurrentEnergy;
@@ -567,6 +643,16 @@ namespace Luckbound.Tests.PlayMode.Magus
                 if (keepAfterRoomDisposal) _persistentTargets.Add(targetObject);
                 else Room.OwnActor(targetObject);
                 return target;
+            }
+
+            public GameObject CreateGroundObstacle(string name, Vector2 position, Vector2 size)
+            {
+                var obstacle = new GameObject(name);
+                obstacle.layer = LayerMask.NameToLayer("Ground");
+                obstacle.transform.position = position;
+                obstacle.AddComponent<BoxCollider2D>().size = size;
+                Room.OwnActor(obstacle);
+                return obstacle;
             }
 
             public void CreateDamageWave(int damage)
