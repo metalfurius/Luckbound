@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Luckbound.Core.Crafting;
 using Luckbound.Core.Economy;
 using Luckbound.Core.Identifiers;
@@ -396,7 +397,7 @@ namespace Luckbound.Tests.Core.Economy
         }
 
         [Test]
-        public void TaliaReceiptConflictsWhenHealthPayloadChangesAfterRestore()
+        public void TaliaReceiptReplaysAfterRestoreWithUpdatedHealthAndConflictsAcrossRooms()
         {
             RoomInstanceId roomId = RoomInstanceId.New();
             var inventory = new ExpeditionInventory(_items, "class.bellator", initialGold: 50);
@@ -407,38 +408,77 @@ namespace Luckbound.Tests.Core.Economy
                 currentHealth: 30, maximumHealth: 100, transactionId);
             Assert.That(first.Status, Is.EqualTo(EconomyOperationStatus.Succeeded));
             ExpeditionInventory restored = ExpeditionInventory.Restore(_items, inventory.CreateSnapshot());
-            ExpeditionInventorySnapshot beforeConflicts = restored.CreateSnapshot();
+            ExpeditionInventorySnapshot beforeReplays = restored.CreateSnapshot();
 
             EconomyTransactionOutcome changedCurrentHealth = RestStopService.TryUseTalia(restored, roomId,
                 currentHealth: 31, maximumHealth: 100, transactionId);
             EconomyTransactionOutcome changedMaximumHealth = RestStopService.TryUseTalia(restored, roomId,
                 currentHealth: 30, maximumHealth: 101, transactionId);
-            ExpeditionInventorySnapshot afterConflicts = restored.CreateSnapshot();
+            EconomyTransactionOutcome differentRoom = RestStopService.TryUseTalia(restored, RoomInstanceId.New(),
+                currentHealth: 30, maximumHealth: 100, transactionId);
+            ExpeditionInventorySnapshot afterReplays = restored.CreateSnapshot();
 
-            Assert.That(changedCurrentHealth.Status, Is.EqualTo(EconomyOperationStatus.RejectedTransactionConflict));
-            Assert.That(changedMaximumHealth.Status, Is.EqualTo(EconomyOperationStatus.RejectedTransactionConflict));
-            Assert.That(changedCurrentHealth.ResultingHealth, Is.EqualTo(-1));
-            Assert.That(changedMaximumHealth.ResultingHealth, Is.EqualTo(-1));
-            Assert.That(afterConflicts.gold, Is.EqualTo(beforeConflicts.gold));
-            Assert.That(afterConflicts.restStops.Length, Is.EqualTo(beforeConflicts.restStops.Length));
-            Assert.That(afterConflicts.restStops[0].entered, Is.EqualTo(beforeConflicts.restStops[0].entered));
-            Assert.That(afterConflicts.restStops[0].entryHealthRestored,
-                Is.EqualTo(beforeConflicts.restStops[0].entryHealthRestored));
-            Assert.That(afterConflicts.restStops[0].taliaUsed, Is.EqualTo(beforeConflicts.restStops[0].taliaUsed));
-            Assert.That(afterConflicts.restStops[0].taliaHealthRestored,
-                Is.EqualTo(beforeConflicts.restStops[0].taliaHealthRestored));
-            Assert.That(afterConflicts.restStops[0].taliaHealthAfter,
-                Is.EqualTo(beforeConflicts.restStops[0].taliaHealthAfter));
-            Assert.That(afterConflicts.transactions.Length, Is.EqualTo(beforeConflicts.transactions.Length));
-            Assert.That(afterConflicts.transactions[0].transactionId,
-                Is.EqualTo(beforeConflicts.transactions[0].transactionId));
-            Assert.That(afterConflicts.transactions[0].signature, Is.EqualTo(beforeConflicts.transactions[0].signature));
-            Assert.That(afterConflicts.transactions[0].economyStatus,
-                Is.EqualTo(beforeConflicts.transactions[0].economyStatus));
-            Assert.That(afterConflicts.transactions[0].economyGoldDelta,
-                Is.EqualTo(beforeConflicts.transactions[0].economyGoldDelta));
-            Assert.That(afterConflicts.transactions[0].economyResultingHealth,
-                Is.EqualTo(beforeConflicts.transactions[0].economyResultingHealth));
+            Assert.That(changedCurrentHealth.Status, Is.EqualTo(EconomyOperationStatus.Succeeded));
+            Assert.That(changedMaximumHealth.Status, Is.EqualTo(EconomyOperationStatus.Succeeded));
+            Assert.That(changedCurrentHealth.ResultingHealth, Is.EqualTo(first.ResultingHealth));
+            Assert.That(changedMaximumHealth.ResultingHealth, Is.EqualTo(first.ResultingHealth));
+            Assert.That(changedCurrentHealth.HealthRestored, Is.EqualTo(first.HealthRestored));
+            Assert.That(changedMaximumHealth.HealthRestored, Is.EqualTo(first.HealthRestored));
+            Assert.That(changedCurrentHealth.GoldDelta, Is.EqualTo(first.GoldDelta));
+            Assert.That(changedMaximumHealth.GoldDelta, Is.EqualTo(first.GoldDelta));
+            Assert.That(differentRoom.Status, Is.EqualTo(EconomyOperationStatus.RejectedTransactionConflict));
+            Assert.That(differentRoom.ResultingHealth, Is.EqualTo(-1));
+            Assert.That(afterReplays.gold, Is.EqualTo(beforeReplays.gold));
+            Assert.That(afterReplays.restStops.Length, Is.EqualTo(beforeReplays.restStops.Length));
+            Assert.That(afterReplays.restStops[0].entered, Is.EqualTo(beforeReplays.restStops[0].entered));
+            Assert.That(afterReplays.restStops[0].entryHealthRestored,
+                Is.EqualTo(beforeReplays.restStops[0].entryHealthRestored));
+            Assert.That(afterReplays.restStops[0].taliaUsed, Is.EqualTo(beforeReplays.restStops[0].taliaUsed));
+            Assert.That(afterReplays.restStops[0].taliaHealthRestored,
+                Is.EqualTo(beforeReplays.restStops[0].taliaHealthRestored));
+            Assert.That(afterReplays.restStops[0].taliaHealthAfter,
+                Is.EqualTo(beforeReplays.restStops[0].taliaHealthAfter));
+            Assert.That(afterReplays.transactions.Length, Is.EqualTo(beforeReplays.transactions.Length));
+            Assert.That(afterReplays.transactions[0].transactionId,
+                Is.EqualTo(beforeReplays.transactions[0].transactionId));
+            Assert.That(afterReplays.transactions[0].signature, Is.EqualTo(beforeReplays.transactions[0].signature));
+            Assert.That(afterReplays.transactions[0].economyStatus,
+                Is.EqualTo(beforeReplays.transactions[0].economyStatus));
+            Assert.That(afterReplays.transactions[0].economyGoldDelta,
+                Is.EqualTo(beforeReplays.transactions[0].economyGoldDelta));
+            Assert.That(afterReplays.transactions[0].economyResultingHealth,
+                Is.EqualTo(beforeReplays.transactions[0].economyResultingHealth));
+        }
+
+        [Test]
+        public void LegacyTaliaReceiptWithHealthInSignatureReplaysAfterRestore()
+        {
+            RoomInstanceId roomId = RoomInstanceId.New();
+            var inventory = new ExpeditionInventory(_items, "class.bellator", initialGold: 50);
+            Assert.That(RestStopService.Enter(inventory, roomId, currentHealth: 10, maximumHealth: 100).Succeeded, Is.True);
+            TransactionId transactionId = TransactionId.New();
+            EconomyTransactionOutcome first = RestStopService.TryUseTalia(inventory, roomId,
+                currentHealth: 30, maximumHealth: 100, transactionId);
+            Assert.That(first.Status, Is.EqualTo(EconomyOperationStatus.Succeeded));
+
+            ExpeditionInventorySnapshot legacySnapshot = inventory.CreateSnapshot();
+            InventoryTransactionSnapshot legacyReceipt = legacySnapshot.transactions.Single(
+                transaction => transaction.transactionId == transactionId.ToString());
+            legacyReceipt.signature = "economy|talia|" + roomId + "|30|100";
+            ExpeditionInventory restored = ExpeditionInventory.Restore(_items, legacySnapshot);
+
+            EconomyTransactionOutcome replay = RestStopService.TryUseTalia(restored, roomId,
+                currentHealth: first.ResultingHealth, maximumHealth: 100, transactionId);
+
+            Assert.That(restored.HasRecordedEconomyTransaction(transactionId), Is.True);
+            Assert.That(replay.Status, Is.EqualTo(first.Status));
+            Assert.That(replay.ResultingHealth, Is.EqualTo(first.ResultingHealth));
+            Assert.That(replay.HealthRestored, Is.EqualTo(first.HealthRestored));
+            Assert.That(replay.GoldDelta, Is.EqualTo(first.GoldDelta));
+            Assert.That(restored.Gold, Is.EqualTo(inventory.Gold));
+            Assert.That(restored.CreateSnapshot().transactions.Single(
+                transaction => transaction.transactionId == transactionId.ToString()).signature,
+                Is.EqualTo(legacyReceipt.signature));
         }
 
         [Test]

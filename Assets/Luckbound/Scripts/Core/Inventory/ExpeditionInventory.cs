@@ -611,12 +611,20 @@ namespace Luckbound.Core.Inventory
             int maximumHealth,
             TransactionId transactionId)
         {
+            // Health is durable mutable state, not part of the caller's transaction payload. Replaying
+            // this room-scoped operation after a save/load must return the original receipt even though
+            // the saved health now reflects the first successful use.
             string signature = "economy|talia|" +
-                (roomInstanceId.IsValid ? roomInstanceId.ToString() : string.Empty) + "|" +
-                currentHealth.ToString(CultureInfo.InvariantCulture) + "|" +
-                maximumHealth.ToString(CultureInfo.InvariantCulture);
+                (roomInstanceId.IsValid ? roomInstanceId.ToString() : string.Empty);
             return ExecuteEconomy(transactionId, signature,
                 () => UseTalia(roomInstanceId, currentHealth, maximumHealth, transactionId));
+        }
+
+        /// <summary>Returns whether this ID already stores an economy receipt in this inventory.</summary>
+        public bool HasRecordedEconomyTransaction(TransactionId transactionId)
+        {
+            return transactionId.IsValid && _transactions.TryGetValue(transactionId, out CachedTransaction cached) &&
+                   cached.EconomyOutcome != null;
         }
 
         /// <summary>
@@ -970,7 +978,8 @@ namespace Luckbound.Core.Inventory
                 return EconomyRejected(transactionId, EconomyOperationStatus.RejectedInvalidTransaction);
             if (_transactions.TryGetValue(transactionId, out CachedTransaction cached))
             {
-                if (string.Equals(cached.Signature, signature, StringComparison.Ordinal) && cached.EconomyOutcome != null)
+                if ((string.Equals(cached.Signature, signature, StringComparison.Ordinal) ||
+                     IsLegacyTaliaSignatureMatch(cached.Signature, signature)) && cached.EconomyOutcome != null)
                     return cached.EconomyOutcome;
                 return EconomyRejected(transactionId, EconomyOperationStatus.RejectedTransactionConflict);
             }
@@ -980,6 +989,36 @@ namespace Luckbound.Core.Inventory
                 transactionId, InventoryOperationStatus.Unknown, itemId: outcome.ItemId);
             _transactions.Add(transactionId, new CachedTransaction(signature, inventoryOutcome, economyOutcome: outcome));
             return outcome;
+        }
+
+        private static bool IsLegacyTaliaSignatureMatch(string storedSignature, string requestedSignature)
+        {
+            const string taliaPrefix = "economy|talia|";
+            if (string.IsNullOrEmpty(storedSignature) || string.IsNullOrEmpty(requestedSignature) ||
+                !requestedSignature.StartsWith(taliaPrefix, StringComparison.Ordinal))
+                return false;
+
+            string roomId = requestedSignature.Substring(taliaPrefix.Length);
+            if (roomId.IndexOf('|') >= 0) return false;
+
+            string legacyPayloadPrefix = requestedSignature + "|";
+            if (!storedSignature.StartsWith(legacyPayloadPrefix, StringComparison.Ordinal)) return false;
+            string legacyPayload = storedSignature.Substring(legacyPayloadPrefix.Length);
+            int separator = legacyPayload.IndexOf('|');
+            if (separator <= 0 || separator == legacyPayload.Length - 1 ||
+                legacyPayload.IndexOf('|', separator + 1) >= 0)
+                return false;
+
+            string currentHealthText = legacyPayload.Substring(0, separator);
+            string maximumHealthText = legacyPayload.Substring(separator + 1);
+            return int.TryParse(currentHealthText, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                       out int currentHealth) &&
+                   int.TryParse(maximumHealthText, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                       out int maximumHealth) &&
+                   string.Equals(currentHealthText, currentHealth.ToString(CultureInfo.InvariantCulture),
+                       StringComparison.Ordinal) &&
+                   string.Equals(maximumHealthText, maximumHealth.ToString(CultureInfo.InvariantCulture),
+                       StringComparison.Ordinal);
         }
 
         private static EconomyTransactionOutcome EconomyRejected(

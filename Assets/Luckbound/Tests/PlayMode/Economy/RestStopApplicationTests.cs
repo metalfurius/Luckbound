@@ -218,9 +218,17 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                     .remainingQuantity, Is.EqualTo(1));
 
+                evidence.RecordInput(3, "PersistLaterHealthState", "Persist the expedition's later health value before replaying an older Talia receipt");
+                ExpeditionSaveData laterHealthState = app.ActiveExpedition;
+                laterHealthState.currentHealth = 60;
+                Task<SaveWriteResult> laterHealthWrite = app.SaveActiveExpeditionStateAsync(laterHealthState);
+                while (!laterHealthWrite.IsCompleted) yield return null;
+                Assert.That(laterHealthWrite.Result.Succeeded, Is.True, laterHealthWrite.Result.Message);
+                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(60));
+
                 string runId = app.ActiveRun.RunId.ToString();
                 string nodeId = app.ActiveExpedition.currentNodeId;
-                evidence.RecordInput(3, "ProcessRestart", "Reload the saved rest room, health, merchant stock, and transaction receipts");
+                evidence.RecordInput(4, "ProcessRestart", "Reload the saved rest room, health, merchant stock, and transaction receipts");
                 Object.Destroy(app.gameObject);
                 yield return null;
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
@@ -234,13 +242,13 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveRun.RunId.ToString(), Is.EqualTo(runId));
                 Assert.That(app.ActiveExpedition.currentNodeId, Is.EqualTo(nodeId));
                 Assert.That(app.ActiveRoomInstanceId, Is.EqualTo(roomId));
-                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(90));
+                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(60));
                 Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(62));
                 Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                     .remainingQuantity, Is.EqualTo(1));
                 evidence.RecordAssertion("Rest room state survives process restart with stable room identity",
                     app.ActiveRun.RunId.ToString() == runId && app.ActiveExpedition.currentNodeId == nodeId &&
-                    app.ActiveRoomInstanceId == roomId && app.ActiveExpedition.currentHealth == 90 &&
+                    app.ActiveRoomInstanceId == roomId && app.ActiveExpedition.currentHealth == 60 &&
                     app.ActiveRun.Inventory.Gold == 62 && app.GetActiveMerchantStock().offers.Single(
                         offer => offer.itemId == "consumable.health_potion").remainingQuantity == 1,
                     "same run/node/room identity, saved health, gold and remaining stock",
@@ -252,6 +260,8 @@ namespace Luckbound.Tests.PlayMode.Economy
                 while (!repeatedTalia.IsCompleted) yield return null;
                 Assert.That(repeatedTalia.Result.Persisted, Is.True);
                 Assert.That(repeatedTalia.Result.Outcome.ResultingHealth, Is.EqualTo(90));
+                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(60),
+                    "A cached Talia receipt must not overwrite health that changed after its original transaction.");
                 Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(62),
                     "A persisted Talia transaction ID must not charge again after restart.");
 
@@ -264,11 +274,11 @@ namespace Luckbound.Tests.PlayMode.Economy
                     "A persisted purchase transaction ID must not charge again after restart.");
                 Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                     .remainingQuantity, Is.EqualTo(1));
-                bool noDuplicateCharge = app.ActiveRun.Inventory.Gold == 62 && app.ActiveExpedition.currentHealth == 90 &&
+                bool noDuplicateCharge = app.ActiveRun.Inventory.Gold == 62 && app.ActiveExpedition.currentHealth == 60 &&
                     app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                         .remainingQuantity == 1;
                 evidence.RecordAssertion("Replaying Talia and purchase transaction IDs after restart does not repeat their effects",
-                    noDuplicateCharge, "gold remains 62, health 90 and one potion remains in stock",
+                    noDuplicateCharge, "gold remains 62, health 60 and one potion remains in stock",
                     noDuplicateCharge ? "no duplicate health, stock or currency mutation" : "a replay mutated saved state");
                 Assert.That(evidence.Complete(), Is.Zero, "E03 rest service scenario failed. Evidence: " + evidence.ReportPath);
             }

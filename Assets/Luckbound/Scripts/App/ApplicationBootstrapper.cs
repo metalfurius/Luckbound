@@ -467,9 +467,11 @@ namespace Luckbound.App
             return ExecuteEconomyMutationAsync(operationKey, roomInstanceId, requiresRestStop: true,
                 (run, inventory, candidateSave) =>
                 {
+                    bool alreadyRecorded = inventory.HasRecordedEconomyTransaction(transactionId);
                     EconomyTransactionOutcome outcome = RestStopService.TryUseTalia(inventory, roomInstanceId,
                         candidateSave.currentHealth, candidateSave.maximumHealth, transactionId);
-                    if (outcome.ResultingHealth >= 0) candidateSave.currentHealth = outcome.ResultingHealth;
+                    if (!alreadyRecorded && outcome.ResultingHealth >= 0)
+                        candidateSave.currentHealth = outcome.ResultingHealth;
                     return outcome;
                 });
         }
