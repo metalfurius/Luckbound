@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "weapons": [
+    {
+      "id": "weapon.bellator.rusted_sword",
+      "classId": "class.bellator",
+      "damage": 12,
+      "attackIntervalSeconds": 0.45,
+      "traits": [{ "id": "weapon.trait.balanced" }]
+    },
+    {
+      "id": "weapon.bellator.trail_saber",
+      "classId": "class.bellator",
+      "damage": 9,
+      "attackIntervalSeconds": 0.33,
+      "traits": [{ "id": "weapon.trait.rapid_cadence" }]
+    },
+    {
+      "id": "weapon.bellator.umbra_greatsword",
+      "classId": "class.bellator",
+      "damage": 18,
+      "attackIntervalSeconds": 0.70,
+      "traits": [
+        { "id": "weapon.trait.greater_range" },
+        { "id": "weapon.trait.greater_knockback" }
+      ]
+    },
+    {
+      "id": "weapon.venator.short_bow",
+      "classId": "class.venator",
+      "damage": 10,
+      "attackIntervalSeconds": 0.40,
+      "traits": [{ "id": "weapon.trait.rapid_cadence" }]
+    },
+    {
+      "id": "weapon.venator.long_bow",
+      "classId": "class.venator",
+      "damage": 14,
+      "attackIntervalSeconds": 0.65,
+      "traits": [{ "id": "weapon.trait.optional_charge_damage_bonus", "percent": 30 }]
+    },
+    {
+      "id": "weapon.venator.ruins_crossbow",
+      "classId": "class.venator",
+      "damage": 16,
+      "attackIntervalSeconds": 0.75,
+      "traits": [{ "id": "weapon.trait.pierce_one_target" }]
+    },
+    {
+      "id": "weapon.magus.ember_staff",
+      "classId": "class.magus",
+      "damage": 12,
+      "attackIntervalSeconds": 0.50,
+      "traits": [{ "id": "weapon.trait.fire_projectile" }]
+    },
+    {
+      "id": "weapon.magus.frost_staff",
+      "classId": "class.magus",
+      "damage": 10,
+      "attackIntervalSeconds": 0.45,
+      "traits": [{ "id": "weapon.trait.slow_on_hit", "percent": 20, "durationSeconds": 0.75 }]
+    },
+    {
+      "id": "weapon.magus.shadow_staff",
+      "classId": "class.magus",
+      "damage": 14,
+      "attackIntervalSeconds": 0.60,
+      "traits": [{ "id": "weapon.trait.ignore_one_defense" }]
+    }
+  ]
+}

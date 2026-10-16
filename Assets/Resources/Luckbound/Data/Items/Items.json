@@ -43,6 +43,54 @@
       "compatibleClassIds": ["class.magus"]
     },
     {
+      "id": "weapon.bellator.trail_saber",
+      "nameKey": "item.weapon.trail_saber.name",
+      "descriptionKey": "item.weapon.trail_saber.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.bellator"]
+    },
+    {
+      "id": "weapon.bellator.umbra_greatsword",
+      "nameKey": "item.weapon.umbra_greatsword.name",
+      "descriptionKey": "item.weapon.umbra_greatsword.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.bellator"]
+    },
+    {
+      "id": "weapon.venator.long_bow",
+      "nameKey": "item.weapon.long_bow.name",
+      "descriptionKey": "item.weapon.long_bow.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.venator"]
+    },
+    {
+      "id": "weapon.venator.ruins_crossbow",
+      "nameKey": "item.weapon.ruins_crossbow.name",
+      "descriptionKey": "item.weapon.ruins_crossbow.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.venator"]
+    },
+    {
+      "id": "weapon.magus.frost_staff",
+      "nameKey": "item.weapon.frost_staff.name",
+      "descriptionKey": "item.weapon.frost_staff.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.magus"]
+    },
+    {
+      "id": "weapon.magus.shadow_staff",
+      "nameKey": "item.weapon.shadow_staff.name",
+      "descriptionKey": "item.weapon.shadow_staff.description",
+      "kind": "Weapon",
+      "maxStack": 1,
+      "compatibleClassIds": ["class.magus"]
+    },
+    {
       "id": "armor.bellator.guild_cuirass",
       "nameKey": "item.armor.guild_cuirass.name",
       "descriptionKey": "item.armor.guild_cuirass.description",
