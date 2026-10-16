@@ -42,12 +42,10 @@ class UnityEffectAssetImportTests(unittest.TestCase):
         self._write_json(manifest_path, manifest)
         self.assertEqual(len(import_unity_effects.read_sources(project_root)[1]), 36)
 
-    def test_checked_in_catalog_retains_all_effect_ids_while_stale_source_is_rejected(self) -> None:
-        with self.assertRaisesRegex(
-            import_unity_effects.ImportValidationError,
-            "Effect manifest parameter hash is stale",
-        ):
-            import_unity_effects.validate_assets()
+    def test_checked_in_catalog_retains_all_effect_ids_and_validates_current_sources(self) -> None:
+        validation = import_unity_effects.validate_assets()
+        self.assertEqual(validation["status"], "passed")
+        self.assertEqual(validation["asset_count"], 36)
 
         catalog_path = import_unity_effects.PROJECT_ROOT / import_unity_effects.CATALOG_PATH
         catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
