@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Gameplay.Combat;
+using Luckbound.Gameplay.Combat.Magus;
 using Luckbound.Gameplay.Movement;
 using UnityEngine;
 
@@ -394,6 +395,8 @@ namespace Luckbound.Gameplay.Enemies
             _recoveryTicksRemaining = 0;
             ProjectileImpactTarget2D target = GetComponent<ProjectileImpactTarget2D>();
             if (target != null) target.ClearPendingImpacts();
+            MagusStatusEffectTarget2D statusTarget = GetComponent<MagusStatusEffectTarget2D>();
+            if (statusTarget != null) statusTarget.ResetRoomEffects();
             _collider.enabled = false;
             _body.linearVelocity = Vector2.zero;
             _body.simulated = false;
@@ -420,6 +423,9 @@ namespace Luckbound.Gameplay.Enemies
         private void ResolveProjectileImpacts(long tick)
         {
             ProjectileImpactTarget2D target = GetComponent<ProjectileImpactTarget2D>();
+            MagusStatusEffectTarget2D statusTarget = GetComponent<MagusStatusEffectTarget2D>();
+            if (statusTarget != null) statusTarget.QueuePendingBurnTicksAsImpacts();
+
             while (target.TryDequeueImpact(out ProjectileImpact impact))
             {
                 DirectImpactOutcome outcome = _damageState.ReceiveDirectImpact(

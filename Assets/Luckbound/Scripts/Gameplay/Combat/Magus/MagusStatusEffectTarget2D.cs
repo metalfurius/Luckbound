@@ -8,13 +8,14 @@ namespace Luckbound.Gameplay.Combat.Magus
 {
     /// <summary>
     /// Magus-side status contract attached to an actor that already has a projectile impact target.
-    /// Enemy controllers read the snapshot and drain burn ticks through their own health state.
+    /// Enemy controllers forward burn ticks into the actor's ordinary projectile-impact queue.
     /// </summary>
     public sealed class MagusStatusEffectTarget2D : MonoBehaviour
     {
         private readonly Queue<MagusBurnTick> _pendingBurnTicks = new Queue<MagusBurnTick>();
         private MagusStatusState _state = new MagusStatusState();
         private ProjectileImpactTarget2D _impactTarget;
+        private EntityId _burnEffectId;
         private ActorId _burnSourceActorId;
         private float _burnSourcePositionX;
         private bool _initialized;
@@ -52,6 +53,7 @@ namespace Luckbound.Gameplay.Combat.Magus
             ValidateSource(sourceActorId);
             ValidateSourcePosition(sourcePositionX);
             _state.ApplyBurn(tick, damagePerSecond, durationTicks);
+            _burnEffectId = EntityId.New();
             _burnSourceActorId = sourceActorId;
             _burnSourcePositionX = sourcePositionX;
         }
@@ -84,6 +86,7 @@ namespace Luckbound.Gameplay.Combat.Magus
                 }
 
                 _pendingBurnTicks.Enqueue(new MagusBurnTick(
+                    _burnEffectId,
                     HitId.New(),
                     _burnSourceActorId,
                     ActorId,
@@ -96,8 +99,7 @@ namespace Luckbound.Gameplay.Combat.Magus
         }
 
         /// <summary>
-        /// Dequeue periodic damage for the owning enemy controller. Resolve it through its periodic
-        /// damage path so direct-impact protection does not suppress burn damage.
+        /// Dequeue one pending status pulse for the owning enemy controller.
         /// </summary>
         public bool TryDequeueBurnTick(out MagusBurnTick burnTick)
         {
@@ -111,10 +113,33 @@ namespace Luckbound.Gameplay.Combat.Magus
             return true;
         }
 
+        /// <summary>Move queued burn pulses into the actor's standard impact queue for normal health resolution.</summary>
+        internal void QueuePendingBurnTicksAsImpacts()
+        {
+            EnsureInitialized();
+
+            while (TryDequeueBurnTick(out MagusBurnTick burnTick))
+            {
+                if (burnTick.TargetActorId != ActorId || burnTick.SourceActorId == ActorId)
+                {
+                    throw new InvalidOperationException("A burn pulse must retain its distinct source and target actors.");
+                }
+
+                _impactTarget.QueueImpact(new ProjectileImpact(
+                    burnTick.EffectId,
+                    burnTick.HitId,
+                    burnTick.SourceActorId,
+                    burnTick.TargetActorId,
+                    burnTick.Damage,
+                    burnTick.SourcePositionX));
+            }
+        }
+
         internal void ResetRoomEffects()
         {
             _state = new MagusStatusState();
             _pendingBurnTicks.Clear();
+            _burnEffectId = default;
             _burnSourceActorId = default;
             _burnSourcePositionX = 0f;
             _lastTick = -1;

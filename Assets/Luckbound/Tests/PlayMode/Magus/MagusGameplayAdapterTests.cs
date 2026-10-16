@@ -6,6 +6,8 @@ using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Combat.Magus;
+using Luckbound.Gameplay.Enemies;
+using Luckbound.Gameplay.Movement;
 using Luckbound.Gameplay.Rooms;
 using NUnit.Framework;
 using UnityEngine;
@@ -91,14 +93,77 @@ namespace Luckbound.Tests.PlayMode.Magus
                 Assert.That(directStatus.StatusSnapshot.IsBurning, Is.True);
                 Assert.That(splashStatus.StatusSnapshot.IsBurning, Is.True);
 
-                for (long tick = 11; tick <= 69; tick++) fixture.Tick(tick);
+                for (long tick = 11; tick <= 129; tick++) fixture.Tick(tick);
 
-                Assert.That(directStatus.TryDequeueBurnTick(out MagusBurnTick directBurn), Is.True);
-                Assert.That(directBurn.Damage, Is.EqualTo(3m));
-                Assert.That(directBurn.Tick, Is.EqualTo(69));
-                Assert.That(splashStatus.TryDequeueBurnTick(out MagusBurnTick splashBurn), Is.True);
-                Assert.That(splashBurn.Damage, Is.EqualTo(3m));
-                Assert.That(splashBurn.TargetActorId, Is.EqualTo(splashTarget.ActorId));
+                List<MagusBurnTick> directBurns = DrainBurnTicks(directStatus);
+                List<MagusBurnTick> splashBurns = DrainBurnTicks(splashStatus);
+                Assert.That(directBurns, Has.Count.EqualTo(2));
+                Assert.That(splashBurns, Has.Count.EqualTo(2));
+                var directHitIds = new HashSet<HitId>();
+                foreach (MagusBurnTick burn in directBurns)
+                {
+                    Assert.That(burn.EffectId.IsValid, Is.True);
+                    Assert.That(burn.SourceActorId, Is.EqualTo(fixture.ActorId));
+                    Assert.That(burn.TargetActorId, Is.EqualTo(directTarget.ActorId));
+                    Assert.That(burn.Damage, Is.EqualTo(3m));
+                    Assert.That(directHitIds.Add(burn.HitId), Is.True, "Every burn pulse must use a unique HitId.");
+                }
+                Assert.That(directBurns[0].Tick, Is.EqualTo(69));
+                Assert.That(directBurns[1].Tick, Is.EqualTo(129));
+                Assert.That(directBurns[0].EffectId, Is.EqualTo(directBurns[1].EffectId));
+                Assert.That(splashBurns[0].SourceActorId, Is.EqualTo(fixture.ActorId));
+                Assert.That(splashBurns[0].TargetActorId, Is.EqualTo(splashTarget.ActorId));
+                Assert.That(splashBurns[1].TargetActorId, Is.EqualTo(splashTarget.ActorId));
+            }
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator FireballDamagesAProductionHuesoguardiaWithDirectAndBurnImpacts()
+        {
+            using (var fixture = CreateFixture(50, MagusSkillLoadout.FireballId, MagusSkillLoadout.FrostNovaId))
+            {
+                Huesoguardia2D enemy = fixture.CreateHuesoguardia("Magus_Fireball_Huesoguardia", new Vector2(1.1f, 0f));
+                Physics2D.SyncTransforms();
+                int initialHealth = enemy.CurrentHealth;
+
+                MagusCombatResult preparing = fixture.Tick(0, PlayerAction.Skill1);
+                for (long tick = 1; tick < 9; tick++)
+                {
+                    yield return new WaitForFixedUpdate();
+                    fixture.Tick(tick);
+                }
+
+                yield return new WaitForFixedUpdate();
+                MagusCombatResult activated = fixture.Tick(9);
+                Assert.That(preparing.SkillOutcome.Status, Is.EqualTo(SkillUseStatus.Preparing));
+                Assert.That(activated.SkillOutcome.Status, Is.EqualTo(SkillUseStatus.Activated));
+
+                long nextTick = 10;
+                int attempts = 0;
+                while (enemy.ProjectileImpactCount < 1 && attempts++ < 30)
+                {
+                    yield return new WaitForFixedUpdate();
+                    fixture.Tick(nextTick++);
+                }
+
+                int healthAfterFireball = enemy.CurrentHealth;
+                Assert.That(enemy.ProjectileImpactCount, Is.EqualTo(1), "The fireball must resolve through the enemy's normal impact processor.");
+                Assert.That(healthAfterFireball, Is.LessThan(initialHealth), "The fireball impact must reduce real enemy health.");
+                Assert.That(initialHealth - healthAfterFireball, Is.EqualTo(22), "The direct hit must use the Huesoguardia's two defense points.");
+
+                attempts = 0;
+                while (enemy.ProjectileImpactCount < 3 && attempts++ < 150)
+                {
+                    yield return new WaitForFixedUpdate();
+                    fixture.Tick(nextTick++);
+                }
+
+                Assert.That(enemy.ProjectileImpactCount, Is.EqualTo(3), "Two burn pulses must follow the direct impact through the normal impact queue.");
+                Assert.That(enemy.CurrentHealth, Is.LessThan(healthAfterFireball), "Burn pulses must reduce the production enemy's real health.");
+                Assert.That(enemy.CurrentHealth, Is.EqualTo(healthAfterFireball - 2), "Each three-damage pulse must pass through the enemy's two defense points.");
+                Assert.That(enemy.GetComponent<MagusStatusEffectTarget2D>().PendingBurnTickCount, Is.Zero);
             }
 
             yield return null;
@@ -335,6 +400,13 @@ namespace Luckbound.Tests.PlayMode.Magus
             return impacts;
         }
 
+        private static List<MagusBurnTick> DrainBurnTicks(MagusStatusEffectTarget2D target)
+        {
+            var burnTicks = new List<MagusBurnTick>();
+            while (target.TryDequeueBurnTick(out MagusBurnTick burnTick)) burnTicks.Add(burnTick);
+            return burnTicks;
+        }
+
         private static MagusFixture CreateFixture(int initialEnergy, string skill1, string skill2)
         {
             TextAsset source = Resources.Load<TextAsset>("Luckbound/Data/Skills");
@@ -428,6 +500,37 @@ namespace Luckbound.Tests.PlayMode.Magus
 
                 LifetimeScope.OwnActor(targetObject);
                 return target;
+            }
+
+            public Huesoguardia2D CreateHuesoguardia(string name, Vector2 position)
+            {
+                Physics2D.gravity = new Vector2(0f, -9.81f);
+                int groundLayer = LayerMask.NameToLayer("Ground");
+                if (groundLayer < 0) throw new System.InvalidOperationException("The Ground layer is required by production enemy initialization.");
+
+                ActorId playerActorId = ActorId.New();
+                var input = new PlayerInputBuffer(playerActorId);
+                GameObject player = NewObject(name + "_Player");
+                player.transform.position = new Vector2(100f, 0f);
+                Rigidbody2D playerBody = player.AddComponent<Rigidbody2D>();
+                playerBody.gravityScale = 0f;
+                CapsuleCollider2D playerCollider = player.AddComponent<CapsuleCollider2D>();
+                playerCollider.direction = CapsuleDirection2D.Vertical;
+                playerCollider.size = new Vector2(0.75f, 1.5f);
+                PlayerMotor2D motor = player.AddComponent<PlayerMotor2D>();
+                motor.Initialize(playerActorId, input, 1 << groundLayer);
+
+                GameObject enemyObject = NewObject(name);
+                enemyObject.transform.position = position;
+                Rigidbody2D enemyBody = enemyObject.AddComponent<Rigidbody2D>();
+                enemyBody.sleepMode = RigidbodySleepMode2D.NeverSleep;
+                CapsuleCollider2D enemyCollider = enemyObject.AddComponent<CapsuleCollider2D>();
+                enemyCollider.direction = CapsuleDirection2D.Vertical;
+                enemyCollider.size = new Vector2(0.9f, 0.9f);
+                Huesoguardia2D enemy = enemyObject.AddComponent<Huesoguardia2D>();
+                enemy.Initialize(ActorId.New(), motor, 1 << groundLayer);
+                enemyBody.gravityScale = 0f;
+                return enemy;
             }
 
             public Projectile2D SpawnUnhittingProjectile()

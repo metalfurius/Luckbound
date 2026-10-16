@@ -2,6 +2,7 @@ using System;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Gameplay.Combat;
+using Luckbound.Gameplay.Combat.Magus;
 using Luckbound.Gameplay.Movement;
 using UnityEngine;
 
@@ -296,6 +297,9 @@ namespace Luckbound.Gameplay.Enemies
 
         private void ResolveProjectileImpacts(long tick)
         {
+            MagusStatusEffectTarget2D statusTarget = GetComponent<MagusStatusEffectTarget2D>();
+            if (statusTarget != null) statusTarget.QueuePendingBurnTicksAsImpacts();
+
             while (_impactTarget.TryDequeueImpact(out ProjectileImpact impact))
             {
                 if (IsDead)
@@ -381,6 +385,8 @@ namespace Luckbound.Gameplay.Enemies
         {
             State = HuesoguardiaBehaviorState.Dead;
             _impactTarget.ClearPendingImpacts();
+            MagusStatusEffectTarget2D statusTarget = GetComponent<MagusStatusEffectTarget2D>();
+            if (statusTarget != null) statusTarget.ResetRoomEffects();
             _collider.enabled = false;
             _body.linearVelocity = Vector2.zero;
             _body.simulated = false;
