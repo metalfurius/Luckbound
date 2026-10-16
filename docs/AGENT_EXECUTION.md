@@ -12,6 +12,8 @@ Este documento convierte las 111 tareas del producto en trabajo distribuible par
 
 La orden explícita de Fran del 16 de octubre retoma el desarrollo completo y supera el límite documental de la intervención anterior. El coordinador parte del estado de [PROGRESS.md](PROGRESS.md), prioriza el siguiente hito jugable F10 y puede repartir hasta tres paquetes listos e independientes entre trabajadores Luna `max` según el grafo. Mantiene los contratos de integración y todas las ejecuciones ocultas o aisladas.
 
+La petición documental posterior de Fran reafirma la regla de visibilidad y limita la intervención actual a documentación. No se deben continuar paquetes de código ni iniciar Unity, pruebas o builds hasta una nueva orden explícita de reanudar. La regla de visibilidad sigue siendo absoluta: solo se muestra la interfaz mínima cuando Fran necesite usarla para tomar una decisión concreta; toda otra ventana o interfaz debe ejecutarse sin UI o en un entorno verdaderamente aislado.
+
 Estado técnico vigente al 16 de octubre; los cambios y sus evidencias están en [PROGRESS.md](PROGRESS.md):
 
 - E01 y E02 están `Verified`; E02.ADAPTER quedó integrado en `99ea5e9` y el recorrido físico de fabricación pasa.

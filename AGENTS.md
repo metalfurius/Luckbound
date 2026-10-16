@@ -24,3 +24,5 @@ Las cinco revisiones de Fran están indicadas en el plan. Una revisión pendient
 El presupuesto no incluye compras de recursos o servicios. Si una herramienta o cuenta bloquea una tarea, registra el fallo concreto y continúa con trabajo independiente. Respeta las instrucciones directas posteriores del usuario cuando modifiquen el plan.
 
 La orden explícita de Fran del 16 de octubre retoma el desarrollo completo y supera el límite documental de la intervención anterior. El coordinador reanuda desde [PROGRESS.md](docs/PROGRESS.md), respeta sus evidencias y puede repartir hasta tres paquetes listos entre trabajadores Luna `max` según el grafo, priorizando el siguiente hito jugable.
+
+La petición posterior de Fran de reafirmar y dejar por escrito la regla de visibilidad limita la intervención actual a documentación. Los paquetes de código quedan detenidos y no se inician Unity, pruebas ni builds hasta una nueva orden de reanudar. La regla estricta anterior sigue vigente: ninguna ventana ajena a una decisión concreta que Fran necesite tomar debe aparecer en su pantalla; solo puede mostrarse la interfaz mínima durante esa decisión.

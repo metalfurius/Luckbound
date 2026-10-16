@@ -2,7 +2,7 @@
 
 **Actualizado:** 16 de octubre de 2026.
 
-**Alcance vigente:** Fran reanudó el desarrollo completo el 16 de octubre. E02 y E07 están verificados; E03 ya tiene integración App durable y cobertura PlayMode parcial; E04 tiene mapper y mutaciones persistentes, pero falta conectar ofertas/recompensas al juego; E08 ya tiene Magus conectado al motor y pruebas por entrada, pero falta apuntado asistido y aceptación integral. F10 sigue siendo el siguiente hito jugable. Todos los trabajos mantienen la regla estricta de visibilidad.
+**Alcance vigente de esta intervención:** petición documental para reafirmar la regla estricta de visibilidad. El estado técnico previo conserva F10 como siguiente hito jugable, pero el trabajo de código queda detenido hasta una nueva orden explícita de reanudar. No se inician Unity, pruebas ni builds para esta actualización documental.
 
 Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, paquetes y grafo de ejecución: [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
@@ -18,6 +18,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, 
 - E08 conecta el motor del jugador y las tres habilidades Magus a los módulos de combate; la regresión PlayMode pasa 93/93. Sigue faltando asistencia de apuntado hacia objetivos y una aceptación integral desde el jugador.
 - F08 incluye tres pistas, catálogo de 36 efectos, director de audio aislado con prueba PlayMode y tres ambientes loopables de fuente. Las herramientas de audio pasan 30/30; falta conectar música/efectos a escenas, integrar los ambientes y hacer revisión auditiva.
 - **Regla obligatoria de visibilidad, reafirmada por Fran (16 de octubre de 2026):** Fran no debe ver ninguna ventana, pestaña, panel, diálogo, notificación ni previsualización salvo que necesite usar personalmente esa interfaz para tomar una decisión concreta en ese momento. Que una ventana esté relacionada con el trabajo no basta; por defecto no se le muestra ninguna interfaz. Cualquier otra UI se ejecuta sin interfaz o en un sandbox/escritorio verdaderamente separado e inaccesible para él. No vale abrirla en su escritorio y dejarla detrás, sin foco o minimizada. La regla cubre al coordinador, subagentes, aplicaciones y procesos secundarios; si no se puede garantizar el aislamiento, no se lanza.
+- **Alcance de la petición actual:** esta intervención únicamente deja reafirmada la regla de visibilidad; no autoriza continuar implementación. Los paquetes pendientes permanecen detenidos y requerirán una nueva orden explícita para reanudar.
 - E01 está consolidada en el commit `fd3626f`; las cuatro referencias originales del usuario permanecen sin seguimiento y fuera del commit.
 - El prototipo, la publicación previa y las fuentes están preservados mediante referencias Git y copias con hash idéntico.
 - La nueva versión del Editor y WebGL están instalados y verificados; A04 creó el proyecto limpio y A05 produjo y probó las primeras builds. B01 establece la sesión y los siete identificadores runtime; B02 entrega entrada común; B03 añade locomoción horizontal física con colisión.
