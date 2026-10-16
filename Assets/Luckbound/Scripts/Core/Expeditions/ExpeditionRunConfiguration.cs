@@ -13,6 +13,9 @@ namespace Luckbound.Core.Expeditions
     public sealed class ExpeditionRunConfiguration
     {
         public const string HumanRaceId = "race.human";
+        public const string OrciniRaceId = "race.orcini";
+        public const string AlvariRaceId = "race.alvari";
+        public const string DvergarRaceId = "race.dvergar";
         public const int InitialHealth = 100;
         public const int InitialEnergy = 50;
         public const int InitialHealthPotions = 2;
@@ -37,8 +40,8 @@ namespace Luckbound.Core.Expeditions
             if (!runId.IsValid) throw new ArgumentException("A fresh expedition requires a valid RunId.", nameof(runId));
             if (classId != "class.bellator" && classId != "class.venator" && classId != "class.magus")
                 throw new ArgumentException("An expedition requires one of the three playable classes.", nameof(classId));
-            if (!string.Equals(raceId, HumanRaceId, StringComparison.Ordinal))
-                throw new ArgumentException("Only the human race is unlocked for a new profile.", nameof(raceId));
+            if (!IsKnownRaceId(raceId))
+                throw new ArgumentException("An expedition requires one of the four known races.", nameof(raceId));
             if (skillIds == null) throw new ArgumentNullException(nameof(skillIds));
             string[] selectedSkills = skillIds.ToArray();
             if (selectedSkills.Length != 2 || selectedSkills.Any(string.IsNullOrWhiteSpace) ||
@@ -93,6 +96,14 @@ namespace Luckbound.Core.Expeditions
         public int StartingEnergy => PermanentUpgradeRules.ApplyFivePercentPerLevel(InitialEnergy, EnergyUpgradeLevel);
         public int StartingHealthPotions => InitialHealthPotions + AdditionalPotionUpgradeLevel;
         public int StartingFortunaCharges => InitialFortunaCharges;
+
+        public static bool IsKnownRaceId(string raceId)
+        {
+            return string.Equals(raceId, HumanRaceId, StringComparison.Ordinal) ||
+                string.Equals(raceId, OrciniRaceId, StringComparison.Ordinal) ||
+                string.Equals(raceId, AlvariRaceId, StringComparison.Ordinal) ||
+                string.Equals(raceId, DvergarRaceId, StringComparison.Ordinal);
+        }
 
         public ExpeditionRunConfiguration WithInventory(ExpeditionInventory inventory)
         {

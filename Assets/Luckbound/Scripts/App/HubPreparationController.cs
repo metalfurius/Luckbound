@@ -19,6 +19,19 @@ namespace Luckbound.App
     {
         private static readonly string[] PlayableClasses = { "class.bellator", "class.venator", "class.magus" };
         private static readonly string[] ClassLabels = { "BELLATOR", "VENATOR", "MAGUS" };
+        private static readonly string[] OtherRaceIds =
+        {
+            ExpeditionRunConfiguration.OrciniRaceId,
+            ExpeditionRunConfiguration.AlvariRaceId,
+            ExpeditionRunConfiguration.DvergarRaceId
+        };
+        private static readonly string[] OtherRaceLabels = { "ORCINI", "ALVARI", "DVERGAR" };
+        private static readonly string[] OtherRaceUnlockLabels =
+        {
+            "CONTRATO DE COMBATE",
+            "CONTRATO DE HISTORIA",
+            "CONTRATO DE FABRICACIÓN"
+        };
 
         [SerializeField] private Button[] _classButtons;
         [SerializeField] private Button[] _skillButtons;
@@ -40,6 +53,7 @@ namespace Luckbound.App
         private readonly List<string> _selectedSkillIds = new List<string>(2);
         private UnityAction[] _classButtonHandlers;
         private UnityAction[] _skillButtonHandlers;
+        private UnityAction[] _raceButtonHandlers;
         private UnityAction _openUpgradesHandler;
         private UnityAction _closeUpgradesHandler;
         private UnityAction _healthUpgradeHandler;
@@ -48,6 +62,7 @@ namespace Luckbound.App
         private SkillCatalog _skillCatalog;
         private List<SkillDefinition> _classSkills = new List<SkillDefinition>(3);
         private int _selectedClassIndex;
+        private string _selectedRaceId = ExpeditionRunConfiguration.HumanRaceId;
         private string _statusMessage;
         private string _profileStatusMessage;
         private bool _startingExpedition;
@@ -55,7 +70,7 @@ namespace Luckbound.App
         private string _upgradeStatusMessage;
 
         public string SelectedClassId => PlayableClasses[_selectedClassIndex];
-        public string SelectedRaceId => ExpeditionRunConfiguration.HumanRaceId;
+        public string SelectedRaceId => _selectedRaceId;
         public IReadOnlyList<string> SelectedSkillIds => _selectedSkillIds.AsReadOnly();
 
         private void OnEnable()
@@ -76,6 +91,13 @@ namespace Luckbound.App
                 _skillButtons[index].onClick.AddListener(_skillButtonHandlers[index]);
             }
             _humanRaceButton.onClick.AddListener(SelectHumanRace);
+            _raceButtonHandlers = new UnityAction[_lockedRaceButtons.Length];
+            for (int index = 0; index < _lockedRaceButtons.Length; index++)
+            {
+                int capturedIndex = index;
+                _raceButtonHandlers[index] = () => SelectRace(OtherRaceIds[capturedIndex]);
+                _lockedRaceButtons[index].onClick.AddListener(_raceButtonHandlers[index]);
+            }
             _startExpeditionButton.onClick.AddListener(StartExpedition);
             _returnToMenuButton.onClick.AddListener(ReturnToMenu);
             _openUpgradesHandler = OpenUpgradePanel;
@@ -120,6 +142,9 @@ namespace Luckbound.App
                 for (int index = 0; index < _skillButtons.Length && index < _skillButtonHandlers.Length; index++)
                     if (_skillButtons[index] != null) _skillButtons[index].onClick.RemoveListener(_skillButtonHandlers[index]);
             if (_humanRaceButton != null) _humanRaceButton.onClick.RemoveListener(SelectHumanRace);
+            if (_lockedRaceButtons != null && _raceButtonHandlers != null)
+                for (int index = 0; index < _lockedRaceButtons.Length && index < _raceButtonHandlers.Length; index++)
+                    if (_lockedRaceButtons[index] != null) _lockedRaceButtons[index].onClick.RemoveListener(_raceButtonHandlers[index]);
             if (_startExpeditionButton != null) _startExpeditionButton.onClick.RemoveListener(StartExpedition);
             if (_returnToMenuButton != null) _returnToMenuButton.onClick.RemoveListener(ReturnToMenu);
             if (_openUpgradesButton != null && _openUpgradesHandler != null) _openUpgradesButton.onClick.RemoveListener(_openUpgradesHandler);
@@ -171,6 +196,21 @@ namespace Luckbound.App
 
         public void SelectHumanRace()
         {
+            SelectRace(ExpeditionRunConfiguration.HumanRaceId);
+        }
+
+        private void SelectRace(string raceId)
+        {
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            ProfileSaveData profile = GetProfileForRaceSelection(app);
+            if (!ExpeditionRunConfiguration.IsKnownRaceId(raceId) || !IsRaceUnlocked(profile, raceId))
+            {
+                _statusMessage = "Esa raza sigue bloqueada en tu perfil.";
+                RefreshView();
+                return;
+            }
+
+            _selectedRaceId = raceId;
             _statusMessage = string.Empty;
             RefreshView();
         }
@@ -252,6 +292,12 @@ namespace Luckbound.App
             try
             {
                 ProfileSaveData profile = app.Profile;
+                if (!IsRaceUnlocked(profile, SelectedRaceId))
+                {
+                    _statusMessage = "La raza seleccionada ya no está desbloqueada en tu perfil.";
+                    RefreshView();
+                    return;
+                }
                 ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
                     SelectedClassId, SelectedRaceId, _selectedSkillIds,
                     profile.healthUpgradeLevel,
@@ -346,6 +392,8 @@ namespace Luckbound.App
 
         private void RefreshView()
         {
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            ProfileSaveData profile = GetProfileForRaceSelection(app);
             if (_classButtons != null)
             {
                 for (int index = 0; index < _classButtons.Length && index < ClassLabels.Length; index++)
@@ -377,16 +425,25 @@ namespace Luckbound.App
 
             if (_humanRaceButton != null)
             {
-                _humanRaceButton.interactable = true;
-                SetLabel(_humanRaceButton, "◆ HUMANO · DISPONIBLE · 2 FORTUNA");
+                bool unlocked = IsRaceUnlocked(profile, ExpeditionRunConfiguration.HumanRaceId);
+                bool selected = _selectedRaceId == ExpeditionRunConfiguration.HumanRaceId;
+                _humanRaceButton.interactable = unlocked;
+                SetLabel(_humanRaceButton, (selected ? "◆ " : "") + "HUMANO · " +
+                    (unlocked ? "DISPONIBLE · INICIAL · 2 FORTUNA" : "BLOQUEADO"));
+                SetButtonColors(_humanRaceButton, selected, "#32251F", "#F0C15A");
             }
             if (_lockedRaceButtons != null)
             {
-                string[] labels = { "ORCINI · CONTRATO DE COMBATE", "ALVARI · CONTRATO DE HISTORIA", "DVERGAR · CONTRATO DE FABRICACIÓN" };
                 for (int index = 0; index < _lockedRaceButtons.Length; index++)
                 {
-                    _lockedRaceButtons[index].interactable = false;
-                SetLabel(_lockedRaceButtons[index], index < labels.Length ? "BLOQUEADA · " + labels[index] : "BLOQUEADA");
+                    string raceId = OtherRaceIds[index];
+                    bool unlocked = IsRaceUnlocked(profile, raceId);
+                    bool selected = _selectedRaceId == raceId;
+                    _lockedRaceButtons[index].interactable = unlocked;
+                    SetLabel(_lockedRaceButtons[index], unlocked
+                        ? (selected ? "◆ " : "") + OtherRaceLabels[index] + " · DESBLOQUEADA · " + OtherRaceUnlockLabels[index]
+                        : "BLOQUEADA · " + OtherRaceLabels[index] + " · " + OtherRaceUnlockLabels[index]);
+                    SetButtonColors(_lockedRaceButtons[index], selected, "#32251F", "#F0C15A");
                 }
             }
 
@@ -394,7 +451,7 @@ namespace Luckbound.App
             {
                 string selected = string.Join("  ·  ", _selectedSkillIds.Select(SkillLabel));
                 _selectionSummaryText.text = "CLASE  " + ClassLabels[_selectedClassIndex] +
-                    "     RAZA  HUMANO\nHABILIDADES  " + (selected.Length == 0 ? "elige dos" : selected);
+                    "     RAZA  " + RaceLabel(_selectedRaceId) + "\nHABILIDADES  " + (selected.Length == 0 ? "elige dos" : selected);
             }
             RefreshUpgradeControls();
             if (_statusText != null)
@@ -406,13 +463,13 @@ namespace Luckbound.App
             }
             if (_startExpeditionButton != null)
             {
-                ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
                 bool canContinue = app != null && app.CanContinueExpedition;
                 bool canRetry = app != null && app.HasPendingExpeditionWrite;
                 bool retrySettlement = app != null && app.HasPendingSettlement;
+                bool selectedRaceUnlocked = IsRaceUnlocked(profile, _selectedRaceId);
                 SetLabel(_startExpeditionButton, retrySettlement ? "REINTENTAR LIQUIDACIÓN" : canRetry ? "REINTENTAR GUARDADO" : canContinue ? "CONTINUAR EXPEDICIÓN" : "PARTIR");
                 _startExpeditionButton.interactable = !_startingExpedition && (retrySettlement || canRetry || canContinue ||
-                    (_selectedSkillIds.Count == 2 && app != null && app.CanStartNewExpedition));
+                    (_selectedSkillIds.Count == 2 && selectedRaceUnlocked && app != null && app.CanStartNewExpedition));
             }
         }
 
@@ -448,7 +505,7 @@ namespace Luckbound.App
                 level < maximumLevel && renown >= cost));
         }
 
-        private static string StartingStatsStatus()
+        private string StartingStatsStatus()
         {
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
             ProfileSaveData profile = app == null ? ProfileSaveData.CreateNewProfile() : app.Profile;
@@ -457,7 +514,28 @@ namespace Luckbound.App
             int energy = PermanentUpgradeRules.ApplyFivePercentPerLevel(ExpeditionRunConfiguration.InitialEnergy,
                 profile.energyUpgradeLevel);
             int potions = ExpeditionRunConfiguration.InitialHealthPotions + profile.additionalPotionUpgradeLevel;
-            return "Preparación lista · " + health + " SALUD · " + energy + " ENERGÍA · " + potions + " pociones";
+            return "Preparación lista · " + RaceLabel(_selectedRaceId) + " · " + health + " SALUD · " +
+                energy + " ENERGÍA · " + potions + " pociones";
+        }
+
+        private static ProfileSaveData GetProfileForRaceSelection(ApplicationBootstrapper app)
+        {
+            if (app == null) return ProfileSaveData.CreateNewProfile();
+            return app.SaveDataReady ? app.Profile : null;
+        }
+
+        private static bool IsRaceUnlocked(ProfileSaveData profile, string raceId)
+        {
+            return profile != null && profile.unlockedRaceIds != null &&
+                profile.unlockedRaceIds.Contains(raceId, StringComparer.Ordinal);
+        }
+
+        private static string RaceLabel(string raceId)
+        {
+            if (raceId == ExpeditionRunConfiguration.OrciniRaceId) return "ORCINI";
+            if (raceId == ExpeditionRunConfiguration.AlvariRaceId) return "ALVARI";
+            if (raceId == ExpeditionRunConfiguration.DvergarRaceId) return "DVERGAR";
+            return "HUMANO";
         }
 
         private static string FormatPurchaseStatus(ProgressionPurchaseCommitResult result)

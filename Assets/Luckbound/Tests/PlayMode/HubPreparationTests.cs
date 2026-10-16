@@ -48,7 +48,26 @@ namespace Luckbound.Tests.PlayMode
                 ExpeditionRunConfiguration.HumanRaceId, new[] { firstSkillId,
                     classId == "class.bellator" ? "skill.venator.piercing_arrow" : "skill.bellator.guard" }));
             Assert.Throws<System.ArgumentException>(() => ExpeditionRunConfigurationFactory.Create(classId,
-                "race.orcini", new[] { firstSkillId, SecondSkillFor(classId) }));
+                "race.unknown", new[] { firstSkillId, SecondSkillFor(classId) }));
+        }
+
+        [TestCase(ExpeditionRunConfiguration.HumanRaceId)]
+        [TestCase(ExpeditionRunConfiguration.OrciniRaceId)]
+        [TestCase(ExpeditionRunConfiguration.AlvariRaceId)]
+        [TestCase(ExpeditionRunConfiguration.DvergarRaceId)]
+        public void E09RunConfigurationAcceptsKnownRacesWithoutOwningUnlockPolicy(string raceId)
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator", raceId,
+                new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
+
+            Assert.That(run.RaceId, Is.EqualTo(raceId));
+        }
+
+        [Test]
+        public void E09RunConfigurationRejectsUnknownRaceIds()
+        {
+            Assert.Throws<System.ArgumentException>(() => ExpeditionRunConfigurationFactory.Create("class.bellator",
+                "race.unknown", new[] { "skill.bellator.circular_cut", "skill.bellator.guard" }));
         }
 
         [UnityTest]
@@ -105,9 +124,23 @@ namespace Luckbound.Tests.PlayMode
                 }
 
                 Button[] lockedRaces = { FindButton("RaceOrciniButton"), FindButton("RaceAlvariButton"), FindButton("RaceDvergarButton") };
-                bool racesLocked = lockedRaces.All(button => button != null && !button.interactable);
+                bool racesLocked = lockedRaces.All(button => button != null && !button.interactable &&
+                    button.GetComponentInChildren<Text>(true) != null &&
+                    button.GetComponentInChildren<Text>(true).text.Contains("BLOQUEADA"));
                 evidence.RecordAssertion("Uncontracted races remain locked", racesLocked,
                     "Orcini, Alvari and Dvergar buttons disabled", string.Join(", ", lockedRaces.Select(button => button == null ? "missing" : button.interactable.ToString())));
+                bool defaultRaceIsHuman = preparation.SelectedRaceId == ExpeditionRunConfiguration.HumanRaceId &&
+                    app.Profile.unlockedRaceIds.SequenceEqual(new[] { ExpeditionRunConfiguration.HumanRaceId });
+                foreach (Button lockedRace in lockedRaces) lockedRace.onClick.Invoke();
+                bool lockedRaceClicksRejected = preparation.SelectedRaceId == ExpeditionRunConfiguration.HumanRaceId &&
+                    app.ActiveRun == null && SceneManager.GetActiveScene().name == "Hub";
+                evidence.RecordAssertion("A new profile selects Human only and programmatic clicks on locked races do not start a run",
+                    defaultRaceIsHuman && lockedRaceClicksRejected, "Human selection, no active run, still in Hub",
+                    preparation.SelectedRaceId + "; active run=" + (app.ActiveRun != null) + "; scene=" + SceneManager.GetActiveScene().name);
+                Text initialSummary = FindText("PreparationSelectionSummary");
+                Text initialStatus = FindText("HubPreparationStatus");
+                Assert.That(initialSummary != null && initialSummary.text.Contains("HUMANO"), Is.True);
+                Assert.That(initialStatus != null && initialStatus.text.Contains("HUMANO"), Is.True);
 
                 evidence.RecordInput(2, "UIButton", "ClassMagusButton.onClick");
                 FindButton("ClassMagusButton").onClick.Invoke();
@@ -121,9 +154,12 @@ namespace Luckbound.Tests.PlayMode
 
                 ExpeditionRunConfiguration firstRun = app.ActiveRun;
                 evidence.RecordAssertion("Starting the expedition applies the selected class and route", firstRun != null &&
-                    SceneManager.GetActiveScene().name == "Expedition" && firstRun.ClassId == "class.magus" && firstRun.Route.Nodes.Count == 24,
+                    SceneManager.GetActiveScene().name == "Expedition" && firstRun.ClassId == "class.magus" &&
+                    firstRun.RaceId == ExpeditionRunConfiguration.HumanRaceId &&
+                    app.ActiveExpedition.raceId == ExpeditionRunConfiguration.HumanRaceId && firstRun.Route.Nodes.Count == 24,
                     "Expedition with Magus and 24-node generated route",
-                    firstRun == null ? "no active run" : SceneManager.GetActiveScene().name + " " + firstRun.ClassId + " " + firstRun.Route.Nodes.Count + " nodes");
+                    firstRun == null ? "no active run" : SceneManager.GetActiveScene().name + " " + firstRun.ClassId +
+                    " " + firstRun.RaceId + " " + firstRun.Route.Nodes.Count + " nodes");
                 if (firstRun == null)
                 {
                     int failure = evidence.Complete();
@@ -223,6 +259,101 @@ namespace Luckbound.Tests.PlayMode
                 evidence.Dispose();
                 if (ApplicationBootstrapper.Instance != null) ApplicationBootstrapper.Instance.ClearActiveRun();
                 UnityRandom.state = previousRandomState;
+                Time.timeScale = 1f;
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E09_UnlockedRaceSelectionSurvivesClassChangeAndIsPersisted()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE09", System.Guid.NewGuid().ToString("N"));
+            FileSaveStore testStore = new FileSaveStore(saveDirectory, null);
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            Time.timeScale = 1f;
+            try
+            {
+                ProfileSaveData profile = ProfileSaveData.CreateNewProfile();
+                profile.unlockedRaceIds = new[]
+                {
+                    ExpeditionRunConfiguration.HumanRaceId,
+                    ExpeditionRunConfiguration.OrciniRaceId,
+                    ExpeditionRunConfiguration.AlvariRaceId,
+                    ExpeditionRunConfiguration.DvergarRaceId
+                };
+                var seedRepository = new SaveRepository(testStore);
+                Task<SaveWriteResult> seededProfile = seedRepository.SaveProfileAsync(profile);
+                while (!seededProfile.IsCompleted) yield return null;
+                Assert.That(seededProfile.Result.Succeeded, Is.True, seededProfile.Result.Message);
+
+                if (app != null) Object.Destroy(app.gameObject);
+                yield return null;
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => testStore;
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                for (int frame = 0; frame < 120 &&
+                    (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady); frame++)
+                    yield return null;
+                app = ApplicationBootstrapper.Instance;
+                Assert.That(app != null && app.SaveDataReady, Is.True, "Bootstrap should load the seeded profile.");
+                Assert.That(app.Profile.unlockedRaceIds, Is.EquivalentTo(profile.unlockedRaceIds));
+
+                SceneManager.LoadScene("Hub", LoadSceneMode.Single);
+                HubPreparationController preparation = null;
+                for (int frame = 0; frame < 60; frame++)
+                {
+                    preparation = Object.FindAnyObjectByType<HubPreparationController>();
+                    if (preparation != null && preparation.SelectedSkillIds.Count == 2) break;
+                    yield return null;
+                }
+                Assert.That(preparation, Is.Not.Null);
+                Assert.That(preparation.SelectedRaceId, Is.EqualTo(ExpeditionRunConfiguration.HumanRaceId));
+
+                Button orciniButton = FindButton("RaceOrciniButton");
+                Button alvariButton = FindButton("RaceAlvariButton");
+                Button dvergarButton = FindButton("RaceDvergarButton");
+                Assert.That(new[] { orciniButton, alvariButton, dvergarButton }.All(button => button != null && button.interactable), Is.True);
+                Assert.That(new[] { orciniButton, alvariButton, dvergarButton }.All(button =>
+                    button.GetComponentInChildren<Text>(true) != null &&
+                    button.GetComponentInChildren<Text>(true).text.Contains("DESBLOQUEADA")), Is.True);
+                orciniButton.onClick.Invoke();
+                Assert.That(preparation.SelectedRaceId, Is.EqualTo(ExpeditionRunConfiguration.OrciniRaceId));
+                alvariButton.onClick.Invoke();
+                Assert.That(preparation.SelectedRaceId, Is.EqualTo(ExpeditionRunConfiguration.AlvariRaceId));
+                dvergarButton.onClick.Invoke();
+                Assert.That(preparation.SelectedRaceId, Is.EqualTo(ExpeditionRunConfiguration.DvergarRaceId));
+
+                FindButton("ClassMagusButton").onClick.Invoke();
+                Assert.That(preparation.SelectedClassId, Is.EqualTo("class.magus"));
+                Assert.That(preparation.SelectedRaceId, Is.EqualTo(ExpeditionRunConfiguration.DvergarRaceId));
+                Text summary = FindText("PreparationSelectionSummary");
+                Text status = FindText("HubPreparationStatus");
+                Assert.That(summary != null && summary.text.Contains("DVERGAR"), Is.True);
+                Assert.That(status != null && status.text.Contains("DVERGAR"), Is.True);
+
+                FindButton("StartExpeditionButton").onClick.Invoke();
+                for (int frame = 0; frame < 120 &&
+                    (SceneManager.GetActiveScene().name != "Expedition" || app.ActiveRun == null); frame++)
+                    yield return null;
+                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Expedition"));
+                Assert.That(app.ActiveRun, Is.Not.Null);
+                Assert.That(app.ActiveRun.RaceId, Is.EqualTo(ExpeditionRunConfiguration.DvergarRaceId));
+                Assert.That(app.ActiveExpedition.raceId, Is.EqualTo(ExpeditionRunConfiguration.DvergarRaceId));
+
+                ProfileSaveEnvelope persisted = JsonUtility.FromJson<ProfileSaveEnvelope>(
+                    File.ReadAllText(testStore.GetPrimaryPath(SaveDocument.Profile)));
+                Assert.That(persisted.hasActiveExpedition, Is.True);
+                Assert.That(persisted.activeExpedition.raceId, Is.EqualTo(ExpeditionRunConfiguration.DvergarRaceId));
+
+                Task<ExpeditionSettlementCommitResult> cleanup = app.SettleActiveRunAsync(ExpeditionOutcome.Abandoned, 0);
+                while (!cleanup.IsCompleted) yield return null;
+                Assert.That(cleanup.Result.Persisted, Is.True, cleanup.Result.Message);
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
                 Time.timeScale = 1f;
             }
         }
@@ -415,6 +546,12 @@ namespace Luckbound.Tests.PlayMode
         {
             GameObject gameObject = GameObject.Find(name);
             return gameObject == null ? null : gameObject.GetComponent<Button>();
+        }
+
+        private static Text FindText(string name)
+        {
+            GameObject gameObject = GameObject.Find(name);
+            return gameObject == null ? null : gameObject.GetComponent<Text>();
         }
     }
 }
