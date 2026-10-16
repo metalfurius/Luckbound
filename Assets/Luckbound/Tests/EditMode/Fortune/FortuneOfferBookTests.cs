@@ -165,8 +165,8 @@ namespace Luckbound.Tests.Core
             FortuneOfferResult result = book.CreateOffer("patio.special", "patio.special", candidates);
 
             Assert.That(result.Status, Is.EqualTo(FortuneOperationStatus.Succeeded));
-            Assert.That(result.Offer.OptionIds, Has.Count.EqualTo(3));
-            Assert.That(result.Offer.OptionIds.Distinct(StringComparer.Ordinal), Has.Count.EqualTo(3));
+            Assert.That(result.Offer.OptionIds.Count, Is.EqualTo(3));
+            Assert.That(result.Offer.OptionIds.Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(3));
         }
 
         private static FortuneOffer Create(FortuneOfferBook book, string offerId, string contextId)
@@ -178,8 +178,8 @@ namespace Luckbound.Tests.Core
 
         private static void AssertFreshSet(FortuneOffer offer, ISet<string> seenSets)
         {
-            Assert.That(offer.OptionIds, Has.Count.EqualTo(3));
-            Assert.That(offer.OptionIds.Distinct(StringComparer.Ordinal), Has.Count.EqualTo(3));
+            Assert.That(offer.OptionIds.Count, Is.EqualTo(3));
+            Assert.That(offer.OptionIds.Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(3));
             string key = string.Join("|", offer.OptionIds.OrderBy(id => id, StringComparer.Ordinal));
             Assert.That(seenSets.Add(key), Is.True, "A complete offer must not be repeated.");
         }

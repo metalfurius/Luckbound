@@ -72,12 +72,12 @@ namespace Luckbound.Tests.Core
         public void InvalidStatusValuesAndOutOfOrderTicksAreRejected()
         {
             var state = new MagusStatusState();
-            Assert.That(() => state.ApplyBurn(0, 0m, 180), Throws.ArgumentOutOfRangeException);
-            Assert.That(() => state.ApplyBurn(0, 3m, 0), Throws.ArgumentOutOfRangeException);
-            Assert.That(() => state.ApplyFreeze(0, 0), Throws.ArgumentOutOfRangeException);
+            Assert.That(() => state.ApplyBurn(0, 0m, 180), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => state.ApplyBurn(0, 3m, 0), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => state.ApplyFreeze(0, 0), Throws.TypeOf<ArgumentOutOfRangeException>());
 
             state.Tick(2);
-            Assert.That(() => state.ApplyBurn(1, 3m, 180), Throws.ArgumentOutOfRangeException);
+            Assert.That(() => state.ApplyBurn(1, 3m, 180), Throws.TypeOf<ArgumentOutOfRangeException>());
             Assert.That(() => state.Tick(2), Throws.InvalidOperationException);
         }
     }
