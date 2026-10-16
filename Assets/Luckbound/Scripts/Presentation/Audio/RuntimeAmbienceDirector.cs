@@ -5,8 +5,8 @@ using UnityEngine;
 namespace Luckbound.Presentation.Audio
 {
     /// <summary>
-    /// Scene-owned playback for the three imported ambience loops. The director
-    /// creates at most two local voices and never persists or creates a singleton.
+    /// Playback for the three imported ambience loops. The host controls its lifetime;
+    /// the director creates at most two local voices and no global singleton.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class RuntimeAmbienceDirector : MonoBehaviour

@@ -6,8 +6,8 @@ using UnityEngine;
 namespace Luckbound.Presentation.Audio
 {
     /// <summary>
-    /// Scene-owned audio playback for the currently shipped F08 music and effect catalogs.
-    /// Add one instance to the scene that owns playback; it does not persist or create a global singleton.
+    /// Audio playback for the shipped F08 music and effect catalogs. The host controls its
+    /// lifetime; the persistent application root owns the player-facing instance.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class RuntimeAudioDirector : MonoBehaviour

@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.12 — 16 de octubre de 2026.
+**Versión del documento:** 3.13 — 16 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -16,7 +16,7 @@ La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajen
 
 **Instrucción vigente (16 de octubre):** Fran volvió a ordenar el desarrollo completo. El coordinador reanuda desde el estado y las evidencias de [PROGRESS.md](PROGRESS.md), selecciona paquetes listos del grafo de [AGENT_EXECUTION.md](AGENT_EXECUTION.md) y prioriza el siguiente hito jugable F10. Una entrega de trabajador no cuenta como aceptación verificada; las decisiones de producto y la política estricta de visibilidad de [5.6](#56-ejecución-invisible-y-decisiones-de-fran) siguen vigentes.
 
-La versión 3.5 concreta el redondeo de las mejoras E06 para estadísticas enteras y fija compra en taberna, recibos transaccionales persistentes, escritura atómica, reintento idéntico tras fallo y aplicación solo a expediciones nuevas. La versión 3.6 reforzó la política de visibilidad en todos los niveles operativos. La versión 3.7 registra la nueva orden de Fran para retomar el desarrollo completo. La versión 3.8 establece que solo se abre una interfaz si Fran necesita usarla para decidir; enseñar o demostrar avances nunca basta. La versión 3.9 registra que Fran reanudó el desarrollo completo el 16 de octubre. La versión 3.10 fija los datos de recorrido del proyectil básico de Báculo de ascua. La versión 3.11 registra la reafirmación de Fran: las ventanas que no requieran una decisión suya deben ejecutarse sin interfaz o en un entorno aislado que no pueda aparecer en su escritorio; dejarlas detrás, sin foco o minimizadas no cumple la regla. La versión 3.12 fija expresamente que ninguna interfaz se muestra por defecto y que solo puede mostrarse la interfaz mínima que Fran necesite para tomar una decisión concreta.
+La versión 3.5 concreta el redondeo de las mejoras E06 para estadísticas enteras y fija compra en taberna, recibos transaccionales persistentes, escritura atómica, reintento idéntico tras fallo y aplicación solo a expediciones nuevas. La versión 3.6 reforzó la política de visibilidad en todos los niveles operativos. La versión 3.7 registra la nueva orden de Fran para retomar el desarrollo completo. La versión 3.8 establece que solo se abre una interfaz si Fran necesita usarla para decidir; enseñar o demostrar avances nunca basta. La versión 3.9 registra que Fran reanudó el desarrollo completo el 16 de octubre. La versión 3.10 fija los datos de recorrido del proyectil básico de Báculo de ascua. La versión 3.11 registra la reafirmación de Fran: las ventanas que no requieran una decisión suya deben ejecutarse sin interfaz o en un entorno aislado que no pueda aparecer en su escritorio; dejarlas detrás, sin foco o minimizadas no cumple la regla. La versión 3.12 fija expresamente que ninguna interfaz se muestra por defecto y que solo puede mostrarse la interfaz mínima que Fran necesite para tomar una decisión concreta. La versión 3.13 aclara que las salidas de herramientas insertadas automáticamente en el chat también son contenido visible sujeto a esta regla, y registra la arquitectura parcial de audio persistente y los hashes reproducibles con finales LF.
 
 ## Índice
 
@@ -1117,6 +1117,8 @@ Objetivos iniciales:
 
 En Windows la música utilizará carga adecuada para pistas largas. En WebGL se mantendrá una cantidad limitada de música cargada y los efectos de mezcla se incorporarán al audio cuando sea necesario, debido a las limitaciones de audio del navegador. [Audio en WebGL](https://docs.unity.com/en-us/engine/6000.6/manual/platform-specific/webgl/develop/audio)
 
+La reproducción pertenece a la raíz persistente de aplicación. `ApplicationAudioRouter` observa cambios de escena y mantiene una sola solicitud de música: `Hub` usa `tavern_theme`; `Expedition` y `CombatArena`, `patio_theme`; `CustodianArena`, `custodian_theme`; `Bootstrap`, `Menu` y escenas desconocidas quedan sin pista. En WebGL, el director no empieza a reproducir hasta la primera pulsación observada por Input System. `RuntimeAudioDirector` limita la música a dos voces para fundidos cruzados y conserva idempotencia al pedir la misma pista. `RuntimeAmbienceDirector` administra por separado los bucles de patio, archivo y forja con un máximo de dos voces y su propio volumen. El contexto de sala seleccionará los ambientes al integrarse los eventos de transición; la muestra F10 usa el patio.
+
 ### 4.4. Ambientes y efectos
 
 Ambientes:
@@ -1141,6 +1143,8 @@ Volúmenes iniciales:
 - Música: 65 %.
 - Efectos: 80 %.
 - Ambiente: 45 %.
+
+Los tres masters de ambiente se importan desde el paquete fuente validado como PCM WAV sin recomprimir las muestras; sus GUID de Unity se derivan de la ruta del recurso. Los manifiestos e informes JSON se serializan con LF explícito para que sus hashes sean iguales en Windows, WebGL CI y Linux. El director de ambiente aplica su categoría separada sin escribir en preferencias; la interfaz y el guardado de ajustes deben aplicar los cuatro valores anteriores cuando se complete F08. F08 no se acepta hasta cubrir transiciones por contexto, pausa/volumen y desbloqueo de reproducción en un build WebGL real, además de revisar auditivamente las mezclas.
 
 ### 4.5. Interfaz y accesibilidad
 
@@ -1289,7 +1293,7 @@ No se añade infraestructura de agentes, servicios de pago o un SDK de orquestac
 
 ### 5.6. Ejecución invisible y decisiones de Fran
 
-**Regla de Fran, reafirmada el 16 de octubre de 2026:** Fran no debe ver **ninguna** ventana, pestaña, panel, diálogo, notificación ni previsualización salvo que necesite usar personalmente esa interfaz para tomar una decisión concreta en ese momento. **Que una ventana esté relacionada con el trabajo no basta; por defecto no se muestra ninguna interfaz.** Toda interfaz ajena a esa decisión se ejecuta sin UI o dentro de un sandbox/escritorio verdaderamente aislado e inaccesible visualmente para Fran; solo se muestra la interfaz mínima durante la decisión que necesite tomar. La mera utilidad de enseñar, revisar o demostrar trabajo no cuenta como necesidad. La regla se aplica al coordinador y a todos los subagentes, a toda interfaz y ejecución interna, no solo a WebGL. Abarca también ventanas auxiliares, paneles de Codex/ChatGPT, pestañas, notificaciones, diálogos, previsualizaciones, ventanas sin foco y ventanas detrás de otras.
+**Regla de Fran, reafirmada el 16 de octubre de 2026:** Fran no debe ver **ninguna** ventana, pestaña, panel, diálogo, notificación ni previsualización salvo que necesite usar personalmente esa interfaz para tomar una decisión concreta en ese momento. **Que una ventana esté relacionada con el trabajo no basta; por defecto no se muestra ninguna interfaz.** Toda interfaz ajena a esa decisión se ejecuta sin UI o dentro de un sandbox/escritorio verdaderamente aislado e inaccesible visualmente para Fran; solo se muestra la interfaz mínima durante la decisión que necesite tomar. La mera utilidad de enseñar, revisar o demostrar trabajo no cuenta como necesidad. La regla se aplica al coordinador y a todos los subagentes, a toda interfaz y ejecución interna, no solo a WebGL. Abarca también ventanas auxiliares, paneles de Codex/ChatGPT, pestañas, notificaciones, diálogos, previsualizaciones, ventanas sin foco y ventanas detrás de otras. El resultado que una herramienta incruste automáticamente en el chat, como una imagen, audio o vídeo generado, también es visible y no puede publicarse salvo que Fran necesite decidir sobre ese resultado.
 
 - Ejecutar tests, builds, servidores y herramientas sin interfaz visible. Los navegadores y sus pestañas deben permanecer fuera de las ventanas de Fran; Unity, juegos Windows y comprobaciones gráficas deben usar procesos realmente ocultos o un sandbox/escritorio aislado que no pueda aparecer en su pantalla cuando necesiten renderizado.
 - No abrir, enfocar, traer al frente ni dejar visibles ventanas, terminales, Explorador, pestañas, paneles, diálogos o previsualizaciones en el escritorio de Fran para enseñar trabajo técnico. No navegar las pestañas de Fran. Comprobar ventanas emergentes y procesos secundarios. Minimizar, quitar foco o dejar una ventana detrás de otra no equivale a aislamiento.
