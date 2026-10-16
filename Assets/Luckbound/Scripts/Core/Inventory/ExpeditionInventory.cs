@@ -611,7 +611,10 @@ namespace Luckbound.Core.Inventory
             int maximumHealth,
             TransactionId transactionId)
         {
-            string signature = "economy|talia|" + (roomInstanceId.IsValid ? roomInstanceId.ToString() : string.Empty);
+            string signature = "economy|talia|" +
+                (roomInstanceId.IsValid ? roomInstanceId.ToString() : string.Empty) + "|" +
+                currentHealth.ToString(CultureInfo.InvariantCulture) + "|" +
+                maximumHealth.ToString(CultureInfo.InvariantCulture);
             return ExecuteEconomy(transactionId, signature,
                 () => UseTalia(roomInstanceId, currentHealth, maximumHealth, transactionId));
         }
