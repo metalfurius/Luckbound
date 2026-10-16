@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "package": "F08.SampleEffects.partial",
+  "sample_rate_hz": 44100,
+  "channels": 1,
+  "wav_subtype": "PCM_24",
+  "peak_target_dbfs": -3.0,
+  "window_ms": 10,
+  "minimum_window_rms_dbfs": -72.0,
+  "effects": [
+    {
+      "id": "stone_step",
+      "label_es": "Paso de piedra",
+      "duration_ms": 180,
+      "events": [
+        {"kind": "noise", "start_ms": 0, "duration_ms": 105, "gain": 0.72, "seed": 101, "attack_ms": 2, "release_ms": 48, "decay_ms": 38},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 180, "gain": 0.78, "frequency_start_hz": 118, "frequency_end_hz": 72, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.1, "gain": 0.24}], "attack_ms": 1, "release_ms": 45, "decay_ms": 83},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 22, "gain": 0.17, "frequency_start_hz": 1420, "frequency_end_hz": 780, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 0, "release_ms": 16, "decay_ms": 12}
+      ]
+    },
+    {
+      "id": "jump",
+      "label_es": "Salto",
+      "duration_ms": 330,
+      "events": [
+        {"kind": "tone", "start_ms": 0, "duration_ms": 330, "gain": 0.82, "frequency_start_hz": 165, "frequency_end_hz": 590, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2, "gain": 0.16}], "attack_ms": 5, "release_ms": 62, "decay_ms": 190},
+        {"kind": "noise", "start_ms": 0, "duration_ms": 115, "gain": 0.2, "seed": 102, "attack_ms": 2, "release_ms": 76, "decay_ms": 42}
+      ]
+    },
+    {
+      "id": "landing",
+      "label_es": "Aterrizaje",
+      "duration_ms": 250,
+      "events": [
+        {"kind": "tone", "start_ms": 0, "duration_ms": 250, "gain": 0.9, "frequency_start_hz": 94, "frequency_end_hz": 48, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.7, "gain": 0.18}], "attack_ms": 1, "release_ms": 68, "decay_ms": 110},
+        {"kind": "noise", "start_ms": 0, "duration_ms": 125, "gain": 0.48, "seed": 103, "attack_ms": 1, "release_ms": 64, "decay_ms": 48}
+      ]
+    },
+    {
+      "id": "sword_swing",
+      "label_es": "Espada al aire",
+      "duration_ms": 300,
+      "events": [
+        {"kind": "noise", "start_ms": 0, "duration_ms": 300, "gain": 0.77, "seed": 104, "attack_ms": 9, "release_ms": 58, "decay_ms": 145},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 300, "gain": 0.44, "frequency_start_hz": 1050, "frequency_end_hz": 230, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 1.5, "gain": 0.12}], "attack_ms": 8, "release_ms": 60, "decay_ms": 145}
+      ]
+    },
+    {
+      "id": "sword_impact",
+      "label_es": "Impacto de espada",
+      "duration_ms": 230,
+      "events": [
+        {"kind": "noise", "start_ms": 0, "duration_ms": 145, "gain": 0.63, "seed": 105, "attack_ms": 0, "release_ms": 58, "decay_ms": 47},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 230, "gain": 0.84, "frequency_start_hz": 430, "frequency_end_hz": 205, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.73, "gain": 0.31}, {"ratio": 4.2, "gain": 0.11}], "attack_ms": 0, "release_ms": 65, "decay_ms": 95},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 35, "gain": 0.26, "frequency_start_hz": 2260, "frequency_end_hz": 1180, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 0, "release_ms": 27, "decay_ms": 19}
+      ]
+    },
+    {
+      "id": "dodge",
+      "label_es": "Esquiva",
+      "duration_ms": 270,
+      "events": [
+        {"kind": "noise", "start_ms": 0, "duration_ms": 270, "gain": 0.73, "seed": 106, "attack_ms": 10, "release_ms": 56, "decay_ms": 165},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 270, "gain": 0.48, "frequency_start_hz": 760, "frequency_end_hz": 185, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 8, "release_ms": 62, "decay_ms": 145}
+      ]
+    },
+    {
+      "id": "player_damage",
+      "label_es": "Daño del jugador",
+      "duration_ms": 340,
+      "events": [
+        {"kind": "noise", "start_ms": 0, "duration_ms": 185, "gain": 0.5, "seed": 107, "attack_ms": 0, "release_ms": 75, "decay_ms": 80},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 340, "gain": 0.82, "frequency_start_hz": 220, "frequency_end_hz": 105, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 1.43, "gain": 0.34}], "attack_ms": 0, "release_ms": 80, "decay_ms": 155}
+      ]
+    },
+    {
+      "id": "enemy_death",
+      "label_es": "Muerte de enemigo",
+      "duration_ms": 590,
+      "events": [
+        {"kind": "tone", "start_ms": 0, "duration_ms": 590, "gain": 0.83, "frequency_start_hz": 310, "frequency_end_hz": 62, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 1.49, "gain": 0.27}, {"ratio": 2.02, "gain": 0.12}], "attack_ms": 2, "release_ms": 120, "decay_ms": 330},
+        {"kind": "noise", "start_ms": 0, "duration_ms": 245, "gain": 0.31, "seed": 108, "attack_ms": 1, "release_ms": 95, "decay_ms": 110}
+      ]
+    },
+    {
+      "id": "potion",
+      "label_es": "Poción",
+      "duration_ms": 560,
+      "events": [
+        {"kind": "tone", "start_ms": 0, "duration_ms": 195, "gain": 0.62, "frequency_start_hz": 540, "frequency_end_hz": 690, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.24}], "attack_ms": 3, "release_ms": 38, "decay_ms": 175},
+        {"kind": "tone", "start_ms": 150, "duration_ms": 190, "gain": 0.69, "frequency_start_hz": 690, "frequency_end_hz": 845, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.22}], "attack_ms": 3, "release_ms": 38, "decay_ms": 175},
+        {"kind": "tone", "start_ms": 300, "duration_ms": 245, "gain": 0.75, "frequency_start_hz": 845, "frequency_end_hz": 1020, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.25}], "attack_ms": 3, "release_ms": 66, "decay_ms": 235},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 560, "gain": 0.22, "frequency_start_hz": 176, "frequency_end_hz": 216, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 0, "release_ms": 105, "decay_ms": 430}
+      ]
+    },
+    {
+      "id": "loot_pickup",
+      "label_es": "Botín y recogida",
+      "duration_ms": 430,
+      "events": [
+        {"kind": "tone", "start_ms": 0, "duration_ms": 175, "gain": 0.62, "frequency_start_hz": 660, "frequency_end_hz": 770, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.2}], "attack_ms": 2, "release_ms": 36, "decay_ms": 155},
+        {"kind": "tone", "start_ms": 125, "duration_ms": 190, "gain": 0.72, "frequency_start_hz": 880, "frequency_end_hz": 990, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.22}], "attack_ms": 2, "release_ms": 42, "decay_ms": 165},
+        {"kind": "tone", "start_ms": 265, "duration_ms": 165, "gain": 0.38, "frequency_start_hz": 1320, "frequency_end_hz": 1180, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 2, "release_ms": 54, "decay_ms": 130}
+      ]
+    },
+    {
+      "id": "ui_confirm",
+      "label_es": "Confirmación de interfaz",
+      "duration_ms": 190,
+      "events": [
+        {"kind": "tone", "start_ms": 0, "duration_ms": 95, "gain": 0.68, "frequency_start_hz": 730, "frequency_end_hz": 820, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2, "gain": 0.12}], "attack_ms": 1, "release_ms": 18, "decay_ms": 100},
+        {"kind": "tone", "start_ms": 74, "duration_ms": 116, "gain": 0.78, "frequency_start_hz": 980, "frequency_end_hz": 1120, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2, "gain": 0.13}], "attack_ms": 1, "release_ms": 31, "decay_ms": 105}
+      ]
+    },
+    {
+      "id": "ui_cancel",
+      "label_es": "Cancelación de interfaz",
+      "duration_ms": 190,
+      "events": [
+        {"kind": "tone", "start_ms": 0, "duration_ms": 112, "gain": 0.76, "frequency_start_hz": 620, "frequency_end_hz": 510, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.12}], "attack_ms": 1, "release_ms": 23, "decay_ms": 112},
+        {"kind": "tone", "start_ms": 79, "duration_ms": 111, "gain": 0.61, "frequency_start_hz": 495, "frequency_end_hz": 420, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 2.01, "gain": 0.1}], "attack_ms": 1, "release_ms": 30, "decay_ms": 103}
+      ]
+    },
+    {
+      "id": "door",
+      "label_es": "Puerta",
+      "duration_ms": 820,
+      "events": [
+        {"kind": "noise", "start_ms": 0, "duration_ms": 790, "gain": 0.32, "seed": 109, "attack_ms": 8, "release_ms": 120, "decay_ms": 750},
+        {"kind": "tone", "start_ms": 0, "duration_ms": 820, "gain": 0.62, "frequency_start_hz": 150, "frequency_end_hz": 86, "partials": [{"ratio": 1, "gain": 1}, {"ratio": 1.51, "gain": 0.3}, {"ratio": 2.97, "gain": 0.12}], "attack_ms": 12, "release_ms": 125, "decay_ms": 680},
+        {"kind": "tone", "start_ms": 32, "duration_ms": 715, "gain": 0.16, "frequency_start_hz": 580, "frequency_end_hz": 190, "partials": [{"ratio": 1, "gain": 1}], "attack_ms": 18, "release_ms": 105, "decay_ms": 600}
+      ]
+    }
+  ]
+}

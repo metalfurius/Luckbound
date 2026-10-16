@@ -1,0 +1,81 @@
+{
+  "manifest_version": 1,
+  "package": "F08.SampleEffects.partial",
+  "scope": "Partial F08 Bellator sample effects",
+  "files": {
+    "parameters": {
+      "path": "parameters.json",
+      "sha256": "ebbce7922fa8c06369b5374683c9a3a39512921d8958efa6cef4da74294bab62"
+    },
+    "renderer": {
+      "path": "render_effects.py",
+      "sha256": "772858b07276bc4bdbd551f6d59cf5bb73300e6abdc4331447683d943634e914"
+    },
+    "report": {
+      "path": "reports/sample_effects.report.json",
+      "sha256": "ef351a7e99f607097bac646002f911ab2eb5e4ab5df55299babffc36df138829"
+    },
+    "masters": {
+      "stone_step": {
+        "path": "masters/stone_step.wav",
+        "sha256": "f63cc8fad4b43faa58872fd727526dab6a252e08fa1e8430a5f99245064bfa36"
+      },
+      "jump": {
+        "path": "masters/jump.wav",
+        "sha256": "a6e32a0b7e90b92ee86883cc957760a08265027cb6dfad691038e14a46ebd0e1"
+      },
+      "landing": {
+        "path": "masters/landing.wav",
+        "sha256": "d82e6efd920884333b8aa97d0882b6f1ef43540e88a2f78bec8dd75b1559b074"
+      },
+      "sword_swing": {
+        "path": "masters/sword_swing.wav",
+        "sha256": "bcfae42f33d5fddd4b5c6612f6eff22791acddc630dc26c73135b17c001fc6d8"
+      },
+      "sword_impact": {
+        "path": "masters/sword_impact.wav",
+        "sha256": "0be23c6b825a5b1ae0ce061fc146190c8d03a39b006447743bf546914fb7a7c5"
+      },
+      "dodge": {
+        "path": "masters/dodge.wav",
+        "sha256": "167b7228f03b8456b957a254e476b81a36c2f853a5f223bd4e08ac1352c457f0"
+      },
+      "player_damage": {
+        "path": "masters/player_damage.wav",
+        "sha256": "fd8960542cd9839d64c98cb13b18538bd0aa3addb5808d137e3e4a78e6e91ad8"
+      },
+      "enemy_death": {
+        "path": "masters/enemy_death.wav",
+        "sha256": "7a7cd1bf7836997c3270c4121e14736896e4fc694ec7ad93acc52477ec75c4f0"
+      },
+      "potion": {
+        "path": "masters/potion.wav",
+        "sha256": "a7a3874ba273d75121179f7d320d5575200e4f5aa1bc8cf73544067611c1fe59"
+      },
+      "loot_pickup": {
+        "path": "masters/loot_pickup.wav",
+        "sha256": "4d97af55f5aa9b9a469bb9aac35fd0a1f81a1a170e082e5ea66b821633328d3d"
+      },
+      "ui_confirm": {
+        "path": "masters/ui_confirm.wav",
+        "sha256": "4ff936fa7bb368efffecef0d68d6b5f9def004b4686245e584e1b7d792b17926"
+      },
+      "ui_cancel": {
+        "path": "masters/ui_cancel.wav",
+        "sha256": "9751fcf806ed78827b5a441f645adda080a7530a125489ff238fab1f81b127e8"
+      },
+      "door": {
+        "path": "masters/door.wav",
+        "sha256": "5f481ca3ce25019d81b5e43dce1959dcbe359ec15c5c8b7f0887a286ad69cbcf"
+      }
+    }
+  },
+  "acceptance": {
+    "status": "passed",
+    "checks": {
+      "expected_13_sample_cues": true,
+      "all_renderings_reproducible": true,
+      "all_masters_pass_audio_checks": true
+    }
+  }
+}
