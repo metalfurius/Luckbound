@@ -4,6 +4,7 @@ using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
+using Luckbound.Core.Inventory;
 using Luckbound.Core.Pacts;
 using Luckbound.Core.Presentation;
 using Luckbound.Content;
@@ -242,6 +243,53 @@ namespace Luckbound.Gameplay.Movement
             _equippedWeaponProfile = weaponProfile;
             _weaponBasicAttackProfile = runtimeProfile;
             ApplyWeaponBasicAttackProfile();
+        }
+
+        /// <summary>
+        /// Binds the weapon selected in this run's equipped inventory slot. The profile is resolved and
+        /// validated before any motor weapon state changes, so invalid run/catalog combinations are atomic.
+        /// </summary>
+        public void ConfigureEquippedWeapon(ExpeditionRunConfiguration run, WeaponCatalog weaponCatalog)
+        {
+            if (!_initialized)
+                throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring its weapon.");
+
+            WeaponProfile equippedProfile = ResolveEquippedWeaponProfile(run, weaponCatalog);
+            ConfigureEquippedWeapon(equippedProfile);
+        }
+
+        /// <summary>Resolves the authoritative profile for the weapon currently equipped by a run.</summary>
+        public static WeaponProfile ResolveEquippedWeaponProfile(
+            ExpeditionRunConfiguration run,
+            WeaponCatalog weaponCatalog)
+        {
+            if (run == null) throw new ArgumentNullException(nameof(run));
+            if (weaponCatalog == null) throw new ArgumentNullException(nameof(weaponCatalog));
+            if (run.Inventory == null ||
+                !string.Equals(run.Inventory.ClassId, run.ClassId, StringComparison.Ordinal))
+            {
+                throw new ArgumentException("The run must carry its own inventory for the selected class.", nameof(run));
+            }
+
+            InventoryItemStack equippedWeapon = run.Inventory.Weapon;
+            if (equippedWeapon == null ||
+                !run.Inventory.Catalog.TryGet(equippedWeapon.ItemId, out ItemDefinition weaponItem) ||
+                weaponItem.Kind != ItemKind.Weapon || !weaponItem.IsCompatibleWithClass(run.ClassId))
+            {
+                throw new ArgumentException("The run's equipped item must be a weapon compatible with its class.", nameof(run));
+            }
+
+            if (!weaponCatalog.TryGet(equippedWeapon.ItemId, out WeaponProfile equippedProfile) ||
+                !string.Equals(equippedProfile.ItemId, equippedWeapon.ItemId, StringComparison.Ordinal) ||
+                !string.Equals(equippedProfile.ClassId, run.ClassId, StringComparison.Ordinal) ||
+                !string.Equals(equippedProfile.ClassId, run.Inventory.ClassId, StringComparison.Ordinal))
+            {
+                throw new ArgumentException("The authoritative weapon profile must match the equipped item and run class.", nameof(weaponCatalog));
+            }
+
+            // Build the complete runtime mapping before a caller can mutate PlayerMotor2D.
+            _ = WeaponBasicAttackProfile.Create(equippedProfile);
+            return equippedProfile;
         }
 
         public MeleeHitWindow CurrentMeleeHitWindow => _meleeAttackSnapshot.HitWindow;

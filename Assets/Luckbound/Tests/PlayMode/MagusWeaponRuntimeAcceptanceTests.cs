@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Luckbound.App;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;
@@ -95,6 +97,7 @@ namespace Luckbound.Tests.PlayMode
         private IEnumerator AssertWeaponRuntime(ExpectedWeapon expected)
         {
             WeaponFixture fixture = CreateFixture(expected.ItemId);
+            AssertWeaponProfile(fixture, expected.ItemId, expected.Damage, expected.IntervalTicks);
             Physics2D.SyncTransforms();
 
             for (int tick = 0; tick < 30 && (!fixture.Motor.IsGrounded || !fixture.Target.IsGuarding); tick++)
@@ -107,10 +110,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(fixture.Target.CombatStats.Defense, Is.EqualTo(Huesoguardia2D.BaseDefense));
 
             WeaponProfile equipped = fixture.Motor.EquippedWeaponProfile;
-            Assert.That(equipped, Is.Not.Null);
-            Assert.That(equipped.ItemId, Is.EqualTo(expected.ItemId));
-            Assert.That(equipped.ClassId, Is.EqualTo("class.magus"));
-            Assert.That(equipped.Damage, Is.EqualTo(expected.Damage));
+            Assert.That(equipped, Is.SameAs(fixture.ExpectedProfile));
 
             fixture.Input.Press(PlayerAction.Attack);
             yield return new WaitForFixedUpdate();
@@ -244,16 +244,24 @@ namespace Luckbound.Tests.PlayMode
             playerCollider.size = new Vector2(0.75f, 1.5f);
             PlayerMotor2D motor = player.AddComponent<PlayerMotor2D>();
             LayerMask enemyLayers = 1 << enemyLayer;
-            motor.Initialize(actorId, input, 1 << groundLayer, new CombatStats(100, 50, 0), enemyLayers);
             fixture.Motor = motor;
 
-            TextAsset itemsJson = Resources.Load<TextAsset>("Luckbound/Data/Items/Items");
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                MagusSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                new[] { MagusSkillLoadout.FireballId, MagusSkillLoadout.FrostNovaId });
+            if (run.Inventory.Weapon.ItemId != weaponId)
+                EquipWeapon(run.Inventory, weaponId);
+
             TextAsset weaponsJson = Resources.Load<TextAsset>("Luckbound/Data/Weapons");
-            Assert.That(itemsJson, Is.Not.Null, "The authoritative Items.json resource is required.");
             Assert.That(weaponsJson, Is.Not.Null, "The authoritative Weapons.json resource is required.");
-            ItemCatalog items = ItemCatalogJsonLoader.Load(itemsJson.text);
+            ItemCatalog items = run.Inventory.Catalog;
             WeaponCatalog weapons = WeaponCatalogJsonLoader.Load(weaponsJson.text, items);
-            motor.ConfigureEquippedWeapon(weapons.Get(weaponId));
+            WeaponProfile equippedWeapon = weapons.Get(run.Inventory.Weapon.ItemId);
+            Assert.That(run.Inventory.Weapon.ItemId, Is.EqualTo(weaponId));
+            motor.Initialize(actorId, input, 1 << groundLayer,
+                new CombatStats(run.StartingHealth, run.StartingEnergy, 0), enemyLayers, run.RaceId);
+            motor.ConfigureEquippedWeapon(run, weapons);
 
             var poolObject = new GameObject("G01 Magus Weapon Test Projectile Pool");
             fixture.Own(poolObject);
@@ -295,13 +303,50 @@ namespace Luckbound.Tests.PlayMode
             fixture.Target = target;
 
             motor.ConfigureMagus(
-                new[] { MagusSkillLoadout.FireballId, MagusSkillLoadout.FrostNovaId },
+                run.SkillIds,
                 projectilePool,
                 projectileScope,
                 room,
                 enemyLayers);
 
+            fixture.Run = run;
+            fixture.ExpectedProfile = equippedWeapon;
             return fixture;
+        }
+
+        private static void EquipWeapon(ExpeditionInventory inventory, string weaponId)
+        {
+            var stack = new InventoryItemStack(ItemInstanceId.New(), weaponId, ItemRarity.Common, 0, 1);
+            InventoryOperationOutcome collected = inventory.TryCollectItem(stack, TransactionId.New());
+            Assert.That(collected.Succeeded, Is.True, "The requested weapon must enter the run inventory.");
+
+            int slot = -1;
+            for (int index = 0; index < ExpeditionInventory.BackpackCapacity; index++)
+            {
+                if (inventory.GetBackpackSlot(index)?.InstanceId == stack.InstanceId)
+                {
+                    slot = index;
+                    break;
+                }
+            }
+
+            Assert.That(slot, Is.GreaterThanOrEqualTo(0));
+            Assert.That(inventory.EquipBackpackItem(slot, EquipmentSlot.Weapon, TransactionId.New()).Succeeded, Is.True,
+                "The requested weapon must be equipped through ExpeditionInventory.");
+        }
+
+        private static void AssertWeaponProfile(WeaponFixture fixture, string itemId, int damage, int intervalTicks)
+        {
+            WeaponProfile equipped = fixture.Motor.EquippedWeaponProfile;
+            Assert.That(equipped, Is.Not.Null);
+            Assert.That(equipped, Is.SameAs(fixture.ExpectedProfile),
+                "The motor must hold the exact profile resolved from the authoritative weapon catalog.");
+            Assert.That(equipped.ItemId, Is.EqualTo(fixture.Run.Inventory.Weapon.ItemId));
+            Assert.That(equipped.ItemId, Is.EqualTo(itemId));
+            Assert.That(equipped.ClassId, Is.EqualTo(fixture.Run.ClassId));
+            Assert.That(equipped.ClassId, Is.EqualTo(MagusSkillLoadout.ClassId));
+            Assert.That(equipped.Damage, Is.EqualTo(damage));
+            Assert.That(WeaponBasicAttackProfile.Create(equipped).AttackIntervalTicks, Is.EqualTo(intervalTicks));
         }
 
         private sealed class ExpectedWeapon
@@ -347,6 +392,8 @@ namespace Luckbound.Tests.PlayMode
             public Huesoguardia2D Target { get; set; }
             public RoomLifetimeScope Room { get; set; }
             public RoomProjectileScope ProjectileScope { get; set; }
+            public ExpeditionRunConfiguration Run { get; set; }
+            public WeaponProfile ExpectedProfile { get; set; }
 
             public void Own(GameObject gameObject)
             {

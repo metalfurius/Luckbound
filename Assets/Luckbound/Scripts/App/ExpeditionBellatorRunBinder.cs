@@ -31,7 +31,7 @@ namespace Luckbound.App
             if (!string.Equals(run.ClassId, BellatorSkillLoadout.ClassId, StringComparison.Ordinal))
                 throw new ArgumentException("Only a confirmed Bellator run can be bound by this composition.", nameof(run));
 
-            WeaponProfile equippedWeaponProfile = ValidateDependencies(run, actorId, inputSource, groundLayers,
+            _ = ValidateDependencies(run, actorId, inputSource, groundLayers,
                 defense, playerMotor, itemCollector, itemCatalog, weaponCatalog, skillCatalog);
 
             var combatStats = new CombatStats(run.StartingHealth, run.StartingEnergy, defense);
@@ -43,7 +43,7 @@ namespace Luckbound.App
                 combatStats,
                 enemyLayers,
                 raceId: run.RaceId);
-            playerMotor.ConfigureEquippedWeapon(equippedWeaponProfile);
+            playerMotor.ConfigureEquippedWeapon(run, weaponCatalog);
             playerMotor.ConfigureBellator(skillCatalog, run.SkillIds);
             itemCollector.Configure(run.Inventory, itemCatalog, dropStager, raceId: run.RaceId);
         }
@@ -89,23 +89,8 @@ namespace Luckbound.App
             if (run.Inventory.Weapon == null || run.Inventory.Armor == null || run.Inventory.QuickConsumable == null)
                 throw new ArgumentException("A Bellator run must contain its currently equipped weapon, armor, and quick consumable.", nameof(run));
 
-            InventoryItemStack equippedWeapon = run.Inventory.Weapon;
-            if (!itemCatalog.TryGet(equippedWeapon.ItemId, out ItemDefinition weaponItem) ||
-                weaponItem.Kind != ItemKind.Weapon || !weaponItem.IsCompatibleWithClass(run.ClassId))
-            {
-                throw new ArgumentException("The run's equipped weapon must be a compatible weapon item.", nameof(run));
-            }
-            if (!weaponCatalog.TryGet(equippedWeapon.ItemId, out WeaponProfile equippedWeaponProfile))
-                throw new ArgumentException("The run's equipped weapon must exist in the authoritative weapon catalog.", nameof(weaponCatalog));
-            if (!string.Equals(equippedWeaponProfile.ItemId, equippedWeapon.ItemId, StringComparison.Ordinal) ||
-                !string.Equals(equippedWeaponProfile.ClassId, run.ClassId, StringComparison.Ordinal) ||
-                !string.Equals(equippedWeaponProfile.ClassId, run.Inventory.ClassId, StringComparison.Ordinal))
-            {
-                throw new ArgumentException("The authoritative weapon profile must belong to the equipped item and run class.", nameof(weaponCatalog));
-            }
-
-            // Validate the complete weapon traits and runtime mapping before Initialize mutates player components.
-            _ = WeaponBasicAttackProfile.Create(equippedWeaponProfile);
+            // Validate the equipped slot and full runtime mapping before Initialize mutates player components.
+            WeaponProfile equippedWeaponProfile = PlayerMotor2D.ResolveEquippedWeaponProfile(run, weaponCatalog);
 
             // Constructing the loadout here checks the complete Bellator catalog and both selected IDs
             // before Initialize mutates the player motor.

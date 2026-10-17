@@ -238,6 +238,37 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(motor.EquippedWeaponProfile, Is.Null);
             Assert.That(collector.Inventory, Is.Null);
             Assert.That(collector.Catalog, Is.Null);
+
+            TextAsset itemSource = Resources.Load<TextAsset>("Luckbound/Data/Items/Items");
+            Assert.That(itemSource, Is.Not.Null);
+            ItemCatalog separateItemCatalog = ItemCatalogJsonLoader.Load(itemSource.text);
+            Assert.Throws<System.ArgumentException>(() => ExpeditionBellatorRunBinder.Bind(
+                run,
+                actorId: actorId,
+                inputSource: input,
+                groundLayers: GroundLayers(),
+                enemyLayers: 0,
+                defense: 0,
+                playerMotor: motor,
+                itemCollector: collector,
+                itemCatalog: separateItemCatalog,
+                weaponCatalog: LoadWeaponCatalog(separateItemCatalog),
+                skillCatalog: LoadSkillCatalog()),
+                "Composition must use the same item catalog owned by the run inventory.");
+            Assert.That(motor.ActorId.IsValid, Is.False);
+            Assert.That(collector.Inventory, Is.Null);
+
+            InventoryItemStack equippedBefore = run.Inventory.Weapon;
+            InventoryItemStack backpackBefore = run.Inventory.GetBackpackSlot(0);
+            motor.Initialize(actorId, input, GroundLayers(), new CombatStats(run.StartingHealth, run.StartingEnergy, 0));
+            WeaponProfile existingProfile = LoadWeaponCatalog(run.Inventory.Catalog).Get(equippedBefore.ItemId);
+            motor.ConfigureEquippedWeapon(existingProfile);
+            Assert.Throws<System.ArgumentException>(() => motor.ConfigureEquippedWeapon(run, mismatchedCatalog),
+                "The run-based motor seam must reject a profile whose class differs from the equipped inventory.");
+            Assert.That(motor.EquippedWeaponProfile, Is.SameAs(existingProfile),
+                "A rejected run must not partially replace the motor's already valid weapon.");
+            Assert.That(run.Inventory.Weapon, Is.SameAs(equippedBefore));
+            Assert.That(run.Inventory.GetBackpackSlot(0), Is.SameAs(backpackBefore));
             yield return null;
         }
 

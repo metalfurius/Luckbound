@@ -117,6 +117,10 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(WeaponBasicAttackProfile.Create(expectedProfile).AttackIntervalTicks, Is.EqualTo(expectedIntervalTicks));
             Assert.That(expectedProfile.HasTrait(expectedTrait), Is.True,
                 "The declared qualitative weapon profile trait must remain present.");
+            Assert.That(expectedProfile.HasTrait(WeaponTraitId.GreaterRange), Is.EqualTo(weaponId == UmbraGreatswordId),
+                "Only Umbra declares greater reach than the worn sword; no numeric reach is authored here.");
+            Assert.That(expectedProfile.HasTrait(WeaponTraitId.GreaterKnockback), Is.EqualTo(weaponId == UmbraGreatswordId),
+                "Only Umbra declares greater push than the worn sword; no numeric push is authored here.");
             if (additionalTrait.HasValue)
             {
                 Assert.That(expectedProfile.HasTrait(additionalTrait.Value), Is.True,
@@ -148,6 +152,8 @@ namespace Luckbound.Tests.PlayMode
 
             Assert.That(motor.EquippedWeaponProfile, Is.SameAs(expectedProfile),
                 "The equipped inventory item must resolve to its authoritative catalog profile on PlayerMotor2D.");
+            Assert.That(motor.EquippedWeaponProfile.ItemId, Is.EqualTo(run.Inventory.Weapon.ItemId));
+            Assert.That(motor.EquippedWeaponProfile.ClassId, Is.EqualTo(run.ClassId));
 
             Slime2D damageReceiver = CreateSlimeDamageReceiver(
                 motor,

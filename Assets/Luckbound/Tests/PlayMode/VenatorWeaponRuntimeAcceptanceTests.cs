@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Luckbound.App;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
+using Luckbound.Core.Inventory;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Movement;
 using Luckbound.Gameplay.Rooms;
@@ -45,6 +48,7 @@ namespace Luckbound.Tests.PlayMode
         public IEnumerator ShortBowDealsTenDamageAndFiresAgainAtTwentyFourTicks()
         {
             WeaponFixture fixture = CreateFixture("weapon.venator.short_bow");
+            AssertWeaponProfile(fixture, "weapon.venator.short_bow", 10, 24);
             yield return SettlePlayer(fixture);
             VenatorTestImpactActor2D target = fixture.CreateTarget("Short Bow Target", new Vector2(4.5f, 1f), multipleColliders: true);
             Physics2D.SyncTransforms();
@@ -86,6 +90,9 @@ namespace Luckbound.Tests.PlayMode
         public IEnumerator LongBowDealsFourteenAndChargedEighteenPointTwoWithThirtyNineTickCadence()
         {
             WeaponFixture fixture = CreateFixture("weapon.venator.long_bow");
+            AssertWeaponProfile(fixture, "weapon.venator.long_bow", 14, 39);
+            Assert.That(fixture.Motor.EquippedWeaponProfile.HasTrait(WeaponTraitId.OptionalChargeDamageBonus), Is.True);
+            Assert.That(WeaponBasicAttackProfile.Create(fixture.Motor.EquippedWeaponProfile).ChargeDamageBonusPercent, Is.EqualTo(30));
             yield return SettlePlayer(fixture);
             VenatorTestImpactActor2D target = fixture.CreateTarget("Long Bow Target", new Vector2(4.5f, 1f), multipleColliders: true);
             Physics2D.SyncTransforms();
@@ -143,6 +150,8 @@ namespace Luckbound.Tests.PlayMode
         public IEnumerator RuinsCrossbowDealsSixteenPiercesOneTargetAndFiresAgainAtFortyFiveTicks()
         {
             WeaponFixture fixture = CreateFixture("weapon.venator.ruins_crossbow");
+            AssertWeaponProfile(fixture, "weapon.venator.ruins_crossbow", 16, 45);
+            Assert.That(fixture.Motor.EquippedWeaponProfile.HasTrait(WeaponTraitId.PierceOneTarget), Is.True);
             yield return SettlePlayer(fixture);
             VenatorTestImpactActor2D first = fixture.CreateTarget("Crossbow Target 1", new Vector2(2.6f, 1f), multipleColliders: true);
             VenatorTestImpactActor2D second = fixture.CreateTarget("Crossbow Target 2", new Vector2(4.2f, 1f), multipleColliders: true);
@@ -203,15 +212,20 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(groundLayer, Is.GreaterThanOrEqualTo(0));
             Assert.That(enemyLayer, Is.GreaterThanOrEqualTo(0));
 
-            TextAsset itemJson = Resources.Load<TextAsset>("Luckbound/Data/Items/Items");
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                VenatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                new[] { VenatorSkillLoadout.PiercingArrowId, VenatorSkillLoadout.RootTrapId });
+            if (run.Inventory.Weapon.ItemId != equippedWeaponId)
+                EquipWeapon(run.Inventory, equippedWeaponId);
+
             TextAsset weaponJson = Resources.Load<TextAsset>("Luckbound/Data/Weapons");
-            Assert.That(itemJson, Is.Not.Null, "The authoritative Items.json resource must load.");
             Assert.That(weaponJson, Is.Not.Null, "The authoritative Weapons.json resource must load.");
-            WeaponCatalog weaponCatalog = WeaponCatalogJsonLoader.Load(
-                weaponJson.text,
-                ItemCatalogJsonLoader.Load(itemJson.text));
+            ItemCatalog itemCatalog = run.Inventory.Catalog;
+            WeaponCatalog weaponCatalog = WeaponCatalogJsonLoader.Load(weaponJson.text, itemCatalog);
             Assert.That(weaponCatalog.Count, Is.EqualTo(WeaponCatalogJsonLoader.ExpectedWeaponCount));
-            WeaponProfile equippedWeapon = weaponCatalog.Get(equippedWeaponId);
+            WeaponProfile equippedWeapon = weaponCatalog.Get(run.Inventory.Weapon.ItemId);
+            Assert.That(run.Inventory.Weapon.ItemId, Is.EqualTo(equippedWeaponId));
 
             var floor = new GameObject("Venator Weapon Acceptance Ground");
             floor.layer = groundLayer;
@@ -231,7 +245,9 @@ namespace Luckbound.Tests.PlayMode
             playerCollider.size = new Vector2(0.75f, 1.5f);
             PlayerMotor2D motor = player.AddComponent<PlayerMotor2D>();
             LayerMask enemyLayers = 1 << enemyLayer;
-            motor.Initialize(actorId, input, 1 << groundLayer, new CombatStats(100, 50, 0), enemyLayers);
+            motor.Initialize(actorId, input, 1 << groundLayer,
+                new CombatStats(run.StartingHealth, run.StartingEnergy, 0), enemyLayers, run.RaceId);
+            motor.ConfigureEquippedWeapon(run, weaponCatalog);
 
             var projectilePoolObject = new GameObject("Venator Weapon Acceptance Projectile Pool");
             ProjectilePool2D projectilePool = projectilePoolObject.AddComponent<ProjectilePool2D>();
@@ -254,12 +270,11 @@ namespace Luckbound.Tests.PlayMode
             room.OwnResource(projectileScope);
 
             motor.ConfigureVenator(
-                new[] { VenatorSkillLoadout.PiercingArrowId, VenatorSkillLoadout.RootTrapId },
+                run.SkillIds,
                 projectilePool,
                 projectileScope,
                 room,
                 enemyLayers);
-            motor.ConfigureEquippedWeapon(equippedWeapon);
             Physics2D.SyncTransforms();
 
             var fixture = new WeaponFixture(
@@ -268,6 +283,8 @@ namespace Luckbound.Tests.PlayMode
                 projectilePoolObject,
                 projectilePrefab,
                 roomObject,
+                run,
+                equippedWeapon,
                 motor,
                 input,
                 projectileScope,
@@ -275,6 +292,40 @@ namespace Luckbound.Tests.PlayMode
                 enemyLayer);
             _fixtures.Add(fixture);
             return fixture;
+        }
+
+        private void EquipWeapon(ExpeditionInventory inventory, string weaponId)
+        {
+            var stack = new InventoryItemStack(ItemInstanceId.New(), weaponId, ItemRarity.Common, 0, 1);
+            InventoryOperationOutcome collected = inventory.TryCollectItem(stack, TransactionId.New());
+            Assert.That(collected.Succeeded, Is.True, "The requested weapon must enter the run inventory.");
+
+            int slot = -1;
+            for (int index = 0; index < ExpeditionInventory.BackpackCapacity; index++)
+            {
+                if (inventory.GetBackpackSlot(index)?.InstanceId == stack.InstanceId)
+                {
+                    slot = index;
+                    break;
+                }
+            }
+
+            Assert.That(slot, Is.GreaterThanOrEqualTo(0));
+            Assert.That(inventory.EquipBackpackItem(slot, EquipmentSlot.Weapon, TransactionId.New()).Succeeded, Is.True,
+                "The requested weapon must be equipped through ExpeditionInventory.");
+        }
+
+        private static void AssertWeaponProfile(WeaponFixture fixture, string itemId, int damage, int intervalTicks)
+        {
+            WeaponProfile equipped = fixture.Motor.EquippedWeaponProfile;
+            Assert.That(equipped, Is.SameAs(fixture.ExpectedProfile),
+                "The motor must hold the exact profile resolved from the authoritative weapon catalog.");
+            Assert.That(equipped.ItemId, Is.EqualTo(fixture.Run.Inventory.Weapon.ItemId));
+            Assert.That(equipped.ItemId, Is.EqualTo(itemId));
+            Assert.That(equipped.ClassId, Is.EqualTo(fixture.Run.ClassId));
+            Assert.That(equipped.ClassId, Is.EqualTo(VenatorSkillLoadout.ClassId));
+            Assert.That(equipped.Damage, Is.EqualTo(damage));
+            Assert.That(WeaponBasicAttackProfile.Create(equipped).AttackIntervalTicks, Is.EqualTo(intervalTicks));
         }
 
         private static IEnumerator SettlePlayer(WeaponFixture fixture)
@@ -338,6 +389,8 @@ namespace Luckbound.Tests.PlayMode
                 GameObject projectilePoolObject,
                 GameObject projectilePrefab,
                 GameObject roomObject,
+                ExpeditionRunConfiguration run,
+                WeaponProfile expectedProfile,
                 PlayerMotor2D motor,
                 PlayerInputBuffer input,
                 RoomProjectileScope projectileScope,
@@ -349,6 +402,8 @@ namespace Luckbound.Tests.PlayMode
                 _projectilePoolObject = projectilePoolObject;
                 _projectilePrefab = projectilePrefab;
                 _roomObject = roomObject;
+                Run = run;
+                ExpectedProfile = expectedProfile;
                 Motor = motor;
                 Input = input;
                 ProjectileScope = projectileScope;
@@ -357,6 +412,10 @@ namespace Luckbound.Tests.PlayMode
             }
 
             public PlayerMotor2D Motor { get; }
+
+            public ExpeditionRunConfiguration Run { get; }
+
+            public WeaponProfile ExpectedProfile { get; }
 
             public PlayerInputBuffer Input { get; }
 
