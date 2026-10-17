@@ -397,7 +397,7 @@ Integrar selección clase/raza/kit con bloqueos visibles, dos habilidades válid
 
 Separar contratos de perfil, textos ES/EN y presentación. Implementar inicialmente CT01–CT04 (G07 completa CT01–CT12), máximo tres activos, reconocer contadores previos al aceptar, reclamar una vez y conservar desbloqueos al morir. Personajes siguen sus nombres/funciones fijadas.
 
-**Aceptación:** flujo por interacción, premios/desbloqueos exactos, doble reclamación y reinicio; cambiar idioma sin reiniciar la aplicación y sin perder foco. Los contadores vienen de eventos válidos de la sesión, nunca de botones de prueba que conceden objetivos.
+**Aceptación:** flujo por interacción, premios/desbloqueos exactos, doble reclamación y reinicio; cambiar idioma sin reiniciar la aplicación y sin perder foco. Los contadores vienen de eventos válidos de la sesión, nunca de botones de prueba que conceden objetivos. Persistir el evento antes de publicar el avance; tras un fallo, reintentar el payload exacto y drenar después los eventos pendientes en orden FIFO. Un replay no suma progreso dos veces. No declarar conectadas las salas genéricas de Expedición sin demostrar su callsite de victoria real.
 
 ### F01 — Referencia maestra reproducible
 

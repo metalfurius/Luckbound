@@ -874,6 +874,8 @@ Habrá un máximo de tres contratos activos. Los objetivos utilizarán contadore
 
 Las recompensas se reclamarán en la taberna y serán idempotentes.
 
+El progreso solo procede de resultados confirmados del dominio de una sesión válida: salas de combate realmente vencidas, enemigos derrotados, y fabricación o mejora persistida. La interfaz y las transiciones no conceden objetivos. El adaptador persiste cada evento antes de publicar el contador; si falla la escritura, conserva el payload exacto para reintentar, procesa después los eventos posteriores en orden FIFO y evita duplicados al repetir recibos. Un intento fallido o un replay no cuenta como progreso adicional.
+
 ### 3.15. Sectores y enemigos
 
 | Sector | Identidad | Enemigos |

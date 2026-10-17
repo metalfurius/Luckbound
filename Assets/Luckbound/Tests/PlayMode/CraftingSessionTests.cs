@@ -242,6 +242,14 @@ namespace Luckbound.Tests.PlayMode
             }
         }
 
+        private static IEnumerator Complete<T>(Task<T> task, Action<T> completed)
+        {
+            while (!task.IsCompleted) yield return null;
+            if (task.IsFaulted) throw task.Exception.Flatten();
+            if (task.IsCanceled) throw new OperationCanceledException();
+            completed(task.GetAwaiter().GetResult());
+        }
+
         private static Button FindButton(string objectName)
         {
             return UnityEngine.Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None)

@@ -708,7 +708,9 @@ namespace Luckbound.App
             {
                 string languageKey = language == "es" ? "ui.language.en" : "ui.language.es";
                 SetLabel(_contractLanguageButton, GetText(languageKey));
-                _contractLanguageButton.interactable = !_languageWriteInProgress;
+                // Keep the selected control focusable during the asynchronous settings save.
+                // ChangeContractLanguage already ignores another activation while its exact write is pending.
+                _contractLanguageButton.interactable = true;
             }
             if (_contractLanguageStatusText != null) _contractLanguageStatusText.text = _languageFeedback ?? string.Empty;
             if (_contractStatusText != null) _contractStatusText.text = _contractFeedback ?? string.Empty;
