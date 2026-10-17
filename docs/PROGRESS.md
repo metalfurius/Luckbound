@@ -627,7 +627,7 @@ Hash SHA-256 de la guía de agentes comprobada: `9cbbdc0dd0597059f216653f6fa019a
 ## Ejecución F01 — Referencia maestra artística (InProgress)
 
 - **Integración:** commit `8a0d23f` añade `docs/art/F01_master_reference.png` (480×270), fuente original generada, guía/manifest y hashes; la comprobación técnica confirma dimensiones, paleta limitada a 32 colores y ausencia de transparencia.
-- **Revisión interna:** se distinguen las siete referencias y el contraste Bellator/amenazas/fondo es legible. La escala de Bellator aún no queda demostrada como celda literal de 32×48 píxeles; por ello F01 no se marca `Verified` y F02 no se inicia.
+- **Corrección de alcance:** el commit posterior `f36f808` añadió `F01_bellator_32x48.png` como referencia compañera separada; su comprobación técnica confirmó 32×48 exactos, paleta permitida, alfa binaria y silueta conectada. La escala ya tiene evidencia técnica; la aprobación visual de la lámina y la celda no está registrada, así que F01 permanece `InProgress/Prototype` y F02 sigue esperando el cierre visual fijado para F01.
 
 ## Ejecución F07 — Partitura y síntesis local (Verified)
 
