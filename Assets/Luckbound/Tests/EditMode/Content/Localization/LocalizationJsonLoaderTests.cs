@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Luckbound.Content;
 using Luckbound.Core.Saves;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Luckbound.Tests.Localization
 {
@@ -10,6 +11,44 @@ namespace Luckbound.Tests.Localization
     {
         private const string BasicJson =
             "{\"schemaVersion\":1,\"defaultLanguageId\":\"es\",\"entries\":[{\"key\":\"menu.play\",\"es\":\"Jugar\",\"en\":\"Play\"}]}";
+
+        [Test]
+        public void LoadsAuthoredInitialResourceWithContractsAndFiveServiceArcs()
+        {
+            TextAsset resource = Resources.Load<TextAsset>("Luckbound/Localization/Initial");
+            Assert.That(resource, Is.Not.Null, "Initial ES/EN resource must be available to the runtime.");
+
+            LocalizedTextCatalog catalog = LocalizationJsonLoader.Load(resource.text);
+            Assert.That(catalog.DefaultLanguageId, Is.EqualTo("es"));
+            Assert.That(catalog.Count, Is.EqualTo(44));
+
+            string[] contractIds = { "ct01", "ct02", "ct03", "ct04" };
+            foreach (string contractId in contractIds)
+            {
+                foreach (string field in new[] { "title", "objective", "reward" })
+                {
+                    string key = "contract." + contractId + "." + field;
+                    Assert.That(catalog.GetText(key, "es"), Is.Not.EqualTo(key), key + " Spanish");
+                    Assert.That(catalog.GetText(key, "en"), Is.Not.EqualTo(key), key + " English");
+                }
+            }
+
+            string[] characters = { "maelis", "ronan", "talia", "bram", "neris" };
+            foreach (string character in characters)
+            {
+                foreach (string field in new[] { "name", "role", "dialogue.intro", "dialogue.reveal", "dialogue.ending" })
+                {
+                    string key = "character." + character + "." + field;
+                    Assert.That(catalog.GetText(key, "es"), Is.Not.EqualTo(key), key + " Spanish");
+                    Assert.That(catalog.GetText(key, "en"), Is.Not.EqualTo(key), key + " English");
+                }
+            }
+
+            var activeText = new LocalizationService(catalog, "es");
+            Assert.That(activeText.GetText("ui.contracts.title"), Is.EqualTo("Contratos"));
+            activeText.SetLanguage("en");
+            Assert.That(activeText.GetText("ui.contracts.title"), Is.EqualTo("Contracts"));
+        }
 
         [Test]
         public void LoadsCatalogAndChangesLanguageImmediatelyInMemory()
