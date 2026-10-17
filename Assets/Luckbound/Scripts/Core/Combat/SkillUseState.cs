@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Pacts;
 
 namespace Luckbound.Core.Combat
@@ -12,13 +13,23 @@ namespace Luckbound.Core.Combat
         private SkillDefinition _preparingSkill;
         private long _preparationStartTick;
         private readonly PactModifierTotals _pactModifiers;
+        private readonly string _raceId;
 
         public SkillUseState(int maximumEnergy, int initialEnergy)
-            : this(maximumEnergy, initialEnergy, default(PactModifierTotals))
+            : this(maximumEnergy, initialEnergy, default(PactModifierTotals), PlayableRaceRules.HumanRaceId)
         {
         }
 
         public SkillUseState(int maximumEnergy, int initialEnergy, PactModifierTotals pactModifiers)
+            : this(maximumEnergy, initialEnergy, pactModifiers, PlayableRaceRules.HumanRaceId)
+        {
+        }
+
+        public SkillUseState(
+            int maximumEnergy,
+            int initialEnergy,
+            PactModifierTotals pactModifiers,
+            string raceId = PlayableRaceRules.HumanRaceId)
         {
             if (maximumEnergy < 0)
             {
@@ -30,12 +41,25 @@ namespace Luckbound.Core.Combat
                 throw new ArgumentOutOfRangeException(nameof(initialEnergy), "Initial energy must be between zero and maximum energy.");
             }
 
+            if (raceId == null)
+            {
+                throw new ArgumentNullException(nameof(raceId));
+            }
+
+            if (!PlayableRaceRules.IsSupportedRace(raceId))
+            {
+                throw new ArgumentException("Unknown playable race ID.", nameof(raceId));
+            }
+
             MaximumEnergy = maximumEnergy;
             CurrentEnergy = initialEnergy;
             _pactModifiers = pactModifiers;
+            _raceId = raceId;
         }
 
         public int MaximumEnergy { get; }
+
+        public string RaceId => _raceId;
 
         public int CurrentEnergy { get; private set; }
 
@@ -139,7 +163,8 @@ namespace Luckbound.Core.Combat
 
         private int GetSkillCost(SkillDefinition skill)
         {
-            return _pactModifiers.ApplySkillCost(skill.EnergyCost);
+            int pactAdjustedCost = _pactModifiers.ApplySkillCost(skill.EnergyCost);
+            return PlayableRaceRules.ApplySkillCost(_raceId, pactAdjustedCost);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Luckbound.Core.Combat;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Pacts;
 using NUnit.Framework;
 
@@ -107,6 +108,72 @@ namespace Luckbound.Tests.Core
             Assert.That(activated.Status, Is.EqualTo(SkillUseStatus.Activated));
             Assert.That(activated.EnergySpent, Is.EqualTo(8));
             Assert.That(state.CurrentEnergy, Is.Zero);
+        }
+
+        [TestCase(PlayableRaceRules.HumanRaceId, 8, 8)]
+        [TestCase(PlayableRaceRules.HumanRaceId, 12, 12)]
+        [TestCase(PlayableRaceRules.HumanRaceId, 16, 16)]
+        [TestCase(PlayableRaceRules.OrciniRaceId, 8, 8)]
+        [TestCase(PlayableRaceRules.OrciniRaceId, 12, 12)]
+        [TestCase(PlayableRaceRules.OrciniRaceId, 16, 16)]
+        [TestCase(PlayableRaceRules.AlvariRaceId, 8, 8)]
+        [TestCase(PlayableRaceRules.AlvariRaceId, 12, 11)]
+        [TestCase(PlayableRaceRules.AlvariRaceId, 16, 15)]
+        [TestCase(PlayableRaceRules.DvergarRaceId, 8, 8)]
+        [TestCase(PlayableRaceRules.DvergarRaceId, 12, 12)]
+        [TestCase(PlayableRaceRules.DvergarRaceId, 16, 16)]
+        public void ActivationConsumesTheRaceAdjustedSkillCostWithoutPacts(string raceId, int baseCost, int expectedCost)
+        {
+            var state = new SkillUseState(
+                maximumEnergy: expectedCost,
+                initialEnergy: expectedCost,
+                pactModifiers: default(PactModifierTotals),
+                raceId: raceId);
+            SkillDefinition skill = CreateSkill("skill.bellator.race_cost", baseCost, 240);
+
+            SkillUseOutcome started = state.Update(0, skill, actionValid: true, interrupted: false);
+            SkillUseOutcome activated = state.Update(9, null, actionValid: true, interrupted: false);
+
+            Assert.That(started.Status, Is.EqualTo(SkillUseStatus.Preparing));
+            Assert.That(activated.Status, Is.EqualTo(SkillUseStatus.Activated));
+            Assert.That(activated.EnergySpent, Is.EqualTo(expectedCost));
+            Assert.That(state.CurrentEnergy, Is.Zero);
+            Assert.That(state.RaceId, Is.EqualTo(raceId));
+        }
+
+        [TestCase(8, 10)]
+        [TestCase(12, 14)]
+        [TestCase(16, 19)]
+        public void AlvariActivationAppliesFervorCostBeforeTheRaceDiscount(int baseCost, int expectedCost)
+        {
+            var pacts = new PactState(baseMaximumHealth: 100, currentHealth: 100);
+            Assert.That(pacts.Accept(PactIds.Fervor).Status, Is.EqualTo(PactOperationStatus.Accepted));
+            var state = new SkillUseState(
+                maximumEnergy: expectedCost,
+                initialEnergy: expectedCost,
+                pactModifiers: pacts.Modifiers,
+                raceId: PlayableRaceRules.AlvariRaceId);
+            SkillDefinition skill = CreateSkill("skill.bellator.alvari_fervor", baseCost, 240);
+
+            SkillUseOutcome started = state.Update(0, skill, actionValid: true, interrupted: false);
+            SkillUseOutcome activated = state.Update(9, null, actionValid: true, interrupted: false);
+
+            Assert.That(started.Status, Is.EqualTo(SkillUseStatus.Preparing));
+            Assert.That(activated.Status, Is.EqualTo(SkillUseStatus.Activated));
+            Assert.That(activated.EnergySpent, Is.EqualTo(expectedCost));
+            Assert.That(state.CurrentEnergy, Is.Zero);
+        }
+
+        [Test]
+        public void RaceIdDefaultsToHumanAndRejectsUnsupportedValues()
+        {
+            var defaultState = new SkillUseState(50, 50);
+            var pactState = new SkillUseState(50, 50, default(PactModifierTotals));
+
+            Assert.That(defaultState.RaceId, Is.EqualTo(PlayableRaceRules.HumanRaceId));
+            Assert.That(pactState.RaceId, Is.EqualTo(PlayableRaceRules.HumanRaceId));
+            Assert.Throws<ArgumentNullException>(() => new SkillUseState(50, 50, default(PactModifierTotals), raceId: null));
+            Assert.Throws<ArgumentException>(() => new SkillUseState(50, 50, default(PactModifierTotals), raceId: "race.unknown"));
         }
 
         [Test]
