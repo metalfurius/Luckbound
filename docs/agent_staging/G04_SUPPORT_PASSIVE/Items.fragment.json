@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": "relic.pale_bone",
+      "nameKey": "item.relic.pale_bone.name",
+      "descriptionKey": "item.relic.pale_bone.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.arcane_flask",
+      "nameKey": "item.relic.arcane_flask.name",
+      "descriptionKey": "item.relic.arcane_flask.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.apprentice_gear",
+      "nameKey": "item.relic.apprentice_gear.name",
+      "descriptionKey": "item.relic.apprentice_gear.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    }
+  ]
+}
