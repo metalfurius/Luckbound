@@ -1,3 +1,5 @@
+using System;
+
 namespace Luckbound.Core.Combat
 {
     /// <summary>Fixed shortbow attack data for the Venator's free basic attack.</summary>

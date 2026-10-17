@@ -4,6 +4,7 @@ using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Gameplay.Combat;
+using Luckbound.Gameplay.Combat.Magus;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Movement;
 using NUnit.Framework;
@@ -158,6 +159,14 @@ namespace Luckbound.Tests.PlayMode
             PlayerFixture player = CreatePlayer("G01_Frost_Player", new Vector2(6f, 1.5f), groundLayer);
             SlimeFixture slimeFixture = CreateSlime("G01_Frost_Slime", new Vector2(0f, 0.4f), player.Motor, groundLayer);
             ProjectileFixture projectileFixture = CreateProjectileFixture("G01_Frost_Projectile");
+            var frictionless = new PhysicsMaterial2D("G01 Frost Surface")
+            {
+                friction = 0f,
+                bounciness = 0f,
+                frictionCombine = PhysicsMaterialCombine2D.Minimum
+            };
+            floor.GetComponent<Collider2D>().sharedMaterial = frictionless;
+            slimeFixture.GameObject.GetComponent<Collider2D>().sharedMaterial = frictionless;
             Physics2D.SyncTransforms();
 
             for (int tick = 0; tick < 30 && slimeFixture.Slime.State != SlimeBehaviorState.Chase; tick++)
@@ -207,6 +216,7 @@ namespace Luckbound.Tests.PlayMode
             projectileFixture.Destroy();
             player.Destroy();
             Object.Destroy(floor);
+            Object.Destroy(frictionless);
             yield return null;
         }
 

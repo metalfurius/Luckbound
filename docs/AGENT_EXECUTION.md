@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 2.2 · 17 de octubre de 2026.
+**Versión:** 2.3 · 17 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -15,12 +15,13 @@ La petición documental anterior de Fran reafirmó la regla de visibilidad y lim
 Estado técnico vigente al 17 de octubre; los cambios y sus evidencias están en [PROGRESS.md](PROGRESS.md):
 
 - E01 y E02 están `Verified`; E02.ADAPTER quedó integrado en `99ea5e9` y el recorrido físico de fabricación pasa.
-- E03 Core y aplicación durable están integrados; compra/reintento, venta de material y restauración pasan. La aceptación de venta de objetos pasa 1/1; falta la interacción accesible del juego. E04 Core, mapper y mutaciones durables están integrados; siguen pendientes UI, aplicación de recompensas, unión a encuentros y aceptación PlayMode de reinicio. La migración rechaza sin sobrescribir expedientes legados que contienen ofertas antiguas irrepresentables.
+- E03 Core y aplicación durable están integrados; compra/reintento, venta de material y restauración pasan. La aceptación de venta de objetos pasa 1/1; falta la interacción accesible del juego. E04 Core, mapper y mutaciones durables están integrados; `31ea4b6` añade la aplicación atómica de recompensa y claim con pruebas PlayMode. Siguen pendientes UI/encuentros y replay de la API después de cargar sin rollback D09. La migración rechaza sin sobrescribir expedientes legados que contienen ofertas antiguas irrepresentables.
 - E06 está `Verified` en `9607751`; sus decisiones de economía, redondeo, guardado y reintento están fijadas en DEVELOPMENT_PLAN.md §3.13.
 - E07 está `Verified`. E08 ya implementa asistencia Magus por cono de 35°, línea de visión y desempate determinista; sus pruebas dirigidas pasan 12/12. E08 sigue abierto hasta la aceptación integral de clase.
 - E09 integra Embestida, Corte circular y Guardia Bellator, y queda `Verified`: la composición reusable pasa raza, kit y estadísticas de la configuración confirmada al motor y al colector. Binder dirigido 3/3; EditMode completo 253/253; PlayMode completo 159/159, cero fallos/omitidos/inconclusos en Unity `6000.6.5f1`, batch/nographics. F09 conserva la unión del binder con la composición productiva del recorrido.
 - F07 está `Verified`; F08 conserva tres pistas, catálogo de 36 efectos y tres ambientes loopables. La raíz persistente crea los directores de música/ambiente y el enrutador. Música por escena: `Hub`→taberna, `Expedition`/`CombatArena`→Patio y `CustodianArena`→Custodio. Ambiente: `Expedition`/`CombatArena`→Patio, se detiene al salir de esas escenas; ambos esperan la primera entrada del jugador. Los fundidos se limitan a dos voces por director. Suites de audio/importación 44/44. La build WebGL local de F08 termina `success`; siguen pendientes la selección de ambiente por sala dentro de la composición F09, la prueba de reproducción tras interacción y la revisión auditiva. F01 tiene la celda técnica 32×48 validada, pero sigue `InProgress/Prototype` porque la revisión visual del tablero/celda no se ha realizado; F02 no empieza hasta aceptar F01.
-- Regresión coordinada vigente: EditMode 253/253 en `Logs/Coordinator-20261017-e09-editmode-full-r1.xml`; PlayMode 159/159 en `Logs/Coordinator-20261017-e09-playmode-full-r1.xml`; binder dirigido 3/3 en `Logs/Coordinator-20261017-e09-binder-playmode-targeted.xml`. Cero fallos, omitidos o inconclusos; Unity `6000.6.5f1`, WindowsEditor, batch/nographics y código 0. Herramientas de audio/importación 44/44. Build WebGL F08 en `Logs/Builds/F08-WebGL`, no publicada.
+- G01 integra `0342026`, con perfiles de las nueve armas aplicados al motor de combate. Continúa `InProgress`: F09 no resuelve todavía el arma equipada en el binder productivo, falta la cobertura completa catálogo→ataque→impacto y las magnitudes de alcance/empuje de Umbra no están definidas por el plan.
+- Regresión coordinada E04/G01 (17-oct): EditMode 266/266 en `Logs/Coordinator-20261017-g01-e04-editmode-r3.xml`; PlayMode 170/170 en `Logs/Coordinator-20261017-g01-e04-playmode-r2.xml`, cero fallos, omitidos o inconclusos. Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`; no se hizo build/publicación en esta corrida. La aceptación anterior E09 queda registrada en PROGRESS.md.
 - A06 tiene un bloqueo de acceso/secretos para ejecutar Actions; no se atribuye al workflow una ejecución remota inexistente.
 - Las cinco revisiones de Fran siguen pendientes. Permiten trabajo técnico independiente, pero no equivalen a aprobación.
 - Editor fijado: Unity `6000.6.5f1`. Mantener paquetes y módulos ya comprobados.
