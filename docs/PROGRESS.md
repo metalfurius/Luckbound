@@ -10,7 +10,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, 
 
 ## Estado actual (17 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01–E03, E06–E09 y F07: Verified; E04, E10, F01, F08 y G01: InProgress; A06: InProgress; D09: NeedsOwnerReview; las demás tareas figuran Pending.
+- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01–E03, E06–E09 y F07: Verified; E04, E10, F01, F08, G01, G02 y G04: InProgress; A06: InProgress; D09: NeedsOwnerReview; las demás tareas figuran Pending.
 - E02.ADAPTER está integrado en `99ea5e9`. El escenario físico `E02_PhysicalCraftCommitRetryAndRestart` pasa con nueve aserciones en `Logs/Scenarios/E02/20261016T143835626Z_E02_PhysicalCraftCommitRetryAndRestart_b5c4a425/scenario-report.json`. La regresión coordinada revalidada incluye E02.
 - E03 Core, App durable e interfaz accesible para comercio, herrería y descanso ya cumplen el cierre técnico: `ce02288` acepta venta de objetos; el escenario integrado comprueba entrada/restauración, compra por puntero, reintento de la misma transacción por teclado, venta, mejora y Talia; tras reiniciar, stock y servicios de uso único conservan su estado. Economía y recuperación cubren también falta de espacio/oro, precios/descuentos, redondeo, ausencia de arbitraje, mejoras consecutivas y replay. `FIX-E03-01` corrige el replay de Talia tras restaurar partidas: la firma durable usa la sala, reconoce recibos antiguos con salud en la firma y no vuelve a aplicar salud histórica. E03 queda `Verified` con la regresión íntegra registrada al final de este documento.
 - E04 integra Core, mapper, mutaciones persistentes y ahora un panel de elección/repetición/reclamo. `31ea4b6` aplica objeto y `ClaimId` en una escritura durable atómica, con reintento exacto y preservación del checkpoint D09; `b89f0e9` añade replay de la API tras recargar la misma oferta sin rollback; `7b33415` integra el panel y `e0d8716` restaura la misma opción pendiente tras recrearlo. Permanecen pendientes los callsites de encuentro y validar migración con un expediente legado original; E04 sigue `InProgress`.
@@ -102,7 +102,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | D09 | Reanudar expedición en ambas plataformas, versión 0.2 | D08 | NeedsOwnerReview |
 | E01 | Materiales y bolsa | D09 | Verified |
 | E02 | Fabricación | E01 | Verified |
-| E03 | Comercio, herrería y descanso | E02 | InProgress |
+| E03 | Comercio, herrería y descanso | E02 | Verified |
 | E04 | Ofertas y Fortuna | D09, E01 | InProgress |
 | E05 | Avaricia y Fervor | C01, E04 | Pending |
 | E06 | Renombre y mejoras permanentes | D07, D08 | Verified |
@@ -121,9 +121,9 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | F09 | Tutorial y Custodio acabados; recorrido corto integrado | F03, F04, F05, F06, F08, E10 | Pending |
 | F10 | Muestra 0.3 | F09 | Pending |
 | G01 | Nueve armas | C03, D04 | InProgress |
-| G02 | Seis armaduras, seis consumibles y doce recetas | E02, E03 | Pending |
+| G02 | Seis armaduras, seis consumibles y doce recetas | E02, E03 | InProgress |
 | G03 | Ocho reliquias de combate | D04, E05, E07, E08 | Pending |
-| G04 | Ocho reliquias de apoyo | D04, E03, E07, E08 | Pending |
+| G04 | Ocho reliquias de apoyo | D04, E03, E07, E08 | InProgress |
 | G05 | Ocho reliquias de Fortuna | D04, E03, E04, E05 | Pending |
 | G06 | Ocho pactos | E04, E05 | Pending |
 | G07 | Doce contratos | E10 | Pending |
@@ -803,3 +803,13 @@ Copiar esta ficha para la tarea activa y añadir las evidencias reales:
 Fran deja asentado de nuevo que no quiere ver ninguna ventana que no necesite usar personalmente para tomar una decisión concreta. Las ventanas de herramientas, juegos, pruebas, builds, navegadores, terminales o cualquier otro proceso deben ejecutarse sin interfaz o en un sandbox/escritorio verdaderamente aislado e inaccesible para su sesión. No basta con minimizarlas, dejarlas detrás de otra ventana o quitarles el foco; tampoco se mostrarán momentáneamente ni se insertarán previsualizaciones en el chat si no hacen falta para una decisión suya. Esta regla obliga al coordinador y a todos los agentes. Si no se puede garantizar la invisibilidad, la operación no se lanza y se registra como bloqueo.
 
 Se reafirmó la regla en `AGENTS.md`, §3.5 de `AGENT_EXECUTION.md` y la versión 3.21 del plan. Esta actualización es documental: no ejecutó Unity, pruebas ni builds y no cambia la aceptación de tareas técnicas.
+
+## Oleada coordinada G02/G04 y revisión G01 — 17 de octubre de 2026
+
+Base común de trabajo: `f5ccf195421c2663d7c37bcf2a870fca560c05ac`. El coordinador conserva el checkout de integración y la cola Unity. Los workers usan worktrees separados; no editan este registro ni ejecutan Unity.
+
+- **G02.ARMOR.RUNTIME — asignado:** integrar los seis perfiles fijados por §3.8 al binder y al motor; aplicar defensa, energía máxima, velocidad, recuperación y duración de estados donde existe el contrato; conservar recursos actuales al aumentar máximos y limitarlos al reducirlos. Archivos cedidos: `ExpeditionPlayerRunBinder.cs`, `ExpeditionBellatorRunBinder.cs`, `PlayerMotor2D.cs` y sus pruebas directas. No tocar catálogo compartido ni integrar reliquias/consumibles. Aceptación pendiente de integración y Unity.
+- **G04.SUPPORT-CATALOG — asignado:** completar en Core, catálogo y localización las ocho reliquias de apoyo exactas de §3.12, con sus modificadores y casos de límites/slots/stacking. Archivos cedidos: `Core/Relics/`, `Tests/EditMode/Relics/`, `Data/Items/Items.json` y `Localization/Initial.json`. No tocar binder/motor ni este registro. Aceptación pendiente de integración y Unity.
+- **F08.AMBIENCE.COMPOSITION — asignado:** añadir en un archivo parcial independiente el método de composición explícito del audio de aplicación con `ExpeditionRoomTransitionController`, y pruebas de enrutamiento al enlazar antes o después de la primera sala. No editar el controlador de transición ni afirmar que existe un callsite productivo: F09 deberá invocar el seam y F08 conserva pendiente la validación WebGL/revisión auditiva.
+- **G02.Core consumibles — entrega integrada y prueba dirigida:** commit `f5ccf19` añade efectos Core de antídoto, bomba, brebaje de Fortuna y antorcha, junto a ocho pruebas EditMode. Unity `6000.6.6f1`, WindowsEditor, `-batchmode -nographics`, salida 0; el proceso se lanzó oculto y el monitoreo no observó ventanas: `ConsumableEffectTests` pasa 8/8 en `Logs/Coordinator-20261017-g02-consumable-core-editmode.xml`, cero fallos, omitidos o inconclusos. El resultado verifica el módulo Core, no su integración en Gameplay ni la tarea G02 completa.
+- **Estado de la verificación:** las tres fichas asignadas siguen pendientes de aceptación del coordinador; ninguna entrega de worker por sí sola verifica su tarea padre. No se atribuye a esos paquetes una build o publicación.
