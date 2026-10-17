@@ -31,7 +31,8 @@ namespace Luckbound.App
             ProjectilePool2D projectilePool = null,
             RoomProjectileScope projectileScope = null,
             RoomLifetimeScope roomLifetimeScope = null,
-            LootPickupDropStager2D dropStager = null)
+            LootPickupDropStager2D dropStager = null,
+            IPlayerFortuneBrewRuntime fortuneBrewRuntime = null)
         {
             BindingPlan plan = Validate(
                 run,
@@ -64,6 +65,8 @@ namespace Luckbound.App
                     weaponCatalog,
                     skillCatalog,
                     dropStager);
+                if (fortuneBrewRuntime != null)
+                    playerMotor.ConfigureFortuneBrewRuntime(fortuneBrewRuntime);
                 return;
             }
 
@@ -99,6 +102,8 @@ namespace Luckbound.App
             }
 
             itemCollector.Configure(run.Inventory, itemCatalog, dropStager, run.RaceId);
+            if (fortuneBrewRuntime != null)
+                playerMotor.ConfigureFortuneBrewRuntime(fortuneBrewRuntime);
         }
 
         private static BindingPlan Validate(

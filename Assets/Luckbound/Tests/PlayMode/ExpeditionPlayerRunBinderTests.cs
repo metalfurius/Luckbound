@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Luckbound.App;
 using Luckbound.Content;
 using Luckbound.Core.Armor;
@@ -87,6 +88,49 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(fixture.Motor.CombatStats.Defense, Is.EqualTo(8));
             Assert.That(fixture.Collector.GrantsDvergarBonus, Is.True);
             yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator RunBinderPassesDurableFortuneRuntimeToThePlayerActor()
+        {
+            ExpeditionRunConfiguration run = CreateRun(
+                BellatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                BellatorSkillLoadout.ChargeId,
+                BellatorSkillLoadout.CircularCutId);
+            InventoryItemStack brew = EquipQuickConsumable(run, "consumable.fortune_brew", quantity: 2);
+            BindingFixture fixture = CreatePlayer(run, includeRoomProjectiles: false);
+            var fortuneRuntime = new ImmediateFortuneBrewRuntime(run.Inventory);
+
+            ExpeditionPlayerRunBinder.Bind(
+                run,
+                fixture.ActorId,
+                fixture.Input,
+                GroundLayers(),
+                EnemyLayers(),
+                0,
+                fixture.Motor,
+                fixture.Collector,
+                run.Inventory.Catalog,
+                fixture.Weapons,
+                fixture.Skills,
+                fortuneBrewRuntime: fortuneRuntime);
+
+            fixture.Input.Press(PlayerAction.Consumable);
+            yield return new WaitForFixedUpdate();
+            fixture.Input.Release(PlayerAction.Consumable);
+            yield return new WaitForFixedUpdate();
+
+            Assert.That(fortuneRuntime.CallCount, Is.EqualTo(1));
+            Assert.That(fortuneRuntime.LastItemInstanceId, Is.EqualTo(brew.InstanceId));
+            Assert.That(fortuneRuntime.LastTransactionId.IsValid, Is.True);
+            Assert.That(fixture.Motor.LastConsumableUseOutcome.Status,
+                Is.EqualTo(PlayerConsumableUseStatus.Consumed));
+            Assert.That(fixture.Collector.Inventory.QuickConsumable.Quantity, Is.EqualTo(brew.Quantity - 1));
+            Assert.That(fixture.Collector.Inventory.HasSuccessfulQuickConsumableConsumption(
+                brew.InstanceId,
+                "consumable.fortune_brew",
+                fortuneRuntime.LastTransactionId), Is.True);
         }
 
         [UnityTest]
@@ -612,6 +656,28 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(run.Inventory.Armor, Is.SameAs(replacement));
         }
 
+        private static InventoryItemStack EquipQuickConsumable(
+            ExpeditionRunConfiguration run, string itemId, int quantity = 1)
+        {
+            var stack = new InventoryItemStack(ItemInstanceId.New(), itemId, ItemRarity.Common, 0, quantity);
+            InventoryOperationOutcome collected = run.Inventory.TryCollectItem(stack, TransactionId.New());
+            Assert.That(collected.Succeeded, Is.True, "Could not collect test quick consumable " + itemId + ".");
+            int slot = -1;
+            for (int index = 0; index < ExpeditionInventory.BackpackCapacity; index++)
+            {
+                if (run.Inventory.GetBackpackSlot(index)?.InstanceId == stack.InstanceId)
+                {
+                    slot = index;
+                    break;
+                }
+            }
+            Assert.That(slot, Is.GreaterThanOrEqualTo(0), "The test quick consumable should occupy a backpack slot.");
+            InventoryOperationOutcome equipped = run.Inventory.SetQuickConsumable(slot, TransactionId.New());
+            Assert.That(equipped.Succeeded, Is.True, "Could not set the test quick consumable.");
+            Assert.That(run.Inventory.QuickConsumable, Is.SameAs(stack));
+            return stack;
+        }
+
         private void AssertActorAndCollectorUnconfigured(BindingFixture fixture)
         {
             Assert.That(fixture.Motor.ActorId.IsValid, Is.False);
@@ -664,6 +730,39 @@ namespace Luckbound.Tests.PlayMode
             public ProjectilePool2D ProjectilePool;
             public RoomProjectileScope ProjectileScope;
             public RoomLifetimeScope Room;
+        }
+
+        private sealed class ImmediateFortuneBrewRuntime : IPlayerFortuneBrewRuntime
+        {
+            private readonly ExpeditionInventory _sourceInventory;
+
+            public ImmediateFortuneBrewRuntime(ExpeditionInventory sourceInventory)
+            {
+                _sourceInventory = sourceInventory;
+            }
+
+            public int CallCount { get; private set; }
+            public ItemInstanceId LastItemInstanceId { get; private set; }
+            public TransactionId LastTransactionId { get; private set; }
+
+            public Task<PlayerFortuneBrewCommitOutcome> ConsumeFortuneBrewAsync(
+                ItemInstanceId itemInstanceId,
+                TransactionId transactionId)
+            {
+                CallCount++;
+                LastItemInstanceId = itemInstanceId;
+                LastTransactionId = transactionId;
+                ExpeditionInventory committed = ExpeditionInventory.Restore(
+                    _sourceInventory.Catalog, _sourceInventory.CreateSnapshot());
+                InventoryOperationOutcome consumed = committed.TryConsumeQuickConsumable(
+                    itemInstanceId, "consumable.fortune_brew", transactionId);
+                Assert.That(consumed.Succeeded, Is.True, consumed.Status.ToString());
+                return Task.FromResult(new PlayerFortuneBrewCommitOutcome(
+                    persisted: true,
+                    status: Luckbound.Core.Fortune.FortuneOperationStatus.Succeeded,
+                    currentCharges: 2,
+                    committedInventory: committed));
+            }
         }
     }
 }
