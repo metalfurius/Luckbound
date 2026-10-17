@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Luckbound.Core.Consumables;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Randomness;
 
@@ -14,7 +15,8 @@ namespace Luckbound.Core.Fortune
     /// </summary>
     public sealed class FortuneOfferBook
     {
-        public const int SnapshotVersion = 2;
+        public const int SnapshotVersion = 3;
+        private const int RerollReceiptSnapshotVersion = 2;
         private const int LegacySnapshotVersion = 1;
         public const int MaximumCharges = 3;
         public const string HumanRaceId = "race.human";
@@ -26,6 +28,8 @@ namespace Luckbound.Core.Fortune
         private readonly HashSet<string> _processedGuardianIds = new HashSet<string>(StringComparer.Ordinal);
         private readonly Dictionary<string, FortuneRerollReceiptSnapshot> _rerollReceipts =
             new Dictionary<string, FortuneRerollReceiptSnapshot>(StringComparer.Ordinal);
+        private readonly Dictionary<string, FortuneBrewReceiptSnapshot> _fortuneBrewReceipts =
+            new Dictionary<string, FortuneBrewReceiptSnapshot>(StringComparer.Ordinal);
 
         public FortuneOfferBook(int generationVersion, uint seed, string raceId)
             : this(generationVersion, seed, raceId, InitialChargesForRace(raceId))
@@ -149,6 +153,9 @@ namespace Luckbound.Core.Fortune
 
             string transactionKey = transactionId.ToString();
             string requestedOfferId = offerId ?? string.Empty;
+            if (_fortuneBrewReceipts.ContainsKey(transactionKey))
+                return new FortuneRerollResult(FortuneOperationStatus.RejectedConflict,
+                    offerId == null ? null : GetOffer(offerId), CurrentCharges);
             if (_rerollReceipts.TryGetValue(transactionKey, out FortuneRerollReceiptSnapshot existing))
             {
                 if (!string.Equals(existing.offerId, requestedOfferId, StringComparison.Ordinal))
@@ -213,6 +220,70 @@ namespace Luckbound.Core.Fortune
             return new FortuneChargeResult(FortuneOperationStatus.Succeeded, CurrentCharges);
         }
 
+        /// <summary>
+        /// Returns a committed brew transaction before callers validate the now-consumed inventory
+        /// item. A replay is successful only for the same transaction and item instance.
+        /// </summary>
+        public bool TryGetFortuneBrewTransaction(
+            TransactionId transactionId, ItemInstanceId itemInstanceId, out FortuneChargeResult result)
+        {
+            result = null;
+            if (!transactionId.IsValid || !itemInstanceId.IsValid) return false;
+
+            string transactionKey = transactionId.ToString();
+            if (_rerollReceipts.ContainsKey(transactionKey))
+            {
+                result = new FortuneChargeResult(FortuneOperationStatus.RejectedConflict, CurrentCharges);
+                return true;
+            }
+
+            if (!_fortuneBrewReceipts.TryGetValue(transactionKey, out FortuneBrewReceiptSnapshot receipt))
+                return false;
+
+            if (!string.Equals(receipt.itemInstanceId, itemInstanceId.ToString(), StringComparison.Ordinal))
+            {
+                result = new FortuneChargeResult(FortuneOperationStatus.RejectedConflict, CurrentCharges);
+                return true;
+            }
+
+            FortuneOperationStatus status = (FortuneOperationStatus)receipt.status == FortuneOperationStatus.Succeeded
+                ? FortuneOperationStatus.AlreadyApplied
+                : (FortuneOperationStatus)receipt.status;
+            result = new FortuneChargeResult(status, receipt.currentCharges);
+            return true;
+        }
+
+        /// <summary>Applies and records one brew charge; capacity rejection is also replay-stable.</summary>
+        public FortuneChargeResult GrantFortuneBrewCharge(ItemInstanceId itemInstanceId, TransactionId transactionId)
+        {
+            if (!itemInstanceId.IsValid || !transactionId.IsValid)
+                return new FortuneChargeResult(FortuneOperationStatus.RejectedInvalidRequest, CurrentCharges);
+            if (TryGetFortuneBrewTransaction(transactionId, itemInstanceId, out FortuneChargeResult replay))
+                return replay;
+
+            string transactionKey = transactionId.ToString();
+            FortuneBrewUseResult effect = FortuneBrewEffect.Apply(CurrentCharges);
+            FortuneOperationStatus status;
+            if (effect.WasConsumed)
+            {
+                CurrentCharges = effect.CurrentCharges;
+                status = FortuneOperationStatus.Succeeded;
+            }
+            else
+            {
+                status = FortuneOperationStatus.RejectedAtCapacity;
+            }
+
+            _fortuneBrewReceipts.Add(transactionKey, new FortuneBrewReceiptSnapshot
+            {
+                transactionId = transactionKey,
+                itemInstanceId = itemInstanceId.ToString(),
+                status = (int)status,
+                currentCharges = CurrentCharges
+            });
+            return new FortuneChargeResult(status, CurrentCharges);
+        }
+
         public FortuneOfferBookSnapshot CreateSnapshot()
         {
             return new FortuneOfferBookSnapshot
@@ -226,18 +297,24 @@ namespace Luckbound.Core.Fortune
                     .Select(CreateSnapshot).ToArray(),
                 processedGuardianIds = _processedGuardianIds.OrderBy(id => id, StringComparer.Ordinal).ToArray(),
                 rerollReceipts = _rerollReceipts.Values.OrderBy(receipt => receipt.transactionId, StringComparer.Ordinal)
-                    .Select(CloneReceipt).ToArray()
+                    .Select(CloneReceipt).ToArray(),
+                fortuneBrewReceipts = _fortuneBrewReceipts.Values
+                    .OrderBy(receipt => receipt.transactionId, StringComparer.Ordinal)
+                    .Select(CloneFortuneBrewReceipt).ToArray()
             };
         }
 
         public static FortuneOfferBook Restore(FortuneOfferBookSnapshot snapshot)
         {
             if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
-            if (snapshot.snapshotVersion != SnapshotVersion && snapshot.snapshotVersion != LegacySnapshotVersion)
+            if (snapshot.snapshotVersion != SnapshotVersion &&
+                snapshot.snapshotVersion != RerollReceiptSnapshotVersion &&
+                snapshot.snapshotVersion != LegacySnapshotVersion)
                 throw new FormatException("Fortune offer snapshot version is unsupported.");
             if (snapshot.generationVersion <= 0 || snapshot.seed == 0u || string.IsNullOrWhiteSpace(snapshot.raceId) ||
                 snapshot.charges < 0 || snapshot.charges > MaximumCharges || snapshot.offers == null || snapshot.processedGuardianIds == null ||
-                (snapshot.snapshotVersion == SnapshotVersion && snapshot.rerollReceipts == null))
+                (snapshot.snapshotVersion >= RerollReceiptSnapshotVersion && snapshot.rerollReceipts == null) ||
+                (snapshot.snapshotVersion == SnapshotVersion && snapshot.fortuneBrewReceipts == null))
                 throw new FormatException("Fortune offer snapshot has invalid root state.");
 
             var restored = new FortuneOfferBook(snapshot.generationVersion, snapshot.seed, snapshot.raceId, snapshot.charges);
@@ -295,7 +372,44 @@ namespace Luckbound.Core.Fortune
                 restored._rerollReceipts.Add(receipt.transactionId, CloneReceipt(receipt));
             }
 
+            FortuneBrewReceiptSnapshot[] brewReceipts = snapshot.fortuneBrewReceipts ?? Array.Empty<FortuneBrewReceiptSnapshot>();
+            foreach (FortuneBrewReceiptSnapshot receipt in brewReceipts)
+            {
+                if (!IsValidFortuneBrewReceipt(receipt))
+                    throw new FormatException("Fortune snapshot contains an invalid brew receipt.");
+                if (restored._rerollReceipts.ContainsKey(receipt.transactionId) ||
+                    restored._fortuneBrewReceipts.ContainsKey(receipt.transactionId))
+                    throw new FormatException("Fortune snapshot repeats a transaction ID.");
+                restored._fortuneBrewReceipts.Add(receipt.transactionId, CloneFortuneBrewReceipt(receipt));
+            }
+
             return restored;
+        }
+
+        private static FortuneBrewReceiptSnapshot CloneFortuneBrewReceipt(FortuneBrewReceiptSnapshot source)
+        {
+            return new FortuneBrewReceiptSnapshot
+            {
+                transactionId = source.transactionId,
+                itemInstanceId = source.itemInstanceId,
+                status = source.status,
+                currentCharges = source.currentCharges
+            };
+        }
+
+        private static bool IsValidFortuneBrewReceipt(FortuneBrewReceiptSnapshot receipt)
+        {
+            if (receipt == null || !TransactionId.TryParse(receipt.transactionId, out TransactionId transactionId) ||
+                !string.Equals(transactionId.ToString(), receipt.transactionId, StringComparison.Ordinal) ||
+                !ItemInstanceId.TryParse(receipt.itemInstanceId, out ItemInstanceId itemInstanceId) ||
+                !string.Equals(itemInstanceId.ToString(), receipt.itemInstanceId, StringComparison.Ordinal) ||
+                receipt.currentCharges < 0 || receipt.currentCharges > MaximumCharges)
+                return false;
+
+            FortuneOperationStatus status = (FortuneOperationStatus)receipt.status;
+            if (status == FortuneOperationStatus.Succeeded)
+                return receipt.currentCharges > 0;
+            return status == FortuneOperationStatus.RejectedAtCapacity && receipt.currentCharges == MaximumCharges;
         }
 
         private static FortuneRerollReceiptSnapshot CreateReceipt(string transactionId, string offerId,

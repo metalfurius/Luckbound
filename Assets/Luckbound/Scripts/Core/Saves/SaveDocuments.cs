@@ -214,6 +214,14 @@ namespace Luckbound.Core.Saves
                         remainingCharges = receipt.remainingCharges,
                         hasOffer = receipt.hasOffer
                     }).ToArray(),
+                fortuneBrewReceipts = source.fortuneBrewReceipts == null ? null : source.fortuneBrewReceipts
+                    .Select(receipt => receipt == null ? null : new FortuneBrewReceiptSnapshot
+                    {
+                        transactionId = receipt.transactionId,
+                        itemInstanceId = receipt.itemInstanceId,
+                        status = receipt.status,
+                        currentCharges = receipt.currentCharges
+                    }).ToArray(),
                 offers = source.offers == null ? null : source.offers.Select(offer => offer == null ? null : new FortuneOfferSnapshot
                 {
                     offerId = offer.offerId,

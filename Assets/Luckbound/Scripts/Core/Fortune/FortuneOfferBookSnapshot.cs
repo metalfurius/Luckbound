@@ -14,6 +14,7 @@ namespace Luckbound.Core.Fortune
         public FortuneOfferSnapshot[] offers = Array.Empty<FortuneOfferSnapshot>();
         public string[] processedGuardianIds = Array.Empty<string>();
         public FortuneRerollReceiptSnapshot[] rerollReceipts = Array.Empty<FortuneRerollReceiptSnapshot>();
+        public FortuneBrewReceiptSnapshot[] fortuneBrewReceipts = Array.Empty<FortuneBrewReceiptSnapshot>();
     }
 
     [Serializable]
@@ -47,5 +48,15 @@ namespace Luckbound.Core.Fortune
         public bool claimed;
         public int remainingCharges;
         public bool hasOffer;
+    }
+
+    /// <summary>Durable replay data for a brew use committed with its inventory consumption.</summary>
+    [Serializable]
+    public sealed class FortuneBrewReceiptSnapshot
+    {
+        public string transactionId;
+        public string itemInstanceId;
+        public int status;
+        public int currentCharges;
     }
 }
