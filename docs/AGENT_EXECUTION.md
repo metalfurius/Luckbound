@@ -8,6 +8,8 @@
 
 Este documento convierte las 111 tareas del producto en trabajo distribuible para **`gpt-6-luna`, esfuerzo `max`**. Fija reparto, dependencias, paquetes, integración y comprobaciones; conserva las decisiones de diseño y los criterios del plan principal. **Regla de ejecución prioritaria: estado por defecto, cero interfaz visible. Fran no debe ver ninguna ventana, panel, pestaña, notificación, diálogo ni previsualización que no necesite utilizar personalmente para tomar una decisión concreta; lo que no necesite para decidir no puede aparecer en pantalla ni siquiera momentáneamente. Toda otra ejecución será headless o en un sandbox/escritorio verdaderamente aislado e inaccesible para él.**
 
+**Reafirmación directa de Fran:** no quiere ver esas ventanas, aunque sea por un instante o solo para observar progreso. Si no se puede probar que la ejecución y sus procesos secundarios quedarán fuera de su vista, no se inicia; se registra el bloqueo y se avanza con trabajo independiente.
+
 ## 1. Punto de partida y límite de esta petición
 
 La petición documental anterior de Fran reafirmó la regla de visibilidad y limitó aquella intervención a documentación. La orden vigente, «Haz el desarrollo completo», reanuda ahora el desarrollo completo: el coordinador parte de las evidencias actuales de [PROGRESS.md](PROGRESS.md), prioriza el siguiente hito jugable F10 y puede repartir hasta tres paquetes listos e independientes entre trabajadores Luna `max` según el grafo. La petición documental queda como historial y no limita esta reanudación. Todas las ejecuciones se mantienen ocultas o verdaderamente aisladas.

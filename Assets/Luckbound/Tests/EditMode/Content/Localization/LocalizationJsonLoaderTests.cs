@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Luckbound.Content;
+using Luckbound.Core.Inventory;
 using Luckbound.Core.Saves;
 using NUnit.Framework;
 using UnityEngine;
@@ -20,7 +21,8 @@ namespace Luckbound.Tests.Localization
 
             LocalizedTextCatalog catalog = LocalizationJsonLoader.Load(resource.text);
             Assert.That(catalog.DefaultLanguageId, Is.EqualTo("es"));
-            Assert.That(catalog.Count, Is.EqualTo(44));
+            Assert.That(catalog.Count, Is.GreaterThanOrEqualTo(44),
+                "The initial localization resource must retain its authored story and service text as content grows.");
 
             string[] contractIds = { "ct01", "ct02", "ct03", "ct04" };
             foreach (string contractId in contractIds)
@@ -48,6 +50,17 @@ namespace Luckbound.Tests.Localization
             Assert.That(activeText.GetText("ui.contracts.title"), Is.EqualTo("Contratos"));
             activeText.SetLanguage("en");
             Assert.That(activeText.GetText("ui.contracts.title"), Is.EqualTo("Contracts"));
+
+            TextAsset itemResource = Resources.Load<TextAsset>("Luckbound/Data/Items/Items");
+            Assert.That(itemResource, Is.Not.Null, "The item catalog must be available for localization completeness checks.");
+            ItemCatalog items = ItemCatalogJsonLoader.Load(itemResource.text);
+            foreach (ItemDefinition item in items.Definitions)
+            {
+                Assert.That(catalog.GetText(item.NameKey, "es"), Is.Not.EqualTo(item.NameKey), item.Id + " Spanish name");
+                Assert.That(catalog.GetText(item.NameKey, "en"), Is.Not.EqualTo(item.NameKey), item.Id + " English name");
+                Assert.That(catalog.GetText(item.DescriptionKey, "es"), Is.Not.EqualTo(item.DescriptionKey), item.Id + " Spanish description");
+                Assert.That(catalog.GetText(item.DescriptionKey, "en"), Is.Not.EqualTo(item.DescriptionKey), item.Id + " English description");
+            }
         }
 
         [Test]

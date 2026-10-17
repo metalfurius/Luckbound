@@ -2,6 +2,10 @@
 
 La especificación del producto está en [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md). El reparto, los contratos y las dependencias para agentes Luna están en [docs/AGENT_EXECUTION.md](docs/AGENT_EXECUTION.md). El estado real de ejecución está en [docs/PROGRESS.md](docs/PROGRESS.md).
 
+## Orden directa vigente de Fran: no mostrar ventanas innecesarias
+
+Fran no quiere ver ninguna ventana, pestaña, panel, diálogo, aviso, notificación o previsualización que no necesite usar personalmente, en ese momento, para tomar una decisión concreta. No debe aparecer ni un instante en su pantalla. Ejecuta sin interfaz o en un sandbox/escritorio verdaderamente aislado e inaccesible para Fran; si no puedes garantizarlo, no lances esa operación y registra el bloqueo. Minimizar, quitar el foco o dejarlo detrás de otra ventana no es aislamiento. Esta orden se aplica al coordinador, a todos los agentes, a procesos secundarios y a los resultados multimedia que una herramienta inserte en el chat. La regla detallada y sus comprobaciones están en [docs/DEVELOPMENT_PLAN.md §5.6](docs/DEVELOPMENT_PLAN.md#56-ejecución-invisible-y-decisiones-de-fran) y [docs/AGENT_EXECUTION.md §3.5](docs/AGENT_EXECUTION.md#35-regla-absoluta-de-visibilidad-cero-interfaz-por-defecto).
+
 Antes de desarrollar:
 
 1. Lee la instrucción vigente, el índice del plan, el estado/tabla de progreso y la guía de ejecución. Comprueba Git. Lee completas las secciones y evidencias pertinentes a la tarea; no hace falta cargar todo el historial para cada paquete.

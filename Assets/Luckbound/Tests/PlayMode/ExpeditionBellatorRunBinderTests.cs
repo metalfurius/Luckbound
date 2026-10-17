@@ -87,7 +87,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(motor.CombatStats.MaximumEnergy, Is.EqualTo(run.StartingEnergy));
             Assert.That(motor.CurrentHealth, Is.EqualTo(run.StartingHealth));
             Assert.That(motor.CurrentEnergy, Is.EqualTo(run.StartingEnergy));
-            Assert.That(motor.CombatStats.Defense, Is.EqualTo(7), "Defense is passed as an independent calculated value.");
+            Assert.That(motor.CombatStats.Defense, Is.EqualTo(10), "Defense combines the incoming base value with the guild cuirass.");
 
             var pickupObject = Track(new GameObject("E09 Dvergar physical ore pickup"));
             pickupObject.transform.position = new Vector2(1f, 0.5f);

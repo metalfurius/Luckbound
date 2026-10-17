@@ -805,10 +805,18 @@ namespace Luckbound.Editor
             try
             {
                 ItemCatalog catalog = ItemCatalogJsonLoader.Load(source.text);
-                if (catalog.Count != 26)
-                {
-                    errors.Add("D04/E02/G01 item catalog must contain 26 definitions: nine class weapons, three armors, two relics, six consumables and six materials; found " + catalog.Count + ".");
-                }
+                if (catalog.Count < 37)
+                    errors.Add("D04/G01/G02/G04 item catalog must contain at least 37 foundation definitions: nine weapons, six armors, ten current relics, six consumables and six materials; found " + catalog.Count + ".");
+                if (catalog.Definitions.Count(definition => definition.Kind == ItemKind.Weapon) != 9)
+                    errors.Add("The initial item catalog must contain exactly nine weapons.");
+                if (catalog.Definitions.Count(definition => definition.Kind == ItemKind.Armor) != 6)
+                    errors.Add("G02 requires exactly six armor definitions.");
+                if (catalog.Definitions.Count(definition => definition.Kind == ItemKind.Relic) < 10)
+                    errors.Add("The current support and Fortune relic families require at least ten relic definitions.");
+                if (catalog.Definitions.Count(definition => definition.Kind == ItemKind.Consumable) != 6)
+                    errors.Add("G02 requires exactly six consumable definitions.");
+                if (catalog.Definitions.Count(definition => definition.Kind == ItemKind.Material) != 6)
+                    errors.Add("The item catalog must contain exactly six material definitions.");
                 if (!catalog.Get("weapon.bellator.rusted_sword").IsCompatibleWithClass("class.bellator") ||
                     !catalog.Get("weapon.venator.short_bow").IsCompatibleWithClass("class.venator") ||
                     !catalog.Get("weapon.magus.ember_staff").IsCompatibleWithClass("class.magus"))

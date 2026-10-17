@@ -86,26 +86,28 @@ namespace Luckbound.Tests.PlayMode
                 StringAssert.Contains("OfferLocked", panel.RepeatAvailabilityText.text);
                 Assert.That(panel.ClaimButton.interactable, Is.True);
 
+                int selectedItemQuantityBeforeClaim = GetBackpackItemQuantity(app, selectedItemId);
                 store.FailNextProfileWrite = true;
                 ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> pendingClaim = null;
                 yield return Complete(panel.Controller.ClaimRewardAsync(), value => pendingClaim = value);
                 Assert.That(pendingClaim.Persisted, Is.False);
                 Assert.That(pendingClaim.Pending, Is.True);
                 Assert.That(app.GetFortuneOffer("offer.panel.claim").IsClaimed, Is.False);
-                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == selectedItemId), Is.Zero);
+                Assert.That(GetBackpackItemQuantity(app, selectedItemId), Is.EqualTo(selectedItemQuantityBeforeClaim),
+                    "A failed save must leave the selected item quantity unchanged, including an item already carried.");
 
                 ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> claim = null;
                 yield return Complete(panel.Controller.ClaimRewardAsync(), value => claim = value);
                 Assert.That(claim.Persisted, Is.True, claim.Message);
                 Assert.That(claim.Outcome.Succeeded, Is.True);
                 Assert.That(app.GetFortuneOffer("offer.panel.claim").IsClaimed, Is.True);
-                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == selectedItemId), Is.EqualTo(1));
+                Assert.That(GetBackpackItemQuantity(app, selectedItemId), Is.EqualTo(selectedItemQuantityBeforeClaim + 1));
                 Assert.That(panel.ClaimButton.interactable, Is.False);
 
                 ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> duplicateClaim = null;
                 yield return Complete(panel.Controller.ClaimRewardAsync(), value => duplicateClaim = value);
                 Assert.That(duplicateClaim, Is.Null, "A claimed offer must not be claimable from the panel again.");
-                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == selectedItemId), Is.EqualTo(1));
+                Assert.That(GetBackpackItemQuantity(app, selectedItemId), Is.EqualTo(selectedItemQuantityBeforeClaim + 1));
             }
             finally
             {
@@ -249,6 +251,13 @@ namespace Luckbound.Tests.PlayMode
             SaveWriteResult result = null;
             yield return Complete(app.BeginExpeditionAsync(run), value => result = value);
             Assert.That(result.Succeeded, Is.True, result.Message);
+        }
+
+        private static int GetBackpackItemQuantity(ApplicationBootstrapper app, string itemId)
+        {
+            return app.ActiveRun.Inventory.Backpack
+                .Where(item => item != null && item.ItemId == itemId)
+                .Sum(item => item.Quantity);
         }
 
         private static IEnumerator StartApplication(Action<ApplicationBootstrapper> ready)
