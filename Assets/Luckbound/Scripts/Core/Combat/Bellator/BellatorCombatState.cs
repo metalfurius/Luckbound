@@ -26,6 +26,8 @@ namespace Luckbound.Core.Combat
         public bool IsPreparingCharge => _skillUseState.IsPreparing &&
             string.Equals(_skillUseState.PreparingSkillId, BellatorSkillLoadout.ChargeId, StringComparison.Ordinal);
 
+        public bool IsPreparingSkill => _skillUseState.IsPreparing && _loadout.Contains(_skillUseState.PreparingSkillId);
+
         public void Interrupt()
         {
             _interruptionPending = true;
@@ -56,28 +58,27 @@ namespace Luckbound.Core.Combat
             bool attackCancelsPreparation = preparing && command.WasPressed(PlayerAction.Attack) && !anySkillPressed;
             bool cancelPreparation = blocked || differentSkillPressed || attackCancelsPreparation;
 
-            SkillDefinition requestedCharge = selectedSkill != null && selectedSkill.EffectKind == SkillEffectKind.Charge
-                ? selectedSkill
-                : null;
             bool requestIsValid = !blocked && !ambiguousSkillInput &&
-                (!anySkillPressed || requestedCharge != null);
+                (!anySkillPressed || selectedSkill != null);
 
             SkillUseOutcome skillOutcome = _skillUseState.Update(
                 command.Tick,
-                requestedCharge,
+                selectedSkill,
                 actionValid: requestIsValid,
                 interrupted: cancelPreparation);
 
-            SkillDefinition activatedCharge = skillOutcome.Status == SkillUseStatus.Activated &&
-                string.Equals(skillOutcome.SkillId, BellatorSkillLoadout.ChargeId, StringComparison.Ordinal)
-                ? requestedCharge ?? ResolveSelectedCharge(skillOutcome.SkillId)
+            SkillDefinition activatedSkill = skillOutcome.Status == SkillUseStatus.Activated
+                ? ResolveSelectedSkill(skillOutcome.SkillId)
+                : null;
+            SkillDefinition activatedCharge = activatedSkill != null && activatedSkill.EffectKind == SkillEffectKind.Charge
+                ? activatedSkill
                 : null;
 
-            bool skillActionOwnsTick = anySkillPressed || _skillUseState.IsPreparing || activatedCharge != null;
-            return new BellatorCombatResult(skillOutcome, activatedCharge, skillActionOwnsTick);
+            bool skillActionOwnsTick = anySkillPressed || _skillUseState.IsPreparing || activatedSkill != null;
+            return new BellatorCombatResult(skillOutcome, activatedSkill, skillActionOwnsTick);
         }
 
-        private SkillDefinition ResolveSelectedCharge(string skillId)
+        private SkillDefinition ResolveSelectedSkill(string skillId)
         {
             if (string.Equals(_loadout.Skill1.Id, skillId, StringComparison.Ordinal)) return _loadout.Skill1;
             if (string.Equals(_loadout.Skill2.Id, skillId, StringComparison.Ordinal)) return _loadout.Skill2;
@@ -85,17 +86,22 @@ namespace Luckbound.Core.Combat
         }
     }
 
-    /// <summary>One Bellator command result and any activated Charge definition.</summary>
+    /// <summary>One Bellator command result and any activated skill definition.</summary>
     public readonly struct BellatorCombatResult
     {
-        internal BellatorCombatResult(SkillUseOutcome skillOutcome, SkillDefinition activatedCharge, bool skillActionOwnsTick)
+        internal BellatorCombatResult(SkillUseOutcome skillOutcome, SkillDefinition activatedSkill, bool skillActionOwnsTick)
         {
             SkillOutcome = skillOutcome;
-            ActivatedCharge = activatedCharge;
+            ActivatedSkill = activatedSkill;
+            ActivatedCharge = activatedSkill != null && activatedSkill.EffectKind == SkillEffectKind.Charge
+                ? activatedSkill
+                : null;
             SkillActionOwnsTick = skillActionOwnsTick;
         }
 
         public SkillUseOutcome SkillOutcome { get; }
+
+        public SkillDefinition ActivatedSkill { get; }
 
         public SkillDefinition ActivatedCharge { get; }
 

@@ -53,7 +53,10 @@ namespace Luckbound.Gameplay.Movement
         private readonly RaycastHit2D[] _chargeWallHits = new RaycastHit2D[4];
         private readonly RaycastHit2D[] _magusLineOfSightHits = new RaycastHit2D[1];
         private readonly Collider2D[] _meleeOverlaps = new Collider2D[16];
+        private Collider2D[] _bellatorAreaOverlaps = new Collider2D[16];
         private Collider2D[] _magusAimOverlaps = new Collider2D[16];
+        private readonly List<ProjectileImpactTarget2D> _bellatorAreaTargets = new List<ProjectileImpactTarget2D>();
+        private readonly HashSet<ActorId> _bellatorAreaTargetIds = new HashSet<ActorId>();
 
         private MeleeAttackState _meleeAttackState;
         private MeleeAttackSnapshot _meleeAttackSnapshot;
@@ -96,9 +99,13 @@ namespace Luckbound.Gameplay.Movement
         private LayerMask _groundLayers;
         private readonly HashSet<ActorId> _chargeHitTargets = new HashSet<ActorId>();
         private SkillDefinition _bellatorChargeSkill;
+        private SkillDefinition _bellatorGuardSkill;
         private HitId _lastBellatorChargeHitId;
+        private HitId _lastBellatorCircularCutHitId;
         private float _bellatorChargeDirection = 1f;
         private int _bellatorChargeTicksRemaining;
+        private long _bellatorGuardStartsAtTick;
+        private long _bellatorGuardExpiresAtTick;
         private long _nextBellatorEnergyRecoveryTick;
         private bool _dodgeActive;
         private bool _dodgeInvulnerabilityActive;
@@ -136,15 +143,27 @@ namespace Luckbound.Gameplay.Movement
 
         public bool IsPreparingBellatorCharge => _bellatorCombatState != null && _bellatorCombatState.IsPreparingCharge;
 
+        public bool IsPreparingBellatorSkill => _bellatorCombatState != null && _bellatorCombatState.IsPreparingSkill;
+
+        public bool IsBellatorGuardActive => IsBellatorGuardActiveAt(SimulationTick);
+
         public BellatorCombatResult LastBellatorCombatResult => _lastBellatorCombatResult;
 
         public int BellatorChargeActivationCount { get; private set; }
+
+        public int BellatorCircularCutActivationCount { get; private set; }
+
+        public int BellatorGuardActivationCount { get; private set; }
+
+        public int BellatorSkillActivationCount { get; private set; }
 
         public bool IsCharging => _bellatorChargeTicksRemaining > 0;
 
         public int BellatorChargeTicksRemaining => _bellatorChargeTicksRemaining;
 
         public HitId LastBellatorChargeHitId => _lastBellatorChargeHitId;
+
+        public HitId LastBellatorCircularCutHitId => _lastBellatorCircularCutHitId;
 
         public bool IsPreparingVenatorSkill => IsVenator && _skillUseState.IsPreparing;
 
@@ -330,7 +349,7 @@ namespace Luckbound.Gameplay.Movement
         }
 
         /// <summary>
-        /// Binds Bellator's selected skills to this actor. Charge values are read from the authoritative Skills.json catalog.
+        /// Binds Bellator's selected skills to this actor. Skill effects are read from the authoritative Skills.json catalog.
         /// </summary>
         public void ConfigureBellator(IEnumerable<string> selectedSkillIds)
         {
@@ -654,9 +673,18 @@ namespace Luckbound.Gameplay.Movement
                 throw new ArgumentOutOfRangeException(nameof(stunDurationTicks));
             }
 
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            DamageCalculationRequest guardedRequest = IsBellatorGuardActiveAt(impactTick)
+                ? ApplyBellatorGuardReduction(request)
+                : request;
+
             DirectImpactOutcome outcome = _damageState.ReceiveDirectImpact(
                 hitId,
-                request,
+                guardedRequest,
                 impactTick,
                 additionalInvulnerability: _dodgeInvulnerabilityActive);
             if (outcome.Status != DirectImpactStatus.Applied)
@@ -665,8 +693,9 @@ namespace Luckbound.Gameplay.Movement
             }
 
             _healthPotionUseState.CancelPreparation();
-            if ((_venatorCombatState != null || _magusCombatState != null) && _skillUseState.IsPreparing)
+            if (_skillUseState.IsPreparing)
             {
+                _bellatorCombatState?.Interrupt();
                 _venatorCombatState?.Interrupt();
                 _magusCombatState?.Interrupt();
             }
@@ -685,6 +714,31 @@ namespace Luckbound.Gameplay.Movement
             }
 
             return outcome;
+        }
+
+        private bool IsBellatorGuardActiveAt(long tick)
+        {
+            return _bellatorGuardSkill != null &&
+                tick >= _bellatorGuardStartsAtTick &&
+                tick < _bellatorGuardExpiresAtTick;
+        }
+
+        private DamageCalculationRequest ApplyBellatorGuardReduction(DamageCalculationRequest request)
+        {
+            decimal guardReduction = _bellatorGuardSkill.DamageReductionPercent;
+            decimal combinedReduction = request.IncomingDamageReductionPercent >= 1m - guardReduction
+                ? 1m
+                : request.IncomingDamageReductionPercent + guardReduction;
+            return new DamageCalculationRequest(
+                request.BaseDamage,
+                request.RarityMultiplier,
+                request.UpgradeMultiplier,
+                request.OffensiveBonusPercent,
+                request.DefensePenetration,
+                combinedReduction,
+                request.TargetStats,
+                request.TargetIsInvulnerable,
+                request.TargetDefenseBonus);
         }
 
         private void OnDestroy()
@@ -1118,10 +1172,109 @@ namespace Luckbound.Gameplay.Movement
                 RecoverBellatorEnergy(command.Tick);
             }
 
-            if (result.ActivatedCharge != null)
+            SkillDefinition activatedSkill = result.ActivatedSkill;
+            if (activatedSkill == null)
             {
-                StartBellatorCharge(result.ActivatedCharge);
+                return;
             }
+
+            BellatorSkillActivationCount++;
+            switch (activatedSkill.EffectKind)
+            {
+                case SkillEffectKind.AreaStrike:
+                    StartBellatorCircularCut(activatedSkill);
+                    break;
+                case SkillEffectKind.Guard:
+                    StartBellatorGuard(activatedSkill, command.Tick);
+                    break;
+                case SkillEffectKind.Charge:
+                    StartBellatorCharge(activatedSkill);
+                    break;
+                default:
+                    throw new InvalidOperationException("Bellator activation returned an unsupported skill effect.");
+            }
+        }
+
+        private void StartBellatorCircularCut(SkillDefinition circularCut)
+        {
+            if (circularCut == null || circularCut.EffectKind != SkillEffectKind.AreaStrike)
+            {
+                throw new ArgumentException("Bellator Circular Cut requires a catalog AreaStrike definition.", nameof(circularCut));
+            }
+
+            _lastBellatorCircularCutHitId = HitId.New();
+            BellatorCircularCutActivationCount++;
+            CollectBellatorAreaImpacts(circularCut, _lastBellatorCircularCutHitId);
+        }
+
+        private void StartBellatorGuard(SkillDefinition guard, long activationTick)
+        {
+            if (guard == null || guard.EffectKind != SkillEffectKind.Guard)
+            {
+                throw new ArgumentException("Bellator Guard requires a catalog Guard definition.", nameof(guard));
+            }
+
+            if (activationTick < 0 || activationTick > long.MaxValue - guard.EffectDurationTicks)
+            {
+                throw new ArgumentOutOfRangeException(nameof(activationTick));
+            }
+
+            _bellatorGuardSkill = guard;
+            _bellatorGuardStartsAtTick = activationTick;
+            _bellatorGuardExpiresAtTick = activationTick + guard.EffectDurationTicks;
+            BellatorGuardActivationCount++;
+        }
+
+        private void CollectBellatorAreaImpacts(SkillDefinition areaStrike, HitId hitId)
+        {
+            _bellatorAreaTargets.Clear();
+            _bellatorAreaTargetIds.Clear();
+
+            Vector2 center = transform.position;
+            float radius = (float)areaStrike.AreaRadius;
+            int overlapCount = Physics2D.OverlapCircle(center, radius, _meleeContactFilter, _bellatorAreaOverlaps);
+            while (overlapCount >= _bellatorAreaOverlaps.Length)
+            {
+                Array.Resize(ref _bellatorAreaOverlaps, checked(_bellatorAreaOverlaps.Length * 2));
+                overlapCount = Physics2D.OverlapCircle(center, radius, _meleeContactFilter, _bellatorAreaOverlaps);
+            }
+
+            for (int index = 0; index < overlapCount; index++)
+            {
+                Collider2D overlap = _bellatorAreaOverlaps[index];
+                if (overlap == null) continue;
+
+                ProjectileImpactTarget2D target = overlap.GetComponentInParent<ProjectileImpactTarget2D>();
+                if (target == null || !target.IsInitialized || target.ActorId == _actorId ||
+                    !_bellatorAreaTargetIds.Add(target.ActorId))
+                {
+                    continue;
+                }
+
+                _bellatorAreaTargets.Add(target);
+            }
+
+            _bellatorAreaTargets.Sort(CompareBellatorTargetsByActorId);
+            long queuedAtTick = CurrentPhysicsTick();
+            for (int index = 0; index < _bellatorAreaTargets.Count; index++)
+            {
+                ProjectileImpactTarget2D target = _bellatorAreaTargets[index];
+                if (target == null || !target.IsInitialized || target.ActorId == _actorId) continue;
+
+                target.QueueMeleeImpact(new MeleeImpact(
+                    hitId,
+                    _actorId,
+                    target.ActorId,
+                    areaStrike.BaseDamage,
+                    transform.position.x,
+                    queuedAtTick));
+                MeleeImpactsQueuedCount++;
+            }
+        }
+
+        private static int CompareBellatorTargetsByActorId(ProjectileImpactTarget2D left, ProjectileImpactTarget2D right)
+        {
+            return left.ActorId.Value.CompareTo(right.ActorId.Value);
         }
 
         private void RecoverBellatorEnergy(long tick)
