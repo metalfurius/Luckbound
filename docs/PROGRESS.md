@@ -735,6 +735,12 @@ La orden explícita posterior de Fran del 16 de octubre reanudó el desarrollo c
 - **Alcance:** estos resultados verifican la regresión actual, no cierran E04 ni G01, no conectan F09, no producen build Windows/WebGL y no publican a la ruta de Luckbound.
 - **Correcciones durante la aceptación:** dos compilaciones iniciales revelaron imports ausentes en el perfil de Venator y el test de Slime; se corrigieron. La primera PlayMode detectó que la fricción del suelo contaminaba la medición de ralentización Frost (1 fallo y su prueba siguiente afectada por la interrupción); el fixture Frost ahora usa material sin fricción y la repetición completa pasa 173/173. No se cambió el comportamiento productivo del suelo.
 
+## Reafirmación de visibilidad — 17 de octubre de 2026
+
+Fran reiteró que **no debe ver ninguna ventana, pestaña, panel, diálogo, aviso ni previsualización que no necesite usar personalmente en ese momento para tomar una decisión concreta**. El estado por defecto es cero interfaz visible. Cualquier otra ejecución debe ser sin interfaz o en un sandbox/escritorio verdaderamente aislado e inaccesible para Fran; dejar algo minimizado, detrás de otra ventana o sin foco no cuenta como aislamiento. La regla también cubre ventanas auxiliares y contenido visual o audiovisual que una herramienta inserte directamente en el chat, y obliga a todos los agentes. Si no puede garantizarse el aislamiento, no se lanza la herramienta: se registra el bloqueo y se continúa con trabajo independiente. Esta instrucción ya está fijada como regla operativa en `AGENTS.md` y la sección 3.5 de `DEVELOPMENT_PLAN.md`.
+
+Esta actualización solo deja constancia de la reafirmación. No se abrió ninguna interfaz ni se ejecutaron Unity, pruebas o builds.
+
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:
