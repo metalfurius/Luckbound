@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
-using Luckbound.Core.Combat.Magus;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;

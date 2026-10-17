@@ -32,9 +32,9 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: Library
-          key: luckbound-linux-6000.6.5f1-tests-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: luckbound-linux-6000.6.6f1-tests-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            luckbound-linux-6000.6.5f1-tests-
+            luckbound-linux-6000.6.6f1-tests-
 
       - name: Run Unity tests
         id: unity_tests
@@ -45,8 +45,9 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           cliVersion: v0.1.72
-          customImage: unityci/editor:ubuntu-6000.6.5f1-base-3.2.2
+          customImage: unityci/editor:ubuntu-6000.6.6f1-base-3.2.2
           testMode: all
+          customParameters: '-testFilter Luckbound'
           artifactsPath: test-results
           coverageEnabled: false
           githubToken: ${{ secrets.GITHUB_TOKEN }}
@@ -79,9 +80,9 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: Library
-          key: luckbound-linux-6000.6.5f1-windows-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: luckbound-linux-6000.6.6f1-windows-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            luckbound-linux-6000.6.5f1-windows-
+            luckbound-linux-6000.6.6f1-windows-
 
       - name: Build Windows player
         uses: game-ci/unity-builder@v6.0.0
@@ -91,7 +92,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           cliVersion: v0.1.72
-          customImage: unityci/editor:ubuntu-6000.6.5f1-windows-mono-3.2.2
+          customImage: unityci/editor:ubuntu-6000.6.6f1-windows-mono-3.2.2
           targetPlatform: StandaloneWindows64
           buildName: Luckbound
           buildsPath: build
@@ -124,9 +125,9 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: Library
-          key: luckbound-linux-6000.6.5f1-webgl-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: luckbound-linux-6000.6.6f1-webgl-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            luckbound-linux-6000.6.5f1-webgl-
+            luckbound-linux-6000.6.6f1-webgl-
 
       - name: Build WebGL player
         uses: game-ci/unity-builder@v6.0.0
@@ -136,7 +137,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           cliVersion: v0.1.72
-          customImage: unityci/editor:ubuntu-6000.6.5f1-webgl-3.2.2
+          customImage: unityci/editor:ubuntu-6000.6.6f1-webgl-3.2.2
           targetPlatform: WebGL
           buildProfile: Assets/Settings/Build Profiles/WebGL.asset
           buildsPath: build
@@ -206,7 +207,7 @@ jobs:
           jq -n \
             --arg tag "$tag" \
             --arg commit "$GITHUB_SHA" \
-            --arg unity "6000.6.5f1" \
+            --arg unity "6000.6.6f1" \
             --arg workflow "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
             --arg windows "$(basename "$windows_zip")" \
             --arg webgl "$(basename "$webgl_zip")" \
@@ -303,7 +304,7 @@ jobs:
 
           jq -n \
             --arg commit "$SOURCE_COMMIT" \
-            --arg unity "6000.6.5f1" \
+            --arg unity "6000.6.6f1" \
             --arg run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
             '{sourceCommit: $commit, unityEditor: $unity, sourceWorkflow: $run}' \
             > site/builds/"$SOURCE_COMMIT"/build-version.json
