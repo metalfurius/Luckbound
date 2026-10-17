@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Luckbound.Core.Armor;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
@@ -119,6 +120,11 @@ namespace Luckbound.Gameplay.Movement
         private long _tick;
         private long _nextVenatorEnergyRecoveryTick;
         private long _nextMagusEnergyRecoveryTick;
+        private long _nextArmorEnergyRecoveryTick;
+        private ArmorResolution _equippedArmorResolution;
+        private float _armorMovementSpeedMultiplier = 1f;
+        private int _armorEnergyRegenerationPerSecondBonus;
+        private int _harmfulStatusDurationReductionPercent;
 
         public bool IsGrounded { get; private set; }
 
@@ -136,6 +142,16 @@ namespace Luckbound.Gameplay.Movement
         public int CurrentHealth => _damageState != null ? _damageState.CurrentHealth : 0;
 
         public CombatStats CombatStats => _damageState != null ? _damageState.Stats : null;
+
+        public ArmorResolution EquippedArmorResolution => _equippedArmorResolution;
+
+        public float ArmorMovementSpeedMultiplier => _armorMovementSpeedMultiplier;
+
+        public float EffectiveMaximumHorizontalSpeed => MaximumHorizontalSpeed * _armorMovementSpeedMultiplier;
+
+        public int ArmorEnergyRegenerationPerSecondBonus => _armorEnergyRegenerationPerSecondBonus;
+
+        public int HarmfulStatusDurationReductionPercent => _harmfulStatusDurationReductionPercent;
 
         public SkillUseState SkillUses => _skillUseState;
 
@@ -340,7 +356,8 @@ namespace Luckbound.Gameplay.Movement
             LayerMask groundLayers,
             CombatStats combatStats = null,
             LayerMask enemyLayers = default,
-            string raceId = ExpeditionRunConfiguration.HumanRaceId)
+            string raceId = ExpeditionRunConfiguration.HumanRaceId,
+            ArmorResolution armorResolution = null)
         {
             if (_initialized)
             {
@@ -367,6 +384,9 @@ namespace Luckbound.Gameplay.Movement
                 throw new ArgumentException("PlayerMotor2D requires one of the four known race identifiers.", nameof(raceId));
             }
 
+            CombatStats resolvedCombatStats = combatStats ?? new CombatStats(maximumHealth: 100, maximumEnergy: 50, defense: 0);
+            ValidateArmorResolution(armorResolution, resolvedCombatStats);
+
             if (Mathf.Abs(Physics2D.gravity.x) > 0.01f || Physics2D.gravity.y >= -0.01f)
             {
                 throw new InvalidOperationException("PlayerMotor2D requires vertical downward 2D gravity with no horizontal component.");
@@ -384,13 +404,21 @@ namespace Luckbound.Gameplay.Movement
             _inputSource = inputSource;
             _groundLayers = groundLayers;
             _damageState = new ActorDamageState(
-                combatStats ?? new CombatStats(maximumHealth: 100, maximumEnergy: 50, defense: 0),
-                DirectHitProtectionTicks);
+                resolvedCombatStats,
+                DirectHitProtectionTicks,
+                armorResolution?.HealthAfterMaximumClamp);
             _skillUseState = new SkillUseState(
                 _damageState.Stats.MaximumEnergy,
-                _damageState.Stats.MaximumEnergy,
+                armorResolution?.EnergyAfterMaximumClamp ?? _damageState.Stats.MaximumEnergy,
                 default(PactModifierTotals),
                 raceId);
+            _equippedArmorResolution = armorResolution;
+            _armorMovementSpeedMultiplier = armorResolution == null
+                ? 1f
+                : (100f + armorResolution.MovementSpeedPercentModifier) / 100f;
+            _armorEnergyRegenerationPerSecondBonus = armorResolution?.EnergyRegenerationPerSecondBonus ?? 0;
+            _harmfulStatusDurationReductionPercent = armorResolution?.HarmfulStatusDurationReductionPercent ?? 0;
+            _nextArmorEnergyRecoveryTick = _tick + 60;
             _healthPotionUseState = new HealthPotionUseState();
             _meleeAttackState = new MeleeAttackState(
                 MeleeAttackProfile.BellatorWornSword,
@@ -420,6 +448,32 @@ namespace Luckbound.Gameplay.Movement
             _collider.sharedMaterial = _movementMaterial;
 
             _initialized = true;
+        }
+
+        private static void ValidateArmorResolution(ArmorResolution armorResolution, CombatStats combatStats)
+        {
+            if (armorResolution == null) return;
+            if (combatStats.MaximumHealth != armorResolution.MaximumHealth ||
+                combatStats.MaximumEnergy != armorResolution.MaximumEnergy ||
+                combatStats.Defense < armorResolution.Defense)
+            {
+                throw new ArgumentException("Combat stats must include the resolved equipped armor values.", nameof(combatStats));
+            }
+            if (armorResolution.HealthAfterMaximumClamp < 0 ||
+                armorResolution.HealthAfterMaximumClamp > combatStats.MaximumHealth ||
+                armorResolution.EnergyAfterMaximumClamp < 0 ||
+                armorResolution.EnergyAfterMaximumClamp > combatStats.MaximumEnergy)
+            {
+                throw new ArgumentException("Resolved current resources must be within their equipped maximums.", nameof(armorResolution));
+            }
+            if (armorResolution.MovementSpeedPercentModifier <= -100)
+                throw new ArgumentOutOfRangeException(nameof(armorResolution), "Armor cannot reduce movement speed to zero or below.");
+            if (armorResolution.EnergyRegenerationPerSecondBonus < 0 ||
+                armorResolution.HarmfulStatusDurationReductionPercent < 0 ||
+                armorResolution.HarmfulStatusDurationReductionPercent > 100)
+            {
+                throw new ArgumentOutOfRangeException(nameof(armorResolution), "Armor runtime modifiers are outside their supported range.");
+            }
         }
 
         /// <summary>
@@ -820,9 +874,10 @@ namespace Luckbound.Gameplay.Movement
             }
 
             _body.linearVelocity = knockbackVelocity;
-            if (stunDurationTicks > 0 && !outcome.IsDead)
+            int resolvedStunDurationTicks = ApplyHarmfulStatusDurationReduction(stunDurationTicks);
+            if (resolvedStunDurationTicks > 0 && !outcome.IsDead)
             {
-                _stunTicksRemaining = Math.Max(_stunTicksRemaining, stunDurationTicks);
+                _stunTicksRemaining = Math.Max(_stunTicksRemaining, resolvedStunDurationTicks);
                 InterruptActions();
             }
 
@@ -833,6 +888,15 @@ namespace Luckbound.Gameplay.Movement
             }
 
             return outcome;
+        }
+
+        private int ApplyHarmfulStatusDurationReduction(int durationTicks)
+        {
+            if (durationTicks <= 0 || _harmfulStatusDurationReductionPercent <= 0) return durationTicks;
+            decimal remainingPercent = 100m - _harmfulStatusDurationReductionPercent;
+            decimal remainingTicks = durationTicks * remainingPercent / 100m;
+            if (remainingTicks <= 0m) return 0;
+            return Math.Max(1, decimal.ToInt32(decimal.Round(remainingTicks, 0, MidpointRounding.AwayFromZero)));
         }
 
         private bool IsBellatorGuardActiveAt(long tick)
@@ -1046,7 +1110,7 @@ namespace Luckbound.Gameplay.Movement
                 CollectMeleeImpacts(_meleeAttackSnapshot.HitWindow);
             }
 
-            float targetSpeed = input * MaximumHorizontalSpeed * attackMovementMultiplier;
+            float targetSpeed = input * EffectiveMaximumHorizontalSpeed * attackMovementMultiplier;
             float acceleration = Mathf.Abs(input) > MovementDeadZone ? GroundAcceleration : GroundBraking;
             if (!IsGrounded)
             {
@@ -1059,7 +1123,7 @@ namespace Luckbound.Gameplay.Movement
             {
                 IsDodging = true;
                 _dodgeInvulnerabilityActive = _dodgeElapsed + (deltaTime * 0.5f) < DodgeInvulnerabilityDuration;
-                velocity.x = _dodgeDirection * DodgeSpeed;
+                velocity.x = _dodgeDirection * DodgeSpeed * _armorMovementSpeedMultiplier;
                 _jumpBufferRemaining = 0f;
                 _dodgeElapsed += deltaTime;
                 if (_dodgeElapsed >= DodgeDuration)
@@ -1079,7 +1143,7 @@ namespace Luckbound.Gameplay.Movement
                 _dodgeInvulnerabilityActive = false;
                 if (_dodgeSpeedRecoveryPending)
                 {
-                    velocity.x = _dodgeDirection * MaximumHorizontalSpeed;
+                    velocity.x = _dodgeDirection * EffectiveMaximumHorizontalSpeed;
                     _dodgeSpeedRecoveryPending = false;
                 }
 
@@ -1242,6 +1306,7 @@ namespace Luckbound.Gameplay.Movement
             if (result.SkillOutcome.EnergySpent > 0)
             {
                 _nextVenatorEnergyRecoveryTick = command.Tick + 60;
+                _nextArmorEnergyRecoveryTick = command.Tick + 60;
             }
             else if (roomReady && !IsDead)
             {
@@ -1285,6 +1350,7 @@ namespace Luckbound.Gameplay.Movement
             if (result.SkillOutcome.EnergySpent > 0)
             {
                 _nextBellatorEnergyRecoveryTick = command.Tick + 60;
+                _nextArmorEnergyRecoveryTick = command.Tick + 60;
             }
             else if (!IsDead)
             {
@@ -1398,38 +1464,12 @@ namespace Luckbound.Gameplay.Movement
 
         private void RecoverBellatorEnergy(long tick)
         {
-            if (_skillUseState.CurrentEnergy >= _skillUseState.MaximumEnergy)
-            {
-                _nextBellatorEnergyRecoveryTick = tick + 12;
-                return;
-            }
-
-            if (tick < _nextBellatorEnergyRecoveryTick) return;
-
-            long elapsedRecoveryTicks = tick - _nextBellatorEnergyRecoveryTick;
-            int recoveryAmount = 1 + (int)(elapsedRecoveryTicks / 12);
-            _skillUseState.SetCurrentEnergy(Math.Min(
-                _skillUseState.MaximumEnergy,
-                _skillUseState.CurrentEnergy + recoveryAmount));
-            _nextBellatorEnergyRecoveryTick += recoveryAmount * 12L;
+            RecoverEnergy(tick, ref _nextBellatorEnergyRecoveryTick);
         }
 
         private void RecoverVenatorEnergy(long tick)
         {
-            if (_skillUseState.CurrentEnergy >= _skillUseState.MaximumEnergy)
-            {
-                _nextVenatorEnergyRecoveryTick = tick + 12;
-                return;
-            }
-
-            if (tick < _nextVenatorEnergyRecoveryTick) return;
-
-            long elapsedRecoveryTicks = tick - _nextVenatorEnergyRecoveryTick;
-            int recoveryAmount = 1 + (int)(elapsedRecoveryTicks / 12);
-            _skillUseState.SetCurrentEnergy(Math.Min(
-                _skillUseState.MaximumEnergy,
-                _skillUseState.CurrentEnergy + recoveryAmount));
-            _nextVenatorEnergyRecoveryTick += recoveryAmount * 12L;
+            RecoverEnergy(tick, ref _nextVenatorEnergyRecoveryTick);
         }
 
         private void TickMagusCommand(PlayerCommand command, bool canAct)
@@ -1465,6 +1505,7 @@ namespace Luckbound.Gameplay.Movement
             if (result.SkillOutcome.EnergySpent > 0)
             {
                 _nextMagusEnergyRecoveryTick = command.Tick + 60;
+                _nextArmorEnergyRecoveryTick = command.Tick + 60;
             }
             else if (roomReady && !IsDead)
             {
@@ -1484,20 +1525,44 @@ namespace Luckbound.Gameplay.Movement
 
         private void RecoverMagusEnergy(long tick)
         {
-            if (_skillUseState.CurrentEnergy >= _skillUseState.MaximumEnergy)
+            RecoverEnergy(tick, ref _nextMagusEnergyRecoveryTick);
+        }
+
+        private void RecoverEnergy(long tick, ref long nextBaseRecoveryTick)
+        {
+            int currentEnergy = _skillUseState.CurrentEnergy;
+            int maximumEnergy = _skillUseState.MaximumEnergy;
+            if (currentEnergy >= maximumEnergy)
             {
-                _nextMagusEnergyRecoveryTick = tick + 12;
+                nextBaseRecoveryTick = tick + 12;
+                _nextArmorEnergyRecoveryTick = tick + 60;
                 return;
             }
 
-            if (tick < _nextMagusEnergyRecoveryTick) return;
+            long baseRecoveryAmount = 0;
+            if (tick >= nextBaseRecoveryTick)
+            {
+                long elapsedRecoveryTicks = tick - nextBaseRecoveryTick;
+                baseRecoveryAmount = 1 + elapsedRecoveryTicks / 12;
+                nextBaseRecoveryTick += baseRecoveryAmount * 12L;
+            }
 
-            long elapsedRecoveryTicks = tick - _nextMagusEnergyRecoveryTick;
-            int recoveryAmount = 1 + (int)(elapsedRecoveryTicks / 12);
-            _skillUseState.SetCurrentEnergy(Math.Min(
-                _skillUseState.MaximumEnergy,
-                _skillUseState.CurrentEnergy + recoveryAmount));
-            _nextMagusEnergyRecoveryTick += recoveryAmount * 12L;
+            long armorRecoveryAmount = 0;
+            if (_armorEnergyRegenerationPerSecondBonus > 0 && tick >= _nextArmorEnergyRecoveryTick)
+            {
+                long elapsedArmorTicks = tick - _nextArmorEnergyRecoveryTick;
+                long recoveryIntervals = 1 + elapsedArmorTicks / 60;
+                armorRecoveryAmount = recoveryIntervals * _armorEnergyRegenerationPerSecondBonus;
+                _nextArmorEnergyRecoveryTick += recoveryIntervals * 60L;
+            }
+
+            long totalRecovery = baseRecoveryAmount + armorRecoveryAmount;
+            if (totalRecovery > 0)
+            {
+                _skillUseState.SetCurrentEnergy((int)Math.Min(
+                    maximumEnergy,
+                    (long)currentEnergy + totalRecovery));
+            }
         }
 
         private Vector2 MagusProjectileOrigin()

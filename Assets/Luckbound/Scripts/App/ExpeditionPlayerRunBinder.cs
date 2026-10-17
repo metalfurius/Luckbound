@@ -1,4 +1,5 @@
 using System;
+using Luckbound.Core.Armor;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
@@ -72,7 +73,8 @@ namespace Luckbound.App
                 groundLayers,
                 plan.CombatStats,
                 plan.EnemyLayers,
-                run.RaceId);
+                run.RaceId,
+                plan.ArmorResolution);
             playerMotor.ConfigureEquippedWeapon(plan.EquippedWeapon);
 
             if (string.Equals(run.ClassId, VenatorSkillLoadout.ClassId, StringComparison.Ordinal))
@@ -166,7 +168,8 @@ namespace Luckbound.App
             if (Mathf.Abs(Physics2D.gravity.x) > 0.01f || Physics2D.gravity.y >= -0.01f)
                 throw new InvalidOperationException("Player composition requires downward vertical 2D gravity.");
 
-            var combatStats = new CombatStats(run.StartingHealth, run.StartingEnergy, defense);
+            ArmorResolution armorResolution = ResolveEquippedArmor(run, itemCatalog);
+            CombatStats combatStats = CreateArmorCombatStats(defense, armorResolution);
             WeaponProfile equippedWeapon = PlayerMotor2D.ResolveEquippedWeaponProfile(run, weaponCatalog);
             ValidateSkillLoadout(run, skillCatalog);
 
@@ -178,7 +181,45 @@ namespace Luckbound.App
                     roomLifetimeScope);
             }
 
-            return new BindingPlan(combatStats, equippedWeapon, effectiveEnemyLayers);
+            return new BindingPlan(combatStats, equippedWeapon, effectiveEnemyLayers, armorResolution);
+        }
+
+        internal static ArmorResolution ResolveEquippedArmor(ExpeditionRunConfiguration run, ItemCatalog itemCatalog)
+        {
+            if (run == null) throw new ArgumentNullException(nameof(run));
+            if (itemCatalog == null) throw new ArgumentNullException(nameof(itemCatalog));
+            if (run.Inventory == null || !string.Equals(run.Inventory.ClassId, run.ClassId, StringComparison.Ordinal))
+                throw new ArgumentException("The run must carry its own inventory for the selected class.", nameof(run));
+            if (!ReferenceEquals(run.Inventory.Catalog, itemCatalog))
+                throw new ArgumentException("Pass the already-loaded item catalog owned by the run inventory.", nameof(itemCatalog));
+
+            InventoryItemStack equippedArmor = run.Inventory.Armor;
+            if (equippedArmor == null || !equippedArmor.InstanceId.IsValid ||
+                !itemCatalog.TryGet(equippedArmor.ItemId, out ItemDefinition armorItem) ||
+                !string.Equals(armorItem.Id, equippedArmor.ItemId, StringComparison.Ordinal) ||
+                armorItem.Kind != ItemKind.Armor ||
+                !ArmorCatalog.Standard.TryGet(equippedArmor.ItemId, out ArmorProfile profile) ||
+                !string.Equals(profile.ItemId, equippedArmor.ItemId, StringComparison.Ordinal))
+            {
+                throw new ArgumentException(
+                    "The run's equipped armor must match an exact item ID in the item and standard armor catalogs.",
+                    nameof(run));
+            }
+
+            return ArmorStatsResolver.Resolve(
+                profile,
+                equippedArmor.UpgradeLevel,
+                run.StartingHealth,
+                run.StartingEnergy,
+                run.StartingHealth,
+                run.StartingEnergy);
+        }
+
+        internal static CombatStats CreateArmorCombatStats(int baseDefense, ArmorResolution armorResolution)
+        {
+            if (armorResolution == null) throw new ArgumentNullException(nameof(armorResolution));
+            int totalDefense = checked(baseDefense + armorResolution.Defense);
+            return new CombatStats(armorResolution.MaximumHealth, armorResolution.MaximumEnergy, totalDefense);
         }
 
         private static void ValidateEquippedItems(ExpeditionRunConfiguration run, ItemCatalog itemCatalog)
@@ -256,16 +297,22 @@ namespace Luckbound.App
 
         private readonly struct BindingPlan
         {
-            public BindingPlan(CombatStats combatStats, WeaponProfile equippedWeapon, LayerMask enemyLayers)
+            public BindingPlan(
+                CombatStats combatStats,
+                WeaponProfile equippedWeapon,
+                LayerMask enemyLayers,
+                ArmorResolution armorResolution)
             {
                 CombatStats = combatStats;
                 EquippedWeapon = equippedWeapon;
                 EnemyLayers = enemyLayers;
+                ArmorResolution = armorResolution;
             }
 
             public CombatStats CombatStats { get; }
             public WeaponProfile EquippedWeapon { get; }
             public LayerMask EnemyLayers { get; }
+            public ArmorResolution ArmorResolution { get; }
         }
     }
 }

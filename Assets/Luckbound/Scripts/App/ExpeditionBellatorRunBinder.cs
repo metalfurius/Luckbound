@@ -1,4 +1,5 @@
 using System;
+using Luckbound.Core.Armor;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
@@ -31,24 +32,23 @@ namespace Luckbound.App
             if (!string.Equals(run.ClassId, BellatorSkillLoadout.ClassId, StringComparison.Ordinal))
                 throw new ArgumentException("Only a confirmed Bellator run can be bound by this composition.", nameof(run));
 
-            _ = ValidateDependencies(run, actorId, inputSource, groundLayers,
+            BindingPlan plan = ValidateDependencies(run, actorId, inputSource, groundLayers,
                 defense, playerMotor, itemCollector, itemCatalog, weaponCatalog, skillCatalog);
-
-            var combatStats = new CombatStats(run.StartingHealth, run.StartingEnergy, defense);
 
             playerMotor.Initialize(
                 actorId,
                 inputSource,
                 groundLayers,
-                combatStats,
+                plan.CombatStats,
                 enemyLayers,
-                raceId: run.RaceId);
-            playerMotor.ConfigureEquippedWeapon(run, weaponCatalog);
+                raceId: run.RaceId,
+                armorResolution: plan.ArmorResolution);
+            playerMotor.ConfigureEquippedWeapon(plan.EquippedWeapon);
             playerMotor.ConfigureBellator(skillCatalog, run.SkillIds);
             itemCollector.Configure(run.Inventory, itemCatalog, dropStager, raceId: run.RaceId);
         }
 
-        private static WeaponProfile ValidateDependencies(
+        private static BindingPlan ValidateDependencies(
             ExpeditionRunConfiguration run,
             ActorId actorId,
             IPlayerInputSource inputSource,
@@ -91,15 +91,31 @@ namespace Luckbound.App
 
             // Validate the equipped slot and full runtime mapping before Initialize mutates player components.
             WeaponProfile equippedWeaponProfile = PlayerMotor2D.ResolveEquippedWeaponProfile(run, weaponCatalog);
+            ArmorResolution armorResolution = ExpeditionPlayerRunBinder.ResolveEquippedArmor(run, itemCatalog);
+            CombatStats combatStats = ExpeditionPlayerRunBinder.CreateArmorCombatStats(defense, armorResolution);
 
             // Constructing the loadout here checks the complete Bellator catalog and both selected IDs
             // before Initialize mutates the player motor.
             _ = new BellatorSkillLoadout(skillCatalog, run.SkillIds);
 
-            if (run.StartingHealth <= 0 || run.StartingEnergy < 0)
+            if (run.StartingHealth <= 0 || run.StartingEnergy <= 0)
                 throw new ArgumentException("The confirmed run contains invalid starting combat values.", nameof(run));
 
-            return equippedWeaponProfile;
+            return new BindingPlan(combatStats, equippedWeaponProfile, armorResolution);
+        }
+
+        private readonly struct BindingPlan
+        {
+            public BindingPlan(CombatStats combatStats, WeaponProfile equippedWeapon, ArmorResolution armorResolution)
+            {
+                CombatStats = combatStats;
+                EquippedWeapon = equippedWeapon;
+                ArmorResolution = armorResolution;
+            }
+
+            public CombatStats CombatStats { get; }
+            public WeaponProfile EquippedWeapon { get; }
+            public ArmorResolution ArmorResolution { get; }
         }
     }
 }
