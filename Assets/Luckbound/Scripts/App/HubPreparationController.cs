@@ -6,8 +6,10 @@ using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Progression;
+using Luckbound.Core.Progression.Contracts;
 using Luckbound.Core.Saves;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -59,14 +61,40 @@ namespace Luckbound.App
         private UnityAction _healthUpgradeHandler;
         private UnityAction _energyUpgradeHandler;
         private UnityAction _potionUpgradeHandler;
+        private UnityAction _openContractsHandler;
+        private UnityAction _closeContractsHandler;
+        private UnityAction _retryContractWriteHandler;
+        private UnityAction _contractLanguageHandler;
+        private UnityAction[] _contractActionHandlers;
         private SkillCatalog _skillCatalog;
         private List<SkillDefinition> _classSkills = new List<SkillDefinition>(3);
+        private readonly List<Button> _contractActionButtons = new List<Button>(4);
+        private readonly List<Text> _contractTitleTexts = new List<Text>(4);
+        private readonly List<Text> _contractObjectiveTexts = new List<Text>(4);
+        private readonly List<Text> _contractRewardTexts = new List<Text>(4);
+        private readonly List<Text> _contractProgressTexts = new List<Text>(4);
+        private Button _openContractsButton;
+        private Button _closeContractsButton;
+        private Button _retryContractWriteButton;
+        private Button _contractLanguageButton;
+        private GameObject _contractPanel;
+        private Text _contractBoardTitleText;
+        private Text _contractActiveLimitText;
+        private Text _contractStatusText;
+        private Text _contractLanguageStatusText;
+        private LocalizationService _localization;
+        private GameSettingsSaveData _pendingLanguageSettings;
+        private GameObject _selectionBeforeContracts;
+        private string _contractFeedback = string.Empty;
+        private string _languageFeedback = string.Empty;
         private int _selectedClassIndex;
         private string _selectedRaceId = ExpeditionRunConfiguration.HumanRaceId;
         private string _statusMessage;
         private string _profileStatusMessage;
         private bool _startingExpedition;
         private bool _purchasingUpgrade;
+        private bool _contractOperationInProgress;
+        private bool _languageWriteInProgress;
         private string _upgradeStatusMessage;
 
         public string SelectedClassId => PlayableClasses[_selectedClassIndex];
@@ -76,6 +104,12 @@ namespace Luckbound.App
         private void OnEnable()
         {
             ValidateReferences();
+            EnsureContractPresentation();
+            if (_localization != null)
+            {
+                _localization.LanguageChanged -= OnContractLanguageChanged;
+                _localization.LanguageChanged += OnContractLanguageChanged;
+            }
             _classButtonHandlers = new UnityAction[_classButtons.Length];
             for (int index = 0; index < _classButtons.Length; index++)
             {
@@ -110,6 +144,21 @@ namespace Luckbound.App
             if (_healthUpgradeButton != null) _healthUpgradeButton.onClick.AddListener(_healthUpgradeHandler);
             if (_energyUpgradeButton != null) _energyUpgradeButton.onClick.AddListener(_energyUpgradeHandler);
             if (_potionUpgradeButton != null) _potionUpgradeButton.onClick.AddListener(_potionUpgradeHandler);
+            _openContractsHandler = OpenContractBoard;
+            _closeContractsHandler = CloseContractBoard;
+            _retryContractWriteHandler = RetryPendingContractWrite;
+            _contractLanguageHandler = ChangeContractLanguage;
+            if (_openContractsButton != null) _openContractsButton.onClick.AddListener(_openContractsHandler);
+            if (_closeContractsButton != null) _closeContractsButton.onClick.AddListener(_closeContractsHandler);
+            if (_retryContractWriteButton != null) _retryContractWriteButton.onClick.AddListener(_retryContractWriteHandler);
+            if (_contractLanguageButton != null) _contractLanguageButton.onClick.AddListener(_contractLanguageHandler);
+            _contractActionHandlers = new UnityAction[_contractActionButtons.Count];
+            for (int index = 0; index < _contractActionButtons.Count; index++)
+            {
+                string contractId = ContractCatalog.ImplementedContracts[index].Id;
+                _contractActionHandlers[index] = () => ActivateContract(contractId);
+                _contractActionButtons[index].onClick.AddListener(_contractActionHandlers[index]);
+            }
         }
 
         private void Start()
@@ -119,6 +168,7 @@ namespace Luckbound.App
                 TextAsset skillData = Resources.Load<TextAsset>("Luckbound/Data/Skills");
                 if (skillData == null) throw new InvalidOperationException("Skills.json could not be loaded.");
                 _skillCatalog = SkillCatalogJsonLoader.Load(skillData.text);
+                InitializeContractLocalization();
                 RefreshProfileStatus();
                 SelectClass(0);
                 SelectHumanRace();
@@ -152,6 +202,14 @@ namespace Luckbound.App
             if (_healthUpgradeButton != null && _healthUpgradeHandler != null) _healthUpgradeButton.onClick.RemoveListener(_healthUpgradeHandler);
             if (_energyUpgradeButton != null && _energyUpgradeHandler != null) _energyUpgradeButton.onClick.RemoveListener(_energyUpgradeHandler);
             if (_potionUpgradeButton != null && _potionUpgradeHandler != null) _potionUpgradeButton.onClick.RemoveListener(_potionUpgradeHandler);
+            if (_openContractsButton != null && _openContractsHandler != null) _openContractsButton.onClick.RemoveListener(_openContractsHandler);
+            if (_closeContractsButton != null && _closeContractsHandler != null) _closeContractsButton.onClick.RemoveListener(_closeContractsHandler);
+            if (_retryContractWriteButton != null && _retryContractWriteHandler != null) _retryContractWriteButton.onClick.RemoveListener(_retryContractWriteHandler);
+            if (_contractLanguageButton != null && _contractLanguageHandler != null) _contractLanguageButton.onClick.RemoveListener(_contractLanguageHandler);
+            if (_contractActionButtons != null && _contractActionHandlers != null)
+                for (int index = 0; index < _contractActionButtons.Count && index < _contractActionHandlers.Length; index++)
+                    if (_contractActionButtons[index] != null) _contractActionButtons[index].onClick.RemoveListener(_contractActionHandlers[index]);
+            if (_localization != null) _localization.LanguageChanged -= OnContractLanguageChanged;
         }
 
         public void SelectClass(int classIndex)
@@ -347,6 +405,474 @@ namespace Luckbound.App
             _upgradePanel.SetActive(false);
         }
 
+        /// <summary>Changes the active language without rebuilding controls or discarding current selections.</summary>
+        public void SetLanguage(string languageId)
+        {
+            if (_languageWriteInProgress) return;
+            if (_localization == null) InitializeContractLocalization();
+            if (_pendingLanguageSettings != null)
+            {
+                RetryPendingLanguageWrite();
+                return;
+            }
+            _localization.SetLanguage(languageId);
+            PersistLanguage(languageId);
+        }
+
+        private void EnsureContractPresentation()
+        {
+            if (_openContractsButton != null) return;
+            Canvas canvas = GameObject.Find("HubPreparationCanvas")?.GetComponent<Canvas>();
+            if (canvas == null) canvas = FindAnyObjectByType<Canvas>();
+            if (canvas == null) return;
+
+            _openContractsButton = CreateRuntimeButton("OpenContractsButton", "CONTRATOS", canvas.transform,
+                new Vector2(12f, -12f), new Vector2(72f, 18f), 6, "#10111B", "#AA7DC2", topLeft: true);
+
+            _contractPanel = new GameObject("ContractBoardPanel", typeof(RectTransform), typeof(CanvasRenderer),
+                typeof(Image), typeof(Button));
+            _contractPanel.transform.SetParent(canvas.transform, false);
+            RectTransform overlayRect = _contractPanel.GetComponent<RectTransform>();
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
+            overlayRect.offsetMin = Vector2.zero;
+            overlayRect.offsetMax = Vector2.zero;
+            Image overlayImage = _contractPanel.GetComponent<Image>();
+            overlayImage.color = new Color(0.025f, 0.03f, 0.055f, 0.84f);
+            overlayImage.raycastTarget = true;
+            Button overlayButton = _contractPanel.GetComponent<Button>();
+            overlayButton.targetGraphic = overlayImage;
+            overlayButton.transition = Selectable.Transition.None;
+            overlayButton.navigation = new Navigation { mode = Navigation.Mode.None };
+
+            Image board = CreateRuntimeImage("ContractBoard", _contractPanel.transform, "#171621");
+            PlaceRuntimeRect(board.rectTransform, Vector2.zero, new Vector2(452f, 250f));
+            _contractBoardTitleText = CreateRuntimeText("ContractBoardTitle", "CONTRACTS", board.transform,
+                new Vector2(0f, 108f), new Vector2(200f, 22f), 13, "#F0C15A", FontStyle.Bold);
+            _contractLanguageButton = CreateRuntimeButton("ContractLanguageButton", "ENGLISH", board.transform,
+                new Vector2(-177f, 108f), new Vector2(70f, 18f), 6, "#E8E3CD", "#32251F");
+            _closeContractsButton = CreateRuntimeButton("CloseContractsButton", "×", board.transform,
+                new Vector2(200f, 108f), new Vector2(30f, 20f), 11, "#E8E3CD", "#493363");
+            _contractActiveLimitText = CreateRuntimeText("ContractActiveLimit", string.Empty, board.transform,
+                new Vector2(0f, 86f), new Vector2(410f, 15f), 7, "#AA7DC2", FontStyle.Bold);
+            _contractLanguageStatusText = CreateRuntimeText("ContractLanguageStatus", string.Empty, board.transform,
+                new Vector2(0f, 69f), new Vector2(410f, 14f), 6, "#BDC6CC", FontStyle.Normal);
+
+            IReadOnlyList<ContractDefinition> contracts = ContractCatalog.ImplementedContracts;
+            for (int index = 0; index < contracts.Count; index++)
+            {
+                ContractDefinition definition = contracts[index];
+                float rowY = 44f - index * 44f;
+                Image row = CreateRuntimeImage("ContractCard" + definition.Id, board.transform, "#282338");
+                PlaceRuntimeRect(row.rectTransform, new Vector2(0f, rowY), new Vector2(434f, 40f));
+                _contractTitleTexts.Add(CreateRuntimeText("Contract" + definition.Id + "Title", string.Empty,
+                    row.transform, new Vector2(-28f, 13f), new Vector2(280f, 12f), 7, "#F0C15A", FontStyle.Bold));
+                _contractObjectiveTexts.Add(CreateRuntimeText("Contract" + definition.Id + "Objective", string.Empty,
+                    row.transform, new Vector2(-28f, 1f), new Vector2(280f, 12f), 6, "#E8E3CD", FontStyle.Normal));
+                _contractRewardTexts.Add(CreateRuntimeText("Contract" + definition.Id + "Reward", string.Empty,
+                    row.transform, new Vector2(-28f, -12f), new Vector2(280f, 12f), 5, "#BDC6CC", FontStyle.Normal));
+                _contractProgressTexts.Add(CreateRuntimeText("Contract" + definition.Id + "Progress", string.Empty,
+                    row.transform, new Vector2(137f, 0f), new Vector2(50f, 16f), 6, "#E8E3CD", FontStyle.Bold));
+                _contractActionButtons.Add(CreateRuntimeButton("Contract" + definition.Id + "ActionButton", "",
+                    row.transform, new Vector2(187f, 0f), new Vector2(64f, 24f), 6, "#10111B", "#D68F32"));
+            }
+
+            _contractStatusText = CreateRuntimeText("ContractBoardStatus", string.Empty, board.transform,
+                new Vector2(-89f, -115f), new Vector2(240f, 15f), 6, "#F0C15A", FontStyle.Normal);
+            _retryContractWriteButton = CreateRuntimeButton("RetryPendingContractProgressionButton", "RETRY",
+                board.transform, new Vector2(167f, -115f), new Vector2(92f, 19f), 6, "#E8E3CD", "#493363");
+            _contractPanel.SetActive(false);
+        }
+
+        private void InitializeContractLocalization()
+        {
+            TextAsset localizationData = Resources.Load<TextAsset>("Luckbound/Localization/Initial");
+            if (localizationData == null) throw new InvalidOperationException("Initial localization catalog could not be loaded.");
+            LocalizedTextCatalog catalog = LocalizationJsonLoader.Load(localizationData.text);
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            string languageId = app != null && app.SaveDataReady ? app.Settings.languageId : catalog.DefaultLanguageId;
+            _localization = new LocalizationService(catalog, languageId);
+            _localization.LanguageChanged -= OnContractLanguageChanged;
+            _localization.LanguageChanged += OnContractLanguageChanged;
+            RefreshContractBoard();
+        }
+
+        private void OnContractLanguageChanged(string languageId)
+        {
+            // Updating labels in place preserves the selected Selectable and all preparation state.
+            _contractFeedback = string.Empty;
+            _languageFeedback = string.Empty;
+            RefreshView();
+        }
+
+        private void OpenContractBoard()
+        {
+            if (_contractPanel == null) return;
+            _selectionBeforeContracts = EventSystem.current == null
+                ? null
+                : EventSystem.current.currentSelectedGameObject;
+            RefreshContractBoard();
+            _contractPanel.SetActive(true);
+            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(_contractLanguageButton.gameObject);
+        }
+
+        private void CloseContractBoard()
+        {
+            if (_contractPanel == null) return;
+            _contractPanel.SetActive(false);
+            if (EventSystem.current != null)
+            {
+                GameObject target = _selectionBeforeContracts != null && _selectionBeforeContracts.activeInHierarchy
+                    ? _selectionBeforeContracts
+                    : _openContractsButton.gameObject;
+                EventSystem.current.SetSelectedGameObject(target);
+            }
+        }
+
+        private async void ActivateContract(string contractId)
+        {
+            if (_contractOperationInProgress) return;
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null || !app.SaveDataReady)
+            {
+                _contractFeedback = LocalizedStatus("El perfil no está disponible.", "The profile is not available.");
+                RefreshContractBoard();
+                return;
+            }
+            if (app.HasPendingContractProgression)
+            {
+                _contractFeedback = LocalizedStatus("Reintenta primero el guardado pendiente.", "Retry the pending save first.");
+                RefreshContractBoard();
+                return;
+            }
+
+            ContractProgressionSnapshot before = app.ContractProgression;
+            bool claim = before.IsAccepted(contractId) && before.IsComplete(contractId);
+            _contractOperationInProgress = true;
+            _contractFeedback = string.Empty;
+            RefreshContractBoard();
+            try
+            {
+                ContractProgressionCommitResult result = claim
+                    ? await app.ClaimContractRewardAsync(contractId)
+                    : await app.AcceptContractAsync(contractId);
+                _contractFeedback = FormatContractResult(result);
+            }
+            catch (Exception exception)
+            {
+                _contractFeedback = LocalizedStatus("No se pudo guardar el contrato.", "The contract could not be saved.") + " " + exception.Message;
+            }
+            finally
+            {
+                _contractOperationInProgress = false;
+                RefreshView();
+            }
+        }
+
+        private async void RetryPendingContractWrite()
+        {
+            if (_contractOperationInProgress) return;
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null || !app.HasPendingContractProgression) return;
+
+            _contractOperationInProgress = true;
+            RefreshContractBoard();
+            try
+            {
+                ContractProgressionCommitResult result = await app.RetryPendingContractProgressionAsync();
+                _contractFeedback = FormatContractResult(result);
+            }
+            catch (Exception exception)
+            {
+                _contractFeedback = LocalizedStatus("El guardado sigue pendiente.", "The save is still pending.") + " " + exception.Message;
+            }
+            finally
+            {
+                _contractOperationInProgress = false;
+                RefreshView();
+            }
+        }
+
+        private void ChangeContractLanguage()
+        {
+            if (_pendingLanguageSettings != null)
+            {
+                RetryPendingLanguageWrite();
+                return;
+            }
+            if (_localization == null) InitializeContractLocalization();
+            SetLanguage(_localization.LanguageId == "es" ? "en" : "es");
+        }
+
+        private async void PersistLanguage(string languageId)
+        {
+            if (_languageWriteInProgress) return;
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null || !app.SaveDataReady)
+            {
+                _languageFeedback = LocalizedStatus("Idioma cambiado para esta sesión.", "Language changed for this session.");
+                RefreshContractBoard();
+                return;
+            }
+
+            GameSettingsSaveData candidate = app.Settings;
+            candidate.languageId = languageId;
+            _pendingLanguageSettings = candidate;
+            _languageWriteInProgress = true;
+            RefreshContractBoard();
+            try
+            {
+                SaveWriteResult result = await app.SaveSettingsAsync(candidate);
+                if (result.Succeeded)
+                {
+                    _pendingLanguageSettings = null;
+                    _languageFeedback = LocalizedStatus("Idioma guardado.", "Language saved.");
+                }
+                else
+                {
+                    _languageFeedback = LocalizedStatus("Guardado de idioma pendiente. Pulsa el idioma para reintentar.",
+                        "Language save pending. Press the language button to retry.");
+                }
+            }
+            catch (Exception exception)
+            {
+                _languageFeedback = LocalizedStatus("No se pudo guardar el idioma.", "The language could not be saved.") + " " + exception.Message;
+            }
+            finally
+            {
+                _languageWriteInProgress = false;
+                RefreshContractBoard();
+            }
+        }
+
+        private async void RetryPendingLanguageWrite()
+        {
+            if (_languageWriteInProgress || _pendingLanguageSettings == null) return;
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null || !app.SaveDataReady) return;
+
+            _languageWriteInProgress = true;
+            RefreshContractBoard();
+            try
+            {
+                GameSettingsSaveData requestedSettings = _pendingLanguageSettings;
+                SaveWriteResult result = await app.RetryPendingSettingsAsync();
+                if (result.Succeeded)
+                {
+                    if (app.Settings.languageId != requestedSettings.languageId)
+                    {
+                        result = await app.SaveSettingsAsync(requestedSettings);
+                    }
+                    if (result.Succeeded)
+                    {
+                        _pendingLanguageSettings = null;
+                        _languageFeedback = LocalizedStatus("Idioma guardado.", "Language saved.");
+                    }
+                    else
+                    {
+                        _languageFeedback = LocalizedStatus("El mismo guardado de idioma sigue pendiente.",
+                            "The same language save is still pending.");
+                    }
+                }
+                else
+                {
+                    _languageFeedback = LocalizedStatus("El mismo guardado de idioma sigue pendiente.",
+                        "The same language save is still pending.");
+                }
+            }
+            catch (Exception exception)
+            {
+                _languageFeedback = LocalizedStatus("El mismo guardado de idioma sigue pendiente.",
+                    "The same language save is still pending.") + " " + exception.Message;
+            }
+            finally
+            {
+                _languageWriteInProgress = false;
+                RefreshContractBoard();
+            }
+        }
+
+        private void RefreshContractBoard()
+        {
+            if (_contractPanel == null) return;
+            string language = _localization == null ? "es" : _localization.LanguageId;
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            ContractProgressionSnapshot snapshot = app == null ? null : app.ContractProgression;
+            int activeCount = snapshot == null ? 0 : snapshot.ActiveContractIds.Count;
+            bool pending = app != null && app.HasPendingContractProgression;
+            if (_openContractsButton != null) SetLabel(_openContractsButton, GetText("ui.contracts.title"));
+            if (_contractBoardTitleText != null) _contractBoardTitleText.text = GetText("ui.contracts.title");
+            if (_contractActiveLimitText != null)
+                _contractActiveLimitText.text = GetText("ui.contracts.active_limit") + " · " + activeCount + "/" + ContractProgressionRules.MaximumActiveContracts;
+            if (_contractLanguageButton != null)
+            {
+                string languageKey = language == "es" ? "ui.language.en" : "ui.language.es";
+                SetLabel(_contractLanguageButton, GetText(languageKey));
+                _contractLanguageButton.interactable = !_languageWriteInProgress;
+            }
+            if (_contractLanguageStatusText != null) _contractLanguageStatusText.text = _languageFeedback ?? string.Empty;
+            if (_contractStatusText != null) _contractStatusText.text = _contractFeedback ?? string.Empty;
+            if (_retryContractWriteButton != null)
+            {
+                _retryContractWriteButton.gameObject.SetActive(pending);
+                _retryContractWriteButton.interactable = pending && !_contractOperationInProgress;
+                SetLabel(_retryContractWriteButton, LocalizedStatus("Reintentar", "Retry"));
+            }
+
+            IReadOnlyList<ContractDefinition> definitions = ContractCatalog.ImplementedContracts;
+            for (int index = 0; index < definitions.Count && index < _contractActionButtons.Count; index++)
+            {
+                ContractDefinition definition = definitions[index];
+                bool accepted = snapshot != null && snapshot.IsAccepted(definition.Id);
+                bool claimed = snapshot != null && snapshot.IsClaimed(definition.Id);
+                bool complete = snapshot != null && snapshot.IsComplete(definition.Id);
+                int progress = snapshot == null ? 0 : snapshot.GetProgress(definition.Id);
+                if (_contractTitleTexts[index] != null)
+                    _contractTitleTexts[index].text = definition.Id + " · " + GetText(definition.TitleLocalizationKey);
+                if (_contractObjectiveTexts[index] != null) _contractObjectiveTexts[index].text = GetText(definition.ObjectiveLocalizationKey);
+                if (_contractRewardTexts[index] != null) _contractRewardTexts[index].text = GetText(ContractRewardLocalizationKey(definition.Id));
+                if (_contractProgressTexts[index] != null)
+                    _contractProgressTexts[index].text = (claimed ? "✓ " : accepted ? "● " : "○ ") + progress + "/" + definition.RequiredProgress;
+
+                Button action = _contractActionButtons[index];
+                if (claimed)
+                {
+                    SetLabel(action, GetText("ui.contracts.complete"));
+                    action.interactable = false;
+                }
+                else if (accepted && complete)
+                {
+                    SetLabel(action, GetText("ui.contracts.claim"));
+                    action.interactable = !_contractOperationInProgress && !pending;
+                }
+                else if (accepted)
+                {
+                    SetLabel(action, progress + "/" + definition.RequiredProgress);
+                    action.interactable = false;
+                }
+                else
+                {
+                    SetLabel(action, GetText("ui.contracts.accept"));
+                    action.interactable = !_contractOperationInProgress && !pending && activeCount < ContractProgressionRules.MaximumActiveContracts;
+                }
+            }
+            // ContractProgressionRules also enforces this limit if the profile changes between UI refreshes.
+        }
+
+        private string FormatContractResult(ContractProgressionCommitResult result)
+        {
+            if (result == null) return LocalizedStatus("No se recibió resultado del contrato.", "No contract result was received.");
+            if (result.Pending) return LocalizedStatus("Guardado pendiente. Reintenta la misma operación.", "Save pending. Retry the same operation.");
+            if (result.AcceptStatus == ContractAcceptStatus.Accepted && result.Persisted)
+                return LocalizedStatus("Contrato aceptado.", "Contract accepted.");
+            if (result.AcceptStatus == ContractAcceptStatus.AlreadyAccepted)
+                return LocalizedStatus("El contrato ya estaba aceptado.", "The contract was already accepted.");
+            if (result.AcceptStatus == ContractAcceptStatus.RejectedActiveLimit)
+                return GetText("ui.contracts.active_limit");
+            if (result.AcceptStatus == ContractAcceptStatus.RejectedUnknownContract ||
+                result.ClaimStatus == ContractClaimStatus.RejectedUnknownContract)
+                return LocalizedStatus("Contrato desconocido.", "Unknown contract.");
+            if (result.ClaimStatus == ContractClaimStatus.Claimed && result.Persisted)
+                return LocalizedStatus("Recompensa reclamada.", "Reward claimed.");
+            if (result.ClaimStatus == ContractClaimStatus.AlreadyClaimed)
+                return LocalizedStatus("La recompensa ya estaba reclamada.", "The reward was already claimed.");
+            if (result.ClaimStatus == ContractClaimStatus.RejectedNotAccepted)
+                return LocalizedStatus("Acepta el contrato antes de reclamarlo.", "Accept the contract before claiming it.");
+            if (result.ClaimStatus == ContractClaimStatus.RejectedIncomplete)
+                return LocalizedStatus("El objetivo todavía no está completo.", "The objective is not complete yet.");
+            if (result.ClaimStatus == ContractClaimStatus.RejectedRenownOverflow)
+                return LocalizedStatus("No se puede añadir esa cantidad de Renombre.", "That amount of Renown cannot be added.");
+            return LocalizedStatus("No se pudo guardar el contrato.", "The contract could not be saved.");
+        }
+
+        private string GetText(string key)
+        {
+            return _localization == null ? key : _localization.GetText(key);
+        }
+
+        private string LocalizedStatus(string spanish, string english)
+        {
+            return _localization != null && _localization.LanguageId == "en" ? english : spanish;
+        }
+
+        private static string ContractRewardLocalizationKey(string contractId)
+        {
+            return "contract." + contractId.ToLowerInvariant() + ".reward";
+        }
+
+        private static Image CreateRuntimeImage(string name, Transform parent, string color)
+        {
+            GameObject imageObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            imageObject.transform.SetParent(parent, false);
+            Image image = imageObject.GetComponent<Image>();
+            Color parsed;
+            image.color = ColorUtility.TryParseHtmlString(color, out parsed) ? parsed : Color.white;
+            image.raycastTarget = false;
+            return image;
+        }
+
+        private static Text CreateRuntimeText(string name, string value, Transform parent, Vector2 position,
+            Vector2 size, int fontSize, string color, FontStyle style)
+        {
+            GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            textObject.transform.SetParent(parent, false);
+            PlaceRuntimeRect(textObject.GetComponent<RectTransform>(), position, size);
+            Text text = textObject.GetComponent<Text>();
+            text.text = value;
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if (text.font == null) text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.fontSize = fontSize;
+            text.fontStyle = style;
+            text.color = ColorUtility.TryParseHtmlString(color, out Color parsed) ? parsed : Color.white;
+            text.alignment = TextAnchor.MiddleLeft;
+            text.horizontalOverflow = HorizontalWrapMode.Wrap;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.raycastTarget = false;
+            return text;
+        }
+
+        private static Button CreateRuntimeButton(string name, string label, Transform parent, Vector2 position,
+            Vector2 size, int fontSize, string textColor, string backgroundColor, bool topLeft = false)
+        {
+            GameObject buttonObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+            buttonObject.transform.SetParent(parent, false);
+            RectTransform rect = buttonObject.GetComponent<RectTransform>();
+            rect.anchorMin = topLeft ? new Vector2(0f, 1f) : new Vector2(0.5f, 0.5f);
+            rect.anchorMax = rect.anchorMin;
+            rect.pivot = topLeft ? new Vector2(0f, 1f) : new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+            Image image = buttonObject.GetComponent<Image>();
+            image.color = ColorUtility.TryParseHtmlString(backgroundColor, out Color parsedBackground) ? parsedBackground : Color.white;
+            Button button = buttonObject.GetComponent<Button>();
+            button.targetGraphic = image;
+            button.navigation = new Navigation { mode = Navigation.Mode.Automatic };
+            ColorBlock colors = button.colors;
+            colors.normalColor = image.color;
+            colors.highlightedColor = new Color(0.55f, 0.36f, 0.72f, 1f);
+            colors.pressedColor = new Color(0.60f, 0.38f, 0.15f, 1f);
+            colors.disabledColor = new Color(0.25f, 0.27f, 0.34f, 1f);
+            button.colors = colors;
+            Text text = CreateRuntimeText(name + "Label", label, buttonObject.transform, Vector2.zero, size,
+                fontSize, textColor, FontStyle.Bold);
+            RectTransform labelRect = text.rectTransform;
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = Vector2.zero;
+            labelRect.offsetMax = Vector2.zero;
+            text.alignment = TextAnchor.MiddleCenter;
+            return button;
+        }
+
+        private static void PlaceRuntimeRect(RectTransform rect, Vector2 position, Vector2 size)
+        {
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = rect.anchorMin;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+        }
+
         public async void PurchasePermanentUpgrade(PermanentUpgradeKind kind)
         {
             if (_purchasingUpgrade) return;
@@ -454,6 +980,7 @@ namespace Luckbound.App
                     "     RAZA  " + RaceLabel(_selectedRaceId) + "\nHABILIDADES  " + (selected.Length == 0 ? "elige dos" : selected);
             }
             RefreshUpgradeControls();
+            RefreshContractBoard();
             if (_statusText != null)
             {
                 string selectionStatus = string.IsNullOrEmpty(_statusMessage)

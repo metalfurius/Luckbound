@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,9 +7,11 @@ using Luckbound.App;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Progression.Contracts;
 using Luckbound.Core.Saves;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -501,6 +504,255 @@ namespace Luckbound.Tests.PlayMode
                 UnityRandom.state = previousRandomState;
                 Time.timeScale = 1f;
                 if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10_ContractBoardAcceptsClaimsPersistsAndChangesLanguageWithoutLosingFocus()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Ui", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var store = new FileSaveStore(saveDirectory, null);
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadBootstrappedApplication(store, value => app = value);
+                Assert.That(app != null && app.SaveDataReady, Is.True);
+                for (int index = 0; index < 3; index++)
+                {
+                    Task<ContractProgressionCommitResult> progress = app.RecordContractProgressEventAsync(ContractProgressEvent.CombatRoomCompleted);
+                    while (!progress.IsCompleted) yield return null;
+                    Assert.That(progress.Result.Persisted, Is.True, progress.Result.Message);
+                }
+
+                yield return LoadContractHub();
+                HubPreparationController preparation = Object.FindAnyObjectByType<HubPreparationController>();
+                preparation.SelectClass(2);
+                string selectedClassBeforeLanguageChange = preparation.SelectedClassId;
+                string[] selectedSkillsBeforeLanguageChange = preparation.SelectedSkillIds.ToArray();
+                Button open = FindButton("OpenContractsButton");
+                Assert.That(open, Is.Not.Null);
+                SimulateButtonClick(open);
+                Button language = FindButton("ContractLanguageButton");
+                Assert.That(language, Is.Not.Null);
+                EventSystem.current.SetSelectedGameObject(language.gameObject);
+                SimulateButtonClick(language);
+                for (int frame = 0; frame < 120 && app.Settings.languageId != "en"; frame++) yield return null;
+
+                Assert.That(app.Settings.languageId, Is.EqualTo("en"));
+                Assert.That(FindText("ContractCT01Objective").text, Is.EqualTo("Complete three combat rooms"));
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(language.gameObject),
+                    "Changing language updates labels in place and keeps the selected control.");
+                Assert.That(preparation.SelectedClassId, Is.EqualTo(selectedClassBeforeLanguageChange));
+                Assert.That(preparation.SelectedSkillIds, Is.EqualTo(selectedSkillsBeforeLanguageChange));
+                Assert.That(app.ContractProgression.GetProgress(ContractCatalog.Ct01), Is.EqualTo(3),
+                    "Changing language must not discard profile contract progress.");
+
+                Button accept = FindButton("ContractCT01ActionButton");
+                Assert.That(accept.interactable, Is.True);
+                SimulateButtonClick(accept);
+                for (int frame = 0; frame < 120; frame++)
+                {
+                    Button current = FindButton("ContractCT01ActionButton");
+                    if (app.ContractProgression.IsAccepted(ContractCatalog.Ct01) && current != null &&
+                        current.interactable && current.GetComponentInChildren<Text>(true).text == "Claim") break;
+                    yield return null;
+                }
+                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct01), Is.True);
+                Button claim = FindButton("ContractCT01ActionButton");
+                Assert.That(claim.interactable, Is.True);
+                Assert.That(claim.GetComponentInChildren<Text>(true).text, Is.EqualTo("Claim"));
+                SimulateButtonClick(claim);
+                for (int frame = 0; frame < 120 && !app.ContractProgression.IsClaimed(ContractCatalog.Ct01); frame++) yield return null;
+
+                Assert.That(app.ContractProgression.IsClaimed(ContractCatalog.Ct01), Is.True);
+                Assert.That(app.Profile.availableRenown, Is.EqualTo(20));
+                Assert.That(app.Profile.unlockedStartingKitIds, Does.Contain("weapon.bellator.trail_saber"));
+                ProfileSaveEnvelope persisted = JsonUtility.FromJson<ProfileSaveEnvelope>(
+                    File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile)));
+                Assert.That(persisted.profile.claimedContractIds, Does.Contain(ContractCatalog.Ct01));
+                Assert.That(persisted.profile.unlockedStartingKitIds, Does.Contain("weapon.bellator.trail_saber"));
+
+                yield return LoadBootstrappedApplication(store, value => app = value);
+                Assert.That(app.ContractProgression.IsClaimed(ContractCatalog.Ct01), Is.True,
+                    "Claimed status and unlocks should survive a Bootstrap restart.");
+                Assert.That(app.Profile.unlockedStartingKitIds, Does.Contain("weapon.bellator.trail_saber"));
+                Assert.That(app.Settings.languageId, Is.EqualTo("en"));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10_ContractBoardEnforcesThreeActiveAndRejectsIncompleteClaims()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Ui", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var store = new FileSaveStore(saveDirectory, null);
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadBootstrappedApplication(store, value => app = value);
+                yield return LoadContractHub();
+                SimulateButtonClick(FindButton("OpenContractsButton"));
+                foreach (string contractId in new[] { ContractCatalog.Ct01, ContractCatalog.Ct02, ContractCatalog.Ct03 })
+                {
+                    Button accept = FindButton("Contract" + contractId + "ActionButton");
+                    Assert.That(accept.interactable, Is.True, contractId + " should be available below the active limit.");
+                    SimulateButtonClick(accept);
+                    for (int frame = 0; frame < 120; frame++)
+                    {
+                        bool accepted = app.ContractProgression.IsAccepted(contractId);
+                        Button next = contractId == ContractCatalog.Ct03 ? null :
+                            FindButton("Contract" + (contractId == ContractCatalog.Ct01 ? ContractCatalog.Ct02 : ContractCatalog.Ct03) + "ActionButton");
+                        if (accepted && (next == null || next.interactable)) break;
+                        yield return null;
+                    }
+                    Assert.That(app.ContractProgression.IsAccepted(contractId), Is.True, contractId + " should be persisted after its button click.");
+                }
+
+                Assert.That(app.ContractProgression.ActiveContractIds.Count, Is.EqualTo(3));
+                Button fourthAccept = FindButton("ContractCT04ActionButton");
+                Assert.That(fourthAccept.interactable, Is.False);
+                string beforeRejectedAttempt = File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile));
+                SimulateButtonClick(fourthAccept);
+                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct04), Is.False);
+
+                Task<ContractProgressionCommitResult> rejectedAccept = app.AcceptContractAsync(ContractCatalog.Ct04);
+                while (!rejectedAccept.IsCompleted) yield return null;
+                Assert.That(rejectedAccept.Result.AcceptStatus, Is.EqualTo(ContractAcceptStatus.RejectedActiveLimit));
+                Assert.That(rejectedAccept.Result.Persisted, Is.False);
+                Assert.That(File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(beforeRejectedAttempt),
+                    "A rejected fourth contract must leave the durable profile payload unchanged.");
+
+                int renownBeforeRejectedClaim = app.Profile.availableRenown;
+                string beforeIncompleteClaim = File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile));
+                Task<ContractProgressionCommitResult> rejectedClaim = app.ClaimContractRewardAsync(ContractCatalog.Ct01);
+                while (!rejectedClaim.IsCompleted) yield return null;
+                Assert.That(rejectedClaim.Result.ClaimStatus, Is.EqualTo(ContractClaimStatus.RejectedIncomplete));
+                Assert.That(rejectedClaim.Result.Persisted, Is.False);
+                Assert.That(app.Profile.availableRenown, Is.EqualTo(renownBeforeRejectedClaim));
+                Assert.That(File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(beforeIncompleteClaim));
+                Assert.That(app.ContractProgression.ActiveContractIds.Count, Is.EqualTo(3));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10_ContractBoardRetriesTheSamePendingProfilePayload()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Ui", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var failingStore = new FailingOnceProfileWriteStore(new FileSaveStore(saveDirectory, null));
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadBootstrappedApplication(failingStore, value => app = value);
+                yield return LoadContractHub();
+                SimulateButtonClick(FindButton("OpenContractsButton"));
+                SimulateButtonClick(FindButton("ContractCT02ActionButton"));
+                for (int frame = 0; frame < 120 && !app.HasPendingContractProgression; frame++) yield return null;
+
+                Assert.That(app.HasPendingContractProgression, Is.True);
+                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct02), Is.False,
+                    "The controller must not publish an unpersisted candidate.");
+                Button retry = FindButton("RetryPendingContractProgressionButton");
+                for (int frame = 0; frame < 120 && (retry == null || !retry.gameObject.activeInHierarchy || !retry.interactable); frame++)
+                {
+                    yield return null;
+                    retry = FindButton("RetryPendingContractProgressionButton");
+                }
+                Assert.That(retry != null && retry.gameObject.activeInHierarchy && retry.interactable, Is.True);
+                SimulateButtonClick(retry);
+                for (int frame = 0; frame < 120 && app.HasPendingContractProgression; frame++) yield return null;
+
+                Assert.That(app.HasPendingContractProgression, Is.False);
+                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct02), Is.True);
+                Assert.That(failingStore.ProfilePayloads.Count, Is.EqualTo(2));
+                Assert.That(failingStore.ProfilePayloads[1], Is.EqualTo(failingStore.ProfilePayloads[0]),
+                    "The retry must write the byte-identical pending profile payload.");
+                Assert.That(File.ReadAllText(failingStore.GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(failingStore.ProfilePayloads[0]));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        private static IEnumerator LoadBootstrappedApplication(ISaveStore store, System.Action<ApplicationBootstrapper> ready)
+        {
+            ApplicationBootstrapper old = ApplicationBootstrapper.Instance;
+            if (old != null) Object.Destroy(old.gameObject);
+            yield return null;
+            ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => store;
+            SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+            for (int frame = 0; frame < 120 &&
+                (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady); frame++) yield return null;
+            ready(ApplicationBootstrapper.Instance);
+        }
+
+        private static IEnumerator LoadContractHub()
+        {
+            SceneManager.LoadScene("Hub", LoadSceneMode.Single);
+            HubPreparationController preparation = null;
+            for (int frame = 0; frame < 60 && preparation == null; frame++)
+            {
+                preparation = Object.FindAnyObjectByType<HubPreparationController>();
+                if (preparation == null) yield return null;
+            }
+            Assert.That(preparation, Is.Not.Null);
+            for (int frame = 0; frame < 2; frame++) yield return null;
+        }
+
+        private static void SimulateButtonClick(Button button)
+        {
+            Assert.That(button, Is.Not.Null);
+            Assert.That(EventSystem.current, Is.Not.Null, "Hub UI should have an EventSystem for pointer input.");
+            var click = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };
+            ExecuteEvents.Execute(button.gameObject, click, ExecuteEvents.pointerClickHandler);
+        }
+
+        private sealed class FailingOnceProfileWriteStore : ISaveStore
+        {
+            private readonly ISaveStore _inner;
+            private readonly System.Collections.Generic.List<string> _profilePayloads = new System.Collections.Generic.List<string>();
+
+            public FailingOnceProfileWriteStore(ISaveStore inner) { _inner = inner; }
+            public IReadOnlyList<string> ProfilePayloads => _profilePayloads;
+            public string GetPrimaryPath(SaveDocument document) => ((FileSaveStore)_inner).GetPrimaryPath(document);
+            public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
+
+            public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
+            {
+                if (document == SaveDocument.Profile)
+                {
+                    _profilePayloads.Add(json);
+                    if (_profilePayloads.Count == 1) throw new IOException("Injected first profile write failure.");
+                }
+                await _inner.WriteAsync(document, json, lastKnownGoodPrimaryJson);
             }
         }
 
