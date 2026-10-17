@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Luckbound.App;
 using Luckbound.Content;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
 using Luckbound.Gameplay.Inventory;
@@ -192,7 +193,7 @@ namespace Luckbound.Tests.PlayMode
                     ItemCatalog catalog = LoadCatalog();
                     var inventory = new ExpeditionInventory(catalog, "class.bellator");
                     CreateCollector("E01DvergarPlayer", Vector2.zero, inventory, catalog, createdObjects,
-                        out ItemCollector2D collector, out _, grantsDvergarBonus: true);
+                        out ItemCollector2D collector, out _, raceId: PlayableRaceRules.DvergarRaceId);
 
                     WorldMaterialPickup2D first = CreateWorldMaterialPickup("E01OreA", MaterialKind.Ore, 3,
                         Vector2.zero, catalog, createdObjects);
@@ -257,6 +258,24 @@ namespace Luckbound.Tests.PlayMode
                         "; remainder=" + inventory.GetWorldMaterialRemainder(MaterialKind.ShadowWood) +
                         "; status=" + collector.LastOperationOutcome.Status);
 
+                    var orciniInventory = new ExpeditionInventory(catalog, "class.bellator");
+                    CreateCollector("E01OrciniPlayer", new Vector2(10f, 0f), orciniInventory, catalog, createdObjects,
+                        out ItemCollector2D orciniCollector, out _, raceId: PlayableRaceRules.OrciniRaceId);
+                    WorldMaterialPickup2D orciniPickup = CreateWorldMaterialPickup("E01OrciniOre", MaterialKind.Herb, 5,
+                        new Vector2(10f, 0f), catalog, createdObjects);
+                    Physics2D.SyncTransforms();
+                    evidence.RecordInput(3, "Physics2DTrigger", "Orcini enters a world pickup containing 5 herb");
+                    yield return new WaitForFixedUpdate();
+                    bool nonDvergarCollectedWithoutBonus = orciniPickup.IsConsumed &&
+                        orciniInventory.GetMaterialCount(MaterialKind.Herb) == 5 &&
+                        orciniInventory.GetWorldMaterialRemainder(MaterialKind.Herb) == 0 &&
+                        orciniCollector.RaceId == PlayableRaceRules.OrciniRaceId && !orciniCollector.GrantsDvergarBonus;
+                    evidence.RecordAssertion("A known non-Dvergar race receives no material bonus or Dvergar remainder progress",
+                        nonDvergarCollectedWithoutBonus, "Orcini collects 5 herb; count=5; remainder=0",
+                        "consumed=" + orciniPickup.IsConsumed + "; herb=" + orciniInventory.GetMaterialCount(MaterialKind.Herb) +
+                        "; remainder=" + orciniInventory.GetWorldMaterialRemainder(MaterialKind.Herb) +
+                        "; race=" + orciniCollector.RaceId + "; bonus=" + orciniCollector.GrantsDvergarBonus);
+
                     int exitCode = evidence.Complete();
                     Assert.That(exitCode, Is.Zero, "E01 material pickup scenario failed. Evidence: " + evidence.ReportPath);
                 }
@@ -267,6 +286,28 @@ namespace Luckbound.Tests.PlayMode
                         if (createdObject != null) Object.Destroy(createdObject);
                     }
                 }
+            }
+        }
+
+        [Test]
+        public void E09ItemCollectorRejectsUnknownRaceIdsWithoutChangingConfiguration()
+        {
+            var player = new GameObject("E09InvalidRaceCollector");
+            try
+            {
+                ItemCollector2D collector = player.AddComponent<ItemCollector2D>();
+                collector.Configure(null, null);
+                Assert.That(collector.RaceId, Is.EqualTo(PlayableRaceRules.HumanRaceId));
+
+                Assert.Throws<System.ArgumentException>(() =>
+                    collector.Configure(null, null, null, "race.unknown"));
+
+                Assert.That(collector.RaceId, Is.EqualTo(PlayableRaceRules.HumanRaceId));
+                Assert.That(collector.GrantsDvergarBonus, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
             }
         }
 
@@ -290,7 +331,7 @@ namespace Luckbound.Tests.PlayMode
             List<GameObject> createdObjects,
             out ItemCollector2D collector,
             out LootPickupDropStager2D stager,
-            bool grantsDvergarBonus = false)
+            string raceId = PlayableRaceRules.HumanRaceId)
         {
             var player = new GameObject(objectName);
             player.transform.position = position;
@@ -303,7 +344,7 @@ namespace Luckbound.Tests.PlayMode
             stager = player.AddComponent<LootPickupDropStager2D>();
             stager.Configure(null);
             collector = player.AddComponent<ItemCollector2D>();
-            collector.Configure(inventory, catalog, stager, grantsDvergarBonus);
+            collector.Configure(inventory, catalog, stager, raceId);
             createdObjects.Add(player);
             return player;
         }

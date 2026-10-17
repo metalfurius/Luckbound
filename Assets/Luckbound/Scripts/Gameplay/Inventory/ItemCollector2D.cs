@@ -1,4 +1,5 @@
 using Luckbound.Content;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
 using UnityEngine;
@@ -12,16 +13,19 @@ namespace Luckbound.Gameplay.Inventory
 
         public ExpeditionInventory Inventory { get; private set; }
         public ItemCatalog Catalog { get; private set; }
+        public string RaceId { get; private set; }
         public LootPickupInteractionStatus LastInteractionStatus { get; private set; }
         public InventoryOperationOutcome LastOperationOutcome { get; private set; }
         public bool GrantsDvergarBonus { get; private set; }
 
         public void Configure(ExpeditionInventory inventory, ItemCatalog catalog, LootPickupDropStager2D dropStager = null,
-            bool grantsDvergarBonus = false)
+            string raceId = PlayableRaceRules.HumanRaceId)
         {
+            bool grantsDvergarBonus = PlayableRaceRules.HasWorldPickupBonus(raceId);
             Inventory = inventory;
             Catalog = catalog;
             _dropStager = dropStager;
+            RaceId = raceId;
             GrantsDvergarBonus = grantsDvergarBonus;
             LastInteractionStatus = LootPickupInteractionStatus.None;
             LastOperationOutcome = null;
