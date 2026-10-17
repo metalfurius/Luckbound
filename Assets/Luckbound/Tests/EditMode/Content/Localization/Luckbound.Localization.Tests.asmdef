@@ -1,0 +1,15 @@
+{
+  "name": "Luckbound.Localization.Tests",
+  "rootNamespace": "Luckbound.Tests.Localization",
+  "references": ["Luckbound.Core", "Luckbound.Content"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "noEngineReferences": false
+}
