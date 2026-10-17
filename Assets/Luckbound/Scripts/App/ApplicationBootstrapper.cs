@@ -13,6 +13,7 @@ using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
 using Luckbound.Core.Progression;
+using Luckbound.Core.Progression.Contracts;
 using Luckbound.Core.Saves;
 using Luckbound.Presentation.Audio;
 
@@ -28,9 +29,11 @@ namespace Luckbound.App
         private ExpeditionSettlementLedger _settlementLedger = new ExpeditionSettlementLedger();
         private SaveRepository _saveRepository;
         private ProfileSaveData _profileData = ProfileSaveData.CreateNewProfile();
+        private ContractProgressionSnapshot _contractProgression = CreateContractProgressionSnapshot(ProfileSaveData.CreateNewProfile());
         private GameSettingsSaveData _settingsData = new GameSettingsSaveData();
         private PendingSettlement _pendingSettlement;
         private PendingPermanentUpgradePurchase _pendingPermanentUpgradePurchase;
+        private PendingContractProgression _pendingContractProgression;
         private PendingCraft _pendingCraft;
         private PendingEconomyMutation _pendingEconomyMutation;
         private readonly SemaphoreSlim _profileMutationGate = new SemaphoreSlim(1, 1);
@@ -51,6 +54,7 @@ namespace Luckbound.App
         public ExpeditionSettlementLedger SettlementLedger => _settlementLedger;
         public int AvailableRenown => _settlementLedger.AvailableRenown;
         public ProfileSaveData Profile => _profileData.Clone();
+        public ContractProgressionSnapshot ContractProgression => _contractProgression;
         public GameSettingsSaveData Settings => _settingsData.Clone();
         public bool SaveDataReady { get; private set; }
         public SaveLoadStatus ProfileLoadStatus { get; private set; } = SaveLoadStatus.Missing;
@@ -59,6 +63,7 @@ namespace Luckbound.App
         public string SettingsLoadMessage { get; private set; } = string.Empty;
         public bool HasPendingSettlement => _pendingSettlement != null;
         public bool HasPendingPermanentUpgradePurchase => _pendingPermanentUpgradePurchase != null;
+        public bool HasPendingContractProgression => _pendingContractProgression != null;
         public bool HasPendingCraftingWrite => _pendingCraft != null;
         public bool HasPendingEconomyMutation => _pendingEconomyMutation != null;
         public string PendingEconomyOperationKey => _pendingEconomyMutation == null
@@ -73,10 +78,130 @@ namespace Luckbound.App
             : ExpeditionRoomIdentity.ForNode(ActiveRun.RunId, _activeExpedition.currentNodeId);
         public bool HasPendingExpeditionWrite => _pendingExpeditionCandidate != null;
         public bool CanStartNewExpedition => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
-            !HasPendingSettlement && !HasPendingPermanentUpgradePurchase && !HasPendingExpeditionWrite && !HasActiveExpedition;
+            !HasPendingSettlement && !HasPendingPermanentUpgradePurchase && !HasPendingContractProgression &&
+            !HasPendingExpeditionWrite && !HasActiveExpedition;
         public bool CanContinueExpedition => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
-            !HasPendingSettlement && !HasPendingExpeditionWrite && HasActiveExpedition && string.IsNullOrEmpty(_activeExpeditionLoadError);
+            !HasPendingSettlement && !HasPendingContractProgression && !HasPendingExpeditionWrite && HasActiveExpedition &&
+            string.IsNullOrEmpty(_activeExpeditionLoadError);
         public string PendingProfileExport => _saveRepository == null ? null : _saveRepository.ExportPendingJson(SaveDocument.Profile);
+
+        /// <summary>Durably accepts one implemented guild contract. A rejected attempt leaves the profile unchanged.</summary>
+        public async Task<ContractProgressionCommitResult> AcceptContractAsync(string contractId)
+        {
+            await _profileMutationGate.WaitAsync();
+            try
+            {
+                if (HasPendingContractProgression)
+                    return PendingContractProgressionResult(ContractProgressionCommitOperation.Accept,
+                        "Retry the exact pending contract progression write before accepting another contract.");
+                if (!CanMutateContractProgression(out string unavailableReason))
+                    return ContractProgressionFailure(ContractProgressionCommitOperation.Accept, unavailableReason);
+
+                ContractAcceptOutcome outcome = ContractProgressionRules.Accept(_contractProgression, contractId);
+                if (!outcome.ChangesProfile)
+                {
+                    bool alreadyAccepted = outcome.Status == ContractAcceptStatus.AlreadyAccepted;
+                    return new ContractProgressionCommitResult(ContractProgressionCommitOperation.Accept,
+                        _contractProgression, outcome.Status, null, null, null, alreadyAccepted, false,
+                        alreadyAccepted ? "This contract is already accepted." : outcome.Status.ToString());
+                }
+
+                ProfileSaveData candidate = _profileData.Clone();
+                ApplyContractProgressionSnapshot(candidate, outcome.Snapshot);
+                return await CommitContractProgressionAsync(candidate, outcome.Snapshot,
+                    ContractProgressionCommitOperation.Accept, outcome.Status, null, null, null);
+            }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        /// <summary>
+        /// Records one validated session event from an application/gameplay event source. Presentation must not call
+        /// this method to award progress; callers pass only an existing ContractProgressEvent value.
+        /// </summary>
+        public async Task<ContractProgressionCommitResult> RecordContractProgressEventAsync(
+            ContractProgressEvent progressEvent)
+        {
+            if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
+                throw new ArgumentOutOfRangeException(nameof(progressEvent));
+
+            await _profileMutationGate.WaitAsync();
+            try
+            {
+                if (HasPendingContractProgression)
+                    return PendingContractProgressionResult(ContractProgressionCommitOperation.RecordProgress,
+                        "Retry the exact pending contract progression write before recording another event.");
+                if (!CanMutateContractProgression(out string unavailableReason))
+                    return ContractProgressionFailure(ContractProgressionCommitOperation.RecordProgress, unavailableReason);
+
+                ContractProgressOutcome outcome = ContractProgressionRules.RecordProgress(_contractProgression, progressEvent);
+                if (!outcome.ChangesProfile)
+                    return new ContractProgressionCommitResult(ContractProgressionCommitOperation.RecordProgress,
+                        _contractProgression, null, outcome.Status, null, null, true, false,
+                        "All implemented counters for this event are already complete.");
+
+                ProfileSaveData candidate = _profileData.Clone();
+                ApplyContractProgressionSnapshot(candidate, outcome.Snapshot);
+                return await CommitContractProgressionAsync(candidate, outcome.Snapshot,
+                    ContractProgressionCommitOperation.RecordProgress, null, outcome.Status, null, null);
+            }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        /// <summary>Durably claims one completed contract reward in the tavern.</summary>
+        public async Task<ContractProgressionCommitResult> ClaimContractRewardAsync(string contractId)
+        {
+            await _profileMutationGate.WaitAsync();
+            try
+            {
+                if (HasPendingContractProgression)
+                    return PendingContractProgressionResult(ContractProgressionCommitOperation.Claim,
+                        "Retry the exact pending contract progression write before claiming another reward.");
+                if (!CanMutateContractProgression(out string unavailableReason))
+                    return ContractProgressionFailure(ContractProgressionCommitOperation.Claim, unavailableReason);
+                if (SceneManager.GetActiveScene().name != "Hub")
+                    return ContractProgressionFailure(ContractProgressionCommitOperation.Claim,
+                        "Contract rewards can only be claimed in the tavern.");
+
+                ContractClaimOutcome outcome = ContractProgressionRules.Claim(_contractProgression, contractId);
+                if (!outcome.ChangesProfile)
+                {
+                    bool alreadyClaimed = outcome.Status == ContractClaimStatus.AlreadyClaimed;
+                    return new ContractProgressionCommitResult(ContractProgressionCommitOperation.Claim,
+                        _contractProgression, null, null, outcome.Status, null, alreadyClaimed, false,
+                        alreadyClaimed ? "This contract reward was already claimed." : outcome.Status.ToString());
+                }
+
+                ProfileSaveData candidate = _profileData.Clone();
+                ApplyContractProgressionSnapshot(candidate, outcome.Snapshot);
+                return await CommitContractProgressionAsync(candidate, outcome.Snapshot,
+                    ContractProgressionCommitOperation.Claim, null, null, outcome.Status, outcome.Reward);
+            }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        /// <summary>Retries the same repository payload after a failed contract-profile write.</summary>
+        public async Task<ContractProgressionCommitResult> RetryPendingContractProgressionAsync()
+        {
+            await _profileMutationGate.WaitAsync();
+            try
+            {
+                if (_pendingContractProgression == null)
+                    return ContractProgressionFailure(ContractProgressionCommitOperation.None,
+                        "There is no pending contract progression write.");
+
+                SaveWriteResult save = await _saveRepository.RetryPendingAsync(SaveDocument.Profile);
+                if (!save.Succeeded)
+                    return PendingContractProgressionResult(_pendingContractProgression.Operation, save.Message);
+
+                PendingContractProgression pending = _pendingContractProgression;
+                CommitContractProgressionProfile(pending.Profile, pending.Snapshot);
+                _pendingContractProgression = null;
+                return new ContractProgressionCommitResult(pending.Operation, _contractProgression,
+                    pending.AcceptStatus, pending.ProgressStatus, pending.ClaimStatus, pending.Reward,
+                    persisted: true, pending: false, message: save.Message);
+            }
+            finally { _profileMutationGate.Release(); }
+        }
 
         public async Task<ProgressionPurchaseCommitResult> PurchasePermanentUpgradeAsync(
             PermanentUpgradeKind kind, TransactionId transactionId)
@@ -170,6 +295,7 @@ namespace Luckbound.App
         private void CommitPermanentUpgradeProfile(ProfileSaveData profile)
         {
             _profileData = profile.Clone();
+            _contractProgression = CreateContractProgressionSnapshot(_profileData);
             _settlementLedger = new ExpeditionSettlementLedger(_profileData.availableRenown,
                 _profileData.processedSettlementRunIds.Select(RunId.Parse));
         }
@@ -204,6 +330,114 @@ namespace Luckbound.App
                 kind = (int)record.Kind,
                 cost = record.Cost
             }).ToArray();
+        }
+
+        private bool CanMutateContractProgression(out string reason)
+        {
+            if (!SaveDataReady)
+            {
+                reason = "Profile data has not finished loading.";
+                return false;
+            }
+            if (!IsUsableProfileStatus(ProfileLoadStatus))
+            {
+                reason = "The profile could not be loaded safely; its existing data is preserved.";
+                return false;
+            }
+            if (HasPendingSettlement || HasPendingPermanentUpgradePurchase || HasPendingCraftingWrite ||
+                HasPendingEconomyMutation || HasPendingExpeditionWrite)
+            {
+                reason = "Resolve the existing profile write through its original retry operation first.";
+                return false;
+            }
+            if (_saveRepository.ExportPendingJson(SaveDocument.Profile) != null)
+            {
+                reason = "A profile write is pending; retry it through its original operation first.";
+                return false;
+            }
+
+            reason = string.Empty;
+            return true;
+        }
+
+        private async Task<ContractProgressionCommitResult> CommitContractProgressionAsync(
+            ProfileSaveData candidate, ContractProgressionSnapshot snapshot,
+            ContractProgressionCommitOperation operation,
+            ContractAcceptStatus? acceptStatus, ContractProgressStatus? progressStatus,
+            ContractClaimStatus? claimStatus, ContractReward reward)
+        {
+            SaveWriteResult save = await _saveRepository.SaveProfileAsync(candidate, _activeExpedition);
+            if (save.Succeeded)
+            {
+                CommitContractProgressionProfile(candidate, snapshot);
+                return new ContractProgressionCommitResult(operation, _contractProgression,
+                    acceptStatus, progressStatus, claimStatus, reward,
+                    persisted: true, pending: false, message: save.Message);
+            }
+
+            bool pending = _saveRepository.ExportPendingJson(SaveDocument.Profile) != null;
+            if (pending)
+                _pendingContractProgression = new PendingContractProgression(candidate, snapshot,
+                    operation, acceptStatus, progressStatus, claimStatus, reward);
+            return new ContractProgressionCommitResult(operation, _contractProgression,
+                acceptStatus, progressStatus, claimStatus, null,
+                persisted: false, pending: pending, message: save.Message);
+        }
+
+        private void CommitContractProgressionProfile(ProfileSaveData profile, ContractProgressionSnapshot snapshot)
+        {
+            _profileData = profile.Clone();
+            _contractProgression = snapshot;
+            _settlementLedger = new ExpeditionSettlementLedger(_profileData.availableRenown,
+                _profileData.processedSettlementRunIds.Select(RunId.Parse));
+        }
+
+        private static ContractProgressionSnapshot CreateContractProgressionSnapshot(ProfileSaveData profile)
+        {
+            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            ContractCounterSaveData[] counters = profile.contractCounters ?? Array.Empty<ContractCounterSaveData>();
+            if (counters.Any(counter => counter == null))
+                throw new FormatException("The saved contract counter ledger contains a null entry.");
+
+            return new ContractProgressionSnapshot(profile.availableRenown,
+                profile.unlockedRaceIds ?? Array.Empty<string>(),
+                profile.unlockedStartingKitIds ?? Array.Empty<string>(),
+                profile.acceptedContractIds ?? Array.Empty<string>(),
+                profile.claimedContractIds ?? Array.Empty<string>(),
+                counters.Select(counter => new ContractProgressCounter(counter.contractId, counter.progress)));
+        }
+
+        private static void ApplyContractProgressionSnapshot(
+            ProfileSaveData profile, ContractProgressionSnapshot snapshot)
+        {
+            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
+            profile.availableRenown = snapshot.AvailableRenown;
+            profile.unlockedRaceIds = snapshot.UnlockedRaceIds.ToArray();
+            profile.unlockedStartingKitIds = snapshot.UnlockedStartingKitIds.ToArray();
+            profile.acceptedContractIds = snapshot.AcceptedContractIds.ToArray();
+            profile.claimedContractIds = snapshot.ClaimedContractIds.ToArray();
+            profile.contractCounters = snapshot.ContractCounters.Select(counter => new ContractCounterSaveData
+            {
+                contractId = counter.ContractId,
+                progress = counter.Progress
+            }).ToArray();
+        }
+
+        private ContractProgressionCommitResult ContractProgressionFailure(
+            ContractProgressionCommitOperation operation, string message)
+        {
+            return new ContractProgressionCommitResult(operation, _contractProgression,
+                null, null, null, null, persisted: false, pending: false, message: message);
+        }
+
+        private ContractProgressionCommitResult PendingContractProgressionResult(
+            ContractProgressionCommitOperation operation, string message)
+        {
+            PendingContractProgression pending = _pendingContractProgression;
+            return new ContractProgressionCommitResult(pending == null ? operation : pending.Operation,
+                _contractProgression, pending?.AcceptStatus, pending?.ProgressStatus, pending?.ClaimStatus,
+                null, persisted: false, pending: pending != null, message: message);
         }
 
         private void Awake()
@@ -266,7 +500,9 @@ namespace Luckbound.App
         {
             if (!CanStartNewExpedition)
             {
-                string reason = HasPendingSettlement || HasPendingExpeditionWrite
+                string reason = HasPendingContractProgression
+                    ? "Retry the pending contract progression write before starting an expedition."
+                    : HasPendingSettlement || HasPendingExpeditionWrite
                     ? "A profile write is waiting for a successful save. Retry or export it before starting another expedition."
                     : HasActiveExpedition
                         ? "An expedition is already saved. Continue or settle it before starting another."
@@ -319,6 +555,9 @@ namespace Luckbound.App
                 if (_pendingEconomyMutation != null)
                     return new SaveWriteResult(false,
                         "Retry the exact pending merchant or rest-stop operation through its original action.");
+                if (_pendingContractProgression != null)
+                    return new SaveWriteResult(false,
+                        "Retry the exact pending contract progression operation through RetryPendingContractProgressionAsync.");
                 return await RetryPendingExpeditionWriteUnderGateAsync();
             }
             finally { _profileMutationGate.Release(); }
@@ -345,6 +584,9 @@ namespace Luckbound.App
                 if (_pendingExpeditionCandidate != null)
                     return new CraftingCommitResult(null, persisted: false, pending: true,
                         "Retry the pending expedition write before starting another crafting operation.");
+                if (_pendingContractProgression != null)
+                    return new CraftingCommitResult(null, persisted: false, pending: true,
+                        "Retry the pending contract progression write before crafting again.");
                 if (!CanContinueExpedition || ActiveRun == null || _activeExpedition == null)
                     return new CraftingCommitResult(null, persisted: false, pending: false,
                         "There is no safely resumable active expedition to craft in.");
@@ -531,6 +773,9 @@ namespace Luckbound.App
                 if (HasPendingExpeditionWrite)
                     return new ExpeditionMutationCommitResult<T>(default, false, true,
                         "Retry the pending expedition write before starting an economy operation.");
+                if (_pendingContractProgression != null)
+                    return new ExpeditionMutationCommitResult<T>(default, false, true,
+                        "Retry the pending contract progression write before starting an economy operation.");
                 if (!CanContinueExpedition || ActiveRun == null || _activeExpedition == null)
                     return new ExpeditionMutationCommitResult<T>(default, false, false,
                         "There is no safely resumable active expedition for this operation.");
@@ -676,6 +921,8 @@ namespace Luckbound.App
                     : new SaveWriteResult(false, "A newer expedition snapshot was committed before this update could be saved.");
             if (HasPendingSettlement)
                 return new SaveWriteResult(false, "A settlement is pending; expedition progress cannot be overwritten.");
+            if (_pendingContractProgression != null)
+                return new SaveWriteResult(false, "A contract progression write is pending; retry it before saving expedition progress.");
             if (HasPendingExpeditionWrite)
                 return new SaveWriteResult(false, "An expedition write is already pending; retry that exact payload before making another change.");
             IReadOnlyList<string> errors = SaveDataValidation.Validate(candidate);
@@ -754,6 +1001,8 @@ namespace Luckbound.App
             if (ActiveRun == null) throw new InvalidOperationException("There is no active expedition to settle.");
             if (HasPendingExpeditionWrite)
                 throw new InvalidOperationException("The active room has a pending save. Retry or export it before settling the expedition.");
+            if (_pendingContractProgression != null)
+                throw new InvalidOperationException("A contract progression write is pending. Retry it before settling the expedition.");
             if (_pendingSettlement != null)
             {
                 bool sameRun = _pendingSettlement.Receipt.RunId == ActiveRun.RunId;
@@ -779,6 +1028,7 @@ namespace Luckbound.App
             {
                 _settlementLedger = candidateLedger;
                 _profileData = candidateProfile;
+                _contractProgression = CreateContractProgressionSnapshot(candidateProfile);
                 _activeExpedition = null;
                 _activeExpeditionRevision++;
                 return new ExpeditionSettlementCommitResult(receipt, persisted: true, pending: false, save.Message);
@@ -806,6 +1056,7 @@ namespace Luckbound.App
                 return new ExpeditionSettlementCommitResult(_pendingSettlement.Receipt, persisted: false, pending: true, save.Message);
             _settlementLedger = _pendingSettlement.Ledger;
             _profileData = _pendingSettlement.Profile;
+            _contractProgression = CreateContractProgressionSnapshot(_profileData);
             _activeExpedition = null;
             _activeExpeditionRevision++;
             ExpeditionSettlementReceipt receipt = _pendingSettlement.Receipt;
@@ -858,6 +1109,7 @@ namespace Luckbound.App
                 if (profileResult.HasUsableData)
                 {
                     _profileData = profileResult.Data.profile.Clone();
+                    _contractProgression = CreateContractProgressionSnapshot(_profileData);
                     _settlementLedger = new ExpeditionSettlementLedger(_profileData.availableRenown,
                         _profileData.processedSettlementRunIds.Select(RunId.Parse));
                     if (profileResult.Data.hasActiveExpedition && profileResult.Data.activeExpedition != null)
@@ -945,6 +1197,30 @@ namespace Luckbound.App
 
             public ProfileSaveData Profile { get; }
             public PermanentUpgradePurchaseResult Purchase { get; }
+        }
+
+        private sealed class PendingContractProgression
+        {
+            public PendingContractProgression(ProfileSaveData profile, ContractProgressionSnapshot snapshot,
+                ContractProgressionCommitOperation operation, ContractAcceptStatus? acceptStatus,
+                ContractProgressStatus? progressStatus, ContractClaimStatus? claimStatus, ContractReward reward)
+            {
+                Profile = profile.Clone();
+                Snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
+                Operation = operation;
+                AcceptStatus = acceptStatus;
+                ProgressStatus = progressStatus;
+                ClaimStatus = claimStatus;
+                Reward = reward;
+            }
+
+            public ProfileSaveData Profile { get; }
+            public ContractProgressionSnapshot Snapshot { get; }
+            public ContractProgressionCommitOperation Operation { get; }
+            public ContractAcceptStatus? AcceptStatus { get; }
+            public ContractProgressStatus? ProgressStatus { get; }
+            public ContractClaimStatus? ClaimStatus { get; }
+            public ContractReward Reward { get; }
         }
 
         private sealed class PendingCraft
