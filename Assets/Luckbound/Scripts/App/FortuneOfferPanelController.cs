@@ -107,6 +107,7 @@ namespace Luckbound.App
             _statusText.text = string.Empty;
             BindButtonHandlers();
             Refresh();
+            RestorePendingChoiceRetry();
         }
 
         /// <summary>Reloads the current committed offer and its Core-provided reroll state.</summary>
@@ -331,6 +332,27 @@ namespace Luckbound.App
                 return false;
 
             return true;
+        }
+
+        private void RestorePendingChoiceRetry()
+        {
+            if (!_application.HasPendingFortuneMutation || CurrentOffer == null || CurrentOffer.IsClaimed ||
+                !string.IsNullOrEmpty(CurrentOffer.SelectedOptionId) ||
+                !TryParseOperationKey(_application.PendingFortuneOperationKey, out string[] fields) ||
+                fields.Length != 3 || !string.Equals(fields[0], "offer.choose", StringComparison.Ordinal) ||
+                !string.Equals(fields[1], _offerId, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            foreach (string optionId in CurrentOffer.OptionIds)
+            {
+                if (!string.Equals(optionId, fields[2], StringComparison.Ordinal)) continue;
+                _pendingChoiceOptionId = optionId;
+                _statusText.text = "GUARDADO PENDIENTE · vuelve a elegir la misma opción para reintentar.";
+                Refresh();
+                return;
+            }
         }
 
         private bool PendingOperationMatches(string operation, params string[] arguments)

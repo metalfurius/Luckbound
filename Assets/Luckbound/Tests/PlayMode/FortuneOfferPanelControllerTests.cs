@@ -65,7 +65,19 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(panel.OptionButtons[1].interactable, Is.True,
                     "The same option remains available as the exact save retry.");
 
+                panel.Destroy();
+                panel = CreatePanel(app, "offer.panel.claim");
+                Assert.That(panel.OptionButtons[1].interactable, Is.True,
+                    "Recreated panels expose only the option captured by the pending save.");
+                Assert.That(panel.OptionButtons.Where((button, index) => index != 1 && button.interactable), Is.Empty);
+                Assert.That(panel.ClaimButton.interactable, Is.False);
+                Assert.That(panel.Controller.StatusText, Does.Contain("GUARDADO PENDIENTE"));
+
                 ExpeditionMutationCommitResult<FortuneChoiceResult> choice = null;
+                ExpeditionMutationCommitResult<FortuneChoiceResult> wrongChoice = null;
+                yield return Complete(panel.Controller.ChooseOptionAsync(0), value => wrongChoice = value);
+                Assert.That(wrongChoice, Is.Null,
+                    "A recreated panel must reject a different option while the exact choice write is pending.");
                 yield return Complete(panel.Controller.ChooseOptionAsync(1), value => choice = value);
                 Assert.That(choice.Persisted, Is.True, choice.Message);
                 Assert.That(choice.Outcome.Succeeded, Is.True);
