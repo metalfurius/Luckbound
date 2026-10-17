@@ -233,6 +233,8 @@ namespace Luckbound.App
             if (projectilePool == null) throw new ArgumentNullException(nameof(projectilePool));
             if (!projectilePool.isActiveAndEnabled || !projectilePool.gameObject.activeInHierarchy)
                 throw new InvalidOperationException("Class projectiles require an active projectile pool.");
+            if (!projectilePool.IsInitialized)
+                throw new InvalidOperationException("Class projectiles require an initialized projectile pool.");
             if (projectileScope == null) throw new ArgumentNullException(nameof(projectileScope));
             if (!projectileScope.isActiveAndEnabled || projectileScope.IsDisposed || !projectileScope.RoomEntityId.IsValid ||
                 projectileScope.Pool != projectilePool)

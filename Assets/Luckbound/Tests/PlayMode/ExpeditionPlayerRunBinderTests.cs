@@ -217,12 +217,47 @@ namespace Luckbound.Tests.PlayMode
             yield return null;
         }
 
+        [UnityTest]
+        public IEnumerator RejectsUninitializedProjectilePoolBeforeMutatingVenatorRun()
+        {
+            ExpeditionRunConfiguration run = CreateRun(
+                VenatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                VenatorSkillLoadout.PiercingArrowId,
+                VenatorSkillLoadout.TripleShotId);
+            BindingFixture fixture = CreatePlayer(run, includeRoomProjectiles: true, initializeProjectilePool: false);
+            Assert.That(fixture.ProjectileScope.Pool, Is.SameAs(fixture.ProjectilePool));
+            Assert.That(fixture.ProjectilePool.IsInitialized, Is.False);
+
+            Assert.Throws<System.InvalidOperationException>(() => ExpeditionPlayerRunBinder.Bind(
+                run,
+                fixture.ActorId,
+                fixture.Input,
+                GroundLayers(),
+                EnemyLayers(),
+                0,
+                fixture.Motor,
+                fixture.Collector,
+                run.Inventory.Catalog,
+                fixture.Weapons,
+                fixture.Skills,
+                fixture.ProjectilePool,
+                fixture.ProjectileScope,
+                fixture.Room));
+
+            AssertActorAndCollectorUnconfigured(fixture);
+            yield return null;
+        }
+
         private ExpeditionRunConfiguration CreateRun(string classId, string raceId, string skill1, string skill2)
         {
             return ExpeditionRunConfigurationFactory.Create(classId, raceId, new[] { skill1, skill2 });
         }
 
-        private BindingFixture CreatePlayer(ExpeditionRunConfiguration run, bool includeRoomProjectiles)
+        private BindingFixture CreatePlayer(
+            ExpeditionRunConfiguration run,
+            bool includeRoomProjectiles,
+            bool initializeProjectilePool = true)
         {
             var fixture = new BindingFixture();
             fixture.ActorId = ActorId.New();
@@ -247,11 +282,11 @@ namespace Luckbound.Tests.PlayMode
             fixture.Motor = player.AddComponent<PlayerMotor2D>();
             fixture.Collector = player.AddComponent<ItemCollector2D>();
 
-            if (includeRoomProjectiles) CreateRoomProjectiles(fixture);
+            if (includeRoomProjectiles) CreateRoomProjectiles(fixture, initializeProjectilePool);
             return fixture;
         }
 
-        private void CreateRoomProjectiles(BindingFixture fixture)
+        private void CreateRoomProjectiles(BindingFixture fixture, bool initializeProjectilePool)
         {
             var roomObject = Track(new GameObject("F09 Run Binder Room Lifetime"));
             fixture.Room = roomObject.AddComponent<RoomLifetimeScope>();
@@ -265,7 +300,7 @@ namespace Luckbound.Tests.PlayMode
             projectilePrefab.AddComponent<CircleCollider2D>();
             projectilePrefab.AddComponent<Projectile2D>();
             projectilePrefab.SetActive(false);
-            fixture.ProjectilePool.Initialize(projectilePrefab);
+            if (initializeProjectilePool) fixture.ProjectilePool.Initialize(projectilePrefab);
 
             var scopeObject = new GameObject("F09 Run Binder Room Projectiles");
             fixture.ProjectileScope = scopeObject.AddComponent<RoomProjectileScope>();

@@ -16,6 +16,8 @@ namespace Luckbound.Gameplay.Combat
 
         public int PooledCount => _available.Count;
 
+        public bool IsInitialized => _initialized;
+
         public void Initialize(GameObject projectilePrefab)
         {
             if (_initialized)
