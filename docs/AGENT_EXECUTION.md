@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 2.3 · 17 de octubre de 2026.
+**Versión:** 2.4 · 17 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -27,7 +27,7 @@ Estado técnico vigente al 17 de octubre; los cambios y sus evidencias están en
 - Unity ya está en `6000.6.6f1`; los runners/imágenes y metadatos de release de `.github/workflows/build.yml` coinciden con esa versión, y CI filtra `Luckbound` porque el Core SRP embebido incorpora pruebas de PathTracing ajenas al juego. En este Editor, EditMode filtrado pasa 269/269 y PlayMode 182/182; el recorrido sin filtro también selecciona cuatro pruebas de Unity que fallan buscando `SetAlphaChannel` con dispositivo gráfico Null. No contar la ejecución sin filtro como aceptación aprobada. Los informes y motivo están en PROGRESS.md; no se ejecutó todavía una build ni GitHub Actions.
 - A06 tiene un bloqueo de acceso/secretos para ejecutar Actions; no se atribuye al workflow una ejecución remota inexistente.
 - Las cinco revisiones de Fran siguen pendientes. Permiten trabajo técnico independiente, pero no equivalen a aprobación.
-- Editor fijado: Unity `6000.6.5f1`. Mantener paquetes y módulos ya comprobados.
+- Editor fijado: Unity `6000.6.6f1`. Mantener paquetes y módulos ya comprobados.
 - El recorrido de `Expedition` existente incluye un recibo de sesión/checkpoint; no demuestra por sí mismo una campaña jugable. F09 debe conectar jugador, salas, combate y resultados reales.
 
 **Oleada ejecutada al reanudar:** releer el estado de Git y las fichas D09/E01; después de consolidar E01, despachar E02.DATA, F01 y F07. El estado de cada entrega e integración se mantiene en PROGRESS.md. Si una evidencia posterior difiere por contenido, repetir la comprobación pertinente. No rehacer automáticamente todas las builds ni añadir las cuatro referencias originales del usuario a un commit de código.
