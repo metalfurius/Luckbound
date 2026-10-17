@@ -237,6 +237,14 @@ namespace Luckbound.App
             return advanced;
         }
 
+        /// <summary>Builds one candidate that records the source result and advances its route cursor together.</summary>
+        public static ExpeditionSaveData CompleteAndAdvanceRoom(ExpeditionSaveData state, string resultId,
+            string resultJson, string nextNodeId)
+        {
+            ExpeditionSaveData completed = CompleteRoom(state, resultId, resultJson);
+            return AdvanceToRoom(completed, nextNodeId);
+        }
+
         public static string SerializeCheckpoint(ExpeditionRoomCheckpointSaveData checkpoint)
         {
             if (checkpoint == null) throw new ArgumentNullException(nameof(checkpoint));

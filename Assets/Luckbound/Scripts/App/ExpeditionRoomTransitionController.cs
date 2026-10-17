@@ -18,6 +18,7 @@ namespace Luckbound.App
         private Transform _sessionPlayer;
         private GameObject _activeRoomRoot;
         private RoomLifetimeScope _activeScope;
+        private PreparedRoomTransition _preparedTransition;
         private bool _initialized;
         private bool _transitioning;
         private bool _disposed;
@@ -90,9 +91,23 @@ namespace Luckbound.App
 
         public bool TryTransition(RoomInstanceId sourceRoomId, string targetNodeId)
         {
-            if (!_initialized || _disposed || _transitioning || !IsCurrentRoom(sourceRoomId) ||
-                !_traversal.CanTransitionTo(targetNodeId))
+            if (!TryPrepareTransition(sourceRoomId, targetNodeId, out PreparedRoomTransition prepared))
+                return false;
+            using (prepared) return TryCommitPreparedTransition(prepared);
+        }
+
+        /// <summary>
+        /// Stages and aligns a connected destination while retaining the current traversal, player and room.
+        /// Dispose the returned lease to cancel it, or commit it after the durable route update succeeds.
+        /// </summary>
+        public bool TryPrepareTransition(RoomInstanceId sourceRoomId, string targetNodeId,
+            out PreparedRoomTransition prepared)
+        {
+            prepared = null;
+            if (!_initialized || _disposed || _transitioning || _preparedTransition != null ||
+                !IsCurrentRoom(sourceRoomId) || !_traversal.CanTransitionTo(targetNodeId))
             {
+                LastTransitionError = "The source room is stale or the requested destination is not a route edge.";
                 return false;
             }
             if (_sessionPlayer == null)
@@ -106,17 +121,64 @@ namespace Luckbound.App
             try
             {
                 if (!TryStageRoom(targetNode, out GameObject nextRoot, out RoomLifetimeScope nextScope)) return false;
-                if (!TryAlignConnectedRoom(targetNodeId, nextRoot, out Vector3 playerSpawn))
+                try
+                {
+                    if (!TryAlignConnectedRoom(targetNodeId, nextRoot, out Vector3 playerSpawn))
+                    {
+                        DiscardStagedRoom(nextRoot, nextScope);
+                        return false;
+                    }
+
+                    prepared = new PreparedRoomTransition(this, sourceRoomId, _traversal.CurrentNodeId,
+                        targetNodeId, nextRoot, nextScope, playerSpawn);
+                    _preparedTransition = prepared;
+                    LastTransitionError = string.Empty;
+                    return true;
+                }
+                catch (Exception exception)
                 {
                     DiscardStagedRoom(nextRoot, nextScope);
+                    LastTransitionError = "Could not align room " + targetNodeId + ": " + exception.Message;
+                    return false;
+                }
+            }
+            finally
+            {
+                _transitioning = false;
+            }
+        }
+
+        /// <summary>Publishes a prepared destination after its matching durable route update has succeeded.</summary>
+        public bool TryCommitPreparedTransition(PreparedRoomTransition prepared)
+        {
+            if (prepared == null || _disposed || _transitioning ||
+                !ReferenceEquals(_preparedTransition, prepared) || !prepared.IsPending ||
+                !IsCurrentRoom(prepared.SourceRoomId) ||
+                !string.Equals(_traversal.CurrentNodeId, prepared.SourceNodeId, StringComparison.Ordinal) ||
+                !_traversal.CanTransitionTo(prepared.TargetNodeId) ||
+                prepared.StagedRoomRoot == null || prepared.StagedScope == null || prepared.StagedScope.IsDisposed)
+            {
+                LastTransitionError = "The prepared room transition is no longer valid.";
+                if (prepared != null && ReferenceEquals(_preparedTransition, prepared))
+                    CancelPreparedTransition(prepared);
+                return false;
+            }
+
+            _transitioning = true;
+            try
+            {
+                if (!_traversal.TryTransitionTo(prepared.TargetNodeId))
+                {
+                    LastTransitionError = "The requested destination is no longer a route edge.";
+                    CancelPreparedTransition(prepared);
                     return false;
                 }
 
-                if (!_traversal.TryTransitionTo(targetNodeId))
-                {
-                    DiscardStagedRoom(nextRoot, nextScope);
-                    return false;
-                }
+                GameObject nextRoot = prepared.StagedRoomRoot;
+                RoomLifetimeScope nextScope = prepared.StagedScope;
+                Vector3 playerSpawn = prepared.PlayerSpawn;
+                prepared.MarkCommitted();
+                _preparedTransition = null;
 
                 RetireActiveRoom();
                 PlaceSessionPlayer(playerSpawn);
@@ -133,10 +195,20 @@ namespace Luckbound.App
             }
         }
 
+        private void CancelPreparedTransition(PreparedRoomTransition prepared)
+        {
+            if (prepared == null || !prepared.IsPending) return;
+            if (ReferenceEquals(_preparedTransition, prepared)) _preparedTransition = null;
+            DiscardStagedRoom(prepared.StagedRoomRoot, prepared.StagedScope);
+            prepared.MarkCancelled();
+        }
+
         public void Dispose()
         {
             if (_disposed) return;
             _disposed = true;
+            if (_preparedTransition != null)
+                CancelPreparedTransition(_preparedTransition);
             RetireActiveRoom();
             RoomActivated = null;
             _prefabResolver = null;
@@ -288,6 +360,53 @@ namespace Luckbound.App
         private void OnDestroy()
         {
             Dispose();
+        }
+
+        public sealed class PreparedRoomTransition : IDisposable
+        {
+            private ExpeditionRoomTransitionController _owner;
+            private bool _pending = true;
+
+            internal PreparedRoomTransition(ExpeditionRoomTransitionController owner, RoomInstanceId sourceRoomId,
+                string sourceNodeId, string targetNodeId, GameObject stagedRoomRoot, RoomLifetimeScope stagedScope,
+                Vector3 playerSpawn)
+            {
+                _owner = owner;
+                SourceRoomId = sourceRoomId;
+                SourceNodeId = sourceNodeId;
+                TargetNodeId = targetNodeId;
+                StagedRoomRoot = stagedRoomRoot;
+                StagedScope = stagedScope;
+                PlayerSpawn = playerSpawn;
+            }
+
+            public RoomInstanceId SourceRoomId { get; }
+            public string SourceNodeId { get; }
+            public string TargetNodeId { get; }
+            public bool IsPending => _pending;
+            public bool IsStagedActive => StagedRoomRoot != null && StagedRoomRoot.activeInHierarchy;
+            public bool IsStagedDisposed => StagedScope == null || StagedScope.IsDisposed;
+            internal GameObject StagedRoomRoot { get; }
+            internal RoomLifetimeScope StagedScope { get; }
+            internal Vector3 PlayerSpawn { get; }
+
+            public void Dispose()
+            {
+                ExpeditionRoomTransitionController owner = _owner;
+                if (owner != null) owner.CancelPreparedTransition(this);
+            }
+
+            internal void MarkCommitted()
+            {
+                _pending = false;
+                _owner = null;
+            }
+
+            internal void MarkCancelled()
+            {
+                _pending = false;
+                _owner = null;
+            }
         }
     }
 }
