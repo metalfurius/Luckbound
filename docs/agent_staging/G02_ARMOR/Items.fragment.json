@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": "armor.runic_mantle",
+      "nameKey": "item.armor.runic_mantle.name",
+      "descriptionKey": "item.armor.runic_mantle.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "armor.iron_cuirass",
+      "nameKey": "item.armor.iron_cuirass.name",
+      "descriptionKey": "item.armor.iron_cuirass.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "armor.bark_armor",
+      "nameKey": "item.armor.bark_armor.name",
+      "descriptionKey": "item.armor.bark_armor.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    }
+  ]
+}

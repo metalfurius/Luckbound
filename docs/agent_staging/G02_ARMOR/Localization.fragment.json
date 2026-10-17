@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "key": "item.armor.runic_mantle.name",
+      "es": "Manto rúnico",
+      "en": "Runic mantle"
+    },
+    {
+      "key": "item.armor.runic_mantle.description",
+      "es": "Aumenta la recuperación de energía en 1 por segundo.",
+      "en": "Increases energy regeneration by 1 per second."
+    },
+    {
+      "key": "item.armor.iron_cuirass.name",
+      "es": "Coraza de hierro",
+      "en": "Iron cuirass"
+    },
+    {
+      "key": "item.armor.iron_cuirass.description",
+      "es": "Reduce la velocidad en un 5 %.",
+      "en": "Reduces movement speed by 5%."
+    },
+    {
+      "key": "item.armor.bark_armor.name",
+      "es": "Armadura de corteza",
+      "en": "Bark armor"
+    },
+    {
+      "key": "item.armor.bark_armor.description",
+      "es": "Reduce en un 15 % la duración de los estados perjudiciales.",
+      "en": "Reduces harmful status effect duration by 15%."
+    }
+  ]
+}
