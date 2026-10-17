@@ -244,6 +244,65 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator FortuneBrewPendingCommitRetriesOnlyOnNewInputWithTheSameIdentityAndPublishesOnce()
+        {
+            PlayerFixture player = CreatePlayer(PlayerMotor2D.FortuneBrewItemId, 2);
+            var runtime = new RetryableFortuneBrewRuntime();
+            player.Motor.ConfigureFortuneBrewRuntime(runtime);
+            try
+            {
+                ExpeditionInventory originalInventory = player.Inventory;
+                player.Input.Press(PlayerAction.Consumable);
+                yield return new WaitForFixedUpdate();
+                player.Input.Release(PlayerAction.Consumable);
+
+                Assert.That(runtime.CallCount, Is.EqualTo(1));
+                Assert.That(originalInventory.QuickConsumable.Quantity, Is.EqualTo(2));
+
+                runtime.CompleteFirstAsPending(currentCharges: 1);
+                yield return new WaitForFixedUpdate();
+
+                Assert.That(player.Motor.LastConsumableUseOutcome.Status, Is.EqualTo(PlayerConsumableUseStatus.Pending));
+                Assert.That(originalInventory.QuickConsumable.Quantity, Is.EqualTo(2),
+                    "An unpersisted Fortune result must leave the live quick stack untouched.");
+                yield return new WaitForFixedUpdate();
+                Assert.That(runtime.CallCount, Is.EqualTo(1),
+                    "The runtime must wait for a new player input instead of retrying automatically.");
+
+                player.Input.Press(PlayerAction.Consumable);
+                yield return new WaitForFixedUpdate();
+                player.Input.Release(PlayerAction.Consumable);
+
+                Assert.That(runtime.CallCount, Is.EqualTo(2));
+                Assert.That(runtime.ItemInstanceIds[1], Is.EqualTo(runtime.ItemInstanceIds[0]));
+                Assert.That(runtime.TransactionIds[1], Is.EqualTo(runtime.TransactionIds[0]));
+                Assert.That(player.Motor.LastConsumableUseOutcome.Status, Is.EqualTo(PlayerConsumableUseStatus.Pending));
+                Assert.That(originalInventory.QuickConsumable.Quantity, Is.EqualTo(2));
+
+                ExpeditionInventory committedInventory = runtime.CompleteSecondSuccess(originalInventory, currentCharges: 2);
+                yield return new WaitForFixedUpdate();
+
+                ItemCollector2D collector = player.GameObject.GetComponent<ItemCollector2D>();
+                Assert.That(collector.Inventory, Is.SameAs(committedInventory));
+                Assert.That(committedInventory.QuickConsumable.Quantity, Is.EqualTo(1));
+                Assert.That(originalInventory.QuickConsumable.Quantity, Is.EqualTo(2));
+                Assert.That(committedInventory.HasSuccessfulQuickConsumableConsumption(
+                    runtime.ItemInstanceIds[0], PlayerMotor2D.FortuneBrewItemId, runtime.TransactionIds[0]), Is.True);
+                Assert.That(player.Motor.LastConsumableUseOutcome.Status, Is.EqualTo(PlayerConsumableUseStatus.Consumed));
+
+                yield return new WaitForFixedUpdate();
+                Assert.That(runtime.CallCount, Is.EqualTo(2));
+                Assert.That(collector.Inventory, Is.SameAs(committedInventory));
+                Assert.That(committedInventory.QuickConsumable.Quantity, Is.EqualTo(1),
+                    "Publishing a durable result is one-shot and must not decrement the candidate again.");
+            }
+            finally
+            {
+                player.Destroy();
+            }
+        }
+
+        [UnityTest]
         public IEnumerator FortuneBrewAtChargeCapacityPersistsNoConsumption()
         {
             PlayerFixture player = CreatePlayer(PlayerMotor2D.FortuneBrewItemId, 1);
@@ -389,6 +448,58 @@ namespace Luckbound.Tests.PlayMode
             private static ExpeditionInventory Clone(ExpeditionInventory inventory)
             {
                 return ExpeditionInventory.Restore(inventory.Catalog, inventory.CreateSnapshot());
+            }
+        }
+
+        private sealed class RetryableFortuneBrewRuntime : IPlayerFortuneBrewRuntime
+        {
+            private readonly TaskCompletionSource<PlayerFortuneBrewCommitOutcome> _firstCompletion =
+                new TaskCompletionSource<PlayerFortuneBrewCommitOutcome>();
+            private readonly TaskCompletionSource<PlayerFortuneBrewCommitOutcome> _secondCompletion =
+                new TaskCompletionSource<PlayerFortuneBrewCommitOutcome>();
+
+            public int CallCount { get; private set; }
+            public List<ItemInstanceId> ItemInstanceIds { get; } = new List<ItemInstanceId>();
+            public List<TransactionId> TransactionIds { get; } = new List<TransactionId>();
+
+            public Task<PlayerFortuneBrewCommitOutcome> ConsumeFortuneBrewAsync(
+                ItemInstanceId itemInstanceId,
+                TransactionId transactionId)
+            {
+                ItemInstanceIds.Add(itemInstanceId);
+                TransactionIds.Add(transactionId);
+                CallCount++;
+                if (CallCount == 1) return _firstCompletion.Task;
+                if (CallCount == 2) return _secondCompletion.Task;
+                throw new InvalidOperationException("The retry scenario expects exactly two explicit use attempts.");
+            }
+
+            public void CompleteFirstAsPending(int currentCharges)
+            {
+                _firstCompletion.SetResult(new PlayerFortuneBrewCommitOutcome(
+                    persisted: false,
+                    status: FortuneOperationStatus.RejectedConflict,
+                    currentCharges: currentCharges,
+                    committedInventory: null,
+                    pending: true));
+            }
+
+            public ExpeditionInventory CompleteSecondSuccess(ExpeditionInventory liveInventory, int currentCharges)
+            {
+                ItemInstanceId itemInstanceId = ItemInstanceIds[1];
+                TransactionId transactionId = TransactionIds[1];
+                ExpeditionInventory committed = ExpeditionInventory.Restore(
+                    liveInventory.Catalog, liveInventory.CreateSnapshot());
+                InventoryOperationOutcome consumed = committed.TryConsumeQuickConsumable(
+                    itemInstanceId, PlayerMotor2D.FortuneBrewItemId, transactionId);
+                Assert.That(consumed.Succeeded, Is.True);
+                Assert.That(consumed.WasReplay, Is.False);
+                _secondCompletion.SetResult(new PlayerFortuneBrewCommitOutcome(
+                    persisted: true,
+                    status: FortuneOperationStatus.Succeeded,
+                    currentCharges: currentCharges,
+                    committedInventory: committed));
+                return committed;
             }
         }
 

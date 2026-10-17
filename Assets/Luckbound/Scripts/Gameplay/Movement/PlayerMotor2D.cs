@@ -970,6 +970,22 @@ namespace Luckbound.Gameplay.Movement
                 return LastConsumableUseOutcome;
             }
 
+            if (_fortuneBrewPendingTransactionId.IsValid)
+            {
+                if (requested && hasQuick && itemId == FortuneBrewItemId &&
+                    quick.InstanceId == _fortuneBrewPendingItemInstanceId)
+                {
+                    LastConsumableUseOutcome = BeginFortuneBrewUse(quick);
+                }
+                else
+                {
+                    LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                        PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
+                }
+
+                return LastConsumableUseOutcome;
+            }
+
             if (_fortuneBrewCompletionReportedThisTick && !requested)
                 return LastConsumableUseOutcome;
 
@@ -1200,11 +1216,29 @@ namespace Luckbound.Gameplay.Movement
         private PlayerConsumableUseOutcome BeginFortuneBrewUse(InventoryItemStack quick)
         {
             if (_fortuneBrewRuntime == null)
-                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedUnsupportedSubsystem, FortuneBrewItemId);
+            {
+                return new PlayerConsumableUseOutcome(
+                    _fortuneBrewPendingTransactionId.IsValid
+                        ? PlayerConsumableUseStatus.Pending
+                        : PlayerConsumableUseStatus.RejectedUnsupportedSubsystem,
+                    FortuneBrewItemId);
+            }
             if (quick == null || quick.ItemId != FortuneBrewItemId || quick.Quantity <= 0 || !quick.InstanceId.IsValid)
                 return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedInventoryChanged, FortuneBrewItemId);
 
-            TransactionId transactionId = TransactionId.New();
+            bool retryingPendingMutation = _fortuneBrewPendingTransactionId.IsValid;
+            if (retryingPendingMutation && quick.InstanceId != _fortuneBrewPendingItemInstanceId)
+            {
+                return new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
+            }
+
+            TransactionId transactionId = retryingPendingMutation
+                ? _fortuneBrewPendingTransactionId
+                : TransactionId.New();
+            _fortuneBrewPendingItemInstanceId = quick.InstanceId;
+            _fortuneBrewPendingTransactionId = transactionId;
+
             Task<PlayerFortuneBrewCommitOutcome> commitTask;
             try
             {
@@ -1213,14 +1247,12 @@ namespace Luckbound.Gameplay.Movement
             catch (Exception exception)
             {
                 Debug.LogException(exception);
-                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
             }
 
             if (commitTask == null)
-                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
 
-            _fortuneBrewPendingItemInstanceId = quick.InstanceId;
-            _fortuneBrewPendingTransactionId = transactionId;
             _fortuneBrewCommitTask = commitTask;
             return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
         }
@@ -1234,15 +1266,13 @@ namespace Luckbound.Gameplay.Movement
             ItemInstanceId itemInstanceId = _fortuneBrewPendingItemInstanceId;
             TransactionId transactionId = _fortuneBrewPendingTransactionId;
             _fortuneBrewCommitTask = null;
-            _fortuneBrewPendingItemInstanceId = default;
-            _fortuneBrewPendingTransactionId = default;
             _fortuneBrewCompletionReportedThisTick = true;
 
             if (completedTask.IsCanceled || completedTask.IsFaulted)
             {
                 if (completedTask.Exception != null) Debug.LogException(completedTask.Exception.Flatten());
                 LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
-                    PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+                    PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
                 return;
             }
 
@@ -1250,9 +1280,18 @@ namespace Luckbound.Gameplay.Movement
             if (outcome == null)
             {
                 LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
-                    PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+                    PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
                 return;
             }
+
+            if (outcome.Pending)
+            {
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
+                return;
+            }
+
+            ClearPendingFortuneBrewIdentity();
 
             if (outcome.Persisted)
                 _itemCollector?.PublishCommittedInventory(outcome.CommittedInventory);
@@ -1275,6 +1314,12 @@ namespace Luckbound.Gameplay.Movement
 
             LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
                 PlayerConsumableUseStatus.Consumed, FortuneBrewItemId);
+        }
+
+        private void ClearPendingFortuneBrewIdentity()
+        {
+            _fortuneBrewPendingItemInstanceId = default;
+            _fortuneBrewPendingTransactionId = default;
         }
 
         private void SynchronizeConsumableCharges()

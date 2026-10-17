@@ -12,12 +12,15 @@ namespace Luckbound.Gameplay.Inventory
             bool persisted,
             FortuneOperationStatus status,
             int currentCharges,
-            ExpeditionInventory committedInventory)
+            ExpeditionInventory committedInventory,
+            bool pending = false)
         {
             if (!Enum.IsDefined(typeof(FortuneOperationStatus), status))
                 throw new ArgumentOutOfRangeException(nameof(status));
             if (currentCharges < 0 || currentCharges > FortuneBrewEffect.MaximumCharges)
                 throw new ArgumentOutOfRangeException(nameof(currentCharges));
+            if (persisted && pending)
+                throw new ArgumentException("A persisted Fortune Brew mutation cannot still be pending.", nameof(pending));
             if (persisted && committedInventory == null)
                 throw new ArgumentNullException(nameof(committedInventory), "A persisted Fortune Brew mutation must provide its committed inventory.");
 
@@ -25,6 +28,7 @@ namespace Luckbound.Gameplay.Inventory
             Status = status;
             CurrentCharges = currentCharges;
             CommittedInventory = committedInventory;
+            Pending = pending;
         }
 
         public bool Persisted { get; }
@@ -34,6 +38,8 @@ namespace Luckbound.Gameplay.Inventory
         public int CurrentCharges { get; }
 
         public ExpeditionInventory CommittedInventory { get; }
+
+        public bool Pending { get; }
 
         public bool Succeeded => Persisted &&
             (Status == FortuneOperationStatus.Succeeded || Status == FortuneOperationStatus.AlreadyApplied);
