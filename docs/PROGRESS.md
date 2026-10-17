@@ -10,7 +10,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, 
 
 ## Estado actual (17 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01, E02, E06–E09 y F07: Verified; E03, E04, F01 y F08: InProgress; A06: InProgress; D09: NeedsOwnerReview; las demás tareas figuran Pending.
+- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01, E02, E06–E09 y F07: Verified; E03, E04, E10, F01 y F08: InProgress; A06: InProgress; D09: NeedsOwnerReview; las demás tareas figuran Pending.
 - E02.ADAPTER está integrado en `99ea5e9`. El escenario físico `E02_PhysicalCraftCommitRetryAndRestart` pasa con nueve aserciones en `Logs/Scenarios/E02/20261016T143835626Z_E02_PhysicalCraftCommitRetryAndRestart_b5c4a425/scenario-report.json`. La regresión coordinada revalidada incluye E02.
 - E03 Core y la integración App durable están presentes: compra con fallo/reintento, stock fijo, venta de material, mejoras y restauración pasan en un escenario PlayMode. `ce02288` añade aceptación de venta de objetos; la prueba dirigida pasa 1/1 en `Logs/Coordinator-20261016-e03-sale-targeted-r3.xml` y la regresión final PlayMode también la incluye. Sigue faltando UI accesible para comercio, herrería y descanso. `FIX-E03-01` corrige el replay de Talia tras restaurar partidas: la firma durable usa la sala, reconoce recibos antiguos con salud en la firma y no vuelve a aplicar una salud histórica.
 - E04 integra Core, mapper y mutaciones persistentes del libro de Fortuna. La clave de creación canonicaliza el conjunto de opciones para permitir reintentos con distinto orden; su prueba dirigida pasa y la regresión EditMode completa pasa 175/175. Siguen pendientes UI/encuentros, aplicación idempotente de recompensas y aceptación PlayMode con reinicio.
@@ -108,7 +108,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | E07 | Venator completo | C03, C04, D05 | Verified |
 | E08 | Magus completo | C03, C04, D05 | Verified |
 | E09 | Clase, raza y kit | D05, E01, E06, E07, E08 | Verified |
-| E10 | Personajes, contratos y localización inicial | E02, E06, E09 | Pending |
+| E10 | Personajes, contratos y localización inicial | E02, E06, E09 | InProgress |
 | F01 | Referencia maestra artística | B07 | InProgress |
 | F02 | Importación y validación de sprites | F01, A07 | Pending |
 | F03 | Animaciones finales iniciales del Humano Bellator | F02, B07 | Pending |
@@ -715,6 +715,14 @@ La orden explícita posterior de Fran del 16 de octubre reanudó el desarrollo c
 - **E08, borde de enfriamiento:** la prueba `MagusCooldownSurvivesRoomRebindingAtItsExactReadyTick` reconfigura el mismo motor/loadout con una sala nueva, rechaza la habilidad en `ReadyAtTick - 1` sin consumir energía y permite iniciar la preparación en `ReadyAtTick`; después confirma consumo al activar y el siguiente cooldown desde el tick real de activación.
 - **Validación del coordinador:** EditMode `197/197`, cero fallos/omitidos/inconclusos, en `Logs/Coordinator-20261016-f08-e08-editmode.xml`. El primer PlayMode detectó dos defectos en las nuevas pruebas (expectativa del tick de cooldown y sincronización de la escena Bootstrap/Menu); se corrigieron. La repetición completa pasa `129/129`, cero fallos/omitidos/inconclusos, en `Logs/Coordinator-20261017-f08-e08-playmode-r2.xml`. Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`, código 0 y `MainWindowHandle=0`; no quedaron procesos Unity activos. `git diff --check` pasa y los 418 GUID de recursos inspeccionados no tienen duplicados.
 - **Límites verificados:** no se ejecutó una build WebGL, una publicación ni una escucha/revisión subjetiva de audio. No se abrió ninguna interfaz para Fran. F08 sigue `InProgress`; E08 se cerró mediante sus pruebas de motor/combate, y F09 conserva la composición productiva del recorrido. Las cuatro referencias originales sin seguimiento se conservaron fuera del cambio.
+
+## E10 — Contratos y localización inicial (InProgress)
+
+- **Contenido ES/EN:** `95273cb` añade 44 claves localizadas para contratos CT01–CT04, rótulos básicos y los nombres, funciones y tres momentos narrativos de los cinco personajes. La prueba `LoadsAuthoredInitialResourceWithContractsAndFiveServiceArcs` carga el `TextAsset` real de Resources, comprueba los campos requeridos y el cambio de idioma del servicio.
+- **Runtime de localización:** `5131ad2` implementa catálogo inmutable, parser estricto de versión 1 y servicio ES/EN que cambia sin reiniciar; clave desconocida retorna la propia clave. `3922056` añade integración de carga real. EditMode dirigido: 8/8 en `Logs/Coordinator-20261017-e10-localization-resource-targeted.xml`; la corrida previa del grupo fue 7/7 en `Logs/Coordinator-20261017-e10-localization-targeted.xml`.
+- **Contratos persistentes:** `f9d65f6` conecta CT01–CT04 al perfil. Aceptación, progreso y reclamación preparan el candidato y lo publican solo tras escribirlo; una escritura fallida retiene el payload exacto para reintentar. El contrato permite tres activos, reconoce hitos anteriores a la aceptación, limita la reclamación a la taberna y persiste Renombre y desbloqueos junto a su recibo.
+- **Aceptación técnica del adaptador:** PlayMode dirigido `ApplicationContractProgressionTests` pasa 3/3 en `Logs/Coordinator-20261017-e10-contract-playmode.xml`, Unity `6000.6.5f1`; cubre límite/progreso previo, reclamo repetido con desbloqueos tras muerte/reinicio y fallo/reintento exacto. Las ejecuciones de Unity fueron batch/nographics, con `IsHumanControllingUs=0` y `MainWindowHandle=0`.
+- **Límite actual:** E10 sigue `InProgress`. No hay aún interacción de presentación para aceptar/reclamar ni callsites productivos que alimenten el progreso desde eventos reales; el comentario del API no sustituye esa unión. El cambio de idioma aún necesita conectarse a controles visibles. Falta concluir la revisión estática independiente del paquete, aceptación en el recorrido productivo y regresión coordinada posterior a los paquetes de esta oleada.
 
 ## Ficha que debe completar cada ejecución
 
