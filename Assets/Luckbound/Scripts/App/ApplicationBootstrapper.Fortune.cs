@@ -79,8 +79,8 @@ namespace Luckbound.App
         }
 
         /// <summary>
-        /// Persists the one-time claim marker and returns its stable key. A reward integrator can
-        /// apply the selected option through its own idempotent transaction using this key.
+        /// Persists the one-time claim marker and returns its stable key. Reward flows should use
+        /// ClaimFortuneOfferRewardAsync so the selected item and claim are committed together.
         /// </summary>
         public Task<ExpeditionMutationCommitResult<FortuneClaimResult>> ClaimFortuneOfferAsync(string offerId)
         {
