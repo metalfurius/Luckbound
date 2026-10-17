@@ -145,6 +145,92 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator E04_ClaimRewardReplayAfterReloadPreservesCompletedExpeditionState()
+        {
+            var store = new MemorySaveStore();
+            Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => store;
+            try
+            {
+                ApplicationBootstrapper app = null;
+                yield return StartApplication(value => app = value);
+                yield return BeginExpedition(app, FillBackpack: false);
+
+                string completedNodeId = app.ActiveExpedition.currentNodeId;
+                SaveWriteResult completedRoom = null;
+                yield return Complete(app.CompleteCurrentRoomAsync("result.e04.replay.completed-room",
+                    "{\"outcome\":\"cleared\",\"renown\":0}"),
+                    value => completedRoom = value);
+                Assert.That(completedRoom.Succeeded, Is.True, completedRoom.Message);
+                Assert.That(app.ActiveExpedition.currentNodeId, Is.EqualTo(completedNodeId));
+                Assert.That(app.ActiveExpedition.completedRoomIds, Does.Contain(completedNodeId));
+                Assert.That(app.ActiveExpedition.roomEntryCheckpointJson, Is.Empty,
+                    "A committed room result clears its checkpoint, so D09 has no in-room state to roll back.");
+
+                ExpeditionMutationCommitResult<FortuneOfferResult> created = null;
+                yield return Complete(app.CreateFortuneOfferAsync("offer.reload", "context.reload", RelicRewardOptions),
+                    value => created = value);
+                Assert.That(created.Persisted, Is.True, created.Message);
+                ExpeditionMutationCommitResult<FortuneChoiceResult> chosen = null;
+                yield return Complete(app.ChooseFortuneOptionAsync("offer.reload", "relic.marked_coin"),
+                    value => chosen = value);
+                Assert.That(chosen.Outcome.Status, Is.EqualTo(FortuneOperationStatus.Succeeded));
+
+                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> claimed = null;
+                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reload"), value => claimed = value);
+                Assert.That(claimed.Persisted, Is.True, claimed.Message);
+                Assert.That(claimed.Outcome.Succeeded, Is.True);
+                Assert.That(claimed.Outcome.Claim.Status, Is.EqualTo(FortuneOperationStatus.Succeeded));
+                Assert.That(app.GetFortuneOffer("offer.reload").IsClaimed, Is.True);
+                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"),
+                    Is.EqualTo(1));
+
+                ExpeditionSaveData committedExpedition = app.ActiveExpedition;
+                string committedExpeditionJson = JsonUtility.ToJson(committedExpedition);
+                string committedProfileJson = store.ProfilePrimary;
+                ApplicationBootstrapper previousApplication = app;
+
+                DestroyApplication();
+                yield return null;
+                app = null;
+                yield return StartApplication(value => app = value, "Expedition");
+
+                Assert.That(object.ReferenceEquals(app, previousApplication), Is.False,
+                    "The replay must run through a reconstructed application and repository.");
+                Assert.That(store.ProfilePrimary, Is.EqualTo(committedProfileJson),
+                    "Reloading a completed room must not roll the durable expedition back through D09.");
+                Assert.That(JsonUtility.ToJson(app.ActiveExpedition), Is.EqualTo(committedExpeditionJson),
+                    "The claim and every other expedition field must survive the reload unchanged.");
+                Assert.That(app.ActiveExpedition.currentNodeId, Is.EqualTo(completedNodeId));
+                Assert.That(app.ActiveExpedition.completedRoomIds, Does.Contain(completedNodeId));
+                Assert.That(app.ActiveExpedition.roomEntryCheckpointJson, Is.Empty);
+                Assert.That(app.GetFortuneOffer("offer.reload").IsClaimed, Is.True);
+                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"),
+                    Is.EqualTo(1));
+
+                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> replayed = null;
+                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reload"), value => replayed = value);
+                Assert.That(replayed.Persisted, Is.True, replayed.Message);
+                Assert.That(replayed.Pending, Is.False);
+                Assert.That(replayed.Outcome.Succeeded, Is.True);
+                Assert.That(replayed.Outcome.Claim.Status, Is.EqualTo(FortuneOperationStatus.AlreadyApplied));
+                Assert.That(replayed.Outcome.Reward.ItemId, Is.EqualTo("relic.marked_coin"));
+                Assert.That(replayed.Outcome.InventoryOperation.Status, Is.EqualTo(InventoryOperationStatus.Succeeded));
+                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"),
+                    Is.EqualTo(1), "Replaying the persisted reward must not create a second item.");
+                Assert.That(JsonUtility.ToJson(app.ActiveExpedition), Is.EqualTo(committedExpeditionJson),
+                    "The already-claimed result must leave the persisted expedition state unchanged.");
+                Assert.That(store.ProfilePrimary, Is.EqualTo(committedProfileJson),
+                    "A replay already represented in the save must not write a changed expedition.");
+            }
+            finally
+            {
+                DestroyApplication();
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+            }
+        }
+
+        [UnityTest]
         public IEnumerator E04_FullBackpackInvalidChoiceAndIncompatibleWeaponLeaveClaimAndInventoryUntouched()
         {
             var store = new MemorySaveStore();
