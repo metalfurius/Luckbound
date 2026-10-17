@@ -29,6 +29,13 @@ namespace Luckbound.App
         public string CraftStatusText => _craftStatusText == null ? string.Empty : _craftStatusText.text;
         public string SummaryText => _summaryText == null ? string.Empty : _summaryText.text;
 
+        public void RefreshCurrentRunSummary()
+        {
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app == null || app.ActiveRun == null || _titleText == null || _summaryText == null) return;
+            RefreshRunSummary(app.ActiveRun, app.ActiveExpedition);
+        }
+
         private void OnEnable()
         {
             if (_returnToTavernButton != null) _returnToTavernButton.onClick.AddListener(ReturnToTavern);
@@ -54,6 +61,9 @@ namespace Luckbound.App
             _craftStatusText.text = string.Empty;
             RefreshRunSummary(run, ApplicationBootstrapper.Instance.ActiveExpedition);
             _overlayRoot.SetActive(true);
+            RestStopServicesPanelController servicesPanel = GetComponent<RestStopServicesPanelController>();
+            if (servicesPanel == null) servicesPanel = gameObject.AddComponent<RestStopServicesPanelController>();
+            servicesPanel.Initialize(ApplicationBootstrapper.Instance, _overlayRoot.transform);
         }
 
         private void OnDisable()
