@@ -74,6 +74,7 @@ namespace Luckbound.Tests.PlayMode
                 playerMotor: motor,
                 itemCollector: collector,
                 itemCatalog: itemCatalog,
+                weaponCatalog: LoadWeaponCatalog(itemCatalog),
                 skillCatalog: skillCatalog);
 
             Assert.That(motor.IsBellator, Is.True);
@@ -116,6 +117,131 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator EquippedBellatorTrailSaberProfileControlsRealAttackDamageAndCadence()
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                BellatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                new[] { BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId });
+            const string trailSaberId = "weapon.bellator.trail_saber";
+            var trailSaber = new InventoryItemStack(
+                ItemInstanceId.New(), trailSaberId, ItemRarity.Common, upgradeLevel: 0, quantity: 1);
+            InventoryOperationOutcome collected = run.Inventory.TryCollectItem(trailSaber, TransactionId.New());
+            Assert.That(collected.Succeeded, Is.True, "The alternative Bellator weapon must enter the run inventory.");
+
+            int trailSaberSlot = -1;
+            for (int index = 0; index < ExpeditionInventory.BackpackCapacity; index++)
+            {
+                if (run.Inventory.GetBackpackSlot(index)?.InstanceId == trailSaber.InstanceId)
+                {
+                    trailSaberSlot = index;
+                    break;
+                }
+            }
+            Assert.That(trailSaberSlot, Is.GreaterThanOrEqualTo(0));
+            InventoryOperationOutcome equipped = run.Inventory.EquipBackpackItem(
+                trailSaberSlot, EquipmentSlot.Weapon, TransactionId.New());
+            Assert.That(equipped.Succeeded, Is.True, "The alternative Bellator weapon must be equipped in the run inventory.");
+            Assert.That(run.Inventory.Weapon.ItemId, Is.EqualTo(trailSaberId));
+
+            ItemCatalog itemCatalog = run.Inventory.Catalog;
+            WeaponCatalog weaponCatalog = LoadWeaponCatalog(itemCatalog);
+            WeaponProfile expectedProfile = weaponCatalog.Get(trailSaberId);
+            ActorId actorId = ActorId.New();
+            var input = new PlayerInputBuffer(actorId);
+            CreatePlayer(out PlayerMotor2D motor, out ItemCollector2D collector);
+
+            ExpeditionBellatorRunBinder.Bind(
+                run,
+                actorId: actorId,
+                inputSource: input,
+                groundLayers: GroundLayers(),
+                enemyLayers: 0,
+                defense: 0,
+                playerMotor: motor,
+                itemCollector: collector,
+                itemCatalog: itemCatalog,
+                weaponCatalog: weaponCatalog,
+                skillCatalog: LoadSkillCatalog());
+
+            Assert.That(motor.EquippedWeaponProfile, Is.SameAs(expectedProfile));
+            Assert.That(motor.EquippedWeaponProfile.ItemId, Is.EqualTo(trailSaberId));
+            Assert.That(motor.EquippedWeaponProfile.Damage, Is.EqualTo(9));
+            Assert.That(motor.EquippedWeaponProfile.AttackIntervalSeconds, Is.EqualTo(0.33f).Within(0.0001f));
+
+            input.Press(PlayerAction.Attack);
+            yield return new WaitForFixedUpdate();
+            long attackStartTick = motor.SimulationTick;
+            Assert.That(motor.CurrentMeleeAttack.WasStartedThisTick, Is.True);
+            Assert.That(motor.CurrentMeleeAttack.BaseDamage, Is.EqualTo(9m));
+            Assert.That(motor.MeleeAttackActivationCount, Is.EqualTo(1));
+            input.Release(PlayerAction.Attack);
+
+            while (motor.SimulationTick < attackStartTick + 6)
+                yield return new WaitForFixedUpdate();
+            Assert.That(motor.CurrentMeleeHitWindow, Is.Not.Null,
+                "The equipped weapon's real melee hit window must open on the motor.");
+            Assert.That(motor.CurrentMeleeHitWindow.BaseDamage, Is.EqualTo(9m));
+
+            while (motor.SimulationTick < attackStartTick + 18)
+                yield return new WaitForFixedUpdate();
+            input.Press(PlayerAction.Attack);
+            yield return new WaitForFixedUpdate();
+            Assert.That(motor.SimulationTick, Is.EqualTo(attackStartTick + 19));
+            Assert.That(motor.CurrentMeleeAttack.WasStartedThisTick, Is.False,
+                "The trail saber must reject an attack one tick before its 20-tick cadence is ready.");
+            Assert.That(motor.MeleeAttackActivationCount, Is.EqualTo(1));
+
+            input.Release(PlayerAction.Attack);
+            input.Press(PlayerAction.Attack);
+            yield return new WaitForFixedUpdate();
+            Assert.That(motor.SimulationTick, Is.EqualTo(attackStartTick + 20));
+            Assert.That(motor.CurrentMeleeAttack.WasStartedThisTick, Is.True,
+                "The trail saber must accept the next attack at its 20-tick cadence.");
+            Assert.That(motor.CurrentMeleeAttack.BaseDamage, Is.EqualTo(9m));
+            Assert.That(motor.MeleeAttackActivationCount, Is.EqualTo(2));
+        }
+
+        [UnityTest]
+        public IEnumerator WeaponProfileForAnotherClassIsRejectedBeforeEitherComponentIsConfigured()
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                BellatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                new[] { BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId });
+            var mismatchedProfile = new WeaponProfile(
+                run.Inventory.Weapon.ItemId,
+                "class.venator",
+                damage: 12,
+                attackIntervalSeconds: 0.45f,
+                traits: new[] { new WeaponTrait(WeaponTraitId.RapidCadence) });
+            var mismatchedCatalog = new WeaponCatalog(new[] { mismatchedProfile });
+            ActorId actorId = ActorId.New();
+            var input = new PlayerInputBuffer(actorId);
+            CreatePlayer(out PlayerMotor2D motor, out ItemCollector2D collector);
+
+            Assert.Throws<System.ArgumentException>(() => ExpeditionBellatorRunBinder.Bind(
+                run,
+                actorId: actorId,
+                inputSource: input,
+                groundLayers: GroundLayers(),
+                enemyLayers: 0,
+                defense: 0,
+                playerMotor: motor,
+                itemCollector: collector,
+                itemCatalog: run.Inventory.Catalog,
+                weaponCatalog: mismatchedCatalog,
+                skillCatalog: LoadSkillCatalog()));
+
+            Assert.That(motor.ActorId.IsValid, Is.False);
+            Assert.That(motor.CombatStats, Is.Null);
+            Assert.That(motor.EquippedWeaponProfile, Is.Null);
+            Assert.That(collector.Inventory, Is.Null);
+            Assert.That(collector.Catalog, Is.Null);
+            yield return null;
+        }
+
+        [UnityTest]
         public IEnumerator AlvariRunSkillChoiceUsesItsDiscountedBellatorKitCost()
         {
             ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
@@ -138,6 +264,7 @@ namespace Luckbound.Tests.PlayMode
                 playerMotor: motor,
                 itemCollector: collector,
                 itemCatalog: run.Inventory.Catalog,
+                weaponCatalog: LoadWeaponCatalog(run.Inventory.Catalog),
                 skillCatalog: LoadSkillCatalog());
 
             Assert.That(motor.RaceId, Is.EqualTo(run.RaceId));
@@ -181,6 +308,7 @@ namespace Luckbound.Tests.PlayMode
                 playerMotor: motor,
                 itemCollector: collector,
                 itemCatalog: run.Inventory.Catalog,
+                weaponCatalog: LoadWeaponCatalog(run.Inventory.Catalog),
                 skillCatalog: LoadSkillCatalog()));
 
             Assert.That(motor.ActorId.IsValid, Is.False);
@@ -236,6 +364,13 @@ namespace Luckbound.Tests.PlayMode
             TextAsset source = Resources.Load<TextAsset>("Luckbound/Data/Skills");
             Assert.That(source, Is.Not.Null, "The accepted Bellator skill catalog must be loaded before binding.");
             return SkillCatalogJsonLoader.Load(source.text);
+        }
+
+        private static WeaponCatalog LoadWeaponCatalog(ItemCatalog itemCatalog)
+        {
+            TextAsset source = Resources.Load<TextAsset>("Luckbound/Data/Weapons");
+            Assert.That(source, Is.Not.Null, "The authoritative weapon catalog must be loaded before binding.");
+            return WeaponCatalogJsonLoader.Load(source.text, itemCatalog);
         }
     }
 }
