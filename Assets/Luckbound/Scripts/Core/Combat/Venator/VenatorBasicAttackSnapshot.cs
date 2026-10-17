@@ -6,11 +6,13 @@ namespace Luckbound.Core.Combat
         internal VenatorBasicAttackSnapshot(
             bool wasStartedThisTick,
             bool isAttacking,
+            bool isCharging,
             ProjectileDefinition projectile,
             decimal movementSpeedMultiplier)
         {
             WasStartedThisTick = wasStartedThisTick;
             IsAttacking = isAttacking;
+            IsCharging = isCharging;
             Projectile = projectile;
             MovementSpeedMultiplier = movementSpeedMultiplier;
         }
@@ -18,6 +20,9 @@ namespace Luckbound.Core.Combat
         public bool WasStartedThisTick { get; }
 
         public bool IsAttacking { get; }
+
+        /// <summary>True while a charged weapon is waiting for the attack input to be released.</summary>
+        public bool IsCharging { get; }
 
         public ProjectileDefinition Projectile { get; }
 

@@ -12,7 +12,10 @@ namespace Luckbound.Core.Combat
             ActorId sourceActorId,
             ActorId targetActorId,
             decimal baseDamage,
-            float sourcePositionX)
+            float sourcePositionX,
+            int defensePenetration = 0,
+            int slowPercent = 0,
+            int slowDurationTicks = 0)
         {
             if (!projectileId.IsValid) throw new ArgumentException("Projectile impact requires a valid entity ID.", nameof(projectileId));
             if (!hitId.IsValid) throw new ArgumentException("Projectile impact requires a valid hit ID.", nameof(hitId));
@@ -23,6 +26,10 @@ namespace Luckbound.Core.Combat
             {
                 throw new ArgumentOutOfRangeException(nameof(sourcePositionX), "Impact source position must be finite.");
             }
+            if (defensePenetration < 0) throw new ArgumentOutOfRangeException(nameof(defensePenetration));
+            if (slowPercent < 0 || slowPercent > 100) throw new ArgumentOutOfRangeException(nameof(slowPercent));
+            if ((slowPercent == 0) != (slowDurationTicks == 0) || slowDurationTicks < 0)
+                throw new ArgumentException("Projectile impact slow requires both a positive percent and duration, or neither.");
 
             ProjectileId = projectileId;
             HitId = hitId;
@@ -30,6 +37,9 @@ namespace Luckbound.Core.Combat
             TargetActorId = targetActorId;
             BaseDamage = baseDamage;
             SourcePositionX = sourcePositionX;
+            DefensePenetration = defensePenetration;
+            SlowPercent = slowPercent;
+            SlowDurationTicks = slowDurationTicks;
         }
 
         public EntityId ProjectileId { get; }
@@ -44,5 +54,11 @@ namespace Luckbound.Core.Combat
 
         /// <summary>Horizontal point where the projectile was launched.</summary>
         public float SourcePositionX { get; }
+
+        public int DefensePenetration { get; }
+
+        public int SlowPercent { get; }
+
+        public int SlowDurationTicks { get; }
     }
 }

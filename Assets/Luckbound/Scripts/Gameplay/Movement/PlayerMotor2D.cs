@@ -76,6 +76,9 @@ namespace Luckbound.Gameplay.Movement
         private MagusCombatResult _lastMagusCombatResult;
         private MagusBasicAttackSnapshot _magusBasicAttackSnapshot;
         private MagusRoomBinding _magusRoomBinding;
+        private string _configuredClassId;
+        private WeaponProfile _equippedWeaponProfile;
+        private WeaponBasicAttackProfile _weaponBasicAttackProfile;
         private ActorId _actorId;
         private string _raceId;
         private Collider2D _collider;
@@ -206,6 +209,8 @@ namespace Luckbound.Gameplay.Movement
 
         public string RaceId => _raceId;
 
+        public WeaponProfile EquippedWeaponProfile => _equippedWeaponProfile;
+
         public long SimulationTick => Math.Max(0L, _tick - 1);
 
         public int SuccessfulJumpCount { get; private set; }
@@ -217,6 +222,27 @@ namespace Luckbound.Gameplay.Movement
         public bool IsAttacking { get; private set; }
 
         public MeleeAttackSnapshot CurrentMeleeAttack => _meleeAttackSnapshot;
+
+        /// <summary>
+        /// Binds or updates the weapon selected by the expedition inventory. The profile must come from
+        /// the authoritative Weapons.json catalog; an accepted attack and its reload remain unchanged.
+        /// </summary>
+        public void ConfigureEquippedWeapon(WeaponProfile weaponProfile)
+        {
+            if (!_initialized)
+                throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring its weapon.");
+            if (weaponProfile == null) throw new ArgumentNullException(nameof(weaponProfile));
+            if (_configuredClassId != null &&
+                !string.Equals(_configuredClassId, weaponProfile.ClassId, StringComparison.Ordinal))
+            {
+                throw new ArgumentException("The equipped weapon is incompatible with the configured player class.", nameof(weaponProfile));
+            }
+
+            WeaponBasicAttackProfile runtimeProfile = WeaponBasicAttackProfile.Create(weaponProfile);
+            _equippedWeaponProfile = weaponProfile;
+            _weaponBasicAttackProfile = runtimeProfile;
+            ApplyWeaponBasicAttackProfile();
+        }
 
         public MeleeHitWindow CurrentMeleeHitWindow => _meleeAttackSnapshot.HitWindow;
 
@@ -384,10 +410,13 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("A Bellator loadout cannot change during an expedition.");
             }
 
+            ConfigureClass("class.bellator");
+
             if (_bellatorCombatState == null)
             {
                 _bellatorSkillLoadout = loadout;
                 _bellatorCombatState = new BellatorCombatState(_actorId, loadout, _skillUseState);
+                ApplyWeaponBasicAttackProfile();
                 _nextBellatorEnergyRecoveryTick = _tick + 60;
             }
 
@@ -470,6 +499,8 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("The previous Venator room must be disposed before binding another room.");
             }
 
+            ConfigureClass("class.venator");
+
             var trapPoolObject = new GameObject("Venator Root Trap Pool");
             VenatorRootTrapPool2D trapPool = trapPoolObject.AddComponent<VenatorRootTrapPool2D>();
             trapPool.Initialize(_actorId, targetLayers);
@@ -492,6 +523,7 @@ namespace Luckbound.Gameplay.Movement
             {
                 _venatorSkillLoadout = loadout;
                 _venatorCombatState = new VenatorCombatState(_actorId, loadout, _skillUseState);
+                ApplyWeaponBasicAttackProfile();
                 _nextVenatorEnergyRecoveryTick = _tick + 60;
             }
 
@@ -577,6 +609,8 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("The previous Magus room must be disposed before binding another room.");
             }
 
+            ConfigureClass("class.magus");
+
             MagusCombatState combatState = _magusCombatState ?? new MagusCombatState(_actorId, loadout, _skillUseState);
             MagusCombatAdapter2D adapter = null;
             MagusRoomBinding binding = null;
@@ -617,6 +651,7 @@ namespace Luckbound.Gameplay.Movement
             {
                 _magusSkillLoadout = loadout;
                 _magusCombatState = combatState;
+                ApplyWeaponBasicAttackProfile();
                 _nextMagusEnergyRecoveryTick = _tick + 60;
             }
 
@@ -648,6 +683,42 @@ namespace Luckbound.Gameplay.Movement
         {
             return IsBellator && _bellatorSkillLoadout.Contains(skillId) &&
                 _skillUseState.IsReady(skillId, SimulationTick);
+        }
+
+        private void ConfigureClass(string classId)
+        {
+            if (_configuredClassId != null)
+            {
+                if (!string.Equals(_configuredClassId, classId, StringComparison.Ordinal))
+                    throw new InvalidOperationException("A player combat class cannot change during an expedition.");
+                return;
+            }
+
+            if (_weaponBasicAttackProfile != null &&
+                !string.Equals(_weaponBasicAttackProfile.ClassId, classId, StringComparison.Ordinal))
+            {
+                throw new ArgumentException("The equipped weapon is incompatible with the configured player class.", nameof(classId));
+            }
+
+            _configuredClassId = classId;
+        }
+
+        private void ApplyWeaponBasicAttackProfile()
+        {
+            if (_weaponBasicAttackProfile == null || _configuredClassId == null) return;
+
+            if (string.Equals(_configuredClassId, "class.bellator", StringComparison.Ordinal))
+            {
+                _meleeAttackState.ConfigureProfile(_weaponBasicAttackProfile.CreateMeleeAttackProfile());
+            }
+            else if (string.Equals(_configuredClassId, "class.venator", StringComparison.Ordinal))
+            {
+                _venatorCombatState?.ConfigureBasicAttackProfile(_weaponBasicAttackProfile.CreateVenatorBasicAttackProfile());
+            }
+            else if (string.Equals(_configuredClassId, "class.magus", StringComparison.Ordinal))
+            {
+                _magusCombatState?.ConfigureBasicAttackProfile(_weaponBasicAttackProfile.CreateMagusBasicAttackProfile());
+            }
         }
 
         public DirectImpactOutcome ReceiveDirectImpact(
@@ -1132,7 +1203,7 @@ namespace Luckbound.Gameplay.Movement
             if (result.BasicAttack.WasStartedThisTick)
             {
                 SpawnVenatorProjectile(
-                    VenatorBasicAttackProfile.Shortbow.Projectile,
+                    result.BasicAttack.Projectile ?? throw new InvalidOperationException("An accepted Venator attack requires its equipped weapon projectile."),
                     0m);
                 VenatorBasicAttackActivationCount++;
             }

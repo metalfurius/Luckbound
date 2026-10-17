@@ -16,6 +16,13 @@ namespace Luckbound.Core.Combat
         private long _freezeStartsAtTick = -1;
         private long _freezeEndsAtTick = -1;
         private long _freezeProtectionEndsAtTick = -1;
+        private int _slowPercent;
+        private long _slowStartsAtTick = -1;
+        private long _slowEndsAtTick = -1;
+
+        public long SlowStartsAtTick => _slowStartsAtTick;
+
+        public long SlowEndsAtTick => _slowEndsAtTick;
 
         public void ApplyBurn(long tick, decimal damagePerSecond, int durationTicks)
         {
@@ -51,6 +58,36 @@ namespace Luckbound.Core.Combat
             _freezeEndsAtTick = tick + durationTicks;
             _freezeProtectionEndsAtTick = _freezeEndsAtTick + FreezeProtectionDurationTicks;
             return true;
+        }
+
+        /// <summary>Apply a movement slow over the half-open range [tick, tick + durationTicks).</summary>
+        public void ApplySlow(long tick, int percent, int durationTicks)
+        {
+            ValidateApplicationTick(tick);
+            if (percent <= 0 || percent > 100) throw new ArgumentOutOfRangeException(nameof(percent));
+            if (durationTicks <= 0) throw new ArgumentOutOfRangeException(nameof(durationTicks));
+            EnsureTickAdditionFits(tick, durationTicks);
+
+            long endTick = tick + durationTicks;
+            bool alreadySlowed = _slowStartsAtTick >= 0 && tick < _slowEndsAtTick;
+            if (alreadySlowed)
+            {
+                _slowPercent = Math.Max(_slowPercent, percent);
+                _slowEndsAtTick = Math.Max(_slowEndsAtTick, endTick);
+            }
+            else
+            {
+                _slowPercent = percent;
+                _slowStartsAtTick = tick;
+                _slowEndsAtTick = endTick;
+            }
+        }
+
+        public decimal GetMovementSpeedMultiplierAt(long tick)
+        {
+            if (tick < 0) throw new ArgumentOutOfRangeException(nameof(tick));
+            if (_slowStartsAtTick < 0 || tick < _slowStartsAtTick || tick >= _slowEndsAtTick) return 1m;
+            return 1m - _slowPercent / 100m;
         }
 
         public MagusStatusSnapshot Tick(long tick)

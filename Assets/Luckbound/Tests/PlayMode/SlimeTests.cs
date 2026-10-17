@@ -150,6 +150,66 @@ namespace Luckbound.Tests.PlayMode
             }
         }
 
+        [UnityTest]
+        public IEnumerator FrostProjectileAppliesTwentyPercentSlowForExactlyFortyFiveEnemyTicks()
+        {
+            int groundLayer = LayerMask.NameToLayer("Ground");
+            GameObject floor = CreateFloor("G01_Frost_Ground");
+            PlayerFixture player = CreatePlayer("G01_Frost_Player", new Vector2(6f, 1.5f), groundLayer);
+            SlimeFixture slimeFixture = CreateSlime("G01_Frost_Slime", new Vector2(0f, 0.4f), player.Motor, groundLayer);
+            ProjectileFixture projectileFixture = CreateProjectileFixture("G01_Frost_Projectile");
+            Physics2D.SyncTransforms();
+
+            for (int tick = 0; tick < 30 && slimeFixture.Slime.State != SlimeBehaviorState.Chase; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            Projectile2D projectile = projectileFixture.Pool.Spawn(
+                new ProjectileDefinition(
+                    baseDamage: 10m,
+                    speedUnitsPerSecond: 10m,
+                    lifetimeTicks: 180,
+                    maximumTargets: 1,
+                    slowPercent: 20,
+                    slowDurationTicks: 45,
+                    element: "frost"),
+                EntityId.New(),
+                player.Motor.ActorId,
+                new Vector2(-1.2f, 0.4f),
+                Vector2.right,
+                1 << 0,
+                projectileFixture.Scope);
+
+            for (int tick = 0; tick < 20 && slimeFixture.Slime.ProjectileImpactCount == 0; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            for (int tick = 0; tick < 3 && !projectile.IsPooled; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            MagusStatusEffectTarget2D status = slimeFixture.GameObject.GetComponent<MagusStatusEffectTarget2D>();
+            Assert.That(projectile.IsPooled, Is.True, "The single-target projectile returns after its hit.");
+            Assert.That(slimeFixture.Slime.ProjectileImpactCount, Is.EqualTo(1));
+            Assert.That(status, Is.Not.Null);
+            Assert.That(status.SlowEndsAtTick - status.SlowStartsAtTick, Is.EqualTo(45));
+            Assert.That(status.GetMovementSpeedMultiplierAt(status.SlowStartsAtTick), Is.EqualTo(0.8m));
+            Assert.That(status.GetMovementSpeedMultiplierAt(status.SlowEndsAtTick - 1), Is.EqualTo(0.8m));
+            Assert.That(status.GetMovementSpeedMultiplierAt(status.SlowEndsAtTick), Is.EqualTo(1m));
+            Assert.That(slimeFixture.Slime.State, Is.EqualTo(SlimeBehaviorState.Chase));
+            Assert.That(slimeFixture.Body.linearVelocity.x, Is.EqualTo(Slime2D.ChaseSpeed * 0.8f).Within(0.05f));
+
+            projectileFixture.Scope.Dispose();
+            slimeFixture.Destroy();
+            projectileFixture.Destroy();
+            player.Destroy();
+            Object.Destroy(floor);
+            yield return null;
+        }
+
         private static GameObject CreateFloor(string name)
         {
             int groundLayer = LayerMask.NameToLayer("Ground");

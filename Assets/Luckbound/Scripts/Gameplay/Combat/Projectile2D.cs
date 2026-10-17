@@ -38,6 +38,8 @@ namespace Luckbound.Gameplay.Combat
 
         public int RegisteredTargetCount => _registeredTargets.Count;
 
+        public string Element => _definition != null ? _definition.Element : string.Empty;
+
         public bool IsPooled { get; private set; } = true;
 
         public RoomProjectileScope RoomScope => _roomScope;
@@ -155,7 +157,10 @@ namespace Luckbound.Gameplay.Combat
                 _sourceActorId,
                 target.ActorId,
                 definition.BaseDamage,
-                _sourcePositionX);
+                _sourcePositionX,
+                definition.DefensePenetration,
+                definition.SlowPercent,
+                definition.SlowDurationTicks);
             target.QueueImpact(impact);
             Impacted?.Invoke(impact);
 

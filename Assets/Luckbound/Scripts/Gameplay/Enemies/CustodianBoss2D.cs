@@ -211,6 +211,11 @@ namespace Luckbound.Gameplay.Enemies
                     break;
             }
 
+            if (State == CustodianBehaviorState.Executing && CurrentPattern == CustodianAttackPattern.Charge)
+            {
+                velocity.x *= (float)GetWeaponSlowMultiplier(_player.SimulationTick);
+            }
+
             _body.linearVelocity = velocity;
             UpdateVisualState();
         }
@@ -430,9 +435,19 @@ namespace Luckbound.Gameplay.Enemies
             {
                 DirectImpactOutcome outcome = _damageState.ReceiveDirectImpact(
                     impact.HitId,
-                    CreateDamageRequest(_damageState.Stats, impact.BaseDamage),
+                    CreateDamageRequest(_damageState.Stats, impact.BaseDamage, impact.DefensePenetration),
                     tick);
-                if (outcome.Status == DirectImpactStatus.Applied) ProjectileImpactCount++;
+                if (outcome.Status == DirectImpactStatus.Applied)
+                {
+                    ProjectileImpactCount++;
+                    if (impact.SlowPercent > 0)
+                    {
+                        GetOrCreateWeaponStatusTarget().ApplySlow(
+                            _player.SimulationTick,
+                            impact.SlowPercent,
+                            impact.SlowDurationTicks);
+                    }
+                }
                 if (outcome.DeathOccurred) EnterDeadState();
                 if (IsDead) return;
             }
@@ -481,14 +496,33 @@ namespace Luckbound.Gameplay.Enemies
             }
         }
 
-        private static DamageCalculationRequest CreateDamageRequest(CombatStats targetStats, decimal damage)
+        private MagusStatusEffectTarget2D GetOrCreateWeaponStatusTarget()
+        {
+            MagusStatusEffectTarget2D statusTarget = GetComponent<MagusStatusEffectTarget2D>();
+            if (statusTarget == null) statusTarget = gameObject.AddComponent<MagusStatusEffectTarget2D>();
+            if (!statusTarget.IsInitialized) statusTarget.Initialize(GetComponent<ProjectileImpactTarget2D>());
+            return statusTarget;
+        }
+
+        private decimal GetWeaponSlowMultiplier(long tick)
+        {
+            MagusStatusEffectTarget2D statusTarget = GetComponent<MagusStatusEffectTarget2D>();
+            return statusTarget != null && statusTarget.IsInitialized
+                ? statusTarget.GetMovementSpeedMultiplierAt(tick)
+                : 1m;
+        }
+
+        private static DamageCalculationRequest CreateDamageRequest(
+            CombatStats targetStats,
+            decimal damage,
+            int defensePenetration = 0)
         {
             return new DamageCalculationRequest(
                 baseDamage: damage,
                 rarityMultiplier: 1m,
                 upgradeMultiplier: 1m,
                 offensiveBonusPercent: 0m,
-                defensePenetration: 0,
+                defensePenetration: defensePenetration,
                 incomingDamageReductionPercent: 0m,
                 targetStats: targetStats,
                 targetIsInvulnerable: false);

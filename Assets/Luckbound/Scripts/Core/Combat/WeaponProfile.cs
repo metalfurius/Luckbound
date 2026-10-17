@@ -76,4 +76,190 @@ namespace Luckbound.Core.Combat
             }
         }
     }
+
+    /// <summary>
+    /// Resolves the weapon definition into the values consumed by each class's basic-attack state.
+    /// Qualitative range/knockback declarations stay on WeaponProfile until their exact values are authored.
+    /// </summary>
+    public sealed class WeaponBasicAttackProfile
+    {
+        public const int SimulationTicksPerSecond = 60;
+        private const int MeleeDamageWindowStartTick = 6;
+        private const int MeleeDamageWindowDurationTicks = 6;
+        private const decimal AttackMovementSpeedMultiplier = 0.65m;
+
+        private readonly WeaponProfile _weapon;
+        private readonly int _chargeDamageBonusPercent;
+        private readonly int _defensePenetration;
+        private readonly int _slowPercent;
+        private readonly int _slowDurationTicks;
+        private readonly int _maximumProjectileTargets;
+        private readonly decimal _projectileSpeedUnitsPerSecond;
+        private readonly int _projectileLifetimeTicks;
+        private readonly string _projectileElement;
+
+        private WeaponBasicAttackProfile(WeaponProfile weapon)
+        {
+            _weapon = weapon ?? throw new ArgumentNullException(nameof(weapon));
+            AttackIntervalTicks = ToTicks(weapon.AttackIntervalSeconds, nameof(weapon.AttackIntervalSeconds));
+            _maximumProjectileTargets = 1 + (GetTrait(WeaponTraitId.PierceOneTarget)?.PiercedTargetCount ?? 0);
+
+            WeaponTrait charge = GetTrait(WeaponTraitId.OptionalChargeDamageBonus);
+            _chargeDamageBonusPercent = charge != null ? charge.Percent : 0;
+            WeaponTrait penetration = GetTrait(WeaponTraitId.IgnoreOneDefense);
+            _defensePenetration = penetration != null ? penetration.DefensePointsIgnored : 0;
+            WeaponTrait slow = GetTrait(WeaponTraitId.SlowOnHit);
+            _slowPercent = slow != null ? slow.Percent : 0;
+            _slowDurationTicks = slow != null ? ToTicks(slow.DurationSeconds, nameof(slow.DurationSeconds)) : 0;
+
+            if (string.Equals(weapon.ClassId, "class.venator", StringComparison.Ordinal))
+            {
+                ProjectileDefinition baseline = VenatorBasicAttackProfile.Shortbow.Projectile;
+                _projectileSpeedUnitsPerSecond = baseline.SpeedUnitsPerSecond;
+                _projectileLifetimeTicks = baseline.LifetimeTicks;
+                _projectileElement = string.Empty;
+            }
+            else if (string.Equals(weapon.ClassId, "class.magus", StringComparison.Ordinal))
+            {
+                ProjectileDefinition baseline = MagusBasicAttackProfile.EmberStaff.Projectile;
+                _projectileSpeedUnitsPerSecond = baseline.SpeedUnitsPerSecond;
+                _projectileLifetimeTicks = baseline.LifetimeTicks;
+                _projectileElement = ResolveMagusElement(weapon);
+            }
+            else
+            {
+                _projectileSpeedUnitsPerSecond = 0m;
+                _projectileLifetimeTicks = 0;
+                _projectileElement = string.Empty;
+            }
+        }
+
+        public WeaponProfile Weapon => _weapon;
+
+        public string ItemId => _weapon.ItemId;
+
+        public string ClassId => _weapon.ClassId;
+
+        public decimal BaseDamage => _weapon.Damage;
+
+        public int AttackIntervalTicks { get; }
+
+        public int ChargeDamageBonusPercent => _chargeDamageBonusPercent;
+
+        public int DefensePenetration => _defensePenetration;
+
+        public int SlowPercent => _slowPercent;
+
+        public int SlowDurationTicks => _slowDurationTicks;
+
+        public int MaximumProjectileTargets => _maximumProjectileTargets;
+
+        public string ProjectileElement => _projectileElement;
+
+        public static WeaponBasicAttackProfile Create(WeaponProfile weapon)
+        {
+            if (weapon == null) throw new ArgumentNullException(nameof(weapon));
+            ValidateTraitClass(weapon);
+            return new WeaponBasicAttackProfile(weapon);
+        }
+
+        public MeleeAttackProfile CreateMeleeAttackProfile()
+        {
+            EnsureClass("class.bellator");
+            return new MeleeAttackProfile(
+                BaseDamage,
+                AttackIntervalTicks,
+                MeleeDamageWindowStartTick,
+                MeleeDamageWindowDurationTicks,
+                AttackMovementSpeedMultiplier);
+        }
+
+        public VenatorBasicAttackProfile CreateVenatorBasicAttackProfile()
+        {
+            EnsureClass("class.venator");
+            return new VenatorBasicAttackProfile(
+                CreateProjectileDefinition(charged: false),
+                AttackIntervalTicks,
+                _chargeDamageBonusPercent);
+        }
+
+        public MagusBasicAttackProfile CreateMagusBasicAttackProfile()
+        {
+            EnsureClass("class.magus");
+            return new MagusBasicAttackProfile(
+                CreateProjectileDefinition(charged: false),
+                AttackIntervalTicks,
+                _projectileElement);
+        }
+
+        public ProjectileDefinition CreateProjectileDefinition(bool charged)
+        {
+            if (_projectileSpeedUnitsPerSecond <= 0m || _projectileLifetimeTicks <= 0)
+                throw new InvalidOperationException("Bellator basic attacks are melee and have no projectile definition.");
+            if (charged && _chargeDamageBonusPercent <= 0)
+                throw new InvalidOperationException("This weapon does not declare an optional charge damage bonus.");
+
+            decimal damage = BaseDamage;
+            if (charged) damage *= 1m + _chargeDamageBonusPercent / 100m;
+            return new ProjectileDefinition(
+                damage,
+                _projectileSpeedUnitsPerSecond,
+                _projectileLifetimeTicks,
+                _maximumProjectileTargets,
+                _defensePenetration,
+                _slowPercent,
+                _slowDurationTicks,
+                _projectileElement);
+        }
+
+        private WeaponTrait GetTrait(WeaponTraitId id)
+        {
+            for (int index = 0; index < _weapon.Traits.Count; index++)
+                if (_weapon.Traits[index].Id == id) return _weapon.Traits[index];
+            return null;
+        }
+
+        private void EnsureClass(string classId)
+        {
+            if (!string.Equals(_weapon.ClassId, classId, StringComparison.Ordinal))
+                throw new InvalidOperationException("Weapon " + _weapon.ItemId + " is not compatible with " + classId + ".");
+        }
+
+        private static int ToTicks(float seconds, string parameterName)
+        {
+            if (float.IsNaN(seconds) || float.IsInfinity(seconds) || seconds <= 0f)
+                throw new ArgumentOutOfRangeException(parameterName);
+            decimal ticks = decimal.Round((decimal)seconds * SimulationTicksPerSecond, 0, MidpointRounding.AwayFromZero);
+            if (ticks < 1m || ticks > int.MaxValue) throw new ArgumentOutOfRangeException(parameterName);
+            return (int)ticks;
+        }
+
+        private static string ResolveMagusElement(WeaponProfile weapon)
+        {
+            if (weapon.HasTrait(WeaponTraitId.FireProjectile)) return "fire";
+            if (weapon.HasTrait(WeaponTraitId.SlowOnHit)) return "frost";
+            if (weapon.HasTrait(WeaponTraitId.IgnoreOneDefense)) return "shadow";
+            throw new InvalidOperationException("A Magus basic weapon must declare its projectile element trait.");
+        }
+
+        private static void ValidateTraitClass(WeaponProfile weapon)
+        {
+            bool bellator = string.Equals(weapon.ClassId, "class.bellator", StringComparison.Ordinal);
+            bool venator = string.Equals(weapon.ClassId, "class.venator", StringComparison.Ordinal);
+            bool magus = string.Equals(weapon.ClassId, "class.magus", StringComparison.Ordinal);
+            foreach (WeaponTrait trait in weapon.Traits)
+            {
+                bool compatible = bellator
+                    ? trait.Id == WeaponTraitId.Balanced || trait.Id == WeaponTraitId.RapidCadence ||
+                      trait.Id == WeaponTraitId.GreaterRange || trait.Id == WeaponTraitId.GreaterKnockback
+                    : venator
+                        ? trait.Id == WeaponTraitId.RapidCadence || trait.Id == WeaponTraitId.OptionalChargeDamageBonus ||
+                          trait.Id == WeaponTraitId.PierceOneTarget
+                        : magus && (trait.Id == WeaponTraitId.FireProjectile || trait.Id == WeaponTraitId.SlowOnHit ||
+                                    trait.Id == WeaponTraitId.IgnoreOneDefense);
+                if (!compatible)
+                    throw new ArgumentException("Weapon trait " + trait.StableId + " is not valid for " + weapon.ClassId + ".", nameof(weapon));
+            }
+        }
+    }
 }

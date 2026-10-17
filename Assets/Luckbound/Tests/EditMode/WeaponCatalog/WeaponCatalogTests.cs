@@ -5,6 +5,7 @@ using Luckbound.Content;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Input;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -106,6 +107,173 @@ namespace Luckbound.Tests.Weapons
             Assert.That(_items.GetStartingLoadout("class.bellator").WeaponItemId, Is.EqualTo("weapon.bellator.rusted_sword"));
             Assert.That(_items.GetStartingLoadout("class.venator").WeaponItemId, Is.EqualTo("weapon.venator.short_bow"));
             Assert.That(_items.GetStartingLoadout("class.magus").WeaponItemId, Is.EqualTo("weapon.magus.ember_staff"));
+        }
+
+        [Test]
+        public void RuntimeProfilesUseEquippedDamageAndConvertIntervalsAtSixtyHertz()
+        {
+            int[] expectedTicks = { 27, 20, 42, 24, 39, 45, 30, 27, 36 };
+            for (int index = 0; index < ExpectedWeapons.Length; index++)
+            {
+                ExpectedWeapon expected = ExpectedWeapons[index];
+                WeaponBasicAttackProfile runtime = WeaponBasicAttackProfile.Create(_weapons.Get(expected.ItemId));
+                Assert.That(runtime.ItemId, Is.EqualTo(expected.ItemId));
+                Assert.That(runtime.ClassId, Is.EqualTo(expected.ClassId));
+                Assert.That(runtime.BaseDamage, Is.EqualTo(expected.Damage));
+                Assert.That(runtime.AttackIntervalTicks, Is.EqualTo(expectedTicks[index]), expected.ItemId);
+
+                if (expected.ClassId == "class.bellator")
+                {
+                    MeleeAttackProfile melee = runtime.CreateMeleeAttackProfile();
+                    Assert.That(melee.BaseDamage, Is.EqualTo(expected.Damage));
+                    Assert.That(melee.AttackIntervalTicks, Is.EqualTo(expectedTicks[index]));
+                    Assert.That(melee.DamageWindowStartTick, Is.EqualTo(6));
+                    Assert.That(melee.DamageWindowDurationTicks, Is.EqualTo(6));
+                }
+                else if (expected.ClassId == "class.venator")
+                {
+                    ProjectileDefinition projectile = runtime.CreateVenatorBasicAttackProfile().Projectile;
+                    Assert.That(projectile.BaseDamage, Is.EqualTo(expected.Damage));
+                    Assert.That(projectile.SpeedUnitsPerSecond, Is.EqualTo(18m));
+                    Assert.That(projectile.LifetimeTicks, Is.EqualTo(120));
+                }
+                else
+                {
+                    ProjectileDefinition projectile = runtime.CreateMagusBasicAttackProfile().Projectile;
+                    Assert.That(projectile.BaseDamage, Is.EqualTo(expected.Damage));
+                    Assert.That(projectile.SpeedUnitsPerSecond, Is.EqualTo(10m));
+                    Assert.That(projectile.LifetimeTicks, Is.EqualTo(180));
+                }
+            }
+        }
+
+        [Test]
+        public void RuntimeProfilesCarryEveryExplicitRangedTraitIntoTheImpactContract()
+        {
+            WeaponBasicAttackProfile longbow = WeaponBasicAttackProfile.Create(_weapons.Get("weapon.venator.long_bow"));
+            VenatorBasicAttackProfile chargedProfile = longbow.CreateVenatorBasicAttackProfile();
+            Assert.That(chargedProfile.ChargeDamageBonusPercent, Is.EqualTo(30));
+            Assert.That(chargedProfile.CreateProjectile(charged: true).BaseDamage, Is.EqualTo(18.2m));
+
+            WeaponBasicAttackProfile crossbow = WeaponBasicAttackProfile.Create(_weapons.Get("weapon.venator.ruins_crossbow"));
+            Assert.That(crossbow.CreateProjectileDefinition(charged: false).MaximumTargets, Is.EqualTo(2),
+                "Piercing one target means one initial actor plus exactly one additional actor.");
+
+            WeaponBasicAttackProfile ember = WeaponBasicAttackProfile.Create(_weapons.Get("weapon.magus.ember_staff"));
+            ProjectileDefinition emberProjectile = ember.CreateMagusBasicAttackProfile().Projectile;
+            Assert.That(emberProjectile.BaseDamage, Is.EqualTo(12m));
+            Assert.That(emberProjectile.SpeedUnitsPerSecond, Is.EqualTo(10m));
+            Assert.That(emberProjectile.LifetimeTicks, Is.EqualTo(180));
+            Assert.That(emberProjectile.Element, Is.EqualTo("fire"));
+            Assert.That(emberProjectile.SlowPercent, Is.Zero, "The basic ember projectile does not burn or slow by itself.");
+
+            ProjectileDefinition frost = WeaponBasicAttackProfile.Create(_weapons.Get("weapon.magus.frost_staff"))
+                .CreateMagusBasicAttackProfile().Projectile;
+            Assert.That(frost.Element, Is.EqualTo("frost"));
+            Assert.That(frost.SlowPercent, Is.EqualTo(20));
+            Assert.That(frost.SlowDurationTicks, Is.EqualTo(45));
+
+            ProjectileDefinition shadow = WeaponBasicAttackProfile.Create(_weapons.Get("weapon.magus.shadow_staff"))
+                .CreateMagusBasicAttackProfile().Projectile;
+            Assert.That(shadow.Element, Is.EqualTo("shadow"));
+            Assert.That(shadow.DefensePenetration, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void LongbowOnlyFiresChargedBonusAfterHeldAttackIsReleasedAndInterruptionCancelsIt()
+        {
+            ActorId actor = ActorId.New();
+            var input = new PlayerInputBuffer(actor);
+            var state = new VenatorBasicAttackState(
+                WeaponBasicAttackProfile.Create(_weapons.Get("weapon.venator.long_bow"))
+                    .CreateVenatorBasicAttackProfile());
+
+            input.Press(PlayerAction.Attack);
+            VenatorBasicAttackSnapshot charging = state.Tick(input.Consume(0), actionAllowed: true, interrupted: false);
+            Assert.That(charging.IsCharging, Is.True);
+            Assert.That(charging.WasStartedThisTick, Is.False);
+
+            state.Tick(input.Consume(1), actionAllowed: true, interrupted: false);
+            input.Release(PlayerAction.Attack);
+            VenatorBasicAttackSnapshot fired = state.Tick(input.Consume(2), actionAllowed: true, interrupted: false);
+            Assert.That(fired.WasStartedThisTick, Is.True);
+            Assert.That(fired.Projectile.BaseDamage, Is.EqualTo(18.2m));
+            Assert.That(fired.Projectile.LifetimeTicks, Is.EqualTo(120));
+
+            ActorId interruptedActor = ActorId.New();
+            var interruptedInput = new PlayerInputBuffer(interruptedActor);
+            var interruptedState = new VenatorBasicAttackState(
+                WeaponBasicAttackProfile.Create(_weapons.Get("weapon.venator.long_bow"))
+                    .CreateVenatorBasicAttackProfile());
+            interruptedInput.Press(PlayerAction.Attack);
+            interruptedState.Tick(interruptedInput.Consume(0), actionAllowed: true, interrupted: false);
+            interruptedInput.Release(PlayerAction.Attack);
+            VenatorBasicAttackSnapshot cancelled = interruptedState.Tick(
+                interruptedInput.Consume(1), actionAllowed: false, interrupted: true);
+            Assert.That(cancelled.WasStartedThisTick, Is.False);
+            Assert.That(cancelled.IsCharging, Is.False);
+        }
+
+        [Test]
+        public void ReequippingDuringCombatKeepsAcceptedAttackAndCooldownButChangesTheNextAttack()
+        {
+            var melee = new MeleeAttackState(
+                MeleeAttackProfile.BellatorWornSword,
+                MeleeComboSequence.CreateBellator());
+            Assert.That(melee.Tick(0, attackPressed: true, dodgeAccepted: false).BaseDamage, Is.EqualTo(12m));
+            melee.ConfigureProfile(WeaponBasicAttackProfile.Create(
+                _weapons.Get("weapon.bellator.umbra_greatsword")).CreateMeleeAttackProfile());
+
+            MeleeAttackSnapshot acceptedSwing = melee.Tick(6, attackPressed: false, dodgeAccepted: false);
+            Assert.That(acceptedSwing.IsDamageWindowOpen, Is.True);
+            Assert.That(acceptedSwing.BaseDamage, Is.EqualTo(12m), "An accepted swing keeps its original profile.");
+            Assert.That(melee.Tick(27, attackPressed: true, dodgeAccepted: false).BaseDamage, Is.EqualTo(18m),
+                "The next swing uses the newly equipped weapon once the old cooldown expires.");
+
+            var venator = new VenatorBasicAttackState(VenatorBasicAttackProfile.Shortbow);
+            VenatorBasicAttackSnapshot firstArrow = venator.Tick(
+                tick: 0, attackPressed: true, actionAllowed: true, interrupted: false);
+            Assert.That(firstArrow.Projectile.BaseDamage, Is.EqualTo(10m));
+            venator.ConfigureProfile(WeaponBasicAttackProfile.Create(
+                _weapons.Get("weapon.venator.ruins_crossbow")).CreateVenatorBasicAttackProfile());
+
+            Assert.That(venator.Tick(
+                tick: 1, attackPressed: true, actionAllowed: true, interrupted: false).WasStartedThisTick, Is.False,
+                "Re-equipping does not reset the shortbow's accepted-shot cooldown.");
+            VenatorBasicAttackSnapshot crossbowShot = venator.Tick(
+                tick: 24, attackPressed: true, actionAllowed: true, interrupted: false);
+            Assert.That(crossbowShot.WasStartedThisTick, Is.True);
+            Assert.That(crossbowShot.Projectile.BaseDamage, Is.EqualTo(16m));
+            Assert.That(crossbowShot.Projectile.MaximumTargets, Is.EqualTo(2));
+
+            var magus = new MagusBasicAttackState(MagusBasicAttackProfile.EmberStaff);
+            Assert.That(magus.Tick(0, attackPressed: true, actionAllowed: true, interrupted: false).BaseDamage,
+                Is.EqualTo(12m));
+            magus.ConfigureProfile(WeaponBasicAttackProfile.Create(
+                _weapons.Get("weapon.magus.frost_staff")).CreateMagusBasicAttackProfile());
+            Assert.That(magus.Tick(1, attackPressed: true, actionAllowed: true, interrupted: false)
+                .WasStartedThisTick, Is.False, "Re-equipping does not reset the accepted Magus shot's cooldown.");
+            MagusBasicAttackSnapshot frostShot = magus.Tick(
+                30, attackPressed: true, actionAllowed: true, interrupted: false);
+            Assert.That(frostShot.WasStartedThisTick, Is.True);
+            Assert.That(frostShot.BaseDamage, Is.EqualTo(10m));
+            Assert.That(frostShot.Projectile.SlowPercent, Is.EqualTo(20));
+            Assert.That(frostShot.Projectile.SlowDurationTicks, Is.EqualTo(45));
+        }
+
+        [Test]
+        public void WeaponSlowUsesExactHalfOpenSixtyHertzDurationAndRefreshesWithoutStrongerInventedValues()
+        {
+            var state = new MagusStatusState();
+            state.ApplySlow(tick: 10, percent: 20, durationTicks: 45);
+            Assert.That(state.GetMovementSpeedMultiplierAt(9), Is.EqualTo(1m));
+            Assert.That(state.GetMovementSpeedMultiplierAt(10), Is.EqualTo(0.8m));
+            Assert.That(state.GetMovementSpeedMultiplierAt(54), Is.EqualTo(0.8m));
+            Assert.That(state.GetMovementSpeedMultiplierAt(55), Is.EqualTo(1m));
+
+            state.ApplySlow(tick: 30, percent: 10, durationTicks: 45);
+            Assert.That(state.GetMovementSpeedMultiplierAt(74), Is.EqualTo(0.8m));
+            Assert.That(state.GetMovementSpeedMultiplierAt(75), Is.EqualTo(1m));
         }
 
         [Test]

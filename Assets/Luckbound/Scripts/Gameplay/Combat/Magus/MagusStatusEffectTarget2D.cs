@@ -33,6 +33,10 @@ namespace Luckbound.Gameplay.Combat.Magus
 
         public MagusStatusSnapshot StatusSnapshot { get; private set; }
 
+        public long SlowStartsAtTick => _initialized ? _state.SlowStartsAtTick : -1;
+
+        public long SlowEndsAtTick => _initialized ? _state.SlowEndsAtTick : -1;
+
         public int PendingBurnTickCount => _pendingBurnTicks.Count;
 
         public void Initialize(ProjectileImpactTarget2D impactTarget)
@@ -65,6 +69,18 @@ namespace Luckbound.Gameplay.Combat.Magus
             bool applied = _state.ApplyFreeze(tick, durationTicks);
             if (applied) _isFrozen = true;
             return applied;
+        }
+
+        public void ApplySlow(long tick, int percent, int durationTicks)
+        {
+            EnsureInitialized();
+            _state.ApplySlow(tick, percent, durationTicks);
+        }
+
+        public decimal GetMovementSpeedMultiplierAt(long tick)
+        {
+            EnsureInitialized();
+            return _state.GetMovementSpeedMultiplierAt(tick);
         }
 
         /// <summary>Advance this actor's status clock once for a simulation tick.</summary>

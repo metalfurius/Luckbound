@@ -25,6 +25,11 @@ namespace Luckbound.Core.Combat
 
         public SkillUseState SkillUses => _skillUseState;
 
+        public void ConfigureBasicAttackProfile(VenatorBasicAttackProfile profile)
+        {
+            _basicAttackState.ConfigureProfile(profile);
+        }
+
         public void Interrupt()
         {
             _basicAttackState.Interrupt();
@@ -74,8 +79,7 @@ namespace Luckbound.Core.Combat
             bool basicAttackAllowed = !blocked && !skillActionOwnsTick && !differentSkillPressed;
             bool basicAttackInterrupted = blocked || anySkillPressed || _skillUseState.IsPreparing || activation != null;
             VenatorBasicAttackSnapshot basicAttack = _basicAttackState.Tick(
-                command.Tick,
-                attackPressed: command.WasPressed(PlayerAction.Attack),
+                command,
                 actionAllowed: basicAttackAllowed,
                 interrupted: basicAttackInterrupted);
 

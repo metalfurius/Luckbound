@@ -25,6 +25,11 @@ namespace Luckbound.Core.Combat
 
         public SkillUseState SkillUses => _skillUseState;
 
+        public void ConfigureBasicAttackProfile(MagusBasicAttackProfile profile)
+        {
+            _basicAttackState.ConfigureProfile(profile);
+        }
+
         public void Interrupt()
         {
             _basicAttackState.Interrupt();

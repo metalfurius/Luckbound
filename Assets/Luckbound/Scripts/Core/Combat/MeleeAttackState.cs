@@ -6,8 +6,9 @@ namespace Luckbound.Core.Combat
     /// <summary>Actor-owned basic melee timing and combo state; call once per increasing simulation tick.</summary>
     public sealed class MeleeAttackState
     {
-        private readonly MeleeAttackProfile _profile;
+        private MeleeAttackProfile _profile;
         private readonly MeleeComboSequence _combo;
+        private MeleeAttackProfile _currentAttackProfile;
         private long _lastEvaluatedTick = -1;
         private long _attackStartTick = -1;
         private long _nextAttackTick;
@@ -19,6 +20,13 @@ namespace Luckbound.Core.Combat
         {
             _profile = profile ?? throw new ArgumentNullException(nameof(profile));
             _combo = combo ?? throw new ArgumentNullException(nameof(combo));
+        }
+
+        /// <summary>Changes the profile for future swings while keeping an accepted swing's timing intact.</summary>
+        public void ConfigureProfile(MeleeAttackProfile profile)
+        {
+            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            _profile = profile;
         }
 
         public void Interrupt()
@@ -47,15 +55,16 @@ namespace Luckbound.Core.Combat
                 _hitWindow = null;
             }
 
-            bool attackActive = _attackStartTick >= 0 &&
+            bool attackActive = _attackStartTick >= 0 && _currentAttackProfile != null &&
                 !_attackCancelled &&
-                tick < _attackStartTick + _profile.AttackIntervalTicks;
+                tick < _attackStartTick + _currentAttackProfile.AttackIntervalTicks;
             bool startedThisTick = false;
 
             if (!attackActive && !dodgeAccepted && attackPressed && tick >= _nextAttackTick)
             {
                 _attackStartTick = tick;
-                _nextAttackTick = tick + _profile.AttackIntervalTicks;
+                _currentAttackProfile = _profile;
+                _nextAttackTick = tick + _currentAttackProfile.AttackIntervalTicks;
                 _attackCancelled = false;
                 _hitWindow = null;
                 _currentDamageMultiplier = _combo.AcceptAttack(tick);
@@ -67,11 +76,11 @@ namespace Luckbound.Core.Combat
             if (attackActive)
             {
                 long elapsedTicks = tick - _attackStartTick;
-                long windowEndTick = (long)_profile.DamageWindowStartTick + _profile.DamageWindowDurationTicks;
-                windowOpen = elapsedTicks >= _profile.DamageWindowStartTick && elapsedTicks < windowEndTick;
+                long windowEndTick = (long)_currentAttackProfile.DamageWindowStartTick + _currentAttackProfile.DamageWindowDurationTicks;
+                windowOpen = elapsedTicks >= _currentAttackProfile.DamageWindowStartTick && elapsedTicks < windowEndTick;
                 if (windowOpen && _hitWindow == null)
                 {
-                    _hitWindow = new MeleeHitWindow(HitId.New(), _profile.BaseDamage, _currentDamageMultiplier);
+                    _hitWindow = new MeleeHitWindow(HitId.New(), _currentAttackProfile.BaseDamage, _currentDamageMultiplier);
                 }
             }
 
@@ -84,9 +93,9 @@ namespace Luckbound.Core.Combat
                 wasStartedThisTick: startedThisTick,
                 isAttacking: attackActive,
                 isDamageWindowOpen: windowOpen,
-                baseDamage: attackActive ? _profile.BaseDamage : 0m,
+                baseDamage: attackActive ? _currentAttackProfile.BaseDamage : 0m,
                 damageMultiplier: attackActive ? _currentDamageMultiplier : 0m,
-                movementSpeedMultiplier: attackActive ? _profile.MovementSpeedMultiplier : 1m,
+                movementSpeedMultiplier: attackActive ? _currentAttackProfile.MovementSpeedMultiplier : 1m,
                 hitWindow: windowOpen ? _hitWindow : null);
         }
     }

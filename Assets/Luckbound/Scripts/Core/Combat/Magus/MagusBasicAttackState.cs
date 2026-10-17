@@ -5,7 +5,7 @@ namespace Luckbound.Core.Combat
     /// <summary>Tick-driven timing for the Magus's free ember-staff basic attack.</summary>
     public sealed class MagusBasicAttackState
     {
-        private readonly MagusBasicAttackProfile _profile;
+        private MagusBasicAttackProfile _profile;
         private long _lastTick = -1;
         private long _nextAttackTick;
         private bool _cancelled;
@@ -13,6 +13,12 @@ namespace Luckbound.Core.Combat
         public MagusBasicAttackState(MagusBasicAttackProfile profile = null)
         {
             _profile = profile ?? MagusBasicAttackProfile.EmberStaff;
+        }
+
+        public void ConfigureProfile(MagusBasicAttackProfile profile)
+        {
+            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            _profile = profile;
         }
 
         public void Interrupt()

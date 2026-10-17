@@ -87,6 +87,41 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator ShadowProjectileIgnoresExactlyOneDefensePointAgainstTheGuard()
+        {
+            int groundLayer = LayerMask.NameToLayer("Ground");
+            GameObject floor = CreateFloor("G01_Shadow_Ground");
+            PlayerFixture player = CreatePlayer("G01_Shadow_Player", new Vector2(7f, 1.5f), groundLayer);
+            HuesoguardiaFixture enemy = CreateEnemy("G01_Shadow_Huesoguardia", new Vector2(0f, 0.5f), player.Motor, groundLayer);
+            ProjectileFixture projectile = CreateProjectileFixture("G01_Shadow_Projectile");
+            Physics2D.SyncTransforms();
+
+            for (int tick = 0; tick < 20 && !enemy.Enemy.IsGuarding; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            Assert.That(enemy.Enemy.IsGuarding, Is.True);
+            FireProjectile(projectile, player.Motor.ActorId, enemy.Enemy,
+                sourceOffset: 1.5f, direction: Vector2.left, defensePenetration: 1);
+            for (int tick = 0; tick < 20 && enemy.Enemy.ProjectileImpactCount == 0; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            Assert.That(enemy.Enemy.ProjectileImpactCount, Is.EqualTo(1));
+            Assert.That(enemy.Enemy.CurrentHealth, Is.EqualTo(41),
+                "Twelve damage minus one ignored point of base-plus-guard defense deals seven.");
+
+            projectile.Scope.Dispose();
+            enemy.Destroy();
+            projectile.Destroy();
+            player.Destroy();
+            Object.Destroy(floor);
+            yield return null;
+        }
+
+        [UnityTest]
         public IEnumerator HuesoguardiaCutMakesOneRealHitThenHasThirtyUnguardedRecoveryTicks()
         {
             using (var evidence = new ScenarioEvidenceRecorder("C06", "C06_CutAndRecovery", 14142135))
@@ -258,11 +293,17 @@ namespace Luckbound.Tests.PlayMode
             ActorId sourceActorId,
             Huesoguardia2D enemy,
             float sourceOffset,
-            Vector2 direction)
+            Vector2 direction,
+            int defensePenetration = 0)
         {
             float sourceX = enemy.transform.position.x + sourceOffset;
             fixture.Pool.Spawn(
-                new ProjectileDefinition(baseDamage: 12m, speedUnitsPerSecond: 12m, lifetimeTicks: 120, maximumTargets: 1),
+                new ProjectileDefinition(
+                    baseDamage: 12m,
+                    speedUnitsPerSecond: 12m,
+                    lifetimeTicks: 120,
+                    maximumTargets: 1,
+                    defensePenetration: defensePenetration),
                 EntityId.New(),
                 sourceActorId,
                 new Vector2(sourceX, enemy.transform.position.y),
