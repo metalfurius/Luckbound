@@ -115,6 +115,30 @@
       "compatibleClassIds": []
     },
     {
+      "id": "armor.runic_mantle",
+      "nameKey": "item.armor.runic_mantle.name",
+      "descriptionKey": "item.armor.runic_mantle.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "armor.iron_cuirass",
+      "nameKey": "item.armor.iron_cuirass.name",
+      "descriptionKey": "item.armor.iron_cuirass.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "armor.bark_armor",
+      "nameKey": "item.armor.bark_armor.name",
+      "descriptionKey": "item.armor.bark_armor.description",
+      "kind": "Armor",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
       "id": "relic.marked_coin",
       "nameKey": "item.relic.marked_coin.name",
       "descriptionKey": "item.relic.marked_coin.description",
@@ -126,6 +150,30 @@
       "id": "relic.hidden_pouch",
       "nameKey": "item.relic.hidden_pouch.name",
       "descriptionKey": "item.relic.hidden_pouch.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.pale_bone",
+      "nameKey": "item.relic.pale_bone.name",
+      "descriptionKey": "item.relic.pale_bone.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.arcane_flask",
+      "nameKey": "item.relic.arcane_flask.name",
+      "descriptionKey": "item.relic.arcane_flask.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.apprentice_gear",
+      "nameKey": "item.relic.apprentice_gear.name",
+      "descriptionKey": "item.relic.apprentice_gear.description",
       "kind": "Relic",
       "maxStack": 1,
       "compatibleClassIds": []
