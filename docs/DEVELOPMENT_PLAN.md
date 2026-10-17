@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.13 — 17 de octubre de 2026.
+**Versión del documento:** 3.14 — 17 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -577,6 +577,8 @@ El catálogo fuente será `Assets/Resources/Luckbound/Data/Skills.json`, con ver
 | Orcini | 10 % más de empuje causado | Contrato de combate |
 | Alvari | 5 % menos de coste de habilidades | Contrato de historia |
 | Dvergar | Una unidad adicional del material recogido por cada cinco unidades obtenidas del mundo | Contrato de fabricación |
+
+`ExpeditionRunConfiguration.RaceId` es la fuente autoritativa de la raza de la partida. La composición pasa ese ID explícitamente al motor y a la recogida; estos no lo infieren de sprites, escenas ni estado global. Alvari aplica primero los modificadores de coste de los pactos con su redondeo vigente y después el descuento racial, redondeado al entero más próximo con medios hacia arriba: sin pacto, 8/12/16 EN cuestan 8/11/15; con Fervor, cuestan 10/14/19. Orcini multiplica por 1,10 el empuje explícito de un impacto directo causado por el jugador; no añade empuje a ataques que no lo definen ni a daño periódico. Los jefes conservan la inmunidad de 3.4 al desplazamiento.
 
 Las cuatro razas compartirán animaciones, controles y dimensiones de colisión. El rasgo Dvergar no contará compras, devoluciones ni materiales fabricados. Para resolver el contador de forma determinista, el progreso se acumulará por tipo de material dentro de la expedición: cada cinco unidades de un mismo material aceptadas desde el mundo conceden una unidad adicional de ese material. El resto de cero a cuatro unidades se conserva entre recogidas y en el guardado. Una compra, fabricación, venta, devolución u otra alta que no venga de un pickup del mundo no cambia ese resto. La recogida es atómica: si su cantidad más el bono excede 99, no se añade ninguna unidad ni avanza el resto.
 
