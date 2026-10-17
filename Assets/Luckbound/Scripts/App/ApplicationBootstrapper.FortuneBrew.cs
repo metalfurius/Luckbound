@@ -163,7 +163,8 @@ namespace Luckbound.App
                 result.Persisted,
                 result.Outcome == null ? FortuneOperationStatus.RejectedInvalidRequest : result.Outcome.Status,
                 currentCharges,
-                result.Persisted && result.Outcome != null ? result.Outcome.Inventory : null);
+                result.Persisted && result.Outcome != null ? result.Outcome.Inventory : null,
+                pending: result.Pending);
         }
 
         private int GetCommittedFortuneCharges()

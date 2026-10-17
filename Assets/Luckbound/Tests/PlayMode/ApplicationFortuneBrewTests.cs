@@ -8,6 +8,7 @@ using Luckbound.Core.Fortune;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
 using Luckbound.Core.Saves;
+using Luckbound.Gameplay.Inventory;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -241,6 +242,54 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
                 Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(chargesBefore + 1));
                 Assert.That(app.HasPendingFortuneMutation, Is.False);
+            }
+            finally
+            {
+                DestroyApplication();
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator RuntimeAdapterCarriesPendingAndCommitsOnlyTheExactRetry()
+        {
+            var store = new MemorySaveStore();
+            Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => store;
+            try
+            {
+                ApplicationBootstrapper app = null;
+                yield return StartApplication(value => app = value);
+                ItemInstanceId brewInstanceId = default;
+                yield return BeginExpedition(app, quickBrewQuantity: 2,
+                    configuredItem => brewInstanceId = configuredItem);
+
+                IPlayerFortuneBrewRuntime runtime = app;
+                TransactionId transactionId = TransactionId.New();
+                int chargesBefore = app.ActiveExpedition.fortuneOfferBookSnapshot.charges;
+                store.FailNextProfileWrite = true;
+
+                PlayerFortuneBrewCommitOutcome failed = null;
+                yield return Complete(runtime.ConsumeFortuneBrewAsync(brewInstanceId, transactionId),
+                    value => failed = value);
+                Assert.That(failed.Persisted, Is.False);
+                Assert.That(failed.Pending, Is.True,
+                    "The Gameplay adapter must preserve App's exact-retry state.");
+                Assert.That(failed.CommittedInventory, Is.Null);
+                Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(2));
+                Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(chargesBefore));
+
+                PlayerFortuneBrewCommitOutcome retried = null;
+                yield return Complete(runtime.ConsumeFortuneBrewAsync(brewInstanceId, transactionId),
+                    value => retried = value);
+                Assert.That(retried.Persisted, Is.True);
+                Assert.That(retried.Pending, Is.False);
+                Assert.That(retried.Status, Is.EqualTo(FortuneOperationStatus.Succeeded));
+                Assert.That(retried.CommittedInventory.QuickConsumable.Quantity, Is.EqualTo(1));
+                Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
+                Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(chargesBefore + 1));
+                Assert.That(app.HasPendingFortuneMutation, Is.False);
+                Assert.That(app.HasPendingExpeditionWrite, Is.False);
             }
             finally
             {
