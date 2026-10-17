@@ -72,7 +72,7 @@ namespace Luckbound.Tests.PlayMode
             ExpeditionRunConfiguration run = CreateRun();
             string sourceNodeId = run.Route.MandatoryNodeIds[0];
             string targetNodeId = run.Route.MandatoryNodeIds[1];
-            RoomWorld world = CreateRoomWorld(run, new[] { sourceNodeId, targetNodeId });
+            RoomWorld world = CreateRoomWorld(run, new[] { sourceNodeId });
             GameObject oldRoot = world.Controller.ActiveRoomRoot;
             RoomLifetimeScope oldScope = world.Controller.ActiveScope;
             RoomInstanceId oldRoomId = world.Controller.CurrentRoomId;
@@ -133,7 +133,7 @@ namespace Luckbound.Tests.PlayMode
 
                 string sourceNodeId = run.Route.MandatoryNodeIds[0];
                 string targetNodeId = run.Route.MandatoryNodeIds[1];
-                world = CreateRoomWorld(run, new[] { sourceNodeId, targetNodeId });
+                world = CreateRoomWorld(run, new[] { sourceNodeId });
                 RoomLifetimeScope sourceScope = world.Controller.ActiveScope;
                 int writesBefore = store.ProfileWriteSuccesses;
                 bool sourceWasAliveDuringWrite = false;
@@ -195,7 +195,7 @@ namespace Luckbound.Tests.PlayMode
 
                 string sourceNodeId = run.Route.MandatoryNodeIds[0];
                 string targetNodeId = run.Route.MandatoryNodeIds[1];
-                world = CreateRoomWorld(run, new[] { sourceNodeId, targetNodeId });
+                world = CreateRoomWorld(run, new[] { sourceNodeId });
                 GameObject oldRoot = world.Controller.ActiveRoomRoot;
                 RoomLifetimeScope oldScope = world.Controller.ActiveScope;
                 RoomInstanceId oldRoomId = world.Controller.CurrentRoomId;
@@ -265,7 +265,7 @@ namespace Luckbound.Tests.PlayMode
                 string targetNodeId = run.Route.MandatoryNodeIds[1];
                 const string resultId = "room-result-restart";
                 const string resultJson = "{\"outcome\":\"cleared\",\"rewardIds\":[\"reward.first\"]}";
-                world = CreateRoomWorld(run, new[] { sourceNodeId, targetNodeId });
+                world = CreateRoomWorld(run, new[] { sourceNodeId });
                 RoomInstanceId sourceRoomId = world.Controller.CurrentRoomId;
                 RoomAdvanceCommitResult first = null;
                 yield return Complete(app.CompleteAndAdvanceRoomAsync(world.Controller, sourceRoomId,
