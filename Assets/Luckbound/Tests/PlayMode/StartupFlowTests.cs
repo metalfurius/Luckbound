@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 using UnityRandom = UnityEngine.Random;
+using Luckbound.App;
+using Luckbound.Core.Saves;
 
 namespace Luckbound.Tests.PlayMode
 {
@@ -19,11 +21,17 @@ namespace Luckbound.Tests.PlayMode
         public IEnumerator BootstrapLoadsTheVisibleMenuAndWritesEvidence()
         {
             UnityRandom.State previousRandomState = UnityRandom.state;
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            string isolatedSaveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundA08", Guid.NewGuid().ToString("N"));
+            var isolatedStore = new FileSaveStore(isolatedSaveDirectory, null);
             var evidence = new ScenarioEvidenceRecorder("A08", "startup-menu", StartupSeed);
 
             try
             {
                 UnityRandom.InitState(StartupSeed);
+                if (ApplicationBootstrapper.Instance != null) UnityEngine.Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                yield return null;
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => isolatedStore;
                 evidence.RecordEvent("Starting the application from the Bootstrap scene.");
                 evidence.RecordInput(0, "LoadScene", "Bootstrap");
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
@@ -58,6 +66,9 @@ namespace Luckbound.Tests.PlayMode
             finally
             {
                 evidence.Dispose();
+                if (ApplicationBootstrapper.Instance != null) UnityEngine.Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                if (Directory.Exists(isolatedSaveDirectory)) Directory.Delete(isolatedSaveDirectory, recursive: true);
                 UnityRandom.state = previousRandomState;
             }
         }

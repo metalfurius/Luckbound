@@ -71,7 +71,7 @@ namespace Luckbound.Tests.PlayMode
                     "Recreated panels expose only the option captured by the pending save.");
                 Assert.That(panel.OptionButtons.Where((button, index) => index != 1 && button.interactable), Is.Empty);
                 Assert.That(panel.ClaimButton.interactable, Is.False);
-                Assert.That(panel.Controller.StatusText, Does.Contain("GUARDADO PENDIENTE"));
+                StringAssert.Contains("GUARDADO PENDIENTE", panel.Controller.StatusText);
 
                 ExpeditionMutationCommitResult<FortuneChoiceResult> choice = null;
                 ExpeditionMutationCommitResult<FortuneChoiceResult> wrongChoice = null;
@@ -83,7 +83,7 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(choice.Outcome.Succeeded, Is.True);
                 Assert.That(panel.Controller.CurrentOffer.SelectedOptionId, Is.EqualTo(selectedItemId));
                 Assert.That(panel.RepeatButton.interactable, Is.False);
-                Assert.That(panel.RepeatAvailabilityText, Does.Contain("OfferLocked"));
+                StringAssert.Contains("OfferLocked", panel.RepeatAvailabilityText.text);
                 Assert.That(panel.ClaimButton.interactable, Is.True);
 
                 store.FailNextProfileWrite = true;
@@ -138,7 +138,7 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(insufficientPanel.Controller.RerollAvailability,
                     Is.EqualTo(FortuneRerollAvailability.InsufficientOptions));
                 Assert.That(insufficientPanel.RepeatButton.interactable, Is.False);
-                Assert.That(insufficientPanel.RepeatAvailabilityText, Does.Contain("InsufficientOptions"));
+                StringAssert.Contains("InsufficientOptions", insufficientPanel.RepeatAvailabilityText.text);
 
                 ExpeditionMutationCommitResult<FortuneOfferResult> chargeOffer = null;
                 yield return Complete(app.CreateFortuneOfferAsync("offer.panel.no-charges", "context.panel.no-charges", ClaimableOptions),
@@ -154,12 +154,12 @@ namespace Luckbound.Tests.PlayMode
                 }
                 Assert.That(noChargesPanel.Controller.RerollAvailability, Is.EqualTo(FortuneRerollAvailability.NoCharges));
                 Assert.That(noChargesPanel.RepeatButton.interactable, Is.False);
-                Assert.That(noChargesPanel.RepeatAvailabilityText, Does.Contain("NoCharges"));
+                StringAssert.Contains("NoCharges", noChargesPanel.RepeatAvailabilityText.text);
 
                 unknownPanel = CreatePanel(app, "offer.panel.missing");
                 Assert.That(unknownPanel.Controller.RerollAvailability, Is.EqualTo(FortuneRerollAvailability.UnknownOffer));
                 Assert.That(unknownPanel.RepeatButton.interactable, Is.False);
-                Assert.That(unknownPanel.RepeatAvailabilityText, Does.Contain("UnknownOffer"));
+                StringAssert.Contains("UnknownOffer", unknownPanel.RepeatAvailabilityText.text);
             }
             finally
             {

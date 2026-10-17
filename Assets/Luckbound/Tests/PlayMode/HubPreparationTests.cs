@@ -79,11 +79,17 @@ namespace Luckbound.Tests.PlayMode
         {
             const int scenarioSeed = 27182819;
             UnityRandom.State previousRandomState = UnityRandom.state;
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            string isolatedSaveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundD05", System.Guid.NewGuid().ToString("N"));
+            var isolatedStore = new FileSaveStore(isolatedSaveDirectory, null);
             var evidence = new ScenarioEvidenceRecorder("D05", "D05_TavernSelectionAndFreshRun", scenarioSeed);
             try
             {
                 UnityRandom.InitState(scenarioSeed);
                 Time.timeScale = 1f;
+                if (ApplicationBootstrapper.Instance != null) Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                yield return null;
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => isolatedStore;
                 evidence.RecordEvent("Load the real application bootstrap and enter Hub using the generated menu control.");
                 evidence.RecordInput(0, "LoadScene", "Bootstrap");
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
@@ -263,6 +269,9 @@ namespace Luckbound.Tests.PlayMode
             {
                 evidence.Dispose();
                 if (ApplicationBootstrapper.Instance != null) ApplicationBootstrapper.Instance.ClearActiveRun();
+                if (ApplicationBootstrapper.Instance != null) Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                if (Directory.Exists(isolatedSaveDirectory)) Directory.Delete(isolatedSaveDirectory, recursive: true);
                 UnityRandom.state = previousRandomState;
                 Time.timeScale = 1f;
             }

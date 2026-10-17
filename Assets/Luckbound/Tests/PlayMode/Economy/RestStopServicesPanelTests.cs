@@ -100,7 +100,7 @@ namespace Luckbound.Tests.PlayMode.Economy
                 yield return WaitUntil(() => !controller.IsBusy && !app.HasPendingEconomyMutation);
                 Assert.That(controller.LastTransactionId, Is.EqualTo(pendingPurchaseId),
                     "Keyboard submit retries the original transaction instead of creating a second purchase.");
-                Assert.That(pendingOperationKey, Does.Contain(pendingPurchaseId.ToString()));
+                StringAssert.Contains(pendingPurchaseId.ToString(), pendingOperationKey);
                 Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(82));
                 Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(3));
                 Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion").remainingQuantity,
@@ -177,7 +177,19 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(servicesRestored, Is.True);
 
                 yield return LoadExpedition(value => controller = value);
-                Assert.That(controller.IsServiceOffered, Is.True);
+                ExpeditionSaveData reloadedExpedition = app.ActiveExpedition;
+                ExpeditionRouteNode reloadedNode = app.ActiveRun.Route.Nodes.FirstOrDefault(node =>
+                    node.NodeId == reloadedExpedition.currentNodeId);
+                Button reloadedAccessButton = controller.AccessButton;
+                string reloadedServiceState = "scene=" + SceneManager.GetActiveScene().name +
+                    "; ready=" + app.SaveDataReady + "; activeRun=" + (app.ActiveRun != null) +
+                    "; loadError=" + app.ActiveExpeditionLoadError + "; node=" + reloadedExpedition.currentNodeId +
+                    "; kind=" + (reloadedNode == null ? "missing" : reloadedNode.Kind.ToString()) +
+                    "; offered=" + controller.IsServiceOffered +
+                    "; accessActive=" + (reloadedAccessButton != null && reloadedAccessButton.gameObject.activeInHierarchy);
+                evidence.RecordAssertion("The rest stop remains available after restart", controller.IsServiceOffered,
+                    "service entry point visible and enabled", reloadedServiceState);
+                Assert.That(controller.IsServiceOffered, Is.True, reloadedServiceState);
                 SimulatePointerClick(controller.AccessButton);
                 Assert.That(FindButton(controller, "EnterRestStop"), Is.Null,
                     "The once-only rest-entry service must no longer be offered after restart.");
@@ -264,10 +276,16 @@ namespace Luckbound.Tests.PlayMode.Economy
         {
             RestStopServicesPanelController controller = null;
             SceneManager.LoadScene("Expedition", LoadSceneMode.Single);
-            for (int frame = 0; frame < 90 && (SceneManager.GetActiveScene().name != "Expedition" ||
-                (controller = UnityEngine.Object.FindAnyObjectByType<RestStopServicesPanelController>()) == null); frame++)
+            for (int frame = 0; frame < 90; frame++)
+            {
                 yield return null;
+                if (SceneManager.GetActiveScene().name != "Expedition") continue;
+                controller = UnityEngine.Object.FindAnyObjectByType<RestStopServicesPanelController>();
+                if (controller != null && controller.AccessButton != null &&
+                    controller.AccessButton.gameObject.scene == SceneManager.GetActiveScene()) break;
+            }
             Assert.That(controller, Is.Not.Null, "ExpeditionRunSessionPresenter must create the E03 service panel.");
+            Assert.That(controller.AccessButton, Is.Not.Null, "The E03 service panel must finish creating its scene-owned entry button.");
             setController(controller);
             yield return null;
         }
@@ -313,7 +331,9 @@ namespace Luckbound.Tests.PlayMode.Economy
 
         private static Button FindButton(RestStopServicesPanelController controller, string name)
         {
-            Button[] buttons = controller.GetComponentsInChildren<Button>(true);
+            if (controller == null || controller.AccessButton == null || controller.AccessButton.transform.parent == null)
+                return null;
+            Button[] buttons = controller.AccessButton.transform.parent.GetComponentsInChildren<Button>(true);
             for (int index = buttons.Length - 1; index >= 0; index--)
                 if (buttons[index].gameObject.name == name) return buttons[index];
             return null;

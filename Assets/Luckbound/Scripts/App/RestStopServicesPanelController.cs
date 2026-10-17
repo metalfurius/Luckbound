@@ -281,7 +281,7 @@ namespace Luckbound.App
                 if (stocked && inventory.Gold < price) label += L(" · falta oro", " · not enough gold");
                 string capturedItemId = offer.itemId;
                 AddAction("Buy_" + StableUiId(capturedItemId), label,
-                    () => Purchase(capturedItemId), stocked, height: 28f);
+                    () => _ = Purchase(capturedItemId), stocked, height: 28f);
             }
 
             AddInfo(L("VENDER MATERIALES · precio unitario al 25 %", "SELL MATERIALS · unit value at 25 %"));
@@ -295,7 +295,7 @@ namespace Luckbound.App
                     : MaterialLabel(materialKind) + L(" · sin unidades", " · none held");
                 MaterialKind capturedKind = materialKind;
                 AddAction("SellMaterial_" + materialKind, label,
-                    () => SellMaterial(capturedKind), count > 0, height: 28f);
+                    () => _ = SellMaterial(capturedKind), count > 0, height: 28f);
             }
 
             AddInfo(L("VENDER OBJETOS · una unidad por acción", "SELL ITEMS · one unit per action"));
@@ -308,7 +308,7 @@ namespace Luckbound.App
                     " +" + item.UpgradeLevel + " · +" + value + L(" oro · tienes ", " gold · held ") + item.Quantity;
                 ItemInstanceId capturedId = item.InstanceId;
                 AddAction("SellItem_" + instanceId, label,
-                    () => SellItem(capturedId), true, height: 28f);
+                    () => _ = SellItem(capturedId), true, height: 28f);
             }
         }
 
@@ -355,7 +355,7 @@ namespace Luckbound.App
             string label = L("MEJORAR ", "UPGRADE ") + targetName + " +" + nextLevel + " · " + cost;
             ItemInstanceId targetId = target.InstanceId;
             AddAction("Upgrade_" + kind, label,
-                () => Upgrade(recipeId, targetId), true, height: 31f);
+                () => _ = Upgrade(recipeId, targetId), true, height: 31f);
         }
 
         private void BuildRestPage()
@@ -372,7 +372,7 @@ namespace Luckbound.App
                     "Resting restores up to 20 health and saves fixed stock once."));
                 bool alive = saved.currentHealth > 0;
                 AddAction("EnterRestStop", L("ENTRAR EN DESCANSO · recuperar hasta 20", "REST · restore up to 20"),
-                    EnterRestStop, alive, height: 34f);
+                    () => _ = EnterRestStop(), alive, height: 34f);
                 return;
             }
 
@@ -386,7 +386,7 @@ namespace Luckbound.App
                 : L("TALIA · recuperar hasta 50 por 20 oro", "TALIA · restore up to 50 for 20 gold");
             if (!alreadyUsed && saved.currentHealth >= saved.maximumHealth) taliaLabel += L(" · salud completa", " · full health");
             else if (!alreadyUsed && inventory.Gold < RestStopService.TaliaGoldCost) taliaLabel += L(" · falta oro", " · not enough gold");
-            AddAction("UseTalia", taliaLabel, UseTalia, canUseTalia, height: 34f);
+            AddAction("UseTalia", taliaLabel, () => _ = UseTalia(), canUseTalia, height: 34f);
         }
 
         private async Task EnterRestStop()
@@ -741,7 +741,7 @@ namespace Luckbound.App
             rect.offsetMax = offsetMax;
         }
 
-        private static Font BuiltinFont() => Resources.GetBuiltinResource<Font>("Arial.ttf");
+        private static Font BuiltinFont() => Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
         private void Select(Button button)
         {
@@ -770,6 +770,12 @@ namespace Luckbound.App
         {
             _statusMessage = value ?? string.Empty;
             if (_statusText != null) _statusText.text = _statusMessage;
+        }
+
+        private string PendingRetryText()
+        {
+            return L("GUARDADO PENDIENTE · vuelve a interactuar para reintentar esta operación.",
+                "SAVE PENDING · interact again to retry this operation.");
         }
 
         private string FormatMaterialBag(ExpeditionInventory inventory)
