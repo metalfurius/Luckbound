@@ -741,6 +741,14 @@ Fran reiteró que **no debe ver ninguna ventana, pestaña, panel, diálogo, avis
 
 Esta actualización solo deja constancia de la reafirmación. No se abrió ninguna interfaz ni se ejecutaron Unity, pruebas o builds.
 
+## Unity 6000.6.6f1 — regresión de Luckbound y CI (17 de octubre de 2026)
+
+- `ProjectVersion.txt` y `.github/workflows/build.yml` quedan alineados en Unity `6000.6.6f1`. Las imágenes de test, Windows y WebGL, sus claves de caché y los metadatos de release apuntan a esa versión. La acción GameCI limita `-testFilter` a `Luckbound`, para ejecutar la suite del juego y no las pruebas internas del paquete SRP.
+- El paquete Core SRP `17.6.0` está embebido para que la importación limpia pueda regenerar los `.meta` ausentes en la copia BuiltIn inmutable de Unity. El paquete versionado coincide byte a byte con el paquete BuiltIn, salvo los dos `.meta` nuevos que Unity generó para `ReadonlyMaterialConverter.MaterialReferenceBuilder.cs` y `ReadonlyMaterialConverter.MaterialReferenceChanger.cs`.
+- Unity `6000.6.6f1`, WindowsEditor, `-batchmode -nographics`, `IsHumanControllingUs=0` y `MainWindowHandle=0`: EditMode filtrado `269/269` en `Logs/Coordinator-20261017-g01-editmode-luckbound-only.xml`; PlayMode filtrado `182/182` en `Logs/Coordinator-20261017-g01-playmode-luckbound-only.xml`, ambos sin fallos, omitidos ni inconclusos.
+- El PlayMode sin filtro **no pasó**: 593 casos, 219 pasaron, 4 fallaron y 370 se omitieron. Los cuatro fallos son pruebas `UnityEngine.PathTracing.Tests.PathIteratorTests` del Core SRP embebido y reportan `Kernel 'SetAlphaChannel' not found`; las 182 pruebas de Luckbound del mismo informe pasaron. Este resultado justifica que CI filtre el grupo del juego y no se registra como aceptación global aprobada.
+- No se ejecutó todavía build Windows/WebGL, GitHub Actions ni publicación. Se mantuvieron intactas las referencias originales del usuario.
+
 ## Ficha que debe completar cada ejecución
 
 Copiar esta ficha para la tarea activa y añadir las evidencias reales:
