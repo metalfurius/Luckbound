@@ -138,6 +138,29 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator ValidDodgeTakesPriorityOverSimultaneousAntidoteWithoutConsumingIt()
+        {
+            PlayerFixture player = CreatePlayer(PlayerMotor2D.AntidoteItemId, 1);
+            try
+            {
+                player.Input.Press(PlayerAction.Dodge);
+                player.Input.Press(PlayerAction.Consumable);
+                yield return new WaitForFixedUpdate();
+
+                Assert.That(player.Motor.DodgeActivationCount, Is.EqualTo(1));
+                Assert.That(player.Motor.LastConsumableUseOutcome.Status,
+                    Is.EqualTo(PlayerConsumableUseStatus.Cancelled));
+                Assert.That(player.Inventory.QuickConsumable.Quantity, Is.EqualTo(1),
+                    "A lower-priority action must not consume its item on the dodge activation tick.");
+                Assert.That(player.Motor.AntidoteProtectionEndsAtTickExclusive, Is.Zero);
+            }
+            finally
+            {
+                player.Destroy();
+            }
+        }
+
+        [UnityTest]
         public IEnumerator BombInputQueuesFortyDamageForActorsInsideItsInclusiveRadiusOnly()
         {
             PlayerFixture player = CreatePlayer(PlayerMotor2D.BombItemId, 1);

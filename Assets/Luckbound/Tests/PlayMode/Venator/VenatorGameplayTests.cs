@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
+using Luckbound.Core.Inventory;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Combat.Venator;
+using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Movement;
 using Luckbound.Gameplay.Rooms;
 using NUnit.Framework;
@@ -262,6 +265,7 @@ namespace Luckbound.Tests.PlayMode.Venator
             VenatorFixture fixture = CreateFixture(
                 VenatorSkillLoadout.PiercingArrowId,
                 VenatorSkillLoadout.TripleShotId);
+            EquipQuickConsumable(fixture, PlayerMotor2D.HealthPotionItemId);
             fixture.Motor.ReceiveDirectImpact(
                 HitId.New(),
                 Request(fixture.Motor.CombatStats, 1m),
@@ -520,6 +524,32 @@ namespace Luckbound.Tests.PlayMode.Venator
                 enemyLayer);
             _fixtures.Add(fixture);
             return fixture;
+        }
+
+        private static void EquipQuickConsumable(VenatorFixture fixture, string itemId)
+        {
+            TextAsset itemsJson = Resources.Load<TextAsset>("Luckbound/Data/Items/Items");
+            Assert.That(itemsJson, Is.Not.Null, "The test must use the authoritative Items.json resource.");
+            ItemCatalog catalog = ItemCatalogJsonLoader.Load(itemsJson.text);
+            var inventory = new ExpeditionInventory(catalog, VenatorSkillLoadout.ClassId);
+            var stack = new InventoryItemStack(ItemInstanceId.New(), itemId, ItemRarity.Common, 0, 1);
+            Assert.That(inventory.TryCollectItem(stack, TransactionId.New()).Succeeded, Is.True);
+
+            int slot = -1;
+            for (int index = 0; index < ExpeditionInventory.BackpackCapacity; index++)
+            {
+                if (inventory.GetBackpackSlot(index)?.InstanceId == stack.InstanceId)
+                {
+                    slot = index;
+                    break;
+                }
+            }
+            Assert.That(slot, Is.GreaterThanOrEqualTo(0), "The test health potion must occupy a backpack slot.");
+            Assert.That(inventory.SetQuickConsumable(slot, TransactionId.New()).Succeeded, Is.True);
+
+            ItemCollector2D collector = fixture.Motor.GetComponent<ItemCollector2D>();
+            if (collector == null) collector = fixture.Motor.gameObject.AddComponent<ItemCollector2D>();
+            collector.Configure(inventory, catalog);
         }
 
         private static DamageCalculationRequest Request(CombatStats targetStats, decimal baseDamage)

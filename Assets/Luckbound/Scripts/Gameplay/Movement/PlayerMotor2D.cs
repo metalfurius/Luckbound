@@ -972,7 +972,7 @@ namespace Luckbound.Gameplay.Movement
 
             if (_fortuneBrewPendingTransactionId.IsValid)
             {
-                if (requested && hasQuick && itemId == FortuneBrewItemId &&
+                if (requested && !interrupted && hasQuick && itemId == FortuneBrewItemId &&
                     quick.InstanceId == _fortuneBrewPendingItemInstanceId)
                 {
                     LastConsumableUseOutcome = BeginFortuneBrewUse(quick);
@@ -1068,6 +1068,13 @@ namespace Luckbound.Gameplay.Movement
             {
                 LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
                     PlayerConsumableUseStatus.Preparing, itemId);
+                return LastConsumableUseOutcome;
+            }
+
+            if (requested && interrupted && !stunnedAtStart)
+            {
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.Cancelled, itemId);
                 return LastConsumableUseOutcome;
             }
 

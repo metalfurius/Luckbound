@@ -674,7 +674,10 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(slot, Is.GreaterThanOrEqualTo(0), "The test quick consumable should occupy a backpack slot.");
             InventoryOperationOutcome equipped = run.Inventory.SetQuickConsumable(slot, TransactionId.New());
             Assert.That(equipped.Succeeded, Is.True, "Could not set the test quick consumable.");
-            Assert.That(run.Inventory.QuickConsumable, Is.SameAs(stack));
+            Assert.That(run.Inventory.QuickConsumable, Is.Not.Null);
+            Assert.That(run.Inventory.QuickConsumable.InstanceId, Is.EqualTo(stack.InstanceId));
+            Assert.That(run.Inventory.QuickConsumable.ItemId, Is.EqualTo(itemId));
+            Assert.That(run.Inventory.QuickConsumable.Quantity, Is.EqualTo(quantity));
             return stack;
         }
 

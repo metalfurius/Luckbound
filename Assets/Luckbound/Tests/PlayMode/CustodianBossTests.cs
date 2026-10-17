@@ -6,9 +6,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Luckbound.App;
 using Luckbound.Content;
+using Luckbound.Core.Identifiers;
+using Luckbound.Core.Inventory;
 using Luckbound.Core.Progression.Contracts;
 using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Enemies;
+using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Movement;
 using NUnit.Framework;
 using UnityEngine;
@@ -113,6 +116,8 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(arena.Boss, Is.Not.Null);
                 PlayerMotor2D player = arena.PlayerMotor;
                 CustodianBoss2D boss = arena.Boss;
+                EquipStartingHealthPotions(player);
+                ItemCollector2D playerCollector = player.GetComponent<ItemCollector2D>();
                 Assert.That(boss.MaximumHealth, Is.EqualTo(900));
                 Assert.That(boss.CurrentHealth, Is.EqualTo(900));
                 Assert.That(boss.Defense, Is.EqualTo(3));
@@ -223,7 +228,8 @@ namespace Luckbound.Tests.PlayMode
                         attackHeld = false;
                     }
 
-                    if (player.CurrentHealth <= 65 && player.HealthPotionCharges > 0 &&
+                    if (player.CurrentHealth <= 65 && playerCollector.Inventory.QuickConsumable != null &&
+                        playerCollector.Inventory.QuickConsumable.Quantity > 0 &&
                         simulatedTicks - lastPotionTick >= 60 && !player.IsPreparingHealthPotion)
                     {
                         SetKey(Key.F, true);
@@ -323,6 +329,34 @@ namespace Luckbound.Tests.PlayMode
             if (task.IsFaulted) throw task.Exception.Flatten();
             if (task.IsCanceled) throw new OperationCanceledException();
             completed(task.GetAwaiter().GetResult());
+        }
+
+        private static void EquipStartingHealthPotions(PlayerMotor2D player)
+        {
+            TextAsset itemsJson = Resources.Load<TextAsset>("Luckbound/Data/Items/Items");
+            if (itemsJson == null) throw new InvalidOperationException("Missing Items.json for the D06 starting loadout.");
+            ItemCatalog catalog = ItemCatalogJsonLoader.Load(itemsJson.text);
+            var inventory = new ExpeditionInventory(catalog, "class.bellator");
+            var potions = new InventoryItemStack(
+                ItemInstanceId.New(), PlayerMotor2D.HealthPotionItemId, ItemRarity.Common, 0, 2);
+            InventoryOperationOutcome collected = inventory.TryCollectItem(potions, TransactionId.New());
+            if (!collected.Succeeded) throw new InvalidOperationException("Could not create the D06 starting health potions.");
+
+            int backpackSlot = -1;
+            for (int index = 0; index < ExpeditionInventory.BackpackCapacity; index++)
+            {
+                if (inventory.GetBackpackSlot(index)?.InstanceId == potions.InstanceId)
+                {
+                    backpackSlot = index;
+                    break;
+                }
+            }
+            if (backpackSlot < 0 || !inventory.SetQuickConsumable(backpackSlot, TransactionId.New()).Succeeded)
+                throw new InvalidOperationException("Could not equip the D06 starting quick consumable.");
+
+            ItemCollector2D collector = player.GetComponent<ItemCollector2D>();
+            if (collector == null) collector = player.gameObject.AddComponent<ItemCollector2D>();
+            collector.Configure(inventory, catalog);
         }
 
         private static void DeleteContractSaveDirectory(string directory)
