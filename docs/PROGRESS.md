@@ -797,3 +797,9 @@ Copiar esta ficha para la tarea activa y añadir las evidencias reales:
 - **Regresión final coordinada:** EditMode `269/269` en `Logs/Coordinator-20261017-e03-e04-f09-editmode-r2.xml`; PlayMode `202/202` en `Logs/Coordinator-20261017-e03-e04-f09-playmode-r4.xml`; prueba dirigida de reinicio E03 `1/1` en `Logs/Coordinator-20261017-e03-restart-targeted-r3.xml`. Unity `6000.6.6f1`, WindowsEditor, `-batchmode -nographics`, código 0, sin fallos, omitidos ni inconclusos; `MainWindowHandle=0`. `git diff --check` pasa.
 - **Commit del coordinador:** `4a84670` integra estas correcciones, pruebas y estados verificados.
 - **Límites:** no se ejecutó una nueva build ni publicación; la ruta pública de Luckbound permanece intacta. F10 y la revisión de Fran siguen pendientes. Los cuatro archivos de referencia originales continúan intactos y sin seguimiento.
+
+## Reafirmación directa de visibilidad — 17 de octubre de 2026
+
+Fran deja asentado de nuevo que no quiere ver ninguna ventana que no necesite usar personalmente para tomar una decisión concreta. Las ventanas de herramientas, juegos, pruebas, builds, navegadores, terminales o cualquier otro proceso deben ejecutarse sin interfaz o en un sandbox/escritorio verdaderamente aislado e inaccesible para su sesión. No basta con minimizarlas, dejarlas detrás de otra ventana o quitarles el foco; tampoco se mostrarán momentáneamente ni se insertarán previsualizaciones en el chat si no hacen falta para una decisión suya. Esta regla obliga al coordinador y a todos los agentes. Si no se puede garantizar la invisibilidad, la operación no se lanza y se registra como bloqueo.
+
+Se reafirmó la regla en `AGENTS.md`, §3.5 de `AGENT_EXECUTION.md` y la versión 3.21 del plan. Esta actualización es documental: no ejecutó Unity, pruebas ni builds y no cambia la aceptación de tareas técnicas.
