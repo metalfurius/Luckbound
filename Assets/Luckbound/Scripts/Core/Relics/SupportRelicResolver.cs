@@ -8,36 +8,78 @@ namespace Luckbound.Core.Relics
         public const string PaleBone = "relic.pale_bone";
         public const string ArcaneFlask = "relic.arcane_flask";
         public const string ApprenticeGear = "relic.apprentice_gear";
+        public const string AlvariLeaf = "relic.alvari_leaf";
+        public const string RouteCord = "relic.route_cord";
+        public const string BlessedVial = "relic.blessed_vial";
+        public const string SigiledBark = "relic.sigiled_bark";
+        public const string MerchantSeal = "relic.merchant_seal";
 
-        /// <summary>Returns whether the ID names one of the three supported relics.</summary>
+        /// <summary>Returns whether the ID names one of the eight support relics.</summary>
         public static bool IsSupported(string relicId)
         {
             return string.Equals(relicId, PaleBone, StringComparison.Ordinal) ||
                 string.Equals(relicId, ArcaneFlask, StringComparison.Ordinal) ||
-                string.Equals(relicId, ApprenticeGear, StringComparison.Ordinal);
+                string.Equals(relicId, ApprenticeGear, StringComparison.Ordinal) ||
+                string.Equals(relicId, AlvariLeaf, StringComparison.Ordinal) ||
+                string.Equals(relicId, RouteCord, StringComparison.Ordinal) ||
+                string.Equals(relicId, BlessedVial, StringComparison.Ordinal) ||
+                string.Equals(relicId, SigiledBark, StringComparison.Ordinal) ||
+                string.Equals(relicId, MerchantSeal, StringComparison.Ordinal);
         }
     }
 
     /// <summary>
-    /// Immutable additive modifiers from the supported support relics. These are deltas to maximum
-    /// values and a cooldown percentage only; current health or energy is never changed here.
-    /// The consumer applies the plan's final skill-cooldown floor.
+    /// Immutable additive modifiers from the supported support relics. Percentage values are
+    /// accumulated by category before a consumer applies them. Maximum-resource bonuses are deltas;
+    /// resolving them never changes current health or energy.
     /// </summary>
     public readonly struct SupportRelicModifiers
     {
         internal SupportRelicModifiers(
             int maximumHealthBonus,
             int maximumEnergyBonus,
-            int skillCooldownReductionPercent)
+            int skillCooldownReductionPercent,
+            int skillCostReductionPercent,
+            int movementSpeedBonusPercent,
+            int consumableHealingBonusPercent,
+            int harmfulStatusDurationReductionPercent,
+            int purchasePriceReductionPercent)
         {
             MaximumHealthBonus = maximumHealthBonus;
             MaximumEnergyBonus = maximumEnergyBonus;
             SkillCooldownReductionPercent = skillCooldownReductionPercent;
+            SkillCostReductionPercent = skillCostReductionPercent;
+            MovementSpeedBonusPercent = movementSpeedBonusPercent;
+            ConsumableHealingBonusPercent = consumableHealingBonusPercent;
+            HarmfulStatusDurationReductionPercent = harmfulStatusDurationReductionPercent;
+            PurchasePriceReductionPercent = purchasePriceReductionPercent;
         }
 
         public int MaximumHealthBonus { get; }
         public int MaximumEnergyBonus { get; }
         public int SkillCooldownReductionPercent { get; }
+        public int SkillCostReductionPercent { get; }
+        public int MovementSpeedBonusPercent { get; }
+        public int ConsumableHealingBonusPercent { get; }
+        public int HarmfulStatusDurationReductionPercent { get; }
+        public int PurchasePriceReductionPercent { get; }
+
+        /// <summary>
+        /// Adds independent modifier sources by category. Percentage categories stay separate and
+        /// are summed before the eventual stat or price calculation.
+        /// </summary>
+        public SupportRelicModifiers Add(SupportRelicModifiers other)
+        {
+            return new SupportRelicModifiers(
+                checked(MaximumHealthBonus + other.MaximumHealthBonus),
+                checked(MaximumEnergyBonus + other.MaximumEnergyBonus),
+                checked(SkillCooldownReductionPercent + other.SkillCooldownReductionPercent),
+                checked(SkillCostReductionPercent + other.SkillCostReductionPercent),
+                checked(MovementSpeedBonusPercent + other.MovementSpeedBonusPercent),
+                checked(ConsumableHealingBonusPercent + other.ConsumableHealingBonusPercent),
+                checked(HarmfulStatusDurationReductionPercent + other.HarmfulStatusDurationReductionPercent),
+                checked(PurchasePriceReductionPercent + other.PurchasePriceReductionPercent));
+        }
 
         /// <summary>Adds the relic bonus to a positive maximum health value.</summary>
         public int AddToMaximumHealth(int currentMaximumHealth)
@@ -77,10 +119,7 @@ namespace Luckbound.Core.Relics
 
             SupportRelicModifiers first = GetModifiers(relicOneId);
             SupportRelicModifiers second = GetModifiers(relicTwoId);
-            return new SupportRelicModifiers(
-                checked(first.MaximumHealthBonus + second.MaximumHealthBonus),
-                checked(first.MaximumEnergyBonus + second.MaximumEnergyBonus),
-                checked(first.SkillCooldownReductionPercent + second.SkillCooldownReductionPercent));
+            return first.Add(second);
         }
 
         private static void ValidateSlot(string relicId, string parameterName)
@@ -96,11 +135,21 @@ namespace Luckbound.Core.Relics
             switch (relicId)
             {
                 case SupportRelicIds.PaleBone:
-                    return new SupportRelicModifiers(15, 0, 0);
+                    return new SupportRelicModifiers(15, 0, 0, 0, 0, 0, 0, 0);
                 case SupportRelicIds.ArcaneFlask:
-                    return new SupportRelicModifiers(0, 10, 0);
+                    return new SupportRelicModifiers(0, 10, 0, 0, 0, 0, 0, 0);
                 case SupportRelicIds.ApprenticeGear:
-                    return new SupportRelicModifiers(0, 0, 10);
+                    return new SupportRelicModifiers(0, 0, 10, 0, 0, 0, 0, 0);
+                case SupportRelicIds.AlvariLeaf:
+                    return new SupportRelicModifiers(0, 0, 0, 10, 0, 0, 0, 0);
+                case SupportRelicIds.RouteCord:
+                    return new SupportRelicModifiers(0, 0, 0, 0, 8, 0, 0, 0);
+                case SupportRelicIds.BlessedVial:
+                    return new SupportRelicModifiers(0, 0, 0, 0, 0, 20, 0, 0);
+                case SupportRelicIds.SigiledBark:
+                    return new SupportRelicModifiers(0, 0, 0, 0, 0, 0, 25, 0);
+                case SupportRelicIds.MerchantSeal:
+                    return new SupportRelicModifiers(0, 0, 0, 0, 0, 0, 0, 15);
                 case null:
                     return default;
                 default:

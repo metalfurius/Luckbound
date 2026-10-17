@@ -179,6 +179,46 @@
       "compatibleClassIds": []
     },
     {
+      "id": "relic.alvari_leaf",
+      "nameKey": "item.relic.alvari_leaf.name",
+      "descriptionKey": "item.relic.alvari_leaf.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.route_cord",
+      "nameKey": "item.relic.route_cord.name",
+      "descriptionKey": "item.relic.route_cord.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.blessed_vial",
+      "nameKey": "item.relic.blessed_vial.name",
+      "descriptionKey": "item.relic.blessed_vial.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.sigiled_bark",
+      "nameKey": "item.relic.sigiled_bark.name",
+      "descriptionKey": "item.relic.sigiled_bark.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.merchant_seal",
+      "nameKey": "item.relic.merchant_seal.name",
+      "descriptionKey": "item.relic.merchant_seal.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
       "id": "consumable.health_potion",
       "nameKey": "item.consumable.health_potion.name",
       "descriptionKey": "item.consumable.health_potion.description",
