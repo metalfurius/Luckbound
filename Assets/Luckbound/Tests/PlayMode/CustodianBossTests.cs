@@ -1,8 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Luckbound.App;
 using Luckbound.Content;
+using Luckbound.Core.Progression.Contracts;
+using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Movement;
 using NUnit.Framework;
@@ -12,6 +17,7 @@ using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Luckbound.Tests.PlayMode
 {
@@ -21,6 +27,27 @@ namespace Luckbound.Tests.PlayMode
         private readonly HashSet<Key> _pressedKeys = new HashSet<Key>();
         private bool _leftHeld;
         private bool _rightHeld;
+        private Func<ISaveStore> _previousSaveStoreFactory;
+        private string _contractSaveDirectory;
+        private bool _restoreSaveStoreFactory;
+
+        [UnityTearDown]
+        public IEnumerator RestoreContractTestApplication()
+        {
+            if (!_restoreSaveStoreFactory) yield break;
+            try
+            {
+                if (ApplicationBootstrapper.Instance != null)
+                    Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                yield return null;
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = _previousSaveStoreFactory;
+                DeleteContractSaveDirectory(_contractSaveDirectory);
+                _restoreSaveStoreFactory = false;
+            }
+        }
 
         [Test]
         public void D06BossJsonMaintainsThePlanValuesAndRejectsAChangedAttack()
@@ -47,6 +74,25 @@ namespace Luckbound.Tests.PlayMode
         {
             using (var evidence = new ScenarioEvidenceRecorder("D06", "D06_RealCombatCustodianTwoPhases", 31415927))
             {
+                _contractSaveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Boss", Guid.NewGuid().ToString("N"));
+                _previousSaveStoreFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => new FileSaveStore(_contractSaveDirectory, null);
+                _restoreSaveStoreFactory = true;
+                if (ApplicationBootstrapper.Instance != null)
+                    Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                yield return null;
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
+                    !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
+                    yield return null;
+
+                ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+                Assert.That(app, Is.Not.Null);
+                Assert.That(app.SaveDataReady, Is.True);
+                ContractProgressionCommitResult acceptedCustodianContract = null;
+                yield return Complete(app.AcceptContractAsync("CT02"), value => acceptedCustodianContract = value);
+                Assert.That(acceptedCustodianContract.Succeeded, Is.True, acceptedCustodianContract.Message);
+
                 _pressedKeys.Clear();
                 _leftHeld = false;
                 _rightHeld = false;
@@ -240,10 +286,54 @@ namespace Luckbound.Tests.PlayMode
                     "result=" + arena.Result + "; dead=" + boss.IsDead + "; health=" + boss.CurrentHealth +
                         "; melee=" + boss.MeleeImpactCount + "; playerHealth=" + player.CurrentHealth);
 
+                for (int frame = 0; frame < 120 && app.ContractProgression.GetProgress("CT02") != 1; frame++) yield return null;
+                int custodianProgressAfterCombat = app.ContractProgression.GetProgress("CT02");
+                for (int frame = 0; frame < 10; frame++) yield return null;
+                bool actualDefeatRecordedOnce = arena.Result == CustodianArenaResult.Victory &&
+                    defeatedThroughCombat && custodianProgressAfterCombat == 1 &&
+                    app.ContractProgression.GetProgress("CT02") == 1;
+                evidence.RecordAssertion("A real Custodian defeat records CT02 once despite later arena frames",
+                    actualDefeatRecordedOnce, "CT02=1 after combat and remains 1",
+                    "victory=" + (arena.Result == CustodianArenaResult.Victory) + "; afterCombat=" +
+                    custodianProgressAfterCombat + "; afterExtraFrames=" + app.ContractProgression.GetProgress("CT02"));
+
+                Object.Destroy(app.gameObject);
+                yield return null;
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
+                    !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
+                    yield return null;
+                app = ApplicationBootstrapper.Instance;
+                bool custodianProgressPersisted = app != null && app.ContractProgression.GetProgress("CT02") == 1;
+                evidence.RecordAssertion("Custodian contract progress survives an application restart",
+                    custodianProgressPersisted, "reloaded profile CT02=1",
+                    app == null ? "application missing after restart" : "CT02=" + app.ContractProgression.GetProgress("CT02"));
+
                 int exitCode = evidence.Complete();
                 yield return null;
                 Assert.That(exitCode, Is.Zero, "D06 real combat scenario failed. Evidence: " + evidence.ReportPath);
+                Assert.That(actualDefeatRecordedOnce, Is.True);
+                Assert.That(custodianProgressPersisted, Is.True);
             }
+        }
+
+        private static IEnumerator Complete<T>(Task<T> task, Action<T> completed)
+        {
+            while (!task.IsCompleted) yield return null;
+            if (task.IsFaulted) throw task.Exception.Flatten();
+            if (task.IsCanceled) throw new OperationCanceledException();
+            completed(task.GetAwaiter().GetResult());
+        }
+
+        private static void DeleteContractSaveDirectory(string directory)
+        {
+            if (string.IsNullOrEmpty(directory)) return;
+            string tempRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(Path.DirectorySeparatorChar) +
+                Path.DirectorySeparatorChar;
+            string fullDirectory = Path.GetFullPath(directory);
+            if (!fullDirectory.StartsWith(tempRoot, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Refusing to delete a save directory outside the system temp root.");
+            if (Directory.Exists(fullDirectory)) Directory.Delete(fullDirectory, recursive: true);
         }
 
         private void SetMove(float direction)

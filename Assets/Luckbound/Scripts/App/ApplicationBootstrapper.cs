@@ -36,7 +36,9 @@ namespace Luckbound.App
         private PendingContractProgression _pendingContractProgression;
         private PendingCraft _pendingCraft;
         private PendingEconomyMutation _pendingEconomyMutation;
+        private readonly Queue<ContractProgressEvent> _queuedGameplayProgressEvents = new Queue<ContractProgressEvent>();
         private readonly SemaphoreSlim _profileMutationGate = new SemaphoreSlim(1, 1);
+        private bool _isDrainingGameplayProgressEvents;
         private ExpeditionSaveData _activeExpedition;
         private long _activeExpeditionRevision;
         private ExpeditionSaveData _pendingExpeditionCandidate;
@@ -125,26 +127,102 @@ namespace Luckbound.App
                 throw new ArgumentOutOfRangeException(nameof(progressEvent));
 
             await _profileMutationGate.WaitAsync();
+            try { return await RecordContractProgressEventUnderGateAsync(progressEvent); }
+            finally { _profileMutationGate.Release(); }
+        }
+
+        /// <summary>
+        /// Runtime gameplay event sources use this fire-and-forget boundary after a real event. It keeps storage
+        /// failures out of input/physics callbacks and drains later events after the exact pending write is retried.
+        /// </summary>
+        internal void RecordContractProgressEventFromGameplay(ContractProgressEvent progressEvent)
+        {
+            if (!SaveDataReady) return;
+            if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
+            {
+                Debug.LogWarning("Ignored an invalid gameplay contract progress event: " + progressEvent, this);
+                return;
+            }
+
+            _queuedGameplayProgressEvents.Enqueue(progressEvent);
+            ScheduleGameplayProgressEventDrain();
+        }
+
+        private async Task<ContractProgressionCommitResult> RecordContractProgressEventUnderGateAsync(
+            ContractProgressEvent progressEvent)
+        {
+            if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
+                throw new ArgumentOutOfRangeException(nameof(progressEvent));
+            if (HasPendingContractProgression)
+                return PendingContractProgressionResult(ContractProgressionCommitOperation.RecordProgress,
+                    "Retry the exact pending contract progression write before recording another event.");
+            if (!CanMutateContractProgression(out string unavailableReason))
+                return ContractProgressionFailure(ContractProgressionCommitOperation.RecordProgress, unavailableReason);
+
+            ContractProgressOutcome outcome = ContractProgressionRules.RecordProgress(_contractProgression, progressEvent);
+            if (!outcome.ChangesProfile)
+                return new ContractProgressionCommitResult(ContractProgressionCommitOperation.RecordProgress,
+                    _contractProgression, null, outcome.Status, null, null, true, false,
+                    "All implemented counters for this event are already complete.");
+
+            ProfileSaveData candidate = _profileData.Clone();
+            ApplyContractProgressionSnapshot(candidate, outcome.Snapshot);
+            return await CommitContractProgressionAsync(candidate, outcome.Snapshot,
+                ContractProgressionCommitOperation.RecordProgress, null, outcome.Status, null, null);
+        }
+
+        private void ScheduleGameplayProgressEventDrain()
+        {
+            if (!SaveDataReady || _isDrainingGameplayProgressEvents || _queuedGameplayProgressEvents.Count == 0)
+                return;
+            _ = DrainGameplayProgressEventsAsync();
+        }
+
+        private async Task DrainGameplayProgressEventsAsync()
+        {
+            if (_isDrainingGameplayProgressEvents) return;
+            _isDrainingGameplayProgressEvents = true;
             try
             {
-                if (HasPendingContractProgression)
-                    return PendingContractProgressionResult(ContractProgressionCommitOperation.RecordProgress,
-                        "Retry the exact pending contract progression write before recording another event.");
-                if (!CanMutateContractProgression(out string unavailableReason))
-                    return ContractProgressionFailure(ContractProgressionCommitOperation.RecordProgress, unavailableReason);
+                while (_queuedGameplayProgressEvents.Count > 0)
+                {
+                    await _profileMutationGate.WaitAsync();
+                    try
+                    {
+                        if (HasPendingContractProgression)
+                            return;
 
-                ContractProgressOutcome outcome = ContractProgressionRules.RecordProgress(_contractProgression, progressEvent);
-                if (!outcome.ChangesProfile)
-                    return new ContractProgressionCommitResult(ContractProgressionCommitOperation.RecordProgress,
-                        _contractProgression, null, outcome.Status, null, null, true, false,
-                        "All implemented counters for this event are already complete.");
+                        ContractProgressEvent progressEvent = _queuedGameplayProgressEvents.Peek();
+                        ContractProgressionCommitResult result =
+                            await RecordContractProgressEventUnderGateAsync(progressEvent);
+                        if (result.Persisted)
+                        {
+                            _queuedGameplayProgressEvents.Dequeue();
+                            continue;
+                        }
 
-                ProfileSaveData candidate = _profileData.Clone();
-                ApplyContractProgressionSnapshot(candidate, outcome.Snapshot);
-                return await CommitContractProgressionAsync(candidate, outcome.Snapshot,
-                    ContractProgressionCommitOperation.RecordProgress, null, outcome.Status, null, null);
+                        if (result.Pending && _pendingContractProgression != null)
+                        {
+                            // The exact event is captured by the pending profile payload. Keep later events
+                            // queued until that payload is retried successfully.
+                            _queuedGameplayProgressEvents.Dequeue();
+                            return;
+                        }
+
+                        Debug.LogWarning("A gameplay contract progress event was not committed: " + result.Message, this);
+                        return;
+                    }
+                    finally { _profileMutationGate.Release(); }
+                }
             }
-            finally { _profileMutationGate.Release(); }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception, this);
+            }
+            finally
+            {
+                _isDrainingGameplayProgressEvents = false;
+            }
         }
 
         /// <summary>Durably claims one completed contract reward in the tavern.</summary>
@@ -200,7 +278,11 @@ namespace Luckbound.App
                     pending.AcceptStatus, pending.ProgressStatus, pending.ClaimStatus, pending.Reward,
                     persisted: true, pending: false, message: save.Message);
             }
-            finally { _profileMutationGate.Release(); }
+            finally
+            {
+                _profileMutationGate.Release();
+                ScheduleGameplayProgressEventDrain();
+            }
         }
 
         public async Task<ProgressionPurchaseCommitResult> PurchasePermanentUpgradeAsync(
@@ -272,7 +354,11 @@ namespace Luckbound.App
         {
             await _profileMutationGate.WaitAsync();
             try { return await RetryPendingPermanentUpgradeUnderGateAsync(); }
-            finally { _profileMutationGate.Release(); }
+            finally
+            {
+                _profileMutationGate.Release();
+                ScheduleGameplayProgressEventDrain();
+            }
         }
 
         private async Task<ProgressionPurchaseCommitResult> RetryPendingPermanentUpgradeUnderGateAsync()
@@ -560,7 +646,11 @@ namespace Luckbound.App
                         "Retry the exact pending contract progression operation through RetryPendingContractProgressionAsync.");
                 return await RetryPendingExpeditionWriteUnderGateAsync();
             }
-            finally { _profileMutationGate.Release(); }
+            finally
+            {
+                _profileMutationGate.Release();
+                ScheduleGameplayProgressEventDrain();
+            }
         }
 
         public async Task<CraftingCommitResult> CraftActiveExpeditionAsync(
@@ -593,10 +683,14 @@ namespace Luckbound.App
 
                 RecipeCatalog recipeCatalog = RecipeCatalogJsonLoader.Load(
                     LoadRequired("Luckbound/Data/Items/Recipes").text, ActiveRun.Inventory.Catalog);
+                bool transactionAlreadySucceeded = HasSuccessfulCraftReceipt(ActiveRun.Inventory, transactionId);
                 ExpeditionInventory candidateInventory = ExpeditionInventory.Restore(
                     ActiveRun.Inventory.Catalog, ActiveRun.Inventory.CreateSnapshot());
                 CraftingOutcome outcome = candidateInventory.TryCraft(
                     recipeCatalog, recipeId, transactionId, upgradeTargetInstanceId);
+                ContractProgressEvent? progressEvent = transactionAlreadySucceeded
+                    ? (ContractProgressEvent?)null
+                    : GetCraftProgressEvent(recipeCatalog, recipeId, outcome);
                 ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);
                 ExpeditionSaveData candidateSave = _activeExpedition.Clone();
                 candidateSave.inventorySnapshotJson = JsonUtility.ToJson(candidateInventory.CreateSnapshot());
@@ -606,23 +700,36 @@ namespace Luckbound.App
                 SaveWriteResult save = await SaveExpeditionCandidateUnderGateAsync(
                     candidateSave, _activeExpeditionRevision, candidateRun);
                 if (save.Succeeded)
+                {
+                    if (progressEvent.HasValue)
+                        RecordContractProgressEventFromGameplay(progressEvent.Value);
                     return new CraftingCommitResult(outcome, persisted: true, pending: false, save.Message);
+                }
 
                 if (HasPendingExpeditionWrite)
                 {
-                    _pendingCraft = new PendingCraft(recipeId, transactionId, upgradeTargetInstanceId, outcome);
+                    _pendingCraft = new PendingCraft(recipeId, transactionId, upgradeTargetInstanceId, outcome,
+                        progressEvent);
                     return new CraftingCommitResult(outcome, persisted: false, pending: true, save.Message);
                 }
                 return new CraftingCommitResult(outcome, persisted: false, pending: false, save.Message);
             }
-            finally { _profileMutationGate.Release(); }
+            finally
+            {
+                _profileMutationGate.Release();
+                ScheduleGameplayProgressEventDrain();
+            }
         }
 
         public async Task<CraftingCommitResult> RetryPendingCraftingAsync()
         {
             await _profileMutationGate.WaitAsync();
             try { return await RetryPendingCraftingUnderGateAsync(); }
-            finally { _profileMutationGate.Release(); }
+            finally
+            {
+                _profileMutationGate.Release();
+                ScheduleGameplayProgressEventDrain();
+            }
         }
 
         private async Task<CraftingCommitResult> RetryPendingCraftingUnderGateAsync()
@@ -633,6 +740,8 @@ namespace Luckbound.App
 
             PendingCraft pending = _pendingCraft;
             SaveWriteResult save = await RetryPendingExpeditionWriteUnderGateAsync();
+            if (save.Succeeded && pending.ProgressEvent.HasValue)
+                RecordContractProgressEventFromGameplay(pending.ProgressEvent.Value);
             return new CraftingCommitResult(pending.Outcome, persisted: save.Succeeded,
                 pending: !save.Succeeded && HasPendingExpeditionWrite, save.Message);
         }
@@ -697,9 +806,27 @@ namespace Luckbound.App
         {
             string operationKey = string.Join("|", "smith.upgrade", roomInstanceId, transactionId,
                 recipeId ?? string.Empty, targetInstanceId);
-            return ExecuteEconomyMutationAsync(operationKey, roomInstanceId, requiresRestStop: true,
-                (run, inventory, _) => SmithingService.TryUpgrade(inventory,
-                    LoadRecipeCatalog(run), recipeId, targetInstanceId, transactionId));
+            return UpgradeEquipmentAndRecordProgressAsync(operationKey, roomInstanceId, recipeId,
+                targetInstanceId, transactionId);
+        }
+
+        private async Task<ExpeditionMutationCommitResult<SmithingOutcome>> UpgradeEquipmentAndRecordProgressAsync(
+            string operationKey, RoomInstanceId roomInstanceId, string recipeId,
+            ItemInstanceId targetInstanceId, TransactionId transactionId)
+        {
+            bool transactionAlreadySucceeded = false;
+            ExpeditionMutationCommitResult<SmithingOutcome> result = await ExecuteEconomyMutationAsync(
+                operationKey, roomInstanceId, requiresRestStop: true,
+                (run, inventory, _) =>
+                {
+                    transactionAlreadySucceeded = HasSuccessfulCraftReceipt(run.Inventory, transactionId);
+                    return SmithingService.TryUpgrade(inventory,
+                        LoadRecipeCatalog(run), recipeId, targetInstanceId, transactionId);
+                });
+
+            if (!transactionAlreadySucceeded && result.Persisted && result.Outcome != null && result.Outcome.Succeeded)
+                RecordContractProgressEventFromGameplay(ContractProgressEvent.ItemUpgraded);
+            return result;
         }
 
         public Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> UseTaliaAsync(
@@ -733,10 +860,16 @@ namespace Luckbound.App
                 if (!(_pendingEconomyMutation.Outcome is T outcome))
                     return new ExpeditionMutationCommitResult<T>(default, false, true,
                         "The pending economy operation has a different result type.");
+                bool smithingAlreadyCommitted = outcome is SmithingOutcome pendingSmithing &&
+                    ActiveRun != null && HasSuccessfulCraftReceipt(ActiveRun.Inventory,
+                        pendingSmithing.CraftingOutcome.TransactionId);
 
                 if (_pendingExpeditionCandidate == null)
                 {
                     _pendingEconomyMutation = null;
+                    if (!smithingAlreadyCommitted && outcome is SmithingOutcome alreadyCommittedSmithing &&
+                        alreadyCommittedSmithing.Succeeded)
+                        RecordContractProgressEventFromGameplay(ContractProgressEvent.ItemUpgraded);
                     return new ExpeditionMutationCommitResult<T>(outcome, true, false,
                         "The economy operation was already durably committed.");
                 }
@@ -746,9 +879,15 @@ namespace Luckbound.App
                     return new ExpeditionMutationCommitResult<T>(outcome, false, HasPendingExpeditionWrite, save.Message);
 
                 _pendingEconomyMutation = null;
+                if (!smithingAlreadyCommitted && outcome is SmithingOutcome committedSmithing && committedSmithing.Succeeded)
+                    RecordContractProgressEventFromGameplay(ContractProgressEvent.ItemUpgraded);
                 return new ExpeditionMutationCommitResult<T>(outcome, true, false, save.Message);
             }
-            finally { _profileMutationGate.Release(); }
+            finally
+            {
+                _profileMutationGate.Release();
+                ScheduleGameplayProgressEventDrain();
+            }
         }
 
         private async Task<ExpeditionMutationCommitResult<T>> ExecuteEconomyMutationAsync<T>(
@@ -811,7 +950,11 @@ namespace Luckbound.App
                 }
                 return new ExpeditionMutationCommitResult<T>(outcome, false, false, save.Message);
             }
-            finally { _profileMutationGate.Release(); }
+            finally
+            {
+                _profileMutationGate.Release();
+                ScheduleGameplayProgressEventDrain();
+            }
         }
 
         private async Task<ExpeditionMutationCommitResult<T>> RetryPendingEconomyMutationUnderGateAsync<T>(T outcome)
@@ -833,6 +976,27 @@ namespace Luckbound.App
             ExpeditionRouteNode node = ActiveRun.Route.Nodes.SingleOrDefault(candidate =>
                 string.Equals(candidate.NodeId, _activeExpedition.currentNodeId, StringComparison.Ordinal));
             return node != null && node.Kind == ExpeditionRouteNodeKind.Rest;
+        }
+
+        private static ContractProgressEvent? GetCraftProgressEvent(
+            RecipeCatalog recipeCatalog, string recipeId, CraftingOutcome outcome)
+        {
+            if (outcome == null || !outcome.Succeeded || recipeCatalog == null ||
+                !recipeCatalog.TryGet(recipeId, out RecipeDefinition recipe))
+                return null;
+
+            return recipe.ResultKind == CraftingResultKind.Upgrade
+                ? ContractProgressEvent.ItemUpgraded
+                : ContractProgressEvent.ItemCrafted;
+        }
+
+        private static bool HasSuccessfulCraftReceipt(ExpeditionInventory inventory, TransactionId transactionId)
+        {
+            if (inventory == null || !transactionId.IsValid) return false;
+            InventoryTransactionSnapshot[] transactions = inventory.CreateSnapshot().transactions;
+            return transactions != null && transactions.Any(transaction => transaction != null &&
+                string.Equals(transaction.transactionId, transactionId.ToString(), StringComparison.Ordinal) &&
+                transaction.craftingStatus == (int)CraftingOperationStatus.Succeeded);
         }
 
         private static RecipeCatalog LoadRecipeCatalog(ExpeditionRunConfiguration run)
@@ -1044,7 +1208,11 @@ namespace Luckbound.App
         {
             await _profileMutationGate.WaitAsync();
             try { return await RetryPendingSettlementUnderGateAsync(); }
-            finally { _profileMutationGate.Release(); }
+            finally
+            {
+                _profileMutationGate.Release();
+                ScheduleGameplayProgressEventDrain();
+            }
         }
 
         private async Task<ExpeditionSettlementCommitResult> RetryPendingSettlementUnderGateAsync()
@@ -1226,18 +1394,21 @@ namespace Luckbound.App
         private sealed class PendingCraft
         {
             public PendingCraft(string recipeId, TransactionId transactionId,
-                ItemInstanceId upgradeTargetInstanceId, CraftingOutcome outcome)
+                ItemInstanceId upgradeTargetInstanceId, CraftingOutcome outcome,
+                ContractProgressEvent? progressEvent)
             {
                 RecipeId = recipeId;
                 TransactionId = transactionId;
                 UpgradeTargetInstanceId = upgradeTargetInstanceId;
                 Outcome = outcome;
+                ProgressEvent = progressEvent;
             }
 
             public string RecipeId { get; }
             public TransactionId TransactionId { get; }
             public ItemInstanceId UpgradeTargetInstanceId { get; }
             public CraftingOutcome Outcome { get; }
+            public ContractProgressEvent? ProgressEvent { get; }
         }
 
         private sealed class PendingEconomyMutation

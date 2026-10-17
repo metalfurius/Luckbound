@@ -65,6 +65,7 @@ namespace Luckbound.Gameplay.Enemies
         private Collider2D _collider;
         private CustodianBossDefinition _definition;
         private bool _initialized;
+        private bool _defeatEventRaised;
         private bool _cutResolved;
         private bool _chargeContactOccurred;
         private int _playerLayerMask;
@@ -107,6 +108,9 @@ namespace Luckbound.Gameplay.Enemies
         public int ProjectileImpactCount { get; private set; }
         public int SuccessfulPlayerHitCount { get; private set; }
         public bool IsDead => State == CustodianBehaviorState.Dead;
+
+        /// <summary>Raised once after this initialized boss reaches Dead through a resolved combat impact.</summary>
+        public event Action<ActorId> Defeated;
 
         public void Initialize(
             ActorId actorId,
@@ -156,6 +160,7 @@ namespace Luckbound.Gameplay.Enemies
             ProjectileImpactTarget2D target = GetComponent<ProjectileImpactTarget2D>();
             if (target != null) target.ClearPendingImpacts();
             ClearActiveWaves();
+            Defeated = null;
         }
 
         private void FixedUpdate()
@@ -393,6 +398,7 @@ namespace Luckbound.Gameplay.Enemies
 
         private void EnterDeadState()
         {
+            if (IsDead) return;
             State = CustodianBehaviorState.Dead;
             Phase = CustodianPhase.Defeated;
             _telegraphTicksRemaining = 0;
@@ -407,6 +413,11 @@ namespace Luckbound.Gameplay.Enemies
             _body.simulated = false;
             ClearActiveWaves();
             UpdateVisualState();
+            if (!_defeatEventRaised && _initialized && _actorId.IsValid)
+            {
+                _defeatEventRaised = true;
+                Defeated?.Invoke(_actorId);
+            }
         }
 
         private void ResolveMeleeImpacts(long tick)

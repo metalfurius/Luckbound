@@ -9,6 +9,7 @@ using Luckbound.Core.Crafting;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Progression.Contracts;
 using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Inventory;
 using NUnit.Framework;
@@ -54,6 +55,11 @@ namespace Luckbound.Tests.PlayMode
                     profileReady, "ready profile with no active run", app == null ? "missing app" :
                     "ready=" + app.SaveDataReady + "; canStart=" + app.CanStartNewExpedition);
                 Assert.That(profileReady, Is.True);
+
+                ContractProgressionCommitResult acceptedCraftContract = null;
+                yield return Complete(app.AcceptContractAsync("CT04"), value => acceptedCraftContract = value);
+                Assert.That(acceptedCraftContract.Succeeded, Is.True, acceptedCraftContract.Message);
+                Assert.That(app.ContractProgression.GetProgress("CT04"), Is.Zero);
 
                 ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator",
                     ExpeditionRunConfiguration.HumanRaceId,
@@ -134,6 +140,9 @@ namespace Luckbound.Tests.PlayMode
                     "; resin=" + inventory.GetMaterialCount(MaterialKind.DarkResin) +
                     "; status=" + presenter.CraftStatusText);
                 Assert.That(retryCommitsExactRecipe, Is.True);
+                for (int frame = 0; frame < 120 && app.ContractProgression.GetProgress("CT04") != 1; frame++) yield return null;
+                Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(1),
+                    "Only the persisted successful crafting transaction should advance CT04.");
 
                 evidence.RecordInput(6, "TransactionReplay", "Submit the committed crafting TransactionId again");
                 Task<CraftingCommitResult> replay = app.CraftActiveExpeditionAsync(HealthPotionRecipeId, committedCraftId);
@@ -143,7 +152,7 @@ namespace Luckbound.Tests.PlayMode
                     CraftingOperationStatus.Succeeded);
                 bool replayIsUnique = replay.Result.Persisted && replay.Result.Outcome != null &&
                     replay.Result.Outcome.Succeeded && inventory.QuickConsumable.Quantity == 3 &&
-                    successfulReceiptsAfterReplay == 1;
+                    successfulReceiptsAfterReplay == 1 && app.ContractProgression.GetProgress("CT04") == 1;
                 evidence.RecordAssertion("Replaying the same transaction returns success without a second potion",
                     replayIsUnique, "same success result; potion quantity stays 3; exactly one success receipt",
                     "persisted=" + replay.Result.Persisted + "; potions=" + inventory.QuickConsumable.Quantity +
@@ -162,6 +171,7 @@ namespace Luckbound.Tests.PlayMode
                     inventory.QuickConsumable != null && inventory.QuickConsumable.Quantity == 3 &&
                     inventory.GetMaterialCount(MaterialKind.UmbraHerb) == 0 &&
                     inventory.GetMaterialCount(MaterialKind.DarkResin) == 0 &&
+                    app.ContractProgression.GetProgress("CT04") == 1 &&
                     CountCraftReceipts(afterRejectionSnapshot, CraftingOperationStatus.Succeeded) == 1 &&
                     CountCraftReceipts(afterRejectionSnapshot, CraftingOperationStatus.RejectedInsufficientMaterials) == 1;
                 evidence.RecordAssertion("A second player intent is rejected without changing functional inventory",
@@ -206,6 +216,7 @@ namespace Luckbound.Tests.PlayMode
                     restoredInventory.QuickConsumable != null && restoredInventory.QuickConsumable.Quantity == 2 &&
                     restoredInventory.GetMaterialCount(MaterialKind.UmbraHerb) == 0 &&
                     restoredInventory.GetMaterialCount(MaterialKind.DarkResin) == 0 &&
+                    app.ContractProgression.GetProgress("CT04") == 1 &&
                     !restoredSnapshot.transactions.Any(item => item.transactionId == committedCraftId.ToString()) &&
                     !restoredSnapshot.transactions.Any(item => item.transactionId == rejectedCraftId.ToString());
                 evidence.RecordAssertion("Restart restores the immutable entry checkpoint for this unfinished room",

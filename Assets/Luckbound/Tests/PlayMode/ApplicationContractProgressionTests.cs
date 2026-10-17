@@ -17,6 +17,34 @@ namespace Luckbound.Tests.PlayMode
     public sealed class ApplicationContractProgressionTests
     {
         [UnityTest]
+        public IEnumerator E10_InvalidGameplayEventIsRejectedWithoutChangingContractProgress()
+        {
+            string directory = CreateSaveDirectory();
+            Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => new FileSaveStore(directory, null);
+            try
+            {
+                ApplicationBootstrapper app = null;
+                yield return StartApplication(value => app = value);
+                ContractProgressionSnapshot before = app.ContractProgression;
+                Task<ContractProgressionCommitResult> invalidEvent = app.RecordContractProgressEventAsync(
+                    (ContractProgressEvent)int.MaxValue);
+                while (!invalidEvent.IsCompleted) yield return null;
+
+                Assert.That(invalidEvent.IsFaulted, Is.True);
+                Assert.That(invalidEvent.Exception.GetBaseException(), Is.TypeOf<ArgumentOutOfRangeException>());
+                Assert.That(app.ContractProgression, Is.SameAs(before));
+                Assert.That(app.Profile.contractCounters, Is.Empty);
+            }
+            finally
+            {
+                DestroyApplication();
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                DeleteSaveDirectory(directory);
+            }
+        }
+
+        [UnityTest]
         public IEnumerator E10_ProfileEventsBeforeAcceptanceRespectTheThreeContractLimit()
         {
             string directory = CreateSaveDirectory();

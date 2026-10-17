@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
+using Luckbound.Core.Progression.Contracts;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Input;
 using Luckbound.Gameplay.Movement;
@@ -41,6 +43,7 @@ namespace Luckbound.App
         private CustodianBoss2D _boss;
         private PlayerHudPresenter _hudPresenter;
         private ExpeditionPauseController _pauseController;
+        private readonly HashSet<ActorId> _reportedCustodianDefeats = new HashSet<ActorId>();
         private bool _resultSet;
 
         public PlayerMotor2D PlayerMotor => _playerMotor;
@@ -78,6 +81,7 @@ namespace Luckbound.App
             _boss = bossObject.GetComponent<CustodianBoss2D>();
             if (_boss == null) throw new InvalidOperationException("Custodian prototype prefab is missing CustodianBoss2D.");
             _boss.Initialize(ActorId.New(), _playerMotor, definition, _wavePrefab, _waveRoot);
+            _boss.Defeated += OnCustodianDefeated;
 
             _hudPresenter = gameObject.AddComponent<PlayerHudPresenter>();
             _hudPresenter.Initialize(_playerMotor, _telemetryText);
@@ -109,12 +113,20 @@ namespace Luckbound.App
         {
             if (_inputSource != null && _pauseController != null) _inputSource.PausePressed -= _pauseController.TogglePause;
             if (_returnToMenuButton != null) _returnToMenuButton.onClick.RemoveListener(ReturnToMenu);
+            if (_boss != null) _boss.Defeated -= OnCustodianDefeated;
             if (_inputSource != null)
             {
                 _inputSource.Dispose();
                 _inputSource = null;
             }
             Time.timeScale = 1f;
+        }
+
+        private void OnCustodianDefeated(ActorId actorId)
+        {
+            if (!actorId.IsValid || !_reportedCustodianDefeats.Add(actorId)) return;
+            ApplicationBootstrapper.Instance?.RecordContractProgressEventFromGameplay(
+                ContractProgressEvent.CustodianDefeated);
         }
 
         public void ReturnToMenu()

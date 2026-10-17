@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Luckbound.Content;
 using Luckbound.Core.Identifiers;
+using Luckbound.Core.Progression.Contracts;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Input;
 using Luckbound.Gameplay.Movement;
@@ -38,6 +39,8 @@ namespace Luckbound.App
 
         private readonly List<Slime2D> _slimes = new List<Slime2D>();
         private readonly List<Huesoguardia2D> _huesoguardias = new List<Huesoguardia2D>();
+        private readonly List<Huesoguardia2D> _subscribedHuesoguardias = new List<Huesoguardia2D>();
+        private readonly HashSet<ActorId> _reportedHuesoguardiaDefeats = new HashSet<ActorId>();
         private CombatEncounterData _encounter;
         private GameObject _playerObject;
         private PlayerInputSource _inputSource;
@@ -124,6 +127,9 @@ namespace Luckbound.App
         {
             if (_inputSource != null && _pauseController != null) _inputSource.PausePressed -= _pauseController.TogglePause;
             if (_returnToMenuButton != null) _returnToMenuButton.onClick.RemoveListener(ReturnToMenu);
+            foreach (Huesoguardia2D enemy in _subscribedHuesoguardias)
+                if (enemy != null) enemy.Defeated -= OnHuesoguardiaDefeated;
+            _subscribedHuesoguardias.Clear();
             if (_inputSource != null)
             {
                 _inputSource.Dispose();
@@ -165,6 +171,8 @@ namespace Luckbound.App
                     Huesoguardia2D huesoguardia = enemyObject.GetComponent<Huesoguardia2D>();
                     if (huesoguardia == null) throw new InvalidOperationException("Huesoguardia prototype prefab is missing Huesoguardia2D.");
                     huesoguardia.Initialize(enemyId, _playerMotor, 1 << groundLayer);
+                    huesoguardia.Defeated += OnHuesoguardiaDefeated;
+                    _subscribedHuesoguardias.Add(huesoguardia);
                     _huesoguardias.Add(huesoguardia);
                 }
             }
@@ -180,9 +188,20 @@ namespace Luckbound.App
 
         private void SetResult(CombatArenaResult result)
         {
+            if (_resultSet) return;
             Result = result;
             _resultSet = true;
+            if (result == CombatArenaResult.Victory)
+                ApplicationBootstrapper.Instance?.RecordContractProgressEventFromGameplay(
+                    ContractProgressEvent.CombatRoomCompleted);
             RefreshEncounterText();
+        }
+
+        private void OnHuesoguardiaDefeated(ActorId actorId)
+        {
+            if (!actorId.IsValid || !_reportedHuesoguardiaDefeats.Add(actorId)) return;
+            ApplicationBootstrapper.Instance?.RecordContractProgressEventFromGameplay(
+                ContractProgressEvent.BoneguardDefeated);
         }
 
         private void RefreshEncounterText()

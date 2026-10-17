@@ -48,6 +48,7 @@ namespace Luckbound.Gameplay.Enemies
         private ContactFilter2D _groundContactFilter;
         private bool _hasHitPlayerThisAttack;
         private bool _initialized;
+        private bool _defeatEventRaised;
         private bool _attackContactOccurred;
         private HitId _attackHitId;
         private PlayerMotor2D _player;
@@ -90,6 +91,9 @@ namespace Luckbound.Gameplay.Enemies
         public Vector2 LastMeleeKnockbackVelocity { get; private set; }
 
         public bool IsGrounded { get; private set; }
+
+        /// <summary>Raised once after this initialized actor reaches Dead through a resolved combat impact.</summary>
+        public event Action<ActorId> Defeated;
 
         public void Initialize(ActorId actorId, PlayerMotor2D player, LayerMask groundLayers)
         {
@@ -170,6 +174,7 @@ namespace Luckbound.Gameplay.Enemies
             {
                 _impactTarget.ClearPendingImpacts();
             }
+            Defeated = null;
         }
 
         private void FixedUpdate()
@@ -426,6 +431,7 @@ namespace Luckbound.Gameplay.Enemies
 
         private void EnterDeadState()
         {
+            if (State == HuesoguardiaBehaviorState.Dead) return;
             State = HuesoguardiaBehaviorState.Dead;
             _impactTarget.ClearPendingImpacts();
             MagusStatusEffectTarget2D statusTarget = GetComponent<MagusStatusEffectTarget2D>();
@@ -433,6 +439,11 @@ namespace Luckbound.Gameplay.Enemies
             _collider.enabled = false;
             _body.linearVelocity = Vector2.zero;
             _body.simulated = false;
+            if (!_defeatEventRaised && _initialized && _actorId.IsValid)
+            {
+                _defeatEventRaised = true;
+                Defeated?.Invoke(_actorId);
+            }
         }
 
         private bool CanDetectPlayer()
