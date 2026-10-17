@@ -6,6 +6,7 @@ using Luckbound.Core.Expeditions;
 using Luckbound.Core.Fortune;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Progression;
+using Luckbound.Core.Progression.Contracts;
 
 namespace Luckbound.Core.Saves
 {
@@ -376,6 +377,19 @@ namespace Luckbound.Core.Saves
             ValidateIds(profile.unlockedStartingKitIds, "unlocked starting kit IDs", errors);
             ValidateIds(profile.acceptedContractIds, "accepted contract IDs", errors);
             ValidateIds(profile.claimedContractIds, "claimed contract IDs", errors);
+            if (profile.acceptedContractIds != null && profile.claimedContractIds != null &&
+                profile.acceptedContractIds.All(value => !string.IsNullOrWhiteSpace(value)) &&
+                profile.claimedContractIds.All(value => !string.IsNullOrWhiteSpace(value)))
+            {
+                var acceptedContracts = new HashSet<string>(profile.acceptedContractIds, StringComparer.Ordinal);
+                var claimedContracts = new HashSet<string>(profile.claimedContractIds, StringComparer.Ordinal);
+                if (claimedContracts.Any(contractId => !acceptedContracts.Contains(contractId)))
+                    errors.Add("Claimed contracts must also be accepted.");
+
+                int activeContractCount = acceptedContracts.Except(claimedContracts).Count();
+                if (activeContractCount > ContractProgressionRules.MaximumActiveContracts)
+                    errors.Add("A profile cannot have more than three active contracts.");
+            }
             ValidateIds(profile.readStoryFragmentIds, "read story fragment IDs", errors);
             ValidateIds(profile.processedSettlementRunIds, "processed settlement RunIds", errors);
             if (profile.processedSettlementRunIds != null)

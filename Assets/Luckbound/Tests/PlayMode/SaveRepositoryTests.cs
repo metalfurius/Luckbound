@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -75,6 +77,62 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(loadedSettings.Data.settings.ambienceVolume, Is.EqualTo(0.3f).Within(0.0001f));
             Assert.That(Path.GetFileName(NewFileStore().GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(FileSaveStore.ProfileFileName));
             Assert.That(Path.GetFileName(NewFileStore().GetPrimaryPath(SaveDocument.Settings)), Is.EqualTo(FileSaveStore.SettingsFileName));
+        }
+
+        [Test]
+        public void ProfileValidationRejectsClaimedContractThatWasNotAccepted()
+        {
+            ProfileSaveData profile = ProfileSaveData.CreateNewProfile();
+            profile.claimedContractIds = new[] { "contract.ct01" };
+
+            IReadOnlyList<string> errors = SaveDataValidation.Validate(profile);
+
+            Assert.That(errors, Does.Contain("Claimed contracts must also be accepted."));
+        }
+
+        [Test]
+        public void ProfileValidationRejectsMoreThanThreeActiveContracts()
+        {
+            ProfileSaveData profile = ProfileSaveData.CreateNewProfile();
+            profile.acceptedContractIds = new[]
+            {
+                "contract.ct01", "contract.ct02", "contract.ct03", "contract.ct04"
+            };
+
+            IReadOnlyList<string> errors = SaveDataValidation.Validate(profile);
+
+            Assert.That(errors, Does.Contain("A profile cannot have more than three active contracts."));
+        }
+
+        [Test]
+        public void SemanticallyInvalidChecksummedPrimaryRecoversValidBackup()
+        {
+            var repository = NewRepository();
+            ProfileSaveData first = ProfileSaveData.CreateNewProfile();
+            first.availableRenown = 21;
+            Assert.That(Wait(repository.SaveProfileAsync(first)).Succeeded, Is.True);
+            ProfileSaveData second = first.Clone();
+            second.availableRenown = 54;
+            Assert.That(Wait(repository.SaveProfileAsync(second)).Succeeded, Is.True);
+
+            string primaryPath = NewFileStore().GetPrimaryPath(SaveDocument.Profile);
+            ProfileSaveEnvelope invalidPrimary = JsonUtility.FromJson<ProfileSaveEnvelope>(File.ReadAllText(primaryPath));
+            invalidPrimary.profile.acceptedContractIds = new[]
+            {
+                "contract.ct01", "contract.ct02", "contract.ct03", "contract.ct04"
+            };
+            Type codecType = typeof(SaveRepository).Assembly.GetType("Luckbound.App.SaveJsonCodec", true);
+            MethodInfo encode = codecType.GetMethod("Encode", BindingFlags.Public | BindingFlags.Static,
+                null, new[] { typeof(ProfileSaveEnvelope) }, null);
+            Assert.That(encode, Is.Not.Null);
+            string invalidJson = (string)encode.Invoke(null, new object[] { invalidPrimary });
+            Assert.That(invalidPrimary.checksum, Does.Match("^[0-9a-f]{64}$"));
+            File.WriteAllText(primaryPath, invalidJson, new System.Text.UTF8Encoding(false));
+
+            SaveLoadResult<ProfileSaveEnvelope> recovered = Wait(NewRepository().LoadProfileAsync());
+
+            Assert.That(recovered.Status, Is.EqualTo(SaveLoadStatus.RecoveredBackup));
+            Assert.That(recovered.Data.profile.availableRenown, Is.EqualTo(21));
         }
 
         [Test]
