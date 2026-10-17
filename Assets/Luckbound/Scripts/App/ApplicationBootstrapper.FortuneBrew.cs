@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Luckbound.Core.Consumables;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Fortune;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
