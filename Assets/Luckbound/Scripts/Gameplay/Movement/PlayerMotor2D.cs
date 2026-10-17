@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Luckbound.Core.Armor;
 using Luckbound.Core.Combat;
+using Luckbound.Core.Consumables;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
@@ -13,8 +15,10 @@ using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Combat.Magus;
 using Luckbound.Gameplay.Combat.Venator;
 using Luckbound.Gameplay.Enemies;
+using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Rooms;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using EntityId = Luckbound.Core.Identifiers.EntityId;
 
 namespace Luckbound.Gameplay.Movement
@@ -44,6 +48,13 @@ namespace Luckbound.Gameplay.Movement
         public const float DodgeCooldownDuration = 0.8f;
         public const int DirectHitProtectionTicks = 27;
 
+        public const string HealthPotionItemId = "consumable.health_potion";
+        public const string EnergyTonicItemId = "consumable.energy_tonic";
+        public const string AntidoteItemId = "consumable.antidote";
+        public const string BombItemId = "consumable.bomb";
+        public const string FortuneBrewItemId = "consumable.fortune_brew";
+        public const string TorchItemId = "consumable.torch";
+
         private const float GroundProbeDistance = 0.08f;
         private const float GroundNormalThreshold = 0.65f;
         private const float GroundedVerticalSpeedLimit = 0.05f;
@@ -64,6 +75,18 @@ namespace Luckbound.Gameplay.Movement
         private MeleeAttackSnapshot _meleeAttackSnapshot;
         private ActorDamageState _damageState;
         private HealthPotionUseState _healthPotionUseState;
+        private EnergyTonicUseState _energyTonicUseState;
+        private IPlayerFortuneBrewRuntime _fortuneBrewRuntime;
+        private Task<PlayerFortuneBrewCommitOutcome> _fortuneBrewCommitTask;
+        private ItemInstanceId _fortuneBrewPendingItemInstanceId;
+        private TransactionId _fortuneBrewPendingTransactionId;
+        private bool _fortuneBrewCompletionReportedThisTick;
+        private ItemCollector2D _itemCollector;
+        private ItemInstanceId _healthPreparationInstanceId;
+        private ItemInstanceId _energyPreparationInstanceId;
+        private AntidoteEffectResolution? _antidoteProtection;
+        private TorchLightActivation? _torchActivation;
+        private Light2D _torchLight;
         private SkillUseState _skillUseState;
         private BellatorCombatState _bellatorCombatState;
         private BellatorSkillLoadout _bellatorSkillLoadout;
@@ -138,6 +161,13 @@ namespace Luckbound.Gameplay.Movement
         public bool IsStunned => _stunTicksRemaining > 0;
 
         public int StunTicksRemaining => _stunTicksRemaining;
+
+        public long AntidoteProtectionEndsAtTickExclusive => _antidoteProtection.HasValue
+            ? _antidoteProtection.Value.ProtectionEndsAtTickExclusive
+            : 0L;
+
+        public bool IsProtectedFromStunAt(long tick) => _antidoteProtection.HasValue &&
+            _antidoteProtection.Value.ProtectsAt(HarmfulStatusKind.Stun, tick);
 
         public int CurrentHealth => _damageState != null ? _damageState.CurrentHealth : 0;
 
@@ -216,6 +246,16 @@ namespace Luckbound.Gameplay.Movement
         public int MaximumEnergy => _skillUseState != null ? _skillUseState.MaximumEnergy : 0;
 
         public int HealthPotionCharges => _healthPotionUseState != null ? _healthPotionUseState.CurrentCharges : 0;
+
+        public int EnergyTonicCharges => _energyTonicUseState != null ? _energyTonicUseState.CurrentCharges : 0;
+
+        public PlayerConsumableUseOutcome LastConsumableUseOutcome { get; private set; }
+
+        public bool IsTorchLightActive => _torchActivation.HasValue && _torchActivation.Value.IsActiveAt(SimulationTick);
+
+        public long TorchLightEndsAtTickExclusive => _torchActivation.HasValue
+            ? _torchActivation.Value.EndsAtTickExclusive
+            : 0L;
 
         public bool IsPreparingHealthPotion => _healthPotionUseState != null && _healthPotionUseState.IsPreparing;
 
@@ -419,7 +459,10 @@ namespace Luckbound.Gameplay.Movement
             _armorEnergyRegenerationPerSecondBonus = armorResolution?.EnergyRegenerationPerSecondBonus ?? 0;
             _harmfulStatusDurationReductionPercent = armorResolution?.HarmfulStatusDurationReductionPercent ?? 0;
             _nextArmorEnergyRecoveryTick = _tick + 60;
-            _healthPotionUseState = new HealthPotionUseState();
+            _healthPotionUseState = new HealthPotionUseState(initialCharges: 0);
+            _energyTonicUseState = new EnergyTonicUseState();
+            _itemCollector = GetComponent<ItemCollector2D>();
+            CreateTorchLight();
             _meleeAttackState = new MeleeAttackState(
                 MeleeAttackProfile.BellatorWornSword,
                 MeleeComboSequence.CreateBellator());
@@ -474,6 +517,16 @@ namespace Luckbound.Gameplay.Movement
             {
                 throw new ArgumentOutOfRangeException(nameof(armorResolution), "Armor runtime modifiers are outside their supported range.");
             }
+        }
+
+        /// <summary>Binds the App service that atomically persists Fortune charges and the quick stack.</summary>
+        public void ConfigureFortuneBrewRuntime(IPlayerFortuneBrewRuntime runtime)
+        {
+            if (!_initialized)
+                throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring Fortune Brew use.");
+            if (_fortuneBrewCommitTask != null)
+                throw new InvalidOperationException("Fortune Brew runtime cannot change while a durable use is pending.");
+            _fortuneBrewRuntime = runtime ?? throw new ArgumentNullException(nameof(runtime));
         }
 
         /// <summary>
@@ -865,7 +918,12 @@ namespace Luckbound.Gameplay.Movement
                 return outcome;
             }
 
+            bool interruptedConsumablePreparation = _healthPotionUseState.IsPreparing ||
+                _energyTonicUseState.IsPreparing;
             _healthPotionUseState.CancelPreparation();
+            _energyTonicUseState.CancelPreparation();
+            if (interruptedConsumablePreparation)
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Cancelled);
             if (_skillUseState.IsPreparing)
             {
                 _bellatorCombatState?.Interrupt();
@@ -875,7 +933,9 @@ namespace Luckbound.Gameplay.Movement
 
             _body.linearVelocity = knockbackVelocity;
             int resolvedStunDurationTicks = ApplyHarmfulStatusDurationReduction(stunDurationTicks);
-            if (resolvedStunDurationTicks > 0 && !outcome.IsDead)
+            bool protectedFromStun = _antidoteProtection.HasValue &&
+                _antidoteProtection.Value.ProtectsAt(HarmfulStatusKind.Stun, impactTick);
+            if (resolvedStunDurationTicks > 0 && !outcome.IsDead && !protectedFromStun)
             {
                 _stunTicksRemaining = Math.Max(_stunTicksRemaining, resolvedStunDurationTicks);
                 InterruptActions();
@@ -888,6 +948,397 @@ namespace Luckbound.Gameplay.Movement
             }
 
             return outcome;
+        }
+
+        private PlayerConsumableUseOutcome UpdateConsumableUse(
+            long tick,
+            bool requested,
+            bool interrupted,
+            bool stunnedAtStart)
+        {
+            if (_itemCollector == null) _itemCollector = GetComponent<ItemCollector2D>();
+            ExpeditionInventory inventory = _itemCollector == null ? null : _itemCollector.Inventory;
+            InventoryItemStack quick = inventory == null ? null : inventory.QuickConsumable;
+            string itemId = quick == null ? string.Empty : quick.ItemId;
+            bool hasQuick = quick != null && quick.Quantity > 0 && quick.InstanceId.IsValid &&
+                !string.IsNullOrWhiteSpace(quick.ItemId);
+            if (!hasQuick) itemId = string.Empty;
+
+            if (_fortuneBrewCommitTask != null)
+            {
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
+                return LastConsumableUseOutcome;
+            }
+
+            if (_fortuneBrewCompletionReportedThisTick && !requested)
+                return LastConsumableUseOutcome;
+
+            bool healthSelected = hasQuick && string.Equals(itemId, HealthPotionItemId, StringComparison.Ordinal);
+            bool energySelected = hasQuick && string.Equals(itemId, EnergyTonicItemId, StringComparison.Ordinal);
+
+            bool wasPreparingHealth = _healthPotionUseState.IsPreparing;
+            bool healthStackMatchesPreparation = wasPreparingHealth && healthSelected &&
+                quick.InstanceId == _healthPreparationInstanceId;
+            bool interruptHealth = interrupted || (wasPreparingHealth && !healthStackMatchesPreparation);
+            _healthPotionUseState.SynchronizeCharges(healthSelected ? quick.Quantity : 0);
+            HealthPotionUseOutcome healthOutcome = _healthPotionUseState.Update(
+                tick,
+                requested: requested && healthSelected,
+                currentHealth: CurrentHealth,
+                maximumHealth: CombatStats.MaximumHealth,
+                interrupted: interruptHealth);
+            if (!wasPreparingHealth && _healthPotionUseState.IsPreparing)
+                _healthPreparationInstanceId = quick.InstanceId;
+
+            if (healthOutcome.Status == HealthPotionUseStatus.Healed)
+            {
+                ItemInstanceId preparedInstanceId = _healthPreparationInstanceId;
+                _healthPreparationInstanceId = default;
+                if (!TryConsumeQuickConsumable(preparedInstanceId, HealthPotionItemId))
+                {
+                    SynchronizeConsumableCharges();
+                    LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                        PlayerConsumableUseStatus.RejectedInventoryChanged, HealthPotionItemId);
+                    return LastConsumableUseOutcome;
+                }
+
+                int restored = _damageState.RestoreHealth(healthOutcome.HealthRestored);
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.Consumed, HealthPotionItemId, healthRestored: restored);
+                return LastConsumableUseOutcome;
+            }
+
+            if (healthOutcome.Status != HealthPotionUseStatus.Preparing)
+                _healthPreparationInstanceId = default;
+
+            bool wasPreparingEnergy = _energyTonicUseState.IsPreparing;
+            bool energyStackMatchesPreparation = wasPreparingEnergy && energySelected &&
+                quick.InstanceId == _energyPreparationInstanceId;
+            bool interruptEnergy = interrupted || (wasPreparingEnergy && !energyStackMatchesPreparation);
+            _energyTonicUseState.SynchronizeCharges(energySelected ? quick.Quantity : 0);
+            EnergyTonicUseOutcome energyOutcome = _energyTonicUseState.Update(
+                tick,
+                requested: requested && energySelected,
+                currentEnergy: CurrentEnergy,
+                maximumEnergy: MaximumEnergy,
+                interrupted: interruptEnergy);
+            if (!wasPreparingEnergy && _energyTonicUseState.IsPreparing)
+                _energyPreparationInstanceId = quick.InstanceId;
+
+            if (energyOutcome.Status == EnergyTonicUseStatus.Energized)
+            {
+                ItemInstanceId preparedInstanceId = _energyPreparationInstanceId;
+                _energyPreparationInstanceId = default;
+                if (!TryConsumeQuickConsumable(preparedInstanceId, EnergyTonicItemId))
+                {
+                    SynchronizeConsumableCharges();
+                    LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                        PlayerConsumableUseStatus.RejectedInventoryChanged, EnergyTonicItemId);
+                    return LastConsumableUseOutcome;
+                }
+
+                int restored = Math.Min(energyOutcome.EnergyRestored, MaximumEnergy - CurrentEnergy);
+                _skillUseState.SetCurrentEnergy(CurrentEnergy + restored);
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.Consumed, EnergyTonicItemId, energyRestored: restored);
+                return LastConsumableUseOutcome;
+            }
+
+            if (energyOutcome.Status != EnergyTonicUseStatus.Preparing)
+                _energyPreparationInstanceId = default;
+
+            if (healthOutcome.Status == HealthPotionUseStatus.Preparing ||
+                energyOutcome.Status == EnergyTonicUseStatus.Preparing)
+            {
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.Preparing, itemId);
+                return LastConsumableUseOutcome;
+            }
+
+            bool antidoteRequested = requested && hasQuick &&
+                string.Equals(itemId, AntidoteItemId, StringComparison.Ordinal);
+            if (!antidoteRequested &&
+                (healthOutcome.Status == HealthPotionUseStatus.Cancelled ||
+                 energyOutcome.Status == EnergyTonicUseStatus.Cancelled))
+            {
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Cancelled, itemId);
+                return LastConsumableUseOutcome;
+            }
+
+            if (requested)
+            {
+                if (!hasQuick)
+                {
+                    LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                        PlayerConsumableUseStatus.RejectedWithoutQuickConsumable);
+                    return LastConsumableUseOutcome;
+                }
+
+                if (stunnedAtStart && !string.Equals(itemId, AntidoteItemId, StringComparison.Ordinal))
+                {
+                    LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                        PlayerConsumableUseStatus.RejectedWhileStunned, itemId);
+                    return LastConsumableUseOutcome;
+                }
+
+                if (string.Equals(itemId, HealthPotionItemId, StringComparison.Ordinal) &&
+                    healthOutcome.Status == HealthPotionUseStatus.RejectedAtFullHealth)
+                {
+                    LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                        PlayerConsumableUseStatus.RejectedAtFullResource, itemId);
+                    return LastConsumableUseOutcome;
+                }
+
+                if (string.Equals(itemId, EnergyTonicItemId, StringComparison.Ordinal) &&
+                    energyOutcome.Status == EnergyTonicUseStatus.RejectedAtFullEnergy)
+                {
+                    LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                        PlayerConsumableUseStatus.RejectedAtFullResource, itemId);
+                    return LastConsumableUseOutcome;
+                }
+
+                if (healthSelected && healthOutcome.Status == HealthPotionUseStatus.RejectedWithoutCharges ||
+                    energySelected && energyOutcome.Status == EnergyTonicUseStatus.RejectedWithoutCharges)
+                {
+                    LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                        PlayerConsumableUseStatus.RejectedWithoutQuickConsumable, itemId);
+                    return LastConsumableUseOutcome;
+                }
+
+                LastConsumableUseOutcome = UseImmediateConsumable(tick, quick, itemId);
+                return LastConsumableUseOutcome;
+            }
+
+            LastConsumableUseOutcome = new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Idle, itemId);
+            return LastConsumableUseOutcome;
+        }
+
+        private PlayerConsumableUseOutcome UseImmediateConsumable(long tick, InventoryItemStack quick, string itemId)
+        {
+            if (string.Equals(itemId, FortuneBrewItemId, StringComparison.Ordinal))
+            {
+                return BeginFortuneBrewUse(quick);
+            }
+
+            BombEffectResolution bombResolution = null;
+            Dictionary<ActorId, ProjectileImpactTarget2D> bombTargets = null;
+            AntidoteEffectResolution? antidoteResolution = null;
+            TorchLightActivation? torchActivation = null;
+            if (string.Equals(itemId, BombItemId, StringComparison.Ordinal))
+            {
+                if (_meleeTargetLayers.value == 0)
+                    return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedUnsupportedSubsystem, itemId);
+                BuildBombResolution(out bombResolution, out bombTargets);
+            }
+            else if (string.Equals(itemId, AntidoteItemId, StringComparison.Ordinal))
+            {
+                antidoteResolution = AntidoteEffect.Apply(tick);
+            }
+            else if (string.Equals(itemId, TorchItemId, StringComparison.Ordinal) && _torchLight == null)
+            {
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedUnsupportedSubsystem, itemId);
+            }
+            else if (string.Equals(itemId, TorchItemId, StringComparison.Ordinal))
+            {
+                torchActivation = TorchEffect.Activate(tick);
+            }
+            else if (!string.Equals(itemId, AntidoteItemId, StringComparison.Ordinal) &&
+                !string.Equals(itemId, TorchItemId, StringComparison.Ordinal))
+            {
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedUnsupportedSubsystem, itemId);
+            }
+
+            if (!TryConsumeQuickConsumable(quick.InstanceId, itemId))
+            {
+                SynchronizeConsumableCharges();
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedInventoryChanged, itemId);
+            }
+
+            if (string.Equals(itemId, AntidoteItemId, StringComparison.Ordinal))
+            {
+                AntidoteEffectResolution effect = antidoteResolution.Value;
+                HarmfulStatusKind activeStatuses = _stunTicksRemaining > 0
+                    ? HarmfulStatusKind.Stun
+                    : HarmfulStatusKind.None;
+                HarmfulStatusKind remainingStatuses = effect.Clear(activeStatuses);
+                if ((remainingStatuses & HarmfulStatusKind.Stun) == 0) _stunTicksRemaining = 0;
+                _antidoteProtection = effect;
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Consumed, itemId);
+            }
+
+            if (string.Equals(itemId, BombItemId, StringComparison.Ordinal))
+            {
+                foreach (ActorId targetId in bombResolution.TargetActorIds)
+                {
+                    ProjectileImpactTarget2D target = bombTargets[targetId];
+                    target.QueueImpact(new ProjectileImpact(
+                        EntityId.New(),
+                        HitId.New(),
+                        _actorId,
+                        targetId,
+                        BombEffect.Damage,
+                        transform.position.x));
+                }
+
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Consumed, itemId);
+            }
+
+            _torchActivation = torchActivation.Value;
+            UpdateTorchLight(tick);
+            return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Consumed, itemId);
+        }
+
+        private bool TryConsumeQuickConsumable(ItemInstanceId expectedInstanceId, string expectedItemId)
+        {
+            ExpeditionInventory inventory = _itemCollector == null ? null : _itemCollector.Inventory;
+            if (inventory == null) return false;
+            InventoryOperationOutcome outcome = inventory.TryConsumeQuickConsumable(
+                expectedInstanceId, expectedItemId, TransactionId.New());
+            return outcome.Succeeded;
+        }
+
+        private PlayerConsumableUseOutcome BeginFortuneBrewUse(InventoryItemStack quick)
+        {
+            if (_fortuneBrewRuntime == null)
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedUnsupportedSubsystem, FortuneBrewItemId);
+            if (quick == null || quick.ItemId != FortuneBrewItemId || quick.Quantity <= 0 || !quick.InstanceId.IsValid)
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedInventoryChanged, FortuneBrewItemId);
+
+            TransactionId transactionId = TransactionId.New();
+            Task<PlayerFortuneBrewCommitOutcome> commitTask;
+            try
+            {
+                commitTask = _fortuneBrewRuntime.ConsumeFortuneBrewAsync(quick.InstanceId, transactionId);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception);
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+            }
+
+            if (commitTask == null)
+                return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+
+            _fortuneBrewPendingItemInstanceId = quick.InstanceId;
+            _fortuneBrewPendingTransactionId = transactionId;
+            _fortuneBrewCommitTask = commitTask;
+            return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Pending, FortuneBrewItemId);
+        }
+
+        private void PollFortuneBrewCommit()
+        {
+            _fortuneBrewCompletionReportedThisTick = false;
+            Task<PlayerFortuneBrewCommitOutcome> completedTask = _fortuneBrewCommitTask;
+            if (completedTask == null || !completedTask.IsCompleted) return;
+
+            ItemInstanceId itemInstanceId = _fortuneBrewPendingItemInstanceId;
+            TransactionId transactionId = _fortuneBrewPendingTransactionId;
+            _fortuneBrewCommitTask = null;
+            _fortuneBrewPendingItemInstanceId = default;
+            _fortuneBrewPendingTransactionId = default;
+            _fortuneBrewCompletionReportedThisTick = true;
+
+            if (completedTask.IsCanceled || completedTask.IsFaulted)
+            {
+                if (completedTask.Exception != null) Debug.LogException(completedTask.Exception.Flatten());
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+                return;
+            }
+
+            PlayerFortuneBrewCommitOutcome outcome = completedTask.Result;
+            if (outcome == null)
+            {
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+                return;
+            }
+
+            if (outcome.Persisted)
+                _itemCollector?.PublishCommittedInventory(outcome.CommittedInventory);
+
+            if (outcome.Status == Luckbound.Core.Fortune.FortuneOperationStatus.RejectedAtCapacity)
+            {
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.RejectedAtFullResource, FortuneBrewItemId);
+                return;
+            }
+
+            if (!outcome.Succeeded || _itemCollector == null ||
+                !outcome.CommittedInventory.HasSuccessfulQuickConsumableConsumption(
+                    itemInstanceId, FortuneBrewItemId, transactionId))
+            {
+                LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                    PlayerConsumableUseStatus.RejectedDurableMutation, FortuneBrewItemId);
+                return;
+            }
+
+            LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
+                PlayerConsumableUseStatus.Consumed, FortuneBrewItemId);
+        }
+
+        private void SynchronizeConsumableCharges()
+        {
+            if (_itemCollector == null) _itemCollector = GetComponent<ItemCollector2D>();
+            InventoryItemStack quick = _itemCollector == null || _itemCollector.Inventory == null
+                ? null
+                : _itemCollector.Inventory.QuickConsumable;
+            _healthPotionUseState.SynchronizeCharges(
+                quick != null && quick.ItemId == HealthPotionItemId ? quick.Quantity : 0);
+            _energyTonicUseState.SynchronizeCharges(
+                quick != null && quick.ItemId == EnergyTonicItemId ? quick.Quantity : 0);
+        }
+
+        private void BuildBombResolution(
+            out BombEffectResolution resolution,
+            out Dictionary<ActorId, ProjectileImpactTarget2D> targetMap)
+        {
+            Vector2 center = transform.position;
+            Collider2D[] overlaps = Physics2D.OverlapCircleAll(
+                center, (float)BombEffect.Radius, _meleeTargetLayers);
+            var candidates = new List<BombTarget>(overlaps.Length);
+            targetMap = new Dictionary<ActorId, ProjectileImpactTarget2D>();
+            foreach (Collider2D overlap in overlaps)
+            {
+                if (overlap == null) continue;
+                ProjectileImpactTarget2D target = overlap.GetComponentInParent<ProjectileImpactTarget2D>();
+                if (target == null || !target.IsInitialized || targetMap.ContainsKey(target.ActorId)) continue;
+                Vector3 position = target.transform.position;
+                if (float.IsNaN(position.x) || float.IsInfinity(position.x) ||
+                    float.IsNaN(position.y) || float.IsInfinity(position.y)) continue;
+                targetMap.Add(target.ActorId, target);
+                candidates.Add(new BombTarget(target.ActorId, (decimal)position.x, (decimal)position.y));
+            }
+
+            resolution = BombEffect.ResolveTargets((decimal)center.x, (decimal)center.y, candidates);
+        }
+
+        private void CreateTorchLight()
+        {
+            var lightObject = new GameObject("Luckbound Player Torch Light");
+            lightObject.transform.SetParent(transform, worldPositionStays: false);
+            _torchLight = lightObject.AddComponent<Light2D>();
+            _torchLight.lightType = Light2D.LightType.Point;
+            _torchLight.pointLightInnerRadius = 0.5f;
+            _torchLight.pointLightOuterRadius = 3f;
+            _torchLight.intensity = 0.8f;
+            _torchLight.color = new Color(1f, 0.76f, 0.45f, 1f);
+            _torchLight.enabled = false;
+        }
+
+        private void UpdateTorchLight(long tick)
+        {
+            if (_torchLight == null) return;
+            bool active = _torchActivation.HasValue && _torchActivation.Value.IsActiveAt(tick);
+            _torchLight.enabled = active;
+            if (_torchActivation.HasValue && tick >= _torchActivation.Value.EndsAtTickExclusive)
+                _torchActivation = null;
+        }
+
+        private static bool IsConsumableActionActive(PlayerConsumableUseOutcome outcome)
+        {
+            return outcome.Status == PlayerConsumableUseStatus.Preparing ||
+                outcome.Status == PlayerConsumableUseStatus.Pending || outcome.WasConsumed;
         }
 
         private int ApplyHarmfulStatusDurationReduction(int durationTicks)
@@ -968,6 +1419,8 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("The input command belongs to a different actor.");
             }
 
+            PollFortuneBrewCommit();
+
             IsGrounded = UpdateGrounded();
             float deltaTime = Time.fixedDeltaTime;
 
@@ -987,8 +1440,8 @@ namespace Luckbound.Gameplay.Movement
 
             if (IsDead)
             {
-                _healthPotionUseState.Update(tick, requested: false, currentHealth: CurrentHealth,
-                    maximumHealth: CombatStats.MaximumHealth, interrupted: true);
+                UpdateConsumableUse(tick, requested: false, interrupted: true, stunnedAtStart: true);
+                UpdateTorchLight(tick);
                 InterruptActions();
                 TickBellatorCommand(command, canAct: false);
                 TickVenatorCommand(command, canAct: false);
@@ -997,10 +1450,25 @@ namespace Luckbound.Gameplay.Movement
                 return;
             }
 
-            if (IsStunned)
+            bool stunnedAtStart = IsStunned;
+            bool dodgeStartedThisTick = !stunnedAtStart &&
+                command.WasPressed(PlayerAction.Dodge) && IsDodgeReady;
+            PlayerConsumableUseOutcome consumableOutcome = UpdateConsumableUse(
+                tick,
+                command.WasPressed(PlayerAction.Consumable),
+                interrupted: dodgeStartedThisTick || stunnedAtStart,
+                stunnedAtStart: stunnedAtStart);
+            UpdateTorchLight(tick);
+
+            if (stunnedAtStart)
             {
-                _healthPotionUseState.Update(tick, requested: false, currentHealth: CurrentHealth,
-                    maximumHealth: CombatStats.MaximumHealth, interrupted: true);
+                if (consumableOutcome.WasConsumed && consumableOutcome.ItemId == AntidoteItemId)
+                {
+                    InterruptActions();
+                    ApplyRestrictedMotion(deltaTime);
+                    return;
+                }
+
                 _stunTicksRemaining--;
                 InterruptActions();
                 TickBellatorCommand(command, canAct: false);
@@ -1008,18 +1476,6 @@ namespace Luckbound.Gameplay.Movement
                 TickMagusCommand(command, canAct: false);
                 ApplyRestrictedMotion(deltaTime);
                 return;
-            }
-
-            bool dodgeStartedThisTick = command.WasPressed(PlayerAction.Dodge) && IsDodgeReady;
-            HealthPotionUseOutcome potionOutcome = _healthPotionUseState.Update(
-                tick,
-                requested: command.WasPressed(PlayerAction.Consumable),
-                currentHealth: CurrentHealth,
-                maximumHealth: CombatStats.MaximumHealth,
-                interrupted: dodgeStartedThisTick);
-            if (potionOutcome.HealthRestored > 0)
-            {
-                _damageState.RestoreHealth(potionOutcome.HealthRestored);
             }
 
             if (command.WasPressed(PlayerAction.Jump))
@@ -1049,24 +1505,21 @@ namespace Luckbound.Gameplay.Movement
             float attackMovementMultiplier;
             if (IsVenator)
             {
-                bool higherPriorityActionActive = potionOutcome.Status == HealthPotionUseStatus.Preparing ||
-                    potionOutcome.Status == HealthPotionUseStatus.Healed;
+                bool higherPriorityActionActive = IsConsumableActionActive(consumableOutcome);
                 TickVenatorCommand(command, canAct: !_dodgeActive && !higherPriorityActionActive);
                 attackMovementMultiplier = IsAttacking ? (float)_venatorBasicAttackSnapshot.MovementSpeedMultiplier : 1f;
                 _meleeAttackSnapshot = default;
             }
             else if (IsMagus)
             {
-                bool higherPriorityActionActive = potionOutcome.Status == HealthPotionUseStatus.Preparing ||
-                    potionOutcome.Status == HealthPotionUseStatus.Healed;
+                bool higherPriorityActionActive = IsConsumableActionActive(consumableOutcome);
                 TickMagusCommand(command, canAct: !_dodgeActive && !higherPriorityActionActive);
                 attackMovementMultiplier = IsAttacking ? (float)_magusBasicAttackSnapshot.MovementSpeedMultiplier : 1f;
                 _meleeAttackSnapshot = default;
             }
             else if (IsBellator)
             {
-                bool higherPriorityActionActive = potionOutcome.Status == HealthPotionUseStatus.Preparing ||
-                    potionOutcome.Status == HealthPotionUseStatus.Healed;
+                bool higherPriorityActionActive = IsConsumableActionActive(consumableOutcome);
                 TickBellatorCommand(command, canAct: !_dodgeActive && !higherPriorityActionActive);
                 bool skillActionOwnsTick = _lastBellatorCombatResult.SkillActionOwnsTick || IsCharging;
                 if (skillActionOwnsTick)

@@ -3,7 +3,9 @@ using Luckbound.App;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
+using Luckbound.Core.Inventory;
 using Luckbound.Gameplay.Input;
+using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Movement;
 using Luckbound.Presentation;
 using NUnit.Framework;
@@ -24,6 +26,15 @@ namespace Luckbound.Tests.PlayMode
                 int groundLayer = LayerMask.NameToLayer("Ground");
                 GameObject floor = CreateFloor("C07_PotionGround", groundLayer);
                 PlayerFixture player = CreatePlayer("C07_PotionPlayer", new Vector2(0f, 1.5f), groundLayer);
+                ItemCatalog itemCatalog = CreateItemCatalog();
+                ExpeditionInventory inventory = new ExpeditionInventory(itemCatalog, "class.bellator");
+                var potionStack = new InventoryItemStack(
+                    ItemInstanceId.New(), PlayerMotor2D.HealthPotionItemId, ItemRarity.Common, 0, 2);
+                Assert.That(inventory.TryCollectItem(potionStack, TransactionId.New()).Succeeded, Is.True);
+                int potionSlot = 0;
+                while (inventory.GetBackpackSlot(potionSlot)?.InstanceId != potionStack.InstanceId) potionSlot++;
+                Assert.That(inventory.SetQuickConsumable(potionSlot, TransactionId.New()).Succeeded, Is.True);
+                player.GameObject.GetComponent<ItemCollector2D>().Configure(inventory, itemCatalog);
                 Text statusText = CreateText("C07_HudText");
                 var presenterObject = new GameObject("C07_PlayerHudPresenter");
                 PlayerHudPresenter presenter = presenterObject.AddComponent<PlayerHudPresenter>();
@@ -54,6 +65,7 @@ namespace Luckbound.Tests.PlayMode
                     "preparing=" + player.Motor.IsPreparingHealthPotion + "; ticks=" +
                     player.Motor.HealthPotionPreparationTicksRemaining + "; health=" + player.Motor.CurrentHealth +
                     "; charges=" + player.Motor.HealthPotionCharges);
+                Assert.That(inventory.QuickConsumable.Quantity, Is.EqualTo(2));
 
                 for (int tick = 0; tick < HealthPotionUseState.PreparationDurationTicks - 1; tick++)
                 {
@@ -66,7 +78,7 @@ namespace Luckbound.Tests.PlayMode
                 yield return new WaitForFixedUpdate();
                 evidence.RecordAssertion("Potion heals 25 only when the 21st preparation tick completes",
                     oneTickRemaining && !player.Motor.IsPreparingHealthPotion && player.Motor.CurrentHealth == 85 &&
-                    player.Motor.HealthPotionCharges == 1,
+                    player.Motor.HealthPotionCharges == 1 && inventory.QuickConsumable.Quantity == 1,
                     "no healing after 20 ticks; health=85 and charges=1 at tick 21",
                     "oneTickRemaining=" + oneTickRemaining + "; preparing=" + player.Motor.IsPreparingHealthPotion +
                     "; health=" + player.Motor.CurrentHealth + "; charges=" + player.Motor.HealthPotionCharges);
@@ -88,7 +100,8 @@ namespace Luckbound.Tests.PlayMode
                 yield return new WaitForFixedUpdate();
                 evidence.RecordAssertion("An accepted hit interrupts the next potion without consuming it",
                     interruptingHit.Status == DirectImpactStatus.Applied && !player.Motor.IsPreparingHealthPotion &&
-                    player.Motor.HealthPotionCharges == 1 && player.Motor.CurrentHealth == 75,
+                    player.Motor.HealthPotionCharges == 1 && player.Motor.CurrentHealth == 75 &&
+                    inventory.QuickConsumable.Quantity == 1,
                     "hit accepted; preparation cancelled; charges=1; health=75",
                     "hit=" + interruptingHit.Status + "; preparing=" + player.Motor.IsPreparingHealthPotion +
                     "; charges=" + player.Motor.HealthPotionCharges + "; health=" + player.Motor.CurrentHealth);
@@ -105,7 +118,7 @@ namespace Luckbound.Tests.PlayMode
                 player.Input.Release(PlayerAction.Dodge);
                 evidence.RecordAssertion("Accepted dodge interrupts preparation without consuming a charge",
                     !player.Motor.IsPreparingHealthPotion && player.Motor.HealthPotionCharges == 1 &&
-                    player.Motor.DodgeActivationCount == 1,
+                    player.Motor.DodgeActivationCount == 1 && inventory.QuickConsumable.Quantity == 1,
                     "preparation cancelled; charges=1; dodge accepted",
                     "preparing=" + player.Motor.IsPreparingHealthPotion + "; charges=" +
                     player.Motor.HealthPotionCharges + "; dodges=" + player.Motor.DodgeActivationCount);
@@ -203,6 +216,7 @@ namespace Luckbound.Tests.PlayMode
             CapsuleCollider2D collider = player.AddComponent<CapsuleCollider2D>();
             collider.direction = CapsuleDirection2D.Vertical;
             collider.size = new Vector2(0.75f, 1.5f);
+            player.AddComponent<ItemCollector2D>();
             PlayerMotor2D motor = player.AddComponent<PlayerMotor2D>();
             motor.Initialize(actorId, input, 1 << groundLayer);
             Physics2D.SyncTransforms();
@@ -223,6 +237,30 @@ namespace Luckbound.Tests.PlayMode
         {
             var textObject = new GameObject(name);
             return textObject.AddComponent<Text>();
+        }
+
+        private static ItemCatalog CreateItemCatalog()
+        {
+            var definitions = new System.Collections.Generic.List<ItemDefinition>();
+            foreach (string id in new[]
+            {
+                PlayerMotor2D.HealthPotionItemId,
+                PlayerMotor2D.EnergyTonicItemId,
+                PlayerMotor2D.AntidoteItemId,
+                PlayerMotor2D.BombItemId,
+                PlayerMotor2D.FortuneBrewItemId,
+                PlayerMotor2D.TorchItemId
+            })
+            {
+                definitions.Add(new ItemDefinition(id, "test." + id, "test." + id + ".description", ItemKind.Consumable, 3));
+            }
+            foreach (MaterialKind kind in System.Enum.GetValues(typeof(MaterialKind)))
+            {
+                string suffix = kind.ToString().ToLowerInvariant();
+                definitions.Add(new ItemDefinition("material.test_" + suffix, "test.material." + suffix,
+                    "test.material." + suffix + ".description", ItemKind.Material, 99, materialKind: kind));
+            }
+            return new ItemCatalog(definitions);
         }
 
         private static DamageCalculationRequest Request(CombatStats target, decimal damage)

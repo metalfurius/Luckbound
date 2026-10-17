@@ -26,7 +26,8 @@ namespace Luckbound.Tests.Core
                 HarmfulStatusKind.Poison,
                 HarmfulStatusKind.Slow,
                 HarmfulStatusKind.Root,
-                HarmfulStatusKind.Freeze
+                HarmfulStatusKind.Freeze,
+                HarmfulStatusKind.Stun
             })
             {
                 Assert.That(effect.ProtectsAt(status, 20), Is.True, status.ToString());
@@ -35,7 +36,7 @@ namespace Luckbound.Tests.Core
             }
             Assert.That(effect.ProtectsAt(HarmfulStatusKind.All, 100), Is.True);
             Assert.That(effect.ProtectsAt(HarmfulStatusKind.Burn, 19), Is.False);
-            Assert.That(() => effect.Clear((HarmfulStatusKind)32), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => effect.Clear((HarmfulStatusKind)64), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]

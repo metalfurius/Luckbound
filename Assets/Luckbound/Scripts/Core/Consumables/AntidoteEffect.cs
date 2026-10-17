@@ -11,7 +11,8 @@ namespace Luckbound.Core.Consumables
         Slow = 1 << 2,
         Root = 1 << 3,
         Freeze = 1 << 4,
-        All = Burn | Poison | Slow | Root | Freeze
+        Stun = 1 << 5,
+        All = Burn | Poison | Slow | Root | Freeze | Stun
     }
 
     /// <summary>Antidote effect command for clearing harmful statuses and protecting against them.</summary>

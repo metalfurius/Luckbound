@@ -471,6 +471,47 @@ namespace Luckbound.Core.Inventory
             });
         }
 
+        /// <summary>Consumes one unit from the exact quick-slot stack as an idempotent run transaction.</summary>
+        public InventoryOperationOutcome TryConsumeQuickConsumable(
+            ItemInstanceId expectedInstanceId,
+            string expectedItemId,
+            TransactionId transactionId)
+        {
+            string signature = "consume-quick|" + expectedInstanceId + "|" + (expectedItemId ?? string.Empty);
+            return Execute(transactionId, signature, () =>
+            {
+                if (!expectedInstanceId.IsValid || string.IsNullOrWhiteSpace(expectedItemId))
+                    return Rejected(transactionId, InventoryOperationStatus.RejectedInvalidQuickConsumable, expectedItemId);
+
+                InventoryItemStack item = QuickConsumable;
+                if (item == null || item.InstanceId != expectedInstanceId ||
+                    !string.Equals(item.ItemId, expectedItemId, StringComparison.Ordinal) ||
+                    !_catalog.TryGet(item.ItemId, out ItemDefinition definition) || definition.Kind != ItemKind.Consumable)
+                {
+                    return Rejected(transactionId, InventoryOperationStatus.RejectedInvalidQuickConsumable, expectedItemId);
+                }
+
+                RemoveOwnedItem(item.InstanceId, 1);
+                return Succeeded(transactionId, item.ItemId);
+            }, reportReplay: true);
+        }
+
+        /// <summary>Checks a persisted quick-consumable receipt without applying another decrement.</summary>
+        public bool HasSuccessfulQuickConsumableConsumption(
+            ItemInstanceId expectedInstanceId,
+            string expectedItemId,
+            TransactionId transactionId)
+        {
+            if (!expectedInstanceId.IsValid || string.IsNullOrWhiteSpace(expectedItemId) || !transactionId.IsValid)
+                return false;
+
+            string signature = "consume-quick|" + expectedInstanceId + "|" + expectedItemId;
+            return _transactions.TryGetValue(transactionId, out CachedTransaction cached) &&
+                string.Equals(cached.Signature, signature, StringComparison.Ordinal) &&
+                cached.Outcome != null && cached.Outcome.Status == InventoryOperationStatus.Succeeded &&
+                cached.EconomyOutcome == null && cached.SmithingOutcome == null;
+        }
+
         public InventoryOperationOutcome TryReplaceBackpackSlot(int index, InventoryItemStack incoming, TransactionId transactionId)
         {
             string signature = "replace|" + index.ToString(CultureInfo.InvariantCulture) + "|" + StackSignature(incoming);
@@ -1278,15 +1319,25 @@ namespace Luckbound.Core.Inventory
             }
         }
 
-        private InventoryOperationOutcome Execute(TransactionId transactionId, string signature, Func<InventoryOperationOutcome> operation)
+        private InventoryOperationOutcome Execute(
+            TransactionId transactionId,
+            string signature,
+            Func<InventoryOperationOutcome> operation,
+            bool reportReplay = false)
         {
             if (!transactionId.IsValid) return Rejected(transactionId, InventoryOperationStatus.RejectedInvalidTransaction);
             if (_transactions.TryGetValue(transactionId, out CachedTransaction cached))
             {
-                return string.Equals(cached.Signature, signature, StringComparison.Ordinal) &&
-                    cached.Outcome != null && cached.EconomyOutcome == null && cached.SmithingOutcome == null
-                    ? cached.Outcome
-                    : Rejected(transactionId, InventoryOperationStatus.RejectedTransactionConflict);
+                if (!string.Equals(cached.Signature, signature, StringComparison.Ordinal) ||
+                    cached.Outcome == null || cached.EconomyOutcome != null || cached.SmithingOutcome != null)
+                {
+                    return Rejected(transactionId, InventoryOperationStatus.RejectedTransactionConflict);
+                }
+
+                return reportReplay
+                    ? new InventoryOperationOutcome(cached.Outcome.TransactionId, cached.Outcome.Status,
+                        cached.Outcome.DisplacedItem, cached.Outcome.ItemId, wasReplay: true)
+                    : cached.Outcome;
             }
 
             InventoryOperationOutcome outcome = operation();

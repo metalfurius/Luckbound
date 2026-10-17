@@ -9,12 +9,14 @@ namespace Luckbound.Core.Inventory
             TransactionId transactionId,
             InventoryOperationStatus status,
             InventoryItemStack displacedItem = null,
-            string itemId = null)
+            string itemId = null,
+            bool wasReplay = false)
         {
             TransactionId = transactionId;
             Status = status;
             DisplacedItem = displacedItem;
             ItemId = itemId ?? string.Empty;
+            WasReplay = wasReplay;
         }
 
         public TransactionId TransactionId { get; }
@@ -22,5 +24,6 @@ namespace Luckbound.Core.Inventory
         public InventoryItemStack DisplacedItem { get; }
         public string ItemId { get; }
         public bool Succeeded => Status == InventoryOperationStatus.Succeeded;
+        public bool WasReplay { get; }
     }
 }

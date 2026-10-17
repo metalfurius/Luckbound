@@ -31,6 +31,18 @@ namespace Luckbound.Gameplay.Inventory
             LastOperationOutcome = null;
         }
 
+        /// <summary>Publishes the inventory returned by an already-persisted App mutation.</summary>
+        public void PublishCommittedInventory(ExpeditionInventory committedInventory)
+        {
+            if (committedInventory == null) throw new System.ArgumentNullException(nameof(committedInventory));
+            if (Catalog != null && !ReferenceEquals(committedInventory.Catalog, Catalog))
+                throw new System.InvalidOperationException("Committed inventory must use the configured item catalog.");
+            if (Inventory != null && !string.Equals(committedInventory.ClassId, Inventory.ClassId, System.StringComparison.Ordinal))
+                throw new System.InvalidOperationException("Committed inventory must belong to the configured expedition class.");
+
+            Inventory = committedInventory;
+        }
+
         public bool TryCollectWorldMaterial(WorldMaterialPickup2D pickup)
         {
             if (pickup == null || pickup.IsConsumed)

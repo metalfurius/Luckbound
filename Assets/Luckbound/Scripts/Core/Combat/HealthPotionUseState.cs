@@ -35,6 +35,14 @@ namespace Luckbound.Core.Combat
 
         public bool IsPreparing { get; private set; }
 
+        /// <summary>Synchronizes the run-owned quick-slot pile before the next use tick.</summary>
+        public void SynchronizeCharges(int charges)
+        {
+            if (charges < 0 || charges > MaximumCharges)
+                throw new ArgumentOutOfRangeException(nameof(charges));
+            CurrentCharges = charges;
+        }
+
         public int PreparationTicksRemaining => IsPreparing
             ? (int)Math.Max(0L, PreparationDurationTicks - (_lastTick - _preparationStartTick))
             : 0;
