@@ -40,14 +40,17 @@ namespace Luckbound.App
         private readonly List<Slime2D> _slimes = new List<Slime2D>();
         private readonly List<Huesoguardia2D> _huesoguardias = new List<Huesoguardia2D>();
         private readonly List<Huesoguardia2D> _subscribedHuesoguardias = new List<Huesoguardia2D>();
-        private readonly HashSet<ActorId> _reportedHuesoguardiaDefeats = new HashSet<ActorId>();
+        private readonly HashSet<ActorId> _reportedEnemyDeaths = new HashSet<ActorId>();
         private CombatEncounterData _encounter;
         private GameObject _playerObject;
         private PlayerInputSource _inputSource;
         private PlayerMotor2D _playerMotor;
+        private ApplicationAudioRouter _audioRouter;
         private PlayerHudPresenter _hudPresenter;
         private ExpeditionPauseController _pauseController;
         private int _waveIndex;
+        private int _reportedMeleeAttackActivations;
+        private int _reportedMeleeImpacts;
         private bool _resultSet;
 
         public PlayerMotor2D PlayerMotor => _playerMotor;
@@ -70,6 +73,9 @@ namespace Luckbound.App
             TextAsset encounterJson = Resources.Load<TextAsset>(EncounterResourcePath);
             if (encounterJson == null) throw new InvalidOperationException("Missing encounter data at Resources/" + EncounterResourcePath + ".json.");
             _encounter = CombatEncounterJsonLoader.Load(encounterJson.text);
+            _audioRouter = ApplicationBootstrapper.Instance != null
+                ? ApplicationBootstrapper.Instance.AudioRouter
+                : null;
 
             int groundLayer = LayerMask.NameToLayer("Ground");
             int enemiesLayer = LayerMask.NameToLayer("Enemies");
@@ -103,6 +109,7 @@ namespace Luckbound.App
 
         private void Update()
         {
+            UpdateCombatAudioEvents();
             if (_playerMotor == null || _pauseController != null && _pauseController.IsPaused || _resultSet) return;
 
             if (_playerMotor.IsDead)
@@ -199,9 +206,40 @@ namespace Luckbound.App
 
         private void OnHuesoguardiaDefeated(ActorId actorId)
         {
-            if (!actorId.IsValid || !_reportedHuesoguardiaDefeats.Add(actorId)) return;
+            if (!actorId.IsValid || !_reportedEnemyDeaths.Add(actorId)) return;
+            _audioRouter?.PlayEffect(ApplicationAudioRouter.EnemyDeathEffectId);
             ApplicationBootstrapper.Instance?.RecordContractProgressEventFromGameplay(
                 ContractProgressEvent.BoneguardDefeated);
+        }
+
+        private void UpdateCombatAudioEvents()
+        {
+            if (_playerMotor == null) return;
+
+            int attackActivations = _playerMotor.MeleeAttackActivationCount;
+            while (_reportedMeleeAttackActivations < attackActivations)
+            {
+                _reportedMeleeAttackActivations++;
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.SwordSwingEffectId);
+            }
+
+            int meleeImpacts = _playerMotor.MeleeImpactsQueuedCount;
+            while (_reportedMeleeImpacts < meleeImpacts)
+            {
+                _reportedMeleeImpacts++;
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.SwordImpactEffectId);
+            }
+
+            foreach (Slime2D slime in _slimes)
+            {
+                if (slime == null || !slime.IsDead || !slime.ActorId.IsValid ||
+                    !_reportedEnemyDeaths.Add(slime.ActorId))
+                {
+                    continue;
+                }
+
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.EnemyDeathEffectId);
+            }
         }
 
         private void RefreshEncounterText()

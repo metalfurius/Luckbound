@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Luckbound.Presentation.Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,16 +8,27 @@ using UnityEngine.SceneManagement;
 
 namespace Luckbound.App
 {
-    /// <summary>Routes application music and ambience requests after browser-safe user input.</summary>
+    /// <summary>Routes application music, ambience, and effects after browser-safe user input.</summary>
     [DisallowMultipleComponent]
     public sealed class ApplicationAudioRouter : MonoBehaviour
     {
+        public const string EnemyDeathEffectId = "enemy_death";
+        public const string BossAppearEffectId = "boss_appear";
+        public const string BossDeathEffectId = "boss_death";
+        public const string SwordSwingEffectId = "sword_swing";
+        public const string SwordImpactEffectId = "sword_impact";
+
+        private const int MaximumPendingEffectRequests = 32;
+
         private RuntimeAudioDirector _audioDirector;
         private RuntimeAmbienceDirector _ambienceDirector;
         private IDisposable _inputSubscription;
+        private readonly List<PendingEffectRequest> _pendingEffectRequests =
+            new List<PendingEffectRequest>(MaximumPendingEffectRequests);
         private string _requestedMusicTrackId;
         private string _sceneAmbienceId;
         private string _roomAmbienceId;
+        private string _currentSceneName;
         private bool _hasRoomAmbienceOverride;
         private bool _userGestureObserved;
 
@@ -24,6 +36,7 @@ namespace Luckbound.App
         public string RequestedAmbienceId => _hasRoomAmbienceOverride ? _roomAmbienceId : _sceneAmbienceId;
         public bool HasRoomAmbienceOverride => _hasRoomAmbienceOverride;
         public bool UserGestureObserved => _userGestureObserved;
+        public int PendingEffectRequestCount => _pendingEffectRequests.Count;
 
         private void Awake()
         {
@@ -44,10 +57,14 @@ namespace Luckbound.App
             SceneManager.sceneLoaded -= OnSceneLoaded;
             _inputSubscription?.Dispose();
             _inputSubscription = null;
+            _pendingEffectRequests.Clear();
         }
 
         public bool SetSceneContext(string sceneName)
         {
+            if (!string.Equals(_currentSceneName, sceneName, StringComparison.Ordinal))
+                _pendingEffectRequests.Clear();
+            _currentSceneName = sceneName;
             bool hasMusic = TryResolveMusicTrack(sceneName, out _requestedMusicTrackId);
             TryResolveAmbience(sceneName, out _sceneAmbienceId);
             ApplyRequestedMusic();
@@ -85,6 +102,21 @@ namespace Luckbound.App
             _inputSubscription = null;
             ApplyRequestedMusic();
             ApplyRequestedAmbience();
+            FlushPendingEffectRequests();
+        }
+
+        /// <summary>
+        /// Routes a one-shot through the persistent director. Requests made before the first
+        /// input are held only for this scene and flushed when Input System unlocks playback.
+        /// </summary>
+        public bool PlayEffect(string effectId, float gain = 1f)
+        {
+            if (!isActiveAndEnabled || _audioDirector == null || string.IsNullOrWhiteSpace(effectId)) return false;
+            if (_userGestureObserved) return _audioDirector.PlayEffect(effectId, gain);
+            if (_pendingEffectRequests.Count >= MaximumPendingEffectRequests) return false;
+
+            _pendingEffectRequests.Add(new PendingEffectRequest(effectId, gain));
+            return true;
         }
 
         public static bool TryResolveMusicTrack(string sceneName, out string trackId)
@@ -128,7 +160,22 @@ namespace Luckbound.App
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode _)
         {
+            // A reload of the same named scene is a new lifetime too.
+            _pendingEffectRequests.Clear();
+            _currentSceneName = scene.name;
             SetSceneContext(scene.name);
+        }
+
+        private void FlushPendingEffectRequests()
+        {
+            if (_audioDirector == null || !_audioDirector.isActiveAndEnabled || _pendingEffectRequests.Count == 0) return;
+
+            for (int index = 0; index < _pendingEffectRequests.Count; index++)
+            {
+                PendingEffectRequest request = _pendingEffectRequests[index];
+                _audioDirector.PlayEffect(request.EffectId, request.Gain);
+            }
+            _pendingEffectRequests.Clear();
         }
 
         private void ApplyRequestedMusic()
@@ -154,6 +201,18 @@ namespace Luckbound.App
             }
 
             _ambienceDirector.PlayAmbience(ambienceId);
+        }
+
+        private readonly struct PendingEffectRequest
+        {
+            public PendingEffectRequest(string effectId, float gain)
+            {
+                EffectId = effectId;
+                Gain = gain;
+            }
+
+            public string EffectId { get; }
+            public float Gain { get; }
         }
     }
 }

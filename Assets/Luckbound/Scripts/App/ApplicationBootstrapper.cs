@@ -26,6 +26,7 @@ namespace Luckbound.App
     public sealed partial class ApplicationBootstrapper : MonoBehaviour
     {
         private static ApplicationBootstrapper _instance;
+        private ApplicationAudioRouter _audioRouter;
         private ExpeditionSettlementLedger _settlementLedger = new ExpeditionSettlementLedger();
         private SaveRepository _saveRepository;
         private ProfileSaveData _profileData = ProfileSaveData.CreateNewProfile();
@@ -46,6 +47,7 @@ namespace Luckbound.App
         private string _activeExpeditionLoadError = string.Empty;
 
         public static ApplicationBootstrapper Instance => _instance;
+        public ApplicationAudioRouter AudioRouter => _audioRouter;
 #if UNITY_EDITOR
         public static Func<ISaveStore> EditorSaveStoreFactoryForTests { get; set; }
 #endif
@@ -578,8 +580,9 @@ namespace Luckbound.App
                 gameObject.AddComponent<RuntimeAmbienceDirector>();
             if (GetComponent<ExpeditionRoomAmbienceRouter>() == null)
                 gameObject.AddComponent<ExpeditionRoomAmbienceRouter>();
-            if (GetComponent<ApplicationAudioRouter>() == null)
-                gameObject.AddComponent<ApplicationAudioRouter>();
+            _audioRouter = GetComponent<ApplicationAudioRouter>();
+            if (_audioRouter == null)
+                _audioRouter = gameObject.AddComponent<ApplicationAudioRouter>();
         }
 
         public async Task<SaveWriteResult> BeginExpeditionAsync(ExpeditionRunConfiguration run)

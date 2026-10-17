@@ -40,6 +40,7 @@ namespace Luckbound.App
 
         private PlayerInputSource _inputSource;
         private PlayerMotor2D _playerMotor;
+        private ApplicationAudioRouter _audioRouter;
         private CustodianBoss2D _boss;
         private PlayerHudPresenter _hudPresenter;
         private ExpeditionPauseController _pauseController;
@@ -60,6 +61,9 @@ namespace Luckbound.App
             TextAsset bossJson = Resources.Load<TextAsset>(BossResourcePath);
             if (bossJson == null) throw new InvalidOperationException("Missing boss data at Resources/" + BossResourcePath + ".json.");
             CustodianBossDefinition definition = CustodianBossJsonLoader.Load(bossJson.text);
+            _audioRouter = ApplicationBootstrapper.Instance != null
+                ? ApplicationBootstrapper.Instance.AudioRouter
+                : null;
 
             int enemiesLayer = LayerMask.NameToLayer("Enemies");
             if (enemiesLayer < 0) throw new InvalidOperationException("The Custodian arena requires the Enemies layer.");
@@ -82,6 +86,7 @@ namespace Luckbound.App
             if (_boss == null) throw new InvalidOperationException("Custodian prototype prefab is missing CustodianBoss2D.");
             _boss.Initialize(ActorId.New(), _playerMotor, definition, _wavePrefab, _waveRoot);
             _boss.Defeated += OnCustodianDefeated;
+            _audioRouter?.PlayEffect(ApplicationAudioRouter.BossAppearEffectId);
 
             _hudPresenter = gameObject.AddComponent<PlayerHudPresenter>();
             _hudPresenter.Initialize(_playerMotor, _telemetryText);
@@ -125,6 +130,7 @@ namespace Luckbound.App
         private void OnCustodianDefeated(ActorId actorId)
         {
             if (!actorId.IsValid || !_reportedCustodianDefeats.Add(actorId)) return;
+            _audioRouter?.PlayEffect(ApplicationAudioRouter.BossDeathEffectId);
             ApplicationBootstrapper.Instance?.RecordContractProgressEventFromGameplay(
                 ContractProgressEvent.CustodianDefeated);
         }
