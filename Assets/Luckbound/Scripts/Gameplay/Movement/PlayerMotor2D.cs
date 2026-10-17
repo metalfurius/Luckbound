@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Luckbound.Core.Combat;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
+using Luckbound.Core.Pacts;
 using Luckbound.Core.Presentation;
 using Luckbound.Content;
 using Luckbound.Gameplay.Combat;
@@ -67,6 +69,7 @@ namespace Luckbound.Gameplay.Movement
         private MagusBasicAttackSnapshot _magusBasicAttackSnapshot;
         private MagusRoomBinding _magusRoomBinding;
         private ActorId _actorId;
+        private string _raceId;
         private Collider2D _collider;
         private ContactFilter2D _groundContactFilter;
         private ContactFilter2D _meleeContactFilter;
@@ -155,6 +158,8 @@ namespace Luckbound.Gameplay.Movement
 
         public ActorId ActorId => _actorId;
 
+        public string RaceId => _raceId;
+
         public long SimulationTick => Math.Max(0L, _tick - 1);
 
         public int SuccessfulJumpCount { get; private set; }
@@ -209,7 +214,13 @@ namespace Luckbound.Gameplay.Movement
 
         public int MeleeImpactsQueuedCount { get; private set; }
 
-        public void Initialize(ActorId actorId, IPlayerInputSource inputSource, LayerMask groundLayers, CombatStats combatStats = null, LayerMask enemyLayers = default)
+        public void Initialize(
+            ActorId actorId,
+            IPlayerInputSource inputSource,
+            LayerMask groundLayers,
+            CombatStats combatStats = null,
+            LayerMask enemyLayers = default,
+            string raceId = ExpeditionRunConfiguration.HumanRaceId)
         {
             if (_initialized)
             {
@@ -231,6 +242,11 @@ namespace Luckbound.Gameplay.Movement
                 throw new ArgumentException("PlayerMotor2D requires at least one ground layer.", nameof(groundLayers));
             }
 
+            if (!ExpeditionRunConfiguration.IsKnownRaceId(raceId))
+            {
+                throw new ArgumentException("PlayerMotor2D requires one of the four known race identifiers.", nameof(raceId));
+            }
+
             if (Mathf.Abs(Physics2D.gravity.x) > 0.01f || Physics2D.gravity.y >= -0.01f)
             {
                 throw new InvalidOperationException("PlayerMotor2D requires vertical downward 2D gravity with no horizontal component.");
@@ -244,11 +260,16 @@ namespace Luckbound.Gameplay.Movement
             }
 
             _actorId = actorId;
+            _raceId = raceId;
             _inputSource = inputSource;
             _damageState = new ActorDamageState(
                 combatStats ?? new CombatStats(maximumHealth: 100, maximumEnergy: 50, defense: 0),
                 DirectHitProtectionTicks);
-            _skillUseState = new SkillUseState(_damageState.Stats.MaximumEnergy, _damageState.Stats.MaximumEnergy);
+            _skillUseState = new SkillUseState(
+                _damageState.Stats.MaximumEnergy,
+                _damageState.Stats.MaximumEnergy,
+                default(PactModifierTotals),
+                raceId);
             _healthPotionUseState = new HealthPotionUseState();
             _meleeAttackState = new MeleeAttackState(
                 MeleeAttackProfile.BellatorWornSword,

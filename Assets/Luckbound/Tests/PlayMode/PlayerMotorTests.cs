@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Globalization;
+using Luckbound.Core.Combat;
+using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Gameplay.Movement;
@@ -11,6 +13,124 @@ namespace Luckbound.Tests.PlayMode
 {
     public sealed class PlayerMotorTests
     {
+        [TestCase(ExpeditionRunConfiguration.HumanRaceId)]
+        [TestCase(ExpeditionRunConfiguration.OrciniRaceId)]
+        [TestCase(ExpeditionRunConfiguration.AlvariRaceId)]
+        [TestCase(ExpeditionRunConfiguration.DvergarRaceId)]
+        public void InitializeAcceptsAndPreservesKnownRaceIds(string raceId)
+        {
+            GameObject player = CreateUninitializedPlayerMotor(out PlayerMotor2D motor, out _, out _);
+            ActorId actorId = ActorId.New();
+
+            try
+            {
+                motor.Initialize(actorId, new PlayerInputBuffer(actorId), 1, raceId: raceId);
+
+                Assert.That(motor.RaceId, Is.EqualTo(raceId));
+                Assert.That(motor.SkillUses.RaceId, Is.EqualTo(raceId));
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
+            }
+        }
+
+        [Test]
+        public void InitializeDefaultsToHumanRaceForExistingCallers()
+        {
+            GameObject player = CreateUninitializedPlayerMotor(out PlayerMotor2D motor, out _, out _);
+            ActorId actorId = ActorId.New();
+
+            try
+            {
+                motor.Initialize(actorId, new PlayerInputBuffer(actorId), 1);
+
+                Assert.That(motor.RaceId, Is.EqualTo(ExpeditionRunConfiguration.HumanRaceId));
+                Assert.That(motor.SkillUses.RaceId, Is.EqualTo(ExpeditionRunConfiguration.HumanRaceId));
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
+            }
+        }
+
+        [Test]
+        public void AlvariSkillUseThroughPlayerMotorConsumesDiscountedEnergy()
+        {
+            GameObject player = CreateUninitializedPlayerMotor(out PlayerMotor2D motor, out _, out _);
+            ActorId actorId = ActorId.New();
+
+            try
+            {
+                motor.Initialize(
+                    actorId,
+                    new PlayerInputBuffer(actorId),
+                    1,
+                    raceId: ExpeditionRunConfiguration.AlvariRaceId);
+                var skill = new SkillDefinition(
+                    "skill.test.alvari_discount",
+                    "class.bellator",
+                    energyCost: 12,
+                    cooldownTicks: 30,
+                    preparationTicks: 9,
+                    effectKind: SkillEffectKind.AreaStrike,
+                    baseDamage: 1m,
+                    areaRadius: 1m);
+
+                SkillUseOutcome preparation = motor.SkillUses.Update(0, skill, actionValid: true, interrupted: false);
+                SkillUseOutcome activation = motor.SkillUses.Update(9, null, actionValid: true, interrupted: false);
+
+                Assert.That(preparation.Status, Is.EqualTo(SkillUseStatus.Preparing));
+                Assert.That(activation.Status, Is.EqualTo(SkillUseStatus.Activated));
+                Assert.That(activation.EnergySpent, Is.EqualTo(11));
+                Assert.That(motor.CurrentEnergy, Is.EqualTo(39));
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
+            }
+        }
+
+        [Test]
+        public void UnknownRaceIsRejectedBeforeComponentMutationAndInitializationCanBeRetried()
+        {
+            GameObject player = CreateUninitializedPlayerMotor(out PlayerMotor2D motor, out Rigidbody2D body, out Collider2D collider);
+            body.bodyType = RigidbodyType2D.Kinematic;
+            body.constraints = RigidbodyConstraints2D.FreezePositionX;
+            body.interpolation = RigidbodyInterpolation2D.None;
+            body.collisionDetectionMode = CollisionDetectionMode2D.Discrete;
+            ActorId actorId = ActorId.New();
+            var input = new PlayerInputBuffer(actorId);
+
+            try
+            {
+                Assert.Throws<System.ArgumentException>(() => motor.Initialize(
+                    actorId,
+                    input,
+                    1,
+                    raceId: "race.unknown"));
+
+                Assert.That(body.bodyType, Is.EqualTo(RigidbodyType2D.Kinematic));
+                Assert.That(body.constraints, Is.EqualTo(RigidbodyConstraints2D.FreezePositionX));
+                Assert.That(body.interpolation, Is.EqualTo(RigidbodyInterpolation2D.None));
+                Assert.That(body.collisionDetectionMode, Is.EqualTo(CollisionDetectionMode2D.Discrete));
+                Assert.That(collider.sharedMaterial, Is.Null);
+                Assert.That(motor.ActorId.IsValid, Is.False);
+                Assert.That(motor.SkillUses, Is.Null);
+                Assert.That(motor.RaceId, Is.Null);
+
+                motor.Initialize(actorId, input, 1);
+
+                Assert.That(motor.ActorId, Is.EqualTo(actorId));
+                Assert.That(motor.RaceId, Is.EqualTo(ExpeditionRunConfiguration.HumanRaceId));
+                Assert.That(motor.SkillUses.RaceId, Is.EqualTo(ExpeditionRunConfiguration.HumanRaceId));
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
+            }
+        }
+
         [UnityTest]
         public IEnumerator WalksOnGroundAcceleratesBrakesAndCannotPassThroughWall()
         {
@@ -107,6 +227,18 @@ namespace Luckbound.Tests.PlayMode
             BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
             collider.size = size;
             return gameObject;
+        }
+
+        private static GameObject CreateUninitializedPlayerMotor(
+            out PlayerMotor2D motor,
+            out Rigidbody2D body,
+            out Collider2D collider)
+        {
+            var player = new GameObject("E09_PlayerMotorRaceTest");
+            body = player.AddComponent<Rigidbody2D>();
+            collider = player.AddComponent<CapsuleCollider2D>();
+            motor = player.AddComponent<PlayerMotor2D>();
+            return player;
         }
     }
 }
