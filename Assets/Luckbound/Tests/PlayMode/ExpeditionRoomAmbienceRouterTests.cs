@@ -37,6 +37,107 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(ExpeditionRoomAmbienceRouter.ResolveAmbienceId("room.unknown.mystery"), Is.Null);
         }
 
+        [UnityTest, Timeout(20000)]
+        public IEnumerator ApplicationRootCompositionSeamReflectsAndUpdatesRoomAmbienceWithoutStartingAudio()
+        {
+            if (ApplicationBootstrapper.Instance != null)
+                Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+            yield return null;
+
+            ExpeditionRoutePlan route = CreateRoute(out Dictionary<string, GameObject> templatePrefabs);
+            GameObject applicationRoot = CreateOwnedObject("RoomAmbienceApplicationBootstrapper");
+            ApplicationBootstrapper application = applicationRoot.AddComponent<ApplicationBootstrapper>();
+            application.enabled = false;
+
+            Assert.Throws<System.ArgumentNullException>(() => application.BindExpeditionRoomAmbience(null));
+            Assert.That(applicationRoot.GetComponent<ApplicationAudioRouter>(), Is.Null,
+                "Invalid arguments must not alter the application audio root.");
+            ExpeditionRoomTransitionController uninitializedTransitions = CreateOwnedObject(
+                "RoomAmbienceUninitializedTransitions").AddComponent<ExpeditionRoomTransitionController>();
+            _additionalTransitions.Add(uninitializedTransitions);
+            Assert.Throws<System.ArgumentException>(() => application.BindExpeditionRoomAmbience(uninitializedTransitions));
+            Assert.That(applicationRoot.GetComponent<ApplicationAudioRouter>(), Is.Null,
+                "A controller without an active room must not alter the application audio root.");
+
+            _roomTransitions = CreateTransitionController("RoomAmbienceSeamTransitions", route,
+                templatePrefabs, "RoomAmbienceSeamPlayer");
+            Assert.That(_roomTransitions.ActiveScope.TemplateId, Does.StartWith("room.patio."));
+
+            application.BindExpeditionRoomAmbience(_roomTransitions);
+            _router = applicationRoot.GetComponent<ExpeditionRoomAmbienceRouter>();
+            RuntimeAmbienceDirector ambienceDirector = applicationRoot.GetComponent<RuntimeAmbienceDirector>();
+            ApplicationAudioRouter audioRouter = application.AudioRouter;
+            Assert.That(_router, Is.Not.Null);
+            Assert.That(ambienceDirector, Is.Not.Null);
+            Assert.That(audioRouter, Is.Not.Null);
+            Assert.That(applicationRoot.GetComponents<ExpeditionRoomAmbienceRouter>().Length, Is.EqualTo(1));
+
+            audioRouter.SetSceneContext("Expedition");
+            ambienceDirector.CrossfadeSeconds = 0f;
+            Assert.That(_router.CurrentRoomTemplateId, Is.EqualTo(_roomTransitions.ActiveScope.TemplateId),
+                "Binding after the initial activation must immediately reflect the current room.");
+            Assert.That(_router.CurrentAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForestCourtyardId));
+            Assert.That(audioRouter.HasRoomAmbienceOverride, Is.True);
+            Assert.That(audioRouter.RequestedAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForestCourtyardId));
+
+            application.BindExpeditionRoomAmbience(_roomTransitions);
+            Assert.That(applicationRoot.GetComponents<ExpeditionRoomAmbienceRouter>().Length, Is.EqualTo(1),
+                "Repeated binding must reuse the root router.");
+            Assert.That(audioRouter.UserGestureObserved, Is.False);
+            Assert.That(ambienceDirector.ActiveSourceCount, Is.Zero,
+                "Room selection must remain silent until an input gesture unlocks audio.");
+
+            ExpeditionRoomTransitionController disposedTransitions = CreateTransitionController(
+                "RoomAmbienceDisposedTransitions", route, templatePrefabs, "RoomAmbienceDisposedPlayer");
+            _additionalTransitions.Add(disposedTransitions);
+            disposedTransitions.Dispose();
+            Assert.Throws<System.ArgumentException>(() => application.BindExpeditionRoomAmbience(disposedTransitions));
+            Assert.That(_router.CurrentAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForestCourtyardId),
+                "A rejected binding must leave the current room source intact.");
+
+            yield return TransitionToAmbience(_roomTransitions, route, RuntimeAmbienceDirector.ArchiveId);
+            Assert.That(_router.CurrentRoomTemplateId, Is.EqualTo(_roomTransitions.ActiveScope.TemplateId));
+            Assert.That(_router.CurrentAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ArchiveId),
+                "A future room activation must replace the Patio ambience override with Archive.");
+
+            ExpeditionRoomTransitionController replacementTransitions = CreateTransitionController(
+                "RoomAmbienceSeamReplacementTransitions", route, templatePrefabs, "RoomAmbienceReplacementPlayer");
+            _additionalTransitions.Add(replacementTransitions);
+            application.BindExpeditionRoomAmbience(replacementTransitions);
+            Assert.That(_router.CurrentRoomTemplateId, Is.EqualTo(replacementTransitions.ActiveScope.TemplateId));
+            Assert.That(_router.CurrentAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForestCourtyardId),
+                "Rebinding must reflect a replacement controller's already active Patio room.");
+            Assert.That(ReferenceEquals(_router, applicationRoot.GetComponent<ExpeditionRoomAmbienceRouter>()), Is.True);
+
+            yield return TransitionToAmbience(_roomTransitions, route, RuntimeAmbienceDirector.ForgeId);
+            Assert.That(_router.CurrentRoomTemplateId, Is.EqualTo(replacementTransitions.ActiveScope.TemplateId),
+                "Room events from the previous controller must be detached after rebind.");
+            Assert.That(_router.CurrentAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForestCourtyardId));
+
+            yield return TransitionToAmbience(replacementTransitions, route, RuntimeAmbienceDirector.ArchiveId);
+            Assert.That(_router.CurrentAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ArchiveId));
+            yield return TransitionToAmbience(replacementTransitions, route, RuntimeAmbienceDirector.ForgeId);
+            Assert.That(replacementTransitions.ActiveScope.TemplateId, Does.StartWith("room.forjas."));
+            Assert.That(_router.CurrentAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForgeId));
+            Assert.That(audioRouter.RequestedAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForgeId));
+
+            application.UnbindExpeditionRoomAmbience();
+            application.UnbindExpeditionRoomAmbience();
+            Assert.That(_router.CurrentRoomTemplateId, Is.Null);
+            Assert.That(_router.CurrentAmbienceId, Is.Null);
+            Assert.That(audioRouter.HasRoomAmbienceOverride, Is.False,
+                "Repeated unbinds must clear the room request without disposing the reusable root router.");
+            Assert.That(audioRouter.RequestedAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForestCourtyardId));
+
+            application.BindExpeditionRoomAmbience(replacementTransitions);
+            Assert.That(ReferenceEquals(_router, applicationRoot.GetComponent<ExpeditionRoomAmbienceRouter>()), Is.True,
+                "The root must reuse its existing router after an explicit unbind.");
+            Assert.That(_router.CurrentRoomTemplateId, Is.EqualTo(replacementTransitions.ActiveScope.TemplateId));
+            Assert.That(_router.CurrentAmbienceId, Is.EqualTo(RuntimeAmbienceDirector.ForgeId));
+            Assert.That(audioRouter.UserGestureObserved, Is.False);
+            Assert.That(ambienceDirector.ActiveSourceCount, Is.Zero);
+        }
+
         [UnityTest, Timeout(15000)]
         public IEnumerator RoomTransitionsWaitForGestureAndRouteTheActiveRoomThroughTheApplicationSeam()
         {

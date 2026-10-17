@@ -20,6 +20,7 @@ namespace Luckbound.App
 
         public string CurrentRoomTemplateId { get; private set; }
         public string CurrentAmbienceId { get; private set; }
+        public bool IsDisposed => _disposed;
 
         /// <summary>
         /// Connects this router to one explicit room transition source and application audio router.
@@ -67,6 +68,13 @@ namespace Luckbound.App
         {
             if (_disposed) return;
             _disposed = true;
+            Unbind(clearOverride: true);
+        }
+
+        /// <summary>Detaches the current room source and restores scene ambience; the router remains reusable.</summary>
+        public void Unbind()
+        {
+            if (_disposed) return;
             Unbind(clearOverride: true);
         }
 
