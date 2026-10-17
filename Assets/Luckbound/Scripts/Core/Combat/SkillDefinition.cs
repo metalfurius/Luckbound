@@ -53,7 +53,11 @@ namespace Luckbound.Core.Combat
             decimal damageReductionPercent = 0m,
             decimal damagePerSecond = 0m,
             int damagePulseIntervalTicks = 0,
-            SkillKnockbackTier knockbackTier = SkillKnockbackTier.None)
+            SkillKnockbackTier knockbackTier = SkillKnockbackTier.None,
+            decimal chargeSpeed = 0m,
+            decimal knockbackHorizontalSpeed = 0m,
+            decimal knockbackVerticalSpeed = 0m,
+            int targetAiControlSuspensionTicks = 0)
         {
             ValidateContentId(id, "id");
             ValidateContentId(classId, "classId");
@@ -86,12 +90,16 @@ namespace Luckbound.Core.Combat
             ValidateNonNegative(statusPower, nameof(statusPower));
             ValidateNonNegative(damageReductionPercent, nameof(damageReductionPercent));
             ValidateNonNegative(damagePerSecond, nameof(damagePerSecond));
+            ValidateNonNegative(chargeSpeed, nameof(chargeSpeed));
+            ValidateNonNegative(knockbackHorizontalSpeed, nameof(knockbackHorizontalSpeed));
+            ValidateNonNegative(knockbackVerticalSpeed, nameof(knockbackVerticalSpeed));
             ValidateNonNegative(effectDurationTicks, nameof(effectDurationTicks));
             ValidateNonNegative(maxTargets, nameof(maxTargets));
             ValidateNonNegative(projectileCount, nameof(projectileCount));
             ValidateNonNegative(projectileLifetimeTicks, nameof(projectileLifetimeTicks));
             ValidateNonNegative(statusDurationTicks, nameof(statusDurationTicks));
             ValidateNonNegative(damagePulseIntervalTicks, nameof(damagePulseIntervalTicks));
+            ValidateNonNegative(targetAiControlSuspensionTicks, nameof(targetAiControlSuspensionTicks));
 
             switch (effectKind)
             {
@@ -105,7 +113,9 @@ namespace Luckbound.Core.Combat
                     Require(damageReductionPercent > 0m && damageReductionPercent <= 1m && effectDurationTicks > 0, effectKind);
                     break;
                 case SkillEffectKind.Charge:
-                    Require(baseDamage > 0m && effectDurationTicks > 0 && knockbackTier != SkillKnockbackTier.None, effectKind);
+                    Require(baseDamage > 0m && effectDurationTicks > 0 && knockbackTier != SkillKnockbackTier.None &&
+                        chargeSpeed > 0m && knockbackHorizontalSpeed > 0m && knockbackVerticalSpeed > 0m &&
+                        targetAiControlSuspensionTicks > 0, effectKind);
                     break;
                 case SkillEffectKind.PiercingProjectile:
                     Require(baseDamage > 0m && maxTargets > 0 && projectileSpeed > 0m && projectileLifetimeTicks > 0, effectKind);
@@ -148,6 +158,10 @@ namespace Luckbound.Core.Combat
             DamagePerSecond = damagePerSecond;
             DamagePulseIntervalTicks = damagePulseIntervalTicks;
             KnockbackTier = knockbackTier;
+            ChargeSpeed = chargeSpeed;
+            KnockbackHorizontalSpeed = knockbackHorizontalSpeed;
+            KnockbackVerticalSpeed = knockbackVerticalSpeed;
+            TargetAiControlSuspensionTicks = targetAiControlSuspensionTicks;
         }
 
         public string Id { get; }
@@ -191,6 +205,14 @@ namespace Luckbound.Core.Combat
         public int DamagePulseIntervalTicks { get; }
 
         public SkillKnockbackTier KnockbackTier { get; }
+
+        public decimal ChargeSpeed { get; }
+
+        public decimal KnockbackHorizontalSpeed { get; }
+
+        public decimal KnockbackVerticalSpeed { get; }
+
+        public int TargetAiControlSuspensionTicks { get; }
 
         private static void ValidateContentId(string value, string parameterName)
         {

@@ -51,7 +51,11 @@ namespace Luckbound.Content
                     damageReductionPercent: skill.damageReductionPercent / 100m,
                     damagePerSecond: skill.damagePerSecond,
                     damagePulseIntervalTicks: skill.damagePulseIntervalTicks,
-                    knockbackTier: ParseEnum<SkillKnockbackTier>(skill.knockbackTier, "knockbackTier", skill.id)));
+                    knockbackTier: ParseEnum<SkillKnockbackTier>(skill.knockbackTier, "knockbackTier", skill.id),
+                    chargeSpeed: skill.chargeSpeed,
+                    knockbackHorizontalSpeed: skill.knockbackHorizontalSpeed,
+                    knockbackVerticalSpeed: skill.knockbackVerticalSpeed,
+                    targetAiControlSuspensionTicks: skill.targetAiControlSuspensionTicks));
             }
 
             return new SkillCatalog(definitions);
@@ -100,6 +104,10 @@ namespace Luckbound.Content
             public int damagePerSecond;
             public int damagePulseIntervalTicks;
             public string knockbackTier;
+            public int chargeSpeed;
+            public int knockbackHorizontalSpeed;
+            public int knockbackVerticalSpeed;
+            public int targetAiControlSuspensionTicks;
         }
     }
 }

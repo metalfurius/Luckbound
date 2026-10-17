@@ -38,6 +38,10 @@
       "baseDamage": 30,
       "effectDurationTicks": 21,
       "knockbackTier": "Strong",
+      "chargeSpeed": 12,
+      "knockbackHorizontalSpeed": 6,
+      "knockbackVerticalSpeed": 3,
+      "targetAiControlSuspensionTicks": 18,
       "statusKind": "None"
     },
     {

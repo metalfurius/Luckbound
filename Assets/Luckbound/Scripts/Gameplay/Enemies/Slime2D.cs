@@ -55,6 +55,7 @@ namespace Luckbound.Gameplay.Enemies
         private int _attackElapsedTicks;
         private int _recoveryTicksRemaining;
         private int _telegraphTicksRemaining;
+        private int _aiControlSuspensionTicksRemaining;
         private long _simulationTick;
 
         public SlimeBehaviorState State { get; private set; } = SlimeBehaviorState.Dormant;
@@ -74,6 +75,10 @@ namespace Luckbound.Gameplay.Enemies
         public int ProjectileImpactCount { get; private set; }
 
         public int MeleeImpactCount { get; private set; }
+
+        public int AiControlSuspensionTicksRemaining => _aiControlSuspensionTicksRemaining;
+
+        public Vector2 LastMeleeKnockbackVelocity { get; private set; }
 
         public int SuccessfulPlayerHitCount { get; private set; }
 
@@ -183,6 +188,8 @@ namespace Luckbound.Gameplay.Enemies
             IsGrounded = UpdateGrounded();
             float deltaTime = Time.fixedDeltaTime;
             Vector2 velocity = _body.linearVelocity;
+            bool aiControlSuspended = _aiControlSuspensionTicksRemaining > 0;
+            float horizontalVelocityDuringSuspension = velocity.x;
 
             switch (State)
             {
@@ -256,6 +263,12 @@ namespace Luckbound.Gameplay.Enemies
                         State = CanDetectPlayer() ? SlimeBehaviorState.Chase : SlimeBehaviorState.Dormant;
                     }
                     break;
+            }
+
+            if (aiControlSuspended)
+            {
+                velocity.x = horizontalVelocityDuringSuspension;
+                _aiControlSuspensionTicksRemaining--;
             }
 
             _body.linearVelocity = velocity;
@@ -334,6 +347,7 @@ namespace Luckbound.Gameplay.Enemies
                 if (outcome.Status == DirectImpactStatus.Applied)
                 {
                     MeleeImpactCount++;
+                    ApplyMeleeKnockback(impact);
                 }
 
                 if (outcome.DeathOccurred)
@@ -363,7 +377,21 @@ namespace Luckbound.Gameplay.Enemies
             _attackElapsedTicks = 0;
             LeapAttackCount++;
             State = SlimeBehaviorState.Attack;
-            _body.linearVelocity = new Vector2(_facingDirection * LeapHorizontalSpeed, LeapVerticalSpeed);
+            if (_aiControlSuspensionTicksRemaining <= 0)
+            {
+                _body.linearVelocity = new Vector2(_facingDirection * LeapHorizontalSpeed, LeapVerticalSpeed);
+            }
+        }
+
+        private void ApplyMeleeKnockback(MeleeImpact impact)
+        {
+            if (!impact.HasKnockback || impact.AiControlSuspensionTicks <= 0) return;
+
+            LastMeleeKnockbackVelocity = impact.KnockbackVelocity;
+            _body.linearVelocity = impact.KnockbackVelocity;
+            _aiControlSuspensionTicksRemaining = Math.Max(
+                _aiControlSuspensionTicksRemaining,
+                impact.AiControlSuspensionTicks);
         }
 
         private void BeginRecovery()

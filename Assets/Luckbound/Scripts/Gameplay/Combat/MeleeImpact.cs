@@ -1,5 +1,6 @@
 using System;
 using Luckbound.Core.Identifiers;
+using UnityEngine;
 
 namespace Luckbound.Gameplay.Combat
 {
@@ -7,6 +8,19 @@ namespace Luckbound.Gameplay.Combat
     public readonly struct MeleeImpact
     {
         public MeleeImpact(HitId hitId, ActorId sourceActorId, ActorId targetActorId, decimal damage, float sourcePositionX, long queuedAtTick)
+            : this(hitId, sourceActorId, targetActorId, damage, sourcePositionX, queuedAtTick, Vector2.zero, 0)
+        {
+        }
+
+        public MeleeImpact(
+            HitId hitId,
+            ActorId sourceActorId,
+            ActorId targetActorId,
+            decimal damage,
+            float sourcePositionX,
+            long queuedAtTick,
+            Vector2 knockbackVelocity,
+            int aiControlSuspensionTicks)
         {
             if (!hitId.IsValid) throw new ArgumentException("Melee impact requires a valid hit ID.", nameof(hitId));
             if (!sourceActorId.IsValid) throw new ArgumentException("Melee impact requires a valid source actor.", nameof(sourceActorId));
@@ -15,6 +29,12 @@ namespace Luckbound.Gameplay.Combat
             if (damage <= 0m) throw new ArgumentOutOfRangeException(nameof(damage));
             if (float.IsNaN(sourcePositionX) || float.IsInfinity(sourcePositionX)) throw new ArgumentOutOfRangeException(nameof(sourcePositionX));
             if (queuedAtTick < 0) throw new ArgumentOutOfRangeException(nameof(queuedAtTick));
+            if (float.IsNaN(knockbackVelocity.x) || float.IsInfinity(knockbackVelocity.x) ||
+                float.IsNaN(knockbackVelocity.y) || float.IsInfinity(knockbackVelocity.y))
+            {
+                throw new ArgumentOutOfRangeException(nameof(knockbackVelocity), "Knockback velocity must be finite.");
+            }
+            if (aiControlSuspensionTicks < 0) throw new ArgumentOutOfRangeException(nameof(aiControlSuspensionTicks));
 
             HitId = hitId;
             SourceActorId = sourceActorId;
@@ -22,6 +42,8 @@ namespace Luckbound.Gameplay.Combat
             Damage = damage;
             SourcePositionX = sourcePositionX;
             QueuedAtTick = queuedAtTick;
+            KnockbackVelocity = knockbackVelocity;
+            AiControlSuspensionTicks = aiControlSuspensionTicks;
         }
 
         public HitId HitId { get; }
@@ -30,5 +52,8 @@ namespace Luckbound.Gameplay.Combat
         public decimal Damage { get; }
         public float SourcePositionX { get; }
         public long QueuedAtTick { get; }
+        public Vector2 KnockbackVelocity { get; }
+        public int AiControlSuspensionTicks { get; }
+        public bool HasKnockback => KnockbackVelocity.sqrMagnitude > 0f;
     }
 }

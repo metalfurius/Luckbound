@@ -10,6 +10,7 @@ using Luckbound.Content;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Combat.Magus;
 using Luckbound.Gameplay.Combat.Venator;
+using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Rooms;
 using UnityEngine;
 using EntityId = Luckbound.Core.Identifiers.EntityId;
@@ -49,6 +50,7 @@ namespace Luckbound.Gameplay.Movement
         private static readonly float MagusAimAssistMinimumDot = Mathf.Cos(MagusAimAssistConeDegrees * Mathf.Deg2Rad);
 
         private readonly RaycastHit2D[] _groundHits = new RaycastHit2D[4];
+        private readonly RaycastHit2D[] _chargeWallHits = new RaycastHit2D[4];
         private readonly RaycastHit2D[] _magusLineOfSightHits = new RaycastHit2D[1];
         private readonly Collider2D[] _meleeOverlaps = new Collider2D[16];
         private Collider2D[] _magusAimOverlaps = new Collider2D[16];
@@ -58,6 +60,9 @@ namespace Luckbound.Gameplay.Movement
         private ActorDamageState _damageState;
         private HealthPotionUseState _healthPotionUseState;
         private SkillUseState _skillUseState;
+        private BellatorCombatState _bellatorCombatState;
+        private BellatorSkillLoadout _bellatorSkillLoadout;
+        private BellatorCombatResult _lastBellatorCombatResult;
         private VenatorCombatState _venatorCombatState;
         private VenatorSkillLoadout _venatorSkillLoadout;
         private VenatorCombatResult _lastVenatorCombatResult;
@@ -88,9 +93,17 @@ namespace Luckbound.Gameplay.Movement
         private float _jumpBufferRemaining;
         private LayerMask _venatorTargetLayers;
         private LayerMask _magusTargetLayers;
+        private LayerMask _groundLayers;
+        private readonly HashSet<ActorId> _chargeHitTargets = new HashSet<ActorId>();
+        private SkillDefinition _bellatorChargeSkill;
+        private HitId _lastBellatorChargeHitId;
+        private float _bellatorChargeDirection = 1f;
+        private int _bellatorChargeTicksRemaining;
+        private long _nextBellatorEnergyRecoveryTick;
         private bool _dodgeActive;
         private bool _dodgeInvulnerabilityActive;
         private bool _dodgeSpeedRecoveryPending;
+        private bool _chargeCollisionActiveThisPhysicsStep;
         private int _stunTicksRemaining;
         private long _tick;
         private long _nextVenatorEnergyRecoveryTick;
@@ -115,9 +128,23 @@ namespace Luckbound.Gameplay.Movement
 
         public SkillUseState SkillUses => _skillUseState;
 
+        public bool IsBellator => _bellatorCombatState != null;
+
         public bool IsVenator => _venatorCombatState != null;
 
         public bool IsMagus => _magusCombatState != null;
+
+        public bool IsPreparingBellatorCharge => _bellatorCombatState != null && _bellatorCombatState.IsPreparingCharge;
+
+        public BellatorCombatResult LastBellatorCombatResult => _lastBellatorCombatResult;
+
+        public int BellatorChargeActivationCount { get; private set; }
+
+        public bool IsCharging => _bellatorChargeTicksRemaining > 0;
+
+        public int BellatorChargeTicksRemaining => _bellatorChargeTicksRemaining;
+
+        public HitId LastBellatorChargeHitId => _lastBellatorChargeHitId;
 
         public bool IsPreparingVenatorSkill => IsVenator && _skillUseState.IsPreparing;
 
@@ -174,7 +201,7 @@ namespace Luckbound.Gameplay.Movement
 
         public MeleeHitWindow CurrentMeleeHitWindow => _meleeAttackSnapshot.HitWindow;
 
-        public bool IsDodgeReady => !IsDead && !IsStunned && !_dodgeActive && _dodgeCooldownRemaining <= 0f;
+        public bool IsDodgeReady => !IsDead && !IsStunned && !_dodgeActive && !IsCharging && _dodgeCooldownRemaining <= 0f;
 
         public float CoyoteTimeRemaining => _coyoteTimeRemaining;
 
@@ -262,6 +289,7 @@ namespace Luckbound.Gameplay.Movement
             _actorId = actorId;
             _raceId = raceId;
             _inputSource = inputSource;
+            _groundLayers = groundLayers;
             _damageState = new ActorDamageState(
                 combatStats ?? new CombatStats(maximumHealth: 100, maximumEnergy: 50, defense: 0),
                 DirectHitProtectionTicks);
@@ -299,6 +327,55 @@ namespace Luckbound.Gameplay.Movement
             _collider.sharedMaterial = _movementMaterial;
 
             _initialized = true;
+        }
+
+        /// <summary>
+        /// Binds Bellator's selected skills to this actor. Charge values are read from the authoritative Skills.json catalog.
+        /// </summary>
+        public void ConfigureBellator(IEnumerable<string> selectedSkillIds)
+        {
+            TextAsset catalogAsset = Resources.Load<TextAsset>("Luckbound/Data/Skills");
+            if (catalogAsset == null)
+            {
+                throw new InvalidOperationException("The authoritative Skills.json catalog is missing from Resources.");
+            }
+
+            ConfigureBellator(SkillCatalogJsonLoader.Load(catalogAsset.text), selectedSkillIds);
+        }
+
+        /// <summary>Test and composition overload for a catalog already loaded from Skills.json.</summary>
+        public void ConfigureBellator(SkillCatalog catalog, IEnumerable<string> selectedSkillIds)
+        {
+            if (!_initialized)
+            {
+                throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring Bellator combat.");
+            }
+
+            if (_venatorCombatState != null || _magusCombatState != null)
+            {
+                throw new InvalidOperationException("A player cannot use Bellator, Venator, and Magus combat in the same expedition.");
+            }
+
+            if (catalog == null) throw new ArgumentNullException(nameof(catalog));
+            var loadout = new BellatorSkillLoadout(catalog, selectedSkillIds);
+            if (_bellatorSkillLoadout != null &&
+                (!string.Equals(_bellatorSkillLoadout.Skill1.Id, loadout.Skill1.Id, StringComparison.Ordinal) ||
+                 !string.Equals(_bellatorSkillLoadout.Skill2.Id, loadout.Skill2.Id, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException("A Bellator loadout cannot change during an expedition.");
+            }
+
+            if (_bellatorCombatState == null)
+            {
+                _bellatorSkillLoadout = loadout;
+                _bellatorCombatState = new BellatorCombatState(_actorId, loadout, _skillUseState);
+                _nextBellatorEnergyRecoveryTick = _tick + 60;
+            }
+
+            _lastBellatorCombatResult = default;
+            _meleeAttackState.Interrupt();
+            _meleeAttackSnapshot = default;
+            IsAttacking = false;
         }
 
         /// <summary>
@@ -341,9 +418,9 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring Venator combat.");
             }
 
-            if (_magusCombatState != null)
+            if (_bellatorCombatState != null || _magusCombatState != null)
             {
-                throw new InvalidOperationException("A player cannot use Venator and Magus combat in the same expedition.");
+                throw new InvalidOperationException("A player cannot use Bellator, Venator, and Magus combat in the same expedition.");
             }
 
             if (catalog == null) throw new ArgumentNullException(nameof(catalog));
@@ -448,9 +525,9 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring Magus combat.");
             }
 
-            if (_venatorCombatState != null)
+            if (_bellatorCombatState != null || _venatorCombatState != null)
             {
-                throw new InvalidOperationException("A player cannot use Magus and Venator combat in the same expedition.");
+                throw new InvalidOperationException("A player cannot use Bellator, Venator, and Magus combat in the same expedition.");
             }
 
             if (catalog == null) throw new ArgumentNullException(nameof(catalog));
@@ -548,6 +625,12 @@ namespace Luckbound.Gameplay.Movement
                 _skillUseState.IsReady(skillId, SimulationTick);
         }
 
+        public bool IsBellatorSkillReady(string skillId)
+        {
+            return IsBellator && _bellatorSkillLoadout.Contains(skillId) &&
+                _skillUseState.IsReady(skillId, SimulationTick);
+        }
+
         public DirectImpactOutcome ReceiveDirectImpact(
             HitId hitId,
             DamageCalculationRequest request,
@@ -640,6 +723,7 @@ namespace Luckbound.Gameplay.Movement
                 return;
             }
 
+            _chargeCollisionActiveThisPhysicsStep = false;
             long tick = _tick++;
             PlayerCommand command = _inputSource.Consume(tick);
             if (command.ActorId != _actorId)
@@ -669,6 +753,7 @@ namespace Luckbound.Gameplay.Movement
                 _healthPotionUseState.Update(tick, requested: false, currentHealth: CurrentHealth,
                     maximumHealth: CombatStats.MaximumHealth, interrupted: true);
                 InterruptActions();
+                TickBellatorCommand(command, canAct: false);
                 TickVenatorCommand(command, canAct: false);
                 TickMagusCommand(command, canAct: false);
                 ApplyRestrictedMotion(deltaTime);
@@ -681,6 +766,7 @@ namespace Luckbound.Gameplay.Movement
                     maximumHealth: CombatStats.MaximumHealth, interrupted: true);
                 _stunTicksRemaining--;
                 InterruptActions();
+                TickBellatorCommand(command, canAct: false);
                 TickVenatorCommand(command, canAct: false);
                 TickMagusCommand(command, canAct: false);
                 ApplyRestrictedMotion(deltaTime);
@@ -740,6 +826,33 @@ namespace Luckbound.Gameplay.Movement
                 attackMovementMultiplier = IsAttacking ? (float)_magusBasicAttackSnapshot.MovementSpeedMultiplier : 1f;
                 _meleeAttackSnapshot = default;
             }
+            else if (IsBellator)
+            {
+                bool higherPriorityActionActive = potionOutcome.Status == HealthPotionUseStatus.Preparing ||
+                    potionOutcome.Status == HealthPotionUseStatus.Healed;
+                TickBellatorCommand(command, canAct: !_dodgeActive && !higherPriorityActionActive);
+                bool skillActionOwnsTick = _lastBellatorCombatResult.SkillActionOwnsTick || IsCharging;
+                if (skillActionOwnsTick)
+                {
+                    _meleeAttackState.Interrupt();
+                    _meleeAttackSnapshot = default;
+                    IsAttacking = false;
+                }
+                else
+                {
+                    _meleeAttackSnapshot = _meleeAttackState.Tick(
+                        command.Tick,
+                        attackPressed: command.WasPressed(PlayerAction.Attack) && !_dodgeActive,
+                        dodgeAccepted: dodgeStartedThisTick);
+                    IsAttacking = _meleeAttackSnapshot.IsAttacking && !_dodgeActive;
+                    if (_meleeAttackSnapshot.WasStartedThisTick)
+                    {
+                        MeleeAttackActivationCount++;
+                    }
+                }
+
+                attackMovementMultiplier = IsAttacking ? (float)_meleeAttackSnapshot.MovementSpeedMultiplier : 1f;
+            }
             else
             {
                 _meleeAttackSnapshot = _meleeAttackState.Tick(
@@ -768,6 +881,7 @@ namespace Luckbound.Gameplay.Movement
             }
 
             Vector2 velocity = _body.linearVelocity;
+            bool chargeOwnsMovement = !_dodgeActive && ApplyBellatorChargeMovement(ref velocity, deltaTime);
             if (_dodgeActive)
             {
                 IsDodging = true;
@@ -780,6 +894,11 @@ namespace Luckbound.Gameplay.Movement
                     _dodgeActive = false;
                     _dodgeSpeedRecoveryPending = true;
                 }
+            }
+            else if (chargeOwnsMovement)
+            {
+                _jumpBufferRemaining = 0f;
+                _coyoteTimeRemaining = 0f;
             }
             else
             {
@@ -812,6 +931,94 @@ namespace Luckbound.Gameplay.Movement
             _body.linearVelocity = velocity;
         }
 
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            QueueBellatorChargeImpact(collision);
+        }
+
+        private void OnCollisionStay2D(Collision2D collision)
+        {
+            QueueBellatorChargeImpact(collision);
+        }
+
+        private void QueueBellatorChargeImpact(Collision2D collision)
+        {
+            if (!_chargeCollisionActiveThisPhysicsStep || _bellatorChargeSkill == null || collision == null) return;
+
+            ProjectileImpactTarget2D target = collision.collider.GetComponentInParent<ProjectileImpactTarget2D>();
+            if (target == null || !target.IsInitialized || target.ActorId == _actorId ||
+                !_chargeHitTargets.Add(target.ActorId))
+            {
+                return;
+            }
+
+            float multiplier = (float)PlayableRaceRules.GetOutgoingKnockbackMultiplier(_raceId);
+            Vector2 knockback = target.GetComponentInParent<CustodianBoss2D>() != null
+                ? Vector2.zero
+                : new Vector2(
+                    _bellatorChargeDirection * (float)_bellatorChargeSkill.KnockbackHorizontalSpeed * multiplier,
+                    (float)_bellatorChargeSkill.KnockbackVerticalSpeed * multiplier);
+            var impact = new MeleeImpact(
+                _lastBellatorChargeHitId,
+                _actorId,
+                target.ActorId,
+                _bellatorChargeSkill.BaseDamage,
+                transform.position.x,
+                CurrentPhysicsTick(),
+                knockback,
+                knockback == Vector2.zero ? 0 : _bellatorChargeSkill.TargetAiControlSuspensionTicks);
+            target.QueueMeleeImpact(impact);
+        }
+
+        private void StartBellatorCharge(SkillDefinition charge)
+        {
+            if (charge == null || charge.EffectKind != SkillEffectKind.Charge)
+            {
+                throw new ArgumentException("Bellator can only activate a catalog Charge definition.", nameof(charge));
+            }
+
+            _bellatorChargeSkill = charge;
+            _bellatorChargeTicksRemaining = charge.EffectDurationTicks;
+            _bellatorChargeDirection = Mathf.Abs(_facingDirection) > MovementDeadZone
+                ? Mathf.Sign(_facingDirection)
+                : 1f;
+            _lastBellatorChargeHitId = HitId.New();
+            _chargeHitTargets.Clear();
+            BellatorChargeActivationCount++;
+        }
+
+        private bool ApplyBellatorChargeMovement(ref Vector2 velocity, float deltaTime)
+        {
+            if (_bellatorChargeSkill == null) return false;
+            if (_bellatorChargeTicksRemaining <= 0)
+            {
+                _bellatorChargeSkill = null;
+                return false;
+            }
+
+            _chargeCollisionActiveThisPhysicsStep = true;
+            float direction = _bellatorChargeDirection;
+            float speed = (float)_bellatorChargeSkill.ChargeSpeed;
+            int hitCount = _collider.Cast(
+                new Vector2(direction, 0f),
+                _groundContactFilter,
+                _chargeWallHits,
+                speed * deltaTime);
+            for (int index = 0; index < hitCount; index++)
+            {
+                RaycastHit2D hit = _chargeWallHits[index];
+                if (hit.collider == null || hit.normal.x * direction >= -0.4f) continue;
+
+                velocity.x = 0f;
+                _bellatorChargeTicksRemaining = 0;
+                return true;
+            }
+
+            velocity.x = direction * speed;
+            _bellatorChargeTicksRemaining--;
+            return true;
+        }
+
         private void InterruptActions()
         {
             if (_meleeAttackState != null)
@@ -829,6 +1036,15 @@ namespace Luckbound.Gameplay.Movement
             {
                 _magusCombatState.Interrupt();
             }
+
+            if (_bellatorCombatState != null)
+            {
+                _bellatorCombatState.Interrupt();
+            }
+
+            _bellatorChargeSkill = null;
+            _bellatorChargeTicksRemaining = 0;
+            _chargeCollisionActiveThisPhysicsStep = false;
 
             _venatorBasicAttackSnapshot = default;
             _magusBasicAttackSnapshot = default;
@@ -885,6 +1101,45 @@ namespace Luckbound.Gameplay.Movement
                 VenatorProjectileShot shot = activation.Projectiles[index];
                 SpawnVenatorProjectile(shot.Definition, shot.AngleOffsetDegrees);
             }
+        }
+
+        private void TickBellatorCommand(PlayerCommand command, bool canAct)
+        {
+            if (_bellatorCombatState == null) return;
+
+            BellatorCombatResult result = _bellatorCombatState.Tick(command, isAlive: canAct);
+            _lastBellatorCombatResult = result;
+            if (result.SkillOutcome.EnergySpent > 0)
+            {
+                _nextBellatorEnergyRecoveryTick = command.Tick + 60;
+            }
+            else if (!IsDead)
+            {
+                RecoverBellatorEnergy(command.Tick);
+            }
+
+            if (result.ActivatedCharge != null)
+            {
+                StartBellatorCharge(result.ActivatedCharge);
+            }
+        }
+
+        private void RecoverBellatorEnergy(long tick)
+        {
+            if (_skillUseState.CurrentEnergy >= _skillUseState.MaximumEnergy)
+            {
+                _nextBellatorEnergyRecoveryTick = tick + 12;
+                return;
+            }
+
+            if (tick < _nextBellatorEnergyRecoveryTick) return;
+
+            long elapsedRecoveryTicks = tick - _nextBellatorEnergyRecoveryTick;
+            int recoveryAmount = 1 + (int)(elapsedRecoveryTicks / 12);
+            _skillUseState.SetCurrentEnergy(Math.Min(
+                _skillUseState.MaximumEnergy,
+                _skillUseState.CurrentEnergy + recoveryAmount));
+            _nextBellatorEnergyRecoveryTick += recoveryAmount * 12L;
         }
 
         private void RecoverVenatorEnergy(long tick)
