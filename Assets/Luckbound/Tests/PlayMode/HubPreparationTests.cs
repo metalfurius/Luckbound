@@ -51,16 +51,17 @@ namespace Luckbound.Tests.PlayMode
                 "race.unknown", new[] { firstSkillId, SecondSkillFor(classId) }));
         }
 
-        [TestCase(ExpeditionRunConfiguration.HumanRaceId)]
-        [TestCase(ExpeditionRunConfiguration.OrciniRaceId)]
-        [TestCase(ExpeditionRunConfiguration.AlvariRaceId)]
-        [TestCase(ExpeditionRunConfiguration.DvergarRaceId)]
-        public void E09RunConfigurationAcceptsKnownRacesWithoutOwningUnlockPolicy(string raceId)
+        [TestCase(ExpeditionRunConfiguration.HumanRaceId, 2)]
+        [TestCase(ExpeditionRunConfiguration.OrciniRaceId, 1)]
+        [TestCase(ExpeditionRunConfiguration.AlvariRaceId, 1)]
+        [TestCase(ExpeditionRunConfiguration.DvergarRaceId, 1)]
+        public void E09RunConfigurationAcceptsKnownRacesAndAssignsStartingFortuna(string raceId, int expectedFortunaCharges)
         {
             ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator", raceId,
                 new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
 
             Assert.That(run.RaceId, Is.EqualTo(raceId));
+            Assert.That(run.StartingFortunaCharges, Is.EqualTo(expectedFortunaCharges));
         }
 
         [Test]
@@ -140,7 +141,8 @@ namespace Luckbound.Tests.PlayMode
                 Text initialSummary = FindText("PreparationSelectionSummary");
                 Text initialStatus = FindText("HubPreparationStatus");
                 Assert.That(initialSummary != null && initialSummary.text.Contains("HUMANO"), Is.True);
-                Assert.That(initialStatus != null && initialStatus.text.Contains("HUMANO"), Is.True);
+                Assert.That(initialStatus != null && initialStatus.text.Contains("bloqueada"), Is.True,
+                    "Rejected clicks on locked races should explain the block without changing the selected Human race.");
 
                 evidence.RecordInput(2, "UIButton", "ClassMagusButton.onClick");
                 FindButton("ClassMagusButton").onClick.Invoke();
@@ -338,6 +340,9 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(app.ActiveRun, Is.Not.Null);
                 Assert.That(app.ActiveRun.RaceId, Is.EqualTo(ExpeditionRunConfiguration.DvergarRaceId));
                 Assert.That(app.ActiveExpedition.raceId, Is.EqualTo(ExpeditionRunConfiguration.DvergarRaceId));
+                ExpeditionRunSessionPresenter sessionPresenter = Object.FindAnyObjectByType<ExpeditionRunSessionPresenter>();
+                Assert.That(sessionPresenter, Is.Not.Null, "Expedition scene should show the prepared run summary.");
+                Assert.That(sessionPresenter.SummaryText, Does.Contain("RAZA · DVERGAR"));
 
                 ProfileSaveEnvelope persisted = JsonUtility.FromJson<ProfileSaveEnvelope>(
                     File.ReadAllText(testStore.GetPrimaryPath(SaveDocument.Profile)));

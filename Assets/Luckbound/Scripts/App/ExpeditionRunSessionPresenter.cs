@@ -27,6 +27,7 @@ namespace Luckbound.App
         public TransactionId LastCraftTransactionId { get; private set; }
         public bool IsCrafting => _crafting;
         public string CraftStatusText => _craftStatusText == null ? string.Empty : _craftStatusText.text;
+        public string SummaryText => _summaryText == null ? string.Empty : _summaryText.text;
 
         private void OnEnable()
         {
@@ -148,6 +149,18 @@ namespace Luckbound.App
             }
         }
 
+        private static string RaceLabel(string raceId)
+        {
+            switch (raceId)
+            {
+                case ExpeditionRunConfiguration.HumanRaceId: return "HUMANO";
+                case ExpeditionRunConfiguration.OrciniRaceId: return "ORCINI";
+                case ExpeditionRunConfiguration.AlvariRaceId: return "ALVARI";
+                case ExpeditionRunConfiguration.DvergarRaceId: return "DVERGAR";
+                default: return "RAZA DESCONOCIDA";
+            }
+        }
+
         private static string SkillLabel(string skillId)
         {
             int separator = skillId == null ? -1 : skillId.LastIndexOf('.');
@@ -172,7 +185,7 @@ namespace Luckbound.App
             int currentHealth = saved == null ? run.StartingHealth : saved.currentHealth;
             int currentEnergy = saved == null ? run.StartingEnergy : saved.currentEnergy;
             int currentFortuna = saved == null ? run.StartingFortunaCharges : saved.fortunaCharges;
-            _summaryText.text = "RAZA · HUMANO\nHABILIDADES · " + string.Join("  ·  ", run.SkillIds.Select(SkillLabel)) +
+            _summaryText.text = "RAZA · " + RaceLabel(run.RaceId) + "\nHABILIDADES · " + string.Join("  ·  ", run.SkillIds.Select(SkillLabel)) +
                 "\nARMA · " + (run.Inventory.Weapon?.ItemId ?? "sin equipar") +
                 "\nARMADURA · " + (run.Inventory.Armor?.ItemId ?? "sin equipar") +
                 "\nPOCIONES · " + (quickConsumable == null ? 0 : quickConsumable.Quantity) +

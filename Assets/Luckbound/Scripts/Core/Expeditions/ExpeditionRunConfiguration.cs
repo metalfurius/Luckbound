@@ -19,7 +19,7 @@ namespace Luckbound.Core.Expeditions
         public const int InitialHealth = 100;
         public const int InitialEnergy = 50;
         public const int InitialHealthPotions = 2;
-        public const int InitialFortunaCharges = 2;
+        public const int InitialFortunaCharges = 1;
 
         private readonly ReadOnlyCollection<string> _skillIds;
         private readonly ReadOnlyCollection<ItemInstanceId> _startingEquipmentInstanceIds;
@@ -95,7 +95,7 @@ namespace Luckbound.Core.Expeditions
         public int StartingHealth => PermanentUpgradeRules.ApplyFivePercentPerLevel(InitialHealth, HealthUpgradeLevel);
         public int StartingEnergy => PermanentUpgradeRules.ApplyFivePercentPerLevel(InitialEnergy, EnergyUpgradeLevel);
         public int StartingHealthPotions => InitialHealthPotions + AdditionalPotionUpgradeLevel;
-        public int StartingFortunaCharges => InitialFortunaCharges;
+        public int StartingFortunaCharges => PlayableRaceRules.GetStartingFortuneCharges(RaceId);
 
         public static bool IsKnownRaceId(string raceId)
         {
