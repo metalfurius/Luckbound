@@ -2317,10 +2317,18 @@ namespace Luckbound.Gameplay.Movement
 
         private void CollectMeleeImpacts(MeleeHitWindow hitWindow)
         {
+            WeaponMeleeParameters melee = _weaponBasicAttackProfile != null
+                ? _weaponBasicAttackProfile.MeleeParameters
+                : null;
+            float centerOffsetX = melee != null ? melee.CenterOffsetX : 0.9f;
+            float centerOffsetY = melee != null ? melee.CenterOffsetY : 0.9f;
+            Vector2 size = melee != null
+                ? new Vector2(melee.Width, melee.Height)
+                : new Vector2(1.35f, 1.25f);
             Vector2 center = new Vector2(
-                transform.position.x + _facingDirection * 0.9f,
-                transform.position.y + 0.9f);
-            int overlapCount = Physics2D.OverlapBox(center, new Vector2(1.35f, 1.25f), 0f, _meleeContactFilter, _meleeOverlaps);
+                transform.position.x + _facingDirection * centerOffsetX,
+                transform.position.y + centerOffsetY);
+            int overlapCount = Physics2D.OverlapBox(center, size, 0f, _meleeContactFilter, _meleeOverlaps);
             for (int index = 0; index < overlapCount; index++)
             {
                 Collider2D overlap = _meleeOverlaps[index];
@@ -2333,13 +2341,32 @@ namespace Luckbound.Gameplay.Movement
                     continue;
                 }
 
+                Vector2 knockback = Vector2.zero;
+                int aiControlSuspensionTicks = 0;
+                bool targetIsBoss = target.GetComponentInParent<CustodianBoss2D>() != null;
+                if (!targetIsBoss && melee != null && melee.AiControlSuspensionTicks > 0 &&
+                    (melee.KnockbackHorizontalSpeed > 0f || melee.KnockbackVerticalSpeed > 0f))
+                {
+                    float targetOffsetX = target.transform.position.x - transform.position.x;
+                    float directionAwayFromAttacker = Mathf.Abs(targetOffsetX) > MovementDeadZone
+                        ? Mathf.Sign(targetOffsetX)
+                        : _facingDirection;
+                    float raceMultiplier = (float)PlayableRaceRules.GetOutgoingKnockbackMultiplier(_raceId);
+                    knockback = new Vector2(
+                        directionAwayFromAttacker * melee.KnockbackHorizontalSpeed * raceMultiplier,
+                        melee.KnockbackVerticalSpeed * raceMultiplier);
+                    aiControlSuspensionTicks = melee.AiControlSuspensionTicks;
+                }
+
                 var impact = new MeleeImpact(
                     hitWindow.Id,
                     _actorId,
                     target.ActorId,
                     hitWindow.BaseDamage * hitWindow.DamageMultiplier,
                     transform.position.x,
-                    CurrentPhysicsTick());
+                    CurrentPhysicsTick(),
+                    knockback,
+                    aiControlSuspensionTicks);
                 target.QueueMeleeImpact(impact);
                 MeleeImpactsQueuedCount++;
             }

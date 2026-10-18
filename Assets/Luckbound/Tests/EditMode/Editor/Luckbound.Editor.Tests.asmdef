@@ -1,7 +1,7 @@
 {
   "name": "Luckbound.Editor.Tests",
   "rootNamespace": "Luckbound.Tests.Editor",
-  "references": ["Luckbound.Editor"],
+  "references": ["Luckbound.Editor", "Luckbound.App", "Luckbound.Gameplay", "Unity.2D.Sprite.Editor"],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

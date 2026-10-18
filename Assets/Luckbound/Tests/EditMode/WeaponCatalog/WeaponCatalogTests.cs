@@ -102,6 +102,84 @@ namespace Luckbound.Tests.Weapons
         }
 
         [Test]
+        public void MeleeParametersUseTheClosedBellatorValuesAndAreAbsentFromOtherClasses()
+        {
+            WeaponMeleeParameters sword = _weapons.Get("weapon.bellator.rusted_sword").MeleeParameters;
+            Assert.That(sword, Is.Not.Null);
+            Assert.That(sword.CenterOffsetX, Is.EqualTo(0.90f).Within(0.00001f));
+            Assert.That(sword.CenterOffsetY, Is.EqualTo(0.90f).Within(0.00001f));
+            Assert.That(sword.Width, Is.EqualTo(1.35f).Within(0.00001f));
+            Assert.That(sword.Height, Is.EqualTo(1.25f).Within(0.00001f));
+            Assert.That(sword.KnockbackHorizontalSpeed, Is.Zero);
+            Assert.That(sword.KnockbackVerticalSpeed, Is.Zero);
+            Assert.That(sword.AiControlSuspensionTicks, Is.Zero);
+
+            WeaponMeleeParameters saber = _weapons.Get("weapon.bellator.trail_saber").MeleeParameters;
+            Assert.That(saber.CenterOffsetX, Is.EqualTo(0.90f).Within(0.00001f));
+            Assert.That(saber.CenterOffsetY, Is.EqualTo(0.90f).Within(0.00001f));
+            Assert.That(saber.Width, Is.EqualTo(1.35f).Within(0.00001f));
+            Assert.That(saber.Height, Is.EqualTo(1.25f).Within(0.00001f));
+            Assert.That(saber.KnockbackHorizontalSpeed, Is.Zero);
+            Assert.That(saber.KnockbackVerticalSpeed, Is.Zero);
+            Assert.That(saber.AiControlSuspensionTicks, Is.Zero);
+
+            WeaponProfile greatswordProfile = _weapons.Get("weapon.bellator.umbra_greatsword");
+            WeaponMeleeParameters greatsword = greatswordProfile.MeleeParameters;
+            Assert.That(greatsword.CenterOffsetX, Is.EqualTo(1.05f).Within(0.00001f));
+            Assert.That(greatsword.CenterOffsetY, Is.EqualTo(0.90f).Within(0.00001f));
+            Assert.That(greatsword.Width, Is.EqualTo(1.80f).Within(0.00001f));
+            Assert.That(greatsword.Height, Is.EqualTo(1.25f).Within(0.00001f));
+            Assert.That(greatsword.KnockbackHorizontalSpeed, Is.EqualTo(6f));
+            Assert.That(greatsword.KnockbackVerticalSpeed, Is.EqualTo(2.5f));
+            Assert.That(greatsword.AiControlSuspensionTicks, Is.EqualTo(12));
+            Assert.That(greatswordProfile.Damage, Is.EqualTo(18));
+            WeaponBasicAttackProfile runtime = WeaponBasicAttackProfile.Create(greatswordProfile);
+            Assert.That(runtime.AttackIntervalTicks, Is.EqualTo(42));
+            Assert.That(runtime.MeleeParameters, Is.SameAs(greatsword));
+
+            foreach (ExpectedWeapon expected in ExpectedWeapons.Where(item => item.ClassId != "class.bellator"))
+                Assert.That(_weapons.Get(expected.ItemId).MeleeParameters, Is.Null, expected.ItemId);
+        }
+
+        [Test]
+        public void LoaderRejectsMissingUnknownAndClassIncompatibleMeleeData()
+        {
+            string missingMelee = RemoveFirstMeleeObject(_weaponsAsset.text);
+            Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(missingMelee, _items));
+
+            string missingField = RemoveFirstMeleeField(_weaponsAsset.text, "aiControlSuspensionTicks");
+            Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(missingField, _items));
+
+            string unknownField = _weaponsAsset.text.Replace(
+                "\"width\": 1.35,", "\"width\": 1.35, \"unlistedRange\": 1,");
+            Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(unknownField, _items));
+
+            string incompatibleClass = ReplaceFirst(
+                _weaponsAsset.text,
+                "\"classId\": \"class.bellator\"",
+                "\"classId\": \"class.venator\"");
+            Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(incompatibleClass, _items));
+
+            string meleeOnRanged = AddMeleeToWeapon(_weaponsAsset.text, "weapon.venator.short_bow");
+            Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(meleeOnRanged, _items));
+        }
+
+        [Test]
+        public void LoaderRejectsInvalidMeleeDimensionsAndPushValues()
+        {
+            string zeroWidth = _weaponsAsset.text.Replace("\"width\": 1.35,", "\"width\": 0,");
+            Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(zeroWidth, _items));
+
+            string negativeKnockback = _weaponsAsset.text.Replace(
+                "\"knockbackHorizontalSpeed\": 6,", "\"knockbackHorizontalSpeed\": -1,");
+            Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(negativeKnockback, _items));
+
+            string nonFiniteCenter = _weaponsAsset.text.Replace(
+                "\"centerOffsetX\": 1.05,", "\"centerOffsetX\": 1e999,");
+            Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(nonFiniteCenter, _items));
+        }
+
+        [Test]
         public void ExistingStartingWeaponIdsRemainUnchanged()
         {
             Assert.That(_items.GetStartingLoadout("class.bellator").WeaponItemId, Is.EqualTo("weapon.bellator.rusted_sword"));
@@ -457,6 +535,66 @@ namespace Luckbound.Tests.Weapons
             string duplicateTrait = _weaponsAsset.text.Replace(
                 "weapon.trait.greater_knockback", "weapon.trait.greater_range");
             Assert.Throws<FormatException>(() => WeaponCatalogJsonLoader.Load(duplicateTrait, _items));
+        }
+
+        private static string ReplaceFirst(string value, string oldValue, string newValue)
+        {
+            int index = value.IndexOf(oldValue, StringComparison.Ordinal);
+            Assert.That(index, Is.GreaterThanOrEqualTo(0), "The expected JSON token must exist in the source fixture.");
+            return value.Substring(0, index) + newValue + value.Substring(index + oldValue.Length);
+        }
+
+        private static string RemoveFirstMeleeObject(string json)
+        {
+            int fieldStart = json.IndexOf("\"melee\"", StringComparison.Ordinal);
+            Assert.That(fieldStart, Is.GreaterThanOrEqualTo(0));
+            int commaBefore = fieldStart - 1;
+            while (commaBefore >= 0 && char.IsWhiteSpace(json[commaBefore])) commaBefore--;
+            Assert.That(commaBefore, Is.GreaterThanOrEqualTo(0));
+            Assert.That(json[commaBefore], Is.EqualTo(','));
+            int objectStart = json.IndexOf('{', fieldStart);
+            Assert.That(objectStart, Is.GreaterThan(fieldStart));
+            int depth = 0;
+            bool inString = false;
+            bool escaped = false;
+            for (int index = objectStart; index < json.Length; index++)
+            {
+                char character = json[index];
+                if (inString)
+                {
+                    if (escaped) escaped = false;
+                    else if (character == '\\') escaped = true;
+                    else if (character == '"') inString = false;
+                    continue;
+                }
+                if (character == '"') inString = true;
+                else if (character == '{') depth++;
+                else if (character == '}' && --depth == 0) return json.Remove(commaBefore, index - commaBefore + 1);
+            }
+            Assert.Fail("The melee object must have a matching closing brace.");
+            return json;
+        }
+
+        private static string RemoveFirstMeleeField(string json, string fieldName)
+        {
+            string property = "\"" + fieldName + "\": 0";
+            int propertyStart = json.IndexOf(property, StringComparison.Ordinal);
+            Assert.That(propertyStart, Is.GreaterThanOrEqualTo(0));
+            int separator = json.LastIndexOf(',', propertyStart);
+            Assert.That(separator, Is.GreaterThanOrEqualTo(0));
+            return json.Remove(separator, propertyStart + property.Length - separator);
+        }
+
+        private static string AddMeleeToWeapon(string json, string itemId)
+        {
+            int weaponStart = json.IndexOf("\"id\": \"" + itemId + "\"", StringComparison.Ordinal);
+            Assert.That(weaponStart, Is.GreaterThanOrEqualTo(0));
+            int traitsStart = json.IndexOf("\"traits\":", weaponStart, StringComparison.Ordinal);
+            Assert.That(traitsStart, Is.GreaterThan(weaponStart));
+            int traitsEnd = json.IndexOf(']', traitsStart);
+            Assert.That(traitsEnd, Is.GreaterThan(traitsStart));
+            const string melee = ",\n      \"melee\": { \"centerOffsetX\": 0.9, \"centerOffsetY\": 0.9, \"width\": 1.35, \"height\": 1.25, \"knockbackHorizontalSpeed\": 0, \"knockbackVerticalSpeed\": 0, \"aiControlSuspensionTicks\": 0 }";
+            return json.Insert(traitsEnd + 1, melee);
         }
 
         private static InventoryOperationOutcome CollectAndEquip(ExpeditionInventory inventory, string itemId)

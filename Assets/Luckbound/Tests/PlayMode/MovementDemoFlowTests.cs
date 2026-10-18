@@ -31,6 +31,7 @@ namespace Luckbound.Tests.PlayMode
                 UnityRandom.InitState(ScenarioSeed);
                 Time.timeScale = 1f;
                 InputSystem.AddDevice<Mouse>();
+                InputSystem.Update();
 
                 evidence.RecordEvent("Load the Menu scene and use its actual demo button binding.");
                 evidence.RecordInput(0, "LoadScene", "Menu");

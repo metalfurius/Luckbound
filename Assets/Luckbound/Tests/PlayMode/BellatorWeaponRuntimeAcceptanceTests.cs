@@ -7,6 +7,7 @@ using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;
+using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Movement;
@@ -94,6 +95,126 @@ namespace Luckbound.Tests.PlayMode
                 additionalTrait: WeaponTraitId.GreaterKnockback);
         }
 
+        [UnityTest]
+        public IEnumerator SwordDoesNotReachTheTargetInsideUmbraOnlyRange()
+        {
+            ExpeditionRunConfiguration run = CreateBoundBellatorRun(
+                ExpeditionRunConfiguration.HumanRaceId,
+                RustedSwordId,
+                out PlayerMotor2D motor,
+                out _,
+                out _,
+                out PlayerInputBuffer input);
+            int enemyLayer = RequiredLayer("Enemies");
+            ProjectileImpactTarget2D target = CreateImpactTarget(
+                enemyLayer,
+                new Vector2(2f, motor.transform.position.y + 0.9f),
+                new Vector2(0.2f, 0.2f));
+            Physics2D.SyncTransforms();
+
+            input.Press(PlayerAction.Attack);
+            yield return new WaitForFixedUpdate();
+            long attackStartTick = motor.SimulationTick;
+            input.Release(PlayerAction.Attack);
+            while (motor.SimulationTick < attackStartTick + 6) yield return new WaitForFixedUpdate();
+
+            Assert.That(target.PendingMeleeImpactCount, Is.Zero,
+                "The worn sword's 1.35-unit box must not overlap a target at the Umbra-only distance.");
+            Assert.That(motor.MeleeImpactsQueuedCount, Is.Zero);
+        }
+
+        [UnityTest]
+        public IEnumerator UmbraMirrorsItsReachAndAppliesOrciniKnockbackAwayForTwelveTicks()
+        {
+            ExpeditionRunConfiguration run = CreateBoundBellatorRun(
+                PlayableRaceRules.OrciniRaceId,
+                UmbraGreatswordId,
+                out PlayerMotor2D motor,
+                out _,
+                out _,
+                out PlayerInputBuffer input);
+            ProjectileImpactTarget2D target = CreateImpactTarget(
+                RequiredLayer("Enemies"),
+                new Vector2(-2f, motor.transform.position.y + 0.9f),
+                new Vector2(0.2f, 0.2f));
+            BoxCollider2D siblingCollider = target.gameObject.AddComponent<BoxCollider2D>();
+            siblingCollider.size = new Vector2(0.2f, 0.2f);
+            Physics2D.SyncTransforms();
+
+            input.SetMoveX(-1f);
+            yield return new WaitForFixedUpdate();
+            input.SetMoveX(0f);
+            Assert.That(motor.FacingDirection, Is.EqualTo(-1f), "A left-facing actor mirrors the hitbox center.");
+
+            input.Press(PlayerAction.Attack);
+            yield return new WaitForFixedUpdate();
+            long attackStartTick = motor.SimulationTick;
+            input.Release(PlayerAction.Attack);
+            while (motor.SimulationTick < attackStartTick + 6) yield return new WaitForFixedUpdate();
+
+            Assert.That(target.PendingMeleeImpactCount, Is.EqualTo(1),
+                "A target just inside Umbra's mirrored 1.80-unit reach must be collected by real Physics2D overlap.");
+            Assert.That(motor.MeleeImpactsQueuedCount, Is.EqualTo(1),
+                "Sibling colliders for the same ActorId must enqueue only one direct hit.");
+            Assert.That(target.TryDequeueMeleeImpactForTick(long.MaxValue, out MeleeImpact impact), Is.True);
+            Assert.That(impact.Damage, Is.EqualTo(18m), "The physical profile must preserve Umbra's damage.");
+            AssertVector(impact.KnockbackVelocity, new Vector2(-6.6f, 2.75f));
+            Assert.That(impact.AiControlSuspensionTicks, Is.EqualTo(12),
+                "Orcini scales both velocity components without extending the 12-tick AI suspension.");
+            Assert.That(impact.SourceActorId, Is.EqualTo(motor.ActorId));
+            Assert.That(impact.TargetActorId, Is.EqualTo(target.ActorId));
+            Assert.That(run.RaceId, Is.EqualTo(PlayableRaceRules.OrciniRaceId));
+        }
+
+        [UnityTest]
+        public IEnumerator UmbraDamagesCustodianWithoutDisplacingTheBoss()
+        {
+            CreateBoundBellatorRun(
+                ExpeditionRunConfiguration.HumanRaceId,
+                UmbraGreatswordId,
+                out PlayerMotor2D motor,
+                out _,
+                out _,
+                out PlayerInputBuffer input);
+            int enemyLayer = RequiredLayer("Enemies");
+            var bossObject = Track(new GameObject("G01 Umbra Custodian receiver"));
+            bossObject.layer = enemyLayer;
+            bossObject.transform.position = new Vector2(1.4f, motor.transform.position.y + 0.9f);
+            Rigidbody2D body = bossObject.AddComponent<Rigidbody2D>();
+            body.sleepMode = RigidbodySleepMode2D.NeverSleep;
+            CapsuleCollider2D collider = bossObject.AddComponent<CapsuleCollider2D>();
+            collider.size = new Vector2(0.9f, 0.9f);
+            bossObject.AddComponent<SpriteRenderer>();
+            CustodianBoss2D boss = bossObject.AddComponent<CustodianBoss2D>();
+            GameObject waveParent = Track(new GameObject("G01 Umbra Custodian wave parent"));
+            GameObject wavePrefab = Track(new GameObject("G01 Umbra Custodian wave prefab"));
+            wavePrefab.AddComponent<Rigidbody2D>();
+            wavePrefab.AddComponent<CircleCollider2D>();
+            wavePrefab.SetActive(false);
+            TextAsset bossSource = Resources.Load<TextAsset>("Luckbound/Data/Encounters/CustodianBoss");
+            Assert.That(bossSource, Is.Not.Null, "The real Custodian definition is required for boss immunity acceptance.");
+            CustodianBossDefinition definition = CustodianBossJsonLoader.Load(bossSource.text);
+            boss.Initialize(ActorId.New(), motor, definition, wavePrefab, waveParent.transform);
+            Physics2D.SyncTransforms();
+
+            input.Press(PlayerAction.Attack);
+            yield return new WaitForFixedUpdate();
+            long attackStartTick = motor.SimulationTick;
+            input.Release(PlayerAction.Attack);
+            while (motor.SimulationTick < attackStartTick + 6) yield return new WaitForFixedUpdate();
+            for (int tick = 0; tick < 12 && boss.MeleeImpactCount == 0; tick++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            Assert.That(motor.MeleeImpactsQueuedCount, Is.EqualTo(1));
+            Assert.That(boss.MeleeImpactCount, Is.EqualTo(1));
+            Assert.That(boss.CurrentHealth, Is.LessThan(boss.MaximumHealth),
+                "Custodian remains a valid damage receiver while ignoring Umbra's push.");
+            Assert.That(body.linearVelocity.x, Is.EqualTo(0f).Within(0.05f),
+                "Bosses are immune to direct melee displacement.");
+        }
+
         private IEnumerator VerifyBellatorWeapon(
             string weaponId,
             int expectedDamage,
@@ -126,9 +247,19 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(expectedProfile.HasTrait(expectedTrait), Is.True,
                 "The declared qualitative weapon profile trait must remain present.");
             Assert.That(expectedProfile.HasTrait(WeaponTraitId.GreaterRange), Is.EqualTo(weaponId == UmbraGreatswordId),
-                "Only Umbra declares greater reach than the worn sword; no numeric reach is authored here.");
+                "Only Umbra declares greater reach than the worn sword.");
             Assert.That(expectedProfile.HasTrait(WeaponTraitId.GreaterKnockback), Is.EqualTo(weaponId == UmbraGreatswordId),
-                "Only Umbra declares greater push than the worn sword; no numeric push is authored here.");
+                "Only Umbra declares greater push than the worn sword.");
+            WeaponMeleeParameters melee = expectedProfile.MeleeParameters;
+            Assert.That(melee, Is.Not.Null, "Every Bellator weapon must resolve its authoritative melee parameters.");
+            bool isUmbra = weaponId == UmbraGreatswordId;
+            Assert.That(melee.CenterOffsetX, Is.EqualTo(isUmbra ? 1.05f : 0.90f).Within(0.0001f));
+            Assert.That(melee.CenterOffsetY, Is.EqualTo(0.90f).Within(0.0001f));
+            Assert.That(melee.Width, Is.EqualTo(isUmbra ? 1.80f : 1.35f).Within(0.0001f));
+            Assert.That(melee.Height, Is.EqualTo(1.25f).Within(0.0001f));
+            Assert.That(melee.KnockbackHorizontalSpeed, Is.EqualTo(isUmbra ? 6f : 0f).Within(0.0001f));
+            Assert.That(melee.KnockbackVerticalSpeed, Is.EqualTo(isUmbra ? 2.5f : 0f).Within(0.0001f));
+            Assert.That(melee.AiControlSuspensionTicks, Is.EqualTo(isUmbra ? 12 : 0));
             if (additionalTrait.HasValue)
             {
                 Assert.That(expectedProfile.HasTrait(additionalTrait.Value), Is.True,
@@ -138,12 +269,21 @@ namespace Luckbound.Tests.PlayMode
             int groundLayer = RequiredLayer("Ground");
             int enemyLayer = RequiredLayer("Enemies");
             CreateFloor(groundLayer);
+            if (weaponId == UmbraGreatswordId)
+            {
+                var raisedEnemyPlatform = Track(new GameObject("G01 Umbra receiver platform"));
+                raisedEnemyPlatform.layer = groundLayer;
+                raisedEnemyPlatform.transform.position = new Vector2(2.5f, 0.5f);
+                BoxCollider2D platformCollider = raisedEnemyPlatform.AddComponent<BoxCollider2D>();
+                platformCollider.size = new Vector2(4f, 1f);
+            }
             CreatePlayer(
                 out PlayerMotor2D motor,
                 out ItemCollector2D collector,
                 out ActorId actorId,
                 out PlayerInputBuffer input,
-                new Vector2(0f, 0.75f));
+                new Vector2(0f, 0.75f),
+                freezePosition: weaponId != UmbraGreatswordId);
 
             ExpeditionBellatorRunBinder.Bind(
                 run,
@@ -169,7 +309,8 @@ namespace Luckbound.Tests.PlayMode
                 motor,
                 groundLayer,
                 enemyLayer,
-                new Vector2(1f, motor.transform.position.y + 0.9f));
+                new Vector2(1f, motor.transform.position.y + 0.9f),
+                freezeBody: weaponId != UmbraGreatswordId);
             Physics2D.SyncTransforms();
 
             input.Press(PlayerAction.Attack);
@@ -200,11 +341,38 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(damageReceiver.CurrentHealth, Is.EqualTo(Slime2D.MaximumHealth - (expectedHitDamage ?? expectedDamage)),
                 "The first resolved hit must apply exactly the equipped weapon's catalog damage.");
             Assert.That(motor.MeleeImpactsQueuedCount, Is.EqualTo(1));
+            if (weaponId == UmbraGreatswordId)
+            {
+                AssertVector(damageReceiver.LastMeleeKnockbackVelocity, new Vector2(6f, 2.5f));
+                Assert.That(damageReceiver.AiControlSuspensionTicksRemaining, Is.GreaterThan(0));
+                Assert.That(damageReceiver.GetComponent<Rigidbody2D>().constraints,
+                    Is.Not.EqualTo(RigidbodyConstraints2D.FreezeAll),
+                    "The Umbra receiver remains dynamic so its accepted force can move it.");
+            }
+            else
+            {
+                AssertVector(damageReceiver.LastMeleeKnockbackVelocity, Vector2.zero);
+                Assert.That(damageReceiver.AiControlSuspensionTicksRemaining, Is.Zero,
+                    "Sword and saber direct impacts do not suspend enemy AI.");
+            }
+
+            while (motor.SimulationTick < attackStartTick + 11) yield return new WaitForFixedUpdate();
+            Assert.That(motor.CurrentMeleeHitWindow, Is.Not.Null,
+                "The damage window remains open through its inclusive tick 11.");
+            yield return new WaitForFixedUpdate();
+            Assert.That(motor.SimulationTick, Is.EqualTo(attackStartTick + 12));
+            Assert.That(motor.CurrentMeleeHitWindow, Is.Null,
+                "The damage window closes at tick 12, preserving [6,12).");
 
             while (motor.SimulationTick < attackStartTick + expectedIntervalTicks - 2)
             {
+                if (weaponId == UmbraGreatswordId)
+                {
+                    SetPlayerMovementTowardTargetWhenOutsideReach(motor, input, damageReceiver);
+                }
                 yield return new WaitForFixedUpdate();
             }
+            input.SetMoveX(0f);
 
             input.Press(PlayerAction.Attack);
             yield return new WaitForFixedUpdate();
@@ -227,11 +395,21 @@ namespace Luckbound.Tests.PlayMode
 
             for (int tick = 0; tick < 12 && damageReceiver.MeleeImpactCount < 2; tick++)
             {
+                if (weaponId == UmbraGreatswordId)
+                {
+                    SetPlayerMovementTowardTargetWhenOutsideReach(motor, input, damageReceiver);
+                }
                 yield return new WaitForFixedUpdate();
             }
+            input.SetMoveX(0f);
 
             Assert.That(damageReceiver.MeleeImpactCount, Is.EqualTo(2),
-                "A later attack with a fresh hit ID must resolve through the same real damage receiver.");
+                "A later attack with a fresh hit ID must resolve through the same real damage receiver. " +
+                "tick=" + motor.SimulationTick + "; player=" + motor.transform.position +
+                "; playerVelocity=" + motor.Velocity + "; facing=" + motor.FacingDirection +
+                "; slime=" + damageReceiver.transform.position +
+                "; slimeVelocity=" + damageReceiver.GetComponent<Rigidbody2D>().linearVelocity +
+                "; queued=" + motor.MeleeImpactsQueuedCount + "; health=" + damageReceiver.CurrentHealth + ".");
             Assert.That(damageReceiver.CurrentHealth, Is.EqualTo(Mathf.Max(0, Slime2D.MaximumHealth - (expectedHitDamage ?? expectedDamage) * 2)),
                 "The second resolved hit must preserve the equipped weapon's damage at its accepted cadence.");
         }
@@ -280,7 +458,8 @@ namespace Luckbound.Tests.PlayMode
             out ItemCollector2D collector,
             out ActorId actorId,
             out PlayerInputBuffer input,
-            Vector2 position)
+            Vector2 position,
+            bool freezePosition = true)
         {
             actorId = ActorId.New();
             input = new PlayerInputBuffer(actorId);
@@ -288,7 +467,7 @@ namespace Luckbound.Tests.PlayMode
             player.transform.position = position;
             Rigidbody2D body = player.AddComponent<Rigidbody2D>();
             body.gravityScale = 0f;
-            body.constraints = RigidbodyConstraints2D.FreezeAll;
+            body.constraints = freezePosition ? RigidbodyConstraints2D.FreezeAll : RigidbodyConstraints2D.FreezeRotation;
             body.sleepMode = RigidbodySleepMode2D.NeverSleep;
             CapsuleCollider2D collider = player.AddComponent<CapsuleCollider2D>();
             collider.direction = CapsuleDirection2D.Vertical;
@@ -301,7 +480,8 @@ namespace Luckbound.Tests.PlayMode
             PlayerMotor2D player,
             int groundLayer,
             int enemyLayer,
-            Vector2 position)
+            Vector2 position,
+            bool freezeBody = true)
         {
             var enemy = Track(new GameObject("G01 Bellator weapon acceptance Slime receiver"));
             enemy.layer = enemyLayer;
@@ -314,10 +494,82 @@ namespace Luckbound.Tests.PlayMode
             Slime2D receiver = enemy.AddComponent<Slime2D>();
             receiver.Initialize(ActorId.New(), player, 1 << groundLayer);
 
-            // Hold the receiver in the melee overlap so the test isolates weapon damage and cadence.
-            // Its Slime damage state and direct-impact resolution remain live.
-            body.constraints = RigidbodyConstraints2D.FreezeAll;
+            // Keep sword/saber receivers stationary because their authored push is zero.
+            // Umbra tests leave the receiver dynamic and move the player back into reach after a push.
+            if (freezeBody) body.constraints = RigidbodyConstraints2D.FreezeAll;
             return receiver;
+        }
+
+        private ExpeditionRunConfiguration CreateBoundBellatorRun(
+            string raceId,
+            string weaponId,
+            out PlayerMotor2D motor,
+            out ItemCollector2D collector,
+            out ActorId actorId,
+            out PlayerInputBuffer input,
+            bool freezePlayer = true)
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                BellatorSkillLoadout.ClassId,
+                raceId,
+                new[] { BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId });
+            if (weaponId != RustedSwordId) EquipWeapon(run.Inventory, weaponId);
+
+            int groundLayer = RequiredLayer("Ground");
+            int enemyLayer = RequiredLayer("Enemies");
+            CreateFloor(groundLayer);
+            CreatePlayer(out motor, out collector, out actorId, out input,
+                new Vector2(0f, 0.75f), freezePlayer);
+            ItemCatalog itemCatalog = run.Inventory.Catalog;
+            WeaponCatalog weaponCatalog = LoadWeaponCatalog(itemCatalog);
+            ExpeditionBellatorRunBinder.Bind(
+                run,
+                actorId: actorId,
+                inputSource: input,
+                groundLayers: 1 << groundLayer,
+                enemyLayers: 1 << enemyLayer,
+                defense: 0,
+                playerMotor: motor,
+                itemCollector: collector,
+                itemCatalog: itemCatalog,
+                weaponCatalog: weaponCatalog,
+                skillCatalog: LoadSkillCatalog());
+            return run;
+        }
+
+        private ProjectileImpactTarget2D CreateImpactTarget(
+            int enemyLayer,
+            Vector2 position,
+            Vector2 size)
+        {
+            var targetObject = Track(new GameObject("G01 Bellator physical impact target"));
+            targetObject.layer = enemyLayer;
+            targetObject.transform.position = position;
+            BoxCollider2D collider = targetObject.AddComponent<BoxCollider2D>();
+            collider.size = size;
+            ProjectileImpactTarget2D target = targetObject.AddComponent<ProjectileImpactTarget2D>();
+            target.Initialize(ActorId.New());
+            return target;
+        }
+
+        private static void SetPlayerMovementTowardTargetWhenOutsideReach(
+            PlayerMotor2D motor,
+            PlayerInputBuffer input,
+            Slime2D target)
+        {
+            WeaponMeleeParameters melee = motor.EquippedWeaponBasicAttackProfile.MeleeParameters;
+            float targetOffsetX = target.transform.position.x - motor.transform.position.x;
+            float direction = Mathf.Abs(targetOffsetX) > 0.001f ? Mathf.Sign(targetOffsetX) : motor.FacingDirection;
+            float maximumCenterDistance = melee.CenterOffsetX + (melee.Width * 0.5f) +
+                target.GetComponent<Collider2D>().bounds.extents.x - 0.15f;
+            input.SetMoveX(Mathf.Abs(targetOffsetX) > maximumCenterDistance ||
+                Mathf.Sign(direction) != Mathf.Sign(motor.FacingDirection) ? direction : 0f);
+        }
+
+        private static void AssertVector(Vector2 actual, Vector2 expected)
+        {
+            Assert.That(actual.x, Is.EqualTo(expected.x).Within(0.0001f));
+            Assert.That(actual.y, Is.EqualTo(expected.y).Within(0.0001f));
         }
 
         private GameObject Track(GameObject gameObject)

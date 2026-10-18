@@ -356,7 +356,7 @@ namespace Luckbound.App
                     RefreshView();
                     return;
                 }
-                ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.CreateSample(
                     SelectedClassId, SelectedRaceId, _selectedSkillIds,
                     profile.healthUpgradeLevel,
                     profile.energyUpgradeLevel,

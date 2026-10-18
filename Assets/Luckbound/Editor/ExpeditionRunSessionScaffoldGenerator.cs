@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Luckbound.App;
+using Luckbound.Presentation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -100,6 +101,8 @@ namespace Luckbound.Editor
                     changed |= SetObjectReference(presenter, "_craftStatusText", craftStatus);
                 }
 
+                changed |= EnsureGameplayComposition(scene);
+
                 if (changed)
                 {
                     EditorSceneManager.MarkSceneDirty(scene);
@@ -111,6 +114,69 @@ namespace Luckbound.Editor
                 if (previousActiveScene.IsValid() && previousActiveScene.isLoaded) EditorSceneManager.SetActiveScene(previousActiveScene);
                 if (scene.IsValid() && scene.isLoaded) EditorSceneManager.CloseScene(scene, true);
             }
+        }
+
+        private static bool EnsureGameplayComposition(Scene scene)
+        {
+            GameObject sessionObject = HubPreparationScaffoldGenerator.FindObject(scene, "ExpeditionRunSession");
+            if (sessionObject == null)
+                throw new InvalidOperationException("ExpeditionRunSession must exist before wiring gameplay composition.");
+
+            bool changed = false;
+            GameObject hudRoot = HubPreparationScaffoldGenerator.FindObject(scene, "ExpeditionGameplayHUD");
+            if (hudRoot == null)
+            {
+                Canvas hudCanvas = HubPreparationScaffoldGenerator.CreateCanvas("ExpeditionGameplayHUD", scene, 70);
+                hudRoot = hudCanvas.gameObject;
+                HubPreparationScaffoldGenerator.CreateText("ExpeditionPlayerHUD", string.Empty, hudCanvas.transform,
+                    new Vector2(0f, 78f), new Vector2(610f, 24f), 8, "#E8E3CD", FontStyle.Bold);
+                HubPreparationScaffoldGenerator.CreateText("ExpeditionPauseLabel", string.Empty, hudCanvas.transform,
+                    new Vector2(0f, 4f), new Vector2(360f, 48f), 12, "#F0C15A", FontStyle.Bold);
+                Button returnButton = HubPreparationScaffoldGenerator.CreateButton("ExpeditionReturnToTavernButton",
+                    "VOLVER A LA TABERNA", hudCanvas.transform, new Vector2(0f, -44f), new Vector2(176f, 24f),
+                    8, "#10111B", "#F0C15A");
+                returnButton.gameObject.SetActive(false);
+                hudRoot.SetActive(false);
+                changed = true;
+            }
+
+            Text hudText = HubPreparationScaffoldGenerator.FindObject(scene, "ExpeditionPlayerHUD")?.GetComponent<Text>();
+            Text pauseText = HubPreparationScaffoldGenerator.FindObject(scene, "ExpeditionPauseLabel")?.GetComponent<Text>();
+            Button returnToTavern = HubPreparationScaffoldGenerator.FindObject(scene, "ExpeditionReturnToTavernButton")?.GetComponent<Button>();
+            RoomCameraRig2D cameraRig = HubPreparationScaffoldGenerator.FindObject(scene, "Main Camera")?.GetComponent<RoomCameraRig2D>();
+            if (hudText == null || pauseText == null || returnToTavern == null || cameraRig == null)
+                throw new InvalidOperationException("Expedition gameplay HUD and camera references must be complete.");
+            if (hudRoot.activeSelf)
+            {
+                hudRoot.SetActive(false);
+                changed = true;
+            }
+            if (returnToTavern.gameObject.activeSelf)
+            {
+                returnToTavern.gameObject.SetActive(false);
+                changed = true;
+            }
+
+            ExpeditionGameplayComposition composition = sessionObject.GetComponent<ExpeditionGameplayComposition>();
+            if (composition == null)
+            {
+                composition = sessionObject.AddComponent<ExpeditionGameplayComposition>();
+                changed = true;
+            }
+            ExpeditionRoomTransitionController transitions = sessionObject.GetComponent<ExpeditionRoomTransitionController>();
+            if (transitions == null)
+            {
+                transitions = sessionObject.AddComponent<ExpeditionRoomTransitionController>();
+                changed = true;
+            }
+
+            changed |= SetObjectReference(composition, "_cameraRig", cameraRig);
+            changed |= SetObjectReference(composition, "_gameplayHudRoot", hudRoot);
+            changed |= SetObjectReference(composition, "_playerHudText", hudText);
+            changed |= SetObjectReference(composition, "_pauseLabelText", pauseText);
+            changed |= SetObjectReference(composition, "_returnToTavernButton", returnToTavern);
+            changed |= SetObjectReference(composition, "_roomTransitions", transitions);
+            return changed;
         }
 
         private static bool SetObjectReference(UnityEngine.Object target, string propertyName, UnityEngine.Object value)

@@ -595,6 +595,70 @@ namespace Luckbound.Editor
                 if (demo.FindProperty(propertyName)?.objectReferenceValue == null)
                     errors.Add("MovementDemoComposition must serialize " + propertyName + " for run/demo scene routing.");
             }
+
+            ExpeditionGameplayComposition[] gameplayCompositions = objects
+                .SelectMany(gameObject => gameObject.GetComponents<ExpeditionGameplayComposition>()).ToArray();
+            if (gameplayCompositions.Length != 1)
+            {
+                errors.Add("Expedition must contain exactly one ExpeditionGameplayComposition; found " +
+                    gameplayCompositions.Length + ".");
+                return;
+            }
+
+            SerializedObject gameplay = new SerializedObject(gameplayCompositions[0]);
+            foreach (string propertyName in new[]
+            {
+                "_cameraRig", "_gameplayHudRoot", "_playerHudText", "_pauseLabelText",
+                "_returnToTavernButton", "_roomTransitions"
+            })
+            {
+                if (gameplay.FindProperty(propertyName)?.objectReferenceValue == null)
+                    errors.Add("ExpeditionGameplayComposition must serialize " + propertyName + ".");
+            }
+
+            GameObject playerPrefab = gameplay.FindProperty("_productionPlayerPrefab")?.objectReferenceValue as GameObject;
+            if (playerPrefab != null && playerPrefab.name == "MovementDemoPlayer")
+                errors.Add("ExpeditionGameplayComposition cannot use the B07 MovementDemoPlayer as its production actor.");
+            GameObject gameplayHudRoot = gameplay.FindProperty("_gameplayHudRoot")?.objectReferenceValue as GameObject;
+            if (gameplayHudRoot != null && gameplayHudRoot.activeSelf)
+                errors.Add("Expedition gameplay HUD must stay hidden until an active run is composed.");
+            ExpeditionRoomTransitionController transitions = gameplay.FindProperty("_roomTransitions")
+                ?.objectReferenceValue as ExpeditionRoomTransitionController;
+            if (transitions != null && transitions.gameObject != gameplayCompositions[0].gameObject)
+                errors.Add("The room transition controller must share the expedition session's lifetime owner.");
+
+            SerializedProperty roomEntries = gameplay.FindProperty("_roomPrefabs");
+            var registeredRoomIds = new HashSet<string>(StringComparer.Ordinal);
+            var registry = new List<ExpeditionRoomPrefabEntry>();
+            if (roomEntries == null)
+            {
+                errors.Add("ExpeditionGameplayComposition must serialize its explicit room-prefab registry.");
+            }
+            else
+            {
+                for (int index = 0; index < roomEntries.arraySize; index++)
+                {
+                    SerializedProperty entryProperty = roomEntries.GetArrayElementAtIndex(index);
+                    string templateId = entryProperty.FindPropertyRelative("templateId")?.stringValue;
+                    GameObject prefab = entryProperty.FindPropertyRelative("prefab")?.objectReferenceValue as GameObject;
+                    if (string.IsNullOrWhiteSpace(templateId) || prefab == null)
+                    {
+                        errors.Add("Every explicit room-prefab registration must have a template ID and prefab.");
+                        continue;
+                    }
+                    if (!registeredRoomIds.Add(templateId))
+                    {
+                        errors.Add("Expedition room-prefab registrations must not duplicate " + templateId + ".");
+                        continue;
+                    }
+                    registry.Add(new ExpeditionRoomPrefabEntry { templateId = templateId, prefab = prefab });
+                }
+            }
+            foreach (ExpeditionRoomPrefabEntry entry in registry)
+            {
+                if (!ExpeditionRoomPrefabRegistry.TryResolve(entry.templateId, registry, out _, out string registryError))
+                    errors.Add("Invalid expedition room-prefab registration: " + registryError);
+            }
         }
 
         private static void ValidateCombatArena(List<string> errors)

@@ -167,10 +167,11 @@ namespace Luckbound.Tests.PlayMode
                 evidence.RecordAssertion("Starting the expedition applies the selected class and route", firstRun != null &&
                     SceneManager.GetActiveScene().name == "Expedition" && firstRun.ClassId == "class.magus" &&
                     firstRun.RaceId == ExpeditionRunConfiguration.HumanRaceId &&
-                    app.ActiveExpedition.raceId == ExpeditionRunConfiguration.HumanRaceId && firstRun.Route.Nodes.Count == 24,
-                    "Expedition with Magus and 24-node generated route",
+                    app.ActiveExpedition.raceId == ExpeditionRunConfiguration.HumanRaceId &&
+                    firstRun.Route.GenerationVersion == 2 && firstRun.Route.Nodes.Count == 5,
+                    "Expedition with Magus and five-node generation-2 sample route",
                     firstRun == null ? "no active run" : SceneManager.GetActiveScene().name + " " + firstRun.ClassId +
-                    " " + firstRun.RaceId + " " + firstRun.Route.Nodes.Count + " nodes");
+                    " " + firstRun.RaceId + " generation " + firstRun.Route.GenerationVersion + " " + firstRun.Route.Nodes.Count + " nodes");
                 if (firstRun == null)
                 {
                     int failure = evidence.Complete();

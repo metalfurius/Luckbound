@@ -122,7 +122,8 @@ namespace Luckbound.Tests.PlayMode
 
                 Assert.That(active.runId, Is.EqualTo(run.RunId.ToString()));
                 Assert.That(active.seed, Is.Not.Zero);
-                Assert.That(run.Route.Nodes.Count, Is.EqualTo(24));
+                Assert.That(run.Route.GenerationVersion, Is.EqualTo(2));
+                Assert.That(run.Route.Nodes.Count, Is.EqualTo(5));
                 Assert.That(active.classId, Is.EqualTo("class.venator"));
                 Assert.That(active.maximumHealth, Is.EqualTo(110));
                 Assert.That(active.currentHealth, Is.EqualTo(110));

@@ -106,6 +106,7 @@ namespace Luckbound.Tests.PlayMode
                 _rightHeld = false;
                 _keyboard = InputSystem.AddDevice<Keyboard>();
                 InputSystem.AddDevice<Mouse>();
+                InputSystem.Update();
                 SceneManager.LoadScene("Menu", LoadSceneMode.Single);
                 yield return null;
 

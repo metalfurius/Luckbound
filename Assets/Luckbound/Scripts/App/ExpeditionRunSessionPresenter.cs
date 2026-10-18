@@ -60,6 +60,17 @@ namespace Luckbound.App
             _craftHealthPotionButton.interactable = true;
             _craftStatusText.text = string.Empty;
             RefreshRunSummary(run, ApplicationBootstrapper.Instance.ActiveExpedition);
+            ExpeditionGameplayComposition gameplay = GetComponent<ExpeditionGameplayComposition>();
+            if (gameplay != null)
+            {
+                if (gameplay.TryInitialize(run, ApplicationBootstrapper.Instance.ActiveExpedition, out string error))
+                {
+                    _overlayRoot.SetActive(false);
+                    return;
+                }
+
+                _craftStatusText.text = "PARTIDA GUARDADA · CONTENIDO PENDIENTE · " + error;
+            }
             _overlayRoot.SetActive(true);
             RestStopServicesPanelController servicesPanel = GetComponent<RestStopServicesPanelController>();
             if (servicesPanel == null) servicesPanel = gameObject.AddComponent<RestStopServicesPanelController>();

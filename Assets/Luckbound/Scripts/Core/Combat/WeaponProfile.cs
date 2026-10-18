@@ -5,6 +5,41 @@ using Luckbound.Core.Inventory;
 
 namespace Luckbound.Core.Combat
 {
+    /// <summary>Validated melee hit-box and direct-impact push values from Weapons.json.</summary>
+    public sealed class WeaponMeleeParameters
+    {
+        public WeaponMeleeParameters(float centerOffsetX, float centerOffsetY, float width, float height,
+            float knockbackHorizontalSpeed, float knockbackVerticalSpeed, int aiControlSuspensionTicks)
+        {
+            ValidateFinite(centerOffsetX, nameof(centerOffsetX));
+            ValidateFinite(centerOffsetY, nameof(centerOffsetY));
+            ValidateFinite(width, nameof(width));
+            ValidateFinite(height, nameof(height));
+            ValidateFinite(knockbackHorizontalSpeed, nameof(knockbackHorizontalSpeed));
+            ValidateFinite(knockbackVerticalSpeed, nameof(knockbackVerticalSpeed));
+            if (width <= 0f) throw new ArgumentOutOfRangeException(nameof(width));
+            if (height <= 0f) throw new ArgumentOutOfRangeException(nameof(height));
+            if (knockbackHorizontalSpeed < 0f) throw new ArgumentOutOfRangeException(nameof(knockbackHorizontalSpeed));
+            if (knockbackVerticalSpeed < 0f) throw new ArgumentOutOfRangeException(nameof(knockbackVerticalSpeed));
+            if (aiControlSuspensionTicks < 0) throw new ArgumentOutOfRangeException(nameof(aiControlSuspensionTicks));
+            CenterOffsetX = centerOffsetX; CenterOffsetY = centerOffsetY; Width = width; Height = height;
+            KnockbackHorizontalSpeed = knockbackHorizontalSpeed; KnockbackVerticalSpeed = knockbackVerticalSpeed;
+            AiControlSuspensionTicks = aiControlSuspensionTicks;
+        }
+        public float CenterOffsetX { get; }
+        public float CenterOffsetY { get; }
+        public float Width { get; }
+        public float Height { get; }
+        public float KnockbackHorizontalSpeed { get; }
+        public float KnockbackVerticalSpeed { get; }
+        public int AiControlSuspensionTicks { get; }
+        private static void ValidateFinite(float value, string parameterName)
+        {
+            if (float.IsNaN(value) || float.IsInfinity(value))
+                throw new ArgumentOutOfRangeException(parameterName, "Melee weapon values must be finite.");
+        }
+    }
+
     /// <summary>Immutable design-time combat values for one equippable weapon item.</summary>
     public sealed class WeaponProfile
     {
@@ -15,10 +50,13 @@ namespace Luckbound.Core.Combat
             string classId,
             int damage,
             float attackIntervalSeconds,
-            IEnumerable<WeaponTrait> traits)
+            IEnumerable<WeaponTrait> traits,
+            WeaponMeleeParameters meleeParameters = null)
         {
             ValidateWeaponId(itemId);
             ValidateClassId(classId);
+            if (meleeParameters != null && !string.Equals(classId, "class.bellator", StringComparison.Ordinal))
+                throw new ArgumentException("Only Bellator weapons may declare melee impact parameters.", nameof(meleeParameters));
             if (damage <= 0) throw new ArgumentOutOfRangeException(nameof(damage));
             if (float.IsNaN(attackIntervalSeconds) || float.IsInfinity(attackIntervalSeconds) || attackIntervalSeconds <= 0f)
                 throw new ArgumentOutOfRangeException(nameof(attackIntervalSeconds));
@@ -38,6 +76,7 @@ namespace Luckbound.Core.Combat
             ClassId = classId;
             Damage = damage;
             AttackIntervalSeconds = attackIntervalSeconds;
+            MeleeParameters = meleeParameters;
             _traits = copiedTraits.AsReadOnly();
         }
 
@@ -45,6 +84,7 @@ namespace Luckbound.Core.Combat
         public string ClassId { get; }
         public int Damage { get; }
         public float AttackIntervalSeconds { get; }
+        public WeaponMeleeParameters MeleeParameters { get; }
         public IReadOnlyList<WeaponTrait> Traits => _traits;
 
         public bool HasTrait(WeaponTraitId id)
@@ -80,7 +120,7 @@ namespace Luckbound.Core.Combat
 
     /// <summary>
     /// Resolves the weapon definition into the values consumed by each class's basic-attack state.
-    /// Qualitative range/knockback declarations stay on WeaponProfile until their exact values are authored.
+    /// The weapon's explicit melee box and push values remain available to the physical adapter.
     /// </summary>
     public sealed class WeaponBasicAttackProfile
     {
@@ -142,6 +182,8 @@ namespace Luckbound.Core.Combat
         }
 
         public WeaponProfile Weapon => _weapon;
+
+        public WeaponMeleeParameters MeleeParameters => _weapon.MeleeParameters;
 
         public string ItemId => _weapon.ItemId;
 

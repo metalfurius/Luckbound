@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "status": "Prototype",
+  "provenance": "Byte-for-byte technical fixture copied from the unreviewed F01 Bellator prototype; not approved or final art.",
+  "sourcePath": "docs/art/F01_bellator_32x48.png",
+  "sourceSha256": "64f2078fc1c4d9183b896028918be04affc232d1a14a1ba2c6578fb7c502f457",
+  "sourceBitDepth": 8,
+  "sourceColorType": 6,
+  "fixturePath": "Assets/Luckbound/Tests/EditMode/F02SpriteImport/F02SpriteImportFixture.png",
+  "width": 32,
+  "height": 48,
+  "pixelsPerUnit": 16,
+  "filterMode": "Point",
+  "mipmaps": false,
+  "alphaIsTransparency": true,
+  "slices": [
+    {
+      "name": "F02SpriteImportFixture_0",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0
+    }
+  ],
+  "clips": [
+    {
+      "name": "F02SpriteImportFixture_Idle",
+      "framesPerSecond": 12,
+      "loop": true,
+      "frames": ["F02SpriteImportFixture_0"]
+    }
+  ]
+}

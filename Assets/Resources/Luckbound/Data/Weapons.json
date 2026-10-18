@@ -6,14 +6,32 @@
       "classId": "class.bellator",
       "damage": 12,
       "attackIntervalSeconds": 0.45,
-      "traits": [{ "id": "weapon.trait.balanced" }]
+      "traits": [{ "id": "weapon.trait.balanced" }],
+      "melee": {
+        "centerOffsetX": 0.90,
+        "centerOffsetY": 0.90,
+        "width": 1.35,
+        "height": 1.25,
+        "knockbackHorizontalSpeed": 0,
+        "knockbackVerticalSpeed": 0,
+        "aiControlSuspensionTicks": 0
+      }
     },
     {
       "id": "weapon.bellator.trail_saber",
       "classId": "class.bellator",
       "damage": 9,
       "attackIntervalSeconds": 0.33,
-      "traits": [{ "id": "weapon.trait.rapid_cadence" }]
+      "traits": [{ "id": "weapon.trait.rapid_cadence" }],
+      "melee": {
+        "centerOffsetX": 0.90,
+        "centerOffsetY": 0.90,
+        "width": 1.35,
+        "height": 1.25,
+        "knockbackHorizontalSpeed": 0,
+        "knockbackVerticalSpeed": 0,
+        "aiControlSuspensionTicks": 0
+      }
     },
     {
       "id": "weapon.bellator.umbra_greatsword",
@@ -23,7 +41,16 @@
       "traits": [
         { "id": "weapon.trait.greater_range" },
         { "id": "weapon.trait.greater_knockback" }
-      ]
+      ],
+      "melee": {
+        "centerOffsetX": 1.05,
+        "centerOffsetY": 0.90,
+        "width": 1.80,
+        "height": 1.25,
+        "knockbackHorizontalSpeed": 6,
+        "knockbackVerticalSpeed": 2.5,
+        "aiControlSuspensionTicks": 12
+      }
     },
     {
       "id": "weapon.venator.short_bow",
