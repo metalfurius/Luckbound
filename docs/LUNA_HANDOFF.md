@@ -118,6 +118,8 @@ Logs/builds son locales e ignorados. Guardar en progreso un resumen con SHA-256,
 
 Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El acceso local no interactivo se comprobó durante esta preparación; consultar progreso para el resultado definitivo del respaldo/CI. Nunca abrir una ventana de autenticación por iniciativa propia.
 
+Fran autorizó expresamente el respaldo y CI de `codex/luckbound-reboot` en `metalfurius/Luckbound`, sin publicar el juego. En el workflow fijado, la cobertura se desactiva mediante `GAME_CI_COVERAGE_ENABLED=false`, opción soportada de la CLI v0.1.72. No volver a añadir `coverageEnabled: false` al input de la acción v4.4.0: genera `--no-coverageEnabled`, que esa CLI rechaza antes de iniciar Unity. El filtro sigue siendo `Luckbound`; no resolver ese fallo cambiando la cobertura, quitando tests ni promoviendo Main.
+
 La campaña posterior mantiene todas sus tareas: tres sectores, tres clases, cuatro razas, 30 salas, 12 enemigos, cuatro jefes, 24 reliquias, ocho pactos, 12 contratos, narrativa, accesibilidad, audio, arte y verificación 1.0. Tras F10, usar el grafo ya documentado; no convertir esta muestra en el alcance final.
 
 Prompt de continuación:

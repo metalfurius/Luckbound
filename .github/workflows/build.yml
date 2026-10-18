@@ -43,13 +43,15 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          # v4.4.0 emits an unsupported --no-coverageEnabled flag for a false action input.
+          # The pinned CLI accepts its documented GAME_CI_* environment option instead.
+          GAME_CI_COVERAGE_ENABLED: 'false'
         with:
           cliVersion: v0.1.72
           customImage: unityci/editor:ubuntu-6000.6.6f1-base-3.2.2
           testMode: all
           customParameters: '-testFilter Luckbound'
           artifactsPath: test-results
-          coverageEnabled: false
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: Unity EditMode and PlayMode
 
