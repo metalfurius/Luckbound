@@ -251,7 +251,6 @@ namespace Luckbound.Tests.PlayMode
         private static void SetKeyboardState(Keyboard keyboard, params Key[] pressedKeys)
         {
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(pressedKeys));
-            InputSystem.Update();
         }
     }
 }
