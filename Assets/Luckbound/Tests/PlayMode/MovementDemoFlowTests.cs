@@ -14,7 +14,7 @@ using UnityRandom = UnityEngine.Random;
 namespace Luckbound.Tests.PlayMode
 {
     /// <summary>Exercises the B07 menu-to-portal flow through real Input System and 2D physics updates.</summary>
-    public sealed class MovementDemoFlowTests : InputTestFixture
+    public sealed class MovementDemoFlowTests : LuckboundInputTestFixture
     {
         private const int ScenarioSeed = 31415926;
         private static readonly float[] BarrierCenters = { -20f, 0f, 20f };
@@ -30,6 +30,7 @@ namespace Luckbound.Tests.PlayMode
             {
                 UnityRandom.InitState(ScenarioSeed);
                 Time.timeScale = 1f;
+                keyboard = InputSystem.AddDevice<Keyboard>();
                 InputSystem.AddDevice<Mouse>();
                 InputSystem.Update();
 
@@ -81,7 +82,6 @@ namespace Luckbound.Tests.PlayMode
                     yield break;
                 }
 
-                keyboard = InputSystem.AddDevice<Keyboard>();
                 SetKeyboardState(keyboard);
                 AudioListener[] listeners = Object.FindObjectsByType<AudioListener>();
                 string listenerDescription = string.Join(", ", System.Array.ConvertAll(listeners,

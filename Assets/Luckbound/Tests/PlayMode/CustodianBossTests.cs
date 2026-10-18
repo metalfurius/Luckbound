@@ -24,7 +24,7 @@ using Object = UnityEngine.Object;
 
 namespace Luckbound.Tests.PlayMode
 {
-    public sealed class CustodianBossTests : InputTestFixture
+    public sealed class CustodianBossTests : LuckboundInputTestFixture
     {
         private Keyboard _keyboard;
         private readonly HashSet<Key> _pressedKeys = new HashSet<Key>();
@@ -85,6 +85,9 @@ namespace Luckbound.Tests.PlayMode
                     Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
                 yield return null;
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                _keyboard = InputSystem.AddDevice<Keyboard>();
+                InputSystem.AddDevice<Mouse>();
+                InputSystem.Update();
                 for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
                     !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
                     yield return null;
@@ -99,12 +102,6 @@ namespace Luckbound.Tests.PlayMode
                 _pressedKeys.Clear();
                 _leftHeld = false;
                 _rightHeld = false;
-                _keyboard = InputSystem.AddDevice<Keyboard>();
-                InputSystem.AddDevice<Mouse>();
-                InputSystem.Update();
-                SceneManager.LoadScene("Menu", LoadSceneMode.Single);
-                yield return null;
-
                 Button bossButton = GameObject.Find("StartCustodianArenaButton")?.GetComponent<Button>();
                 bool menuEntryAvailable = bossButton != null && bossButton.interactable;
                 if (menuEntryAvailable) bossButton.onClick.Invoke();
