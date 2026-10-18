@@ -267,6 +267,7 @@ namespace Luckbound.Gameplay.Movement
         public string RaceId => _raceId;
 
         public WeaponProfile EquippedWeaponProfile => _equippedWeaponProfile;
+        public WeaponBasicAttackProfile EquippedWeaponBasicAttackProfile => _weaponBasicAttackProfile;
 
         public long SimulationTick => Math.Max(0L, _tick - 1);
 
@@ -284,7 +285,8 @@ namespace Luckbound.Gameplay.Movement
         /// Binds or updates the weapon selected by the expedition inventory. The profile must come from
         /// the authoritative Weapons.json catalog; an accepted attack and its reload remain unchanged.
         /// </summary>
-        public void ConfigureEquippedWeapon(WeaponProfile weaponProfile)
+        public void ConfigureEquippedWeapon(WeaponProfile weaponProfile, ItemRarity rarity = ItemRarity.Common,
+            int upgradeLevel = 0)
         {
             if (!_initialized)
                 throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring its weapon.");
@@ -295,7 +297,7 @@ namespace Luckbound.Gameplay.Movement
                 throw new ArgumentException("The equipped weapon is incompatible with the configured player class.", nameof(weaponProfile));
             }
 
-            WeaponBasicAttackProfile runtimeProfile = WeaponBasicAttackProfile.Create(weaponProfile);
+            WeaponBasicAttackProfile runtimeProfile = WeaponBasicAttackProfile.Create(weaponProfile, rarity, upgradeLevel);
             _equippedWeaponProfile = weaponProfile;
             _weaponBasicAttackProfile = runtimeProfile;
             ApplyWeaponBasicAttackProfile();
@@ -311,7 +313,7 @@ namespace Luckbound.Gameplay.Movement
                 throw new InvalidOperationException("PlayerMotor2D must be initialized before configuring its weapon.");
 
             WeaponProfile equippedProfile = ResolveEquippedWeaponProfile(run, weaponCatalog);
-            ConfigureEquippedWeapon(equippedProfile);
+            ConfigureEquippedWeapon(equippedProfile, run.Inventory.Weapon.Rarity, run.Inventory.Weapon.UpgradeLevel);
         }
 
         /// <summary>Resolves the authoritative profile for the weapon currently equipped by a run.</summary>
@@ -344,7 +346,7 @@ namespace Luckbound.Gameplay.Movement
             }
 
             // Build the complete runtime mapping before a caller can mutate PlayerMotor2D.
-            _ = WeaponBasicAttackProfile.Create(equippedProfile);
+            _ = WeaponBasicAttackProfile.Create(equippedProfile, equippedWeapon.Rarity, equippedWeapon.UpgradeLevel);
             return equippedProfile;
         }
 
@@ -1327,6 +1329,13 @@ namespace Luckbound.Gameplay.Movement
         {
             _fortuneBrewPendingItemInstanceId = default;
             _fortuneBrewPendingTransactionId = default;
+        }
+
+        /// <summary>Refreshes the HUD charges after binding the run inventory, without consuming any item.</summary>
+        public void RefreshConsumableChargesFromInventory()
+        {
+            if (!_initialized) throw new InvalidOperationException("Initialize the player before binding consumable charges.");
+            SynchronizeConsumableCharges();
         }
 
         private void SynchronizeConsumableCharges()

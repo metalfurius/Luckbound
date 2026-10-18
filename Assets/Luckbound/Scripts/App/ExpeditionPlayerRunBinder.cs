@@ -1,10 +1,13 @@
 using System;
+using System.Linq;
+using Luckbound.Content;
 using Luckbound.Core.Armor;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Movement;
@@ -32,7 +35,9 @@ namespace Luckbound.App
             RoomProjectileScope projectileScope = null,
             RoomLifetimeScope roomLifetimeScope = null,
             LootPickupDropStager2D dropStager = null,
-            IPlayerFortuneBrewRuntime fortuneBrewRuntime = null)
+            IPlayerFortuneBrewRuntime fortuneBrewRuntime = null,
+            ArmorCatalog armorCatalog = null,
+            ExpeditionSaveData checkpoint = null)
         {
             BindingPlan plan = Validate(
                 run,
@@ -48,27 +53,9 @@ namespace Luckbound.App
                 skillCatalog,
                 projectilePool,
                 projectileScope,
-                roomLifetimeScope);
-
-            if (string.Equals(run.ClassId, BellatorSkillLoadout.ClassId, StringComparison.Ordinal))
-            {
-                ExpeditionBellatorRunBinder.Bind(
-                    run,
-                    actorId,
-                    inputSource,
-                    groundLayers,
-                    plan.EnemyLayers,
-                    defense,
-                    playerMotor,
-                    itemCollector,
-                    itemCatalog,
-                    weaponCatalog,
-                    skillCatalog,
-                    dropStager);
-                if (fortuneBrewRuntime != null)
-                    playerMotor.ConfigureFortuneBrewRuntime(fortuneBrewRuntime);
-                return;
-            }
+                roomLifetimeScope,
+                armorCatalog,
+                checkpoint);
 
             playerMotor.Initialize(
                 actorId,
@@ -78,9 +65,14 @@ namespace Luckbound.App
                 plan.EnemyLayers,
                 run.RaceId,
                 plan.ArmorResolution);
-            playerMotor.ConfigureEquippedWeapon(plan.EquippedWeapon);
+            playerMotor.ConfigureEquippedWeapon(plan.EquippedWeapon, run.Inventory.Weapon.Rarity,
+                run.Inventory.Weapon.UpgradeLevel);
 
-            if (string.Equals(run.ClassId, VenatorSkillLoadout.ClassId, StringComparison.Ordinal))
+            if (string.Equals(run.ClassId, BellatorSkillLoadout.ClassId, StringComparison.Ordinal))
+            {
+                playerMotor.ConfigureBellator(skillCatalog, run.SkillIds);
+            }
+            else if (string.Equals(run.ClassId, VenatorSkillLoadout.ClassId, StringComparison.Ordinal))
             {
                 playerMotor.ConfigureVenator(
                     skillCatalog,
@@ -102,8 +94,25 @@ namespace Luckbound.App
             }
 
             itemCollector.Configure(run.Inventory, itemCatalog, dropStager, run.RaceId);
+            playerMotor.RefreshConsumableChargesFromInventory();
             if (fortuneBrewRuntime != null)
                 playerMotor.ConfigureFortuneBrewRuntime(fortuneBrewRuntime);
+        }
+
+        /// <summary>Binds the committed actor resources without healing or rebuilding them from the current profile.</summary>
+        public static void BindFromCheckpoint(
+            ExpeditionRunConfiguration run, ExpeditionSaveData checkpoint, ActorId actorId,
+            IPlayerInputSource inputSource, LayerMask groundLayers, LayerMask enemyLayers, int defense,
+            PlayerMotor2D playerMotor, ItemCollector2D itemCollector, ItemCatalog itemCatalog,
+            WeaponCatalog weaponCatalog, SkillCatalog skillCatalog, ProjectilePool2D projectilePool = null,
+            RoomProjectileScope projectileScope = null, RoomLifetimeScope roomLifetimeScope = null,
+            LootPickupDropStager2D dropStager = null, IPlayerFortuneBrewRuntime fortuneBrewRuntime = null,
+            ArmorCatalog armorCatalog = null)
+        {
+            if (checkpoint == null) throw new ArgumentNullException(nameof(checkpoint));
+            Bind(run, actorId, inputSource, groundLayers, enemyLayers, defense, playerMotor, itemCollector,
+                itemCatalog, weaponCatalog, skillCatalog, projectilePool, projectileScope, roomLifetimeScope,
+                dropStager, fortuneBrewRuntime, armorCatalog, checkpoint);
         }
 
         private static BindingPlan Validate(
@@ -120,7 +129,9 @@ namespace Luckbound.App
             SkillCatalog skillCatalog,
             ProjectilePool2D projectilePool,
             RoomProjectileScope projectileScope,
-            RoomLifetimeScope roomLifetimeScope)
+            RoomLifetimeScope roomLifetimeScope,
+            ArmorCatalog armorCatalog,
+            ExpeditionSaveData checkpoint)
         {
             if (run == null) throw new ArgumentNullException(nameof(run));
             if (run.ClassId != BellatorSkillLoadout.ClassId &&
@@ -173,7 +184,7 @@ namespace Luckbound.App
             if (Mathf.Abs(Physics2D.gravity.x) > 0.01f || Physics2D.gravity.y >= -0.01f)
                 throw new InvalidOperationException("Player composition requires downward vertical 2D gravity.");
 
-            ArmorResolution armorResolution = ResolveEquippedArmor(run, itemCatalog);
+            ArmorResolution armorResolution = ResolveEquippedArmor(run, itemCatalog, armorCatalog, checkpoint);
             CombatStats combatStats = CreateArmorCombatStats(defense, armorResolution);
             WeaponProfile equippedWeapon = PlayerMotor2D.ResolveEquippedWeaponProfile(run, weaponCatalog);
             ValidateSkillLoadout(run, skillCatalog);
@@ -189,7 +200,8 @@ namespace Luckbound.App
             return new BindingPlan(combatStats, equippedWeapon, effectiveEnemyLayers, armorResolution);
         }
 
-        internal static ArmorResolution ResolveEquippedArmor(ExpeditionRunConfiguration run, ItemCatalog itemCatalog)
+        internal static ArmorResolution ResolveEquippedArmor(ExpeditionRunConfiguration run, ItemCatalog itemCatalog,
+            ArmorCatalog armorCatalog = null, ExpeditionSaveData checkpoint = null)
         {
             if (run == null) throw new ArgumentNullException(nameof(run));
             if (itemCatalog == null) throw new ArgumentNullException(nameof(itemCatalog));
@@ -198,26 +210,71 @@ namespace Luckbound.App
             if (!ReferenceEquals(run.Inventory.Catalog, itemCatalog))
                 throw new ArgumentException("Pass the already-loaded item catalog owned by the run inventory.", nameof(itemCatalog));
 
+            ArmorCatalog resolvedCatalog = armorCatalog ?? LoadArmorCatalog(itemCatalog);
+            if (checkpoint != null) ValidateCheckpoint(run, checkpoint);
             InventoryItemStack equippedArmor = run.Inventory.Armor;
             if (equippedArmor == null || !equippedArmor.InstanceId.IsValid ||
                 !itemCatalog.TryGet(equippedArmor.ItemId, out ItemDefinition armorItem) ||
                 !string.Equals(armorItem.Id, equippedArmor.ItemId, StringComparison.Ordinal) ||
                 armorItem.Kind != ItemKind.Armor ||
-                !ArmorCatalog.Standard.TryGet(equippedArmor.ItemId, out ArmorProfile profile) ||
+                !resolvedCatalog.TryGet(equippedArmor.ItemId, out ArmorProfile profile) ||
                 !string.Equals(profile.ItemId, equippedArmor.ItemId, StringComparison.Ordinal))
             {
                 throw new ArgumentException(
-                    "The run's equipped armor must match an exact item ID in the item and standard armor catalogs.",
+                    "The run's equipped armor must match an exact item ID in the item and armor catalogs.",
                     nameof(run));
             }
 
+            int baseMaximumHealth = checkpoint == null ? run.StartingHealth : checkpoint.maximumHealth;
+            int baseMaximumEnergy = checkpoint == null ? run.StartingEnergy :
+                checked(checkpoint.maximumEnergy - profile.MaximumEnergyBonus);
+            if (baseMaximumEnergy <= 0)
+                throw new ArgumentException("Saved maximum energy must contain the equipped armor bonus.", nameof(checkpoint));
             return ArmorStatsResolver.Resolve(
                 profile,
                 equippedArmor.UpgradeLevel,
-                run.StartingHealth,
-                run.StartingEnergy,
-                run.StartingHealth,
-                run.StartingEnergy);
+                baseMaximumHealth,
+                baseMaximumEnergy,
+                checkpoint == null ? run.StartingHealth : checkpoint.currentHealth,
+                checkpoint == null ? run.StartingEnergy : checkpoint.currentEnergy,
+                equippedArmor.Rarity);
+        }
+
+        private static ArmorCatalog LoadArmorCatalog(ItemCatalog itemCatalog)
+        {
+            TextAsset data = Resources.Load<TextAsset>("Luckbound/Data/Items/Armors");
+            if (data == null) throw new InvalidOperationException("Required armor data is missing: Armors.json.");
+            return ArmorCatalogJsonLoader.Load(data.text, itemCatalog);
+        }
+
+        private static void ValidateCheckpoint(ExpeditionRunConfiguration run, ExpeditionSaveData checkpoint)
+        {
+            if (!string.Equals(checkpoint.runId, run.RunId.ToString(), StringComparison.Ordinal) ||
+                checkpoint.seed != run.Seed || checkpoint.generationVersion != run.Route.GenerationVersion ||
+                !string.Equals(checkpoint.classId, run.ClassId, StringComparison.Ordinal) ||
+                !string.Equals(checkpoint.raceId, run.RaceId, StringComparison.Ordinal) ||
+                checkpoint.hasFrozenPermanentUpgrades != run.HasKnownStartingLoadout ||
+                (run.HasKnownStartingLoadout && (checkpoint.frozenPermanentUpgrades == null ||
+                    checkpoint.frozenPermanentUpgrades.healthUpgradeLevel != run.HealthUpgradeLevel ||
+                    checkpoint.frozenPermanentUpgrades.energyUpgradeLevel != run.EnergyUpgradeLevel ||
+                    checkpoint.frozenPermanentUpgrades.additionalPotionUpgradeLevel != run.AdditionalPotionUpgradeLevel)) ||
+                checkpoint.selectedSkillIds == null || !checkpoint.selectedSkillIds.SequenceEqual(run.SkillIds) ||
+                !string.Equals(checkpoint.routeSnapshotJson, run.Route.CanonicalForm, StringComparison.Ordinal))
+                throw new ArgumentException("The checkpoint must belong to this exact run configuration.", nameof(checkpoint));
+            if (checkpoint.maximumHealth <= 0 || checkpoint.maximumEnergy <= 0 ||
+                checkpoint.currentHealth < 0 || checkpoint.currentHealth > checkpoint.maximumHealth ||
+                checkpoint.currentEnergy < 0 || checkpoint.currentEnergy > checkpoint.maximumEnergy)
+                throw new ArgumentException("Saved actor resources must be within their committed maximums.", nameof(checkpoint));
+
+            ExpeditionInventorySnapshot savedInventory;
+            try { savedInventory = JsonUtility.FromJson<ExpeditionInventorySnapshot>(checkpoint.inventorySnapshotJson); }
+            catch (Exception exception)
+            {
+                throw new ArgumentException("Checkpoint inventory could not be decoded.", nameof(checkpoint), exception);
+            }
+            if (savedInventory == null || !string.Equals(JsonUtility.ToJson(savedInventory),
+                    JsonUtility.ToJson(run.Inventory.CreateSnapshot()), StringComparison.Ordinal))
+                throw new ArgumentException("The checkpoint inventory must match the actor's restored run inventory.", nameof(checkpoint));
         }
 
         internal static CombatStats CreateArmorCombatStats(int baseDefense, ArmorResolution armorResolution)
@@ -230,14 +287,15 @@ namespace Luckbound.App
         private static void ValidateEquippedItems(ExpeditionRunConfiguration run, ItemCatalog itemCatalog)
         {
             ExpeditionInventory inventory = run.Inventory;
-            if (inventory.Weapon == null || inventory.Armor == null || inventory.QuickConsumable == null)
+            if (inventory.Weapon == null || inventory.Armor == null)
             {
-                throw new ArgumentException("A confirmed run must carry its equipped weapon, armor, and quick consumable.", nameof(run));
+                throw new ArgumentException("A confirmed run must carry its equipped weapon and armor.", nameof(run));
             }
 
             ValidateItem(inventory.Weapon, ItemKind.Weapon, itemCatalog, run.ClassId, requireWeaponCompatibility: true);
             ValidateItem(inventory.Armor, ItemKind.Armor, itemCatalog, run.ClassId, requireWeaponCompatibility: false);
-            ValidateItem(inventory.QuickConsumable, ItemKind.Consumable, itemCatalog, run.ClassId, requireWeaponCompatibility: false);
+            if (inventory.QuickConsumable != null)
+                ValidateItem(inventory.QuickConsumable, ItemKind.Consumable, itemCatalog, run.ClassId, requireWeaponCompatibility: false);
             if (inventory.RelicOne != null)
                 ValidateItem(inventory.RelicOne, ItemKind.Relic, itemCatalog, run.ClassId, requireWeaponCompatibility: false);
             if (inventory.RelicTwo != null)

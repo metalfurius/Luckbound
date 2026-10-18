@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Luckbound.App;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Fortune;
+using Luckbound.Core.Identifiers;
+using Luckbound.Core.Inventory;
 using Luckbound.Core.Saves;
 using NUnit.Framework;
 using UnityEngine;
@@ -68,6 +70,171 @@ namespace Luckbound.Tests.App
             AssertSnapshot(expected, loaded.Data.activeExpedition.fortuneOfferBookSnapshot);
             ExpeditionSaveMapper.Restore(loaded.Data.activeExpedition, out ExpeditionSaveData resumed);
             AssertSnapshot(expected, resumed.fortuneOfferBookSnapshot);
+        }
+
+        [Test]
+        public void FrozenPermanentUpgradesSurviveRepositoryRestartWithoutRefillingCheckpointResources()
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                "class.magus", "race.human", new[] { "skill.magus.fireball", "skill.magus.frost_nova" },
+                healthUpgradeLevel: 2, energyUpgradeLevel: 2, additionalPotionUpgradeLevel: 1);
+            ExpeditionSaveData state = CreatePreparedExpedition(run, out FortuneOfferBookSnapshot expectedFortune);
+            state.currentHealth = 73;
+            state.currentEnergy = 41;
+            state.roomEntryCheckpointJson = ExpeditionSaveMapper.SerializeCheckpoint(
+                ExpeditionSaveMapper.CreateCheckpoint(state));
+
+            ExpeditionSaveData clone = state.Clone();
+            Assert.That(clone.frozenPermanentUpgrades, Is.Not.SameAs(state.frozenPermanentUpgrades));
+            clone.frozenPermanentUpgrades.healthUpgradeLevel = 0;
+            Assert.That(state.frozenPermanentUpgrades.healthUpgradeLevel, Is.EqualTo(2));
+
+            ProfileSaveData currentProfile = ProfileSaveData.CreateNewProfile();
+            var repository = NewRepository();
+            SaveWriteResult write = Wait(repository.SaveProfileAsync(currentProfile, state));
+            SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(NewRepository().LoadProfileAsync());
+            ExpeditionRunConfiguration restored = ExpeditionSaveMapper.Restore(loaded.Data.activeExpedition,
+                out ExpeditionSaveData resumed);
+
+            Assert.That(write.Succeeded, Is.True, write.Message);
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+            Assert.That(restored.HasKnownStartingLoadout, Is.True);
+            Assert.That(restored.HealthUpgradeLevel, Is.EqualTo(2));
+            Assert.That(restored.EnergyUpgradeLevel, Is.EqualTo(2));
+            Assert.That(restored.AdditionalPotionUpgradeLevel, Is.EqualTo(1));
+            Assert.That(restored.StartingHealth, Is.EqualTo(110));
+            Assert.That(restored.StartingEnergy, Is.EqualTo(55));
+            Assert.That(restored.StartingHealthPotions, Is.EqualTo(3));
+            Assert.That(resumed.maximumHealth, Is.EqualTo(110));
+            Assert.That(resumed.maximumEnergy, Is.EqualTo(60), "The Magus robe adds five maximum energy to the run's frozen 55.");
+            Assert.That(resumed.currentHealth, Is.EqualTo(73));
+            Assert.That(resumed.currentEnergy, Is.EqualTo(41));
+            Assert.That(JsonUtility.ToJson(restored.Inventory.CreateSnapshot()),
+                Is.EqualTo(JsonUtility.ToJson(run.Inventory.CreateSnapshot())));
+            Assert.That(restored.Inventory.QuickConsumable.Quantity, Is.EqualTo(3));
+            Assert.That(restored.RaceId, Is.EqualTo(run.RaceId));
+            CollectionAssert.AreEqual(run.SkillIds, restored.SkillIds);
+            CollectionAssert.AreEqual(run.StartingEquipmentInstanceIds, restored.StartingEquipmentInstanceIds);
+            Assert.That(restored.Route.CanonicalForm, Is.EqualTo(run.Route.CanonicalForm));
+            AssertSnapshot(expectedFortune, resumed.fortuneOfferBookSnapshot);
+            Assert.That(loaded.Data.profile.healthUpgradeLevel, Is.EqualTo(0),
+                "Restoration takes the frozen run snapshot, never the current profile levels.");
+        }
+
+        [Test]
+        public void UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore()
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                "class.magus", "race.human", new[] { "skill.magus.fireball", "skill.magus.frost_nova" },
+                healthUpgradeLevel: 2, energyUpgradeLevel: 2, additionalPotionUpgradeLevel: 1);
+            ExpeditionSaveData state = ExpeditionSaveMapper.Create(run);
+            state.hasFrozenPermanentUpgrades = false;
+            state.frozenPermanentUpgrades = new ExpeditionPermanentUpgradeSnapshotSaveData();
+            ProfileSaveData profile = ProfileSaveData.CreateNewProfile();
+            profile.healthUpgradeLevel = 2;
+            profile.energyUpgradeLevel = 2;
+            profile.additionalPotionUpgradeLevel = 1;
+
+            SaveWriteResult write = Wait(NewRepository().SaveProfileAsync(profile, state));
+            SaveLoadResult<ProfileSaveEnvelope> firstLoad = Wait(NewRepository().LoadProfileAsync());
+            ExpeditionRunConfiguration firstRestore = ExpeditionSaveMapper.Restore(firstLoad.Data.activeExpedition,
+                out ExpeditionSaveData firstResumed);
+            Assert.That(write.Succeeded, Is.True, write.Message);
+            Assert.That(firstLoad.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), firstLoad.Message);
+            Assert.That(firstResumed.hasFrozenPermanentUpgrades, Is.False);
+            Assert.That(firstResumed.frozenPermanentUpgrades, Is.Null);
+            Assert.That(firstRestore.HasKnownStartingLoadout, Is.False,
+                "The current profile's 2/2/1 values cannot fill an unknown historical run snapshot.");
+            Assert.Throws<InvalidOperationException>(() => _ = firstRestore.StartingHealth);
+            Assert.Throws<InvalidOperationException>(() => _ = firstRestore.StartingEnergy);
+            Assert.Throws<InvalidOperationException>(() => _ = firstRestore.StartingHealthPotions);
+
+            SaveWriteResult resave = Wait(NewRepository().SaveProfileAsync(firstLoad.Data.profile,
+                firstLoad.Data.activeExpedition));
+            SaveLoadResult<ProfileSaveEnvelope> afterRestart = Wait(NewRepository().LoadProfileAsync());
+            ExpeditionRunConfiguration secondRestore = ExpeditionSaveMapper.Restore(afterRestart.Data.activeExpedition,
+                out ExpeditionSaveData secondResumed);
+
+            Assert.That(resave.Succeeded, Is.True, resave.Message);
+            Assert.That(afterRestart.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), afterRestart.Message);
+            Assert.That(secondResumed.hasFrozenPermanentUpgrades, Is.False);
+            Assert.That(secondResumed.frozenPermanentUpgrades, Is.Null,
+                "JsonUtility's empty inline object must not become a synthetic zero-level snapshot on resave.");
+            Assert.That(secondRestore.HasKnownStartingLoadout, Is.False);
+            Assert.Throws<InvalidOperationException>(() => _ = secondRestore.StartingHealth);
+        }
+
+        [Test]
+        public void PlainProfileWithoutActiveExpeditionKeepsAStableChecksumAcrossRestart()
+        {
+            ProfileSaveData profile = ProfileSaveData.CreateNewProfile();
+
+            SaveWriteResult write = Wait(NewRepository().SaveProfileAsync(profile));
+            SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(NewRepository().LoadProfileAsync());
+
+            Assert.That(write.Succeeded, Is.True, write.Message);
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+            Assert.That(loaded.Data.hasActiveExpedition, Is.False);
+            Assert.That(loaded.Data.activeExpedition, Is.Null,
+                "An empty JsonUtility placeholder must canonicalize to the historical absent-expedition form.");
+            Assert.That(loaded.Data.profile.healthUpgradeLevel, Is.EqualTo(profile.healthUpgradeLevel));
+        }
+
+        [Test]
+        public void AbsentFrozenUpgradeFlagRejectsNonzeroSnapshotValues()
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                "class.magus", "race.human", new[] { "skill.magus.fireball", "skill.magus.frost_nova" },
+                healthUpgradeLevel: 2, energyUpgradeLevel: 2, additionalPotionUpgradeLevel: 1);
+            ExpeditionSaveData state = ExpeditionSaveMapper.Create(run);
+            state.hasFrozenPermanentUpgrades = false;
+
+            SaveWriteResult write = Wait(NewRepository().SaveProfileAsync(ProfileSaveData.CreateNewProfile(), state));
+
+            Assert.That(write.Succeeded, Is.False);
+            Assert.That(write.Message, Does.Contain("marked absent"));
+        }
+
+        [Test]
+        public void RetryUsesTheSameFrozenUpgradePayload()
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
+                "class.magus", "race.human", new[] { "skill.magus.fireball", "skill.magus.frost_nova" },
+                healthUpgradeLevel: 2, energyUpgradeLevel: 2, additionalPotionUpgradeLevel: 1);
+            ExpeditionSaveData state = ExpeditionSaveMapper.Create(run);
+            var storage = new RecordingFailOnceStore(NewFileStore());
+            var repository = new SaveRepository(storage);
+
+            SaveWriteResult first = Wait(repository.SaveProfileAsync(ProfileSaveData.CreateNewProfile(), state));
+            string pending = repository.ExportPendingJson(SaveDocument.Profile);
+            SaveWriteResult retry = Wait(repository.RetryPendingAsync(SaveDocument.Profile));
+            SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(NewRepository().LoadProfileAsync());
+
+            Assert.That(first.Succeeded, Is.False);
+            Assert.That(retry.Succeeded, Is.True, retry.Message);
+            Assert.That(storage.Payloads.Count, Is.EqualTo(2));
+            Assert.That(storage.Payloads[0], Is.EqualTo(pending));
+            Assert.That(storage.Payloads[0], Is.EqualTo(storage.Payloads[1]));
+            Assert.That(loaded.Data.activeExpedition.frozenPermanentUpgrades.healthUpgradeLevel, Is.EqualTo(2));
+            Assert.That(loaded.Data.activeExpedition.frozenPermanentUpgrades.energyUpgradeLevel, Is.EqualTo(2));
+            Assert.That(loaded.Data.activeExpedition.frozenPermanentUpgrades.additionalPotionUpgradeLevel, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void NewSaveCountsOnlyHealthPotionsInThePotionChargeField()
+        {
+            ExpeditionRunConfiguration run = CreateRun();
+            InventoryOperationOutcome collected = run.Inventory.TryCollectItem(
+                new InventoryItemStack(ItemInstanceId.New(), "consumable.energy_tonic", ItemRarity.Common, 0, 2),
+                TransactionId.New());
+            Assert.That(collected.Succeeded, Is.True);
+            Assert.That(run.Inventory.SetQuickConsumable(1, TransactionId.New()).Succeeded, Is.True);
+
+            ExpeditionSaveData save = ExpeditionSaveMapper.Create(run);
+
+            Assert.That(save.healthPotionCharges, Is.Zero);
+            Assert.That(run.Inventory.QuickConsumable.ItemId, Is.EqualTo("consumable.energy_tonic"));
+            Assert.That(run.Inventory.QuickConsumable.Quantity, Is.EqualTo(2));
         }
 
         [Test]
@@ -138,7 +305,12 @@ namespace Luckbound.Tests.App
             Assert.That(migrated.Data.activeExpedition.fortuneOfferBookSnapshot.generationVersion, Is.EqualTo(run.Route.GenerationVersion));
             Assert.That(migrated.Data.activeExpedition.fortuneOfferBookSnapshot.raceId, Is.EqualTo(run.RaceId));
             Assert.That(migrated.Data.activeExpedition.fortuneOfferBookSnapshot.offers, Is.Empty);
-            ExpeditionSaveMapper.Restore(migrated.Data.activeExpedition, out ExpeditionSaveData migratedEntry);
+            Assert.That(migrated.Data.activeExpedition.frozenPermanentUpgrades, Is.Null,
+                "The legacy envelope did not record which profile upgrades were frozen when this run started.");
+            ExpeditionRunConfiguration legacyRun = ExpeditionSaveMapper.Restore(migrated.Data.activeExpedition,
+                out ExpeditionSaveData migratedEntry);
+            Assert.That(legacyRun.HasKnownStartingLoadout, Is.False);
+            Assert.Throws<InvalidOperationException>(() => _ = legacyRun.StartingHealth);
             Assert.That(migratedEntry.fortunaCharges, Is.EqualTo(run.StartingFortunaCharges - 1),
                 "Legacy checkpoint charges migrate independently from the in-room snapshot.");
 

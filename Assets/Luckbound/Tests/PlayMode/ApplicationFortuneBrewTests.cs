@@ -51,6 +51,8 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(committed.Outcome.InventoryOperation.Succeeded, Is.True);
                 Assert.That(app.ActiveRun.Inventory.QuickConsumable.InstanceId, Is.EqualTo(brewInstanceId));
                 Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
+                Assert.That(app.ActiveExpedition.healthPotionCharges, Is.Zero,
+                    "A remaining Fortune Brew is not a health potion charge.");
                 Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(chargesBefore + 1));
 
                 // Complete the room before restarting so D09's immutable entry checkpoint has
@@ -77,6 +79,8 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
                 Assert.That(loaded.Data.activeExpedition.fortuneOfferBookSnapshot.fortuneBrewReceipts.Length,
                     Is.EqualTo(1), "The clone and saved document retain the durable brew receipt.");
+                Assert.That(loaded.Data.activeExpedition.healthPotionCharges, Is.Zero,
+                    "The durable potion counter must remain zero after a restart with a brew equipped.");
 
                 ExpeditionMutationCommitResult<FortuneBrewApplicationOutcome> replayed = null;
                 yield return Complete(app.ConsumeFortuneBrewAsync(brewInstanceId, transactionId),

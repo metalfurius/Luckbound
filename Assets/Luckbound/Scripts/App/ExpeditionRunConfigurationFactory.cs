@@ -18,6 +18,23 @@ namespace Luckbound.App
         public static ExpeditionRunConfiguration Create(string classId, string raceId, IEnumerable<string> selectedSkillIds,
             int healthUpgradeLevel = 0, int energyUpgradeLevel = 0, int additionalPotionUpgradeLevel = 0)
         {
+            return CreateInternal(classId, raceId, selectedSkillIds, healthUpgradeLevel, energyUpgradeLevel,
+                additionalPotionUpgradeLevel, sample: false);
+        }
+
+        /// <summary>Creates the explicitly versioned F10 route without changing campaign generation.</summary>
+        public static ExpeditionRunConfiguration CreateSample(string classId, string raceId,
+            IEnumerable<string> selectedSkillIds, int healthUpgradeLevel = 0, int energyUpgradeLevel = 0,
+            int additionalPotionUpgradeLevel = 0)
+        {
+            return CreateInternal(classId, raceId, selectedSkillIds, healthUpgradeLevel, energyUpgradeLevel,
+                additionalPotionUpgradeLevel, sample: true);
+        }
+
+        private static ExpeditionRunConfiguration CreateInternal(string classId, string raceId,
+            IEnumerable<string> selectedSkillIds, int healthUpgradeLevel, int energyUpgradeLevel,
+            int additionalPotionUpgradeLevel, bool sample)
+        {
             if (selectedSkillIds == null) throw new ArgumentNullException(nameof(selectedSkillIds));
             if (healthUpgradeLevel < 0 || healthUpgradeLevel > PermanentUpgradeSnapshot.MaximumHealthUpgradeLevel)
                 throw new ArgumentOutOfRangeException(nameof(healthUpgradeLevel));
@@ -31,8 +48,6 @@ namespace Luckbound.App
 
             ItemCatalog items = ItemCatalogJsonLoader.Load(LoadRequired("Luckbound/Data/Items/Items").text);
             SkillCatalog skills = SkillCatalogJsonLoader.Load(LoadRequired("Luckbound/Data/Skills").text);
-            ExpeditionRouteCatalog routes = ExpeditionRouteCatalogJsonLoader.Load(
-                LoadRequired("Luckbound/Data/Rooms/RouteTemplates").text);
 
             foreach (string skillId in skillIds)
             {
@@ -42,7 +57,11 @@ namespace Luckbound.App
 
             RunId runId = RunId.New();
             uint seed = Xorshift32.NormalizeSeed(SeedDeriver.HashUtf8("luckbound-run-seed-v1|" + runId));
-            ExpeditionRoutePlan route = ExpeditionRouteGenerator.Generate(seed, routes);
+            ExpeditionRoutePlan route = sample
+                ? ExpeditionSampleRouteGenerator.Generate(seed, ExpeditionSampleRouteJsonLoader.Load(
+                    LoadRequired("Luckbound/Data/Rooms/F10SampleRoute").text))
+                : ExpeditionRouteGenerator.Generate(seed, ExpeditionRouteCatalogJsonLoader.Load(
+                    LoadRequired("Luckbound/Data/Rooms/RouteTemplates").text));
             ExpeditionInventory inventory = CreateStartingInventory(items, classId,
                 ExpeditionRunConfiguration.InitialHealthPotions + additionalPotionUpgradeLevel);
             return new ExpeditionRunConfiguration(

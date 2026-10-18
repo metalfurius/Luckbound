@@ -14,175 +14,10 @@ namespace Luckbound.Tests.PlayMode
     /// </summary>
     public sealed class ScenarioEvidenceRecorder : IDisposable
     {
-        private static readonly string[] SourceFiles =
-        {
-            "ProjectSettings/ProjectVersion.txt",
-            "ProjectSettings/TagManager.asset",
-            "ProjectSettings/TimeManager.asset",
-            "ProjectSettings/EditorBuildSettings.asset",
-            "Assets/Luckbound/Scenes/Bootstrap.unity",
-            "Assets/Luckbound/Scenes/Menu.unity",
-            "Assets/Luckbound/Scenes/Hub.unity",
-            "Assets/Luckbound/Scenes/Expedition.unity",
-            "Assets/Luckbound/Scenes/CombatArena.unity",
-            "Assets/Luckbound/Scenes/CustodianArena.unity",
-            "Assets/Luckbound/Prefabs/CombatArena/SlimePrototype.prefab",
-            "Assets/Luckbound/Prefabs/CombatArena/HuesoguardiaPrototype.prefab",
-            "Assets/Luckbound/Prefabs/CustodianArena/CustodianPrototype.prefab",
-            "Assets/Luckbound/Prefabs/CustodianArena/CustodianWavePrototype.prefab",
-            "Assets/Resources/Luckbound/Data/Encounters/C08Arena.json",
-            "Assets/Resources/Luckbound/Data/Encounters/CustodianBoss.json",
-            "Assets/Resources/Luckbound/Data/Rooms/RouteTemplates.json",
-            "Assets/Resources/Luckbound/Data/Items/Items.json",
-            "Assets/Resources/Luckbound/Data/Items/Recipes.json",
-            "Assets/Resources/Luckbound/InputSystem_Actions.inputactions",
-            "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
-            "Assets/Luckbound/Scripts/Core/Randomness/Xorshift32.cs",
-            "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
-            "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
-            "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
-            "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
-            "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-            "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/ItemRarity.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/EquipmentSlot.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/ItemDefinition.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/InventoryItemStack.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationStatus.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationOutcome.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/StartingLoadout.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
-            "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
-            "Assets/Luckbound/Scripts/Core/Crafting/CraftingOperationStatus.cs",
-            "Assets/Luckbound/Scripts/Core/Crafting/CraftingOutcome.cs",
-            "Assets/Luckbound/Scripts/Core/Crafting/RecipeCatalog.cs",
-            "Assets/Luckbound/Scripts/Core/Crafting/RecipeDefinition.cs",
-            "Assets/Luckbound/Scripts/Core/Crafting/RecipeMaterialCost.cs",
-            "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
-            "Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
-            "Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
-            "Assets/Luckbound/Scripts/Core/Identifiers/HitId.cs",
-            "Assets/Luckbound/Scripts/Core/Identifiers/TransactionId.cs",
-            "Assets/Luckbound/Scripts/Core/Identifiers/ItemInstanceId.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/CombatStats.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/CustodianBossDefinition.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/DamageCalculationRequest.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/DamageResolution.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/DamageResolver.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/ActorDamageState.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseOutcome.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseStatus.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/DirectImpactOutcome.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackProfile.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackSnapshot.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackState.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/MeleeComboSequence.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/MeleeHitWindow.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/SkillDefinition.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/SkillCatalog.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/SkillUseOutcome.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/ProjectileDefinition.cs",
-            "Assets/Luckbound/Scripts/Core/Combat/ProjectileImpact.cs",
-            "Assets/Luckbound/Scripts/Core/Presentation/PlayerVisualState.cs",
-            "Assets/Luckbound/Scripts/Core/Presentation/PlayerHudState.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Luckbound.Gameplay.asmdef",
-            "Assets/Luckbound/Scripts/Gameplay/Rooms/RoomLifetimeScope.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Inventory/LootPickupInteractionStatus.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Inventory/IStagedLootDrop.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Inventory/LootPickupDropStager2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Inventory/ItemCollector2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Inventory/LootPickup2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Inventory/WorldMaterialPickup2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Enemies/Slime2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Enemies/Huesoguardia2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Enemies/CustodianBoss2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Enemies/CustodianWaveHazard2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Combat/ProjectileImpactTarget2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Combat/MeleeImpact.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Combat/ProjectilePool2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Combat/Projectile2D.cs",
-            "Assets/Luckbound/Scripts/Gameplay/Combat/RoomProjectileScope.cs",
-            "Assets/Luckbound/Scripts/Content/SkillCatalogJsonLoader.cs",
-            "Assets/Luckbound/Scripts/Content/ExpeditionRouteCatalogJsonLoader.cs",
-            "Assets/Luckbound/Scripts/Content/CombatEncounterJsonLoader.cs",
-            "Assets/Luckbound/Scripts/Content/CustodianBossJsonLoader.cs",
-            "Assets/Luckbound/Scripts/Content/ItemCatalogJsonLoader.cs",
-            "Assets/Luckbound/Scripts/Content/RecipeCatalogJsonLoader.cs",
-            "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
-            "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
-            "Assets/Luckbound/Scripts/App/CraftingCommitResult.cs",
-            "Assets/Luckbound/Scripts/App/SaveRepository.cs",
-            "Assets/Luckbound/Scripts/App/FileSaveStore.cs",
-            "Assets/Luckbound/Scripts/App/WebGlFileSystemSyncer.cs",
-            "Assets/Luckbound/Scripts/App/ExpeditionRunConfigurationFactory.cs",
-            "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
-            "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
-            "Assets/Luckbound/Scripts/App/ExpeditionRunSessionPresenter.cs",
-            "Assets/Luckbound/Scripts/App/ExpeditionRoomTransitionController.cs",
-            "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
-            "Assets/Luckbound/Scripts/App/CustodianArenaComposition.cs",
-            "Assets/Luckbound/Scripts/App/MovementDemoComposition.cs",
-            "Assets/Luckbound/Scripts/App/ExpeditionPauseController.cs",
-            "Assets/Luckbound/Scripts/App/MovementDemoGoalTrigger.cs",
-            "Assets/Luckbound/Scripts/Presentation/Luckbound.Presentation.asmdef",
-            "Assets/Luckbound/Scripts/Presentation/PlayerHudPresenter.cs",
-            "Assets/Luckbound/Scripts/Presentation/PlayerVisualStatePresenter.cs",
-            "Assets/Luckbound/Scripts/Presentation/RoomCameraRig2D.cs",
-            "Assets/Luckbound/Editor/ProjectDevelopmentChecks.cs",
-            "Assets/Luckbound/Editor/Luckbound.Editor.asmdef",
-            "Assets/Luckbound/Editor/ProjectScaffoldGenerator.cs",
-            "Assets/Luckbound/Editor/CustodianArenaScaffoldGenerator.cs",
-            "Assets/Luckbound/Editor/HubPreparationScaffoldGenerator.cs",
-            "Assets/Luckbound/Editor/ExpeditionRunSessionScaffoldGenerator.cs",
-            "Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs",
-            "Assets/Luckbound/Editor/CombatArenaScaffoldGenerator.cs",
-            "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab",
-            "Assets/Luckbound/Art/Prototypes/MovementDemo/BellatorPrototype.png",
-            "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png",
-            "Assets/Resources/Luckbound/PlayerVisualStates.controller",
-            "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
-            "Assets/Luckbound/Tests/PlayMode/ScenarioEvidenceRecorder.cs",
-            "Assets/Luckbound/Tests/PlayMode/JumpControlTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/PlayerPresentationTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/PlayerDodgeTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/MeleeAttackMotorTests.cs",
-            "Assets/Luckbound/Tests/EditMode/DamageResolverTests.cs",
-            "Assets/Luckbound/Tests/EditMode/ExpeditionRouteTraversalTests.cs",
-            "Assets/Luckbound/Tests/EditMode/ActorDamageStateTests.cs",
-            "Assets/Luckbound/Tests/EditMode/HealthPotionUseStateTests.cs",
-            "Assets/Luckbound/Tests/EditMode/MeleeAttackTests.cs",
-            "Assets/Luckbound/Tests/EditMode/SkillUseStateTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/SkillCatalogContentTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/ProjectilePoolTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/PlayerDamageTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/SlimeTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/HuesoguardiaTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/PlayerHudConsumableTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/ExpeditionRouteGenerationTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/RoomTransitionLifecycleTests.cs",
-            "Assets/Luckbound/Tests/EditMode/Inventory/ExpeditionInventoryTests.cs",
-            "Assets/Luckbound/Tests/EditMode/ExpeditionSettlementTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/ItemCatalogAndPickupTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/CraftingSessionTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/CustodianBossTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/ExpeditionSettlementFlowTests.cs",
-            "Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
-            "Assets/Luckbound/Plugins/WebGL/LuckboundFileSystemSync.jslib",
-            "Assets/Resources/Luckbound/Data/Skills.json"
-        };
-
+        private string[] _sourceFiles;
+        private static readonly Dictionary<string, SourceSnapshot> SourceSnapshots =
+            new Dictionary<string, SourceSnapshot>(StringComparer.Ordinal);
+        private SourceSnapshot _sourceSnapshot;
         private readonly string _projectRoot;
         private bool _completed;
 
@@ -204,8 +39,13 @@ namespace Luckbound.Tests.PlayMode
                 taskId = taskId,
                 scenarioId = scenarioId,
                 seed = seed,
-                sourceCommit = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? string.Empty,
+                sourceCommit = Environment.GetEnvironmentVariable("GITHUB_SHA") ??
+                    Environment.GetEnvironmentVariable("LUCKBOUND_SOURCE_COMMIT") ?? string.Empty,
                 sourceHash = ComputeSourceHash(),
+                sourceHashVersion = 2,
+                sourceFileCount = _sourceFiles.Length,
+                sourceSnapshotCapturedUtc = _sourceSnapshot.CapturedUtc,
+                sourceWorkingTree = Environment.GetEnvironmentVariable("LUCKBOUND_SOURCE_STATE") ?? "unspecified",
                 unityVersion = Application.unityVersion,
                 platform = Application.platform.ToString(),
                 graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
@@ -216,7 +56,7 @@ namespace Luckbound.Tests.PlayMode
                 events = new List<string>(),
                 assertions = new List<ScenarioAssertionRecord>(),
                 errors = new List<string>(),
-                artifacts = new List<string>()
+                artifacts = new List<string> { "source-manifest.sha256" }
             };
 
             AppendLog("START", "scenario=" + scenarioId + " task=" + taskId + " seed=" + seed);
@@ -324,7 +164,32 @@ namespace Luckbound.Tests.PlayMode
 
         private string ComputeSourceHash()
         {
-            string material = string.Join("\n", SourceFiles.Select(path =>
+            // The coordinator freezes the checkout during this Editor execution; the runner verifies
+            // the manifest again when tests end. Reuse that snapshot across scenarios in this domain.
+            lock (SourceSnapshots)
+            {
+                if (!SourceSnapshots.TryGetValue(_projectRoot, out _sourceSnapshot))
+                {
+                    _sourceSnapshot = CaptureSourceSnapshot();
+                    SourceSnapshots.Add(_projectRoot, _sourceSnapshot);
+                }
+            }
+            _sourceFiles = _sourceSnapshot.Files;
+            File.WriteAllText(Path.Combine(EvidenceDirectory, "source-manifest.sha256"),
+                _sourceSnapshot.Manifest, new UTF8Encoding(false));
+            return _sourceSnapshot.Hash;
+        }
+
+        private SourceSnapshot CaptureSourceSnapshot()
+        {
+            string capturedUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
+            string[] files = new[] { "Assets/Luckbound", "Assets/Resources/Luckbound", "Assets/Settings", "Packages", "ProjectSettings" }
+                .SelectMany(root => Directory.Exists(Path.Combine(_projectRoot, root))
+                    ? Directory.EnumerateFiles(Path.Combine(_projectRoot, root), "*", SearchOption.AllDirectories)
+                    : Enumerable.Empty<string>())
+                .Select(path => path.Substring(_projectRoot.Length + 1).Replace('\\', '/'))
+                .OrderBy(path => path, StringComparer.Ordinal).ToArray();
+            string material = string.Join("\n", files.Select(path =>
             {
                 string absolutePath = Path.Combine(_projectRoot, path.Replace('/', Path.DirectorySeparatorChar));
                 if (!File.Exists(absolutePath))
@@ -342,9 +207,25 @@ namespace Luckbound.Tests.PlayMode
 
             using (SHA256 sha256 = SHA256.Create())
             {
-                return string.Concat(sha256.ComputeHash(Encoding.UTF8.GetBytes(material))
+                string hash = string.Concat(sha256.ComputeHash(Encoding.UTF8.GetBytes(material))
                     .Select(value => value.ToString("x2", CultureInfo.InvariantCulture)));
+                return new SourceSnapshot(files, material, hash, capturedUtc);
             }
+        }
+
+        private sealed class SourceSnapshot
+        {
+            public SourceSnapshot(string[] files, string manifest, string hash, string capturedUtc)
+            {
+                Files = files;
+                Manifest = manifest;
+                Hash = hash;
+                CapturedUtc = capturedUtc;
+            }
+            public string[] Files { get; }
+            public string Manifest { get; }
+            public string Hash { get; }
+            public string CapturedUtc { get; }
         }
 
         private string ToProjectRelativePath(string absolutePath)
@@ -378,6 +259,10 @@ namespace Luckbound.Tests.PlayMode
         public int seed;
         public string sourceCommit;
         public string sourceHash;
+        public int sourceHashVersion;
+        public int sourceFileCount;
+        public string sourceSnapshotCapturedUtc;
+        public string sourceWorkingTree;
         public string unityVersion;
         public string platform;
         public string graphicsDevice;

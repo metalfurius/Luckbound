@@ -23,6 +23,9 @@ namespace Luckbound.Core.Expeditions
 
         private readonly ReadOnlyCollection<string> _skillIds;
         private readonly ReadOnlyCollection<ItemInstanceId> _startingEquipmentInstanceIds;
+        private readonly int? _healthUpgradeLevel;
+        private readonly int? _energyUpgradeLevel;
+        private readonly int? _additionalPotionUpgradeLevel;
 
         public ExpeditionRunConfiguration(
             RunId runId,
@@ -35,7 +38,8 @@ namespace Luckbound.Core.Expeditions
             IEnumerable<ItemInstanceId> startingEquipmentInstanceIds = null,
             int healthUpgradeLevel = 0,
             int energyUpgradeLevel = 0,
-            int additionalPotionUpgradeLevel = 0)
+            int additionalPotionUpgradeLevel = 0,
+            bool hasKnownStartingLoadout = true)
         {
             if (!runId.IsValid) throw new ArgumentException("A fresh expedition requires a valid RunId.", nameof(runId));
             if (classId != "class.bellator" && classId != "class.venator" && classId != "class.magus")
@@ -54,12 +58,15 @@ namespace Luckbound.Core.Expeditions
             if (inventory == null) throw new ArgumentNullException(nameof(inventory));
             if (!string.Equals(inventory.ClassId, classId, StringComparison.Ordinal))
                 throw new ArgumentException("The expedition inventory must belong to the selected class.", nameof(inventory));
-            if (healthUpgradeLevel < 0 || healthUpgradeLevel > PermanentUpgradeSnapshot.MaximumHealthUpgradeLevel)
-                throw new ArgumentOutOfRangeException(nameof(healthUpgradeLevel));
-            if (energyUpgradeLevel < 0 || energyUpgradeLevel > PermanentUpgradeSnapshot.MaximumEnergyUpgradeLevel)
-                throw new ArgumentOutOfRangeException(nameof(energyUpgradeLevel));
-            if (additionalPotionUpgradeLevel < 0 || additionalPotionUpgradeLevel > PermanentUpgradeSnapshot.MaximumPotionUpgradeLevel)
-                throw new ArgumentOutOfRangeException(nameof(additionalPotionUpgradeLevel));
+            if (hasKnownStartingLoadout)
+            {
+                if (healthUpgradeLevel < 0 || healthUpgradeLevel > PermanentUpgradeSnapshot.MaximumHealthUpgradeLevel)
+                    throw new ArgumentOutOfRangeException(nameof(healthUpgradeLevel));
+                if (energyUpgradeLevel < 0 || energyUpgradeLevel > PermanentUpgradeSnapshot.MaximumEnergyUpgradeLevel)
+                    throw new ArgumentOutOfRangeException(nameof(energyUpgradeLevel));
+                if (additionalPotionUpgradeLevel < 0 || additionalPotionUpgradeLevel > PermanentUpgradeSnapshot.MaximumPotionUpgradeLevel)
+                    throw new ArgumentOutOfRangeException(nameof(additionalPotionUpgradeLevel));
+            }
 
             RunId = runId;
             ClassId = classId;
@@ -68,9 +75,10 @@ namespace Luckbound.Core.Expeditions
             Seed = route.Seed;
             Route = route;
             Inventory = inventory;
-            HealthUpgradeLevel = healthUpgradeLevel;
-            EnergyUpgradeLevel = energyUpgradeLevel;
-            AdditionalPotionUpgradeLevel = additionalPotionUpgradeLevel;
+            HasKnownStartingLoadout = hasKnownStartingLoadout;
+            _healthUpgradeLevel = hasKnownStartingLoadout ? healthUpgradeLevel : (int?)null;
+            _energyUpgradeLevel = hasKnownStartingLoadout ? energyUpgradeLevel : (int?)null;
+            _additionalPotionUpgradeLevel = hasKnownStartingLoadout ? additionalPotionUpgradeLevel : (int?)null;
 
             ItemInstanceId[] startingEquipment = startingEquipmentInstanceIds == null
                 ? Array.Empty<ItemInstanceId>()
@@ -88,9 +96,10 @@ namespace Luckbound.Core.Expeditions
         public uint Seed { get; }
         public ExpeditionRoutePlan Route { get; }
         public ExpeditionInventory Inventory { get; }
-        public int HealthUpgradeLevel { get; }
-        public int EnergyUpgradeLevel { get; }
-        public int AdditionalPotionUpgradeLevel { get; }
+        public bool HasKnownStartingLoadout { get; }
+        public int HealthUpgradeLevel => _healthUpgradeLevel ?? throw UnknownStartingLoadout(nameof(HealthUpgradeLevel));
+        public int EnergyUpgradeLevel => _energyUpgradeLevel ?? throw UnknownStartingLoadout(nameof(EnergyUpgradeLevel));
+        public int AdditionalPotionUpgradeLevel => _additionalPotionUpgradeLevel ?? throw UnknownStartingLoadout(nameof(AdditionalPotionUpgradeLevel));
         public IReadOnlyList<ItemInstanceId> StartingEquipmentInstanceIds => _startingEquipmentInstanceIds;
         public int StartingHealth => PermanentUpgradeRules.ApplyFivePercentPerLevel(InitialHealth, HealthUpgradeLevel);
         public int StartingEnergy => PermanentUpgradeRules.ApplyFivePercentPerLevel(InitialEnergy, EnergyUpgradeLevel);
@@ -107,8 +116,18 @@ namespace Luckbound.Core.Expeditions
 
         public ExpeditionRunConfiguration WithInventory(ExpeditionInventory inventory)
         {
+            if (!HasKnownStartingLoadout)
+            {
+                return new ExpeditionRunConfiguration(RunId, ClassId, RaceId, _skillIds, Seed, Route, inventory,
+                    _startingEquipmentInstanceIds, hasKnownStartingLoadout: false);
+            }
             return new ExpeditionRunConfiguration(RunId, ClassId, RaceId, _skillIds, Seed, Route, inventory,
                 _startingEquipmentInstanceIds, HealthUpgradeLevel, EnergyUpgradeLevel, AdditionalPotionUpgradeLevel);
+        }
+
+        private static InvalidOperationException UnknownStartingLoadout(string propertyName)
+        {
+            return new InvalidOperationException(propertyName + " is unavailable because this historical expedition did not save its frozen starting-upgrade snapshot.");
         }
     }
 }

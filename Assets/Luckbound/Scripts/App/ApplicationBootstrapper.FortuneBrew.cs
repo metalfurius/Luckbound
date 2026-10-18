@@ -123,10 +123,7 @@ namespace Luckbound.App
                 ExpeditionSaveData candidateSave = _activeExpedition.Clone();
                 candidateSave.fortuneOfferBookSnapshot = updatedBook;
                 candidateSave.inventorySnapshotJson = JsonUtility.ToJson(candidateInventory.CreateSnapshot(), false);
-                InventoryItemStack remainingQuickConsumable = candidateInventory.QuickConsumable;
-                candidateSave.healthPotionCharges = remainingQuickConsumable == null
-                    ? 0
-                    : remainingQuickConsumable.Quantity;
+                candidateSave.healthPotionCharges = ExpeditionSaveMapper.GetHealthPotionCharges(candidateInventory);
                 // D09 keeps the in-room entry checkpoint immutable. An interrupted-room resume
                 // intentionally restores that checkpoint; completed-room saves retain this mutation.
                 ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);

@@ -1,5 +1,7 @@
 # Luckbound — Checkpoint del 18 de octubre de 2026
 
+**Snapshot histórico:** las correcciones posteriores y su aceptación están en [PROGRESS.md](PROGRESS.md#preparación-del-relevo-a-luna-max--18-de-octubre-de-2026). Para continuar, usar [LUNA_HANDOFF.md](LUNA_HANDOFF.md); los hallazgos de este documento describen el estado anterior a esa preparación.
+
 **Base de código revisada:** rama codex/luckbound-reboot, commit 9532a63fb4adae9dc80c4064312eece37a45a7c6. Último cambio de código: 63c70bc.
 
 **Producto de referencia:** [plan 3.22](DEVELOPMENT_PLAN.md).

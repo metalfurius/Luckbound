@@ -13,7 +13,7 @@ namespace Luckbound.Core.Saves
     public static class SaveFormat
     {
         public const int SchemaVersion = 1;
-        public const int ContentVersion = 4;
+        public const int ContentVersion = 5;
         public const int Generation = 1;
     }
 
@@ -139,6 +139,8 @@ namespace Luckbound.Core.Saves
         public int maximumEnergy = 50;
         public int currentEnergy = 50;
         public int healthPotionCharges = 2;
+        public ExpeditionPermanentUpgradeSnapshotSaveData frozenPermanentUpgrades;
+        public bool hasFrozenPermanentUpgrades;
         public int accumulatedRenown;
         public string[] pactIds = Array.Empty<string>();
         public FortuneOfferBookSnapshot fortuneOfferBookSnapshot;
@@ -180,6 +182,11 @@ namespace Luckbound.Core.Saves
             maximumEnergy = maximumEnergy,
             currentEnergy = currentEnergy,
             healthPotionCharges = healthPotionCharges,
+            frozenPermanentUpgrades = frozenPermanentUpgrades == null ||
+                (!hasFrozenPermanentUpgrades && !HasFrozenUpgradeValues(frozenPermanentUpgrades))
+                ? null
+                : frozenPermanentUpgrades.Clone(),
+            hasFrozenPermanentUpgrades = hasFrozenPermanentUpgrades,
             accumulatedRenown = accumulatedRenown,
             pactIds = Copy(pactIds),
             fortuneOfferBookSnapshot = Clone(fortuneOfferBookSnapshot),
@@ -188,6 +195,10 @@ namespace Luckbound.Core.Saves
         };
 
         private static string[] Copy(string[] values) => values == null ? null : (string[])values.Clone();
+
+        private static bool HasFrozenUpgradeValues(ExpeditionPermanentUpgradeSnapshotSaveData snapshot) =>
+            snapshot != null && (snapshot.healthUpgradeLevel != 0 || snapshot.energyUpgradeLevel != 0 ||
+                snapshot.additionalPotionUpgradeLevel != 0);
 
         private static FortuneOfferBookSnapshot Clone(FortuneOfferBookSnapshot source)
         {
@@ -236,6 +247,21 @@ namespace Luckbound.Core.Saves
                 }).ToArray()
             };
         }
+    }
+
+    [Serializable]
+    public sealed class ExpeditionPermanentUpgradeSnapshotSaveData
+    {
+        public int healthUpgradeLevel;
+        public int energyUpgradeLevel;
+        public int additionalPotionUpgradeLevel;
+
+        public ExpeditionPermanentUpgradeSnapshotSaveData Clone() => new ExpeditionPermanentUpgradeSnapshotSaveData
+        {
+            healthUpgradeLevel = healthUpgradeLevel,
+            energyUpgradeLevel = energyUpgradeLevel,
+            additionalPotionUpgradeLevel = additionalPotionUpgradeLevel
+        };
     }
 
     [Serializable]
@@ -505,13 +531,33 @@ namespace Luckbound.Core.Saves
                 expedition.generationVersion, expedition.raceId, "Active expedition", errors);
             if (expedition.maximumHealth < 1 || expedition.currentHealth < 0 || expedition.currentHealth > expedition.maximumHealth)
                 errors.Add("Active expedition health must be within its positive maximum.");
-            if (expedition.maximumEnergy < 0 || expedition.currentEnergy < 0 || expedition.currentEnergy > expedition.maximumEnergy)
-                errors.Add("Active expedition energy must be within its maximum.");
+            if (expedition.maximumEnergy < 1 || expedition.currentEnergy < 0 || expedition.currentEnergy > expedition.maximumEnergy)
+                errors.Add("Active expedition energy must be within its positive maximum.");
             if (expedition.healthPotionCharges < 0) errors.Add("Active expedition potion charges cannot be negative.");
+            if (expedition.hasFrozenPermanentUpgrades && expedition.frozenPermanentUpgrades == null)
+                errors.Add("Frozen permanent-upgrade snapshot is marked present but missing.");
+            if (expedition.hasFrozenPermanentUpgrades && expedition.frozenPermanentUpgrades != null)
+            {
+                if (expedition.frozenPermanentUpgrades.healthUpgradeLevel < 0 ||
+                    expedition.frozenPermanentUpgrades.healthUpgradeLevel > PermanentUpgradeSnapshot.MaximumHealthUpgradeLevel)
+                    errors.Add("Frozen health upgrade level must be 0–2.");
+                if (expedition.frozenPermanentUpgrades.energyUpgradeLevel < 0 ||
+                    expedition.frozenPermanentUpgrades.energyUpgradeLevel > PermanentUpgradeSnapshot.MaximumEnergyUpgradeLevel)
+                    errors.Add("Frozen energy upgrade level must be 0–2.");
+                if (expedition.frozenPermanentUpgrades.additionalPotionUpgradeLevel < 0 ||
+                    expedition.frozenPermanentUpgrades.additionalPotionUpgradeLevel > PermanentUpgradeSnapshot.MaximumPotionUpgradeLevel)
+                    errors.Add("Frozen additional potion upgrade level must be 0–1.");
+            }
+            if (!expedition.hasFrozenPermanentUpgrades && HasFrozenUpgradeValues(expedition.frozenPermanentUpgrades))
+                errors.Add("Frozen permanent-upgrade snapshot contains values but is marked absent.");
             ValidateIds(expedition.pactIds, "active expedition pact IDs", errors);
             ValidateIds(expedition.collectedItemIds, "collected item IDs", errors);
             ValidateIds(expedition.claimedRewardIds, "claimed reward IDs", errors);
         }
+
+        private static bool HasFrozenUpgradeValues(ExpeditionPermanentUpgradeSnapshotSaveData snapshot) =>
+            snapshot != null && (snapshot.healthUpgradeLevel != 0 || snapshot.energyUpgradeLevel != 0 ||
+                snapshot.additionalPotionUpgradeLevel != 0);
 
         private static void ValidateFortuneBook(FortuneOfferBookSnapshot snapshot, uint seed, int generationVersion,
             string raceId, string label, List<string> errors)

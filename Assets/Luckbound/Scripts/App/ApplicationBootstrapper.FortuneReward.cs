@@ -108,8 +108,7 @@ namespace Luckbound.App
                 ExpeditionSaveData candidateSave = _activeExpedition.Clone();
                 candidateSave.fortuneOfferBookSnapshot = updatedBook;
                 candidateSave.inventorySnapshotJson = updatedInventory;
-                InventoryItemStack quickConsumable = candidateInventory.QuickConsumable;
-                candidateSave.healthPotionCharges = quickConsumable == null ? 0 : quickConsumable.Quantity;
+                candidateSave.healthPotionCharges = ExpeditionSaveMapper.GetHealthPotionCharges(candidateInventory);
                 ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);
 
                 SaveWriteResult save = await SaveExpeditionCandidateUnderGateAsync(

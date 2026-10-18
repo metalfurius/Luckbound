@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Luckbound.Presentation.Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 
 namespace Luckbound.App
@@ -22,7 +22,7 @@ namespace Luckbound.App
 
         private RuntimeAudioDirector _audioDirector;
         private RuntimeAmbienceDirector _ambienceDirector;
-        private IDisposable _inputSubscription;
+        private bool _listeningForInput;
         private readonly List<PendingEffectRequest> _pendingEffectRequests =
             new List<PendingEffectRequest>(MaximumPendingEffectRequests);
         private string _requestedMusicTrackId;
@@ -48,15 +48,17 @@ namespace Luckbound.App
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
             if (!_userGestureObserved)
-                _inputSubscription = InputSystem.onAnyButtonPress.CallOnce(OnAnyButtonPressed);
+            {
+                InputSystem.onEvent += OnInputEvent;
+                _listeningForInput = true;
+            }
             SetSceneContext(SceneManager.GetActiveScene().name);
         }
 
         private void OnDisable()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
-            _inputSubscription?.Dispose();
-            _inputSubscription = null;
+            StopListeningForInput();
             _pendingEffectRequests.Clear();
         }
 
@@ -98,8 +100,7 @@ namespace Luckbound.App
         {
             if (_userGestureObserved) return;
             _userGestureObserved = true;
-            _inputSubscription?.Dispose();
-            _inputSubscription = null;
+            StopListeningForInput();
             ApplyRequestedMusic();
             ApplyRequestedAmbience();
             FlushPendingEffectRequests();
@@ -153,9 +154,18 @@ namespace Luckbound.App
             }
         }
 
-        private void OnAnyButtonPressed(InputControl _)
+        private void OnInputEvent(InputEventPtr eventPtr, InputDevice device)
         {
-            NotifyUserGesture();
+            if ((eventPtr.IsA<StateEvent>() || eventPtr.IsA<DeltaStateEvent>()) &&
+                eventPtr.GetFirstButtonPressOrNull() != null)
+                NotifyUserGesture();
+        }
+
+        private void StopListeningForInput()
+        {
+            if (!_listeningForInput) return;
+            InputSystem.onEvent -= OnInputEvent;
+            _listeningForInput = false;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode _)

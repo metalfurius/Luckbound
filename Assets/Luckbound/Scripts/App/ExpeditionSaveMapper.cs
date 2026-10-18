@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Luckbound.Content;
+using Luckbound.Core.Armor;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Fortune;
 using Luckbound.Core.Identifiers;
@@ -16,7 +17,10 @@ namespace Luckbound.App
         public static ExpeditionSaveData Create(ExpeditionRunConfiguration run)
         {
             if (run == null) throw new ArgumentNullException(nameof(run));
+            if (!run.HasKnownStartingLoadout)
+                throw new InvalidOperationException("A new expedition save requires its known starting-upgrade snapshot.");
             string startNodeId = run.Route.MandatoryNodeIds[0];
+            ArmorResolution equippedArmor = ExpeditionPlayerRunBinder.ResolveEquippedArmor(run, run.Inventory.Catalog);
             var save = new ExpeditionSaveData
             {
                 runId = run.RunId.ToString(),
@@ -33,11 +37,18 @@ namespace Luckbound.App
                 completedRoomIds = Array.Empty<string>(),
                 completedRoomResults = Array.Empty<ExpeditionRoomCompletionSaveData>(),
                 inventorySnapshotJson = JsonUtility.ToJson(run.Inventory.CreateSnapshot()),
-                maximumHealth = run.StartingHealth,
-                currentHealth = run.StartingHealth,
-                maximumEnergy = run.StartingEnergy,
-                currentEnergy = run.StartingEnergy,
-                healthPotionCharges = run.Inventory.QuickConsumable == null ? 0 : run.Inventory.QuickConsumable.Quantity,
+                maximumHealth = equippedArmor.MaximumHealth,
+                currentHealth = equippedArmor.HealthAfterMaximumClamp,
+                maximumEnergy = equippedArmor.MaximumEnergy,
+                currentEnergy = equippedArmor.EnergyAfterMaximumClamp,
+                healthPotionCharges = GetHealthPotionCharges(run.Inventory),
+                frozenPermanentUpgrades = new ExpeditionPermanentUpgradeSnapshotSaveData
+                {
+                    healthUpgradeLevel = run.HealthUpgradeLevel,
+                    energyUpgradeLevel = run.EnergyUpgradeLevel,
+                    additionalPotionUpgradeLevel = run.AdditionalPotionUpgradeLevel
+                },
+                hasFrozenPermanentUpgrades = true,
                 accumulatedRenown = 0,
                 pactIds = Array.Empty<string>(),
                 fortuneOfferBookSnapshot = new FortuneOfferBook(
@@ -47,6 +58,14 @@ namespace Luckbound.App
             };
             save.roomEntryCheckpointJson = SerializeCheckpoint(CreateCheckpoint(save));
             return save;
+        }
+
+        internal static int GetHealthPotionCharges(ExpeditionInventory inventory)
+        {
+            if (inventory == null) throw new ArgumentNullException(nameof(inventory));
+            InventoryItemStack quick = inventory.QuickConsumable;
+            return quick != null && string.Equals(quick.ItemId, "consumable.health_potion", StringComparison.Ordinal)
+                ? quick.Quantity : 0;
         }
 
         public static ExpeditionRunConfiguration Restore(ExpeditionSaveData persisted, out ExpeditionSaveData resumedState)
@@ -66,9 +85,18 @@ namespace Luckbound.App
             ExpeditionInventory inventory = ExpeditionInventory.Restore(catalog, inventorySnapshot);
             ItemInstanceId[] startingEquipment = (resumedState.startingEquipmentInstanceIds ?? Array.Empty<string>())
                 .Select(ItemInstanceId.Parse).ToArray();
+            ExpeditionPermanentUpgradeSnapshotSaveData upgrades = resumedState.hasFrozenPermanentUpgrades
+                ? resumedState.frozenPermanentUpgrades
+                : null;
+            if (resumedState.hasFrozenPermanentUpgrades && upgrades == null)
+                throw new FormatException("The expedition marks its frozen upgrade snapshot as present, but the snapshot is missing.");
             return new ExpeditionRunConfiguration(
                 RunId.Parse(resumedState.runId), resumedState.classId, resumedState.raceId,
-                resumedState.selectedSkillIds, resumedState.seed, route, inventory, startingEquipment);
+                resumedState.selectedSkillIds, resumedState.seed, route, inventory, startingEquipment,
+                upgrades == null ? 0 : upgrades.healthUpgradeLevel,
+                upgrades == null ? 0 : upgrades.energyUpgradeLevel,
+                upgrades == null ? 0 : upgrades.additionalPotionUpgradeLevel,
+                hasKnownStartingLoadout: upgrades != null);
         }
 
         public static ExpeditionSaveData RestoreRoomEntry(ExpeditionSaveData persisted)

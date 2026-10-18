@@ -1,3 +1,5 @@
+using Luckbound.Core.Inventory;
+
 namespace Luckbound.Core.Armor
 {
     /// <summary>Resolved armor stats and resource caps for one equipment change.</summary>
@@ -6,6 +8,8 @@ namespace Luckbound.Core.Armor
         internal ArmorResolution(
             ArmorProfile armor,
             int upgradeLevel,
+            ItemRarity rarity,
+            int defense,
             int maximumHealth,
             int maximumEnergy,
             int healthAfterMaximumClamp,
@@ -13,7 +17,8 @@ namespace Luckbound.Core.Armor
         {
             Armor = armor;
             UpgradeLevel = upgradeLevel;
-            Defense = armor.GetDefenseAtUpgradeLevel(upgradeLevel);
+            Rarity = rarity;
+            Defense = defense;
             MaximumHealth = maximumHealth;
             MaximumEnergy = maximumEnergy;
             HealthAfterMaximumClamp = healthAfterMaximumClamp;
@@ -22,6 +27,7 @@ namespace Luckbound.Core.Armor
 
         public ArmorProfile Armor { get; }
         public int UpgradeLevel { get; }
+        public ItemRarity Rarity { get; }
         public int Defense { get; }
         public int MaximumHealth { get; }
         public int MaximumEnergy { get; }

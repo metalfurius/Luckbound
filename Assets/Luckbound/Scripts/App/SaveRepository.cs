@@ -407,7 +407,8 @@ namespace Luckbound.App
                 if (header.contentVersion == 1)
                 {
                     LegacyProfileSaveEnvelopeV1 legacy = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV1>(json);
-                    if (legacy == null || !string.Equals(legacy.checksum, ComputeLegacyProfileChecksum(legacy), StringComparison.Ordinal))
+                    if (legacy == null || !NormalizeLegacyProfileEnvelope(legacy) ||
+                        !string.Equals(legacy.checksum, ComputeLegacyProfileChecksum(legacy), StringComparison.Ordinal))
                         return DecodeStatus.Corrupted;
                     envelope = MigrateLegacyProfile(legacy.schemaVersion, legacy.generation, legacy.sequence,
                         legacy.savedAtUtc, legacy.profile, legacy.hasActiveExpedition, legacy.activeExpedition,
@@ -416,23 +417,42 @@ namespace Luckbound.App
                 else if (header.contentVersion == 2)
                 {
                     LegacyProfileSaveEnvelopeV2 legacy = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV2>(json);
-                    if (legacy == null || !string.Equals(legacy.checksum, ComputeLegacyProfileChecksum(legacy), StringComparison.Ordinal))
+                    if (legacy == null || !NormalizeLegacyProfileEnvelope(legacy) ||
+                        !string.Equals(legacy.checksum, ComputeLegacyProfileChecksum(legacy), StringComparison.Ordinal))
                         return DecodeStatus.Corrupted;
                     envelope = MigrateLegacyProfile(legacy.schemaVersion, legacy.generation, legacy.sequence,
                         legacy.savedAtUtc, ToLegacyProfileV1(legacy.profile), legacy.hasActiveExpedition,
                         legacy.activeExpedition, legacy.profile == null ? null : legacy.profile.progressionPurchaseTransactions);
+                }
+                else if (header.contentVersion < SaveFormat.ContentVersion)
+                {
+                    LegacyProfileSaveEnvelopeV4 legacy = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV4>(json);
+                    bool validLegacyChecksum = legacy != null && NormalizeLegacyProfileEnvelope(legacy) &&
+                        string.Equals(legacy.checksum, ComputeLegacyProfileChecksum(legacy), StringComparison.Ordinal);
+                    if (validLegacyChecksum)
+                    {
+                        envelope = MigrateLegacyCurrentProfile(legacy);
+                    }
+                    else if (header.contentVersion == 4)
+                    {
+                        // Fortune Brew added a nested receipt after ContentVersion 4 had already shipped.
+                        // Accept both historical shapes while checking each checksum against its exact DTO.
+                        LegacyProfileSaveEnvelopeV4Brew legacyBrew = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV4Brew>(json);
+                        if (legacyBrew == null || !NormalizeLegacyProfileEnvelope(legacyBrew) ||
+                            !string.Equals(legacyBrew.checksum, ComputeLegacyProfileChecksum(legacyBrew), StringComparison.Ordinal))
+                            return DecodeStatus.Corrupted;
+                        envelope = MigrateLegacyCurrentProfile(legacyBrew);
+                    }
+                    else
+                    {
+                        return DecodeStatus.Corrupted;
+                    }
                 }
                 else
                 {
                     envelope = JsonUtility.FromJson<ProfileSaveEnvelope>(json);
                     if (envelope == null || !string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal))
                         return DecodeStatus.Corrupted;
-                    if (!envelope.hasActiveExpedition) envelope.activeExpedition = null;
-                    if (envelope.contentVersion < SaveFormat.ContentVersion)
-                    {
-                        envelope.contentVersion = SaveFormat.ContentVersion;
-                        envelope.checksum = ComputeChecksum(envelope);
-                    }
                 }
             }
             catch
@@ -453,7 +473,7 @@ namespace Luckbound.App
             DecodeStatus versionStatus = CheckVersion(header.schemaVersion, header.contentVersion);
             if (versionStatus != DecodeStatus.Valid) return versionStatus;
 
-            if (header.contentVersion < SaveFormat.ContentVersion)
+            if (header.contentVersion <= 3)
             {
                 LegacySettingsSaveEnvelope legacy;
                 try { legacy = JsonUtility.FromJson<LegacySettingsSaveEnvelope>(json); }
@@ -480,6 +500,33 @@ namespace Luckbound.App
                 };
                 envelope.checksum = ComputeChecksum(envelope);
             }
+            else if (header.contentVersion == 4)
+            {
+                LegacySettingsSaveEnvelopeV4 legacy;
+                try { legacy = JsonUtility.FromJson<LegacySettingsSaveEnvelopeV4>(json); }
+                catch { return DecodeStatus.Corrupted; }
+                if (legacy == null || legacy.settings == null ||
+                    !string.Equals(legacy.checksum, ComputeLegacySettingsChecksum(legacy), StringComparison.Ordinal))
+                    return DecodeStatus.Corrupted;
+
+                envelope = new SettingsSaveEnvelope
+                {
+                    schemaVersion = legacy.schemaVersion,
+                    contentVersion = SaveFormat.ContentVersion,
+                    generation = legacy.generation,
+                    sequence = legacy.sequence,
+                    savedAtUtc = legacy.savedAtUtc,
+                    settings = new GameSettingsSaveData
+                    {
+                        languageId = legacy.settings.languageId,
+                        masterVolume = legacy.settings.masterVolume,
+                        musicVolume = legacy.settings.musicVolume,
+                        effectsVolume = legacy.settings.effectsVolume,
+                        ambienceVolume = legacy.settings.ambienceVolume
+                    }
+                };
+                envelope.checksum = ComputeChecksum(envelope);
+            }
             else
             {
                 try { envelope = JsonUtility.FromJson<SettingsSaveEnvelope>(json); }
@@ -498,9 +545,152 @@ namespace Luckbound.App
             return DecodeStatus.Valid;
         }
 
+        private static bool NormalizeLegacyProfileEnvelope(LegacyProfileSaveEnvelopeV1 envelope)
+        {
+            if (envelope.hasActiveExpedition) return envelope.activeExpedition != null;
+            if (HasActiveExpeditionPayload(envelope.activeExpedition)) return false;
+            envelope.activeExpedition = null;
+            return true;
+        }
+
+        private static bool NormalizeLegacyProfileEnvelope(LegacyProfileSaveEnvelopeV2 envelope)
+        {
+            if (envelope.hasActiveExpedition) return envelope.activeExpedition != null;
+            if (HasActiveExpeditionPayload(envelope.activeExpedition)) return false;
+            envelope.activeExpedition = null;
+            return true;
+        }
+
+        private static bool NormalizeLegacyProfileEnvelope(LegacyProfileSaveEnvelopeV4 envelope)
+        {
+            if (envelope.hasActiveExpedition) return envelope.activeExpedition != null;
+            if (HasActiveExpeditionPayload(envelope.activeExpedition)) return false;
+            envelope.activeExpedition = null;
+            return true;
+        }
+
+        private static bool NormalizeLegacyProfileEnvelope(LegacyProfileSaveEnvelopeV4Brew envelope)
+        {
+            if (envelope.hasActiveExpedition) return envelope.activeExpedition != null;
+            if (HasActiveExpeditionPayload(envelope.activeExpedition)) return false;
+            envelope.activeExpedition = null;
+            return true;
+        }
+
+        private static bool HasActiveExpeditionPayload(string runId, uint seed, int generationVersion,
+            int contentVersion, string classId, string raceId, string routeSnapshotJson,
+            string currentNodeId, string roomEntryCheckpointJson, string inventorySnapshotJson)
+        {
+            return !string.IsNullOrWhiteSpace(runId) || seed != 0 || generationVersion != 0 || contentVersion != 0 ||
+                !string.IsNullOrWhiteSpace(classId) || !string.IsNullOrWhiteSpace(raceId) ||
+                !string.IsNullOrWhiteSpace(routeSnapshotJson) || !string.IsNullOrWhiteSpace(currentNodeId) ||
+                !string.IsNullOrWhiteSpace(roomEntryCheckpointJson) || !string.IsNullOrWhiteSpace(inventorySnapshotJson);
+        }
+
+        private static bool HasActiveExpeditionPayload(LegacyExpeditionSaveDataV2 expedition)
+        {
+            if (expedition == null) return false;
+            return HasActiveExpeditionPayload(expedition.runId, expedition.seed, expedition.generationVersion,
+                    expedition.contentVersion, expedition.classId, expedition.raceId, expedition.routeSnapshotJson,
+                    expedition.currentNodeId, expedition.roomEntryCheckpointJson, expedition.inventorySnapshotJson) ||
+                HasEntries(expedition.selectedSkillIds) || HasEntries(expedition.startingEquipmentInstanceIds) ||
+                HasEntries(expedition.visitedNodeIds) || HasEntries(expedition.completedRoomIds) ||
+                HasEntries(expedition.completedRoomResults) || HasEntries(expedition.pactIds) ||
+                HasEntries(expedition.pendingOfferIds) || HasEntries(expedition.offerRerollCounts) ||
+                HasEntries(expedition.collectedItemIds) || HasEntries(expedition.claimedRewardIds);
+        }
+
+        private static bool HasActiveExpeditionPayload(LegacyExpeditionSaveDataV4 expedition)
+        {
+            if (expedition == null) return false;
+            return HasActiveExpeditionPayload(expedition.runId, expedition.seed, expedition.generationVersion,
+                    expedition.contentVersion, expedition.classId, expedition.raceId, expedition.routeSnapshotJson,
+                    expedition.currentNodeId, expedition.roomEntryCheckpointJson, expedition.inventorySnapshotJson) ||
+                HasEntries(expedition.selectedSkillIds) || HasEntries(expedition.startingEquipmentInstanceIds) ||
+                HasEntries(expedition.visitedNodeIds) || HasEntries(expedition.completedRoomIds) ||
+                HasEntries(expedition.completedRoomResults) || HasEntries(expedition.pactIds) ||
+                HasEntries(expedition.collectedItemIds) || HasEntries(expedition.claimedRewardIds) ||
+                HasActiveFortuneSnapshot(expedition.fortuneOfferBookSnapshot);
+        }
+
+        private static bool HasActiveExpeditionPayload(LegacyExpeditionSaveDataV4Brew expedition)
+        {
+            if (expedition == null) return false;
+            return HasActiveExpeditionPayload(expedition.runId, expedition.seed, expedition.generationVersion,
+                    expedition.contentVersion, expedition.classId, expedition.raceId, expedition.routeSnapshotJson,
+                    expedition.currentNodeId, expedition.roomEntryCheckpointJson, expedition.inventorySnapshotJson) ||
+                HasEntries(expedition.selectedSkillIds) || HasEntries(expedition.startingEquipmentInstanceIds) ||
+                HasEntries(expedition.visitedNodeIds) || HasEntries(expedition.completedRoomIds) ||
+                HasEntries(expedition.completedRoomResults) || HasEntries(expedition.pactIds) ||
+                HasEntries(expedition.collectedItemIds) || HasEntries(expedition.claimedRewardIds) ||
+                HasActiveFortuneSnapshot(expedition.fortuneOfferBookSnapshot);
+        }
+
+        private static bool HasActiveFortuneSnapshot(LegacyFortuneOfferBookSnapshotV4 snapshot)
+        {
+            return snapshot != null && (snapshot.snapshotVersion != 0 || snapshot.generationVersion != 0 ||
+                snapshot.seed != 0 || !string.IsNullOrWhiteSpace(snapshot.raceId) || snapshot.charges != 0 ||
+                HasEntries(snapshot.offers) || HasEntries(snapshot.processedGuardianIds) || HasEntries(snapshot.rerollReceipts));
+        }
+
+        private static bool HasActiveFortuneSnapshot(LegacyFortuneOfferBookSnapshotV4Brew snapshot)
+        {
+            return snapshot != null && (snapshot.snapshotVersion != 0 || snapshot.generationVersion != 0 ||
+                snapshot.seed != 0 || !string.IsNullOrWhiteSpace(snapshot.raceId) || snapshot.charges != 0 ||
+                HasEntries(snapshot.offers) || HasEntries(snapshot.processedGuardianIds) || HasEntries(snapshot.rerollReceipts) ||
+                HasEntries(snapshot.fortuneBrewReceipts));
+        }
+
+        private static bool HasEntries(Array values) => values != null && values.Length != 0;
+
+        private static bool HasActiveExpeditionPayload(ExpeditionSaveData expedition)
+        {
+            if (expedition == null) return false;
+            bool hasFortune = expedition.fortuneOfferBookSnapshot != null &&
+                (expedition.fortuneOfferBookSnapshot.snapshotVersion != 0 ||
+                 expedition.fortuneOfferBookSnapshot.generationVersion != 0 || expedition.fortuneOfferBookSnapshot.seed != 0 ||
+                 !string.IsNullOrWhiteSpace(expedition.fortuneOfferBookSnapshot.raceId) ||
+                 expedition.fortuneOfferBookSnapshot.charges != 0 || HasEntries(expedition.fortuneOfferBookSnapshot.offers) ||
+                 HasEntries(expedition.fortuneOfferBookSnapshot.processedGuardianIds) ||
+                 HasEntries(expedition.fortuneOfferBookSnapshot.rerollReceipts) ||
+                 HasEntries(expedition.fortuneOfferBookSnapshot.fortuneBrewReceipts));
+            return HasActiveExpeditionPayload(expedition.runId, expedition.seed, expedition.generationVersion,
+                    expedition.contentVersion, expedition.classId, expedition.raceId, expedition.routeSnapshotJson,
+                    expedition.currentNodeId, expedition.roomEntryCheckpointJson, expedition.inventorySnapshotJson) ||
+                HasEntries(expedition.selectedSkillIds) || HasEntries(expedition.startingEquipmentInstanceIds) ||
+                HasEntries(expedition.visitedNodeIds) || HasEntries(expedition.completedRoomIds) ||
+                HasEntries(expedition.completedRoomResults) || HasEntries(expedition.pactIds) ||
+                HasEntries(expedition.collectedItemIds) || HasEntries(expedition.claimedRewardIds) ||
+                expedition.hasFrozenPermanentUpgrades || HasFrozenUpgradeValues(expedition.frozenPermanentUpgrades) || hasFortune;
+        }
+
+        private static bool HasFrozenUpgradeValues(ExpeditionPermanentUpgradeSnapshotSaveData snapshot) =>
+            snapshot != null && (snapshot.healthUpgradeLevel != 0 || snapshot.energyUpgradeLevel != 0 ||
+                snapshot.additionalPotionUpgradeLevel != 0);
+
+        private static bool NormalizeProfileEnvelope(ProfileSaveEnvelope envelope)
+        {
+            if (envelope.hasActiveExpedition)
+            {
+                if (envelope.activeExpedition == null) return false;
+            }
+            else
+            {
+                if (HasActiveExpeditionPayload(envelope.activeExpedition)) return false;
+                envelope.activeExpedition = null;
+            }
+
+            if (envelope.activeExpedition != null && !envelope.activeExpedition.hasFrozenPermanentUpgrades)
+            {
+                if (HasFrozenUpgradeValues(envelope.activeExpedition.frozenPermanentUpgrades)) return false;
+                envelope.activeExpedition.frozenPermanentUpgrades = null;
+            }
+            return true;
+        }
+
         private static bool ValidateProfileEnvelope(ProfileSaveEnvelope envelope)
         {
-            if (envelope == null || envelope.hasActiveExpedition != (envelope.activeExpedition != null)) return false;
+            if (envelope == null || !NormalizeProfileEnvelope(envelope)) return false;
             if (SaveDataValidation.Validate(envelope).Count != 0) return false;
             if (envelope.activeExpedition == null) return true;
             try
@@ -546,6 +736,148 @@ namespace Luckbound.App
             };
             migrated.checksum = ComputeChecksum(migrated);
             return migrated;
+        }
+
+        private static ProfileSaveEnvelope MigrateLegacyCurrentProfile(LegacyProfileSaveEnvelopeV4 legacy)
+        {
+            var migrated = new ProfileSaveEnvelope
+            {
+                schemaVersion = legacy.schemaVersion,
+                contentVersion = SaveFormat.ContentVersion,
+                generation = legacy.generation,
+                sequence = legacy.sequence,
+                savedAtUtc = legacy.savedAtUtc,
+                checksum = string.Empty,
+                profile = legacy.profile,
+                hasActiveExpedition = legacy.hasActiveExpedition,
+                activeExpedition = legacy.activeExpedition == null
+                    ? null
+                    : MigrateLegacyCurrentExpedition(legacy.activeExpedition)
+            };
+            migrated.checksum = ComputeChecksum(migrated);
+            return migrated;
+        }
+
+        private static ProfileSaveEnvelope MigrateLegacyCurrentProfile(LegacyProfileSaveEnvelopeV4Brew legacy)
+        {
+            var migrated = new ProfileSaveEnvelope
+            {
+                schemaVersion = legacy.schemaVersion,
+                contentVersion = SaveFormat.ContentVersion,
+                generation = legacy.generation,
+                sequence = legacy.sequence,
+                savedAtUtc = legacy.savedAtUtc,
+                checksum = string.Empty,
+                profile = legacy.profile,
+                hasActiveExpedition = legacy.hasActiveExpedition,
+                activeExpedition = legacy.activeExpedition == null
+                    ? null
+                    : MigrateLegacyCurrentExpedition(legacy.activeExpedition)
+            };
+            migrated.checksum = ComputeChecksum(migrated);
+            return migrated;
+        }
+
+        private static ExpeditionSaveData MigrateLegacyCurrentExpedition(LegacyExpeditionSaveDataV4 legacy)
+        {
+            return new ExpeditionSaveData
+            {
+                runId = legacy.runId,
+                seed = legacy.seed,
+                generationVersion = legacy.generationVersion,
+                contentVersion = legacy.contentVersion,
+                classId = legacy.classId,
+                raceId = legacy.raceId,
+                selectedSkillIds = Copy(legacy.selectedSkillIds),
+                startingEquipmentInstanceIds = Copy(legacy.startingEquipmentInstanceIds),
+                routeSnapshotJson = legacy.routeSnapshotJson,
+                currentNodeId = legacy.currentNodeId,
+                visitedNodeIds = Copy(legacy.visitedNodeIds),
+                completedRoomIds = Copy(legacy.completedRoomIds),
+                completedRoomResults = legacy.completedRoomResults == null ? null : legacy.completedRoomResults
+                    .Select(result => result == null ? null : result.Clone()).ToArray(),
+                roomEntryCheckpointJson = legacy.roomEntryCheckpointJson,
+                inventorySnapshotJson = legacy.inventorySnapshotJson,
+                maximumHealth = legacy.maximumHealth,
+                currentHealth = legacy.currentHealth,
+                maximumEnergy = legacy.maximumEnergy,
+                currentEnergy = legacy.currentEnergy,
+                healthPotionCharges = legacy.healthPotionCharges,
+                frozenPermanentUpgrades = null,
+                accumulatedRenown = legacy.accumulatedRenown,
+                pactIds = Copy(legacy.pactIds),
+                fortuneOfferBookSnapshot = MigrateLegacyFortuneBook(legacy.fortuneOfferBookSnapshot),
+                collectedItemIds = Copy(legacy.collectedItemIds),
+                claimedRewardIds = Copy(legacy.claimedRewardIds)
+            };
+        }
+
+        private static ExpeditionSaveData MigrateLegacyCurrentExpedition(LegacyExpeditionSaveDataV4Brew legacy)
+        {
+            return new ExpeditionSaveData
+            {
+                runId = legacy.runId,
+                seed = legacy.seed,
+                generationVersion = legacy.generationVersion,
+                contentVersion = legacy.contentVersion,
+                classId = legacy.classId,
+                raceId = legacy.raceId,
+                selectedSkillIds = Copy(legacy.selectedSkillIds),
+                startingEquipmentInstanceIds = Copy(legacy.startingEquipmentInstanceIds),
+                routeSnapshotJson = legacy.routeSnapshotJson,
+                currentNodeId = legacy.currentNodeId,
+                visitedNodeIds = Copy(legacy.visitedNodeIds),
+                completedRoomIds = Copy(legacy.completedRoomIds),
+                completedRoomResults = legacy.completedRoomResults == null ? null : legacy.completedRoomResults
+                    .Select(result => result == null ? null : result.Clone()).ToArray(),
+                roomEntryCheckpointJson = legacy.roomEntryCheckpointJson,
+                inventorySnapshotJson = legacy.inventorySnapshotJson,
+                maximumHealth = legacy.maximumHealth,
+                currentHealth = legacy.currentHealth,
+                maximumEnergy = legacy.maximumEnergy,
+                currentEnergy = legacy.currentEnergy,
+                healthPotionCharges = legacy.healthPotionCharges,
+                frozenPermanentUpgrades = null,
+                accumulatedRenown = legacy.accumulatedRenown,
+                pactIds = Copy(legacy.pactIds),
+                fortuneOfferBookSnapshot = MigrateLegacyFortuneBook(legacy.fortuneOfferBookSnapshot),
+                collectedItemIds = Copy(legacy.collectedItemIds),
+                claimedRewardIds = Copy(legacy.claimedRewardIds)
+            };
+        }
+
+        private static FortuneOfferBookSnapshot MigrateLegacyFortuneBook(LegacyFortuneOfferBookSnapshotV4 legacy)
+        {
+            if (legacy == null) return null;
+            return new FortuneOfferBookSnapshot
+            {
+                snapshotVersion = legacy.snapshotVersion,
+                generationVersion = legacy.generationVersion,
+                seed = legacy.seed,
+                raceId = legacy.raceId,
+                charges = legacy.charges,
+                offers = legacy.offers,
+                processedGuardianIds = Copy(legacy.processedGuardianIds),
+                rerollReceipts = legacy.rerollReceipts,
+                fortuneBrewReceipts = Array.Empty<FortuneBrewReceiptSnapshot>()
+            };
+        }
+
+        private static FortuneOfferBookSnapshot MigrateLegacyFortuneBook(LegacyFortuneOfferBookSnapshotV4Brew legacy)
+        {
+            if (legacy == null) return null;
+            return new FortuneOfferBookSnapshot
+            {
+                snapshotVersion = legacy.snapshotVersion,
+                generationVersion = legacy.generationVersion,
+                seed = legacy.seed,
+                raceId = legacy.raceId,
+                charges = legacy.charges,
+                offers = legacy.offers,
+                processedGuardianIds = Copy(legacy.processedGuardianIds),
+                rerollReceipts = legacy.rerollReceipts,
+                fortuneBrewReceipts = legacy.fortuneBrewReceipts
+            };
         }
 
         private static LegacyProfileSaveDataV1 ToLegacyProfileV1(LegacyProfileSaveDataV2 source)
@@ -662,8 +994,23 @@ namespace Luckbound.App
             return Hash(JsonUtility.ToJson(source, false));
         }
 
+        private static string ComputeLegacyProfileChecksum(LegacyProfileSaveEnvelopeV4 source)
+        {
+            source.checksum = string.Empty;
+            return Hash(JsonUtility.ToJson(source, false));
+        }
+
+        private static string ComputeLegacyProfileChecksum(LegacyProfileSaveEnvelopeV4Brew source)
+        {
+            source.checksum = string.Empty;
+            return Hash(JsonUtility.ToJson(source, false));
+        }
+
         private static string ComputeChecksum(ProfileSaveEnvelope source)
         {
+            ExpeditionSaveData canonicalExpedition = source.hasActiveExpedition && source.activeExpedition != null
+                ? source.activeExpedition.Clone()
+                : null;
             var canonical = new ProfileSaveEnvelope
             {
                 schemaVersion = source.schemaVersion,
@@ -674,7 +1021,7 @@ namespace Luckbound.App
                 checksum = string.Empty,
                 profile = source.profile,
                 hasActiveExpedition = source.hasActiveExpedition,
-                activeExpedition = source.activeExpedition
+                activeExpedition = source.hasActiveExpedition ? canonicalExpedition : null
             };
             return Hash(JsonUtility.ToJson(canonical, false));
         }
@@ -709,6 +1056,12 @@ namespace Luckbound.App
             return Hash(JsonUtility.ToJson(canonical, false));
         }
 
+        private static string ComputeLegacySettingsChecksum(LegacySettingsSaveEnvelopeV4 source)
+        {
+            source.checksum = string.Empty;
+            return Hash(JsonUtility.ToJson(source, false));
+        }
+
         private static string[] Copy(string[] values) => values == null ? null : (string[])values.Clone();
 
         [Serializable]
@@ -727,12 +1080,34 @@ namespace Luckbound.App
         }
 
         [Serializable]
+        private sealed class LegacySettingsSaveEnvelopeV4
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public LegacyGameSettingsSaveDataV4 settings;
+        }
+
+        [Serializable]
         private sealed class LegacyGameSettingsSaveData
         {
             public string languageId;
             public float masterVolume;
             public float musicVolume;
             public float effectsVolume;
+        }
+
+        [Serializable]
+        private sealed class LegacyGameSettingsSaveDataV4
+        {
+            public string languageId;
+            public float masterVolume;
+            public float musicVolume;
+            public float effectsVolume;
+            public float ambienceVolume;
         }
 
         [Serializable]
@@ -761,6 +1136,34 @@ namespace Luckbound.App
             public LegacyProfileSaveDataV2 profile;
             public bool hasActiveExpedition;
             public LegacyExpeditionSaveDataV2 activeExpedition;
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileSaveEnvelopeV4
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public ProfileSaveData profile;
+            public bool hasActiveExpedition;
+            public LegacyExpeditionSaveDataV4 activeExpedition;
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileSaveEnvelopeV4Brew
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public ProfileSaveData profile;
+            public bool hasActiveExpedition;
+            public LegacyExpeditionSaveDataV4Brew activeExpedition;
         }
 
         [Serializable]
@@ -826,6 +1229,93 @@ namespace Luckbound.App
             public int[] offerRerollCounts = Array.Empty<int>();
             public string[] collectedItemIds = Array.Empty<string>();
             public string[] claimedRewardIds = Array.Empty<string>();
+        }
+
+        [Serializable]
+        private sealed class LegacyExpeditionSaveDataV4
+        {
+            public string runId;
+            public uint seed;
+            public int generationVersion;
+            public int contentVersion;
+            public string classId;
+            public string raceId;
+            public string[] selectedSkillIds = Array.Empty<string>();
+            public string[] startingEquipmentInstanceIds = Array.Empty<string>();
+            public string routeSnapshotJson;
+            public string currentNodeId;
+            public string[] visitedNodeIds = Array.Empty<string>();
+            public string[] completedRoomIds = Array.Empty<string>();
+            public ExpeditionRoomCompletionSaveData[] completedRoomResults = Array.Empty<ExpeditionRoomCompletionSaveData>();
+            public string roomEntryCheckpointJson;
+            public string inventorySnapshotJson;
+            public int maximumHealth = 100;
+            public int currentHealth = 100;
+            public int maximumEnergy = 50;
+            public int currentEnergy = 50;
+            public int healthPotionCharges = 2;
+            public int accumulatedRenown;
+            public string[] pactIds = Array.Empty<string>();
+            public LegacyFortuneOfferBookSnapshotV4 fortuneOfferBookSnapshot;
+            public string[] collectedItemIds = Array.Empty<string>();
+            public string[] claimedRewardIds = Array.Empty<string>();
+        }
+
+        [Serializable]
+        private sealed class LegacyExpeditionSaveDataV4Brew
+        {
+            public string runId;
+            public uint seed;
+            public int generationVersion;
+            public int contentVersion;
+            public string classId;
+            public string raceId;
+            public string[] selectedSkillIds = Array.Empty<string>();
+            public string[] startingEquipmentInstanceIds = Array.Empty<string>();
+            public string routeSnapshotJson;
+            public string currentNodeId;
+            public string[] visitedNodeIds = Array.Empty<string>();
+            public string[] completedRoomIds = Array.Empty<string>();
+            public ExpeditionRoomCompletionSaveData[] completedRoomResults = Array.Empty<ExpeditionRoomCompletionSaveData>();
+            public string roomEntryCheckpointJson;
+            public string inventorySnapshotJson;
+            public int maximumHealth = 100;
+            public int currentHealth = 100;
+            public int maximumEnergy = 50;
+            public int currentEnergy = 50;
+            public int healthPotionCharges = 2;
+            public int accumulatedRenown;
+            public string[] pactIds = Array.Empty<string>();
+            public LegacyFortuneOfferBookSnapshotV4Brew fortuneOfferBookSnapshot;
+            public string[] collectedItemIds = Array.Empty<string>();
+            public string[] claimedRewardIds = Array.Empty<string>();
+        }
+
+        [Serializable]
+        private sealed class LegacyFortuneOfferBookSnapshotV4
+        {
+            public int snapshotVersion;
+            public int generationVersion;
+            public uint seed;
+            public string raceId;
+            public int charges;
+            public FortuneOfferSnapshot[] offers = Array.Empty<FortuneOfferSnapshot>();
+            public string[] processedGuardianIds = Array.Empty<string>();
+            public FortuneRerollReceiptSnapshot[] rerollReceipts = Array.Empty<FortuneRerollReceiptSnapshot>();
+        }
+
+        [Serializable]
+        private sealed class LegacyFortuneOfferBookSnapshotV4Brew
+        {
+            public int snapshotVersion;
+            public int generationVersion;
+            public uint seed;
+            public string raceId;
+            public int charges;
+            public FortuneOfferSnapshot[] offers = Array.Empty<FortuneOfferSnapshot>();
+            public string[] processedGuardianIds = Array.Empty<string>();
+            public FortuneRerollReceiptSnapshot[] rerollReceipts = Array.Empty<FortuneRerollReceiptSnapshot>();
+            public FortuneBrewReceiptSnapshot[] fortuneBrewReceipts = Array.Empty<FortuneBrewReceiptSnapshot>();
         }
 
         [Serializable]

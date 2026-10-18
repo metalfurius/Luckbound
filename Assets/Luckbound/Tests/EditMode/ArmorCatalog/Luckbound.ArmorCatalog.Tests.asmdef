@@ -1,0 +1,15 @@
+{
+  "name": "Luckbound.ArmorCatalog.Tests",
+  "rootNamespace": "Luckbound.Tests.ArmorContent",
+  "references": ["Luckbound.Core", "Luckbound.Content"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "noEngineReferences": false
+}

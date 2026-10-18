@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.22 — 17 de octubre de 2026.
+**Versión del documento:** 3.23 — 18 de octubre de 2026.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -19,6 +19,8 @@ La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajen
 La versión 3.5 concreta el redondeo de las mejoras E06 para estadísticas enteras y fija compra en taberna, recibos transaccionales persistentes, escritura atómica, reintento idéntico tras fallo y aplicación solo a expediciones nuevas. La versión 3.6 reforzó la política de visibilidad en todos los niveles operativos. La versión 3.7 registra la nueva orden de Fran para retomar el desarrollo completo. La versión 3.8 establece que solo se abre una interfaz si Fran necesita usarla para decidir; enseñar o demostrar avances nunca basta. La versión 3.9 registra que Fran reanudó el desarrollo completo el 16 de octubre. La versión 3.10 fija los datos de recorrido del proyectil básico de Báculo de ascua. La versión 3.11 registra la reafirmación de Fran: las ventanas que no requieran una decisión suya deben ejecutarse sin interfaz o en un entorno aislado que no pueda aparecer en su escritorio; dejarlas detrás, sin foco o minimizadas no cumple la regla. La versión 3.12 fija expresamente que ninguna interfaz se muestra por defecto y que solo puede mostrarse la interfaz mínima que Fran necesite para tomar una decisión concreta. La versión 3.13 aclara que las salidas de herramientas insertadas automáticamente en el chat también son contenido visible sujeto a esta regla, y registra la arquitectura parcial de audio persistente y los hashes reproducibles con finales LF. La versión 3.14 fija la fuente de raza de la partida y el orden/redondeo del coste Alvari. La versión 3.15 fija la velocidad, el daño y el empuje efectivo de la Embestida Bellator para integrar su impacto real y el rasgo Orcini. La versión 3.16 registra la instrucción vigente de Fran del 17 de octubre y conserva como regla absoluta que ninguna interfaz ajena a una decisión concreta suya se muestra. La versión 3.17 reitera que Fran no debe ver ninguna ventana salvo que necesite usarla personalmente para tomar una decisión concreta: cero interfaz visible por defecto y ejecución sin UI o en aislamiento inaccesible para él para todo lo demás. La versión 3.18 enfatiza que ninguna interfaz innecesaria puede aparecer ni siquiera momentáneamente. La versión 3.19 registra la reiteración explícita de Fran: solo se muestra una ventana si necesita usarla personalmente para tomar una decisión concreta; la relación con el proyecto no basta. La versión 3.20 deja asentado que Fran no quiere ver ninguna interfaz que no necesite usar personalmente para tomar una decisión concreta; toda ejecución restante debe ser headless o estar en un entorno verdaderamente aislado. La versión 3.21 registra de nuevo la orden directa de Fran: cualquier ventana que no necesite usar personalmente para decidir debe permanecer fuera de su vista; el desarrollo y las verificaciones se ejecutan sin interfaz o en un sandbox realmente inaccesible, sin excepciones por conveniencia ni exposición momentánea. La versión 3.22 alinea la versión fijada del Editor con Unity 6000.6.6f1, instalada e integrada en el proyecto y CI.
 
 ## Índice
+
+Entrada breve para el siguiente coordinador Luna `max`: [LUNA_HANDOFF.md](LUNA_HANDOFF.md). El estado y las pruebas siguen teniendo una sola autoridad: [PROGRESS.md](PROGRESS.md).
 
 1. [Objetivo y decisiones de producción](#1-objetivo-y-decisiones-de-producción)
 2. [Arquitectura de software y contratos](#2-arquitectura-de-software-y-contratos)
@@ -384,6 +386,7 @@ La expedición incluirá:
 
 - Semilla y versiones.
 - Clase, raza y habilidades seleccionadas.
+- Niveles permanentes elegidos al crear la partida, congelados independientemente del perfil posterior.
 - Recorrido generado.
 - Sala actual y estado de entrada.
 - Salas completadas.
@@ -417,6 +420,8 @@ Errores:
 - Ajustes corruptos: restaurar ajustes por defecto.
 - Error de escritura crítico: mantener el resultado pendiente, ofrecer reintento y exportación.
 - Nunca eliminar automáticamente una partida porque no se pudo cargar.
+
+**Contrato de compatibilidad de contenido v5:** los expedientes nuevos guardan `frozenPermanentUpgrades` con los tres niveles de salida y `hasFrozenPermanentUpgrades=true`. El marcador explícito distingue niveles conocidos 0/0/0 de niveles desconocidos: `JsonUtility` puede materializar un objeto inline nulo como un objeto vacío. Con marcador falso, el lector normaliza ese objeto vacío a nulo y rechaza valores de mejora contradictorios. También normaliza el expediente vacío de un perfil sin partida activa al comprobar su checksum; no descarta una partida real que contradiga su marcador. Las migraciones de contenido v1–v4 verifican primero el checksum del DTO histórico exacto y conservan el snapshot desconocido; nunca deducen niveles a partir de la mochila, las pociones restantes o el perfil actual. La configuración marca `HasKnownStartingLoadout=false` en ese caso y no ofrece valores iniciales inventados. El actor se compone con `ExpeditionPlayerRunBinder.BindFromCheckpoint`: máximos, recursos actuales, instancias de equipo y consumibles proceden del estado durable restaurado. Por compatibilidad, una túnica de un expediente antiguo que guardó energía máxima 50 conserva 50; una nueva registra 55 y energía actual 50, sin relleno. `WithInventory`, el binder y las actualizaciones durables conservan el snapshot conocido o su ausencia; una mutación de inventario no puede cambiar los niveles congelados. El lector mantiene los dos formatos históricos v4 de Fortuna, con y sin recibos de infusión; su checksum se comprueba antes de migrar. Un fallo conserva el archivo y utiliza la política de recuperación existente.
 
 ### 2.9. Herramientas y generación de recursos
 
@@ -609,6 +614,8 @@ Armas y armaduras podrán mejorarse hasta **+3** durante una expedición:
 
 Los objetos generados tendrán identificador de instancia. Dos objetos con la misma definición podrán tener rareza y mejoras diferentes.
 
+El ataque básico usa los valores de su instancia equipada: daño de definición × rareza × `(1 + 0,05 × nivel)`, con `decimal` y sin redondeo intermedio. Combo, carga y modificadores se aplican antes del redondeo final de §3.4. Las habilidades con daño propio de §3.5 conservan ese valor; el modificador de arma descrito aquí corresponde al ataque básico. El overload de configuración por definición sin instancia representa común +0; la composición de expedición pasa siempre rareza y mejora reales.
+
 Contrato de implementación D04:
 
 - `Luckbound.Core.Inventory` será independiente de Unity. El catálogo convierte IDs de contenido estables en definiciones inmutables; el estado mutable pertenece a una instancia de `ExpeditionInventory` con clase, equipo, mochila, materiales y oro.
@@ -633,6 +640,8 @@ Contrato de implementación D04:
 | Magus | Báculo de escarcha | 10 | 0,45 s | Lentitud del 20 % durante 0,75 s |
 | Magus | Báculo de sombra | 14 | 0,60 s | Ignora un punto de defensa |
 
+**Magnitudes cerradas para G01.UMBRA.NUMERIC (implementación pendiente hasta su aceptación):** la espada y el sable conservan la caja de impacto actual de 1,35 × 1,25 unidades, centro a 0,90 unidades delante del origen del jugador y 0,90 por encima. El mandoble usa 1,80 × 1,25, centro a 1,05 delante y 0,90 por encima. El signo horizontal sigue la orientación del actor. El mandoble causa velocidad inicial de empuje horizontal 6 u/s alejándose del atacante, vertical 2,5 u/s y suspensión del control de IA de 12 ticks; espada y sable mantienen empuje y suspensión cero. Se aplica el multiplicador racial Orcini de 1,10 a ambas velocidades, sin modificar duración. Los jefes conservan su inmunidad al empuje. Se reutilizan `MeleeImpact` y el receptor físico existentes; un impacto bloqueado o deduplicado no empuja. La caja y las velocidades se declaran en `Weapons.json` y se validan en el loader; no se codifican por ID en el motor. No cambian daño, cadencia ni ventana `[6,12)`. Estas magnitudes completan la diferencia ya prevista; su ajuste posterior sigue el registro de equilibrio. La mera presencia de los traits no verifica su efecto.
+
 Bellator tendrá una secuencia de tres golpes con multiplicadores `1 / 1 / 1,25`. La secuencia se reiniciará al transcurrir un segundo sin continuarla.
 
 El arma inicial de Bellator, Espada gastada, ataca cada 27 ticks (0,45 s). Cada activación mantiene el estado `Attacking` hasta el tick 27; su ventana de daño abre en el tick 6 y cierra antes del tick 12, con intervalos semiabiertos `[inicio + 6, inicio + 12)`. El resto es recuperación. El daño y la ventana vienen de datos de combate, nunca de eventos o duración del clip. Solo un ataque aceptado avanza la secuencia; el tiempo entre ataques aceptados de 60 ticks o más la reinicia. Una entrada rechazada por recarga no la avanza.
@@ -653,6 +662,8 @@ El ataque básico de Báculo de ascua lanza un proyectil de fuego que causa 12 d
 | Armadura de corteza | 3 | −15 % de duración de estados perjudiciales |
 
 Al aumentar salud o energía máximas mediante equipo no se rellenará el recurso. Al reducirlas se limitará el valor actual al nuevo máximo.
+
+Los seis perfiles proceden exclusivamente de `Resources/Luckbound/Data/Items/Armors.json`, validados contra los objetos de `Items.json`. La defensa de una instancia es defensa común + rareza (común 0, rara 1, épica 2) + mejora (0–3). Los modificadores secundarios no escalan por rareza ni mejora. No mantener un catálogo estándar paralelo codificado en C#.
 
 Los kits iniciales usarán espada gastada, arco corto o báculo de ascua. Las armaduras por defecto serán cota del gremio para Bellator, chaleco de cuero para Venator y túnica para Magus. Los contratos desbloquearán opciones alternativas de inicio. Todas las armas podrán aparecer como botín compatible con la clase.
 
@@ -1390,6 +1401,8 @@ Las revisiones de Fran mantienen sus criterios y builds; no se abren demostracio
 | F10 | Muestra 0.3 | Sesión breve de 8–12 minutos con Bellator; tercera revisión de Fran sobre combate, arte y sonido |
 
 F10 será una muestra limitada del producto: sus recursos visibles estarán acabados, pero no representará la campaña completa. Su salida tras el Custodio reutilizará las reglas normales de extracción, con una zona segura construida para esta muestra.
+
+**Contrato técnico de ruta de la muestra:** `ExpeditionRunConfigurationFactory.CreateSample` usa `F10SampleRoute.json` (esquema 1, generación 2) y exactamente cinco nodos obligatorios del Patio, sin desvíos: `sample.tutorial` → `sample.patio.combat` → `sample.patio.exploration` → `sample.patio.guardian` → `sample.safe_extraction`. Sus plantillas son respectivamente `room.sample.tutorial`, `room.patio.c1`, `room.patio.e1`, `room.patio.guardian`, `room.sample.extraction`, con puertos `port.entry.west` y `port.exit.east`. `Tutorial` y `SafeExtraction` se añaden al enum sin renumerar valores previos. La generación 1 conserva su campaña de 24 nodos y su forma canónica/huella; `Create` continúa creando esa campaña. La generación 2 es una variante explícita, no una migración automática de partidas. Guardar, continuar y liquidar usan las mismas APIs durables para ambas. Versiones desconocidas se rechazan. El tutorial se completa mediante movimiento e interacción; combate y Custodio mediante sus resolutores físicos; exploración tras alcanzar la salida. La extracción segura requiere interactuar después de la derrota durable del Custodio y usa resultado `Extracted`, nunca victoria de campaña. La duración 8–12 minutos se mide en recorrido real; no se obtiene alterando el reloj o forzando desenlaces. Este contrato lógico no aporta prefabs ni aprueba recursos provisionales para F10.
 
 ### G. Catálogo de sistemas
 

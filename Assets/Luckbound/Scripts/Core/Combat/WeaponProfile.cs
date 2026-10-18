@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Luckbound.Core.Inventory;
 
 namespace Luckbound.Core.Combat
 {
@@ -97,10 +98,16 @@ namespace Luckbound.Core.Combat
         private readonly decimal _projectileSpeedUnitsPerSecond;
         private readonly int _projectileLifetimeTicks;
         private readonly string _projectileElement;
+        private readonly decimal _rarityMultiplier;
+        private readonly decimal _upgradeMultiplier;
 
-        private WeaponBasicAttackProfile(WeaponProfile weapon)
+        private WeaponBasicAttackProfile(WeaponProfile weapon, ItemRarity rarity, int upgradeLevel)
         {
             _weapon = weapon ?? throw new ArgumentNullException(nameof(weapon));
+            Rarity = rarity;
+            UpgradeLevel = upgradeLevel;
+            _rarityMultiplier = GetRarityMultiplier(rarity);
+            _upgradeMultiplier = 1m + 0.05m * upgradeLevel;
             AttackIntervalTicks = ToTicks(weapon.AttackIntervalSeconds, nameof(weapon.AttackIntervalSeconds));
             _maximumProjectileTargets = 1 + (GetTrait(WeaponTraitId.PierceOneTarget)?.PiercedTargetCount ?? 0);
 
@@ -140,7 +147,18 @@ namespace Luckbound.Core.Combat
 
         public string ClassId => _weapon.ClassId;
 
-        public decimal BaseDamage => _weapon.Damage;
+        /// <summary>The rarity stored on the equipped weapon instance.</summary>
+        public ItemRarity Rarity { get; }
+
+        /// <summary>The expedition upgrade level stored on the equipped weapon instance.</summary>
+        public int UpgradeLevel { get; }
+
+        public decimal RarityMultiplier => _rarityMultiplier;
+
+        public decimal UpgradeMultiplier => _upgradeMultiplier;
+
+        /// <summary>Definition damage after exact instance modifiers, with no intermediate rounding.</summary>
+        public decimal BaseDamage => _weapon.Damage * _rarityMultiplier * _upgradeMultiplier;
 
         public int AttackIntervalTicks { get; }
 
@@ -156,11 +174,27 @@ namespace Luckbound.Core.Combat
 
         public string ProjectileElement => _projectileElement;
 
-        public static WeaponBasicAttackProfile Create(WeaponProfile weapon)
+        public static WeaponBasicAttackProfile Create(
+            WeaponProfile weapon,
+            ItemRarity rarity = ItemRarity.Common,
+            int upgradeLevel = 0)
         {
             if (weapon == null) throw new ArgumentNullException(nameof(weapon));
+            if (!Enum.IsDefined(typeof(ItemRarity), rarity)) throw new ArgumentOutOfRangeException(nameof(rarity));
+            if (upgradeLevel < 0 || upgradeLevel > 3) throw new ArgumentOutOfRangeException(nameof(upgradeLevel));
             ValidateTraitClass(weapon);
-            return new WeaponBasicAttackProfile(weapon);
+            return new WeaponBasicAttackProfile(weapon, rarity, upgradeLevel);
+        }
+
+        private static decimal GetRarityMultiplier(ItemRarity rarity)
+        {
+            switch (rarity)
+            {
+                case ItemRarity.Common: return 1m;
+                case ItemRarity.Rare: return 1.15m;
+                case ItemRarity.Epic: return 1.30m;
+                default: throw new ArgumentOutOfRangeException(nameof(rarity));
+            }
         }
 
         public MeleeAttackProfile CreateMeleeAttackProfile()

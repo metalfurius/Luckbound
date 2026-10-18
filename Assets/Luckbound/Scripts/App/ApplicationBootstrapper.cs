@@ -697,8 +697,7 @@ namespace Luckbound.App
                 ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);
                 ExpeditionSaveData candidateSave = _activeExpedition.Clone();
                 candidateSave.inventorySnapshotJson = JsonUtility.ToJson(candidateInventory.CreateSnapshot());
-                InventoryItemStack quickConsumable = candidateInventory.QuickConsumable;
-                candidateSave.healthPotionCharges = quickConsumable == null ? 0 : quickConsumable.Quantity;
+                candidateSave.healthPotionCharges = ExpeditionSaveMapper.GetHealthPotionCharges(candidateInventory);
 
                 SaveWriteResult save = await SaveExpeditionCandidateUnderGateAsync(
                     candidateSave, _activeExpeditionRevision, candidateRun);
@@ -933,8 +932,7 @@ namespace Luckbound.App
                 ExpeditionSaveData candidateSave = _activeExpedition.Clone();
                 T outcome = mutation(ActiveRun, candidateInventory, candidateSave);
                 candidateSave.inventorySnapshotJson = JsonUtility.ToJson(candidateInventory.CreateSnapshot());
-                InventoryItemStack quickConsumable = candidateInventory.QuickConsumable;
-                candidateSave.healthPotionCharges = quickConsumable == null ? 0 : quickConsumable.Quantity;
+                candidateSave.healthPotionCharges = ExpeditionSaveMapper.GetHealthPotionCharges(candidateInventory);
                 ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);
 
                 if (string.Equals(candidateSave.inventorySnapshotJson, _activeExpedition.inventorySnapshotJson, StringComparison.Ordinal) &&
@@ -1124,9 +1122,21 @@ namespace Luckbound.App
                 left.seed == right.seed && left.generationVersion == right.generationVersion &&
                 left.contentVersion == right.contentVersion && string.Equals(left.classId, right.classId, StringComparison.Ordinal) &&
                 string.Equals(left.raceId, right.raceId, StringComparison.Ordinal) &&
+                SameFrozenPermanentUpgrades(left, right) &&
                 left.selectedSkillIds.SequenceEqual(right.selectedSkillIds) &&
                 left.startingEquipmentInstanceIds.SequenceEqual(right.startingEquipmentInstanceIds) &&
                 string.Equals(left.routeSnapshotJson, right.routeSnapshotJson, StringComparison.Ordinal);
+        }
+
+        private static bool SameFrozenPermanentUpgrades(ExpeditionSaveData left, ExpeditionSaveData right)
+        {
+            if (left.hasFrozenPermanentUpgrades != right.hasFrozenPermanentUpgrades) return false;
+            if (!left.hasFrozenPermanentUpgrades) return true;
+            var before = left.frozenPermanentUpgrades;
+            var after = right.frozenPermanentUpgrades;
+            return before != null && after != null && before.healthUpgradeLevel == after.healthUpgradeLevel &&
+                before.energyUpgradeLevel == after.energyUpgradeLevel &&
+                before.additionalPotionUpgradeLevel == after.additionalPotionUpgradeLevel;
         }
 
         private static bool ExpeditionStatesEqual(ExpeditionSaveData left, ExpeditionSaveData right)

@@ -16,8 +16,13 @@ namespace Luckbound.Core.Armor
             int harmfulStatusDurationReductionPercent = 0)
         {
             ValidateItemId(itemId);
-            if (baseDefense <= 0) throw new ArgumentOutOfRangeException(nameof(baseDefense));
+            if (baseDefense <= 0 || baseDefense > int.MaxValue - MaximumUpgradeLevel - 2)
+                throw new ArgumentOutOfRangeException(nameof(baseDefense),
+                    "Base defense must remain representable after the maximum rarity and upgrade bonuses.");
             if (maximumEnergyBonus < 0) throw new ArgumentOutOfRangeException(nameof(maximumEnergyBonus));
+            if (movementSpeedPercentModifier <= -100)
+                throw new ArgumentOutOfRangeException(nameof(movementSpeedPercentModifier),
+                    "Armor movement modifiers must leave a positive movement multiplier.");
             if (energyRegenerationPerSecondBonus < 0)
                 throw new ArgumentOutOfRangeException(nameof(energyRegenerationPerSecondBonus));
             if (harmfulStatusDurationReductionPercent < 0 || harmfulStatusDurationReductionPercent > 100)
@@ -42,7 +47,7 @@ namespace Luckbound.Core.Armor
         {
             if (upgradeLevel < 0 || upgradeLevel > MaximumUpgradeLevel)
                 throw new ArgumentOutOfRangeException(nameof(upgradeLevel), "Armor upgrades must be between +0 and +3.");
-            return BaseDefense + upgradeLevel;
+            return checked(BaseDefense + upgradeLevel);
         }
 
         private static void ValidateItemId(string itemId)

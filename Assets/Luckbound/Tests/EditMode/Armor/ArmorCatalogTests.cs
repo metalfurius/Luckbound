@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Luckbound.Core.Armor;
+using Luckbound.Core.Inventory;
 using NUnit.Framework;
 
 namespace Luckbound.Tests.Armor
@@ -18,10 +19,10 @@ namespace Luckbound.Tests.Armor
             new ExpectedArmor(ArmorCatalog.BarkArmorItemId, 3, 0, 0, 0, 15)
         };
 
-        private readonly ArmorCatalog _catalog = ArmorCatalog.Standard;
+        private readonly ArmorCatalog _catalog = CreateFixtureCatalog();
 
         [Test]
-        public void StandardCatalogContainsAllSixProfilesAndTheirExactModifiers()
+        public void ExplicitFixtureCatalogContainsTheSixProfilesAndTheirExactModifiers()
         {
             Assert.That(_catalog.Count, Is.EqualTo(6));
             CollectionAssert.AreEqual(ExpectedArmors.Select(expected => expected.ItemId).ToArray(),
@@ -41,21 +42,41 @@ namespace Luckbound.Tests.Armor
         }
 
         [Test]
-        public void EachUpgradeLevelAddsExactlyOneDefenseThroughPlusThree()
+        public void EveryProfileHasCorrectDefenseAtAllThreeRaritiesAndFourUpgradeLevels()
         {
+            ItemRarity[] rarities = { ItemRarity.Common, ItemRarity.Rare, ItemRarity.Epic };
             foreach (ExpectedArmor expected in ExpectedArmors)
             {
                 ArmorProfile profile = _catalog.Get(expected.ItemId);
-                for (int upgradeLevel = 0; upgradeLevel <= ArmorProfile.MaximumUpgradeLevel; upgradeLevel++)
+                foreach (ItemRarity rarity in rarities)
                 {
-                    ArmorResolution result = ArmorStatsResolver.Resolve(
-                        profile, upgradeLevel, baseMaximumHealth: 100, baseMaximumEnergy: 50,
-                        currentHealth: 70, currentEnergy: 30);
-                    Assert.That(result.Defense, Is.EqualTo(expected.BaseDefense + upgradeLevel),
-                        expected.ItemId + " at +" + upgradeLevel);
-                    Assert.That(result.UpgradeLevel, Is.EqualTo(upgradeLevel));
+                    for (int upgradeLevel = 0; upgradeLevel <= ArmorProfile.MaximumUpgradeLevel; upgradeLevel++)
+                    {
+                        ArmorResolution result = ArmorStatsResolver.Resolve(
+                            profile, upgradeLevel, 100, 50, 70, 30, rarity);
+                        Assert.That(result.Defense,
+                            Is.EqualTo(expected.BaseDefense + (int)rarity + upgradeLevel),
+                            expected.ItemId + " " + rarity + " at +" + upgradeLevel);
+                        Assert.That(result.Rarity, Is.EqualTo(rarity));
+                        Assert.That(result.UpgradeLevel, Is.EqualTo(upgradeLevel));
+                    }
                 }
             }
+        }
+
+        [Test]
+        public void MaximumDefenseAndResourceClampsUseTheProfileValues()
+        {
+            ArmorResolution result = ArmorStatsResolver.Resolve(
+                _catalog.Get(ArmorCatalog.IronCuirassItemId), upgradeLevel: 3,
+                baseMaximumHealth: 100, baseMaximumEnergy: 50, currentHealth: 120, currentEnergy: 80,
+                rarity: ItemRarity.Epic);
+
+            Assert.That(result.Defense, Is.EqualTo(10));
+            Assert.That(result.MaximumHealth, Is.EqualTo(100));
+            Assert.That(result.MaximumEnergy, Is.EqualTo(50));
+            Assert.That(result.HealthAfterMaximumClamp, Is.EqualTo(100));
+            Assert.That(result.EnergyAfterMaximumClamp, Is.EqualTo(50));
         }
 
         [Test]
@@ -92,7 +113,19 @@ namespace Luckbound.Tests.Armor
         }
 
         [Test]
-        public void ResolverRejectsInvalidInputsAndUpgradeLevels()
+        public void CatalogRejectsNullEmptyAndDuplicateProfiles()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ArmorCatalog(null));
+            Assert.Throws<ArgumentException>(() => new ArmorCatalog(Array.Empty<ArmorProfile>()));
+            Assert.Throws<ArgumentException>(() => new ArmorCatalog(new ArmorProfile[] { null }));
+
+            var first = new ArmorProfile("armor.test_duplicate", 1);
+            var second = new ArmorProfile("armor.test_duplicate", 2);
+            Assert.Throws<ArgumentException>(() => new ArmorCatalog(new[] { first, second }));
+        }
+
+        [Test]
+        public void ResolverRejectsInvalidInputsRaritiesAndUpgradeLevels()
         {
             ArmorProfile robe = _catalog.Get(ArmorCatalog.TravelerRobeItemId);
             Assert.Throws<ArgumentNullException>(() => ArmorStatsResolver.Resolve(
@@ -101,6 +134,8 @@ namespace Luckbound.Tests.Armor
                 robe, -1, 100, 50, 50, 20));
             Assert.Throws<ArgumentOutOfRangeException>(() => ArmorStatsResolver.Resolve(
                 robe, ArmorProfile.MaximumUpgradeLevel + 1, 100, 50, 50, 20));
+            Assert.Throws<ArgumentOutOfRangeException>(() => ArmorStatsResolver.Resolve(
+                robe, 0, 100, 50, 50, 20, (ItemRarity)int.MaxValue));
             Assert.Throws<ArgumentOutOfRangeException>(() => ArmorStatsResolver.Resolve(
                 robe, 0, 0, 50, 50, 20));
             Assert.Throws<ArgumentOutOfRangeException>(() => ArmorStatsResolver.Resolve(
@@ -112,14 +147,36 @@ namespace Luckbound.Tests.Armor
         }
 
         [Test]
-        public void ProfilesRejectInvalidStableIdsAndInvalidModifierInputs()
+        public void ProfilesRejectInvalidStableIdsAndModifierInputs()
         {
             Assert.Throws<ArgumentException>(() => new ArmorProfile("weapon.iron_cuirass", 5));
             Assert.Throws<ArgumentException>(() => new ArmorProfile("armor.Iron_cuirass", 5));
             Assert.Throws<ArgumentOutOfRangeException>(() => new ArmorProfile("armor.invalid", 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new ArmorProfile("armor.invalid", int.MaxValue));
             Assert.Throws<ArgumentOutOfRangeException>(() => new ArmorProfile("armor.invalid", 1, maximumEnergyBonus: -1));
             Assert.Throws<ArgumentOutOfRangeException>(() => new ArmorProfile("armor.invalid", 1,
+                movementSpeedPercentModifier: -100));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new ArmorProfile("armor.invalid", 1,
+                movementSpeedPercentModifier: -101));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new ArmorProfile("armor.invalid", 1,
                 harmfulStatusDurationReductionPercent: 101));
+
+            var edge = new ArmorProfile("armor.invalid", 1,
+                movementSpeedPercentModifier: -99,
+                harmfulStatusDurationReductionPercent: 100);
+            Assert.That(edge.MovementSpeedPercentModifier, Is.EqualTo(-99));
+            Assert.That(edge.HarmfulStatusDurationReductionPercent, Is.EqualTo(100));
+        }
+
+        private static ArmorCatalog CreateFixtureCatalog()
+        {
+            return new ArmorCatalog(ExpectedArmors.Select(expected => new ArmorProfile(
+                expected.ItemId,
+                expected.BaseDefense,
+                expected.MaximumEnergyBonus,
+                expected.MovementSpeedPercentModifier,
+                expected.EnergyRegenerationPerSecondBonus,
+                expected.HarmfulStatusDurationReductionPercent)));
         }
 
         private sealed class ExpectedArmor

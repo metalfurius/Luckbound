@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "generationVersion": 2,
+  "nodes": [
+    {
+      "nodeId": "sample.tutorial",
+      "sectorId": "patio",
+      "templateId": "room.sample.tutorial",
+      "kind": "Tutorial",
+      "isMandatory": true,
+      "mainPathIndex": 0,
+      "entryPortId": "port.entry.west",
+      "exitPortId": "port.exit.east"
+    },
+    {
+      "nodeId": "sample.patio.combat",
+      "sectorId": "patio",
+      "templateId": "room.patio.c1",
+      "kind": "Combat",
+      "isMandatory": true,
+      "mainPathIndex": 1,
+      "entryPortId": "port.entry.west",
+      "exitPortId": "port.exit.east"
+    },
+    {
+      "nodeId": "sample.patio.exploration",
+      "sectorId": "patio",
+      "templateId": "room.patio.e1",
+      "kind": "Exploration",
+      "isMandatory": true,
+      "mainPathIndex": 2,
+      "entryPortId": "port.entry.west",
+      "exitPortId": "port.exit.east"
+    },
+    {
+      "nodeId": "sample.patio.guardian",
+      "sectorId": "patio",
+      "templateId": "room.patio.guardian",
+      "kind": "Guardian",
+      "isMandatory": true,
+      "mainPathIndex": 3,
+      "entryPortId": "port.entry.west",
+      "exitPortId": "port.exit.east"
+    },
+    {
+      "nodeId": "sample.safe_extraction",
+      "sectorId": "patio",
+      "templateId": "room.sample.extraction",
+      "kind": "SafeExtraction",
+      "isMandatory": true,
+      "mainPathIndex": 4,
+      "entryPortId": "port.entry.west",
+      "exitPortId": "port.exit.east"
+    }
+  ],
+  "connections": [
+    {
+      "fromNodeId": "sample.tutorial",
+      "fromPortId": "port.exit.east",
+      "toNodeId": "sample.patio.combat",
+      "toPortId": "port.entry.west",
+      "isOptionalBranch": false
+    },
+    {
+      "fromNodeId": "sample.patio.combat",
+      "fromPortId": "port.exit.east",
+      "toNodeId": "sample.patio.exploration",
+      "toPortId": "port.entry.west",
+      "isOptionalBranch": false
+    },
+    {
+      "fromNodeId": "sample.patio.exploration",
+      "fromPortId": "port.exit.east",
+      "toNodeId": "sample.patio.guardian",
+      "toPortId": "port.entry.west",
+      "isOptionalBranch": false
+    },
+    {
+      "fromNodeId": "sample.patio.guardian",
+      "fromPortId": "port.exit.east",
+      "toNodeId": "sample.safe_extraction",
+      "toPortId": "port.entry.west",
+      "isOptionalBranch": false
+    }
+  ],
+  "mandatoryNodeIds": [
+    "sample.tutorial",
+    "sample.patio.combat",
+    "sample.patio.exploration",
+    "sample.patio.guardian",
+    "sample.safe_extraction"
+  ]
+}

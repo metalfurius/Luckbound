@@ -76,6 +76,13 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator EpicSwordAtPlusThreeScalesRealDamageWithoutIntermediateRounding()
+        {
+            return VerifyBellatorWeapon(RustedSwordId, 12, 0.45f, 27, WeaponTraitId.Balanced,
+                rarity: ItemRarity.Epic, upgradeLevel: 3, expectedRawDamage: 17.94m, expectedHitDamage: 18);
+        }
+
+        [UnityTest]
         public IEnumerator UmbraGreatswordCatalogProfileReachesRealDamageAndFortyTwoTickCadence()
         {
             return VerifyBellatorWeapon(
@@ -93,16 +100,17 @@ namespace Luckbound.Tests.PlayMode
             float expectedIntervalSeconds,
             int expectedIntervalTicks,
             WeaponTraitId expectedTrait,
-            WeaponTraitId? additionalTrait = null)
+            WeaponTraitId? additionalTrait = null, ItemRarity rarity = ItemRarity.Common, int upgradeLevel = 0,
+            decimal? expectedRawDamage = null, int? expectedHitDamage = null)
         {
             ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create(
                 BellatorSkillLoadout.ClassId,
                 ExpeditionRunConfiguration.HumanRaceId,
                 new[] { BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId });
 
-            if (weaponId != RustedSwordId)
+            if (weaponId != RustedSwordId || rarity != ItemRarity.Common || upgradeLevel != 0)
             {
-                EquipWeapon(run.Inventory, weaponId);
+                EquipWeapon(run.Inventory, weaponId, rarity, upgradeLevel);
             }
 
             Assert.That(run.Inventory.Weapon.ItemId, Is.EqualTo(weaponId),
@@ -154,6 +162,8 @@ namespace Luckbound.Tests.PlayMode
                 "The equipped inventory item must resolve to its authoritative catalog profile on PlayerMotor2D.");
             Assert.That(motor.EquippedWeaponProfile.ItemId, Is.EqualTo(run.Inventory.Weapon.ItemId));
             Assert.That(motor.EquippedWeaponProfile.ClassId, Is.EqualTo(run.ClassId));
+            Assert.That(motor.EquippedWeaponBasicAttackProfile.Rarity, Is.EqualTo(rarity));
+            Assert.That(motor.EquippedWeaponBasicAttackProfile.UpgradeLevel, Is.EqualTo(upgradeLevel));
 
             Slime2D damageReceiver = CreateSlimeDamageReceiver(
                 motor,
@@ -167,7 +177,7 @@ namespace Luckbound.Tests.PlayMode
             long attackStartTick = motor.SimulationTick;
             Assert.That(motor.CurrentMeleeAttack.WasStartedThisTick, Is.True,
                 "A simulated Attack input must start the composed player's melee attack.");
-            Assert.That(motor.CurrentMeleeAttack.BaseDamage, Is.EqualTo((decimal)expectedDamage));
+            Assert.That(motor.CurrentMeleeAttack.BaseDamage, Is.EqualTo(expectedRawDamage ?? expectedDamage));
             Assert.That(motor.MeleeAttackActivationCount, Is.EqualTo(1));
             input.Release(PlayerAction.Attack);
 
@@ -178,7 +188,7 @@ namespace Luckbound.Tests.PlayMode
 
             Assert.That(motor.CurrentMeleeHitWindow, Is.Not.Null,
                 "The weapon profile must open the real six-tick melee impact window.");
-            Assert.That(motor.CurrentMeleeHitWindow.BaseDamage, Is.EqualTo((decimal)expectedDamage));
+            Assert.That(motor.CurrentMeleeHitWindow.BaseDamage, Is.EqualTo(expectedRawDamage ?? expectedDamage));
 
             for (int tick = 0; tick < 12 && damageReceiver.MeleeImpactCount == 0; tick++)
             {
@@ -187,7 +197,7 @@ namespace Luckbound.Tests.PlayMode
 
             Assert.That(damageReceiver.MeleeImpactCount, Is.EqualTo(1),
                 "Physics2D overlap must queue and resolve one impact on the real Slime damage receiver.");
-            Assert.That(damageReceiver.CurrentHealth, Is.EqualTo(Slime2D.MaximumHealth - expectedDamage),
+            Assert.That(damageReceiver.CurrentHealth, Is.EqualTo(Slime2D.MaximumHealth - (expectedHitDamage ?? expectedDamage)),
                 "The first resolved hit must apply exactly the equipped weapon's catalog damage.");
             Assert.That(motor.MeleeImpactsQueuedCount, Is.EqualTo(1));
 
@@ -210,7 +220,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(motor.SimulationTick, Is.EqualTo(attackStartTick + expectedIntervalTicks));
             Assert.That(motor.CurrentMeleeAttack.WasStartedThisTick, Is.True,
                 "The equipped weapon must accept its next attack exactly at its catalog cadence.");
-            Assert.That(motor.CurrentMeleeAttack.BaseDamage, Is.EqualTo((decimal)expectedDamage));
+            Assert.That(motor.CurrentMeleeAttack.BaseDamage, Is.EqualTo(expectedRawDamage ?? expectedDamage));
             Assert.That(motor.CurrentMeleeAttack.DamageMultiplier, Is.EqualTo(1m),
                 "The rejected pre-cadence input must not advance Bellator's accepted-attack sequence.");
             Assert.That(motor.MeleeAttackActivationCount, Is.EqualTo(2));
@@ -222,17 +232,18 @@ namespace Luckbound.Tests.PlayMode
 
             Assert.That(damageReceiver.MeleeImpactCount, Is.EqualTo(2),
                 "A later attack with a fresh hit ID must resolve through the same real damage receiver.");
-            Assert.That(damageReceiver.CurrentHealth, Is.EqualTo(Mathf.Max(0, Slime2D.MaximumHealth - expectedDamage * 2)),
+            Assert.That(damageReceiver.CurrentHealth, Is.EqualTo(Mathf.Max(0, Slime2D.MaximumHealth - (expectedHitDamage ?? expectedDamage) * 2)),
                 "The second resolved hit must preserve the equipped weapon's damage at its accepted cadence.");
         }
 
-        private void EquipWeapon(ExpeditionInventory inventory, string weaponId)
+        private void EquipWeapon(ExpeditionInventory inventory, string weaponId,
+            ItemRarity rarity = ItemRarity.Common, int upgradeLevel = 0)
         {
             var stack = new InventoryItemStack(
                 ItemInstanceId.New(),
                 weaponId,
-                ItemRarity.Common,
-                upgradeLevel: 0,
+                rarity,
+                upgradeLevel: upgradeLevel,
                 quantity: 1);
             InventoryOperationOutcome collected = inventory.TryCollectItem(stack, TransactionId.New());
             Assert.That(collected.Succeeded, Is.True, "The alternative Bellator weapon must enter the run inventory.");

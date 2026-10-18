@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "armors": [
+    {
+      "id": "armor.magus.traveler_robe",
+      "baseDefense": 1,
+      "maximumEnergyBonus": 5,
+      "movementSpeedPercentModifier": 0,
+      "energyRegenerationPerSecondBonus": 0,
+      "harmfulStatusDurationReductionPercent": 0
+    },
+    {
+      "id": "armor.venator.leather_vest",
+      "baseDefense": 2,
+      "maximumEnergyBonus": 0,
+      "movementSpeedPercentModifier": 3,
+      "energyRegenerationPerSecondBonus": 0,
+      "harmfulStatusDurationReductionPercent": 0
+    },
+    {
+      "id": "armor.bellator.guild_cuirass",
+      "baseDefense": 3,
+      "maximumEnergyBonus": 0,
+      "movementSpeedPercentModifier": -3,
+      "energyRegenerationPerSecondBonus": 0,
+      "harmfulStatusDurationReductionPercent": 0
+    },
+    {
+      "id": "armor.runic_mantle",
+      "baseDefense": 2,
+      "maximumEnergyBonus": 0,
+      "movementSpeedPercentModifier": 0,
+      "energyRegenerationPerSecondBonus": 1,
+      "harmfulStatusDurationReductionPercent": 0
+    },
+    {
+      "id": "armor.iron_cuirass",
+      "baseDefense": 5,
+      "maximumEnergyBonus": 0,
+      "movementSpeedPercentModifier": -5,
+      "energyRegenerationPerSecondBonus": 0,
+      "harmfulStatusDurationReductionPercent": 0
+    },
+    {
+      "id": "armor.bark_armor",
+      "baseDefense": 3,
+      "maximumEnergyBonus": 0,
+      "movementSpeedPercentModifier": 0,
+      "energyRegenerationPerSecondBonus": 0,
+      "harmfulStatusDurationReductionPercent": 15
+    }
+  ]
+}

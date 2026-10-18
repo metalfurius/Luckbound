@@ -9,6 +9,7 @@ using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Movement;
@@ -231,7 +232,9 @@ namespace Luckbound.Tests.PlayMode
         [UnityTest]
         public IEnumerator BindsAllSixStandardArmorsWithInstanceUpgradeAndRuntimeModifiers()
         {
-            foreach (ArmorProfile profile in ArmorCatalog.Standard.Profiles)
+            ItemCatalog catalog = CreateRun(BellatorSkillLoadout.ClassId, ExpeditionRunConfiguration.HumanRaceId,
+                BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId).Inventory.Catalog;
+            foreach (ArmorProfile profile in LoadArmors(catalog).Profiles)
             {
                 ExpeditionRunConfiguration run = CreateRun(
                     BellatorSkillLoadout.ClassId,
@@ -384,7 +387,7 @@ namespace Luckbound.Tests.PlayMode
                 BellatorSkillLoadout.CircularCutId);
             BindingFixture fixture = CreatePlayer(run, includeRoomProjectiles: false);
             ArmorResolution increased = ArmorStatsResolver.Resolve(
-                ArmorCatalog.Standard.Get(ArmorCatalog.TravelerRobeItemId),
+                LoadArmors(run.Inventory.Catalog).Get(ArmorCatalog.TravelerRobeItemId),
                 upgradeLevel: 0,
                 baseMaximumHealth: 100,
                 baseMaximumEnergy: 50,
@@ -409,7 +412,7 @@ namespace Luckbound.Tests.PlayMode
 
             BindingFixture decreasedFixture = CreatePlayer(run, includeRoomProjectiles: false);
             ArmorResolution decreased = ArmorStatsResolver.Resolve(
-                ArmorCatalog.Standard.Get(ArmorCatalog.GuildCuirassItemId),
+                LoadArmors(run.Inventory.Catalog).Get(ArmorCatalog.GuildCuirassItemId),
                 upgradeLevel: 0,
                 baseMaximumHealth: 100,
                 baseMaximumEnergy: 50,
@@ -528,6 +531,146 @@ namespace Luckbound.Tests.PlayMode
             yield return null;
         }
 
+        [UnityTest]
+        public IEnumerator RuntimeDefenseIncludesRareAndEpicInstanceBonusesForEveryClass()
+        {
+            string[] classes = { BellatorSkillLoadout.ClassId, VenatorSkillLoadout.ClassId, MagusSkillLoadout.ClassId };
+            string[][] skills = {
+                new[] { BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId },
+                new[] { VenatorSkillLoadout.PiercingArrowId, VenatorSkillLoadout.TripleShotId },
+                new[] { MagusSkillLoadout.FireballId, MagusSkillLoadout.FrostNovaId }
+            };
+            for (int index = 0; index < classes.Length; index++)
+            {
+                foreach (ItemRarity rarity in new[] { ItemRarity.Rare, ItemRarity.Epic })
+                {
+                    ExpeditionRunConfiguration run = CreateRun(classes[index], ExpeditionRunConfiguration.HumanRaceId,
+                        skills[index][0], skills[index][1]);
+                    ReplaceArmor(run, ArmorCatalog.IronCuirassItemId, 3, rarity);
+                    ReplaceWeapon(run, rarity, 3);
+                    BindingFixture fixture = CreatePlayer(run, index != 0);
+                    ExpeditionPlayerRunBinder.Bind(run, fixture.ActorId, fixture.Input, GroundLayers(), EnemyLayers(), 4,
+                        fixture.Motor, fixture.Collector, run.Inventory.Catalog, fixture.Weapons, fixture.Skills,
+                        fixture.ProjectilePool, fixture.ProjectileScope, fixture.Room);
+
+                    int rarityBonus = rarity == ItemRarity.Rare ? 1 : 2;
+                    Assert.That(fixture.Motor.CombatStats.Defense, Is.EqualTo(4 + 5 + 3 + rarityBonus), classes[index]);
+                    Assert.That(fixture.Motor.EquippedArmorResolution.Rarity, Is.EqualTo(rarity));
+                    Assert.That(fixture.Motor.EquippedWeaponBasicAttackProfile.Rarity, Is.EqualTo(rarity));
+                    Assert.That(fixture.Motor.EquippedWeaponBasicAttackProfile.UpgradeLevel, Is.EqualTo(3));
+                    decimal[] expectedDamage = rarity == ItemRarity.Rare
+                        ? new[] { 15.87m, 13.225m, 15.87m } : new[] { 17.94m, 14.95m, 17.94m };
+                    Assert.That(fixture.Motor.EquippedWeaponBasicAttackProfile.BaseDamage, Is.EqualTo(expectedDamage[index]));
+                    Assert.That(fixture.Motor.CurrentHealth, Is.EqualTo(run.StartingHealth));
+                    Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(run.StartingEnergy));
+                    yield return null;
+                }
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator RestoredCheckpointBindsCommittedResourcesAndEmptyQuickSlotForEveryClass()
+        {
+            string[] classes = { BellatorSkillLoadout.ClassId, VenatorSkillLoadout.ClassId, MagusSkillLoadout.ClassId };
+            string[][] skills = {
+                new[] { BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId },
+                new[] { VenatorSkillLoadout.PiercingArrowId, VenatorSkillLoadout.TripleShotId },
+                new[] { MagusSkillLoadout.FireballId, MagusSkillLoadout.FrostNovaId }
+            };
+            for (int index = 0; index < classes.Length; index++)
+            {
+                ExpeditionRunConfiguration original = ExpeditionRunConfigurationFactory.Create(classes[index],
+                    ExpeditionRunConfiguration.HumanRaceId, skills[index], 2, 2, 1);
+                ReplaceArmor(original, ArmorCatalog.TravelerRobeItemId, 2, ItemRarity.Epic);
+                while (original.Inventory.QuickConsumable != null)
+                {
+                    InventoryItemStack potion = original.Inventory.QuickConsumable;
+                    Assert.That(original.Inventory.TryConsumeQuickConsumable(potion.InstanceId, potion.ItemId,
+                        TransactionId.New()).Succeeded, Is.True);
+                }
+                ExpeditionSaveData saved = ExpeditionSaveMapper.Create(original);
+                Assert.That(saved.maximumEnergy, Is.EqualTo(original.StartingEnergy + 5), "Robe maximum is durable.");
+                Assert.That(saved.currentEnergy, Is.EqualTo(original.StartingEnergy), "Equipping the robe must not fill energy.");
+                saved.currentHealth = 37;
+                saved.currentEnergy = 11;
+                saved.roomEntryCheckpointJson = JsonUtility.ToJson(ExpeditionSaveMapper.CreateCheckpoint(saved));
+                ExpeditionRunConfiguration restored = ExpeditionSaveMapper.Restore(saved, out ExpeditionSaveData resumed);
+                BindingFixture fixture = CreatePlayer(restored, index != 0);
+
+                ExpeditionPlayerRunBinder.BindFromCheckpoint(restored, resumed, fixture.ActorId, fixture.Input,
+                    GroundLayers(), EnemyLayers(), 0, fixture.Motor, fixture.Collector, restored.Inventory.Catalog,
+                    fixture.Weapons, fixture.Skills, fixture.ProjectilePool, fixture.ProjectileScope, fixture.Room);
+
+                Assert.That(restored.HealthUpgradeLevel, Is.EqualTo(2));
+                Assert.That(restored.EnergyUpgradeLevel, Is.EqualTo(2));
+                Assert.That(restored.AdditionalPotionUpgradeLevel, Is.EqualTo(1));
+                Assert.That(fixture.Motor.CombatStats.MaximumHealth, Is.EqualTo(saved.maximumHealth));
+                Assert.That(fixture.Motor.CombatStats.MaximumEnergy, Is.EqualTo(saved.maximumEnergy));
+                Assert.That(fixture.Motor.CurrentHealth, Is.EqualTo(37), "Restore must not heal the actor.");
+                Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(11), "Restore must not refill energy.");
+                Assert.That(fixture.Motor.CombatStats.Defense, Is.EqualTo(1 + 2 + 2));
+                Assert.That(fixture.Collector.Inventory.QuickConsumable, Is.Null);
+                Assert.That(fixture.Motor.HealthPotionCharges, Is.Zero, "HUD charges must match before the first simulation tick.");
+                Assert.That(fixture.Collector.Inventory.Armor.InstanceId, Is.EqualTo(original.Inventory.Armor.InstanceId));
+                yield return null;
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator LegacyCheckpointRestoresSavedMaximumsWithoutInventingStartingUpgradeLevels()
+        {
+            ExpeditionRunConfiguration original = CreateRun(MagusSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId, MagusSkillLoadout.FireballId, MagusSkillLoadout.FrostNovaId);
+            ExpeditionSaveData saved = ExpeditionSaveMapper.Create(original);
+            saved.frozenPermanentUpgrades = null;
+            saved.hasFrozenPermanentUpgrades = false;
+            saved.maximumEnergy = 50; // Historical saves did not add the robe's five maximum energy.
+            saved.currentEnergy = 7;
+            saved.currentHealth = 43;
+            saved.roomEntryCheckpointJson = JsonUtility.ToJson(ExpeditionSaveMapper.CreateCheckpoint(saved));
+            ExpeditionRunConfiguration restored = ExpeditionSaveMapper.Restore(saved, out ExpeditionSaveData resumed);
+            Assert.That(restored.HasKnownStartingLoadout, Is.False);
+            Assert.Throws<System.InvalidOperationException>(() => { _ = restored.EnergyUpgradeLevel; });
+            BindingFixture fixture = CreatePlayer(restored, true);
+            ExpeditionPlayerRunBinder.BindFromCheckpoint(restored, resumed, fixture.ActorId, fixture.Input,
+                GroundLayers(), EnemyLayers(), 0, fixture.Motor, fixture.Collector, restored.Inventory.Catalog,
+                fixture.Weapons, fixture.Skills, fixture.ProjectilePool, fixture.ProjectileScope, fixture.Room);
+            Assert.That(fixture.Motor.CombatStats.MaximumEnergy, Is.EqualTo(50));
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(7));
+            Assert.That(fixture.Motor.CurrentHealth, Is.EqualTo(43));
+            Assert.That(fixture.Motor.HealthPotionCharges, Is.EqualTo(2));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CheckpointMismatchRejectsCompositionBeforeMutatingActorOrCollector()
+        {
+            ExpeditionRunConfiguration run = CreateRun(BellatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId, BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId);
+            ExpeditionSaveData checkpoint = ExpeditionSaveMapper.Create(run);
+            BindingFixture fixture = CreatePlayer(run, false);
+            checkpoint.runId = RunId.New().ToString();
+            Assert.Throws<System.ArgumentException>(() => ExpeditionPlayerRunBinder.BindFromCheckpoint(run, checkpoint,
+                fixture.ActorId, fixture.Input, GroundLayers(), EnemyLayers(), 0, fixture.Motor, fixture.Collector,
+                run.Inventory.Catalog, fixture.Weapons, fixture.Skills));
+            AssertActorAndCollectorUnconfigured(fixture);
+
+            checkpoint = ExpeditionSaveMapper.Create(run);
+            checkpoint.frozenPermanentUpgrades.energyUpgradeLevel = 2;
+            Assert.Throws<System.ArgumentException>(() => ExpeditionPlayerRunBinder.BindFromCheckpoint(run, checkpoint,
+                fixture.ActorId, fixture.Input, GroundLayers(), EnemyLayers(), 0, fixture.Motor, fixture.Collector,
+                run.Inventory.Catalog, fixture.Weapons, fixture.Skills));
+            AssertActorAndCollectorUnconfigured(fixture);
+
+            checkpoint = ExpeditionSaveMapper.Create(run);
+            checkpoint.inventorySnapshotJson = "{}";
+            Assert.Throws<System.ArgumentException>(() => ExpeditionPlayerRunBinder.BindFromCheckpoint(run, checkpoint,
+                fixture.ActorId, fixture.Input, GroundLayers(), EnemyLayers(), 0, fixture.Motor, fixture.Collector,
+                run.Inventory.Catalog, fixture.Weapons, fixture.Skills));
+            AssertActorAndCollectorUnconfigured(fixture);
+            yield return null;
+        }
+
         private ExpeditionRunConfiguration CreateRun(string classId, string raceId, string skill1, string skill2)
         {
             return ExpeditionRunConfigurationFactory.Create(classId, raceId, new[] { skill1, skill2 });
@@ -609,7 +752,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(fixture.Collector.Inventory.Armor, Is.SameAs(run.Inventory.Armor));
             Assert.That(fixture.Collector.Inventory.QuickConsumable, Is.SameAs(run.Inventory.QuickConsumable));
             ArmorResolution armor = ArmorStatsResolver.Resolve(
-                ArmorCatalog.Standard.Get(run.Inventory.Armor.ItemId),
+                LoadArmors(run.Inventory.Catalog).Get(run.Inventory.Armor.ItemId),
                 run.Inventory.Armor.UpgradeLevel,
                 run.StartingHealth,
                 run.StartingEnergy,
@@ -626,12 +769,32 @@ namespace Luckbound.Tests.PlayMode
                 "The third class skill must not enter the two-skill run loadout.");
         }
 
-        private static void ReplaceArmor(ExpeditionRunConfiguration run, string armorItemId, int upgradeLevel)
+        private static ArmorCatalog LoadArmors(ItemCatalog items)
+        {
+            TextAsset source = Resources.Load<TextAsset>("Luckbound/Data/Items/Armors");
+            Assert.That(source, Is.Not.Null, "The authoritative Armors.json must be available.");
+            return ArmorCatalogJsonLoader.Load(source.text, items);
+        }
+
+        private static void ReplaceWeapon(ExpeditionRunConfiguration run, ItemRarity rarity, int upgradeLevel)
+        {
+            var replacement = new InventoryItemStack(ItemInstanceId.New(), run.Inventory.Weapon.ItemId,
+                rarity, upgradeLevel, 1);
+            Assert.That(run.Inventory.TryCollectItem(replacement, TransactionId.New()).Succeeded, Is.True);
+            int slot = -1;
+            for (int index = 0; index < run.Inventory.Backpack.Count; index++)
+                if (run.Inventory.GetBackpackSlot(index)?.InstanceId == replacement.InstanceId) slot = index;
+            Assert.That(slot, Is.GreaterThanOrEqualTo(0));
+            Assert.That(run.Inventory.EquipBackpackItem(slot, EquipmentSlot.Weapon, TransactionId.New()).Succeeded, Is.True);
+        }
+
+        private static void ReplaceArmor(ExpeditionRunConfiguration run, string armorItemId, int upgradeLevel,
+            ItemRarity rarity = ItemRarity.Common)
         {
             var replacement = new InventoryItemStack(
                 ItemInstanceId.New(),
                 armorItemId,
-                ItemRarity.Common,
+                rarity,
                 upgradeLevel,
                 quantity: 1);
             InventoryOperationOutcome collected = run.Inventory.TryCollectItem(replacement, TransactionId.New());

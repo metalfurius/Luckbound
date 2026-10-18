@@ -148,6 +148,61 @@ namespace Luckbound.Tests.Weapons
         }
 
         [Test]
+        public void EquippedInstanceDamageUsesAllRarityAndUpgradeCombinationsWithoutRounding()
+        {
+            ItemRarity[] rarities = { ItemRarity.Common, ItemRarity.Rare, ItemRarity.Epic };
+            decimal[] rarityMultipliers = { 1m, 1.15m, 1.30m };
+
+            foreach (ExpectedWeapon expected in ExpectedWeapons)
+            {
+                WeaponProfile weapon = _weapons.Get(expected.ItemId);
+                for (int rarityIndex = 0; rarityIndex < rarities.Length; rarityIndex++)
+                {
+                    for (int upgradeLevel = 0; upgradeLevel <= 3; upgradeLevel++)
+                    {
+                        WeaponBasicAttackProfile runtime = WeaponBasicAttackProfile.Create(
+                            weapon, rarities[rarityIndex], upgradeLevel);
+                        decimal upgradeMultiplier = 1m + 0.05m * upgradeLevel;
+                        decimal expectedDamage = expected.Damage * rarityMultipliers[rarityIndex] * upgradeMultiplier;
+
+                        Assert.That(runtime.Rarity, Is.EqualTo(rarities[rarityIndex]), expected.ItemId);
+                        Assert.That(runtime.UpgradeLevel, Is.EqualTo(upgradeLevel), expected.ItemId);
+                        Assert.That(runtime.RarityMultiplier, Is.EqualTo(rarityMultipliers[rarityIndex]), expected.ItemId);
+                        Assert.That(runtime.UpgradeMultiplier, Is.EqualTo(upgradeMultiplier), expected.ItemId);
+                        Assert.That(runtime.BaseDamage, Is.EqualTo(expectedDamage), expected.ItemId);
+
+                        if (expected.ClassId == "class.bellator")
+                        {
+                            Assert.That(runtime.CreateMeleeAttackProfile().BaseDamage, Is.EqualTo(expectedDamage), expected.ItemId);
+                        }
+                        else if (expected.ClassId == "class.venator")
+                        {
+                            Assert.That(runtime.CreateVenatorBasicAttackProfile().Projectile.BaseDamage,
+                                Is.EqualTo(expectedDamage), expected.ItemId);
+                        }
+                        else
+                        {
+                            Assert.That(runtime.CreateMagusBasicAttackProfile().Projectile.BaseDamage,
+                                Is.EqualTo(expectedDamage), expected.ItemId);
+                        }
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public void InvalidWeaponInstanceRarityAndUpgradeLevelsAreRejected()
+        {
+            WeaponProfile weapon = _weapons.Get("weapon.bellator.rusted_sword");
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                WeaponBasicAttackProfile.Create(weapon, (ItemRarity)99));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                WeaponBasicAttackProfile.Create(weapon, ItemRarity.Common, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                WeaponBasicAttackProfile.Create(weapon, ItemRarity.Common, 4));
+        }
+
+        [Test]
         public void RuntimeProfilesCarryEveryExplicitRangedTraitIntoTheImpactContract()
         {
             WeaponBasicAttackProfile longbow = WeaponBasicAttackProfile.Create(_weapons.Get("weapon.venator.long_bow"));
@@ -177,6 +232,42 @@ namespace Luckbound.Tests.Weapons
                 .CreateMagusBasicAttackProfile().Projectile;
             Assert.That(shadow.Element, Is.EqualTo("shadow"));
             Assert.That(shadow.DefensePenetration, Is.EqualTo(1));
+
+            WeaponBasicAttackProfile upgradedLongbow = WeaponBasicAttackProfile.Create(
+                _weapons.Get("weapon.venator.long_bow"), ItemRarity.Epic, upgradeLevel: 3);
+            Assert.That(upgradedLongbow.CreateVenatorBasicAttackProfile()
+                .CreateProjectile(charged: true).BaseDamage, Is.EqualTo(27.209m));
+        }
+
+        [Test]
+        public void MeleeComboMultipliesInstanceDamageBeforeDamageResolverRounds()
+        {
+            WeaponBasicAttackProfile instance = WeaponBasicAttackProfile.Create(
+                _weapons.Get("weapon.bellator.rusted_sword"), ItemRarity.Rare, upgradeLevel: 3);
+            var state = new MeleeAttackState(instance.CreateMeleeAttackProfile(), MeleeComboSequence.CreateBellator());
+
+            MeleeAttackSnapshot first = state.Tick(0, attackPressed: true, dodgeAccepted: false);
+            MeleeAttackSnapshot second = state.Tick(27, attackPressed: true, dodgeAccepted: false);
+            MeleeAttackSnapshot third = state.Tick(54, attackPressed: true, dodgeAccepted: false);
+            MeleeAttackSnapshot thirdHitWindow = state.Tick(60, attackPressed: false, dodgeAccepted: false);
+
+            Assert.That(first.DamageMultiplier, Is.EqualTo(1m));
+            Assert.That(second.DamageMultiplier, Is.EqualTo(1m));
+            Assert.That(third.DamageMultiplier, Is.EqualTo(1.25m));
+            Assert.That(thirdHitWindow.HitWindow, Is.Not.Null);
+            Assert.That(thirdHitWindow.HitWindow.BaseDamage, Is.EqualTo(15.87m));
+            Assert.That(thirdHitWindow.HitWindow.DamageMultiplier, Is.EqualTo(1.25m));
+
+            DamageResolution resolution = DamageResolver.Resolve(new DamageCalculationRequest(
+                thirdHitWindow.HitWindow.BaseDamage,
+                rarityMultiplier: 1m,
+                upgradeMultiplier: 1m,
+                offensiveBonusPercent: thirdHitWindow.HitWindow.DamageMultiplier - 1m,
+                defensePenetration: 0,
+                incomingDamageReductionPercent: 0m,
+                targetStats: new CombatStats(100, 0, 0),
+                targetIsInvulnerable: false));
+            Assert.That(resolution.Damage, Is.EqualTo(20), "19.8375 is rounded only by DamageResolver.");
         }
 
         [Test]

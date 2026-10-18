@@ -8,19 +8,20 @@
 
 Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, paquetes y grafo de ejecución: [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
-**Checkpoint vigente:** [revisión completa del 18 de octubre](CHECKPOINT_2026-10-18.md). Base de código `9532a63`; 38 tareas `Verified`, nueve `InProgress`, una `NeedsOwnerReview` y 63 `Pending`. Se leyeron las evidencias existentes; este checkpoint no ejecuta Unity ni inicia paquetes nuevos.
+**Relevo vigente:** [entrada para Luna max](LUNA_HANDOFF.md) y [aceptación de la preparación](#preparación-del-relevo-a-luna-max--18-de-octubre-de-2026). 39 tareas `Verified`, ocho `InProgress`, una `NeedsOwnerReview` y 63 `Pending`. El [checkpoint previo](CHECKPOINT_2026-10-18.md) conserva el diagnóstico anterior a estas correcciones. La petición actual, «Arregla todo lo necesario para que luna en max luego siga con el objetivo», prepara el relevo; no inicia la composición F09 ni aprueba revisiones de Fran.
 
 ## Estado actual (18 de octubre de 2026)
 
-- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01–E03, E06–E09 y F07: Verified; E04, E10, F01, F08, F09, G01, G02 y G04: InProgress; A06: InProgress; D09: NeedsOwnerReview; las demás tareas figuran Pending.
+- A01–A05, A07–A08, B01–B07, C01–C08, D01–D08, E01–E03, E06–E09, F07 y G02: Verified; E04, E10, F01, F08, F09, G01 y G04: InProgress; A06: InProgress; D09: NeedsOwnerReview; las demás tareas figuran Pending.
 - E02.ADAPTER está integrado en `99ea5e9`. El escenario físico `E02_PhysicalCraftCommitRetryAndRestart` pasa con nueve aserciones en `Logs/Scenarios/E02/20261016T143835626Z_E02_PhysicalCraftCommitRetryAndRestart_b5c4a425/scenario-report.json`. La regresión coordinada revalidada incluye E02.
 - E03 Core, App durable e interfaz accesible para comercio, herrería y descanso ya cumplen el cierre técnico: `ce02288` acepta venta de objetos; el escenario integrado comprueba entrada/restauración, compra por puntero, reintento de la misma transacción por teclado, venta, mejora y Talia; tras reiniciar, stock y servicios de uso único conservan su estado. Economía y recuperación cubren también falta de espacio/oro, precios/descuentos, redondeo, ausencia de arbitraje, mejoras consecutivas y replay. `FIX-E03-01` corrige el replay de Talia tras restaurar partidas: la firma durable usa la sala, reconoce recibos antiguos con salud en la firma y no vuelve a aplicar salud histórica. E03 queda `Verified` con la regresión íntegra registrada al final de este documento.
 - E04 integra Core, mapper, mutaciones persistentes y ahora un panel de elección/repetición/reclamo. `31ea4b6` aplica objeto y `ClaimId` en una escritura durable atómica, con reintento exacto y preservación del checkpoint D09; `b89f0e9` añade replay de la API tras recargar la misma oferta sin rollback; `7b33415` integra el panel y `e0d8716` restaura la misma opción pendiente tras recrearlo. Permanecen pendientes los callsites de encuentro y validar migración con un expediente legado original; E04 sigue `InProgress`.
-- G01 integra el catálogo de nueve armas y sus perfiles en `PlayerMotor2D`, los binders y pruebas de runtime incluidas en la regresión 320/230. Siguen pendientes el callsite productivo de composición del recorrido y las magnitudes del mayor alcance/empuje del Mandoble de Umbra, que el plan no fija. G01 permanece `InProgress`.
-- G02 ya contiene seis armaduras, seis consumibles y doce recetas. La auditoría del checkpoint confirma una brecha: la defensa no incorpora +1/+2 de rareza y los perfiles de armadura siguen codificados en C# en vez de proceder de JSON. `G02.ARMOR.DATA-RARITY` requiere implementación y aceptación; su worktree sigue limpio en `9532a63` tras la interrupción. G02 permanece `InProgress`.
+- G01 integra nueve armas y ahora conserva rareza/mejora de instancia en sus básicos, sin redondeo intermedio. El plan fija las magnitudes de Umbra; falta su implementación/aceptación mediante `G01.UMBRA.NUMERIC`, además de la composición productiva F09. G01 permanece `InProgress`.
+- G02 queda `Verified`: seis armaduras desde JSON autoritativo, defensa base + rareza 0/1/2 + mejora 0–3, modificadores de runtime, seis consumibles y doce recetas con transacciones y regresión comprobadas. La preparación cierra `G02.ARMOR.DATA-RARITY`; no reasignar ese paquete ni reutilizar automáticamente su worktree antiguo. La publicación del equipo confirmado al actor vivo durante el recorrido sigue siendo integración F09, delimitada en `F09.PLAYER.SESSION`.
+- Contenido de guardado v5: niveles permanentes congelados con marcador explícito, migración de las formas históricas v1–v4 y composición `BindFromCheckpoint` sin curación ni inferencia desde el perfil actual. La ruta corta generación 2 ya tiene JSON, validación y persistencia; no existe todavía un recorrido F10 integrado con salas finales.
 - E07 quedó reparado en `58d715f`; la prueba `PiercingArrowDamagesThreeActorsOnceDespiteSiblingColliders` pasa dentro de la regresión completa PlayMode 93/93. E07 sigue `Verified`.
 - **FIX-E03-01 — recibos durables de Talia, commit `a4c1806`:** antes del cambio, partidas guardadas por la firma `economy|talia|<room>|<salud>|<máxima>` chocaban con la firma nueva al repetir tras reiniciar. La firma canónica ahora identifica Talia + sala y el lector acepta la forma histórica; `ApplicationBootstrapper` deja intacta la salud vigente cuando reproduce un recibo existente. EditMode `197/197` en `Logs/Coordinator-20261016-talia-compat-editmode.xml` y PlayMode `125/125` en `Logs/Coordinator-20261016-talia-compat-playmode.xml`, Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`, exit code 0 y `MainWindowHandle=0`. El escenario conserva el resultado original de Talia y el oro/stock, pero persiste salud 60 cambiada después del uso para probar que replay no cura de nuevo.
-- El proyecto y el workflow local ya fijan Unity `6000.6.6f1`. Existen builds locales Windows/WebGL satisfactorias y regresiones EditMode 320/320 y PlayMode 230/230 en ese Editor. El intento anterior de instalación que falló quedó superado; no describe la instalación vigente. Las builds preceden a los últimos cambios de código y no se atribuyen al último estado de distribución.
+- El proyecto y el workflow fijan Unity `6000.6.6f1`. La regresión vigente pasa EditMode `343/343` y PlayMode `243/243`, con filtro `Luckbound`, cero fallos y cero omitidos. Las builds locales Windows/WebGL previas preceden a estas correcciones y no se atribuyen al último estado de distribución. El intento antiguo de instalación fallido no describe el Editor vigente.
 - El commit `807a816` consolida la integración de E03/E04, la conexión de E08 a `PlayerMotor2D`, los recursos/runtime parciales de F08 y los importadores de Unity. EditMode 175/175, PlayMode 93/93 y las herramientas de audio 30/30 pasan en el estado integrado. No se incluyeron las cuatro referencias originales del usuario.
 - **Paquetes integrados desde `d3ff243`:** E03 venta de objetos (`ce02288`); E08 asistencia de apuntado Magus (`25c9109`, corrección de API `bf9ab36`); F08 protección de reproducción/procedencia (`d296466`) y expectativa del catálogo actual (`684facb`). Los trabajadores no actualizaron este registro central; sus entregas se aceptaron tras integración y comprobación del coordinador.
 - E08 está `Verified`. La asistencia Magus usa cono de 35°, línea de visión y desempate determinista; su cobertura dirigida y la regresión completa aceptan los contratos de clase. La composición de esa clase en una expedición productiva pertenece a F09 y sigue pendiente.
@@ -54,7 +55,7 @@ Especificación principal: [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). Reparto, 
 - E07 integra las reglas Core del ataque básico gratuito y las tres habilidades de Venator en `707354c`; su conexión al motor, proyectiles, trampa y aceptación están verificadas según la ficha E07.
 - La entrega parcial F08.Taberna y su corrección de hashes están integradas (`f8f4aba`, `a066ece`): diez pruebas de audio pasan y el validador independiente devuelve `passed`, sin reproducir ni escuchar el WAV de referencia del usuario.
 - Revisiones de builds: ninguna realizada.
-- La rama local `codex/luckbound-reboot` contiene los commits de integración enumerados en las fichas siguientes. No se ha ejecutado GitHub Actions ni se ha modificado o publicado la web; las builds de esta reanudación no se han vuelto a ejecutar.
+- La rama `codex/luckbound-reboot` contiene las integraciones enumeradas en las fichas siguientes. El cierre de respaldo y CI de esta preparación se registra al final; no atribuir una ejecución remota, build ni publicación que no conste allí.
 - A06 espera una ejecución real de Actions con los secretos y permisos del repositorio. B05 fija la física a 60 Hz; B06 integra cámara y estados visuales sin cruzar la frontera Gameplay/Presentation. B07 ya cumple su aceptación técnica; su revisión de Fran sigue Pending.
 
 ## Estados y dependencias
@@ -124,7 +125,7 @@ Las pruebas y entregables completos están en el plan. Esta tabla explicita el e
 | F09 | Tutorial y Custodio acabados; recorrido corto integrado | F03, F04, F05, F06, F08, E10 | InProgress |
 | F10 | Muestra 0.3 | F09 | Pending |
 | G01 | Nueve armas | C03, D04 | InProgress |
-| G02 | Seis armaduras, seis consumibles y doce recetas | E02, E03 | InProgress |
+| G02 | Seis armaduras, seis consumibles y doce recetas | E02, E03 | Verified |
 | G03 | Ocho reliquias de combate | D04, E05, E07, E08 | Pending |
 | G04 | Ocho reliquias de apoyo | D04, E03, E07, E08 | InProgress |
 | G05 | Ocho reliquias de Fortuna | D04, E03, E04, E05 | Pending |
@@ -850,3 +851,43 @@ Base común de trabajo: `f5ccf195421c2663d7c37bcf2a870fca560c05ac`. El coordinad
 - Hallazgos nuevos: el validador de ruta exige 24 nodos y necesita un contrato compatible con la muestra F10; al restaurar se omiten niveles de mejora permanente de la configuración del actor; el binder no aplica recursos actuales guardados; armadura rara/épica omite defensa adicional. Son brechas pendientes, sin atribuirles corrección ni aceptación.
 - GitHub devuelve solo `Main` en `5495d8b` y `gh-pages` en `38ab247`, con la build anterior 0.0.38; la consulta de Actions devuelve cero ejecuciones visibles. La rama de reinicio no está publicada como rama remota. No se hizo push ni despliegue; el acceso HTTP directo al dominio no pudo verificarse con la herramienta web.
 - No hay workers activos. El worktree `g02-armor-data-rarity` está limpio en `9532a63`; la asignación interrumpida no produjo entrega. No se abrió ninguna interfaz ni previsualización. El checkpoint modifica solo documentación; no registra aprobación de las revisiones pendientes.
+
+## Preparación del relevo a Luna max — 18 de octubre de 2026
+
+**Petición:** «Arregla todo lo necesario para que luna en max luego siga con el objetivo». Base `4dbf5d0d6d0b466871a178b008653be4c1b008d5`, rama `codex/luckbound-reboot`. Se corrigen las brechas técnicas del checkpoint y se fija la siguiente cola; no se inicia el recorrido F09 ni se presenta F10 como terminado.
+
+### Entregas integradas y aceptadas
+
+| Contrato | Resultado comprobado |
+|---|---|
+| G02.ARMOR.DATA-RARITY | Seis perfiles desde `Data/Items/Armors.json`, sin perfiles numéricos de producción en C#. Loader valida forma, IDs exactos, referencias, duplicados y campos obligatorios. Core comprueba seis perfiles × tres rarezas × cuatro mejoras; PlayMode comprueba modificadores reales y rareza/equipo en las tres clases. Junto a los seis consumibles y doce recetas ya integrados, cierra la aceptación de G02. |
+| G01.INSTANCE.DAMAGE | Básicos de nueve armas usan rareza 1/1,15/1,30 y mejora 0–3 de la instancia. No hay redondeo intermedio ni doble multiplicador; el impacto Bellator épico +3 comprueba daño físico real. G01 sigue InProgress por Umbra y su integración en el recorrido. |
+| SAVE.FROZEN / ACTOR.RESUME | Contenido v5 conserva niveles de salida, incluido 2/2/1, y distingue desconocido de conocido 0/0/0 con `hasFrozenPermanentUpgrades`. Legado v1–v4 comprueba primero el checksum de su DTO; se admiten ambas formas v4 de Fortuna. Los objetos vacíos materializados por `JsonUtility` se normalizan sin inventar una partida ni mejoras. Guardar, reiniciar, reintentar y restaurar conserva recursos, equipo, snapshot y slot rápido agotado. Binder y mutaciones rechazan cambiar los niveles congelados. |
+| F09.ROUTE.CONTRACT | `CreateSample` carga cinco nodos generación 2 desde JSON: tutorial → C1 → E1 → Custodio → extracción segura. Campaña generación 1/24 nodos conserva su representación. Pruebas de archivo real recorren guardar/reabrir los cinco nodos; no prueban combate, geometría ni duración de F10. |
+| F08.INPUT.LIFETIME | El router observa eventos de botón sin conservar el disposable que quedaba obsoleto al sustituir Input System. Dos pruebas cubren entrada real y desactivación tras sustituir el runtime. No es revisión auditiva ni validación WebGL. |
+| TOOLING.EVIDENCE | Runner PowerShell 7 invisible, filtro por defecto `Luckbound`, exclusión de otro Unity, timeout, XML y auditoría. Recorder v2 enumera todas las fuentes de sus cinco raíces, conserva manifiesto y captura una vez por dominio; el runner verifica al final hashes y listado completos. |
+
+Los trabajadores entregaron diffs acotados y revisiones, sin ejecutar Unity ni escribir producción. El coordinador aplicó e integró, corrigió los fallos de aceptación y retiró únicamente los cinco directorios de staging creados para este relevo. Una revisión estática que no detectó el comportamiento de nulos de `JsonUtility` no se utiliza como prueba de persistencia.
+
+### Aceptación real del coordinador
+
+Unity `6000.6.6f1`, WindowsEditor, `-batchmode -nographics`, lanzamiento `UseShellExecute=false` y `CreateNoWindow=true`. Una ejecución de Editor a la vez; los procesos Unity observados tenían `MainWindowHandle=0`. No se abrió navegador, Hub, juego, ventana ni previsualización multimedia.
+
+| Ejecución | Resultado | XML y SHA-256 |
+|---|---|---|
+| EditMode completo, filtro Luckbound | 343/343, cero fallos/omitidos, exit 0 | `Logs/Coordinator-20261018-handoff-editmode-final.xml` — `a3cc18716806ac02856b0e227dc2202cec23853068b223940af6adc3ee08c7e2` |
+| PlayMode completo, filtro Luckbound | 243/243, cero fallos/omitidos, exit 0 | `Logs/Coordinator-20261018-handoff-playmode-full-r2.xml` — `9d566a77b365886047a6448c06673079e28e2b2fe1a17509c0d3c09eef529e30` |
+| PlayMode dirigido SaveRepositoryTests | 22/22, cero fallos/omitidos, exit 0 | `Logs/Coordinator-20261018-handoff-saves-playmode-r4.xml` — `8532751a1a502bd0c160fe60142d65229ff061441eb6fbdf018a39d1455e1a97` |
+
+Cada prefijo conserva también `.log` y `.execution.json`. La PlayMode completa verifica 41 manifiestos de escenario con una única huella v2 de 4.063 archivos: `b195fb5f17eb39ab4fb265eace50f6fa3b6bc4b9b18f486c71071440687e3209`; `sourceSnapshotVerified=true`. La comprobación final de fuentes tardó 2,592 s. La ejecución registra el commit base y árbol modificado; la huella identifica los bytes comprobados, sin atribuir limpieza al commit base. El runner utilizado tiene SHA-256 `86057ce4392faa0ba66b350d1b60bdeba37958ad472863397488367e6050e521`.
+
+Se conservan los intentos no aceptados: compilación por namespace de test y helper estático, salida temprana del Editor y una ejecución EditMode sin filtro que incluyó pruebas GPU internas de Unity. Esa selección produjo resultados ajenos al juego y una entrada temporal de pipeline gráfico que se retiró; no verifica Luckbound. La primera PlayMode completa tuvo 20 fallos por nulos inline/checksums y la suscripción obsoleta de entrada; fueron corregidos antes de la aceptación final. Las pruebas dirigidas intermedias también detectaron una fixture v3 creada con DTO actual y después con constructores/valores por defecto distintos de los históricos; se corrigió la fixture, sin debilitar el checksum. No se omiten ni se silencian esos casos.
+
+### Continuación y límites
+
+- Entrada única: [LUNA_HANDOFF.md](LUNA_HANDOFF.md). Sus contratos `F09.ENTRY.TECH`, `F09.PLAYER.SESSION`, `G01.UMBRA.NUMERIC`, `F01.REVIEW/F02.IMPORT`, `F09.ENCOUNTERS`, `F09.EXIT` y `F08.PLATFORM/F10.ACCEPT` fijan archivos, dependencias, reglas y aceptación. El plan 3.23 fija también las magnitudes pendientes de Umbra; no rediseñarlas al retomar.
+- La composición de `Expedition` sigue pendiente: no confundir el binder, la ruta lógica ni pruebas de persistencia con la muestra jugable. F01 necesita decisión visual; F02–F06 siguen Pending; F08/E10/F09 siguen InProgress; F10 sigue Pending. La actualización del equipo del actor vivo y la conservación de recargas entre salas son parte explícita de la integración pendiente.
+- E04 conserva pendientes los productores de encuentros y una prueba con expediente histórico original. Las fixtures históricas comprobadas no sustituyen ese archivo. D09 y las cinco revisiones de Fran conservan su estado; no se solicita ni se atribuye aprobación en esta preparación.
+- No se ejecutó una nueva build local ni prueba gráfica/auditiva de plataforma. Las builds anteriores conservan sus límites. La aceptación headless no demuestra arte final, sonido audible ni rendimiento de WebGL.
+- Las cuatro referencias originales permanecen intactas y sin seguimiento. El WAV conserva SHA-256 `34bd516e4542da523610cb70a098770950ad9f6ee3d32f32dcd16b9d619fc61a`; no se reprodujo ni se incorporó como música distribuible.
+- El respaldo de rama y el resultado real de CI se añaden a continuación. Main y gh-pages se preservan; el respaldo no promueve ni publica el juego.

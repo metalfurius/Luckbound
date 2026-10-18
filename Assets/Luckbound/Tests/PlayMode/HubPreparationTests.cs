@@ -408,6 +408,14 @@ namespace Luckbound.Tests.PlayMode
                 while (!begin.IsCompleted) yield return null;
                 Assert.That(begin.Result.Succeeded, Is.True, begin.Result.Message);
                 ExpeditionSaveData entry = app.ActiveExpedition;
+                ExpeditionSaveData changedStartingUpgrades = entry.Clone();
+                changedStartingUpgrades.frozenPermanentUpgrades.healthUpgradeLevel = 1;
+                Assert.Throws<System.InvalidOperationException>(() => app.SaveActiveExpeditionStateAsync(changedStartingUpgrades),
+                    "An in-room snapshot cannot change the permanent upgrades frozen at departure.");
+                changedStartingUpgrades = entry.Clone();
+                changedStartingUpgrades.hasFrozenPermanentUpgrades = false;
+                Assert.Throws<System.InvalidOperationException>(() => app.SaveActiveExpeditionStateAsync(changedStartingUpgrades),
+                    "A known starting snapshot cannot become unknown during a run.");
                 evidence.RecordAssertion("The run is attached only after its complete initial snapshot reaches durable storage",
                     app.ActiveRun != null && entry != null && entry.runId == run.RunId.ToString() &&
                     !string.IsNullOrWhiteSpace(entry.roomEntryCheckpointJson), "persisted RunId and entry checkpoint", entry?.runId);

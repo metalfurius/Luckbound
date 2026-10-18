@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Security.Cryptography;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -107,6 +108,17 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(report.errors, Is.Not.Empty);
                 Assert.That(report.seed, Is.EqualTo(seed));
                 Assert.That(report.sourceHash, Is.Not.Empty);
+                Assert.That(report.sourceHashVersion, Is.EqualTo(2));
+                Assert.That(report.sourceFileCount, Is.GreaterThan(0));
+                Assert.That(report.sourceSnapshotCapturedUtc, Is.Not.Empty);
+                Assert.That(File.Exists(Path.Combine(evidence.EvidenceDirectory, "source-manifest.sha256")), Is.True);
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    string manifestHash = BitConverter.ToString(sha256.ComputeHash(File.ReadAllBytes(
+                        Path.Combine(evidence.EvidenceDirectory, "source-manifest.sha256"))))
+                        .Replace("-", string.Empty).ToLowerInvariant();
+                    Assert.That(report.sourceHash, Is.EqualTo(manifestHash));
+                }
                 Assert.That(File.ReadAllText(evidence.LogPath), Does.Contain("Deliberately missing fixture object"));
 
                 if (string.Equals(Environment.GetEnvironmentVariable("LUCKBOUND_SCENARIO_FAIL_PROBE"), "1", StringComparison.Ordinal))

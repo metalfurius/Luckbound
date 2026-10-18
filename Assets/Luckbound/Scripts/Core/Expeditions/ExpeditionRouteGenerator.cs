@@ -17,7 +17,9 @@ namespace Luckbound.Core.Expeditions
         Guardian,
         Rest,
         FinalBoss,
-        OptionalCombat
+        OptionalCombat,
+        Tutorial,
+        SafeExtraction
     }
 
     public sealed class ExpeditionRouteSectorCatalog
@@ -146,6 +148,203 @@ namespace Luckbound.Core.Expeditions
         }
     }
 
+    public sealed class ExpeditionSampleRouteNodeDefinition
+    {
+        public ExpeditionSampleRouteNodeDefinition(string nodeId, string sectorId, string templateId,
+            ExpeditionRouteNodeKind kind, bool isMandatory, int mainPathIndex, string entryPortId, string exitPortId)
+        {
+            NodeId = nodeId;
+            SectorId = sectorId;
+            TemplateId = templateId;
+            Kind = kind;
+            IsMandatory = isMandatory;
+            MainPathIndex = mainPathIndex;
+            EntryPortId = entryPortId;
+            ExitPortId = exitPortId;
+        }
+
+        public string NodeId { get; }
+        public string SectorId { get; }
+        public string TemplateId { get; }
+        public ExpeditionRouteNodeKind Kind { get; }
+        public bool IsMandatory { get; }
+        public int MainPathIndex { get; }
+        public string EntryPortId { get; }
+        public string ExitPortId { get; }
+    }
+
+    public sealed class ExpeditionSampleRouteConnectionDefinition
+    {
+        public ExpeditionSampleRouteConnectionDefinition(string fromNodeId, string fromPortId, string toNodeId,
+            string toPortId, bool isOptionalBranch)
+        {
+            FromNodeId = fromNodeId;
+            FromPortId = fromPortId;
+            ToNodeId = toNodeId;
+            ToPortId = toPortId;
+            IsOptionalBranch = isOptionalBranch;
+        }
+
+        public string FromNodeId { get; }
+        public string FromPortId { get; }
+        public string ToNodeId { get; }
+        public string ToPortId { get; }
+        public bool IsOptionalBranch { get; }
+    }
+
+    /// <summary>Fixed, data-driven definition of the five-location F10 sample route.</summary>
+    public sealed class ExpeditionSampleRouteDefinition
+    {
+        public const int RequiredSchemaVersion = 1;
+        public const int RequiredGenerationVersion = 2;
+        public const string EntryPortId = "port.entry.west";
+        public const string ExitPortId = "port.exit.east";
+        private static readonly ExpeditionSampleRouteNodeDefinition[] ContractNodes =
+        {
+            new ExpeditionSampleRouteNodeDefinition("sample.tutorial", "patio", "room.sample.tutorial",
+                ExpeditionRouteNodeKind.Tutorial, true, 0, EntryPortId, ExitPortId),
+            new ExpeditionSampleRouteNodeDefinition("sample.patio.combat", "patio", "room.patio.c1",
+                ExpeditionRouteNodeKind.Combat, true, 1, EntryPortId, ExitPortId),
+            new ExpeditionSampleRouteNodeDefinition("sample.patio.exploration", "patio", "room.patio.e1",
+                ExpeditionRouteNodeKind.Exploration, true, 2, EntryPortId, ExitPortId),
+            new ExpeditionSampleRouteNodeDefinition("sample.patio.guardian", "patio", "room.patio.guardian",
+                ExpeditionRouteNodeKind.Guardian, true, 3, EntryPortId, ExitPortId),
+            new ExpeditionSampleRouteNodeDefinition("sample.safe_extraction", "patio", "room.sample.extraction",
+                ExpeditionRouteNodeKind.SafeExtraction, true, 4, EntryPortId, ExitPortId)
+        };
+
+        private readonly IReadOnlyList<ExpeditionSampleRouteNodeDefinition> _nodes;
+        private readonly IReadOnlyList<ExpeditionSampleRouteConnectionDefinition> _connections;
+        private readonly IReadOnlyList<string> _mandatoryNodeIds;
+
+        public ExpeditionSampleRouteDefinition(int schemaVersion, int generationVersion,
+            IEnumerable<ExpeditionSampleRouteNodeDefinition> nodes,
+            IEnumerable<ExpeditionSampleRouteConnectionDefinition> connections,
+            IEnumerable<string> mandatoryNodeIds)
+        {
+            SchemaVersion = schemaVersion;
+            GenerationVersion = generationVersion;
+            _nodes = Array.AsReadOnly(nodes == null
+                ? Array.Empty<ExpeditionSampleRouteNodeDefinition>()
+                : nodes.ToArray());
+            _connections = Array.AsReadOnly(connections == null
+                ? Array.Empty<ExpeditionSampleRouteConnectionDefinition>()
+                : connections.ToArray());
+            _mandatoryNodeIds = Array.AsReadOnly(mandatoryNodeIds == null
+                ? Array.Empty<string>()
+                : mandatoryNodeIds.ToArray());
+        }
+
+        public int SchemaVersion { get; }
+        public int GenerationVersion { get; }
+        public IReadOnlyList<ExpeditionSampleRouteNodeDefinition> Nodes => _nodes;
+        public IReadOnlyList<ExpeditionSampleRouteConnectionDefinition> Connections => _connections;
+        public IReadOnlyList<string> MandatoryNodeIds => _mandatoryNodeIds;
+        internal static ExpeditionSampleRouteNodeDefinition RequiredNodeAt(int index) => ContractNodes[index];
+
+        public IReadOnlyList<string> Validate()
+        {
+            var errors = new List<string>();
+            if (SchemaVersion != RequiredSchemaVersion) errors.Add("schemaVersion must be 1");
+            if (GenerationVersion != RequiredGenerationVersion) errors.Add("generationVersion must be 2");
+            if (_nodes.Count != ContractNodes.Length)
+                errors.Add("the sample route must contain exactly five locations");
+            if (_connections.Count != ContractNodes.Length - 1)
+                errors.Add("the sample route must contain exactly four linear connections");
+            if (_mandatoryNodeIds.Count != ContractNodes.Length)
+                errors.Add("the sample route must list all five mandatory locations");
+
+            int nodeCount = Math.Min(_nodes.Count, ContractNodes.Length);
+            for (int index = 0; index < nodeCount; index++)
+            {
+                ExpeditionSampleRouteNodeDefinition actual = _nodes[index];
+                ExpeditionSampleRouteNodeDefinition expected = ContractNodes[index];
+                if (actual == null)
+                {
+                    errors.Add("nodes[" + index.ToString(CultureInfo.InvariantCulture) + "] is missing");
+                    continue;
+                }
+
+                if (!string.Equals(actual.NodeId, expected.NodeId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.SectorId, expected.SectorId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.TemplateId, expected.TemplateId, StringComparison.Ordinal) ||
+                    actual.Kind != expected.Kind || actual.IsMandatory != expected.IsMandatory ||
+                    actual.MainPathIndex != expected.MainPathIndex ||
+                    !string.Equals(actual.EntryPortId, expected.EntryPortId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.ExitPortId, expected.ExitPortId, StringComparison.Ordinal))
+                {
+                    errors.Add("nodes[" + index.ToString(CultureInfo.InvariantCulture) +
+                        "] does not match the fixed sample route contract");
+                }
+            }
+
+            int connectionCount = Math.Min(_connections.Count, ContractNodes.Length - 1);
+            for (int index = 0; index < connectionCount; index++)
+            {
+                ExpeditionSampleRouteConnectionDefinition actual = _connections[index];
+                ExpeditionSampleRouteNodeDefinition from = ContractNodes[index];
+                ExpeditionSampleRouteNodeDefinition to = ContractNodes[index + 1];
+                if (actual == null ||
+                    !string.Equals(actual.FromNodeId, from.NodeId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.FromPortId, ExitPortId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.ToNodeId, to.NodeId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.ToPortId, EntryPortId, StringComparison.Ordinal) ||
+                    actual.IsOptionalBranch)
+                {
+                    errors.Add("connections[" + index.ToString(CultureInfo.InvariantCulture) +
+                        "] must connect consecutive sample locations through the standard west/east ports");
+                }
+            }
+
+            int mandatoryCount = Math.Min(_mandatoryNodeIds.Count, ContractNodes.Length);
+            for (int index = 0; index < mandatoryCount; index++)
+            {
+                if (!string.Equals(_mandatoryNodeIds[index], ContractNodes[index].NodeId, StringComparison.Ordinal))
+                {
+                    errors.Add("mandatoryNodeIds must preserve the fixed sample location order");
+                    break;
+                }
+            }
+
+            return errors.AsReadOnly();
+        }
+    }
+
+    /// <summary>Builds the fixed five-location F10 sample without changing campaign generation.</summary>
+    public static class ExpeditionSampleRouteGenerator
+    {
+        public const int GenerationVersion = ExpeditionSampleRouteDefinition.RequiredGenerationVersion;
+
+        public static ExpeditionRoutePlan Generate(uint seed, ExpeditionSampleRouteDefinition definition)
+        {
+            if (definition == null) throw new ArgumentNullException(nameof(definition));
+            IReadOnlyList<string> definitionErrors = definition.Validate();
+            if (definitionErrors.Count > 0)
+                throw new ArgumentException("Invalid expedition sample route definition: " +
+                    string.Join("; ", definitionErrors), nameof(definition));
+
+            var nodes = new List<ExpeditionRouteNode>(definition.Nodes.Count);
+            foreach (ExpeditionSampleRouteNodeDefinition node in definition.Nodes)
+            {
+                nodes.Add(new ExpeditionRouteNode(node.NodeId, node.SectorId, node.TemplateId, node.Kind,
+                    node.IsMandatory, node.MainPathIndex));
+            }
+
+            var connections = new List<ExpeditionRouteConnection>(definition.Connections.Count);
+            foreach (ExpeditionSampleRouteConnectionDefinition connection in definition.Connections)
+            {
+                connections.Add(new ExpeditionRouteConnection(connection.FromNodeId, connection.FromPortId,
+                    connection.ToNodeId, connection.ToPortId, connection.IsOptionalBranch));
+            }
+
+            var route = new ExpeditionRoutePlan(GenerationVersion, seed, nodes, connections, definition.MandatoryNodeIds);
+            IReadOnlyList<string> routeErrors = route.Validate();
+            if (routeErrors.Count > 0)
+                throw new InvalidOperationException("Generated an invalid expedition sample route: " +
+                    string.Join("; ", routeErrors));
+            return route;
+        }
+    }
     public sealed class ExpeditionRouteNode
     {
         internal ExpeditionRouteNode(
@@ -288,6 +487,17 @@ namespace Luckbound.Core.Expeditions
         public IReadOnlyList<string> Validate()
         {
             var errors = new List<string>();
+            if (GenerationVersion != ExpeditionRouteGenerator.GenerationVersion &&
+                GenerationVersion != ExpeditionSampleRouteGenerator.GenerationVersion)
+            {
+                errors.Add("unsupported route generation version " + GenerationVersion.ToString(CultureInfo.InvariantCulture));
+                return errors.AsReadOnly();
+            }
+            if (GenerationVersion == ExpeditionSampleRouteGenerator.GenerationVersion)
+            {
+                ValidateSampleRoute(errors);
+                return errors.AsReadOnly();
+            }
             if (_nodes.Count != 24) errors.Add("a route must contain 21 mandatory and three optional nodes");
             if (_mandatoryNodeIds.Count != 21) errors.Add("the required main path must contain 21 locations");
             var nodesById = new Dictionary<string, ExpeditionRouteNode>(StringComparer.Ordinal);
@@ -404,6 +614,58 @@ namespace Luckbound.Core.Expeditions
             return errors.AsReadOnly();
         }
 
+        private void ValidateSampleRoute(List<string> errors)
+        {
+            if (_nodes.Count != 5) errors.Add("a sample route must contain exactly five mandatory nodes");
+            if (_mandatoryNodeIds.Count != 5) errors.Add("a sample route main path must contain exactly five locations");
+            if (_connections.Count != 4) errors.Add("a sample route must contain exactly four linear connections");
+
+            int nodeCount = Math.Min(_nodes.Count, 5);
+            for (int index = 0; index < nodeCount; index++)
+            {
+                ExpeditionRouteNode actual = _nodes[index];
+                ExpeditionSampleRouteNodeDefinition expected = ExpeditionSampleRouteDefinition.RequiredNodeAt(index);
+                if (actual == null || !string.Equals(actual.NodeId, expected.NodeId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.SectorId, expected.SectorId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.TemplateId, expected.TemplateId, StringComparison.Ordinal) ||
+                    actual.Kind != expected.Kind || actual.IsMandatory != expected.IsMandatory ||
+                    actual.MainPathIndex != expected.MainPathIndex ||
+                    !string.Equals(actual.EntryPortId, expected.EntryPortId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.ExitPortId, expected.ExitPortId, StringComparison.Ordinal))
+                {
+                    errors.Add("sample route node at index " + index.ToString(CultureInfo.InvariantCulture) +
+                        " does not match the fixed sample route contract");
+                }
+            }
+
+            int mandatoryCount = Math.Min(_mandatoryNodeIds.Count, 5);
+            for (int index = 0; index < mandatoryCount; index++)
+            {
+                if (!string.Equals(_mandatoryNodeIds[index],
+                    ExpeditionSampleRouteDefinition.RequiredNodeAt(index).NodeId, StringComparison.Ordinal))
+                {
+                    errors.Add("sample route mandatory path must preserve its fixed location order");
+                    break;
+                }
+            }
+
+            int connectionCount = Math.Min(_connections.Count, 4);
+            for (int index = 0; index < connectionCount; index++)
+            {
+                ExpeditionRouteConnection actual = _connections[index];
+                ExpeditionSampleRouteNodeDefinition from = ExpeditionSampleRouteDefinition.RequiredNodeAt(index);
+                ExpeditionSampleRouteNodeDefinition to = ExpeditionSampleRouteDefinition.RequiredNodeAt(index + 1);
+                if (actual == null || !string.Equals(actual.FromNodeId, from.NodeId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.FromPortId, ExpeditionSampleRouteDefinition.ExitPortId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.ToNodeId, to.NodeId, StringComparison.Ordinal) ||
+                    !string.Equals(actual.ToPortId, ExpeditionSampleRouteDefinition.EntryPortId, StringComparison.Ordinal) ||
+                    actual.IsOptionalBranch)
+                {
+                    errors.Add("sample route connection at index " + index.ToString(CultureInfo.InvariantCulture) +
+                        " must connect consecutive locations through the standard ports");
+                }
+            }
+        }
         private string BuildCanonicalForm()
         {
             var canonical = new StringBuilder();

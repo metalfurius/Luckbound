@@ -1,0 +1,15 @@
+{
+  "name": "Luckbound.Content.Route.Tests",
+  "rootNamespace": "Luckbound.Tests.Content.Route",
+  "references": ["Luckbound.Core", "Luckbound.Content"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "noEngineReferences": false
+}

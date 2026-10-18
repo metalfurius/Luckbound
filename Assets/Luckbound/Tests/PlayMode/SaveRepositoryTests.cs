@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using Luckbound.App;
 using Luckbound.Core.Expeditions;
+using Luckbound.Core.Fortune;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
 using Luckbound.Core.Saves;
@@ -437,7 +438,9 @@ namespace Luckbound.Tests.PlayMode
         {
             Directory.CreateDirectory(_directory);
             FileSaveStore store = NewFileStore();
-            var legacy = new ProfileSaveEnvelope
+            // Content v3 used the pre-brew expedition DTO. Serializing the current DTO with a
+            // v3 header includes new inline fields even when JsonUtility receives a null run.
+            var legacy = new LegacyProfileSaveEnvelopeV4
             {
                 schemaVersion = SaveFormat.SchemaVersion,
                 contentVersion = 3,
@@ -449,11 +452,10 @@ namespace Luckbound.Tests.PlayMode
                 activeExpedition = null
             };
             legacy.profile.availableRenown = 91;
-            using (SHA256 sha = SHA256.Create())
-                legacy.checksum = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(JsonUtility.ToJson(legacy, false))))
-                    .Replace("-", string.Empty).ToLowerInvariant();
-            File.WriteAllText(store.GetPrimaryPath(SaveDocument.Profile), JsonUtility.ToJson(legacy, true),
-                new UTF8Encoding(false));
+            legacy.checksum = ComputeTestChecksum(legacy);
+            string legacyJson = JsonUtility.ToJson(legacy, true);
+            string path = store.GetPrimaryPath(SaveDocument.Profile);
+            File.WriteAllText(path, legacyJson, new UTF8Encoding(false));
 
             SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(new SaveRepository(store).LoadProfileAsync());
 
@@ -461,6 +463,150 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(loaded.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
             Assert.That(loaded.Data.sequence, Is.EqualTo(11));
             Assert.That(loaded.Data.profile.availableRenown, Is.EqualTo(91));
+            Assert.That(loaded.Data.hasActiveExpedition, Is.False);
+            Assert.That(loaded.Data.activeExpedition, Is.Null);
+            Assert.That(File.ReadAllText(path), Is.EqualTo(legacyJson));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ContentVersionFourEnvelopeMigratesWithItsExactHistoricalShapeAndKeepsUnknownRunState(bool includesFortuneBrewReceipts)
+        {
+            Directory.CreateDirectory(_directory);
+            FileSaveStore store = NewFileStore();
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.magus", "race.human",
+                new[] { "skill.magus.fireball", "skill.magus.frost_nova" },
+                healthUpgradeLevel: 2, energyUpgradeLevel: 2, additionalPotionUpgradeLevel: 1);
+            ExpeditionSaveData expedition = ExpeditionSaveMapper.Create(run);
+            // This exact legacy value is ambiguous: old maximumEnergy could be 50 despite the equipped tunic's +5.
+            // Migration must preserve the durable value and must not infer or subtract an armor bonus.
+            expedition.maximumHealth = 110;
+            expedition.currentHealth = 64;
+            expedition.maximumEnergy = 50;
+            expedition.currentEnergy = 37;
+            expedition.roomEntryCheckpointJson = ExpeditionSaveMapper.SerializeCheckpoint(
+                ExpeditionSaveMapper.CreateCheckpoint(expedition));
+
+            string brewTransactionId = string.Empty;
+            if (includesFortuneBrewReceipts)
+            {
+                FortuneOfferBook book = FortuneOfferBook.Restore(expedition.fortuneOfferBookSnapshot);
+                ItemInstanceId brewItem = ItemInstanceId.New();
+                TransactionId brewTransaction = TransactionId.New();
+                Assert.That(book.GrantFortuneBrewCharge(brewItem, brewTransaction).Succeeded, Is.True);
+                brewTransactionId = brewTransaction.ToString();
+                expedition.fortuneOfferBookSnapshot = book.CreateSnapshot();
+                expedition.roomEntryCheckpointJson = ExpeditionSaveMapper.SerializeCheckpoint(
+                    ExpeditionSaveMapper.CreateCheckpoint(expedition));
+            }
+
+            ProfileSaveData profile = ProfileSaveData.CreateNewProfile();
+            profile.healthUpgradeLevel = 2;
+            profile.energyUpgradeLevel = 2;
+            profile.additionalPotionUpgradeLevel = 1;
+            string legacyJson = EncodeLegacyProfileV4(profile, expedition, includesFortuneBrewReceipts);
+            string path = store.GetPrimaryPath(SaveDocument.Profile);
+            File.WriteAllText(path, legacyJson, new UTF8Encoding(false));
+
+            SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(NewRepository().LoadProfileAsync());
+
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+            Assert.That(loaded.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
+            Assert.That(loaded.Data.profile.healthUpgradeLevel, Is.EqualTo(2));
+            Assert.That(loaded.Data.profile.energyUpgradeLevel, Is.EqualTo(2));
+            Assert.That(loaded.Data.profile.additionalPotionUpgradeLevel, Is.EqualTo(1));
+            Assert.That(loaded.Data.activeExpedition.frozenPermanentUpgrades, Is.Null);
+            Assert.That(loaded.Data.activeExpedition.maximumHealth, Is.EqualTo(110));
+            Assert.That(loaded.Data.activeExpedition.currentHealth, Is.EqualTo(64));
+            Assert.That(loaded.Data.activeExpedition.maximumEnergy, Is.EqualTo(50));
+            Assert.That(loaded.Data.activeExpedition.currentEnergy, Is.EqualTo(37));
+            Assert.That(File.ReadAllText(path), Is.EqualTo(legacyJson), "Reading a historical save must not rewrite its original bytes.");
+
+            ExpeditionRunConfiguration restored = ExpeditionSaveMapper.Restore(loaded.Data.activeExpedition,
+                out ExpeditionSaveData resumed);
+            Assert.That(restored.HasKnownStartingLoadout, Is.False);
+            Assert.Throws<InvalidOperationException>(() => _ = restored.StartingHealth);
+            Assert.Throws<InvalidOperationException>(() => _ = restored.StartingEnergy);
+            Assert.Throws<InvalidOperationException>(() => _ = restored.StartingHealthPotions);
+            Assert.That(resumed.maximumEnergy, Is.EqualTo(50));
+            Assert.That(resumed.currentEnergy, Is.EqualTo(37));
+            ExpeditionRunConfiguration inventoryUpdated = restored.WithInventory(restored.Inventory);
+            Assert.That(inventoryUpdated.HasKnownStartingLoadout, Is.False);
+            Assert.Throws<InvalidOperationException>(() => _ = inventoryUpdated.StartingEnergy);
+            if (includesFortuneBrewReceipts)
+            {
+                Assert.That(resumed.fortuneOfferBookSnapshot.fortuneBrewReceipts, Has.Length.EqualTo(1));
+                Assert.That(resumed.fortuneOfferBookSnapshot.fortuneBrewReceipts[0].transactionId,
+                    Is.EqualTo(brewTransactionId));
+            }
+
+            SaveWriteResult resave = Wait(NewRepository().SaveProfileAsync(loaded.Data.profile, loaded.Data.activeExpedition));
+            Assert.That(resave.Succeeded, Is.True, resave.Message);
+            SaveLoadResult<ProfileSaveEnvelope> afterRestart = Wait(NewRepository().LoadProfileAsync());
+            Assert.That(afterRestart.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), afterRestart.Message);
+            Assert.That(afterRestart.Data.activeExpedition.frozenPermanentUpgrades, Is.Null,
+                "Resaving a legacy run must keep its loadout unknown rather than serializing an invented zero snapshot.");
+            ExpeditionRunConfiguration restoredAgain = ExpeditionSaveMapper.Restore(afterRestart.Data.activeExpedition,
+                out ExpeditionSaveData resumedAgain);
+            Assert.That(restoredAgain.HasKnownStartingLoadout, Is.False);
+            Assert.Throws<InvalidOperationException>(() => _ = restoredAgain.StartingHealth);
+            Assert.That(resumedAgain.maximumEnergy, Is.EqualTo(50));
+            Assert.That(resumedAgain.currentEnergy, Is.EqualTo(37));
+        }
+
+        [Test]
+        public void ContentVersionFourSettingsKeepTheirSavedAmbienceValue()
+        {
+            Directory.CreateDirectory(_directory);
+            FileSaveStore store = NewFileStore();
+            var legacy = new LegacySettingsSaveEnvelopeV4
+            {
+                schemaVersion = SaveFormat.SchemaVersion,
+                contentVersion = 4,
+                generation = 3,
+                sequence = 9,
+                savedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                checksum = string.Empty,
+                settings = new LegacyGameSettingsSaveDataV4
+                {
+                    languageId = "es",
+                    masterVolume = 0.8f,
+                    musicVolume = 0.5f,
+                    effectsVolume = 0.6f,
+                    ambienceVolume = 0.27f
+                }
+            };
+            legacy.checksum = ComputeTestChecksum(legacy);
+            string legacyJson = JsonUtility.ToJson(legacy, true);
+            File.WriteAllText(store.GetPrimaryPath(SaveDocument.Settings), legacyJson, new UTF8Encoding(false));
+
+            SaveLoadResult<SettingsSaveEnvelope> loaded = Wait(NewRepository().LoadSettingsAsync());
+
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+            Assert.That(loaded.Data.contentVersion, Is.EqualTo(SaveFormat.ContentVersion));
+            Assert.That(loaded.Data.settings.ambienceVolume, Is.EqualTo(0.27f).Within(0.0001f));
+            Assert.That(File.ReadAllText(store.GetPrimaryPath(SaveDocument.Settings)), Is.EqualTo(legacyJson));
+        }
+
+        [Test]
+        public void CorruptFrozenUpgradeSnapshotIsRejectedWithoutChangingItsBytes()
+        {
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.magus", "race.human",
+                new[] { "skill.magus.fireball", "skill.magus.frost_nova" },
+                healthUpgradeLevel: 2, energyUpgradeLevel: 2, additionalPotionUpgradeLevel: 1);
+            ExpeditionSaveData expedition = ExpeditionSaveMapper.Create(run);
+            var repository = NewRepository();
+            Assert.That(Wait(repository.SaveProfileAsync(ProfileSaveData.CreateNewProfile(), expedition)).Succeeded, Is.True);
+            string path = NewFileStore().GetPrimaryPath(SaveDocument.Profile);
+            string original = File.ReadAllText(path);
+            string corrupted = original.Replace("\"healthUpgradeLevel\": 2", "\"healthUpgradeLevel\": 3");
+            Assert.That(corrupted, Is.Not.EqualTo(original), "The test must actually alter the frozen snapshot field.");
+            File.WriteAllText(path, corrupted, new UTF8Encoding(false));
+
+            SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(NewRepository().LoadProfileAsync());
+
+            Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.Corrupted));
+            Assert.That(File.ReadAllText(path), Is.EqualTo(corrupted));
         }
 
         [Test]
@@ -589,6 +735,53 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(File.ReadAllText(path), Is.EqualTo(before));
         }
 
+        private static string EncodeLegacyProfileV4(ProfileSaveData profile, ExpeditionSaveData expedition,
+            bool includesFortuneBrewReceipts)
+        {
+            if (includesFortuneBrewReceipts)
+            {
+                var envelope = new LegacyProfileSaveEnvelopeV4Brew
+                {
+                    schemaVersion = SaveFormat.SchemaVersion,
+                    contentVersion = 4,
+                    generation = 3,
+                    sequence = 18,
+                    savedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                    checksum = string.Empty,
+                    profile = profile.Clone(),
+                    hasActiveExpedition = true,
+                    activeExpedition = new LegacyExpeditionSaveDataV4Brew(expedition)
+                };
+                envelope.checksum = ComputeTestChecksum(envelope);
+                return JsonUtility.ToJson(envelope, true);
+            }
+
+            var legacy = new LegacyProfileSaveEnvelopeV4
+            {
+                schemaVersion = SaveFormat.SchemaVersion,
+                contentVersion = 4,
+                generation = 3,
+                sequence = 17,
+                savedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                checksum = string.Empty,
+                profile = profile.Clone(),
+                hasActiveExpedition = true,
+                activeExpedition = new LegacyExpeditionSaveDataV4(expedition)
+            };
+            legacy.checksum = ComputeTestChecksum(legacy);
+            return JsonUtility.ToJson(legacy, true);
+        }
+
+        private static string ComputeTestChecksum(object envelope)
+        {
+            FieldInfo checksumField = envelope.GetType().GetField("checksum", BindingFlags.Public | BindingFlags.Instance);
+            Assert.That(checksumField, Is.Not.Null);
+            checksumField.SetValue(envelope, string.Empty);
+            using (SHA256 sha = SHA256.Create())
+                return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(JsonUtility.ToJson(envelope, false))))
+                    .Replace("-", string.Empty).ToLowerInvariant();
+        }
+
         private SaveRepository NewRepository() => new SaveRepository(NewFileStore());
 
         private FileSaveStore NewFileStore() => new FileSaveStore(_directory, null);
@@ -709,6 +902,302 @@ namespace Luckbound.Tests.PlayMode
             public float masterVolume;
             public float musicVolume;
             public float effectsVolume;
+        }
+
+        [Serializable]
+        private sealed class LegacySettingsSaveEnvelopeV4
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public LegacyGameSettingsSaveDataV4 settings;
+        }
+
+        [Serializable]
+        private sealed class LegacyGameSettingsSaveDataV4
+        {
+            public string languageId;
+            public float masterVolume;
+            public float musicVolume;
+            public float effectsVolume;
+            public float ambienceVolume;
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileSaveEnvelopeV4
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public ProfileSaveData profile;
+            public bool hasActiveExpedition;
+            public LegacyExpeditionSaveDataV4 activeExpedition;
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileSaveEnvelopeV4Brew
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public ProfileSaveData profile;
+            public bool hasActiveExpedition;
+            public LegacyExpeditionSaveDataV4Brew activeExpedition;
+        }
+
+        [Serializable]
+        private sealed class LegacyExpeditionSaveDataV4
+        {
+            public string runId;
+            public uint seed;
+            public int generationVersion;
+            public int contentVersion;
+            public string classId;
+            public string raceId;
+            public string[] selectedSkillIds;
+            public string[] startingEquipmentInstanceIds;
+            public string routeSnapshotJson;
+            public string currentNodeId;
+            public string[] visitedNodeIds;
+            public string[] completedRoomIds;
+            public ExpeditionRoomCompletionSaveData[] completedRoomResults;
+            public string roomEntryCheckpointJson;
+            public string inventorySnapshotJson;
+            // JsonUtility serializes an inline null with these historical field initializers.
+            public int maximumHealth = 100;
+            public int currentHealth = 100;
+            public int maximumEnergy = 50;
+            public int currentEnergy = 50;
+            public int healthPotionCharges = 2;
+            public int accumulatedRenown;
+            public string[] pactIds;
+            public LegacyFortuneOfferBookSnapshotV4 fortuneOfferBookSnapshot;
+            public string[] collectedItemIds;
+            public string[] claimedRewardIds;
+
+            public LegacyExpeditionSaveDataV4() { }
+
+            public LegacyExpeditionSaveDataV4(ExpeditionSaveData source)
+            {
+                runId = source.runId;
+                seed = source.seed;
+                generationVersion = source.generationVersion;
+                contentVersion = 4;
+                classId = source.classId;
+                raceId = source.raceId;
+                selectedSkillIds = source.selectedSkillIds;
+                startingEquipmentInstanceIds = source.startingEquipmentInstanceIds;
+                routeSnapshotJson = source.routeSnapshotJson;
+                currentNodeId = source.currentNodeId;
+                visitedNodeIds = source.visitedNodeIds;
+                completedRoomIds = source.completedRoomIds;
+                completedRoomResults = source.completedRoomResults;
+                roomEntryCheckpointJson = EncodeLegacyCheckpointV4(source, includesFortuneBrewReceipts: false);
+                inventorySnapshotJson = source.inventorySnapshotJson;
+                maximumHealth = source.maximumHealth;
+                currentHealth = source.currentHealth;
+                maximumEnergy = source.maximumEnergy;
+                currentEnergy = source.currentEnergy;
+                healthPotionCharges = source.healthPotionCharges;
+                accumulatedRenown = source.accumulatedRenown;
+                pactIds = source.pactIds;
+                fortuneOfferBookSnapshot = new LegacyFortuneOfferBookSnapshotV4(source.fortuneOfferBookSnapshot);
+                collectedItemIds = source.collectedItemIds;
+                claimedRewardIds = source.claimedRewardIds;
+            }
+        }
+
+        [Serializable]
+        private sealed class LegacyExpeditionSaveDataV4Brew
+        {
+            public string runId;
+            public uint seed;
+            public int generationVersion;
+            public int contentVersion;
+            public string classId;
+            public string raceId;
+            public string[] selectedSkillIds;
+            public string[] startingEquipmentInstanceIds;
+            public string routeSnapshotJson;
+            public string currentNodeId;
+            public string[] visitedNodeIds;
+            public string[] completedRoomIds;
+            public ExpeditionRoomCompletionSaveData[] completedRoomResults;
+            public string roomEntryCheckpointJson;
+            public string inventorySnapshotJson;
+            public int maximumHealth = 100;
+            public int currentHealth = 100;
+            public int maximumEnergy = 50;
+            public int currentEnergy = 50;
+            public int healthPotionCharges = 2;
+            public int accumulatedRenown;
+            public string[] pactIds;
+            public LegacyFortuneOfferBookSnapshotV4Brew fortuneOfferBookSnapshot;
+            public string[] collectedItemIds;
+            public string[] claimedRewardIds;
+
+            public LegacyExpeditionSaveDataV4Brew() { }
+
+            public LegacyExpeditionSaveDataV4Brew(ExpeditionSaveData source)
+            {
+                runId = source.runId;
+                seed = source.seed;
+                generationVersion = source.generationVersion;
+                contentVersion = 4;
+                classId = source.classId;
+                raceId = source.raceId;
+                selectedSkillIds = source.selectedSkillIds;
+                startingEquipmentInstanceIds = source.startingEquipmentInstanceIds;
+                routeSnapshotJson = source.routeSnapshotJson;
+                currentNodeId = source.currentNodeId;
+                visitedNodeIds = source.visitedNodeIds;
+                completedRoomIds = source.completedRoomIds;
+                completedRoomResults = source.completedRoomResults;
+                roomEntryCheckpointJson = EncodeLegacyCheckpointV4(source, includesFortuneBrewReceipts: true);
+                inventorySnapshotJson = source.inventorySnapshotJson;
+                maximumHealth = source.maximumHealth;
+                currentHealth = source.currentHealth;
+                maximumEnergy = source.maximumEnergy;
+                currentEnergy = source.currentEnergy;
+                healthPotionCharges = source.healthPotionCharges;
+                accumulatedRenown = source.accumulatedRenown;
+                pactIds = source.pactIds;
+                fortuneOfferBookSnapshot = new LegacyFortuneOfferBookSnapshotV4Brew(source.fortuneOfferBookSnapshot);
+                collectedItemIds = source.collectedItemIds;
+                claimedRewardIds = source.claimedRewardIds;
+            }
+        }
+
+        private static string EncodeLegacyCheckpointV4(ExpeditionSaveData source, bool includesFortuneBrewReceipts)
+        {
+            if (includesFortuneBrewReceipts)
+            {
+                return JsonUtility.ToJson(new LegacyExpeditionRoomCheckpointSaveDataV4Brew
+                {
+                    roomNodeId = source.currentNodeId,
+                    inventorySnapshotJson = source.inventorySnapshotJson,
+                    maximumHealth = source.maximumHealth,
+                    currentHealth = source.currentHealth,
+                    maximumEnergy = source.maximumEnergy,
+                    currentEnergy = source.currentEnergy,
+                    healthPotionCharges = source.healthPotionCharges,
+                    accumulatedRenown = source.accumulatedRenown,
+                    fortuneOfferBookSnapshot = new LegacyFortuneOfferBookSnapshotV4Brew(source.fortuneOfferBookSnapshot),
+                    pactIds = source.pactIds,
+                    collectedItemIds = source.collectedItemIds,
+                    claimedRewardIds = source.claimedRewardIds
+                });
+            }
+            return JsonUtility.ToJson(new LegacyExpeditionRoomCheckpointSaveDataV4
+            {
+                roomNodeId = source.currentNodeId,
+                inventorySnapshotJson = source.inventorySnapshotJson,
+                maximumHealth = source.maximumHealth,
+                currentHealth = source.currentHealth,
+                maximumEnergy = source.maximumEnergy,
+                currentEnergy = source.currentEnergy,
+                healthPotionCharges = source.healthPotionCharges,
+                accumulatedRenown = source.accumulatedRenown,
+                fortuneOfferBookSnapshot = new LegacyFortuneOfferBookSnapshotV4(source.fortuneOfferBookSnapshot),
+                pactIds = source.pactIds,
+                collectedItemIds = source.collectedItemIds,
+                claimedRewardIds = source.claimedRewardIds
+            });
+        }
+
+        [Serializable]
+        private sealed class LegacyExpeditionRoomCheckpointSaveDataV4
+        {
+            public string roomNodeId;
+            public string inventorySnapshotJson;
+            public int maximumHealth;
+            public int currentHealth;
+            public int maximumEnergy;
+            public int currentEnergy;
+            public int healthPotionCharges;
+            public int accumulatedRenown;
+            public LegacyFortuneOfferBookSnapshotV4 fortuneOfferBookSnapshot;
+            public string[] pactIds;
+            public string[] collectedItemIds;
+            public string[] claimedRewardIds;
+        }
+
+        [Serializable]
+        private sealed class LegacyExpeditionRoomCheckpointSaveDataV4Brew
+        {
+            public string roomNodeId;
+            public string inventorySnapshotJson;
+            public int maximumHealth;
+            public int currentHealth;
+            public int maximumEnergy;
+            public int currentEnergy;
+            public int healthPotionCharges;
+            public int accumulatedRenown;
+            public LegacyFortuneOfferBookSnapshotV4Brew fortuneOfferBookSnapshot;
+            public string[] pactIds;
+            public string[] collectedItemIds;
+            public string[] claimedRewardIds;
+        }
+
+        [Serializable]
+        private sealed class LegacyFortuneOfferBookSnapshotV4
+        {
+            public int snapshotVersion;
+            public int generationVersion;
+            public uint seed;
+            public string raceId;
+            public int charges;
+            public FortuneOfferSnapshot[] offers;
+            public string[] processedGuardianIds;
+            public FortuneRerollReceiptSnapshot[] rerollReceipts;
+
+            public LegacyFortuneOfferBookSnapshotV4(FortuneOfferBookSnapshot source)
+            {
+                snapshotVersion = 2;
+                generationVersion = source.generationVersion;
+                seed = source.seed;
+                raceId = source.raceId;
+                charges = source.charges;
+                offers = source.offers;
+                processedGuardianIds = source.processedGuardianIds;
+                rerollReceipts = source.rerollReceipts;
+            }
+        }
+
+        [Serializable]
+        private sealed class LegacyFortuneOfferBookSnapshotV4Brew
+        {
+            public int snapshotVersion;
+            public int generationVersion;
+            public uint seed;
+            public string raceId;
+            public int charges;
+            public FortuneOfferSnapshot[] offers;
+            public string[] processedGuardianIds;
+            public FortuneRerollReceiptSnapshot[] rerollReceipts;
+            public FortuneBrewReceiptSnapshot[] fortuneBrewReceipts;
+
+            public LegacyFortuneOfferBookSnapshotV4Brew(FortuneOfferBookSnapshot source)
+            {
+                snapshotVersion = 3;
+                generationVersion = source.generationVersion;
+                seed = source.seed;
+                raceId = source.raceId;
+                charges = source.charges;
+                offers = source.offers;
+                processedGuardianIds = source.processedGuardianIds;
+                rerollReceipts = source.rerollReceipts;
+                fortuneBrewReceipts = source.fortuneBrewReceipts;
+            }
         }
 
         private sealed class FailOnceSaveStore : ISaveStore

@@ -51,6 +51,8 @@ namespace Luckbound.Tests.Core
 
             Assert.That(second.CanonicalForm, Is.EqualTo(first.CanonicalForm));
             Assert.That(second.Fingerprint, Is.EqualTo(first.Fingerprint));
+            Assert.That(first.GenerationVersion, Is.EqualTo(1));
+            Assert.That(first.Fingerprint, Is.EqualTo("D9AAFA27"));
             Assert.That(first.Nodes, Has.Count.EqualTo(24));
             Assert.That(first.MandatoryNodeIds, Has.Count.EqualTo(21));
             Assert.That(first.Connections, Has.Count.EqualTo(26));

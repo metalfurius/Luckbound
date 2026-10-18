@@ -1,10 +1,12 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 2.5 · 18 de octubre de 2026.
+**Versión:** 2.6 · 18 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
 **Estado, evidencias y revisiones:** [PROGRESS.md](PROGRESS.md).
+
+**Relevo concreto para la siguiente sesión:** [LUNA_HANDOFF.md](LUNA_HANDOFF.md), con contratos cerrados, archivos, aceptación y orden hacia F10. Leer sus correcciones junto al resumen vigente de progreso; el checkpoint previo describe la base anterior a esas correcciones.
 
 Este documento convierte las 111 tareas del producto en trabajo distribuible para **`gpt-6-luna`, esfuerzo `max`**. Fija reparto, dependencias, paquetes, integración y comprobaciones; conserva las decisiones de diseño y los criterios del plan principal. **Regla de ejecución prioritaria: estado por defecto, cero interfaz visible. Fran solo debe ver y usar una ventana, panel, pestaña, notificación, diálogo o previsualización cuando lo necesite personalmente para tomar una decisión concreta; cualquier otra interfaz debe quedar fuera de su vista y no aparecer ni un instante. Toda otra ejecución será headless o en un sandbox/escritorio verdaderamente aislado e inaccesible para él.**
 
@@ -14,17 +16,17 @@ Este documento convierte las 111 tareas del producto en trabajo distribuible par
 
 La petición documental anterior de Fran reafirmó la regla de visibilidad y limitó aquella intervención a documentación. La orden vigente, «Haz el desarrollo completo», reanuda ahora el desarrollo completo: el coordinador parte de las evidencias actuales de [PROGRESS.md](PROGRESS.md), prioriza el siguiente hito jugable F10 y puede repartir hasta tres paquetes listos e independientes entre trabajadores Luna `max` según el grafo. La petición documental queda como historial y no limita esta reanudación. Todas las ejecuciones se mantienen ocultas o verdaderamente aisladas.
 
-Estado técnico vigente al 18 de octubre: [checkpoint completo](CHECKPOINT_2026-10-18.md). Los estados de tareas y las evidencias canónicas permanecen en [PROGRESS.md](PROGRESS.md).
+Estado técnico vigente al 18 de octubre: [relevo preparado](LUNA_HANDOFF.md) y aceptación al final de [PROGRESS.md](PROGRESS.md). El [checkpoint previo](CHECKPOINT_2026-10-18.md) conserva la base anterior a las correcciones; sus brechas no deben reasignarse como si siguieran intactas.
 
-- Base de integración: codex/luckbound-reboot, 9532a63. El checkpoint actual modifica documentación, sin iniciar paquetes ni aprobar revisiones.
+- Rama de integración: `codex/luckbound-reboot`. Consultar en progreso el commit y la evidencia actuales; el estado de Git real prevalece sobre una ficha antigua.
 - E01–E03 y E06–E09 tienen aceptación técnica. E03 ya incluye interacción accesible de servicios; E08 está Verified. E04 tiene panel y mutaciones durables, pero conserva pendientes los encuentros y la comprobación con un expediente legado original.
-- La regresión vigente registrada en Unity 6000.6.6f1 es EditMode 320/320 y PlayMode 230/230. Existen builds locales satisfactorias anteriores a los últimos cambios de código; no son una build de distribución del último estado.
+- Unity permanece fijada en 6000.6.6f1. La aceptación de esta preparación y sus XML están en progreso. Las builds locales previas no representan automáticamente las correcciones nuevas.
 - F01 sigue InProgress/Prototype a la espera de revisión visual. F02 espera ese cierre; F03–F06 siguen Pending. F07 está Verified. F08 conserva tres pistas, tres ambientes y 36 efectos; faltan integración por sala, prueba WebGL tras interacción y revisión auditiva.
-- F09 conserva binder y servicios durables, pero Expedition todavía muestra el recibo de partida y no compone el recorrido jugable. F10 sigue Pending. El contrato de ruta completa exige 24 nodos; la muestra corta requiere una representación y validación compatibles antes de integrarla.
-- G01 conserva pruebas de runtime de nueve armas; faltan su uso en el recorrido y las magnitudes de alcance/empuje de Umbra. G02 ya contiene seis armaduras, seis consumibles y doce recetas: falta defensa por rareza, datos de perfiles desde JSON y aceptación. No reasignar las definiciones como si no existieran.
-- La restitución del actor desde el checkpoint debe conservar máximos, recursos actuales, equipo y mejoras permanentes. La configuración restaurada y el binder actuales aún no cubren ese puente.
-- A06 no tiene ejecución remota verificada. Main y gh-pages siguen en el prototipo anterior, y la rama de reinicio no aparece publicada en remoto. Conservar la ruta pública y verificar CI antes de promover una versión.
-- No hay trabajadores activos al tomar este checkpoint. El worktree g02-armor-data-rarity está limpio en 9532a63; la asignación interrumpida no produjo entrega.
+- F09 conserva binder y servicios durables, pero Expedition todavía muestra el recibo de partida y no compone el recorrido jugable. F10 sigue Pending. La campaña conserva generación 1/24 nodos; `CreateSample` crea generación 2/5 nodos explícita desde JSON, ya validada y persistible. Faltan sus salas y composición productiva.
+- G01 ya aplica rareza y mejora a los básicos de las nueve armas. Las magnitudes de alcance/empuje de Umbra están fijadas en el plan; falta implementarlas mediante G01.UMBRA.NUMERIC. G02 tiene JSON autoritativo, defensa por rareza, seis perfiles, seis consumibles y doce recetas aceptados; no recrear esos módulos. La actualización del actor vivo al cambiar equipo pertenece al contrato de integración F09.PLAYER.SESSION.
+- La restitución mediante `BindFromCheckpoint` conserva recursos y máximos guardados, instancias y niveles permanentes congelados. Contenido v5 distingue snapshot conocido/desconocido con marcador explícito y mantiene las formas históricas de checksum. No recomponer una partida antigua desde el perfil vigente.
+- A06 necesita ejecución remota y artefactos reales. Consultar el resultado de respaldo/CI en progreso. Conservar Main, gh-pages y la ruta pública al respaldar la rama de desarrollo; no promoverla por preparar un relevo.
+- Las entregas de esta preparación se integraron desde staging revisado, con producción escrita solo por el coordinador. No reutilizar un worktree antiguo sin actualizar su base y su ficha.
 - Las cinco revisiones de Fran siguen pendientes. La revisión visual F01 tampoco está aprobada. El silencio y esta revisión de estado no constituyen aprobación.
 
 **Al retomar tras el checkpoint:** seleccionar paquetes listos del grafo que cierren las brechas de F10. Reutilizar las entregas ya integradas y ejecutar la aceptación correspondiente al contenido que cambie. No rehacer automáticamente todas las builds ni incorporar las cuatro referencias originales a un commit de código.
@@ -499,20 +501,22 @@ Después de una aceptación satisfactoria, ampliar o repetir solo si un cambio n
 
 ### 8.2. Herramientas reales y resultados
 
-Usar Unity CLI y los generadores existentes de [5.2 del plan](DEVELOPMENT_PLAN.md#52-herramienta-de-desarrollo). `Tools/dev.ps1` no existe al redactar esta revisión. No asumir `dotnet test`: los tests actuales usan assemblies Unity; los de Core también se ejecutan mediante su runner Unity.
+Usar `Tools/Automation/Test-UnityHeadless.ps1` con PowerShell 7 y los generadores existentes de [5.2 del plan](DEVELOPMENT_PLAN.md#52-herramienta-de-desarrollo). El runner localiza la versión fijada, lanza directamente Unity con `-batchmode -nographics`, `UseShellExecute=false`, `CreateNoWindow=true`, rechaza otro Unity activo y conserva XML/log/auditoría. No abre Hub. `Tools/dev.ps1` no existe. No asumir `dotnet test`: los tests actuales usan assemblies Unity; los de Core también se ejecutan mediante su runner Unity.
 
 Ejemplos **para la futura sesión**, con filtro/ID real:
 
 ```powershell
-unity test . --mode EditMode --filter <fixture> --output Logs/<paquete>-edit.xml --timeout 1200 -- -nographics
-unity test . --mode PlayMode --filter <escenario> --output Logs/<paquete>-play.xml --timeout 1200 -- -nographics
+./Tools/Automation/Test-UnityHeadless.ps1 -Mode EditMode -Filter <fixture> -EvidenceName <paquete>-edit
+./Tools/Automation/Test-UnityHeadless.ps1 -Mode PlayMode -Filter <escenario> -EvidenceName <paquete>-play
 ```
 
-Validar código de proceso, tests seleccionados >0, fallos/omitidos/inconclusos y el informe del escenario. Una CLI que terminó sin seleccionar tests no verifica nada. La sintaxis local utiliza EditMode/PlayMode por separado; no inventar `--mode All`.
+Validar código de proceso, tests seleccionados >0, fallos/omitidos/inconclusos y el informe del escenario. El runner rechaza fallo, resultado no satisfactorio, XML ausente y cero tests; el coordinador comprueba además omitidos/inconclusos y cobertura del filtro. La sintaxis local utiliza EditMode/PlayMode por separado; no inventar `--mode All`. Usar nombres nuevos para conservar cada intento. Una limitación de permisos del Editor/licencia se resuelve mediante elevación acotada si está autorizada, nunca lanzando login o una ventana.
 
 Los trabajadores sin acceso exclusivo a Unity entregan tests escritos como **pendientes de ejecución**. El coordinador los ejecuta sobre la unión real y devuelve fallo concreto o evidencia. Un revisor lee test e implementación, no sustituye el runner.
 
 Conservar commit o SHA-256 de los archivos exactos, editor, plataforma, semilla, entradas, código de salida y rutas de XML/log/reporte. Si un test se ejecutó en headless, registrar que no existe captura. No presentar ese resultado como validación visual.
+
+Los escenarios nuevos registran `sourceHashVersion=2`, commit local/CI, estado del árbol y un `source-manifest.sha256` con todas las fuentes de las carpetas enumeradas en el relevo. La captura se reutiliza dentro del dominio Unity; el runner vuelve a verificar íntegramente archivos y listado al terminar, registrando `sourceSnapshotVerified`. Una discrepancia invalida la aceptación. La lista fija histórica no cubría algunos módulos añadidos; conservar su evidencia con esa limitación, sin reinterpretarla como una huella completa.
 
 ### 8.3. Caché, CI y diagnóstico
 
