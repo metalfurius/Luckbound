@@ -29,7 +29,7 @@ La petición de preparación no aprueba arte, revisiones de builds ni publicaci�
 | Transiciones | Preparar destino, guardar resultado/avance mediante `CompleteAndAdvanceRoomAsync` y activar después. No retirar sala/actor antes de confirmar persistencia. Los reintentos conservan la misma identidad y carga. |
 | Ambiente | Tras activar la primera sala, llamar `BindExpeditionRoomAmbience` con el controlador de transición. El contexto de sala determina el ambiente; no buscar objetos globalmente. |
 | Salida de muestra | `ExpeditionOutcome.Extracted`, liquidación existente y única por `RunId`. No desbloquear una victoria de campaña al derrotar únicamente al Custodio. |
-| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI Linux pendiente debe confirmar el fix de input antes de cerrar A06. |
+| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI 39159702047 falló en pruebas PlayMode Linux ajenas al contrato numérico de Umbra; A06 sigue abierta. |
 
 `WeaponBasicAttackProfile.BaseDamage` ya incorpora los dos multiplicadores de instancia. Al enviarlo a `DamageCalculationRequest`, mantener rareza/mejora en 1/1; aplicarlos otra vez duplicaría el efecto. Combo, carga y bonificación ofensiva conservan su lugar antes del redondeo final.
 
@@ -41,7 +41,7 @@ Esta cola descompone las tareas existentes, sin crear dependencias por posición
 
 ### F09.ENTRY.TECH — Salida y reanudación con jugador y sala reales
 
-**Estado actual:** implementación técnica integrada y comprobada localmente; falta confirmación CI. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
+**Estado actual:** implementación técnica integrada y comprobada localmente; la CI 39159702047 confirma tests EditMode, pero falla tres tests PlayMode Linux antes de los jobs de build. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
 
 **Dueño:** coordinador. **Consume:** D03, D05, D09, E09 y los contratos de ruta/guardado/binder aceptados en esta preparación. Puede avanzar antes del arte final como unión técnica delimitada.
 
@@ -114,7 +114,7 @@ Logs/builds son locales e ignorados. Guardar en progreso un resumen con SHA-256,
 
 ## 5. Entrega, web y continuación
 
-Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El acceso local no interactivo se comprobó durante esta preparación; consultar progreso para el resultado definitivo del respaldo/CI. Nunca abrir una ventana de autenticación por iniciativa propia.
+Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El run autorizado 39159702047 pasó EditMode y falló tres PlayMode en Linux; no hubo builds ni publicación. Consultar `PROGRESS.md` para el artefacto, hash y diagnóstico vigentes. Nunca abrir una ventana de autenticación por iniciativa propia.
 
 Fran autorizó expresamente el respaldo y CI de `codex/luckbound-reboot` en `metalfurius/Luckbound`, sin publicar el juego. En el workflow fijado, la cobertura se desactiva mediante `GAME_CI_COVERAGE_ENABLED=false`, opción soportada de la CLI v0.1.72. No volver a añadir `coverageEnabled: false` al input de la acción v4.4.0: genera `--no-coverageEnabled`, que esa CLI rechaza antes de iniciar Unity. El filtro sigue siendo `Luckbound`; no resolver ese fallo cambiando la cobertura, quitando tests ni promoviendo Main.
 
@@ -126,8 +126,9 @@ Prompt de continuación:
 Retoma el objetivo completo de Luckbound como coordinador Luna max.
 Lee AGENTS.md, docs/LUNA_HANDOFF.md, el resumen de docs/PROGRESS.md
 y las secciones pertinentes del plan. Inspecciona Git y no rehagas
-contratos ya integrados y comprobados. Confirma el resultado de CI; después
-prioriza F09.PLAYER.SESSION y los paquetes independientes disponibles hacia F10.
+contratos ya integrados y comprobados. Diagnostica el fallo PlayMode Linux
+del run 39159702047; no repitas CI sin un cambio concreto. Prioriza
+F09.PLAYER.SESSION y los paquetes independientes disponibles hacia F10.
 Usa hasta tres Luna max
 con contexto nuevo y archivos exclusivos. Integra, ejecuta aceptación
 real sin ninguna interfaz visible, registra evidencia y continúa.
