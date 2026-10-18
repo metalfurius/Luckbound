@@ -29,7 +29,7 @@ La petición de preparación no aprueba arte, revisiones de builds ni publicaci�
 | Transiciones | Preparar destino, guardar resultado/avance mediante `CompleteAndAdvanceRoomAsync` y activar después. No retirar sala/actor antes de confirmar persistencia. Los reintentos conservan la misma identidad y carga. |
 | Ambiente | Tras activar la primera sala, llamar `BindExpeditionRoomAmbience` con el controlador de transición. El contexto de sala determina el ambiente; no buscar objetos globalmente. |
 | Salida de muestra | `ExpeditionOutcome.Extracted`, liquidación existente y única por `RunId`. No desbloquear una victoria de campaña al derrotar únicamente al Custodio. |
-| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI 39163419284 dejó un fallo PlayMode Linux ajeno al contrato numérico de Umbra; el candidato actualizado pasa local 246/246 y A06 espera validación Linux/builds. |
+| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI 39165682705 conserva un fallo PlayMode Linux en B07, ajeno al contrato numérico de Umbra; el candidato local de aislamiento de UI pasa 246/246 y A06 espera validación Linux/builds. |
 
 `WeaponBasicAttackProfile.BaseDamage` ya incorpora los dos multiplicadores de instancia. Al enviarlo a `DamageCalculationRequest`, mantener rareza/mejora en 1/1; aplicarlos otra vez duplicaría el efecto. Combo, carga y bonificación ofensiva conservan su lugar antes del redondeo final.
 
@@ -41,7 +41,7 @@ Esta cola descompone las tareas existentes, sin crear dependencias por posición
 
 ### F09.ENTRY.TECH — Salida y reanudación con jugador y sala reales
 
-**Estado actual:** implementación técnica integrada y comprobada localmente; la CI 39163419284 pasó EditMode 348/348 y PlayMode 245/246 en Linux; C08/D06 pasan, pero B07 informa una discrepancia de caché Vector2 durante un `InputSystem.Update()` manual. Windows/WebGL quedaron omitidas. El candidato local actualizado procesa el `KeyboardState` en el player loop y pasa PlayMode 246/246; aún requiere CI Linux/builds. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
+**Estado actual:** implementación técnica integrada y comprobada localmente; la CI 39165682705 pasó EditMode 348/348 y PlayMode 245/246 en Linux; C08/D06 pasan, pero B07 informa que un valor cacheado de `Vector2` cambia a `3.67342E-40`, igual al patrón IEEE-754 de los bytes de la tecla D en `KeyboardState`. Es una pista de lectura cruzada de estado/control UI, no una causa confirmada. Windows/WebGL quedaron omitidas. El candidato local desactiva solo los módulos de entrada UI de la escena durante B07 (el escenario usa teclado y llama botones directamente) y pasa PlayMode 246/246; aún requiere CI Linux/builds. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
 
 **Dueño:** coordinador. **Consume:** D03, D05, D09, E09 y los contratos de ruta/guardado/binder aceptados en esta preparación. Puede avanzar antes del arte final como unión técnica delimitada.
 
@@ -55,7 +55,7 @@ Esta cola descompone las tareas existentes, sin crear dependencias por posición
 
 ### F09.PLAYER.SESSION — Conservar actor y publicar equipo confirmado
 
-**Dueño:** coordinador; consume la entrada técnica. La auditoría estática confirmó que `ExecuteEconomyMutationAsync` reemplaza `ActiveRun` tras persistir, pero no publica el inventario confirmado en el actor; mejorar el arma/armadura en la herrería puede dejar al motor con datos viejos. `EquipBackpackItem` no tiene todavía wrapper App durable. El panel solo bloquea acciones duplicadas de sí mismo, no ataques/consumos durante la escritura.
+**Dueño:** coordinador; consume la entrada técnica. Auditoría estática en `3a21a90`: `ExpeditionInventory.EquipBackpackItem`, `SetQuickConsumable`, `ItemCollector2D.PublishCommittedInventory` y `PlayerMotor2D.RefreshConsumableChargesFromInventory` ya existen; la propuesta de staging no debe aplicarse tal cual. `ExecuteEconomyMutationAsync` y `SaveExpeditionCandidateUnderGateAsync` solo publican el `ActiveRun` durable y no sincronizan inventario/recursos con actor y colector. Antes de guardar, validar todo lo necesario para que la publicación posterior sea síncrona y no falle; conservar el mismo inventario/`RunId` incluso al reintentar. El gate de acciones debe permanecer tomado mientras la escritura está pendiente: no liberarlo en el `finally` del panel ni llamar `InterruptActions` para cancelar la preparación. La auditoría recomienda calcular el máximo quitando primero el bono de armadura anterior, conservar salud/energía/recargas, limitar solo si baja el nuevo máximo y no curar al aumentarlo. Talia y descanso también alteran salud: revisar esos caminos para que no diverjan durante I/O. Re-enlazar scopes de sala sin recrear `SkillUseState`; falta prueba Venator de dos puertas.
 
 El actor de la sesión conserva identidad, salud/energía, recargas y efectos al cambiar sala. `Bind`/`BindFromCheckpoint` crean/configuran actor; no son APIs de reconfiguración por puerta. Añadir un contrato explícito para re-enlazar scopes de proyectiles sin inicializar otra vez el estado de clase: retirar el enlace anterior y conectar el nuevo sin crear otro `SkillUseState` ni perder tiempos de disponibilidad. Cerrar proyectiles/efectos de la sala anterior, sin reponer energía ni pociones.
 
@@ -77,7 +77,7 @@ Tras F01/F02: asignar F03 jugador, F04 enemigos y F05 Patio como familias indepe
 
 ### F09.ENCOUNTERS — Combate, ofertas y avance durables
 
-**Dueño:** coordinador con trabajador de módulos nuevos/revisión. **Consume:** F09.ENTRY.TECH y prefabs de las plantillas requeridas; los consumidores pueden prepararse contra contratos ya aceptados sin verificar la muestra.
+**Dueño:** coordinador con trabajador de módulos nuevos/revisión. **Consume:** F09.ENTRY.TECH y prefabs de las plantillas requeridas; los consumidores pueden prepararse contra contratos ya aceptados sin verificar la muestra. Auditoría estática en `3a21a90`: `CompleteAndAdvanceRoomAsync` ya valida sala/arista, persiste resultado y avance una vez, y admite retry/replay exactos, pero no tiene callsites productivos. La victoria C08/D06 solo reporta/progresa; no dispara la transición. `ExpeditionRoomIdentity.ForNode(runId,nodeId)` existe; el caller proporciona ID de resultado y payload. El resolver nuevo debe capturar sala origen/destino al activar, asignar identidad/payload deterministas, conservarlos en retry, limitar callbacks al scope y rechazar callbacks tardíos de la sala anterior. E04 tiene UI/persistencia pero todavía no productor de ofertas de encuentro. La prueba final depende de F03–F06 y no se acepta F09 simulando un evento.
 
 Reutilizar el combate C08 y el Custodio D06 con entrada física; ningún script de la ruta decide daño o muerte por tiempo. El resolutor de sala crea una identidad estable de resultado; no generar una nueva recompensa al recrear componentes. Conectar victoria/objetivo con `CompleteAndAdvanceRoomAsync`; las ofertas E04 conservan ID/contexto, elección, repetición y reclamo tras reiniciar. Tutorial y exploración usan objetivos cumplidos y salida real, no un botón de depuración para completar. Resolver los callsites que hoy solo existen en tests.
 
@@ -114,7 +114,7 @@ Logs/builds son locales e ignorados. Guardar en progreso un resumen con SHA-256,
 
 ## 5. Entrega, web y continuación
 
-Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El run 39163419284 pasó EditMode 348/348, falló un PlayMode Linux y omitió ambas builds; no hubo publicación. El cambio local actualizado elimina el `InputSystem.Update()` manual por transición y pasa PlayMode 246/246. Respaldarlo en `codex/luckbound-reboot` y confirmar Linux/builds con la siguiente CI manual cubierta por la autorización vigente, sin publicar. Consultar `PROGRESS.md` para el artefacto, hash y resultado vigentes. Nunca abrir una ventana de autenticación por iniciativa propia.
+Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El run 39165682705 pasó EditMode 348/348, falló un PlayMode Linux y omitió ambas builds; no hubo publicación. El candidato local actual aísla los módulos de entrada UI de B07 y pasa PlayMode 246/246. Fran autorizó el respaldo y CI manual de `codex/luckbound-reboot`; tras registrar este candidato, confirmar Linux/builds con CI manual sin publicar. Consultar `PROGRESS.md` para el artefacto, hash y resultado vigentes. Nunca abrir una ventana de autenticación por iniciativa propia.
 
 Fran autorizó expresamente el respaldo y CI de `codex/luckbound-reboot` en `metalfurius/Luckbound`, sin publicar el juego. En el workflow fijado, la cobertura se desactiva mediante `GAME_CI_COVERAGE_ENABLED=false`, opción soportada de la CLI v0.1.72. No volver a añadir `coverageEnabled: false` al input de la acción v4.4.0: genera `--no-coverageEnabled`, que esa CLI rechaza antes de iniciar Unity. El filtro sigue siendo `Luckbound`; no resolver ese fallo cambiando la cobertura, quitando tests ni promoviendo Main.
 
@@ -126,11 +126,12 @@ Prompt de continuación:
 Retoma el objetivo completo de Luckbound como coordinador Luna max.
 Lee AGENTS.md, docs/LUNA_HANDOFF.md, el resumen de docs/PROGRESS.md
 y las secciones pertinentes del plan. Inspecciona Git y no rehagas
-contratos ya integrados y comprobados. El arreglo de ciclo de vida UI corrigió
-dos fallos en Linux; el ajuste B07 de eventos sin Update manual pasa PlayMode
-246/246 en Windows. Respáldalo en `codex/luckbound-reboot` y confirma Linux y
-builds con una CI manual, dentro de la autorización vigente. Después
-prioriza F09.PLAYER.SESSION y los paquetes independientes hacia F10.
+contratos ya integrados y comprobados. La CI 39165682705 aún falla B07 en
+Linux (245/246); el candidato local actual aísla en esa prueba los módulos de
+entrada UI de Expedition y pasa PlayMode 246/246. Respáldalo en
+`codex/luckbound-reboot` y confirma Linux y builds con una CI manual, dentro
+de la autorización vigente. Después prioriza F09.PLAYER.SESSION, el resolver
+productivo de encuentros y los paquetes independientes hacia F10.
 Usa hasta tres Luna max
 con contexto nuevo y archivos exclusivos. Integra, ejecuta aceptación
 real sin ninguna interfaz visible, registra evidencia y continúa.
