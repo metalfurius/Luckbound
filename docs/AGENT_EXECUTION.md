@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 2.4 · 17 de octubre de 2026.
+**Versión:** 2.5 · 18 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -14,23 +14,20 @@ Este documento convierte las 111 tareas del producto en trabajo distribuible par
 
 La petición documental anterior de Fran reafirmó la regla de visibilidad y limitó aquella intervención a documentación. La orden vigente, «Haz el desarrollo completo», reanuda ahora el desarrollo completo: el coordinador parte de las evidencias actuales de [PROGRESS.md](PROGRESS.md), prioriza el siguiente hito jugable F10 y puede repartir hasta tres paquetes listos e independientes entre trabajadores Luna `max` según el grafo. La petición documental queda como historial y no limita esta reanudación. Todas las ejecuciones se mantienen ocultas o verdaderamente aisladas.
 
-Estado técnico vigente al 17 de octubre; los cambios y sus evidencias están en [PROGRESS.md](PROGRESS.md):
+Estado técnico vigente al 18 de octubre: [checkpoint completo](CHECKPOINT_2026-10-18.md). Los estados de tareas y las evidencias canónicas permanecen en [PROGRESS.md](PROGRESS.md).
 
-- E01 y E02 están `Verified`; E02.ADAPTER quedó integrado en `99ea5e9` y el recorrido físico de fabricación pasa.
-- E03 Core y aplicación durable están integrados; compra/reintento, venta de material y restauración pasan. La aceptación de venta de objetos pasa 1/1; falta la interacción accesible del juego. E04 Core, mapper y mutaciones durables están integrados; `31ea4b6` aplica recompensa y claim atómicamente y `b89f0e9` cubre replay de la API tras recarga sin rollback D09 (dirigida 4/4). Siguen pendientes UI/encuentros y validar la migración con un expediente legado real, que debe fallar sin sobrescribirlo si contiene ofertas antiguas irrepresentables.
-- E06 está `Verified` en `9607751`; sus decisiones de economía, redondeo, guardado y reintento están fijadas en DEVELOPMENT_PLAN.md §3.13.
-- E07 está `Verified`. E08 ya implementa asistencia Magus por cono de 35°, línea de visión y desempate determinista; sus pruebas dirigidas pasan 12/12. E08 sigue abierto hasta la aceptación integral de clase.
-- E09 integra Embestida, Corte circular y Guardia Bellator, y queda `Verified`: la composición reusable pasa raza, kit y estadísticas de la configuración confirmada al motor y al colector. Binder dirigido 3/3; EditMode completo 253/253; PlayMode completo 159/159, cero fallos/omitidos/inconclusos en Unity `6000.6.5f1`, batch/nographics. F09 conserva la unión del binder con la composición productiva del recorrido.
-- F07 está `Verified`; F08 conserva tres pistas, catálogo de 36 efectos y tres ambientes loopables. La raíz persistente crea los directores de música/ambiente y el enrutador. Música por escena: `Hub`→taberna, `Expedition`/`CombatArena`→Patio y `CustodianArena`→Custodio. Ambiente: `Expedition`/`CombatArena`→Patio, se detiene al salir de esas escenas; ambos esperan la primera entrada del jugador. Los fundidos se limitan a dos voces por director. Suites de audio/importación 44/44. La build WebGL local de F08 termina `success`; siguen pendientes la selección de ambiente por sala dentro de la composición F09, la prueba de reproducción tras interacción y la revisión auditiva. F01 tiene la celda técnica 32×48 validada, pero sigue `InProgress/Prototype` porque la revisión visual del tablero/celda no se ha realizado; F02 no empieza hasta aceptar F01.
-- G01 integra `0342026`; `d0cfb7b` enlaza la ranura equipada con el perfil de catálogo en el binder Bellator, con PlayMode dirigido 5/5. Continúa `InProgress`: falta el callsite productivo, cobertura catálogo→ataque→impacto de las nueve armas y magnitudes de alcance/empuje de Umbra (no definidas por el plan).
-- Regresión coordinada posterior a E04/G01/F09 (17-oct): EditMode 266/266 en `Logs/Coordinator-20261017-final-e04-g01-f09-editmode.xml`; PlayMode 173/173 en `Logs/Coordinator-20261017-final-e04-g01-f09-playmode.xml`, cero fallos, omitidos o inconclusos. Unity `6000.6.5f1`, WindowsEditor, `-batchmode -nographics`, exit code 0; no se hizo build/publicación. La aceptación dirigida E04 4/4 y F09 binder 5/5, y las evidencias E09 anteriores, quedan registradas en PROGRESS.md.
-- Unity ya está en `6000.6.6f1`; los runners/imágenes y metadatos de release de `.github/workflows/build.yml` coinciden con esa versión, y CI filtra `Luckbound` porque el Core SRP embebido incorpora pruebas de PathTracing ajenas al juego. En este Editor, EditMode filtrado pasa 269/269 y PlayMode 182/182; el recorrido sin filtro también selecciona cuatro pruebas de Unity que fallan buscando `SetAlphaChannel` con dispositivo gráfico Null. No contar la ejecución sin filtro como aceptación aprobada. Los informes y motivo están en PROGRESS.md; no se ejecutó todavía una build ni GitHub Actions.
-- A06 tiene un bloqueo de acceso/secretos para ejecutar Actions; no se atribuye al workflow una ejecución remota inexistente.
-- Las cinco revisiones de Fran siguen pendientes. Permiten trabajo técnico independiente, pero no equivalen a aprobación.
-- Editor fijado: Unity `6000.6.6f1`. Mantener paquetes y módulos ya comprobados.
-- El recorrido de `Expedition` existente incluye un recibo de sesión/checkpoint; no demuestra por sí mismo una campaña jugable. F09 debe conectar jugador, salas, combate y resultados reales.
+- Base de integración: codex/luckbound-reboot, 9532a63. El checkpoint actual modifica documentación, sin iniciar paquetes ni aprobar revisiones.
+- E01–E03 y E06–E09 tienen aceptación técnica. E03 ya incluye interacción accesible de servicios; E08 está Verified. E04 tiene panel y mutaciones durables, pero conserva pendientes los encuentros y la comprobación con un expediente legado original.
+- La regresión vigente registrada en Unity 6000.6.6f1 es EditMode 320/320 y PlayMode 230/230. Existen builds locales satisfactorias anteriores a los últimos cambios de código; no son una build de distribución del último estado.
+- F01 sigue InProgress/Prototype a la espera de revisión visual. F02 espera ese cierre; F03–F06 siguen Pending. F07 está Verified. F08 conserva tres pistas, tres ambientes y 36 efectos; faltan integración por sala, prueba WebGL tras interacción y revisión auditiva.
+- F09 conserva binder y servicios durables, pero Expedition todavía muestra el recibo de partida y no compone el recorrido jugable. F10 sigue Pending. El contrato de ruta completa exige 24 nodos; la muestra corta requiere una representación y validación compatibles antes de integrarla.
+- G01 conserva pruebas de runtime de nueve armas; faltan su uso en el recorrido y las magnitudes de alcance/empuje de Umbra. G02 ya contiene seis armaduras, seis consumibles y doce recetas: falta defensa por rareza, datos de perfiles desde JSON y aceptación. No reasignar las definiciones como si no existieran.
+- La restitución del actor desde el checkpoint debe conservar máximos, recursos actuales, equipo y mejoras permanentes. La configuración restaurada y el binder actuales aún no cubren ese puente.
+- A06 no tiene ejecución remota verificada. Main y gh-pages siguen en el prototipo anterior, y la rama de reinicio no aparece publicada en remoto. Conservar la ruta pública y verificar CI antes de promover una versión.
+- No hay trabajadores activos al tomar este checkpoint. El worktree g02-armor-data-rarity está limpio en 9532a63; la asignación interrumpida no produjo entrega.
+- Las cinco revisiones de Fran siguen pendientes. La revisión visual F01 tampoco está aprobada. El silencio y esta revisión de estado no constituyen aprobación.
 
-**Oleada ejecutada al reanudar:** releer el estado de Git y las fichas D09/E01; después de consolidar E01, despachar E02.DATA, F01 y F07. El estado de cada entrega e integración se mantiene en PROGRESS.md. Si una evidencia posterior difiere por contenido, repetir la comprobación pertinente. No rehacer automáticamente todas las builds ni añadir las cuatro referencias originales del usuario a un commit de código.
+**Al retomar tras el checkpoint:** seleccionar paquetes listos del grafo que cierren las brechas de F10. Reutilizar las entregas ya integradas y ejecutar la aceptación correspondiente al contenido que cambie. No rehacer automáticamente todas las builds ni incorporar las cuatro referencias originales a un commit de código.
 
 ## 2. Modelos, plazas y responsabilidades
 
@@ -451,7 +448,7 @@ Los ambientes usan un `RuntimeAmbienceDirector` separado, con volumen propio y m
 
 ### F09 / F10 — Primera unión jugable
 
-**Listo:** todos los prerrequisitos del grafo. **Dueño:** coordinador, con una plaza de revisión de integración cuando haga falta.
+**Disponibilidad actual (18 de octubre de 2026):** F03, F04, F05 y F06 siguen `Pending`; F08 y E10 siguen `InProgress`. No se ha demostrado el conjunto de prerrequisitos del recorrido, por lo que F09/F10 no pueden declararse aceptados. Avanza por paquetes técnicos independientes que respeten el grafo. **Dueño:** coordinador, con una plaza de revisión de integración cuando haga falta.
 
 Conectar taberna→tutorial→combate→exploración→Custodio→zona segura de extracción→resultado→taberna. Jugador real, enemigos físicos, recompensas de sala únicas, fabricación/servicios accesibles, checkpoint/reanudación y liquidación duradera. Usar entrada, no llamadas de “completar sala” o daño artificial para simular recorrido.
 
