@@ -1,11 +1,11 @@
 # Luckbound — Relevo para Luna max
 
-Preparación del 18 de octubre de 2026. Este documento es una entrada y una cola de contratos; no mantiene otro registro de estados. La autoridad de ejecución, commits y aceptación es [PROGRESS.md](PROGRESS.md). El producto completo sigue definido en [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) y las dependencias en [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
+Preparación actualizada el 18 de octubre de 2026. Este documento es una entrada y una cola de contratos; no mantiene otro registro de estados. La autoridad de ejecución, commits y aceptación es [PROGRESS.md](PROGRESS.md). El producto completo sigue definido en [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) y las dependencias en [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
 ## 1. Arranque de una sesión
 
 1. Leer `AGENTS.md`, el resumen vigente de progreso y esta entrada. Comprobar rama, commit y cambios locales. No borrar las cuatro referencias originales sin seguimiento ni integrar worktrees antiguos automáticamente.
-2. Partir de `codex/luckbound-reboot`. Las entregas de esta preparación deben constar integradas y probadas en progreso; no volver a implementar armaduras, ruta corta o snapshot de mejoras.
+2. Partir de `codex/luckbound-reboot`. Las entregas integradas deben constar probadas en progreso; no volver a implementar armaduras, ruta corta, snapshot de mejoras ni G01/Umbra.
 3. Seleccionar el primer contrato disponible del apartado 3. Antes de asignarlo, leer sus secciones completas del plan y sus archivos. Completar la ficha con el commit real; nunca dar a un trabajador una base descrita solo como «la última».
 4. El coordinador puede ser Luna `max`. Hasta tres trabajadores `gpt-6-luna`, esfuerzo `max`, contexto nuevo, sin delegación recursiva. Un dueño por archivo; una ejecución Unity por máquina. El coordinador conserva integración, escenas, motor, guardado, configuración y progreso salvo cesión expresa.
 5. Si no hay worktrees escribibles, solo el coordinador modifica código de producción. Los trabajadores preparan diffs en `docs/agent_staging/<paquete>/`, fuera de `Assets`; no importar carpetas enteras ni compilar esas copias. Revisar cada diff antes de aplicarlo y retirar el staging integrado.
@@ -29,7 +29,7 @@ La petición de preparación no aprueba arte, revisiones de builds ni publicaci�
 | Transiciones | Preparar destino, guardar resultado/avance mediante `CompleteAndAdvanceRoomAsync` y activar después. No retirar sala/actor antes de confirmar persistencia. Los reintentos conservan la misma identidad y carga. |
 | Ambiente | Tras activar la primera sala, llamar `BindExpeditionRoomAmbience` con el controlador de transición. El contexto de sala determina el ambiente; no buscar objetos globalmente. |
 | Salida de muestra | `ExpeditionOutcome.Extracted`, liquidación existente y única por `RunId`. No desbloquear una victoria de campaña al derrotar únicamente al Custodio. |
-| Umbra | Alcance/empuje ya tienen magnitudes concretas en §3.8. Falta implementar y aceptar G01.UMBRA.NUMERIC; conservar daño 18, intervalo 42 ticks y ventana `[6,12)`. |
+| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI Linux pendiente debe confirmar el fix de input antes de cerrar A06. |
 
 `WeaponBasicAttackProfile.BaseDamage` ya incorpora los dos multiplicadores de instancia. Al enviarlo a `DamageCalculationRequest`, mantener rareza/mejora en 1/1; aplicarlos otra vez duplicaría el efecto. Combo, carga y bonificación ofensiva conservan su lugar antes del redondeo final.
 
@@ -40,6 +40,8 @@ La petición de preparación no aprueba arte, revisiones de builds ni publicaci�
 Esta cola descompone las tareas existentes, sin crear dependencias por posición. El cierre de un contrato técnico no verifica F09 ni permite saltarse F02–F06. Los recursos provisionales sirven solo en pruebas técnicas permitidas, nunca en la muestra acabada.
 
 ### F09.ENTRY.TECH — Salida y reanudación con jugador y sala reales
+
+**Estado actual:** implementación técnica integrada y comprobada localmente; falta confirmación CI. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
 
 **Dueño:** coordinador. **Consume:** D03, D05, D09, E09 y los contratos de ruta/guardado/binder aceptados en esta preparación. Puede avanzar antes del arte final como unión técnica delimitada.
 
@@ -53,27 +55,23 @@ Esta cola descompone las tareas existentes, sin crear dependencias por posición
 
 ### F09.PLAYER.SESSION — Conservar actor y publicar equipo confirmado
 
-**Dueño:** coordinador; consume la entrada técnica. Cambiar de sala no reinicializa el actor, su identidad, recursos, recargas ni efectos de expedición. `Bind`/`BindFromCheckpoint` son contratos de actor nuevo, no APIs de reconfiguración por puerta. Separar en `PlayerMotor2D` el enlace a scopes de proyectiles de la inicialización del estado de clase: retirar el enlace de sala anterior y conectar el nuevo sin crear otro `SkillUseState`. Cerrar proyectiles/efectos de la sala anterior, sin reponer energía ni pociones. Probar Venator/Magus en dos transiciones y conservar recarga pendiente.
+**Dueño:** coordinador; consume la entrada técnica. La auditoría estática confirmó que `ExecuteEconomyMutationAsync` reemplaza `ActiveRun` tras persistir, pero no publica el inventario confirmado en el actor; mejorar el arma/armadura en la herrería puede dejar al motor con datos viejos. `EquipBackpackItem` no tiene todavía wrapper App durable. El panel solo bloquea acciones duplicadas de sí mismo, no ataques/consumos durante la escritura.
 
-Las mutaciones App publican un inventario nuevo después de confirmar escritura. Usar `ItemCollector2D.PublishCommittedInventory`, `ConfigureEquippedWeapon(run, catalog)` y `RefreshConsumableChargesFromInventory`; no dejar al actor con la instancia vieja ni inicializarlo de nuevo. Añadir un método explícito de actualización de armadura que conserve salud/energía actuales, recargas y preparación de acciones, aplique el resolver y limite solo al reducir máximos. Al cambiar armadura, retirar el bono de la armadura anterior del máximo vigente antes de añadir el nuevo, una sola vez; este delta también rige el máximo histórico conservado. Una mejora de defensa no modifica recursos. Persistir máximos y valores calculados junto con el inventario antes de reflejar el cambio en el actor. No permitir una acción de consumo/ataque concurrente mientras se confirma una operación que sustituya su inventario.
+El actor de la sesión conserva identidad, salud/energía, recargas y efectos al cambiar sala. `Bind`/`BindFromCheckpoint` crean/configuran actor; no son APIs de reconfiguración por puerta. Añadir un contrato explícito para re-enlazar scopes de proyectiles sin inicializar otra vez el estado de clase: retirar el enlace anterior y conectar el nuevo sin crear otro `SkillUseState` ni perder tiempos de disponibilidad. Cerrar proyectiles/efectos de la sala anterior, sin reponer energía ni pociones.
 
-**Aceptación:** comprar, mejorar, equipar, consumir y reiniciar conserva la misma instancia/rareza/nivel y el actor usa el resultado; fallo de escritura deja actor e inventario vigentes intactos, reintento no duplica efecto ni rellena. Cambiar túnica→cota limita energía al nuevo máximo sin curar; volver a túnica no la rellena. Dos reaplicaciones del mismo estado confirmado no acumulan defensa/energía. La aceptación de la armadura durante composición inicial no demuestra todavía este cambio en vivo.
+Tras escritura durable confirmada, publicar la misma instancia aceptada a `ActiveRun`, `ItemCollector2D` y `PlayerMotor2D`; conectar mejoras de arma/armadura, operación App durable de equipamiento si se ofrece equipar desde mochila y `RefreshConsumableChargesFromInventory`. No publicar antes del guardado ni reconstruir el actor. Actualizar armadura conservando salud/energía actuales, recargas y preparación de acciones; quitar del máximo el bono de la armadura previa y añadir el nuevo una sola vez. Limitar al nuevo máximo cuando disminuye; aumentarlo nunca cura. Persistir máximos y valores actuales junto al inventario antes de reflejarlos en el actor. Una mejora de defensa no modifica recursos. Bloquear ataque y consumo mientras se confirma un reemplazo del inventario; liberar en éxito, rechazo o reintento exacto.
 
-### G01.UMBRA.NUMERIC — Efectos que faltan del mandoble
+**Aceptación:** después de mejorar y equipar, `ActiveRun`, colector y motor conservan la misma instancia/rareza/nivel; el actor mantiene `ActorId`, salud, energía, recargas y preparación. Túnica→cota con EN 53/55 deja 50/50, sin curar; cota→túnica deja EN 50/55; re-aplicar el estado no acumula bono. Una mejora de defensa no cambia recursos. Cambiar/consumir la pila rápida actualiza colector y HUD. Escritura fallida conserva actor/inventario previos; reintentar el mismo payload lo publica una vez. Durante la escritura no se aceptan ataques/consumos. Para Venator y Magus, iniciar habilidad y cruzar dos puertas con recarga pendiente conserva actor, `SkillUseState`, recarga y energía; solo el scope nuevo queda activo, los proyectiles previos se liberan y no aparecen bindings duplicados. Estas pruebas integradas aún no existen.
 
-**Dueño sugerido:** trabajador 1. **Prerrequisitos:** C03/D04 y catálogo de armas ya integrado; independiente de F01.
+### G01 — Integrado y aceptado localmente
 
-**Leer:** plan §2.2, §2.5, §3.8 y §3.6; `WeaponTrait`, `WeaponProfile`, `WeaponCatalogJsonLoader`, `Weapons.json`, `MeleeImpact`, receptores Slime/Huesoguardia y `BellatorWeaponRuntimeAcceptanceTests`.
-
-**Archivos exclusivos:** `Core/Combat/WeaponProfile.cs`, `Core/Combat/WeaponTrait.cs`, `Content/WeaponCatalogJsonLoader.cs`, `Resources/Luckbound/Data/Weapons.json`, pruebas `EditMode/WeaponCatalog/`. Entregar al coordinador el diff acotado para `PlayerMotor2D` y pruebas físicas; no escribir en esos archivos sin cesión. Para mantener el esquema 1, el bloque `melee` es obligatorio en las tres armas Bellator y ausente en las otras seis: `centerOffsetX`, `centerOffsetY`, `width`, `height`, `knockbackHorizontalSpeed`, `knockbackVerticalSpeed`, `aiControlSuspensionTicks`. Rangos finitos, dimensiones positivas, empuje no negativo; un valor omitido necesario se rechaza. El contrato del plan fija las magnitudes de las tres armas.
-
-**Aceptación:** objetivo situado fuera del alcance de espada pero dentro del mandoble solo recibe este último; espejo izquierda/derecha; empuje físico 6/2,5 y Orcini 6,6/2,75 durante 12 ticks de suspensión de IA; no empuja tras bloqueo, duplicado o impacto de otro actor; jefe inmune. Los ataques mantienen daño/cadencia/secuencia. Validación JSON rechaza campos y clases incompatibles. Mantener el test de dos impactos: si el empuje aleja al objetivo, recolocar mediante movimiento del jugador, sin congelar al enemigo para ocultar el efecto.
+No despachar ni reimplementar G01/Umbra. El catálogo Bellator, alcance, offset, empuje, modificador Orcini, suspensión de IA e inmunidad del Custodio están integrados y pasan EditMode/PlayMode localmente. Los contratos numéricos y la evidencia exacta están en [PROGRESS.md](PROGRESS.md); la CI remota de esta rama queda pendiente.
 
 ### F01.REVIEW / F02.IMPORT — Referencia y pipeline artístico
 
 **Dueño sugerido:** trabajador 2 para validación/importador; coordinador para revisión con Fran. **Leer:** plan §4.1–§4.2 y archivos existentes de F01; no generar otro estilo desde cero.
 
-F01 sigue pendiente de decisión visual. Preparar el inventario verificable de las siete referencias, manifiesto de dimensiones/paleta/procedencia y la familia mínima; sin previsualización automática. Solo cuando Fran necesite decidir se presenta la referencia concreta. Si no hay aprobación, no declarar F01 cerrada ni finalizar F02/F03 con un estilo supuesto. Un importador técnico puede adelantarse como contrato parcial usando una fixture, con Point, PPU 16, sin mipmaps, alfa y slicing/pivotes deterministas; dos ejecuciones conservan GUID/clips/referencias y no derivan colisión de la silueta. Ninguna fixture se etiqueta como arte final.
+F01 sigue pendiente de decisión visual. Preparar el inventario verificable de las siete referencias, manifiesto de dimensiones/paleta/procedencia y la familia mínima; sin previsualización automática. Solo cuando Fran necesite decidir se presenta la referencia concreta. Si no hay aprobación, no declarar F01 cerrada ni finalizar F02/F03 con un estilo supuesto. Ya existe y pasa una fixture técnica F02: Point, PPU 16, sin mipmaps, alfa, slicing/pivote/clips deterministas, GUID/referencias estables al importar dos veces y `spriteGenerateFallbackPhysicsShape=false`. Es una sola fixture basada en F01 no revisado; no cierra F02 ni se etiqueta como arte final. Faltan las familias y atlas planificados. Ninguna fixture deriva colisión de la silueta.
 
 Tras F01/F02: asignar F03 jugador, F04 enemigos y F05 Patio como familias independientes; F06 taberna/UI ocupa la primera plaza que quede libre. Cada paquete contiene su lista de estados/archivos y aceptación del plan, no solo un número de PNG creados.
 
@@ -128,8 +126,9 @@ Prompt de continuación:
 Retoma el objetivo completo de Luckbound como coordinador Luna max.
 Lee AGENTS.md, docs/LUNA_HANDOFF.md, el resumen de docs/PROGRESS.md
 y las secciones pertinentes del plan. Inspecciona Git y no rehagas
-contratos ya integrados y comprobados. Prioriza F09.ENTRY.TECH y los
-paquetes independientes disponibles hacia F10. Usa hasta tres Luna max
+contratos ya integrados y comprobados. Confirma el resultado de CI; después
+prioriza F09.PLAYER.SESSION y los paquetes independientes disponibles hacia F10.
+Usa hasta tres Luna max
 con contexto nuevo y archivos exclusivos. Integra, ejecuta aceptación
 real sin ninguna interfaz visible, registra evidencia y continúa.
 Conserva los bloqueos de arte/revisión/CI que sigan vigentes; el silencio

@@ -1,6 +1,6 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 2.6 · 18 de octubre de 2026.
+**Versión:** 2.7 · 18 de octubre de 2026.
 
 **Producto y aceptación:** [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
 
@@ -20,12 +20,12 @@ Estado técnico vigente al 18 de octubre: [relevo preparado](LUNA_HANDOFF.md) y 
 
 - Rama de integración: `codex/luckbound-reboot`. Consultar en progreso el commit y la evidencia actuales; el estado de Git real prevalece sobre una ficha antigua.
 - E01–E03 y E06–E09 tienen aceptación técnica. E03 ya incluye interacción accesible de servicios; E08 está Verified. E04 tiene panel y mutaciones durables, pero conserva pendientes los encuentros y la comprobación con un expediente legado original.
-- Unity permanece fijada en 6000.6.6f1. La aceptación de esta preparación y sus XML están en progreso. Las builds locales previas no representan automáticamente las correcciones nuevas.
-- F01 sigue InProgress/Prototype a la espera de revisión visual. F02 espera ese cierre; F03–F06 siguen Pending. F07 está Verified. F08 conserva tres pistas, tres ambientes y 36 efectos; faltan integración por sala, prueba WebGL tras interacción y revisión auditiva.
-- F09 conserva binder y servicios durables, pero Expedition todavía muestra el recibo de partida y no compone el recorrido jugable. F10 sigue Pending. La campaña conserva generación 1/24 nodos; `CreateSample` crea generación 2/5 nodos explícita desde JSON, ya validada y persistible. Faltan sus salas y composición productiva.
-- G01 ya aplica rareza y mejora a los básicos de las nueve armas. Las magnitudes de alcance/empuje de Umbra están fijadas en el plan; falta implementarlas mediante G01.UMBRA.NUMERIC. G02 tiene JSON autoritativo, defensa por rareza, seis perfiles, seis consumibles y doce recetas aceptados; no recrear esos módulos. La actualización del actor vivo al cambiar equipo pertenece al contrato de integración F09.PLAYER.SESSION.
+- Unity permanece fijada en 6000.6.6f1. La aceptación local coordinada de esta preparación pasa: EditMode 351/351 y PlayMode 246/246. A06 sigue pendiente de la nueva ejecución remota Linux y de sus builds; no atribuir a esas builds locales ni a esta evidencia un resultado CI.
+- F01 sigue InProgress/Prototype a la espera de revisión visual. F02 tiene un importador técnico de fixture aceptado localmente (Point, PPU 16, slicing/pivote/clips estables y sin fallback de colisión); F02 sigue InProgress porque la referencia no está aprobada y faltan familias/atlas finales. F03–F06 siguen Pending. F07 está Verified. F08 conserva tres pistas, tres ambientes y 36 efectos; faltan integración por sala, prueba WebGL tras interacción y revisión auditiva.
+- F09 tiene una composición técnica conectada a la ruta `CreateSample` y a la escena Expedition, con registro explícito de salas y comprobación de prefabs. Sigue sin poder ensamblar la muestra: faltan el jugador de producción y las salas F10; conserva un recibo de contenido pendiente si esos recursos no existen. F10 sigue Pending. La campaña conserva generación 1/24 nodos; `CreateSample` crea generación 2/5 nodos explícita desde JSON, ya validada y persistible.
+- G01 está Verified con alcance/empuje de Umbra configurados en JSON y efecto físico probado en PlayMode; no reabrirlo al integrar el recorrido F09. G02 tiene JSON autoritativo, defensa por rareza, seis perfiles, seis consumibles y doce recetas aceptados; no recrear esos módulos. La actualización del actor vivo al cambiar equipo pertenece al contrato de integración F09.PLAYER.SESSION.
 - La restitución mediante `BindFromCheckpoint` conserva recursos y máximos guardados, instancias y niveles permanentes congelados. Contenido v5 distingue snapshot conocido/desconocido con marcador explícito y mantiene las formas históricas de checksum. No recomponer una partida antigua desde el perfil vigente.
-- A06 necesita aceptación de los artefactos remotos. Hay una segunda ejecución autorizada identificada en progreso; consultar su resultado antes de crear otra. Conservar Main, gh-pages y la ruta pública al respaldar la rama de desarrollo; no promoverla por preparar un relevo.
+- A06 sigue InProgress: la ejecución remota 39154373553 falló en tres escenarios PlayMode Linux por `ArgumentNullException(statePtr)`; Windows local pasa 246/246 tras añadir `InputSystem.Update()` en esos fixtures. Respaldar el siguiente commit únicamente en `codex/luckbound-reboot`, lanzar `build.yml` manualmente en esa rama y revisar tests/builds; release y despliegue requieren tag/Main y quedan fuera de esta autorización.
 - Las entregas de esta preparación se integraron desde staging revisado, con producción escrita solo por el coordinador. No reutilizar un worktree antiguo sin actualizar su base y su ficha.
 - Las cinco revisiones de Fran siguen pendientes. La revisión visual F01 tampoco está aprobada. El silencio y esta revisión de estado no constituyen aprobación.
 
@@ -604,7 +604,7 @@ Si predominan conflictos, reducir escritores y separar contratos; si predomina e
 
 Éxito de esta optimización: 111 tareas conservadas, grafo sin ciclos, decisiones fijas, próximos paquetes ejecutables, integración segura y aceptación demostrable. No se mide por número de agentes creados ni por cantidad de código generado.
 
-**Estado al guardar:** Fran reanudó el desarrollo completo el 14 de octubre. E02.DATA ya se integró; consultar PROGRESS.md para el estado real, paquetes activos y evidencias.
+**Estado al guardar:** Fran reanudó el desarrollo completo. G01/Umbra, la fixture técnica F02 y la composición de entrada F09 están integrados y aceptados localmente; la CI remota es el siguiente punto de control. Después, el siguiente contrato coordinado es F09.PLAYER.SESSION, junto con los paquetes independientes listos para acercar F10. Consultar PROGRESS.md para evidencias y bloqueos vigentes.
 
 Prompt genérico de reanudación para futuras sesiones:
 
