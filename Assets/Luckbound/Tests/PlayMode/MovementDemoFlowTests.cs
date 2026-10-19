@@ -31,7 +31,6 @@ namespace Luckbound.Tests.PlayMode
                 UnityRandom.InitState(ScenarioSeed);
                 Time.timeScale = 1f;
                 keyboard = InputSystem.AddDevice<Keyboard>();
-                InputSystem.AddDevice<Mouse>();
                 InputSystem.Update();
 
                 evidence.RecordEvent("Load the Menu scene and use its actual demo button binding.");
@@ -82,9 +81,7 @@ namespace Luckbound.Tests.PlayMode
                     yield break;
                 }
 
-                // This scenario drives the player with keyboard events and invokes menu buttons directly.
-                // Pointer/navigation input is outside this scenario and is covered by its dedicated tests.
-                DisableSceneUiInputModules();
+                // This flow uses keyboard input and invokes menu buttons directly; no pointer device is required.
                 SetKeyboardState(keyboard);
                 AudioListener[] listeners = Object.FindObjectsByType<AudioListener>();
                 string listenerDescription = string.Join(", ", System.Array.ConvertAll(listeners,

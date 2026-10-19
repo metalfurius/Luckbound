@@ -1,6 +1,6 @@
 # Luckbound — Relevo para Luna max
 
-Preparación actualizada el 18 de octubre de 2026. Este documento es una entrada y una cola de contratos; no mantiene otro registro de estados. La autoridad de ejecución, commits y aceptación es [PROGRESS.md](PROGRESS.md). El producto completo sigue definido en [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) y las dependencias en [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
+Preparación actualizada el 19 de octubre de 2026. Este documento es una entrada y una cola de contratos; no mantiene otro registro de estados. La autoridad de ejecución, commits y aceptación es [PROGRESS.md](PROGRESS.md). El producto completo sigue definido en [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) y las dependencias en [AGENT_EXECUTION.md](AGENT_EXECUTION.md).
 
 ## 1. Arranque de una sesión
 
@@ -9,7 +9,7 @@ Preparación actualizada el 18 de octubre de 2026. Este documento es una entrada
 3. Seleccionar el primer contrato disponible del apartado 3. Antes de asignarlo, leer sus secciones completas del plan y sus archivos. Completar la ficha con el commit real; nunca dar a un trabajador una base descrita solo como «la última».
 4. El coordinador puede ser Luna `max`. Hasta tres trabajadores `gpt-6-luna`, esfuerzo `max`, contexto nuevo, sin delegación recursiva. Un dueño por archivo; una ejecución Unity por máquina. El coordinador conserva integración, escenas, motor, guardado, configuración y progreso salvo cesión expresa.
 5. Si no hay worktrees escribibles, solo el coordinador modifica código de producción. Los trabajadores preparan diffs en `docs/agent_staging/<paquete>/`, fuera de `Assets`; no importar carpetas enteras ni compilar esas copias. Revisar cada diff antes de aplicarlo y retirar el staging integrado.
-6. Cero interfaz visible: no abrir Unity Editor, jugador, navegador, terminal, explorador, preview ni contenido multimedia en el chat. Solo se muestra lo que Fran necesite usar personalmente para decidir en ese momento. Si una herramienta no garantiza invisibilidad, no lanzarla; registrar el impedimento y seguir con otro contrato. No sustituir aislamiento por minimizar o quitar el foco.
+6. Fran permite ventanas auxiliares en segundo plano si no las ve ni oye, no le roban el foco de forma visible y no mueven su ratón. Comprobar también ventanas secundarias, avisos y sonidos. Solo presentar una interfaz o previsualización a Fran cuando necesite usarla para decidir. Si no se pueden garantizar esas condiciones, usar headless/oculto/aislado y registrar el bloqueo.
 
 La petición de preparación no aprueba arte, revisiones de builds ni publicación. Las revisiones pendientes no impiden trabajo técnico independiente.
 
@@ -29,7 +29,7 @@ La petición de preparación no aprueba arte, revisiones de builds ni publicaci�
 | Transiciones | Preparar destino, guardar resultado/avance mediante `CompleteAndAdvanceRoomAsync` y activar después. No retirar sala/actor antes de confirmar persistencia. Los reintentos conservan la misma identidad y carga. |
 | Ambiente | Tras activar la primera sala, llamar `BindExpeditionRoomAmbience` con el controlador de transición. El contexto de sala determina el ambiente; no buscar objetos globalmente. |
 | Salida de muestra | `ExpeditionOutcome.Extracted`, liquidación existente y única por `RunId`. No desbloquear una victoria de campaña al derrotar únicamente al Custodio. |
-| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI 39165682705 conserva un fallo PlayMode Linux en B07, ajeno al contrato numérico de Umbra; el candidato local de aislamiento de UI pasa 246/246 y A06 espera validación Linux/builds. |
+| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI 39167559657 conserva un fallo de log PlayMode Linux en B07, ajeno al contrato numérico de Umbra. El candidato local más reciente elimina el Mouse simulado innecesario y pasa 246/246 con UI activa; A06 espera validación Linux/builds. |
 
 `WeaponBasicAttackProfile.BaseDamage` ya incorpora los dos multiplicadores de instancia. Al enviarlo a `DamageCalculationRequest`, mantener rareza/mejora en 1/1; aplicarlos otra vez duplicaría el efecto. Combo, carga y bonificación ofensiva conservan su lugar antes del redondeo final.
 
@@ -41,7 +41,7 @@ Esta cola descompone las tareas existentes, sin crear dependencias por posición
 
 ### F09.ENTRY.TECH — Salida y reanudación con jugador y sala reales
 
-**Estado actual:** implementación técnica integrada y comprobada localmente; la CI 39165682705 pasó EditMode 348/348 y PlayMode 245/246 en Linux; C08/D06 pasan, pero B07 informa que un valor cacheado de `Vector2` cambia a `3.67342E-40`, igual al patrón IEEE-754 de los bytes de la tecla D en `KeyboardState`. Es una pista de lectura cruzada de estado/control UI, no una causa confirmada. Windows/WebGL quedaron omitidas. El candidato local desactiva solo los módulos de entrada UI de la escena durante B07 (el escenario usa teclado y llama botones directamente) y pasa PlayMode 246/246; aún requiere CI Linux/builds. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
+**Estado actual:** implementación técnica integrada y comprobada localmente; la CI 39167559657 pasó EditMode 348/348 y PlayMode 245/246 en Linux; C08/D06 pasan. B07 completó el recorrido físico, pero el framework detectó un log de caché `Vector2` con valor `3.67342E-40` al procesar `OnBeforeInitialUpdate` tras cargar Menu. La correlación de bytes con Key.D y la acción UI `Point` enlazada a `Mouse.position` sugieren lectura cruzada, sin identificar el control exacto. El candidato que desactivó UI solo en Expedition no resolvió el retorno al Menu. El candidato local vigente quita el Mouse simulado que este recorrido de teclado no usa y mantiene activos los módulos UI; PlayMode completo pasa 246/246 con 41 manifiestos verificados. Windows/WebGL y publicación se omitieron en 39167559657; el candidato aún necesita CI Linux/builds. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
 
 **Dueño:** coordinador. **Consume:** D03, D05, D09, E09 y los contratos de ruta/guardado/binder aceptados en esta preparación. Puede avanzar antes del arte final como unión técnica delimitada.
 
@@ -114,7 +114,7 @@ Logs/builds son locales e ignorados. Guardar en progreso un resumen con SHA-256,
 
 ## 5. Entrega, web y continuación
 
-Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El run 39165682705 pasó EditMode 348/348, falló un PlayMode Linux y omitió ambas builds; no hubo publicación. El candidato local actual aísla los módulos de entrada UI de B07 y pasa PlayMode 246/246. Fran autorizó el respaldo y CI manual de `codex/luckbound-reboot`; tras registrar este candidato, confirmar Linux/builds con CI manual sin publicar. Consultar `PROGRESS.md` para el artefacto, hash y resultado vigentes. Nunca abrir una ventana de autenticación por iniciativa propia.
+Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El run 39167559657 pasó EditMode 348/348, falló un log en PlayMode (245/246) y omitió builds; no hubo publicación. El candidato local actual omite el Mouse simulado innecesario en B07, mantiene activa la UI y pasa PlayMode 246/246; aún requiere Linux/builds. Fran autorizó el respaldo y CI manual de `codex/luckbound-reboot`; respaldar esta variante y confirmar Linux/builds con otra CI manual sin publicar. Consultar `PROGRESS.md` para el artefacto, hash y resultado vigentes. Nunca abrir una ventana de autenticación por iniciativa propia.
 
 Fran autorizó expresamente el respaldo y CI de `codex/luckbound-reboot` en `metalfurius/Luckbound`, sin publicar el juego. En el workflow fijado, la cobertura se desactiva mediante `GAME_CI_COVERAGE_ENABLED=false`, opción soportada de la CLI v0.1.72. No volver a añadir `coverageEnabled: false` al input de la acción v4.4.0: genera `--no-coverageEnabled`, que esa CLI rechaza antes de iniciar Unity. El filtro sigue siendo `Luckbound`; no resolver ese fallo cambiando la cobertura, quitando tests ni promoviendo Main.
 
@@ -126,15 +126,15 @@ Prompt de continuación:
 Retoma el objetivo completo de Luckbound como coordinador Luna max.
 Lee AGENTS.md, docs/LUNA_HANDOFF.md, el resumen de docs/PROGRESS.md
 y las secciones pertinentes del plan. Inspecciona Git y no rehagas
-contratos ya integrados y comprobados. La CI 39165682705 aún falla B07 en
-Linux (245/246); el candidato local actual aísla en esa prueba los módulos de
-entrada UI de Expedition y pasa PlayMode 246/246. Respáldalo en
-`codex/luckbound-reboot` y confirma Linux y builds con una CI manual, dentro
-de la autorización vigente. Después prioriza F09.PLAYER.SESSION, el resolver
-productivo de encuentros y los paquetes independientes hacia F10.
-Usa hasta tres Luna max
-con contexto nuevo y archivos exclusivos. Integra, ejecuta aceptación
-real sin ninguna interfaz visible, registra evidencia y continúa.
+contratos ya integrados y comprobados. La CI 39167559657 falla B07 por un log
+Vector2 al volver a Menu (245/246), aunque el escenario físico completo pasa.
+El candidato local más reciente quita el Mouse simulado innecesario y pasa
+PlayMode 246/246 con UI activa. Respáldalo en `codex/luckbound-reboot` y
+confirma Linux y builds con otra CI manual, dentro de la autorización vigente.
+Después prioriza F09.PLAYER.SESSION, el resolver productivo de encuentros y
+los paquetes independientes hacia F10. Usa hasta tres Luna max con contexto
+nuevo y archivos exclusivos. Integra y prueba en headless o en segundo plano
+sin que Fran vea, oiga ni reciba movimiento de ratón; registra evidencia y continúa.
 Conserva los bloqueos de arte/revisión/CI que sigan vigentes; el silencio
 no aprueba ninguno. No promociones Main/gh-pages por preparar el relevo.
 ```

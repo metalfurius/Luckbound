@@ -24,7 +24,7 @@ namespace Luckbound.Tests.PlayMode
             base.TearDown();
         }
 
-        protected static void DisableSceneUiInputModules()
+        private static void DisableSceneUiInputModules()
         {
             InputSystemUIInputModule[] modules = UnityEngine.Object.FindObjectsByType<InputSystemUIInputModule>();
             foreach (InputSystemUIInputModule module in modules)
