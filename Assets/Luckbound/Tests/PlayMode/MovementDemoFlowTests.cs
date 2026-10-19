@@ -6,6 +6,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -25,12 +26,14 @@ namespace Luckbound.Tests.PlayMode
             UnityRandom.State previousRandomState = UnityRandom.state;
             var evidence = new ScenarioEvidenceRecorder("B07", "B07_MovementDemoFlow", ScenarioSeed);
             Keyboard keyboard = null;
+            Mouse mouse = null;
 
             try
             {
                 UnityRandom.InitState(ScenarioSeed);
                 Time.timeScale = 1f;
                 keyboard = InputSystem.AddDevice<Keyboard>();
+                mouse = InputSystem.AddDevice<Mouse>();
                 InputSystem.Update();
 
                 evidence.RecordEvent("Load the Menu scene and use its actual demo button binding.");
@@ -52,6 +55,8 @@ namespace Luckbound.Tests.PlayMode
                     yield break;
                 }
 
+                // This scenario invokes the real Button callback directly; pointer/navigation input is covered separately.
+                DisableSceneUiInputModules();
                 evidence.RecordInput(1, "MenuButton", "StartMovementDemoButton.onClick");
                 startButton.onClick.Invoke();
                 for (int frame = 0; frame < 20 && SceneManager.GetActiveScene().name != "Expedition"; frame++)
@@ -81,7 +86,7 @@ namespace Luckbound.Tests.PlayMode
                     yield break;
                 }
 
-                // This flow uses keyboard input and invokes menu buttons directly; no pointer device is required.
+                DisableSceneUiInputModules();
                 SetKeyboardState(keyboard);
                 AudioListener[] listeners = Object.FindObjectsByType<AudioListener>();
                 string listenerDescription = string.Join(", ", System.Array.ConvertAll(listeners,
@@ -207,12 +212,23 @@ namespace Luckbound.Tests.PlayMode
                         Button returnButton = returnButtonObject == null ? null : returnButtonObject.GetComponent<Button>();
                         evidence.RecordAssertion("Course presents a return button", returnButton != null,
                             "ReturnToMenuButton with Button", returnButton == null ? "missing" : "present");
-                        if (returnButton != null) returnButton.onClick.Invoke();
+                        if (returnButton != null)
+                        {
+                            // Clear held movement before the Menu UI module enables its actions again.
+                            evidence.RecordInput(evidenceFrame++, "MoveX", "release all keys before returning to Menu");
+                            SetKeyboardState(keyboard);
+                            if (mouse != null) InputSystem.QueueStateEvent(mouse, new MouseState());
+                            InputSystem.Update();
+                            yield return null;
+                            DisableSceneUiInputModules();
+                            returnButton.onClick.Invoke();
+                        }
 
                         for (int frame = 0; frame < 20 && SceneManager.GetActiveScene().name != "Menu"; frame++)
                         {
                             yield return null;
                         }
+                        DisableSceneUiInputModules();
                         evidence.RecordAssertion("Return action loads the Menu scene",
                             SceneManager.GetActiveScene().name == "Menu", "Menu",
                             SceneManager.GetActiveScene().name);
@@ -251,6 +267,15 @@ namespace Luckbound.Tests.PlayMode
         private static void SetKeyboardState(Keyboard keyboard, params Key[] pressedKeys)
         {
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(pressedKeys));
+        }
+
+        private static void DisableSceneUiInputModules()
+        {
+            InputSystemUIInputModule[] modules = Object.FindObjectsByType<InputSystemUIInputModule>();
+            foreach (InputSystemUIInputModule module in modules)
+            {
+                if (module != null && module.enabled) module.enabled = false;
+            }
         }
     }
 }

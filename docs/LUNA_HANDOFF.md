@@ -29,7 +29,7 @@ La petición de preparación no aprueba arte, revisiones de builds ni publicaci�
 | Transiciones | Preparar destino, guardar resultado/avance mediante `CompleteAndAdvanceRoomAsync` y activar después. No retirar sala/actor antes de confirmar persistencia. Los reintentos conservan la misma identidad y carga. |
 | Ambiente | Tras activar la primera sala, llamar `BindExpeditionRoomAmbience` con el controlador de transición. El contexto de sala determina el ambiente; no buscar objetos globalmente. |
 | Salida de muestra | `ExpeditionOutcome.Extracted`, liquidación existente y única por `RunId`. No desbloquear una victoria de campaña al derrotar únicamente al Custodio. |
-| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI 39167559657 conserva un fallo de log PlayMode Linux en B07, ajeno al contrato numérico de Umbra. El candidato local más reciente elimina el Mouse simulado innecesario y pasa 246/246 con UI activa; A06 espera validación Linux/builds. |
+| Umbra | `G01` está integrado y aceptado localmente con las magnitudes de §3.8; conserva daño 18, intervalo 42 ticks y ventana `[6,12)`. La CI 39241917686 dejó B07 en 245/246 por una excepción al habilitar el módulo UI de Expedition en Linux, ajena al contrato numérico de Umbra. El candidato local aísla la UI dentro del test B07, conserva Keyboard/Mouse y pasa 246/246; A06 espera validar Linux/builds. |
 
 `WeaponBasicAttackProfile.BaseDamage` ya incorpora los dos multiplicadores de instancia. Al enviarlo a `DamageCalculationRequest`, mantener rareza/mejora en 1/1; aplicarlos otra vez duplicaría el efecto. Combo, carga y bonificación ofensiva conservan su lugar antes del redondeo final.
 
@@ -41,7 +41,7 @@ Esta cola descompone las tareas existentes, sin crear dependencias por posición
 
 ### F09.ENTRY.TECH — Salida y reanudación con jugador y sala reales
 
-**Estado actual:** implementación técnica integrada y comprobada localmente; la CI 39167559657 pasó EditMode 348/348 y PlayMode 245/246 en Linux; C08/D06 pasan. B07 completó el recorrido físico, pero el framework detectó un log de caché `Vector2` con valor `3.67342E-40` al procesar `OnBeforeInitialUpdate` tras cargar Menu. La correlación de bytes con Key.D y la acción UI `Point` enlazada a `Mouse.position` sugieren lectura cruzada, sin identificar el control exacto. El candidato que desactivó UI solo en Expedition no resolvió el retorno al Menu. El candidato local vigente quita el Mouse simulado que este recorrido de teclado no usa y mantiene activos los módulos UI; PlayMode completo pasa 246/246 con 41 manifiestos verificados. Windows/WebGL y publicación se omitieron en 39167559657; el candidato aún necesita CI Linux/builds. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
+**Estado actual:** implementación técnica integrada y comprobada localmente; la CI 39241917686 pasó EditMode 348/348 y PlayMode 245/246 en Linux; C08/D06 pasan. B07 completó el recorrido físico y falló con `IndexOutOfRangeException` en `InputSystemUIInputModule.EnableInputAction/OnEnable` al habilitar el módulo UI de Expedition después del callback de inicio. Windows/WebGL, release y despliegue se omitieron; no se publicó. El candidato local vigente mantiene Keyboard/Mouse simulados, desactiva los módulos UI solo en B07 (que invoca los callbacks reales de botones) y libera ambos dispositivos antes de volver a Menu; B07 dirigido pasa 1/1 y PlayMode completo 246/246, con 41 manifiestos verificados. Aún requiere CI Linux/builds. El coordinador conectó `CreateSample`, el registro explícito de prefabs y la composición en `Expedition.unity`. La composición rechaza contenido ausente y el presentador conserva un recibo recuperable de contenido pendiente. F03 aún debe aportar el jugador de producción y F05 las cinco salas/prefabs; por eso la muestra no es todavía jugable ni se acepta F09.
 
 **Dueño:** coordinador. **Consume:** D03, D05, D09, E09 y los contratos de ruta/guardado/binder aceptados en esta preparación. Puede avanzar antes del arte final como unión técnica delimitada.
 
@@ -93,6 +93,8 @@ Reutilizar el combate C08 y el Custodio D06 con entrada física; ningún script 
 
 **Consume:** prerrequisitos completos F03–F09 y E10. No declarar que una suite sobre Editor comprueba WebGL, audio audible, rendimiento gráfico o dirección artística.
 
+El callsite productivo de ambiente por sala ya está integrado en `c8e7bbe`: `ExpeditionGameplayComposition.OnRoomActivated` enlaza el controlador explícito con el router persistente. `ExpeditionRoomAmbienceRouterTests` cubre bind tardío, transiciones, salas sin mapeo, rebind y limpieza. No crear un segundo adaptador. Siguen pendientes la reproducción WebGL después de un gesto y la revisión auditiva.
+
 Pruebas de ruta y persistencia en Windows y WebGL; reproducción solo tras gesto en WebGL, volúmenes/pausa y cambios Taberna→Patio→Custodio. Escenario Bellator completo de 8–12 minutos, sin recursos provisionales. Builds del contenido exacto comprobado, informes/hashes y tercera revisión de Fran. Una aprobación pendiente queda pendiente. Continuar trabajo independiente disponible de campaña mientras se espera; no interpretar silencio como conformidad.
 
 ## 4. Pruebas y evidencias sin interfaz
@@ -114,7 +116,7 @@ Logs/builds son locales e ignorados. Guardar en progreso un resumen con SHA-256,
 
 ## 5. Entrega, web y continuación
 
-Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El run 39167559657 pasó EditMode 348/348, falló un log en PlayMode (245/246) y omitió builds; no hubo publicación. El candidato local actual omite el Mouse simulado innecesario en B07, mantiene activa la UI y pasa PlayMode 246/246; aún requiere Linux/builds. Fran autorizó el respaldo y CI manual de `codex/luckbound-reboot`; respaldar esta variante y confirmar Linux/builds con otra CI manual sin publicar. Consultar `PROGRESS.md` para el artefacto, hash y resultado vigentes. Nunca abrir una ventana de autenticación por iniciativa propia.
+Conservar Main, gh-pages, la ruta `/Luckbound/`, las versiones publicadas y las releases. Respaldar el desarrollo en su propia rama; el push de esa rama no autoriza publicar la muestra ni promover Main. A06 requiere un workflow real y sus artefactos, no solo secretos presentes o YAML inspeccionado. El run 39241917686 pasó EditMode 348/348, falló B07 en PlayMode (245/246) y omitió builds; no hubo publicación. El candidato local actual conserva dispositivos simulados y aísla módulos UI únicamente en el test B07; PlayMode pasa 246/246. Fran autorizó el respaldo y CI manual de `codex/luckbound-reboot`; respaldar esta variante y confirmar Linux/builds con otra CI manual sin publicar. Consultar `PROGRESS.md` para el artefacto, hash y resultado vigentes. Nunca abrir una ventana de autenticación por iniciativa propia.
 
 Fran autorizó expresamente el respaldo y CI de `codex/luckbound-reboot` en `metalfurius/Luckbound`, sin publicar el juego. En el workflow fijado, la cobertura se desactiva mediante `GAME_CI_COVERAGE_ENABLED=false`, opción soportada de la CLI v0.1.72. No volver a añadir `coverageEnabled: false` al input de la acción v4.4.0: genera `--no-coverageEnabled`, que esa CLI rechaza antes de iniciar Unity. El filtro sigue siendo `Luckbound`; no resolver ese fallo cambiando la cobertura, quitando tests ni promoviendo Main.
 
@@ -126,10 +128,12 @@ Prompt de continuación:
 Retoma el objetivo completo de Luckbound como coordinador Luna max.
 Lee AGENTS.md, docs/LUNA_HANDOFF.md, el resumen de docs/PROGRESS.md
 y las secciones pertinentes del plan. Inspecciona Git y no rehagas
-contratos ya integrados y comprobados. La CI 39167559657 falla B07 por un log
-Vector2 al volver a Menu (245/246), aunque el escenario físico completo pasa.
-El candidato local más reciente quita el Mouse simulado innecesario y pasa
-PlayMode 246/246 con UI activa. Respáldalo en `codex/luckbound-reboot` y
+contratos ya integrados y comprobados. La CI 39241917686 pasa EditMode
+348/348 y PlayMode 245/246; B07 recorre el curso, pero falla al habilitar
+InputSystemUIInputModule en Expedition. El candidato local conserva Keyboard
+y Mouse, desactiva módulos UI solo en el escenario que invoca callbacks
+directos de botones, libera ambos dispositivos antes del retorno, y pasa
+B07 1/1 + PlayMode 246/246. Respáldalo en `codex/luckbound-reboot` y
 confirma Linux y builds con otra CI manual, dentro de la autorización vigente.
 Después prioriza F09.PLAYER.SESSION, el resolver productivo de encuentros y
 los paquetes independientes hacia F10. Usa hasta tres Luna max con contexto
