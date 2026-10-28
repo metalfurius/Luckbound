@@ -40,7 +40,7 @@ namespace Luckbound.Presentation
 
             PlayerHudSnapshot state = _source.CaptureHudState();
             string potionState = state.PotionPreparationTicksRemaining > 0
-                ? " · PREPARANDO " + state.PotionPreparationTicksRemaining.ToString(CultureInfo.InvariantCulture) + " TICKS"
+                ? "\n· PREPARANDO " + state.PotionPreparationTicksRemaining.ToString(CultureInfo.InvariantCulture) + " TICKS"
                 : string.Empty;
             _statusText.text =
                 "VIDA " + state.CurrentHealth.ToString(CultureInfo.InvariantCulture) + "/" +

@@ -50,7 +50,12 @@ namespace Luckbound.Editor
             bool valid = prefab != null && prefab.layer == LayerMask.NameToLayer("Enemies") &&
                 prefab.GetComponent<Rigidbody2D>() != null && prefab.GetComponent<CapsuleCollider2D>() != null &&
                 prefab.GetComponent<SpriteRenderer>()?.sprite == stone && prefab.GetComponent<CustodianBoss2D>() != null;
-            if (valid) return prefab;
+            Color prototypeColor = ParseColor("#94BC74");
+            if (valid)
+            {
+                ReconcilePrefabSpriteColor(BossPrefabPath, prototypeColor);
+                return AssetDatabase.LoadAssetAtPath<GameObject>(BossPrefabPath);
+            }
             if (prefab != null) Debug.LogWarning("Replacing incomplete generated D06 Custodian prefab: " + BossPrefabPath);
 
             var boss = new GameObject("CustodianPrototype");
@@ -71,7 +76,7 @@ namespace Luckbound.Editor
                 renderer.drawMode = SpriteDrawMode.Tiled;
                 renderer.size = new Vector2(1.45f, 2.3f);
                 renderer.sortingOrder = 9;
-                renderer.color = ParseColor("#6B8A54");
+                renderer.color = prototypeColor;
                 boss.AddComponent<CustodianBoss2D>();
                 GameObject saved = PrefabUtility.SaveAsPrefabAsset(boss, BossPrefabPath);
                 if (saved == null) throw new IOException("Unity failed to create the D06 boss prefab.");
@@ -86,7 +91,12 @@ namespace Luckbound.Editor
             bool valid = prefab != null && prefab.layer == LayerMask.NameToLayer("Enemies") &&
                 prefab.GetComponent<Rigidbody2D>() != null && prefab.GetComponent<CircleCollider2D>() != null &&
                 prefab.GetComponent<SpriteRenderer>()?.sprite == stone && prefab.GetComponent<CustodianWaveHazard2D>() != null;
-            if (valid) return prefab;
+            Color prototypeColor = Amber;
+            if (valid)
+            {
+                ReconcilePrefabSpriteColor(WavePrefabPath, prototypeColor);
+                return AssetDatabase.LoadAssetAtPath<GameObject>(WavePrefabPath);
+            }
             if (prefab != null) Debug.LogWarning("Replacing incomplete generated D06 wave prefab: " + WavePrefabPath);
 
             var wave = new GameObject("CustodianWavePrototype");
@@ -105,13 +115,31 @@ namespace Luckbound.Editor
                 renderer.drawMode = SpriteDrawMode.Tiled;
                 renderer.size = new Vector2(0.7f, 0.45f);
                 renderer.sortingOrder = 10;
-                renderer.color = Amber;
+                renderer.color = prototypeColor;
                 wave.AddComponent<CustodianWaveHazard2D>();
                 GameObject saved = PrefabUtility.SaveAsPrefabAsset(wave, WavePrefabPath);
                 if (saved == null) throw new IOException("Unity failed to create the D06 wave prefab.");
                 return saved;
             }
             finally { UnityEngine.Object.DestroyImmediate(wave); }
+        }
+
+        private static void ReconcilePrefabSpriteColor(string path, Color color)
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                SpriteRenderer renderer = root.GetComponent<SpriteRenderer>();
+                if (renderer == null || renderer.color == color) return;
+                renderer.color = color;
+                EditorUtility.SetDirty(renderer);
+                if (PrefabUtility.SaveAsPrefabAsset(root, path) == null)
+                    throw new IOException("Unity failed to reconcile prototype tint for " + path + ".");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
         }
 
         private static void EnsureArenaScene(GameObject playerPrefab, GameObject bossPrefab, GameObject wavePrefab, Sprite stone)
@@ -149,13 +177,13 @@ namespace Luckbound.Editor
                 bounds.isTrigger = true;
 
                 CreateArenaSprite("CustodianArenaBackdrop", world.transform, stone, new Vector3(0f, 1f, 9f),
-                    new Vector2(30f, 12f), ParseColor("#252436"), -100, -1, false);
+                    new Vector2(30f, 12f), ParseColor("#8290A5"), -100, -1, false);
                 CreateArenaSprite("CustodianArenaFloor", world.transform, stone, new Vector3(0f, FloorTop - 0.5f, 0f),
-                    new Vector2(30f, 1f), ParseColor("#59647A"), 0, groundLayer, true);
+                    new Vector2(30f, 1f), ParseColor("#A7794D"), 0, groundLayer, true);
                 CreateArenaSprite("CustodianArenaLeftWall", world.transform, stone, new Vector3(-15.25f, FloorTop + 1.75f, 0f),
-                    new Vector2(0.5f, 3.5f), ParseColor("#3F465C"), 2, groundLayer, true);
+                    new Vector2(0.5f, 3.5f), ParseColor("#59647A"), 2, groundLayer, true);
                 CreateArenaSprite("CustodianArenaRightWall", world.transform, stone, new Vector3(15.25f, FloorTop + 1.75f, 0f),
-                    new Vector2(0.5f, 3.5f), ParseColor("#3F465C"), 2, groundLayer, true);
+                    new Vector2(0.5f, 3.5f), ParseColor("#59647A"), 2, groundLayer, true);
 
                 GameObject playerSpawn = new GameObject("CustodianArenaPlayerSpawn");
                 playerSpawn.transform.SetParent(world.transform, false);
@@ -172,13 +200,16 @@ namespace Luckbound.Editor
 
                 Canvas canvas = CreateCanvas(scene, "CustodianArenaHUD");
                 Text telemetry = CreateText("CustodianArenaTelemetry", canvas.transform,
-                    new Vector2(12f, -12f), new Vector2(320f, 48f), 11, ParseColor("#E8E3CD"), TextAnchor.UpperLeft, top: true, left: true);
+                    new Vector2(16f, -16f), new Vector2(260f, 56f), 14, ParseColor("#E8E3CD"), TextAnchor.UpperLeft,
+                    new Vector2(0f, 1f), new Vector2(0f, 1f));
                 Text bossStatus = CreateText("CustodianBossStatus", canvas.transform,
-                    new Vector2(0f, -15f), new Vector2(460f, 40f), 10, Amber, TextAnchor.MiddleCenter, top: true);
+                    new Vector2(16f, 16f), new Vector2(260f, 52f), 14, Amber, TextAnchor.LowerLeft,
+                    Vector2.zero, Vector2.zero);
                 Text pause = CreateText("CustodianArenaPause", canvas.transform,
-                    Vector2.zero, new Vector2(400f, 76f), 18, ParseColor("#E8E3CD"), TextAnchor.MiddleCenter);
+                    Vector2.zero, new Vector2(400f, 76f), 18, ParseColor("#E8E3CD"), TextAnchor.MiddleCenter,
+                    new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
                 Button returnButton = CreateButton("CustodianArenaReturnButton", "VOLVER AL MENÚ",
-                    canvas.transform, new Vector2(-12f, -12f), new Vector2(126f, 28f));
+                    canvas.transform, new Vector2(-16f, 16f), new Vector2(148f, 32f), bottomRight: true);
 
                 GameObject compositionObject = new GameObject("CustodianArenaComposition");
                 SceneManager.MoveGameObjectToScene(compositionObject, scene);
@@ -196,6 +227,8 @@ namespace Luckbound.Editor
                 data.FindProperty("_pauseText").objectReferenceValue = pause;
                 data.FindProperty("_returnToMenuButton").objectReferenceValue = returnButton;
                 data.ApplyModifiedPropertiesWithoutUndo();
+                ProjectScaffoldGenerator.ReconcilePrototypeHudLayout(scene, "CustodianArenaHUD",
+                    "CustodianArenaTelemetry", "CustodianBossStatus", "CustodianArenaReturnButton");
 
                 EventSystem eventSystem = FindEventSystem(scene);
                 if (eventSystem != null) eventSystem.firstSelectedGameObject = returnButton.gameObject;
@@ -222,12 +255,11 @@ namespace Luckbound.Editor
                 if (button == null)
                 {
                     button = CreateButton("StartCustodianArenaButton", "ENFRENTAR · CUSTODIO (D06)", canvas.transform,
-                        new Vector2(105f, -110f), new Vector2(200f, 24f), 10, Amber, ParseColor("#32251F"), topRight: false);
+                        new Vector2(110f, -51f), new Vector2(204f, 28f), 14, Amber, ParseColor("#32251F"), topRight: false);
                     changed = true;
                 }
                 else
                 {
-                    changed |= SetButtonRect(button, new Vector2(105f, -110f), new Vector2(200f, 24f));
                     Text label = button.GetComponentInChildren<Text>(true);
                     if (label != null && label.text != "ENFRENTAR · CUSTODIO (D06)")
                     {
@@ -241,19 +273,6 @@ namespace Luckbound.Editor
                 if (navigation == null) throw new InvalidOperationException("MenuNavigationController is missing from Menu.");
                 changed |= SetObjectReference(navigation, "_startCustodianButton", button);
 
-                GameObject bottomRule = FindObject(scene, "BottomRule");
-                RectTransform rule = bottomRule == null ? null : bottomRule.GetComponent<RectTransform>();
-                if (rule != null && rule.anchoredPosition != new Vector2(0f, -145f))
-                {
-                    rule.anchoredPosition = new Vector2(0f, -145f);
-                    EditorUtility.SetDirty(rule);
-                    changed = true;
-                }
-                changed |= SetTextLayout(scene, "MenuStatus", new Vector2(0.5f, 0.5f), new Vector2(0f, -145f),
-                    new Vector2(300f, 10f), TextAnchor.MiddleCenter);
-                changed |= SetTextLayout(scene, "MenuVersion", new Vector2(0.5f, 0.5f), new Vector2(0f, -156f),
-                    new Vector2(300f, 8f), TextAnchor.MiddleCenter);
-
                 EventSystem eventSystem = FindEventSystem(scene);
                 GameObject preferredButton = FindObject(scene, "StartTavernButton") ?? button.gameObject;
                 if (eventSystem != null && eventSystem.firstSelectedGameObject != preferredButton)
@@ -262,6 +281,7 @@ namespace Luckbound.Editor
                     EditorUtility.SetDirty(eventSystem);
                     changed = true;
                 }
+                changed |= ProjectScaffoldGenerator.ReconcileMenuVisualLayout(scene);
                 if (changed)
                 {
                     EditorSceneManager.MarkSceneDirty(scene);
@@ -283,17 +303,74 @@ namespace Luckbound.Editor
         private static void ReconcileArenaHud(Scene scene)
         {
             bool changed = false;
-            changed |= SetTextLayout(scene, "CustodianArenaTelemetry", new Vector2(0f, 1f), new Vector2(12f, -12f),
-                new Vector2(320f, 48f), TextAnchor.UpperLeft);
-            changed |= SetTextLayout(scene, "CustodianBossStatus", new Vector2(0.5f, 1f), new Vector2(0f, -15f),
-                new Vector2(460f, 40f), TextAnchor.MiddleCenter);
-            changed |= SetTextLayout(scene, "CustodianArenaPause", new Vector2(0.5f, 0.5f), Vector2.zero,
-                new Vector2(400f, 76f), TextAnchor.MiddleCenter);
+            changed |= ProjectScaffoldGenerator.ReconcilePrototypeHudLayout(scene, "CustodianArenaHUD",
+                "CustodianArenaTelemetry", "CustodianBossStatus", "CustodianArenaReturnButton");
+            changed |= SetTextLayout(scene, "CustodianArenaPause", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
+                Vector2.zero, new Vector2(400f, 76f), 18, TextAnchor.MiddleCenter);
+            changed |= SetSpriteColor(scene, "CustodianArenaBackdrop", "#8290A5");
+            changed |= SetSpriteColor(scene, "CustodianArenaFloor", "#A7794D");
+            changed |= SetSpriteColor(scene, "CustodianArenaLeftWall", "#59647A");
+            changed |= SetSpriteColor(scene, "CustodianArenaRightWall", "#59647A");
+            changed |= SetCameraBackground(scene, "#10111B");
             if (changed)
             {
                 EditorSceneManager.MarkSceneDirty(scene);
                 if (!EditorSceneManager.SaveScene(scene, ArenaScenePath)) throw new IOException("Unity failed to reconcile CustodianArena HUD layout.");
             }
+        }
+
+        private static bool SetTextLayout(Scene scene, string objectName, Vector2 anchor, Vector2 pivot,
+            Vector2 position, Vector2 size, int fontSize, TextAnchor textAnchor)
+        {
+            Text text = FindComponent<Text>(scene, objectName);
+            if (text == null) return false;
+            bool changed = false;
+            RectTransform rect = text.GetComponent<RectTransform>();
+            if (rect.anchorMin != anchor || rect.anchorMax != anchor || rect.pivot != pivot ||
+                rect.anchoredPosition != position || rect.sizeDelta != size)
+            {
+                rect.anchorMin = anchor;
+                rect.anchorMax = anchor;
+                rect.pivot = pivot;
+                rect.anchoredPosition = position;
+                rect.sizeDelta = size;
+                EditorUtility.SetDirty(rect);
+                changed = true;
+            }
+            if (text.fontSize != fontSize || text.alignment != textAnchor || text.resizeTextForBestFit ||
+                text.horizontalOverflow != HorizontalWrapMode.Wrap || text.verticalOverflow != VerticalWrapMode.Truncate)
+            {
+                text.fontSize = fontSize;
+                text.alignment = textAnchor;
+                text.resizeTextForBestFit = false;
+                text.horizontalOverflow = HorizontalWrapMode.Wrap;
+                text.verticalOverflow = VerticalWrapMode.Truncate;
+                EditorUtility.SetDirty(text);
+                changed = true;
+            }
+            return changed;
+        }
+
+        private static bool SetSpriteColor(Scene scene, string objectName, string colorHex)
+        {
+            SpriteRenderer renderer = FindComponent<SpriteRenderer>(scene, objectName);
+            if (renderer == null) return false;
+            Color color = ParseColor(colorHex);
+            if (renderer.color == color) return false;
+            renderer.color = color;
+            EditorUtility.SetDirty(renderer);
+            return true;
+        }
+
+        private static bool SetCameraBackground(Scene scene, string colorHex)
+        {
+            Camera camera = FindComponent<Camera>(scene, "Main Camera");
+            if (camera == null) return false;
+            Color color = ParseColor(colorHex);
+            if (camera.backgroundColor == color) return false;
+            camera.backgroundColor = color;
+            EditorUtility.SetDirty(camera);
+            return true;
         }
 
         private static void ConfigureArenaCamera(GameObject cameraObject)
@@ -346,13 +423,14 @@ namespace Luckbound.Editor
         }
 
         private static Text CreateText(string name, Transform parent, Vector2 position, Vector2 size, int fontSize,
-            Color color, TextAnchor anchor, bool top = false, bool left = false)
+            Color color, TextAnchor alignment, Vector2 anchor, Vector2 pivot)
         {
             var textObject = new GameObject(name, typeof(RectTransform), typeof(Text));
             textObject.transform.SetParent(parent, false);
             RectTransform rect = textObject.GetComponent<RectTransform>();
-            rect.anchorMin = top ? (left ? new Vector2(0f, 1f) : new Vector2(0.5f, 1f)) : new Vector2(0.5f, 0.5f);
-            rect.anchorMax = rect.anchorMin;
+            rect.anchorMin = anchor;
+            rect.anchorMax = anchor;
+            rect.pivot = pivot;
             rect.anchoredPosition = position;
             rect.sizeDelta = size;
             Text text = textObject.GetComponent<Text>();
@@ -360,7 +438,7 @@ namespace Luckbound.Editor
             if (text.font == null) text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
             text.fontSize = fontSize;
             text.color = color;
-            text.alignment = anchor;
+            text.alignment = alignment;
             text.horizontalOverflow = HorizontalWrapMode.Wrap;
             text.verticalOverflow = VerticalWrapMode.Truncate;
             text.raycastTarget = false;
@@ -368,13 +446,16 @@ namespace Luckbound.Editor
         }
 
         private static Button CreateButton(string name, string label, Transform parent, Vector2 position, Vector2 size,
-            int fontSize = 10, Color textColor = default, Color backgroundColor = default, bool topRight = true)
+            int fontSize = 14, Color textColor = default, Color backgroundColor = default,
+            bool topRight = true, bool bottomRight = false)
         {
             var buttonObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
             buttonObject.transform.SetParent(parent, false);
             RectTransform rect = buttonObject.GetComponent<RectTransform>();
-            rect.anchorMin = topRight ? new Vector2(1f, 1f) : new Vector2(0.5f, 0.5f);
+            Vector2 buttonAnchor = bottomRight ? new Vector2(1f, 0f) : topRight ? new Vector2(1f, 1f) : new Vector2(0.5f, 0.5f);
+            rect.anchorMin = buttonAnchor;
             rect.anchorMax = rect.anchorMin;
+            rect.pivot = buttonAnchor;
             rect.anchoredPosition = position;
             rect.sizeDelta = size;
             Image image = buttonObject.GetComponent<Image>();
@@ -396,6 +477,8 @@ namespace Luckbound.Editor
             labelText.fontStyle = FontStyle.Bold;
             labelText.color = textColor == default ? ParseColor("#E8E3CD") : textColor;
             labelText.alignment = TextAnchor.MiddleCenter;
+            labelText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            labelText.verticalOverflow = VerticalWrapMode.Truncate;
             labelText.raycastTarget = false;
             return button;
         }
@@ -436,35 +519,6 @@ namespace Luckbound.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(target);
             return true;
-        }
-
-        private static bool SetButtonRect(Button button, Vector2 position, Vector2 size)
-        {
-            RectTransform rect = button.GetComponent<RectTransform>();
-            bool changed = false;
-            if (rect.anchoredPosition != position) { rect.anchoredPosition = position; changed = true; }
-            if (rect.sizeDelta != size) { rect.sizeDelta = size; changed = true; }
-            if (changed) EditorUtility.SetDirty(rect);
-            return changed;
-        }
-
-        private static bool SetTextLayout(Scene scene, string name, Vector2 anchor, Vector2 position, Vector2 size, TextAnchor textAnchor)
-        {
-            Text text = FindComponent<Text>(scene, name);
-            if (text == null) return false;
-            RectTransform rect = text.GetComponent<RectTransform>();
-            bool changed = false;
-            if (rect.anchorMin != anchor || rect.anchorMax != anchor || rect.anchoredPosition != position || rect.sizeDelta != size)
-            {
-                rect.anchorMin = anchor;
-                rect.anchorMax = anchor;
-                rect.anchoredPosition = position;
-                rect.sizeDelta = size;
-                EditorUtility.SetDirty(rect);
-                changed = true;
-            }
-            if (text.alignment != textAnchor) { text.alignment = textAnchor; EditorUtility.SetDirty(text); changed = true; }
-            return changed;
         }
 
         private static void EnsureAssetFolder(string path)

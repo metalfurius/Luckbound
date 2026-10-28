@@ -1,0 +1,27 @@
+Use case: original game asset study, modular 2D pixel-art tilesheet for Luckbound's Patio, a compact ruin-courtyard.
+
+Reference use: use the supplied F01 master reference only for visual style and palette direction: compact crisp pixel clusters, dark blue-gray stone, muted moss greens, a small amount of warm stone highlight, simple shadows, clear top-left lighting, and two-plane depth. Do not copy its layout or recreate any of its characters, UI, sword, relic, slime, or screenshot-like room composition. Bellator already exists; include no character or creature.
+
+Primary request: a small, original, modular stone Patio study sheet containing reusable floor, wall, and architecture tile pieces. It is a standalone asset sheet, not a game screenshot, not a mockup, and not a complete room.
+
+Exact target canvas and logical layout: square 256 × 256 pixels, exactly 16 columns × 16 rows of logical 16 × 16 pixel cells. Every cell boundary aligns to the same exact 16-pixel grid. Modules touch edge-to-edge with zero gutters, zero spacing, and no outer margin. No drawn grid lines, labels, numbers, frame, or cell separators. Make the 16 × 16 cell grid obvious through tile construction only. Keep all stone clusters snapped to the pixel grid. Use hard pixel edges only: no antialiasing, blur, soft gradients, painterly strokes, or subpixel detail.
+
+Regular layout, in exact 4-row bands from top to bottom:
+Rows 1–4: reusable dark Patio floor tiles with several subtly varied stone paving patterns and edge-compatible seams.
+Rows 5–8: wall faces, wall tops, inner/outer corners, broken wall ends, and mossy footings as cell-sized modular pieces.
+Rows 9–12: compact architectural components assembled across aligned cells: column shaft/base/cap parts, stair segments, arch jamb and curved-arch segments, and broken lintel pieces.
+Rows 13–16: compatible transition pieces, cracked slabs, mossy stone edges, and small stone trim variants.
+Within each band preserve repeated edge logic so adjacent cells can form larger walkable floor, walls, columns, stairs, and arch structures. Keep silhouettes readable at the requested logical 16 × 16 scale.
+
+Palette target only, selected from Luckbound's 32-color palette; use these exact swatches as the intended colors, without inventing colors:
+#10111B #1B1D2B #2A2E40 #3F465C #59647A #8290A5 #BDC6CC #E8E3CD
+#172C28 #24463A #38654A #59935C #94BC74
+#32251F #50382B #765137 #A7794D
+#54232A #83333A #BC5148 #E98664
+#2D2445 #493363 #74528F #AA7DC2
+#5E3F22 #9A6026 #D68F32 #F0C15A
+#294C69 #4C86A0 #8FC1C1
+
+Lighting comes from upper left, with restrained top-left highlights and simple lower-right shadows. Favor the dark stone, bone-gray, and moss-green subset; violet and amber are only tiny optional accents if naturally useful. Aim for a close style match to the F01 reference, while keeping the tile content new and readable.
+
+Constraints: transparent background; no characters, creatures, UI, icons, text, watermark, screenshot frame, full room, ground-plane perspective, extruded 3D, or standalone decorative scene. The result is an early source prototype; do not present it as a final catalog or as import-ready unless its actual output dimensions and palette can be verified.

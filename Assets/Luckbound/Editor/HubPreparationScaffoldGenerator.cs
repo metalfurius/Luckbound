@@ -248,10 +248,9 @@ namespace Luckbound.Editor
                 if (tavernButton == null)
                 {
                     tavernButton = CreateButton("StartTavernButton", "PREPARAR EXPEDICIÓN", menuCanvas.transform,
-                        new Vector2(-105f, -110f), new Vector2(190f, 24f), 9, "#10111B", "#F0C15A");
+                        new Vector2(110f, -18f), new Vector2(204f, 28f), 14, "#10111B", "#F0C15A");
                     changed = true;
                 }
-                changed |= SetRect(tavernButton.GetComponent<RectTransform>(), new Vector2(-105f, -110f), new Vector2(190f, 24f));
                 Text tavernLabel = tavernButton.GetComponentInChildren<Text>(true);
                 if (tavernLabel != null && tavernLabel.text != "PREPARAR EXPEDICIÓN")
                 {
@@ -261,13 +260,7 @@ namespace Luckbound.Editor
                 }
 
                 changed |= SetObjectReference(navigation, "_startTavernButton", tavernButton);
-                changed |= SetTextLayout(scene, "MenuStatus", new Vector2(0.5f, 0.5f), new Vector2(0f, -122f),
-                    new Vector2(300f, 12f), TextAnchor.MiddleCenter);
-                changed |= SetTextLayout(scene, "MenuVersion", new Vector2(0.5f, 0.5f), new Vector2(0f, -133f),
-                    new Vector2(300f, 8f), TextAnchor.MiddleCenter);
-                GameObject bottomRule = FindObject(scene, "BottomRule");
-                RectTransform ruleRect = bottomRule == null ? null : bottomRule.GetComponent<RectTransform>();
-                if (ruleRect != null) changed |= SetRect(ruleRect, new Vector2(0f, -123f), ruleRect.sizeDelta);
+                changed |= ProjectScaffoldGenerator.ReconcileMenuVisualLayout(scene);
 
                 EventSystem eventSystem = FindEventSystem(scene);
                 if (eventSystem != null && eventSystem.firstSelectedGameObject != tavernButton.gameObject)

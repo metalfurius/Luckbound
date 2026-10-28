@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - Main
+      - codex/luckbound-visual-20261028
     tags:
       - 'v*'
   workflow_dispatch:

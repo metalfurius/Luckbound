@@ -284,18 +284,11 @@ namespace Luckbound.Editor
                         "StartMovementDemoButton",
                         "JUGAR DEMO 0.1",
                         canvasObject.transform,
-                        new Vector2(0f, -56f),
-                        new Vector2(204f, 30f),
-                        13,
+                        new Vector2(0f, -18f),
+                        new Vector2(204f, 28f),
+                        14,
                         "#F0C15A",
                         "#32251F");
-                    changed = true;
-                }
-                RectTransform startButtonRect = startButton.GetComponent<RectTransform>();
-                if (startButtonRect.anchoredPosition != new Vector2(0f, -48f) || startButtonRect.sizeDelta != new Vector2(204f, 26f))
-                {
-                    startButtonRect.anchoredPosition = new Vector2(0f, -48f);
-                    startButtonRect.sizeDelta = new Vector2(204f, 26f);
                     changed = true;
                 }
 
@@ -315,15 +308,7 @@ namespace Luckbound.Editor
                 }
                 changed |= SetObjectReference(navigation, "_startDemoButton", startButton);
 
-                GameObject bottomRule = FindObject(scene, "BottomRule");
-                RectTransform ruleRect = bottomRule == null ? null : bottomRule.GetComponent<RectTransform>();
-                bool hasTavernEntry = FindObject(scene, "StartTavernButton") != null;
-                Vector2 rulePosition = new Vector2(0f, hasTavernEntry ? -123f : -101f);
-                if (ruleRect != null && ruleRect.anchoredPosition != rulePosition)
-                {
-                    ruleRect.anchoredPosition = rulePosition;
-                    changed = true;
-                }
+                changed |= ProjectScaffoldGenerator.ReconcileMenuVisualLayout(scene);
 
                 EventSystem eventSystem = FindEventSystem(scene);
                 GameObject arenaButton = FindObject(scene, "StartCombatArenaButton");
@@ -365,6 +350,7 @@ namespace Luckbound.Editor
                 if (courseRoot != null)
                 {
                     ValidateExistingCourse(scene, playerPrefab);
+                    changed |= ReconcileExistingCourseVisuals(scene);
                     if (changed)
                     {
                         EditorSceneManager.MarkSceneDirty(scene);
@@ -397,7 +383,7 @@ namespace Luckbound.Editor
                     stone,
                     new Vector3(0f, 0f, 8f),
                     new Vector2(100f, 40f),
-                    new Color(0.46f, 0.48f, 0.60f, 1f),
+                    ColorFromHex("#8290A5"),
                     -100,
                     -1,
                     false);
@@ -407,24 +393,24 @@ namespace Luckbound.Editor
                     stone,
                     new Vector3(0f, FloorTop - 0.5f, 0f),
                     new Vector2(100f, 1f),
-                    Color.white,
+                    ColorFromHex("#A7794D"),
                     0,
                     groundLayer,
                     true);
 
                 CreateCourseSprite("JumpBarrierOne", courseRoot.transform, stone,
-                    new Vector3(-20f, FloorTop + 1f, 0f), new Vector2(1.5f, 2f), Color.white, 2, groundLayer, true);
+                    new Vector3(-20f, FloorTop + 1f, 0f), new Vector2(1.5f, 2f), ColorFromHex("#AA7DC2"), 2, groundLayer, true);
                 CreateCourseSprite("JumpBarrierTwo", courseRoot.transform, stone,
-                    new Vector3(0f, FloorTop + 0.9f, 0f), new Vector2(1.5f, 1.8f), Color.white, 2, groundLayer, true);
+                    new Vector3(0f, FloorTop + 0.9f, 0f), new Vector2(1.5f, 1.8f), ColorFromHex("#AA7DC2"), 2, groundLayer, true);
                 CreateCourseSprite("JumpBarrierThree", courseRoot.transform, stone,
-                    new Vector3(20f, FloorTop + 1f, 0f), new Vector2(1.5f, 2f), Color.white, 2, groundLayer, true);
+                    new Vector3(20f, FloorTop + 1f, 0f), new Vector2(1.5f, 2f), ColorFromHex("#AA7DC2"), 2, groundLayer, true);
 
                 var spawn = new GameObject("MovementDemoSpawn");
                 spawn.transform.SetParent(courseRoot.transform, false);
                 spawn.transform.position = new Vector3(-35f, FloorTop, 0f);
 
                 CreateCourseSprite("MovementDemoPortal", courseRoot.transform, stone,
-                    new Vector3(40f, FloorTop + 1.5f, 0f), new Vector2(1f, 3f), ColorFromHex("#D68F32"), 5, -1, false);
+                    new Vector3(40f, FloorTop + 1.5f, 0f), new Vector2(1f, 3f), ColorFromHex("#F0C15A"), 5, -1, false);
                 GameObject portalTriggerObject = new GameObject("MovementDemoGoal");
                 portalTriggerObject.transform.SetParent(courseRoot.transform, false);
                 portalTriggerObject.transform.position = new Vector3(40f, FloorTop + 1.5f, 0f);
@@ -447,11 +433,13 @@ namespace Luckbound.Editor
 
                 Canvas hudCanvas = CreateHudCanvas(scene);
                 Text telemetry = CreateText("MovementDemoTelemetry", hudCanvas.transform,
-                    new Vector2(12f, -12f), new Vector2(318f, 58f), 11, "#E8E3CD", TextAnchor.UpperLeft);
+                    new Vector2(16f, -16f), new Vector2(260f, 56f), 14, "#E8E3CD", TextAnchor.UpperLeft,
+                    new Vector2(0f, 1f), new Vector2(0f, 1f));
                 Text courseText = CreateText("MovementDemoCourseStatus", hudCanvas.transform,
-                    new Vector2(0f, -83f), new Vector2(430f, 28f), 12, "#F0C15A", TextAnchor.MiddleCenter);
+                    new Vector2(16f, 16f), new Vector2(260f, 52f), 14, "#F0C15A", TextAnchor.LowerLeft,
+                    Vector2.zero, Vector2.zero);
                 Button returnButton = CreateButton("ReturnToMenuButton", "VOLVER AL MENÚ", hudCanvas.transform,
-                    new Vector2(-12f, -12f), new Vector2(126f, 28f), 9, "#E8E3CD", "#32251F", true);
+                    new Vector2(-16f, 16f), new Vector2(148f, 32f), 14, "#E8E3CD", "#32251F", false, true);
 
                 SerializedObject compositionObjectData = new SerializedObject(composition);
                 compositionObjectData.FindProperty("_playerPrefab").objectReferenceValue = playerPrefab;
@@ -468,6 +456,8 @@ namespace Luckbound.Editor
                 compositionObjectData.FindProperty("_courseText").objectReferenceValue = courseText;
                 compositionObjectData.FindProperty("_returnToMenuButton").objectReferenceValue = returnButton;
                 compositionObjectData.ApplyModifiedPropertiesWithoutUndo();
+                ProjectScaffoldGenerator.ReconcilePrototypeHudLayout(scene, "MovementDemoHUD",
+                    "MovementDemoTelemetry", "MovementDemoCourseStatus", "ReturnToMenuButton");
 
                 EventSystem eventSystem = FindEventSystem(scene);
                 if (eventSystem != null) eventSystem.firstSelectedGameObject = returnButton.gameObject;
@@ -500,6 +490,31 @@ namespace Luckbound.Editor
             {
                 throw new InvalidOperationException("The existing B07 movement course is incomplete; it was left untouched for repair.");
             }
+        }
+
+        private static bool ReconcileExistingCourseVisuals(Scene scene)
+        {
+            bool changed = false;
+            changed |= SetSpriteColor(scene, "StoneBackdrop", "#8290A5");
+            changed |= SetSpriteColor(scene, "TrainingFloor", "#A7794D");
+            changed |= SetSpriteColor(scene, "JumpBarrierOne", "#AA7DC2");
+            changed |= SetSpriteColor(scene, "JumpBarrierTwo", "#AA7DC2");
+            changed |= SetSpriteColor(scene, "JumpBarrierThree", "#AA7DC2");
+            changed |= SetSpriteColor(scene, "MovementDemoPortal", "#F0C15A");
+            changed |= ProjectScaffoldGenerator.ReconcilePrototypeHudLayout(scene, "MovementDemoHUD",
+                "MovementDemoTelemetry", "MovementDemoCourseStatus", "ReturnToMenuButton");
+            return changed;
+        }
+
+        private static bool SetSpriteColor(Scene scene, string objectName, string colorHex)
+        {
+            SpriteRenderer renderer = FindComponent<SpriteRenderer>(scene, objectName);
+            if (renderer == null) return false;
+            Color color = ColorFromHex(colorHex);
+            if (renderer.color == color) return false;
+            renderer.color = color;
+            EditorUtility.SetDirty(renderer);
+            return true;
         }
 
         private static bool EnsureEventSystem(Scene scene)
@@ -557,14 +572,16 @@ namespace Luckbound.Editor
             int fontSize,
             string textColor,
             string backgroundColor,
-            bool topRight = false)
+            bool topRight = false,
+            bool bottomRight = false)
         {
             var buttonObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
             buttonObject.transform.SetParent(parent, false);
             var rect = buttonObject.GetComponent<RectTransform>();
-            rect.anchorMin = topRight ? Vector2.one : new Vector2(0.5f, 0.5f);
-            rect.anchorMax = topRight ? Vector2.one : new Vector2(0.5f, 0.5f);
-            rect.pivot = topRight ? Vector2.one : new Vector2(0.5f, 0.5f);
+            Vector2 anchor = topRight ? Vector2.one : bottomRight ? new Vector2(1f, 0f) : new Vector2(0.5f, 0.5f);
+            rect.anchorMin = anchor;
+            rect.anchorMax = anchor;
+            rect.pivot = anchor;
             rect.anchoredPosition = anchoredPosition;
             rect.sizeDelta = size;
 
@@ -610,14 +627,16 @@ namespace Luckbound.Editor
             Vector2 size,
             int fontSize,
             string color,
-            TextAnchor alignment)
+            TextAnchor alignment,
+            Vector2 anchor,
+            Vector2 pivot)
         {
             var textObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
             textObject.transform.SetParent(parent, false);
             RectTransform rect = textObject.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 1f);
-            rect.anchorMax = new Vector2(0.5f, 1f);
-            rect.pivot = new Vector2(0.5f, 1f);
+            rect.anchorMin = anchor;
+            rect.anchorMax = anchor;
+            rect.pivot = pivot;
             rect.anchoredPosition = anchoredPosition;
             rect.sizeDelta = size;
             Text text = textObject.GetComponent<Text>();

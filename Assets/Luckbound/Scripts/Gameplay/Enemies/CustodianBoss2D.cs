@@ -481,21 +481,21 @@ namespace Luckbound.Gameplay.Enemies
             if (_renderer == null) return;
             if (Phase == CustodianPhase.Transition)
             {
-                _renderer.color = new Color(0.72f, 0.48f, 0.92f, 1f);
+                _renderer.color = new Color(170f / 255f, 125f / 255f, 194f / 255f, 1f);
                 return;
             }
             if (Phase == CustodianPhase.PhaseTwo)
             {
                 _renderer.color = State == CustodianBehaviorState.Telegraphing
-                    ? new Color(1f, 0.72f, 0.28f, 1f)
-                    : new Color(0.84f, 0.43f, 0.25f, 1f);
+                    ? new Color(240f / 255f, 193f / 255f, 90f / 255f, 1f)
+                    : new Color(233f / 255f, 134f / 255f, 100f / 255f, 1f);
                 return;
             }
             _renderer.color = State == CustodianBehaviorState.Telegraphing
-                ? new Color(1f, 0.8f, 0.38f, 1f)
+                ? new Color(240f / 255f, 193f / 255f, 90f / 255f, 1f)
                 : State == CustodianBehaviorState.Dead
-                    ? new Color(0.32f, 0.34f, 0.42f, 0.7f)
-                    : new Color(0.42f, 0.62f, 0.38f, 1f);
+                    ? new Color(89f / 255f, 100f / 255f, 122f / 255f, 0.7f)
+                    : new Color(148f / 255f, 188f / 255f, 116f / 255f, 1f);
         }
 
         private void ClearActiveWaves()

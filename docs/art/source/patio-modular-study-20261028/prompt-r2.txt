@@ -1,0 +1,30 @@
+Use case: original 2D game-art material study for Luckbound's Patio, guided by the F01 master reference.
+
+Reference: use the supplied F01 master reference only to match its dark, compact pixel-art language, blue-gray stone, muted moss, restrained bone-gray highlights, and upper-left light. Do not copy its composition, room screenshot, characters, UI, sword, relic, slime, or any existing asset.
+
+Create exactly eight simple, separate side-view studies, arranged as two loose rows of four with generous transparent margins between them. This is an illustrative material study board, not an atlas, not a production sheet, and not import-ready. Do not draw cell boundaries, grid lines, labels, numerals, titles, frames, or a background scene.
+
+Use a strictly lateral orthographic 2D view: flat side-facing shapes, no top-down view, no isometric angle, no perspective, no extruded 3D. Keep forms broad and simple, with a small number of crisp hard-edged pixel clusters and few tones per sample. Avoid microtexture, tiny noise, grain, painted shading, smooth gradients, antialiasing, and blur. Light comes from the upper left; use only a few simple highlights and shadows.
+
+The eight studies, in reading order:
+1. a short horizontal side-view stone floor run;
+2. the left termination of that same floor run;
+3. the right termination of that same floor run;
+4. a flat background wall made from a few broad masonry blocks;
+5. a simple wall cap / upper rim in side view;
+6. one uncomplicated front-facing stone column with base, shaft, and capital;
+7. one uncomplicated background arch silhouette with a clear open center;
+8. a sparse moss variation of the floor run, with only one or two small moss clusters.
+
+Keep the floor, wall, cap, column, and arch clearly separate objects with generous space around each. Make the samples coherent as one material family while preserving the F01 palette direction. They should feel like simple game-material studies, not finished level composition.
+
+Palette target from the F01 32-color palette; favor only the dark stone, bone-gray, and moss subset and do not introduce unrelated hues:
+#10111B #1B1D2B #2A2E40 #3F465C #59647A #8290A5 #BDC6CC #E8E3CD
+#172C28 #24463A #38654A #59935C #94BC74
+#32251F #50382B #765137 #A7794D
+#54232A #83333A #BC5148 #E98664
+#2D2445 #493363 #74528F #AA7DC2
+#5E3F22 #9A6026 #D68F32 #F0C15A
+#294C69 #4C86A0 #8FC1C1
+
+Transparent background. No characters, creatures, weapons, icons, UI, words, watermarks, screenshot frames, full room, camera perspective, or decorative props. This is source prototype r2 only; do not imply exact tile dimensions, grid alignment, exact palette compliance, final-family status, or import readiness.

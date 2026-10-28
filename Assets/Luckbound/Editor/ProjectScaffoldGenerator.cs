@@ -64,7 +64,7 @@ namespace Luckbound.Editor
                             CreateCamera("#10111B");
                             if (sceneName == "Menu")
                             {
-                                CreateMenu();
+                                CreateMenu(scene);
                             }
                         }
 
@@ -395,7 +395,7 @@ namespace Luckbound.Editor
             return false;
         }
 
-        private static void CreateMenu()
+        private static void CreateMenu(Scene scene)
         {
             var canvasObject = new GameObject(
                 "MenuCanvas",
@@ -416,21 +416,504 @@ namespace Luckbound.Editor
             Stretch(background.rectTransform);
 
             Image topRule = CreateImage("TopRule", canvas.transform, "#D68F32");
-            Place(topRule.rectTransform, new Vector2(0f, 94f), new Vector2(150f, 2f));
+            Place(topRule.rectTransform, new Vector2(0f, 112f), new Vector2(150f, 2f));
 
             Image bottomRule = CreateImage("BottomRule", canvas.transform, "#493363");
-            Place(bottomRule.rectTransform, new Vector2(0f, -73f), new Vector2(88f, 1f));
+            Place(bottomRule.rectTransform, new Vector2(0f, -83f), new Vector2(88f, 1f));
 
             CreateText("TavernLabel", "ATRIUM GLORIAM", canvas.transform,
-                new Vector2(0f, 75f), new Vector2(280f, 20f), 10, "#F0C15A", FontStyle.Bold);
+                new Vector2(0f, 92f), new Vector2(280f, 18f), 14, "#F0C15A", FontStyle.Bold);
             CreateText("LuckboundTitle", "LUCKBOUND", canvas.transform,
-                new Vector2(0f, 26f), new Vector2(420f, 68f), 42, "#E8E3CD", FontStyle.Bold);
+                new Vector2(0f, 52f), new Vector2(420f, 52f), 42, "#E8E3CD", FontStyle.Bold);
             CreateText("MenuTagline", "La fortuna no decide. Te ofrece el precio.", canvas.transform,
-                new Vector2(0f, -22f), new Vector2(420f, 30f), 14, "#AA7DC2", FontStyle.Normal);
+                new Vector2(0f, 13f), new Vector2(440f, 22f), 14, "#AA7DC2", FontStyle.Normal);
             CreateText("MenuStatus", "EL CASTILLO ESPERA", canvas.transform,
-                new Vector2(0f, -99f), new Vector2(300f, 22f), 9, "#BDC6CC", FontStyle.Bold);
+                new Vector2(-110f, -109f), new Vector2(200f, 18f), 14, "#BDC6CC", FontStyle.Bold);
             CreateText("MenuVersion", "PREPRODUCCIÓN  ·  0.1.0", canvas.transform,
-                new Vector2(0f, -126f), new Vector2(300f, 18f), 7, "#8290A5", FontStyle.Normal);
+                new Vector2(110f, -109f), new Vector2(200f, 18f), 14, "#8290A5", FontStyle.Normal);
+            ReconcileMenuVisualLayout(scene);
+        }
+
+        /// <summary>Applies the shared responsive menu hierarchy after any scaffold adds its entry.</summary>
+        public static bool ReconcileMenuVisualLayout(Scene scene)
+        {
+            GameObject canvas = FindMenuObject(scene, "MenuCanvas");
+            if (canvas == null) return false;
+            bool changed = false;
+            GameObject root = EnsureLayoutObject(scene, canvas.transform, "PrototypeMenuLayout", ref changed, out _);
+            changed |= SetRect(root.GetComponent<RectTransform>(), new Vector2(0f, 0.5f), new Vector2(1f, 0.5f),
+                new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(-32f, 247f));
+
+            GameObject buttonsRoot = EnsureLayoutObject(scene, root.transform, "PrototypeMenuButtons", ref changed, out _);
+            GameObject rowOne = EnsureLayoutObject(scene, buttonsRoot.transform, "PrototypeMenuRow1", ref changed,
+                out bool rowOneMigrated);
+            GameObject rowTwo = EnsureLayoutObject(scene, buttonsRoot.transform, "PrototypeMenuRow2", ref changed,
+                out bool rowTwoMigrated);
+            GameObject footer = EnsureLayoutObject(scene, root.transform, "PrototypeMenuFooter", ref changed, out _);
+            changed |= SetRect(buttonsRoot.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f),
+                new Vector2(0.5f, 1f), new Vector2(0f, -115f), new Vector2(0f, 96f));
+            if (rowOneMigrated)
+            {
+                changed |= SetRect(rowOne.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f),
+                    new Vector2(0.5f, 1f), Vector2.zero, new Vector2(0f, 44f));
+            }
+            if (rowTwoMigrated)
+            {
+                changed |= SetRect(rowTwo.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f),
+                    new Vector2(0.5f, 1f), Vector2.zero, new Vector2(0f, 44f));
+            }
+            changed |= SetRect(footer.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f),
+                new Vector2(0.5f, 1f), new Vector2(0f, -227f), new Vector2(0f, 20f));
+
+            VerticalLayoutGroup buttonLayout = EnsureComponent<VerticalLayoutGroup>(buttonsRoot, ref changed);
+            changed |= ConfigureVerticalLayout(buttonLayout, spacing: 8f, childControlWidth: true,
+                childControlHeight: true, childForceExpandWidth: true, childForceExpandHeight: false);
+            LayoutElement rowOneElement = EnsureComponent<LayoutElement>(rowOne, ref changed);
+            changed |= ConfigureLayoutElement(rowOneElement, minWidth: -1f, preferredWidth: -1f,
+                flexibleWidth: -1f, minHeight: 44f, preferredHeight: 44f, flexibleHeight: 0f);
+            LayoutElement rowTwoElement = EnsureComponent<LayoutElement>(rowTwo, ref changed);
+            changed |= ConfigureLayoutElement(rowTwoElement, minWidth: -1f, preferredWidth: -1f,
+                flexibleWidth: -1f, minHeight: 44f, preferredHeight: 44f, flexibleHeight: 0f);
+            HorizontalLayoutGroup rowOneLayout = EnsureComponent<HorizontalLayoutGroup>(rowOne, ref changed);
+            changed |= ConfigureHorizontalLayout(rowOneLayout, spacing: 16f, childControlWidth: true,
+                childControlHeight: true, childForceExpandWidth: true, childForceExpandHeight: true);
+            HorizontalLayoutGroup rowTwoLayout = EnsureComponent<HorizontalLayoutGroup>(rowTwo, ref changed);
+            changed |= ConfigureHorizontalLayout(rowTwoLayout, spacing: 16f, childControlWidth: true,
+                childControlHeight: true, childForceExpandWidth: true, childForceExpandHeight: true);
+            HorizontalLayoutGroup footerLayout = EnsureComponent<HorizontalLayoutGroup>(footer, ref changed);
+            changed |= ConfigureHorizontalLayout(footerLayout, spacing: 16f, childControlWidth: true,
+                childControlHeight: true, childForceExpandWidth: true, childForceExpandHeight: true);
+
+            changed |= SetMenuText(scene, "TavernLabel", root.transform,
+                new Vector2(0f, -8f), new Vector2(0f, 18f), 14, TextAnchor.MiddleCenter,
+                new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f));
+            changed |= SetMenuText(scene, "LuckboundTitle", root.transform,
+                new Vector2(0f, -29f), new Vector2(0f, 52f), 36, TextAnchor.MiddleCenter,
+                new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f));
+            changed |= SetMenuText(scene, "MenuTagline", root.transform,
+                new Vector2(0f, -85f), new Vector2(0f, 22f), 14, TextAnchor.MiddleCenter,
+                new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f));
+            changed |= SetMenuText(scene, "MenuStatus", footer.transform,
+                Vector2.zero, new Vector2(0f, 20f), 14, TextAnchor.MiddleCenter,
+                new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
+            changed |= SetMenuText(scene, "MenuVersion", footer.transform,
+                Vector2.zero, new Vector2(0f, 20f), 14, TextAnchor.MiddleCenter,
+                new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
+            changed |= SetMenuGraphic(scene, "TopRule", root.transform,
+                new Vector2(0f, 0f), new Vector2(150f, 2f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+            changed |= SetMenuGraphic(scene, "BottomRule", root.transform,
+                new Vector2(0f, -219f), new Vector2(88f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+
+            string[] names =
+            {
+                "StartMovementDemoButton",
+                "StartTavernButton",
+                "StartCombatArenaButton",
+                "StartCustodianArenaButton"
+            };
+            Button[] buttons = names
+                .Select(name => FindMenuObject(scene, name))
+                .Where(gameObject => gameObject != null)
+                .Select(gameObject => gameObject.GetComponent<Button>())
+                .Where(button => button != null)
+                .ToArray();
+            for (int index = 0; index < buttons.Length; index++)
+            {
+                Transform row = index < 2 ? rowOne.transform : rowTwo.transform;
+                bool migrated = buttons[index].transform.parent != row;
+                if (migrated)
+                {
+                    buttons[index].transform.SetParent(row, false);
+                    changed = true;
+                }
+                if (buttons[index].transform.GetSiblingIndex() != index % 2)
+                {
+                    buttons[index].transform.SetSiblingIndex(index % 2);
+                    changed = true;
+                }
+                changed |= SetMenuButton(buttons[index], migrated);
+            }
+
+            return changed;
+        }
+
+        /// <summary>Creates a top-stacked, intrinsic-height HUD while preserving its bound Text and Button components.</summary>
+        public static bool ReconcilePrototypeHudLayout(Scene scene, string canvasName, string telemetryName,
+            string statusName, string returnButtonName)
+        {
+            GameObject canvas = FindMenuObject(scene, canvasName);
+            Text telemetry = FindMenuObject(scene, telemetryName)?.GetComponent<Text>();
+            Text status = FindMenuObject(scene, statusName)?.GetComponent<Text>();
+            Button returnButton = FindMenuObject(scene, returnButtonName)?.GetComponent<Button>();
+            if (canvas == null || telemetry == null || status == null || returnButton == null) return false;
+
+            bool changed = false;
+            GameObject root = EnsureLayoutObject(scene, canvas.transform, canvasName + "Layout", ref changed, out _);
+            GameObject statusRow = EnsureLayoutObject(scene, root.transform, root.name + "StatusRow", ref changed,
+                out bool statusRowMigrated);
+            changed |= SetHudRootRect(root.GetComponent<RectTransform>());
+            if (statusRowMigrated)
+            {
+                changed |= SetRect(statusRow.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f),
+                    new Vector2(0.5f, 1f), Vector2.zero, Vector2.zero);
+            }
+
+            VerticalLayoutGroup rootLayout = EnsureComponent<VerticalLayoutGroup>(root, ref changed);
+            changed |= ConfigureVerticalLayout(rootLayout, spacing: 8f, childControlWidth: true,
+                childControlHeight: true, childForceExpandWidth: true, childForceExpandHeight: false);
+            ContentSizeFitter rootFitter = EnsureComponent<ContentSizeFitter>(root, ref changed);
+            changed |= ConfigureContentSizeFitter(rootFitter, ContentSizeFitter.FitMode.Unconstrained,
+                ContentSizeFitter.FitMode.PreferredSize);
+            HorizontalLayoutGroup rowLayout = EnsureComponent<HorizontalLayoutGroup>(statusRow, ref changed);
+            changed |= ConfigureHorizontalLayout(rowLayout, spacing: 12f, childControlWidth: true,
+                childControlHeight: true, childForceExpandWidth: false, childForceExpandHeight: false);
+
+            bool telemetryMigrated = telemetry.transform.parent != root.transform;
+            if (telemetryMigrated)
+            {
+                telemetry.transform.SetParent(root.transform, false);
+                changed = true;
+            }
+            bool statusMigrated = status.transform.parent != statusRow.transform;
+            if (statusMigrated)
+            {
+                status.transform.SetParent(statusRow.transform, false);
+                changed = true;
+            }
+            bool returnButtonMigrated = returnButton.transform.parent != statusRow.transform;
+            if (returnButtonMigrated)
+            {
+                returnButton.transform.SetParent(statusRow.transform, false);
+                changed = true;
+            }
+            if (telemetry.transform.GetSiblingIndex() != 0)
+            {
+                telemetry.transform.SetSiblingIndex(0);
+                changed = true;
+            }
+            if (status.transform.GetSiblingIndex() != 0)
+            {
+                status.transform.SetSiblingIndex(0);
+                changed = true;
+            }
+            if (returnButton.transform.GetSiblingIndex() != 1)
+            {
+                returnButton.transform.SetSiblingIndex(1);
+                changed = true;
+            }
+
+            changed |= SetHudText(telemetry, TextAnchor.UpperLeft, addFlexibleWidth: false,
+                initializeLayoutRect: telemetryMigrated);
+            changed |= SetHudText(status, TextAnchor.UpperLeft, addFlexibleWidth: true,
+                initializeLayoutRect: statusMigrated);
+            LayoutElement returnElement = EnsureComponent<LayoutElement>(returnButton.gameObject, ref changed);
+            changed |= ConfigureLayoutElement(returnElement, minWidth: 148f, preferredWidth: 148f,
+                flexibleWidth: 0f, minHeight: 32f, preferredHeight: 32f, flexibleHeight: 0f);
+            RectTransform returnRect = returnButton.GetComponent<RectTransform>();
+            if (returnButtonMigrated)
+            {
+                changed |= SetRect(returnRect, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                    Vector2.zero, new Vector2(148f, 32f));
+            }
+            foreach (Text label in returnButton.GetComponentsInChildren<Text>(true))
+            {
+                changed |= SetHudButtonLabel(label, new Vector2(8f, 4f), new Vector2(-8f, -4f));
+            }
+            return changed;
+        }
+
+        private static bool SetMenuText(Scene scene, string objectName, Transform parent, Vector2 position,
+            Vector2 size, int fontSize, TextAnchor alignment, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot)
+        {
+            Text text = FindMenuObject(scene, objectName)?.GetComponent<Text>();
+            if (text == null) return false;
+            bool changed = false;
+            bool migrated = text.transform.parent != parent;
+            if (migrated)
+            {
+                text.transform.SetParent(parent, false);
+                changed = true;
+            }
+            if (parent.name != "PrototypeMenuFooter" || migrated)
+            {
+                changed |= SetRect(text.GetComponent<RectTransform>(), anchorMin, anchorMax, pivot, position, size);
+            }
+            if (text.fontSize != fontSize || text.alignment != alignment || text.resizeTextForBestFit ||
+                text.horizontalOverflow != HorizontalWrapMode.Wrap || text.verticalOverflow != VerticalWrapMode.Truncate)
+            {
+                text.fontSize = fontSize;
+                text.alignment = alignment;
+                text.resizeTextForBestFit = false;
+                text.horizontalOverflow = HorizontalWrapMode.Wrap;
+                text.verticalOverflow = VerticalWrapMode.Truncate;
+                EditorUtility.SetDirty(text);
+                changed = true;
+            }
+            if (parent.name == "PrototypeMenuFooter")
+            {
+                LayoutElement element = EnsureComponent<LayoutElement>(text.gameObject, ref changed);
+                changed |= ConfigureLayoutElement(element, minWidth: 0f, preferredWidth: 0f,
+                    flexibleWidth: 1f, minHeight: 20f, preferredHeight: 20f, flexibleHeight: 0f);
+            }
+            return changed;
+        }
+
+        private static bool SetMenuGraphic(Scene scene, string objectName, Transform parent, Vector2 position,
+            Vector2 size, Vector2 anchor, Vector2 pivot)
+        {
+            GameObject imageObject = FindMenuObject(scene, objectName);
+            if (imageObject == null) return false;
+            bool changed = false;
+            if (imageObject.transform.parent != parent)
+            {
+                imageObject.transform.SetParent(parent, false);
+                changed = true;
+            }
+            changed |= SetRect(imageObject.GetComponent<RectTransform>(), anchor, anchor, pivot, position, size);
+            return changed;
+        }
+
+        private static bool SetMenuButton(Button button, bool initializeLayoutRect)
+        {
+            bool changed = false;
+            RectTransform rect = button.GetComponent<RectTransform>();
+            if (initializeLayoutRect)
+            {
+                changed |= SetRect(rect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
+                    new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(0f, 44f));
+            }
+            LayoutElement element = EnsureComponent<LayoutElement>(button.gameObject, ref changed);
+            changed |= ConfigureLayoutElement(element, minWidth: 0f, preferredWidth: 0f,
+                flexibleWidth: 1f, minHeight: 44f, preferredHeight: 44f, flexibleHeight: 0f);
+            foreach (Text label in button.GetComponentsInChildren<Text>(true))
+            {
+                RectTransform labelRect = label.GetComponent<RectTransform>();
+                changed |= SetHudStretchRect(labelRect, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f),
+                    new Vector2(8f, 4f), new Vector2(-8f, -4f), Vector2.zero);
+                if (label.fontSize != 14 || label.resizeTextForBestFit || label.horizontalOverflow != HorizontalWrapMode.Wrap ||
+                    label.verticalOverflow != VerticalWrapMode.Truncate)
+                {
+                    label.fontSize = 14;
+                    label.resizeTextForBestFit = false;
+                    label.horizontalOverflow = HorizontalWrapMode.Wrap;
+                    label.verticalOverflow = VerticalWrapMode.Truncate;
+                    EditorUtility.SetDirty(label);
+                    changed = true;
+                }
+            }
+            return changed;
+        }
+
+        private static bool SetHudText(Text text, TextAnchor alignment, bool addFlexibleWidth,
+            bool initializeLayoutRect)
+        {
+            bool changed = false;
+            if (initializeLayoutRect)
+            {
+                changed |= SetHudStretchRect(text.GetComponent<RectTransform>(), new Vector2(0f, 1f),
+                    new Vector2(1f, 1f), new Vector2(0f, 1f), Vector2.zero, Vector2.zero, Vector2.zero);
+            }
+            if (text.fontSize != 14 || text.resizeTextForBestFit || text.alignment != alignment ||
+                text.horizontalOverflow != HorizontalWrapMode.Wrap || text.verticalOverflow != VerticalWrapMode.Truncate)
+            {
+                text.fontSize = 14;
+                text.resizeTextForBestFit = false;
+                text.alignment = alignment;
+                text.horizontalOverflow = HorizontalWrapMode.Wrap;
+                text.verticalOverflow = VerticalWrapMode.Truncate;
+                EditorUtility.SetDirty(text);
+                changed = true;
+            }
+            if (addFlexibleWidth)
+            {
+                LayoutElement element = EnsureComponent<LayoutElement>(text.gameObject, ref changed);
+                changed |= ConfigureLayoutElement(element, minWidth: 0f, preferredWidth: 0f,
+                    flexibleWidth: 1f, minHeight: -1f, preferredHeight: -1f, flexibleHeight: 0f);
+            }
+            return changed;
+        }
+
+        private static bool SetHudButtonLabel(Text label, Vector2 offsetMin, Vector2 offsetMax)
+        {
+            bool changed = false;
+            changed |= SetHudStretchRect(label.GetComponent<RectTransform>(), Vector2.zero, Vector2.one,
+                new Vector2(0.5f, 0.5f), offsetMin, offsetMax, Vector2.zero);
+            if (label.fontSize != 14 || label.resizeTextForBestFit || label.horizontalOverflow != HorizontalWrapMode.Wrap ||
+                label.verticalOverflow != VerticalWrapMode.Truncate)
+            {
+                label.fontSize = 14;
+                label.resizeTextForBestFit = false;
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
+                label.verticalOverflow = VerticalWrapMode.Truncate;
+                EditorUtility.SetDirty(label);
+                changed = true;
+            }
+            return changed;
+        }
+
+        private static GameObject EnsureLayoutObject(Scene scene, Transform parent, string name, ref bool changed,
+            out bool createdOrMigrated)
+        {
+            GameObject gameObject = FindMenuObject(scene, name);
+            createdOrMigrated = gameObject == null || gameObject.transform.parent != parent;
+            if (gameObject == null)
+            {
+                gameObject = new GameObject(name, typeof(RectTransform));
+                SceneManager.MoveGameObjectToScene(gameObject, scene);
+                changed = true;
+            }
+            if (gameObject.transform.parent != parent)
+            {
+                gameObject.transform.SetParent(parent, false);
+                changed = true;
+            }
+            return gameObject;
+        }
+
+        private static bool SetHudRootRect(RectTransform rect)
+        {
+            bool changed = rect.anchorMin != new Vector2(0f, 1f) || rect.anchorMax != new Vector2(1f, 1f) ||
+                rect.pivot != new Vector2(0.5f, 1f) || rect.sizeDelta.x != -32f ||
+                rect.offsetMin.x != 16f || rect.offsetMax.x != -16f ||
+                rect.anchoredPosition != new Vector2(0f, -16f);
+            if (!changed) return false;
+
+            float preferredHeight = rect.sizeDelta.y;
+            rect.anchorMin = new Vector2(0f, 1f);
+            rect.anchorMax = new Vector2(1f, 1f);
+            rect.pivot = new Vector2(0.5f, 1f);
+            rect.sizeDelta = new Vector2(-32f, preferredHeight);
+            Vector2 offsetMin = rect.offsetMin;
+            offsetMin.x = 16f;
+            rect.offsetMin = offsetMin;
+            Vector2 offsetMax = rect.offsetMax;
+            offsetMax.x = -16f;
+            rect.offsetMax = offsetMax;
+            rect.anchoredPosition = new Vector2(0f, -16f);
+            EditorUtility.SetDirty(rect);
+            return true;
+        }
+
+        private static T EnsureComponent<T>(GameObject gameObject, ref bool changed) where T : Component
+        {
+            T component = gameObject.GetComponent<T>();
+            if (component != null) return component;
+            component = gameObject.AddComponent<T>();
+            EditorUtility.SetDirty(gameObject);
+            changed = true;
+            return component;
+        }
+
+        private static bool ConfigureVerticalLayout(VerticalLayoutGroup group, float spacing, bool childControlWidth,
+            bool childControlHeight, bool childForceExpandWidth, bool childForceExpandHeight)
+        {
+            bool changed = false;
+            changed |= SetGroupProperties(group, spacing, childControlWidth, childControlHeight,
+                childForceExpandWidth, childForceExpandHeight);
+            if (group.padding.left != 0 || group.padding.right != 0 || group.padding.top != 0 || group.padding.bottom != 0)
+            {
+                group.padding = new RectOffset(0, 0, 0, 0);
+                changed = true;
+            }
+            return changed;
+        }
+
+        private static bool ConfigureHorizontalLayout(HorizontalLayoutGroup group, float spacing,
+            bool childControlWidth, bool childControlHeight, bool childForceExpandWidth, bool childForceExpandHeight)
+        {
+            bool changed = false;
+            changed |= SetGroupProperties(group, spacing, childControlWidth, childControlHeight,
+                childForceExpandWidth, childForceExpandHeight);
+            if (group.padding.left != 0 || group.padding.right != 0 || group.padding.top != 0 || group.padding.bottom != 0)
+            {
+                group.padding = new RectOffset(0, 0, 0, 0);
+                changed = true;
+            }
+            return changed;
+        }
+
+        private static bool SetGroupProperties(HorizontalOrVerticalLayoutGroup group, float spacing,
+            bool childControlWidth, bool childControlHeight, bool childForceExpandWidth, bool childForceExpandHeight)
+        {
+            bool changed = group.spacing != spacing || group.childAlignment != TextAnchor.UpperLeft ||
+                group.childControlWidth != childControlWidth || group.childControlHeight != childControlHeight ||
+                group.childForceExpandWidth != childForceExpandWidth || group.childForceExpandHeight != childForceExpandHeight;
+            if (!changed) return false;
+            group.spacing = spacing;
+            group.childAlignment = TextAnchor.UpperLeft;
+            group.childControlWidth = childControlWidth;
+            group.childControlHeight = childControlHeight;
+            group.childForceExpandWidth = childForceExpandWidth;
+            group.childForceExpandHeight = childForceExpandHeight;
+            EditorUtility.SetDirty(group);
+            return true;
+        }
+
+        private static bool ConfigureContentSizeFitter(ContentSizeFitter fitter,
+            ContentSizeFitter.FitMode horizontalFit, ContentSizeFitter.FitMode verticalFit)
+        {
+            if (fitter.horizontalFit == horizontalFit && fitter.verticalFit == verticalFit) return false;
+            fitter.horizontalFit = horizontalFit;
+            fitter.verticalFit = verticalFit;
+            EditorUtility.SetDirty(fitter);
+            return true;
+        }
+
+        private static bool ConfigureLayoutElement(LayoutElement element, float minWidth, float preferredWidth,
+            float flexibleWidth, float minHeight, float preferredHeight, float flexibleHeight)
+        {
+            bool changed = element.ignoreLayout || element.minWidth != minWidth || element.preferredWidth != preferredWidth ||
+                element.flexibleWidth != flexibleWidth || element.minHeight != minHeight ||
+                element.preferredHeight != preferredHeight || element.flexibleHeight != flexibleHeight;
+            if (!changed) return false;
+            element.ignoreLayout = false;
+            element.minWidth = minWidth;
+            element.preferredWidth = preferredWidth;
+            element.flexibleWidth = flexibleWidth;
+            element.minHeight = minHeight;
+            element.preferredHeight = preferredHeight;
+            element.flexibleHeight = flexibleHeight;
+            EditorUtility.SetDirty(element);
+            return true;
+        }
+
+        private static bool SetRect(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
+            Vector2 anchoredPosition, Vector2 sizeDelta)
+        {
+            if (rect == null) return false;
+            if (rect.anchorMin == anchorMin && rect.anchorMax == anchorMax && rect.pivot == pivot &&
+                rect.anchoredPosition == anchoredPosition && rect.sizeDelta == sizeDelta) return false;
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.pivot = pivot;
+            rect.anchoredPosition = anchoredPosition;
+            rect.sizeDelta = sizeDelta;
+            EditorUtility.SetDirty(rect);
+            return true;
+        }
+
+        private static bool SetHudStretchRect(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
+            Vector2 offsetMin, Vector2 offsetMax, Vector2 anchoredPosition)
+        {
+            if (rect == null) return false;
+            if (rect.anchorMin == anchorMin && rect.anchorMax == anchorMax && rect.pivot == pivot &&
+                rect.offsetMin == offsetMin && rect.offsetMax == offsetMax && rect.anchoredPosition == anchoredPosition) return false;
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.pivot = pivot;
+            rect.offsetMin = offsetMin;
+            rect.offsetMax = offsetMax;
+            rect.anchoredPosition = anchoredPosition;
+            EditorUtility.SetDirty(rect);
+            return true;
+        }
+
+        private static GameObject FindMenuObject(Scene scene, string objectName)
+        {
+            return scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<Transform>(true))
+                .Select(transform => transform.gameObject)
+                .FirstOrDefault(gameObject => gameObject.name == objectName);
         }
 
         private static Image CreateImage(string name, Transform parent, string color)
