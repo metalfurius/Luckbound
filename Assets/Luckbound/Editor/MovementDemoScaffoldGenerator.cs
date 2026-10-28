@@ -494,7 +494,7 @@ namespace Luckbound.Editor
 
         private static bool ReconcileExistingCourseVisuals(Scene scene)
         {
-            bool changed = false;
+            bool changed = ReconcileExistingCourseSpriteBindings(scene);
             changed |= SetSpriteColor(scene, "StoneBackdrop", "#2A2E40");
             changed |= SetSpriteColor(scene, "TrainingFloor", "#A7794D");
             changed |= SetSpriteColor(scene, "JumpBarrierOne", "#AA7DC2");
@@ -503,6 +503,49 @@ namespace Luckbound.Editor
             changed |= SetSpriteColor(scene, "MovementDemoPortal", "#F0C15A");
             changed |= ProjectScaffoldGenerator.ReconcilePrototypeHudLayout(scene, "MovementDemoHUD",
                 "MovementDemoTelemetry", "MovementDemoCourseStatus", "ReturnToMenuButton");
+            return changed;
+        }
+
+        private static bool ReconcileExistingCourseSpriteBindings(Scene scene)
+        {
+            Sprite stone = AssetDatabase.LoadAssetAtPath<Sprite>(StoneSpritePath);
+            GameObject courseRoot = FindObject(scene, "MovementDemoCourse");
+            if (stone == null || courseRoot == null)
+            {
+                throw new InvalidOperationException("B07 course or imported StonePrototype sprite is missing.");
+            }
+
+            string[] names =
+            {
+                "StoneBackdrop",
+                "TrainingFloor",
+                "JumpBarrierOne",
+                "JumpBarrierTwo",
+                "JumpBarrierThree",
+                "MovementDemoPortal"
+            };
+            SpriteRenderer[] renderers = courseRoot.GetComponentsInChildren<SpriteRenderer>(true);
+            if (renderers.Length != names.Length)
+            {
+                throw new InvalidOperationException(
+                    "B07 must contain exactly six course SpriteRenderers; found " + renderers.Length + ".");
+            }
+
+            bool changed = false;
+            foreach (string name in names)
+            {
+                Transform child = courseRoot.transform.Find(name);
+                SpriteRenderer renderer = child == null ? null : child.GetComponent<SpriteRenderer>();
+                if (renderer == null)
+                {
+                    throw new InvalidOperationException("B07 is missing SpriteRenderer " + name + ".");
+                }
+                if (renderer.sprite == stone) continue;
+
+                renderer.sprite = stone;
+                EditorUtility.SetDirty(renderer);
+                changed = true;
+            }
             return changed;
         }
 

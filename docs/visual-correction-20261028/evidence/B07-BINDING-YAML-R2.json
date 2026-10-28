@@ -1,0 +1,10 @@
+{
+  "input": "Assets\\Luckbound\\Scenes\\Expedition.unity",
+  "input_sha256": "9599c0b951ad932e54c65c7186e8dd4f5a0cd0b42b3ce522f362a8068fc3d857",
+  "candidate": "Logs\\B07SpriteBindingCandidate-20261028\\Expedition.B07-sprite-binding-candidate-r2.unity",
+  "output_sha256": "d07f07e84c3f50b2cad0e78cccbfdb083a44914ea06e2bae2dbe9c64ce955856",
+  "replacements": 6,
+  "roundtrip_byte_identical": true,
+  "rejected_r1_sha256": "c644e1dd46ad921d4fae5f1eca98e82fefa0af321d38e5de3b95f36c7cf30134",
+  "reason_r1_rejected": "Based on historical scene, reverted R3 UI/tints; never applied"
+}

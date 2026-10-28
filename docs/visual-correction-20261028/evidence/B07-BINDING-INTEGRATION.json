@@ -1,0 +1,17 @@
+[
+  {
+    "path": "Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs",
+    "before_sha256": "7c7b31a1d3987a600218f04efe7509241eb40c839582dc46ac5ffeaff6599bee",
+    "after_sha256": "1f20e44de2f2a768de4038e783d99548160672cc7a67c77cc7295831921bdaba"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/EditMode/Editor/ProjectScaffoldGeneratorTests.cs",
+    "before_sha256": "0f76729c2df44d70cea58fb5a4b08bce86ab2fc0f0e7a195a7a4e59f8f4a12bf",
+    "after_sha256": "cceca5737726afb37e649327ac74e663e9841919d15746afdea1613481edec40"
+  },
+  {
+    "path": "Assets/Luckbound/Scenes/Expedition.unity",
+    "before_sha256": "9599c0b951ad932e54c65c7186e8dd4f5a0cd0b42b3ce522f362a8068fc3d857",
+    "after_sha256": "d07f07e84c3f50b2cad0e78cccbfdb083a44914ea06e2bae2dbe9c64ce955856"
+  }
+]

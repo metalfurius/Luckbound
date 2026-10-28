@@ -101,6 +101,58 @@ namespace Luckbound.Tests.Editor
             Assert.DoesNotThrow(() => ProjectDevelopmentChecks.RunAll());
         }
 
+        [Test]
+        public void MovementDemoCourseSprites_ResolveCanonicalStoneSpriteFromCheckout()
+        {
+            const string scenePath = "Assets/Luckbound/Scenes/Expedition.unity";
+            string[] rendererNames =
+            {
+                "StoneBackdrop",
+                "TrainingFloor",
+                "JumpBarrierOne",
+                "JumpBarrierTwo",
+                "JumpBarrierThree",
+                "MovementDemoPortal"
+            };
+
+            Sprite stone = AssetDatabase.LoadAssetAtPath<Sprite>(MovementDemoScaffoldGenerator.StoneSpritePath);
+            Assert.That(stone, Is.Not.Null, "The canonical single StonePrototype Sprite must load.");
+            Assert.That(AssetDatabase.TryGetGUIDAndLocalFileIdentifier(
+                stone, out string spriteGuid, out long localFileId), Is.True,
+                "Unity must expose the imported Sprite identity.");
+            Assert.That(spriteGuid, Is.EqualTo(
+                AssetDatabase.AssetPathToGUID(MovementDemoScaffoldGenerator.StoneSpritePath)));
+            Assert.That(localFileId, Is.Not.EqualTo(0L));
+            TestContext.WriteLine("StonePrototype GUID=" + spriteGuid + "; localFileID=" + localFileId);
+
+            UnityEngine.SceneManagement.Scene previewScene =
+                UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene(scenePath);
+            try
+            {
+                GameObject courseRoot = previewScene.GetRootGameObjects()
+                    .FirstOrDefault(root => root.name == "MovementDemoCourse");
+                Assert.That(courseRoot, Is.Not.Null, "Expedition checkout scene must contain MovementDemoCourse.");
+                Assert.That(courseRoot.GetComponentsInChildren<SpriteRenderer>(true).Length,
+                    Is.EqualTo(rendererNames.Length), "MovementDemoCourse must contain exactly six SpriteRenderers.");
+
+                foreach (string name in rendererNames)
+                {
+                    Transform child = courseRoot.transform.Find(name);
+                    SpriteRenderer renderer = child == null ? null : child.GetComponent<SpriteRenderer>();
+                    Assert.That(renderer, Is.Not.Null, "Missing course SpriteRenderer: " + name);
+                    Assert.That(renderer.sprite, Is.SameAs(stone),
+                        name + " must reference the canonical imported StonePrototype Sprite.");
+                }
+            }
+            finally
+            {
+                if (previewScene.IsValid() && previewScene.isLoaded)
+                {
+                    UnityEditor.SceneManagement.EditorSceneManager.ClosePreviewScene(previewScene);
+                }
+            }
+        }
+
         private static Dictionary<string, string> SnapshotManagedFiles()
         {
             string projectRoot = Directory.GetParent(UnityEngine.Application.dataPath).FullName;
