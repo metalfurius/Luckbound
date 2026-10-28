@@ -1,0 +1,29 @@
+[
+  {
+    "path": "Assets/Luckbound/Scenes/Expedition.unity",
+    "object": "StoneBackdrop",
+    "before": "6e6ef27560d93f5513bfe7a93e30d53bd2a4872abbfbeb78667d393af83f7cb8",
+    "after": "9599c0b951ad932e54c65c7186e8dd4f5a0cd0b42b3ce522f362a8068fc3d857",
+    "changed_field": "SpriteRenderer.m_Color",
+    "old_color": "  m_Color: {r: 0.50980395, g: 0.5647059, b: 0.64705884, a: 1}",
+    "new_color": "  m_Color: {r: 0.16470589, g: 0.18039216, b: 0.2509804, a: 1}"
+  },
+  {
+    "path": "Assets/Luckbound/Scenes/CombatArena.unity",
+    "object": "ArenaBackdrop",
+    "before": "a54d0209ad61b046155e0b87ca8d71e1cc7cafc58e2be7eb6af563b576164a96",
+    "after": "91b26d32571b1b9c902b06f81ee599d0d7952c903e649d8f1482dd6098ec02f9",
+    "changed_field": "SpriteRenderer.m_Color",
+    "old_color": "  m_Color: {r: 0.50980395, g: 0.5647059, b: 0.64705884, a: 1}",
+    "new_color": "  m_Color: {r: 0.16470589, g: 0.18039216, b: 0.2509804, a: 1}"
+  },
+  {
+    "path": "Assets/Luckbound/Scenes/CustodianArena.unity",
+    "object": "CustodianArenaBackdrop",
+    "before": "954a2ca7152c92fd1e14c3a5a04d9afed11f6cf6ca33b8a97c63ef513972fbe4",
+    "after": "d36d080f3a15401b5892f8dcebd71db3959e9361f8e5664971cbd7dd7e74f96d",
+    "changed_field": "SpriteRenderer.m_Color",
+    "old_color": "  m_Color: {r: 0.50980395, g: 0.5647059, b: 0.64705884, a: 1}",
+    "new_color": "  m_Color: {r: 0.16470589, g: 0.18039216, b: 0.2509804, a: 1}"
+  }
+]

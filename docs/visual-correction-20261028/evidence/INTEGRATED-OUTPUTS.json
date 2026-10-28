@@ -1,0 +1,9 @@
+{
+  "Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs": "7c7b31a1d3987a600218f04efe7509241eb40c839582dc46ac5ffeaff6599bee",
+  "Assets/Luckbound/Editor/CombatArenaScaffoldGenerator.cs": "4c5a63f271e83ad158ffff244d6b31111a299e18cebcc977774f680113ad9cae",
+  "Assets/Luckbound/Editor/CustodianArenaScaffoldGenerator.cs": "c6f3d8a75be005fdcb9194782cb0399b4a320b8f9f6a7ccf1e5ace8ba6013341",
+  "Assets/Luckbound/Scenes/Expedition.unity": "9599c0b951ad932e54c65c7186e8dd4f5a0cd0b42b3ce522f362a8068fc3d857",
+  "Assets/Luckbound/Scenes/CombatArena.unity": "91b26d32571b1b9c902b06f81ee599d0d7952c903e649d8f1482dd6098ec02f9",
+  "Assets/Luckbound/Scenes/CustodianArena.unity": "d36d080f3a15401b5892f8dcebd71db3959e9361f8e5664971cbd7dd7e74f96d",
+  "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png": "bbc831be3163492b1be78b737ad0913f0ce47bec88249483e5f1d7e9b369fd31"
+}

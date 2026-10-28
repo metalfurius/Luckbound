@@ -175,10 +175,10 @@ namespace Luckbound.Editor
             const int width = 16;
             const int height = 16;
             var pixels = new Color32[width * height];
-            Color32 baseColor = Color32FromHex("#2A2E40");
-            Color32 shadow = Color32FromHex("#1B1D2B");
-            Color32 mid = Color32FromHex("#3F465C");
-            Color32 edge = Color32FromHex("#59647A");
+            Color32 baseColor = Color32FromHex("#8290A5");
+            Color32 shadow = Color32FromHex("#59647A");
+            Color32 mid = Color32FromHex("#BDC6CC");
+            Color32 edge = Color32FromHex("#E8E3CD");
             FillRect(pixels, width, 0, 0, width, height, baseColor);
             FillRect(pixels, width, 0, 14, width, 16, edge);
             FillRect(pixels, width, 0, 0, width, 1, shadow);
@@ -383,7 +383,7 @@ namespace Luckbound.Editor
                     stone,
                     new Vector3(0f, 0f, 8f),
                     new Vector2(100f, 40f),
-                    ColorFromHex("#8290A5"),
+                    ColorFromHex("#2A2E40"),
                     -100,
                     -1,
                     false);
@@ -495,7 +495,7 @@ namespace Luckbound.Editor
         private static bool ReconcileExistingCourseVisuals(Scene scene)
         {
             bool changed = false;
-            changed |= SetSpriteColor(scene, "StoneBackdrop", "#8290A5");
+            changed |= SetSpriteColor(scene, "StoneBackdrop", "#2A2E40");
             changed |= SetSpriteColor(scene, "TrainingFloor", "#A7794D");
             changed |= SetSpriteColor(scene, "JumpBarrierOne", "#AA7DC2");
             changed |= SetSpriteColor(scene, "JumpBarrierTwo", "#AA7DC2");

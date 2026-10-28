@@ -177,7 +177,7 @@ namespace Luckbound.Editor
                 bounds.isTrigger = true;
 
                 CreateArenaSprite("CustodianArenaBackdrop", world.transform, stone, new Vector3(0f, 1f, 9f),
-                    new Vector2(30f, 12f), ParseColor("#8290A5"), -100, -1, false);
+                    new Vector2(30f, 12f), ParseColor("#2A2E40"), -100, -1, false);
                 CreateArenaSprite("CustodianArenaFloor", world.transform, stone, new Vector3(0f, FloorTop - 0.5f, 0f),
                     new Vector2(30f, 1f), ParseColor("#A7794D"), 0, groundLayer, true);
                 CreateArenaSprite("CustodianArenaLeftWall", world.transform, stone, new Vector3(-15.25f, FloorTop + 1.75f, 0f),
@@ -307,7 +307,7 @@ namespace Luckbound.Editor
                 "CustodianArenaTelemetry", "CustodianBossStatus", "CustodianArenaReturnButton");
             changed |= SetTextLayout(scene, "CustodianArenaPause", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                 Vector2.zero, new Vector2(400f, 76f), 18, TextAnchor.MiddleCenter);
-            changed |= SetSpriteColor(scene, "CustodianArenaBackdrop", "#8290A5");
+            changed |= SetSpriteColor(scene, "CustodianArenaBackdrop", "#2A2E40");
             changed |= SetSpriteColor(scene, "CustodianArenaFloor", "#A7794D");
             changed |= SetSpriteColor(scene, "CustodianArenaLeftWall", "#59647A");
             changed |= SetSpriteColor(scene, "CustodianArenaRightWall", "#59647A");

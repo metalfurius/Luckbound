@@ -1,0 +1,92 @@
+[
+  {
+    "file": "01-menu-canvas-960x600.jpg",
+    "width": 960,
+    "height": 600,
+    "sha256": "7529440814ceb1ef9a4a32c78eca83eec2a44e61dabb726bfccc6e2e0728fa57"
+  },
+  {
+    "file": "01-menu-viewport.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "02ac521dde0b1ba9625feb7f0a931b686e9e87ead2751887c756ca6a64b40ff7"
+  },
+  {
+    "file": "02-arena-canvas-960x600.jpg",
+    "width": 960,
+    "height": 600,
+    "sha256": "cccec18bfe2d1e691a54b976fbb55475cc372ca4cac78cc98a68bb1e50df7ce0"
+  },
+  {
+    "file": "02-arena-viewport.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "78aa06879078d3f6af80c4e9ee79e9b8a152131bc191b7a5bdf2ba46a99c1653"
+  },
+  {
+    "file": "03-custodio-canvas-960x600.jpg",
+    "width": 960,
+    "height": 600,
+    "sha256": "b34d35ecde45825ca19231dd82dfda49121668428eb8cff97e98126c2aa971b0"
+  },
+  {
+    "file": "04-custodio-approach-960x600.jpg",
+    "width": 960,
+    "height": 600,
+    "sha256": "fc6623ff95562fd03d11a016449355db41bbd238b854e9ed37f8ee03cd607e2e"
+  },
+  {
+    "file": "05-demo-canvas-960x600.jpg",
+    "width": 960,
+    "height": 600,
+    "sha256": "6a3894cca50effcf78e595c25891176882b3c6a90da0d86928a71dbb731fee84"
+  },
+  {
+    "file": "06-demo-settled-960x600.jpg",
+    "width": 960,
+    "height": 600,
+    "sha256": "6a3894cca50effcf78e595c25891176882b3c6a90da0d86928a71dbb731fee84"
+  },
+  {
+    "file": "07-menu-canvas-1280x720.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "6b90451fa496c730ab852c7a1817024c18541648cd8344dc90181fb913f08d1a"
+  },
+  {
+    "file": "08-arena-canvas-1280x720.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "ee1abd5ef4c00f5d1ba46ccbb183170322b5d94d577518a9f072f79453263253"
+  },
+  {
+    "file": "09-custodio-canvas-1280x720.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "753861cbf8a9d29a6793c5df944ed9542d0605a2cedc58a100e1eac58ab5b5d6"
+  },
+  {
+    "file": "10-custodio-alert-1280x720.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "9ca6eb020f6e1a94d7aead04f86240416743c852ffe7e48f28361ae28a558090"
+  },
+  {
+    "file": "11-demo-after-input-1280x720.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "8a23c35187aacc889ae3f29f9816b56b43dcd722e638e15126dc7c8c19465600"
+  },
+  {
+    "file": "12-taberna-canvas-1280x720.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "622e77fed00b00e48bdcee1760b90c8fa0354899d13a8577c6be410e2bd55b69"
+  },
+  {
+    "file": "navigation-return-menu.jpg",
+    "width": 1280,
+    "height": 720,
+    "sha256": "02ac521dde0b1ba9625feb7f0a931b686e9e87ead2751887c756ca6a64b40ff7"
+  }
+]

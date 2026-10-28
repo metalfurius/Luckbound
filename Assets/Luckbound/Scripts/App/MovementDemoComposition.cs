@@ -42,6 +42,11 @@ namespace Luckbound.App
 
         private void Start()
         {
+            if (Application.platform == RuntimePlatform.WebGLPlayer &&
+                Uri.TryCreate(Application.absoluteURL, UriKind.Absolute, out Uri probeUrl) &&
+                Array.IndexOf(probeUrl.Query.TrimStart('?').Split('&'), "luckboundRenderProbe=1") >= 0)
+                StartCoroutine(CaptureRenderProbe());
+
             if (ApplicationBootstrapper.Instance != null && ApplicationBootstrapper.Instance.ActiveRun != null)
             {
                 if (_demoCourseRoot == null || _movementDemoHudRoot == null)
@@ -91,6 +96,44 @@ namespace Luckbound.App
             {
                 RefreshHud();
             }
+        }
+
+        // Read-only diagnostic, enabled solely by an explicit WebGL capture query.
+        private System.Collections.IEnumerator CaptureRenderProbe()
+        {
+            WriteRenderProbe("start");
+            yield return null;
+            yield return null;
+            WriteRenderProbe("after-two-frames");
+        }
+
+        private void WriteRenderProbe(string stage)
+        {
+            Camera camera = _cameraRig != null ? _cameraRig.GetComponent<Camera>() : Camera.main;
+            var output = new System.Text.StringBuilder("LUCKBOUND_RENDER_PROBE stage=").Append(stage)
+                .Append(" activeRun=").Append(ApplicationBootstrapper.Instance != null && ApplicationBootstrapper.Instance.ActiveRun != null)
+                .Append(" courseSelf=").Append(_demoCourseRoot != null && _demoCourseRoot.activeSelf)
+                .Append(" courseHierarchy=").Append(_demoCourseRoot != null && _demoCourseRoot.activeInHierarchy);
+            if (camera != null)
+                output.Append(" camera=").Append(camera.transform.position.ToString("F3"))
+                    .Append(" ortho=").Append(camera.orthographicSize)
+                    .Append(" near=").Append(camera.nearClipPlane).Append(" far=").Append(camera.farClipPlane)
+                    .Append(" mask=").Append(camera.cullingMask);
+            if (_demoCourseRoot != null)
+                foreach (SpriteRenderer renderer in _demoCourseRoot.GetComponentsInChildren<SpriteRenderer>(true))
+                {
+                    output.Append(" | renderer=").Append(renderer.name)
+                        .Append(" active=").Append(renderer.gameObject.activeInHierarchy)
+                        .Append(" enabled=").Append(renderer.enabled).Append(" visible=").Append(renderer.isVisible)
+                        .Append(" sprite=").Append(renderer.sprite != null ? renderer.sprite.name : "null")
+                        .Append(" material=").Append(renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "null")
+                        .Append(" layer=").Append(renderer.gameObject.layer)
+                        .Append(" sorting=").Append(renderer.sortingLayerID).Append('/').Append(renderer.sortingOrder)
+                        .Append(" bounds=").Append(renderer.bounds.ToString());
+                    if (camera != null)
+                        output.Append(" viewportCenter=").Append(camera.WorldToViewportPoint(renderer.bounds.center).ToString("F3"));
+                }
+            Debug.Log(output.ToString(), this);
         }
 
         private void OnDestroy()

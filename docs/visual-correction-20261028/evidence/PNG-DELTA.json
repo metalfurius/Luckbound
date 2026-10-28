@@ -1,0 +1,37 @@
+{
+  "source": "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png",
+  "before_sha256": "40d5c9e40b59b7e35d944813de4f824a6642a00a742146535ccc7ff0f34953b8",
+  "after_sha256": "bbc831be3163492b1be78b737ad0913f0ce47bec88249483e5f1d7e9b369fd31",
+  "meta_sha256": "310eaf50ed1b7421e80b1dd8f23a9329861294b4fcdad2dcf7663d47412e76d0",
+  "consumers_unchanged_during_png_replacement": {
+    "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png.meta": "310eaf50ed1b7421e80b1dd8f23a9329861294b4fcdad2dcf7663d47412e76d0",
+    "Assets/Luckbound/Prefabs/CombatArena/HuesoguardiaPrototype.prefab": "cb4cfe4eb9204c37c6128316b7dbc7e822c91662d88e0ecd90706145447d9066",
+    "Assets/Luckbound/Prefabs/CombatArena/SlimePrototype.prefab": "3f742dadc2683fac174f6bc6f86b526b915f8c2a7ecc8b84df884f1dc1c562c0",
+    "Assets/Luckbound/Prefabs/CustodianArena/CustodianPrototype.prefab": "e1847fc6f9c4e74123e1c87b0c5dc39862f6b3f153d04b4b5892b3e9ee19fe2a",
+    "Assets/Luckbound/Prefabs/CustodianArena/CustodianWavePrototype.prefab": "6031cb7acbc6891e70bee566103bd29c939b3822b6e4e68652f2fb202c62b3eb",
+    "Assets/Luckbound/Scenes/CombatArena.unity": "91b26d32571b1b9c902b06f81ee599d0d7952c903e649d8f1482dd6098ec02f9",
+    "Assets/Luckbound/Scenes/CustodianArena.unity": "d36d080f3a15401b5892f8dcebd71db3959e9361f8e5664971cbd7dd7e74f96d",
+    "Assets/Luckbound/Scenes/Expedition.unity": "9599c0b951ad932e54c65c7186e8dd4f5a0cd0b42b3ce522f362a8068fc3d857",
+    "Assets/Resources/Luckbound/Rooms/PrototypeFloorTile.asset": "cbefe0fa85ed3ad03cf17d74241e76b7bc12034c566e575ec9b0c8df7851540e",
+    "Assets/Resources/Luckbound/Rooms/PrototypeRoom.prefab": "1165c8cc3ae0183475bef0350608f1d9637a9cce7e296fb274de6f9c8b3c8b49"
+  },
+  "source_ihdr": [
+    16,
+    16,
+    8,
+    6,
+    0,
+    0,
+    0
+  ],
+  "output_ihdr": [
+    16,
+    16,
+    8,
+    6,
+    0,
+    0,
+    0
+  ],
+  "generation": "Existing BuildStonePixels C# method compiled with System.Drawing.Color adapter; PNG encoded by System.Drawing. All256 legacy/current RGBA pixels verified before copying. No Unity execution."
+}
