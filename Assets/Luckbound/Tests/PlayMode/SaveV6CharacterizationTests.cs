@@ -76,7 +76,7 @@ namespace Luckbound.Tests.PlayMode
         };
 
         [OneTimeSetUp]
-        private void InitializeV6CaptureIfRequested()
+        public void InitializeV6CaptureIfRequested()
         {
             string relativeCapturePath;
             if (!TryReadV6CaptureArgument(out relativeCapturePath)) return;
@@ -133,7 +133,7 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [OneTimeTearDown]
-        private void FinalizeV6CaptureIfRequested()
+        public void FinalizeV6CaptureIfRequested()
         {
             V6CaptureSessionState session;
             lock (V6CaptureGate) session = _v6CaptureSession;

@@ -197,8 +197,8 @@ namespace Luckbound.Tests.PlayMode
             effects.value = 0.6f;
             ambience.value = 0.3f;
 
-            for (int frame = 0; frame < 120 && !_store.BlockedSettingsWriteStarted.IsCompleted; frame++)
-                yield return null;
+            // Observe the configured 0.35-second realtime debounce even while the game is paused.
+            yield return new WaitForSecondsRealtime(0.55f);
             Assert.That(_store.BlockedSettingsWriteStarted.IsCompleted, Is.True,
                 "The debounced settings write should reach the blocked store.");
 
@@ -300,8 +300,8 @@ namespace Luckbound.Tests.PlayMode
             effects.value = 0.6f;
             ambience.value = 0.3f;
 
-            for (int frame = 0; frame < 120 && !_store.BlockedSettingsWriteStarted.IsCompleted; frame++)
-                yield return null;
+            // Observe the configured 0.35-second realtime debounce even while the game is paused.
+            yield return new WaitForSecondsRealtime(0.55f);
             Assert.That(_store.BlockedSettingsWriteStarted.IsCompleted, Is.True);
 
             UnityEngine.Object.Destroy(_pauseObject);

@@ -618,6 +618,8 @@ namespace Luckbound.Editor
             EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
             AnimationUtility.SetObjectReferenceCurve(clip, binding, keys);
             AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
+            settings.startTime = 0f;
+            settings.stopTime = ExpectedClipDuration(spec);
             settings.loopTime = spec.loop;
             AnimationUtility.SetAnimationClipSettings(clip, settings);
             AssetDatabase.CreateAsset(clip, clipPath);
@@ -628,7 +630,7 @@ namespace Luckbound.Editor
         {
             AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
             if (!string.Equals(clip.name, spec.name, StringComparison.Ordinal) ||
-                !Mathf.Approximately(clip.frameRate, spec.framesPerSecond) || settings.loopTime != spec.loop)
+                !IsFiniteAndApproximately(clip.frameRate, spec.framesPerSecond) || settings.loopTime != spec.loop)
                 throw new InvalidDataException("An existing F02 clip differs from its manifest; it was not overwritten: " + spec.name);
 
             EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
@@ -650,23 +652,37 @@ namespace Luckbound.Editor
             ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
             if (keys == null || keys.Length != spec.frames.Length + 1)
                 throw new InvalidDataException("Existing F02 clip frame count differs from its manifest: " + spec.name);
-            float expectedLength = (float)spec.frames.Length / spec.framesPerSecond;
-            if (!Mathf.Approximately(clip.length, expectedLength))
+            float expectedDuration = ExpectedClipDuration(spec);
+            bool serializedLengthMatches = IsFiniteAndApproximately(clip.length, expectedDuration) ||
+                (spec.frames.Length == 1 && IsFiniteAndApproximately(clip.length, 0f));
+            if (!IsFiniteAndApproximately(settings.startTime, 0f) ||
+                !IsFiniteAndApproximately(settings.stopTime, expectedDuration))
                 throw new InvalidDataException("Existing F02 clip duration differs from its manifest: " + spec.name);
             for (int i = 0; i < spec.frames.Length; i++)
             {
                 Sprite expected;
                 if (!spritesByName.TryGetValue(spec.frames[i], out expected) ||
-                    !Mathf.Approximately(keys[i].time, (float)i / spec.framesPerSecond) ||
+                    !IsFiniteAndApproximately(keys[i].time, (float)i / spec.framesPerSecond) ||
                     keys[i].value != expected)
                     throw new InvalidDataException("Existing F02 clip frame reference differs from its manifest: " + spec.name);
             }
             Sprite last;
             if (!spritesByName.TryGetValue(spec.frames[spec.frames.Length - 1], out last))
                 throw new InvalidDataException("Existing F02 clip references a sprite not yet owned by the family: " + spec.name);
-            float end = expectedLength;
-            if (!Mathf.Approximately(keys[keys.Length - 1].time, end) || keys[keys.Length - 1].value != last)
+            if (!IsFiniteAndApproximately(keys[keys.Length - 1].time, expectedDuration) || keys[keys.Length - 1].value != last)
                 throw new InvalidDataException("Existing F02 clip terminal frame differs from its manifest: " + spec.name);
+            if (!serializedLengthMatches)
+                throw new InvalidDataException("Existing F02 clip duration differs from its manifest: " + spec.name);
+        }
+
+        private static float ExpectedClipDuration(ClipSpec spec)
+        {
+            return (float)spec.frames.Length / spec.framesPerSecond;
+        }
+
+        private static bool IsFiniteAndApproximately(float actual, float expected)
+        {
+            return !float.IsNaN(actual) && !float.IsInfinity(actual) && Mathf.Approximately(actual, expected);
         }
 
         private static void ValidateClipSet(string outputFullPath, FamilyManifest manifest)

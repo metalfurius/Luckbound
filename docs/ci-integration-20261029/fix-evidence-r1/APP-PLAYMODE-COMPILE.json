@@ -1,0 +1,35 @@
+{
+  "assemblies": [
+    {
+      "assembly": "Luckbound.App",
+      "sourceCount": 47,
+      "candidates": [
+        "Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs"
+      ],
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 67,
+      "candidates": [
+        "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs",
+        "Assets/Luckbound/Tests/PlayMode/PauseAudioSettingsTests.cs",
+        "Assets/Luckbound/Tests/PlayMode/Economy/MerchantApplicationTests.cs"
+      ],
+      "exitCode": 0,
+      "logSha256": "4c8c1e377a38a1ab316f42e87da4b37158d843f4bde08b8a7278c5e5fe7661d8"
+    }
+  ],
+  "candidateHashes": {
+    "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs": "19b0f3a9ace138c3f82d6249cbbb460621841647bd7c2ee26d961cce48c9e22e",
+    "Assets/Luckbound/Tests/PlayMode/PauseAudioSettingsTests.cs": "651212124322626ef7879909d0c0201458abf4b99aed4501c7912ea5fadf14ba",
+    "Assets/Luckbound/Tests/PlayMode/Economy/MerchantApplicationTests.cs": "6fc20ca36d5e0e2f4bcd776a6b6b856cd6712b4405c74797200ff3af66097b58",
+    "Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs": "0166a16ae32800e35c19568279db6e5dac3c8f5bb5891ba5af57b5464a2fab43"
+  },
+  "allChangedSourcesSelected": true,
+  "rootSourcesUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "jsonUtilityExecuted": false
+}

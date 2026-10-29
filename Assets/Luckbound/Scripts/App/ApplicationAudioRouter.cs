@@ -128,7 +128,7 @@ namespace Luckbound.App
         /// </summary>
         public bool PlayEffect(string effectId, float gain = 1f)
         {
-            if (!isActiveAndEnabled || _audioDirector == null || string.IsNullOrWhiteSpace(effectId)) return false;
+            if (this == null || !isActiveAndEnabled || _audioDirector == null || string.IsNullOrWhiteSpace(effectId)) return false;
             if (_userGestureObserved) return _audioDirector.PlayEffect(effectId, gain);
             if (_pendingEffectRequests.Count >= MaximumPendingEffectRequests) return false;
 

@@ -1,0 +1,35 @@
+{
+  "schema": "luckbound-first-ci-root-fixes-v1",
+  "changes": [
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "beforeSha256": "5c0dbd8ea291bfa814000c54a3e51362ee86cf52a626669de8913ac3b5fe4f3c",
+      "afterSha256": "b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7",
+      "reason": "NUnit 3.5 lifecycle signature: public parameterless callbacks; helpers/roles/assertions unchanged"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Saves/ExpeditionEncounterRewardPolicyTests.cs",
+      "beforeSha256": "1a717994912774d35246c414dc314ec6fb5270dac21358cfcd80d4ed3347cbaa",
+      "afterSha256": "064fef63781250456831a685d990943b88a81b98e75dbd7d0ed98cc393c749c6",
+      "reason": "Count enumerable explicitly on NUnit 3.5; fixed-input RNG vectors recalculated by independent documented protocol oracle"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterCatalogCoreTests.cs",
+      "beforeSha256": "bd3fce4e8b010f159e551ea9573c686bae8635a673fa4302245445836e71f721",
+      "afterSha256": "683c8e31adbb8205cea5881d93c88a4e287bc7fe7e90d4ecc1026b9f317f9f60",
+      "reason": "Repair malformed copied hex literals; all four SHA256 constants already match independent protocol oracle and remain unchanged"
+    }
+  ],
+  "solReviewSha256": "cbbe1efef32af98fdfd95dfe5cc4977240ab21613675525c5dcbf6d3cfa5fcd7",
+  "allOtherCsharpSourcesUnchanged": true,
+  "totalCsharpSources": 374,
+  "codecsEconomyProductionUnchanged": true,
+  "offlineAssemblies": {
+    "CoreTests": 35,
+    "AppTests": 6,
+    "PlayModeTests": 67
+  },
+  "compileExitCode": 0,
+  "nunitDiscoveryCheckedBySol": true,
+  "unityExecutedForFix": false
+}

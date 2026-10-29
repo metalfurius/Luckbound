@@ -364,6 +364,76 @@ namespace Luckbound.Tests.Editor
                 }), "undeclared animation events");
         }
 
+        [Test]
+        public void ExistingClipWithCorruptStartTime_IsRejectedWithoutRepair()
+        {
+            float corruptedStartTime = float.NaN;
+            AssertExistingClipTimeCorruptionRejectedWithoutRepair(clip =>
+            {
+                AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
+                corruptedStartTime = -0.005f / clip.frameRate;
+                settings.startTime = corruptedStartTime;
+                AnimationUtility.SetAnimationClipSettings(clip, settings);
+            }, clip => AssertPersistedTimeIsOutsidePreviousApproximation(
+                AnimationUtility.GetAnimationClipSettings(clip).startTime, corruptedStartTime, 0f),
+                "duration differs from its manifest");
+        }
+
+        [Test]
+        public void ExistingClipWithCorruptStopTime_IsRejectedWithoutRepair()
+        {
+            float corruptedStopTime = float.NaN;
+            AssertExistingClipTimeCorruptionRejectedWithoutRepair(clip =>
+            {
+                AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
+                corruptedStopTime = settings.stopTime + 0.005f / clip.frameRate;
+                settings.stopTime = corruptedStopTime;
+                AnimationUtility.SetAnimationClipSettings(clip, settings);
+            }, clip => AssertPersistedTimeIsOutsidePreviousApproximation(
+                AnimationUtility.GetAnimationClipSettings(clip).stopTime, corruptedStopTime, 1f / clip.frameRate),
+                "duration differs from its manifest");
+        }
+
+        [Test]
+        public void ExistingClipWithCorruptFrameKeyTime_IsRejectedWithoutRepair()
+        {
+            float corruptedFrameTime = float.NaN;
+            AssertExistingClipTimeCorruptionRejectedWithoutRepair(clip =>
+            {
+                EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
+                ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
+                corruptedFrameTime = keys[0].time + 0.005f / clip.frameRate;
+                keys[0].time = corruptedFrameTime;
+                AnimationUtility.SetObjectReferenceCurve(clip, binding, keys);
+            }, clip =>
+            {
+                EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
+                ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
+                AssertPersistedTimeIsOutsidePreviousApproximation(keys[0].time, corruptedFrameTime, 0f);
+            }, "frame reference differs from its manifest");
+        }
+
+        [Test]
+        public void ExistingClipWithCorruptTerminalKeyTime_IsRejectedWithoutRepair()
+        {
+            float corruptedTerminalTime = float.NaN;
+            AssertExistingClipTimeCorruptionRejectedWithoutRepair(clip =>
+            {
+                EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
+                ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
+                int terminalIndex = keys.Length - 1;
+                corruptedTerminalTime = keys[terminalIndex].time + 0.005f / clip.frameRate;
+                keys[terminalIndex].time = corruptedTerminalTime;
+                AnimationUtility.SetObjectReferenceCurve(clip, binding, keys);
+            }, clip =>
+            {
+                EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
+                ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
+                AssertPersistedTimeIsOutsidePreviousApproximation(keys[keys.Length - 1].time,
+                    corruptedTerminalTime, 1f / clip.frameRate);
+            }, "terminal frame differs from its manifest");
+        }
+
         private static void AssertExistingClipRejectedWithoutAssetsMutation(
             Action<AnimationClip> corruptClip, string expectedMessage)
         {
@@ -378,6 +448,42 @@ namespace Luckbound.Tests.Editor
 
                 AssertRejectedWithoutAssetsMutation(() =>
                     F02SpriteFamilyManifestImporter.ImportFamily(ManifestPath), expectedMessage);
+            }
+            finally
+            {
+                CleanupOutputFolder();
+            }
+        }
+
+        private static void AssertExistingClipTimeCorruptionRejectedWithoutRepair(
+            Action<AnimationClip> corruptClip, Action<AnimationClip> assertCorruptionPersisted,
+            string expectedMessage)
+        {
+            AssertOutputFolderAbsent();
+            try
+            {
+                F02SpriteFamilyManifestImporter.ImportFamily(ManifestPath);
+                string clipFullPath = ProjectFullPath(ClipPath);
+                AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(ClipPath);
+                Assert.That(clip, Is.Not.Null);
+                string originalHash = HashFile(clipFullPath);
+
+                corruptClip(clip);
+                EditorUtility.SetDirty(clip);
+                AssetDatabase.SaveAssetIfDirty(clip);
+                AssetDatabase.ImportAsset(ClipPath, ImportAssetOptions.ForceSynchronousImport);
+
+                AnimationClip reloadedClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(ClipPath);
+                Assert.That(reloadedClip, Is.Not.Null);
+                assertCorruptionPersisted(reloadedClip);
+                string corruptedHash = HashFile(clipFullPath);
+                Assert.That(corruptedHash, Is.Not.EqualTo(originalHash),
+                    "The time corruption must be present in the serialized clip before validation.");
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(ManifestPath), expectedMessage);
+                Assert.That(HashFile(clipFullPath), Is.EqualTo(corruptedHash),
+                    "Rejecting a corrupt existing clip must leave its serialized bytes unchanged.");
             }
             finally
             {
@@ -425,9 +531,10 @@ namespace Luckbound.Tests.Editor
             {
                 string image = BuildImageJson(tempSource, "BellatorTechnicalFixtureNullMetadata.png",
                     "BellatorTechnicalFixtureNullMetadata_0", 32);
+                image = InsertJsonStringProperty(image, "resourceId", "f02-bellator-null-metadata-image");
                 foreach (string field in new[]
                 {
-                    "resourceId", "status", "provenance", "referenceId", "referencePath",
+                    "status", "provenance", "referenceId", "referencePath",
                     "referenceSha256", "promptReference", "promptReferenceSha256"
                 })
                     image = InsertJsonNullProperty(image, field);
@@ -1794,11 +1901,16 @@ namespace Luckbound.Tests.Editor
         private static void CaptureMultiClip(string clipPath, string[] frames, bool loop, string[] texturePaths,
             IReadOnlyDictionary<string, Sprite> sprites, ICollection<string> identities, ICollection<string> clipCurves)
         {
+            AssetDatabase.ImportAsset(clipPath, ImportAssetOptions.ForceSynchronousImport);
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(clipPath);
             Assert.That(clip, Is.Not.Null, clipPath);
             Assert.That(clip.frameRate, Is.EqualTo(12f));
             Assert.That(clip.length, Is.EqualTo((float)frames.Length / 12f).Within(0.0001f), clipPath);
-            Assert.That(AnimationUtility.GetAnimationClipSettings(clip).loopTime, Is.EqualTo(loop));
+            AnimationClipSettings clipSettings = AnimationUtility.GetAnimationClipSettings(clip);
+            AssertFiniteAndApproximately(clipSettings.startTime, 0f, clipPath + " start time");
+            AssertFiniteAndApproximately(clipSettings.stopTime, (float)frames.Length / clip.frameRate,
+                clipPath + " stop time");
+            Assert.That(clipSettings.loopTime, Is.EqualTo(loop));
             identities.Add("clip:" + clipPath + ":" + StableIdentity(clip));
 
             EditorCurveBinding expectedBinding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
@@ -1851,10 +1963,28 @@ namespace Luckbound.Tests.Editor
             return guid + ":" + localId.ToString(CultureInfo.InvariantCulture);
         }
 
+        private static void AssertFiniteAndApproximately(float actual, float expected, string message)
+        {
+            Assert.That(float.IsNaN(actual) || float.IsInfinity(actual), Is.False, message);
+            Assert.That(Mathf.Approximately(actual, expected), Is.True, message);
+        }
+
+        private static void AssertPersistedTimeIsOutsidePreviousApproximation(
+            float actual, float corruptedValue, float expectedValue)
+        {
+            Assert.That(float.IsNaN(actual) || float.IsInfinity(actual), Is.False,
+                "The persisted corruption must remain a finite time value.");
+            Assert.That(actual, Is.EqualTo(corruptedValue),
+                "The time corruption must persist unchanged after AssetDatabase reload.");
+            Assert.That(Mathf.Approximately(actual, expectedValue), Is.False,
+                "A persisted 0.005-frame offset must be rejected by the previous Mathf.Approximately contract.");
+        }
+
         private static FamilyIdentity CaptureIdentity()
         {
             Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(TexturePath);
             Sprite sprite = AssetDatabase.LoadAllAssetsAtPath(TexturePath).OfType<Sprite>().Single(item => item.name == SpriteName);
+            AssetDatabase.ImportAsset(ClipPath, ImportAssetOptions.ForceSynchronousImport);
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(ClipPath);
             SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(AtlasPath);
             Assert.That(texture, Is.Not.Null);
@@ -1888,6 +2018,13 @@ namespace Luckbound.Tests.Editor
                 clip, EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite"));
             Assert.That(keys, Is.Not.Null);
             Assert.That(keys.Length, Is.EqualTo(2));
+            AnimationClipSettings clipSettings = AnimationUtility.GetAnimationClipSettings(clip);
+            AssertFiniteAndApproximately(clipSettings.startTime, 0f, "A one-frame clip must retain its start time after reload.");
+            AssertFiniteAndApproximately(clipSettings.stopTime, 1f / clip.frameRate,
+                "A one-frame clip must retain an explicit one-frame stop time after AssetDatabase reload.");
+            AssertFiniteAndApproximately(keys[0].time, 0f, "The first PPtr key must remain at the start after reload.");
+            AssertFiniteAndApproximately(keys[1].time, 1f / clip.frameRate,
+                "The terminal PPtr key is the duration boundary even if AnimationClip.length is zero for one frame.");
             foreach (ObjectReferenceKeyframe key in keys) Assert.That(key.value, Is.EqualTo(sprite));
 
             UnityEngine.Object[] packables = SpriteAtlasExtensions.GetPackables(atlas);

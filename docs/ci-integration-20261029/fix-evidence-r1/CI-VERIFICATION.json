@@ -1,0 +1,414 @@
+{
+  "run": {
+    "id": 40894514320,
+    "attempt": 1,
+    "checkSuiteId": 110851768746,
+    "workflow": "Luckbound CI",
+    "branch": "codex/luckbound-integration-20261029",
+    "commit": "59d6ce85d0432aaeb0d90bc4b58515f967c6ab53",
+    "tree": "e284f4f6b5764e238e972b40d489f7283818b6d8",
+    "startedAt": "2026-10-29T14:44:34Z",
+    "completedAtObserved": "2026-10-29T14:54:03Z",
+    "status": "completed",
+    "conclusion": "failure",
+    "apiEvidence": "GitHub Actions API GET workflow run and jobs; run identity matched requested commit, tree, branch, run and suite"
+  },
+  "jobs": [
+    {
+      "id": 123519858763,
+      "name": "EditMode and PlayMode tests",
+      "conclusion": "failure",
+      "runUnityTests": "failure",
+      "verifyExplicitV6Capture": "skipped",
+      "uploadTestResults": "success"
+    },
+    {
+      "id": 123525472424,
+      "name": "Build Windows x64",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 123525473291,
+      "name": "Build WebGL",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 123525473302,
+      "name": "Publish versioned WebGL on gh-pages",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 123525473520,
+      "name": "Create version release",
+      "conclusion": "skipped"
+    }
+  ],
+  "unityEditor": {
+    "version": "6000.6.6f1",
+    "revision": "d20c9ac777da",
+    "platform": "Linux",
+    "evidence": [
+      "test-results/editmode.log",
+      "test-results/playmode.log"
+    ]
+  },
+  "testSuites": {
+    "EditMode": {
+      "xml": "test-results/editmode-results.xml",
+      "result": "Failed(Child)",
+      "counts": {
+        "total": 565,
+        "passed": 534,
+        "failed": 31,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "startTime": "2026-10-29 14:52:11Z",
+      "endTime": "2026-10-29 14:53:20Z",
+      "durationSeconds": 69.4441522,
+      "nunitEngineVersion": "3.5.0.0",
+      "clrVersion": "4.0.30319.42000"
+    },
+    "PlayMode": {
+      "xml": "test-results/playmode-results.xml",
+      "result": "Failed(Child)",
+      "counts": {
+        "total": 336,
+        "passed": 312,
+        "failed": 24,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "startTime": "2026-10-29 14:48:57Z",
+      "endTime": "2026-10-29 14:51:39Z",
+      "durationSeconds": 162.5975485,
+      "nunitEngineVersion": "3.5.0.0",
+      "clrVersion": "4.0.30319.42000"
+    }
+  },
+  "failureCount": 55,
+  "nativeV6FailedTestCaseCount": 18,
+  "failuresJson": "FAILURES.json",
+  "otherFailuresGroupedReport": "FAILURES-BY-GROUP.md",
+  "artifact": {
+    "id": 12906394581,
+    "name": "test-results-59d6ce85d0432aaeb0d90bc4b58515f967c6ab53",
+    "apiDigest": "sha256:6e886be335a2ea4c322039ba15312b951769b3bf80727f647752e1c4576067a5",
+    "verifiedArchiveSha256": "6e886be335a2ea4c322039ba15312b951769b3bf80727f647752e1c4576067a5",
+    "zipBytes": 8790967,
+    "fileCount": 130,
+    "createdAt": "2026-10-29T14:54:00Z",
+    "expiresAt": "2026-11-12T14:53:58Z",
+    "downloadRecord": "test-results-download/DOWNLOAD.json",
+    "criticalFileHashes": [
+      {
+        "path": "test-results/COMBINE_RESULTS.log",
+        "sha256": "0d30d9224f48cb3347daae8450bc92ebf0104230226b917d5116d97d822d1e98",
+        "bytes": 33246
+      },
+      {
+        "path": "test-results/editmode-results.xml",
+        "sha256": "d6eac44335070c8ba5111481779e5496fd2bcffc94f9e1690111204849930221",
+        "bytes": 536579
+      },
+      {
+        "path": "test-results/editmode.log",
+        "sha256": "a13a5a067eec8a0f204da07adaf649ea2d9a1242fec536e4f89cfbabe942a770",
+        "bytes": 177707
+      },
+      {
+        "path": "test-results/playmode-results.xml",
+        "sha256": "6f762269d0274a575bac3eac46aa585732bb2206ce45fe8db52f83c780145364",
+        "bytes": 876831
+      },
+      {
+        "path": "test-results/playmode.log",
+        "sha256": "18366d8c7cc2381bf68377731e6c378d426f7c79500160784e18f2ef26684b90",
+        "bytes": 2851503
+      }
+    ]
+  },
+  "capture": {
+    "expectedDirectory": "Logs/Scenarios/V6Capture-59d6ce85d0432aaeb0d90bc4b58515f967c6ab53-40894514320-1",
+    "directoryExists": false,
+    "sessionJsonExists": false,
+    "manifestJsonExists": false,
+    "expectedCaseIds": [
+      "V6-P0-profile-no-active",
+      "V6-P1-active-known-zero",
+      "V6-P1-active-known-nontrivial",
+      "V6-P2-active-unknown-null",
+      "V6-P2-active-unknown-inline-empty",
+      "V6-P3-receipts-full",
+      "V6-P4-null-empty-boundary",
+      "V6-P5-flag-payload-conflict",
+      "V6-S0-settings",
+      "V6-checkpoint-empty-slots",
+      "V6-checkpoint-null-slots"
+    ],
+    "capturedCaseIds": [],
+    "capturedCaseCount": 0,
+    "dataComplete": null,
+    "roleRequirementsPassed": null,
+    "runtime": null,
+    "assemblyMvid": null,
+    "sourceHashes": null,
+    "roleObservations": null,
+    "status": "unavailable; the capture directory and manifest are absent because the V6 verification step was skipped after Unity tests failed",
+    "nativeV6TestCases": [
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+          "runstate": "Runnable",
+          "seed": "2018749854",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.DeterministicSettingsBuilderHasCompleteLiveAndLegacyProjectionByteEquivalence",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "DeterministicSettingsBuilderHasCompleteLiveAndLegacyProjectionByteEquivalence",
+          "runstate": "Runnable",
+          "seed": "1182478783",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.FalseActiveMarkerExcludesPayloadFromProjectionButSemanticValidationRejectsIt",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "FalseActiveMarkerExcludesPayloadFromProjectionButSemanticValidationRejectsIt",
+          "runstate": "Runnable",
+          "seed": "94822330",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InputOnlyProfileAndSettingsDocumentsReportChecksumMismatch",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "InputOnlyProfileAndSettingsDocumentsReportChecksumMismatch",
+          "runstate": "Runnable",
+          "seed": "2030842474",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InspectionFactoryRejectsNullAndCallerCreatedAccessKeys",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "InspectionFactoryRejectsNullAndCallerCreatedAccessKeys",
+          "runstate": "Runnable",
+          "seed": "1110230197",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InspectionPreimageGetterReturnsDefensiveCopies",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "InspectionPreimageGetterReturnsDefensiveCopies",
+          "runstate": "Runnable",
+          "seed": "1244777212",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.JsonUtilityMalformedInputNeverReportsChecksumValid(\"{\")",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "JsonUtilityMalformedInputNeverReportsChecksumValid",
+          "runstate": "Runnable",
+          "seed": "712507121",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.JsonUtilityMalformedInputNeverReportsChecksumValid(\"not-json\")",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "JsonUtilityMalformedInputNeverReportsChecksumValid",
+          "runstate": "Runnable",
+          "seed": "676389237",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NonV6HeadersAreReportedWithoutRewritingTheInput",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "NonV6HeadersAreReportedWithoutRewritingTheInput",
+          "runstate": "Runnable",
+          "seed": "317711280",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(null)",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "NullOrWhitespaceDocumentsAreMalformed",
+          "runstate": "Runnable",
+          "seed": "585057886",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(\"\")",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "NullOrWhitespaceDocumentsAreMalformed",
+          "runstate": "Runnable",
+          "seed": "1444007666",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(\" \\r\\n\\t\")",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "NullOrWhitespaceDocumentsAreMalformed",
+          "runstate": "Runnable",
+          "seed": "766499429",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.P3NestedJsonStringsRemainLiteralAcrossBothByteProjections",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "P3NestedJsonStringsRemainLiteralAcrossBothByteProjections",
+          "runstate": "Runnable",
+          "seed": "355158806",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.ProfileProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "ProfileProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+          "runstate": "Runnable",
+          "seed": "547622232",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.ProjectionRejectsHeadersOutsideTheFrozenV6Shape",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "ProjectionRejectsHeadersOutsideTheFrozenV6Shape",
+          "runstate": "Runnable",
+          "seed": "1972897401",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence(False)",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence",
+          "runstate": "Runnable",
+          "seed": "436887538",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence(True)",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence",
+          "runstate": "Runnable",
+          "seed": "648477796",
+          "label": "Invalid"
+        }
+      },
+      {
+        "suite": "PlayMode",
+        "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.SettingsProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+        "result": "Failed",
+        "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+        "stackTrace": "",
+        "testCaseAttributes": {
+          "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+          "methodname": "SettingsProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+          "runstate": "Runnable",
+          "seed": "1012393150",
+          "label": "Invalid"
+        }
+      }
+    ]
+  },
+  "acceptance": "rejected; the actual Unity test XML contains failures and no V6 capture manifest was produced"
+}

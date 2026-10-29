@@ -1,0 +1,33 @@
+{
+  "schema": "luckbound-playmode-ci-fixes-integration-v1",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs",
+      "beforeSha256": "97578334263834aa6300a99f7847377903bf1db52c08af384a1928240481e033",
+      "afterSha256": "19b0f3a9ace138c3f82d6249cbbb460621841647bd7c2ee26d961cce48c9e22e"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/PauseAudioSettingsTests.cs",
+      "beforeSha256": "f97780c61a1ed393b016a2cb86db43ef0274340702f1c1efa9c488cc88f85f97",
+      "afterSha256": "651212124322626ef7879909d0c0201458abf4b99aed4501c7912ea5fadf14ba"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Economy/MerchantApplicationTests.cs",
+      "beforeSha256": "a4af646ca8936de5dc83d7887ffb355f5d8d8d9db141429412143713823fb285",
+      "afterSha256": "6fc20ca36d5e0e2f4bcd776a6b6b856cd6712b4405c74797200ff3af66097b58"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs",
+      "beforeSha256": "705edc955a50b1fd873a840568527a7e38671396a4b5a69446e3a8e61280e32b",
+      "afterSha256": "0166a16ae32800e35c19568279db6e5dac3c8f5bb5891ba5af57b5464a2fab43"
+    }
+  ],
+  "staticReviewSha256": "0c3aeafebca03f27a3e46d11eebe20d7ad206c07333b59cf8007e4f135ab48d3",
+  "offlineCompile": {
+    "appSources": 47,
+    "playmodeSources": 67,
+    "exitCode": 0
+  },
+  "otherSourcesUnchanged": true,
+  "unityRerunPending": true
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "luckbound-f02-ci-fixes-integration-v1",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+      "before": "dfc816c591f0322f8967c22b355adf0fbabef99b4db601fddc7f15092445c4fd",
+      "after": "128795929a09dc335a52007ac05af7ef02cf76094139a95edd9e74808f0ef712"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+      "before": "535ff61b7ff32e4e3b9513af3dfca9ef637f7af68a714668fbbefc8740fc2972",
+      "after": "134fe32d88c1214b23c181e5b6ac125f7ad4b56b430c8c96189abd05805e0c1f"
+    }
+  ],
+  "staticReview": "315837cbd245ae786d2f7eeba924644f8334a61d9953d671987acd403fb17b89",
+  "compile": {
+    "editorSources": 10,
+    "editorTestSources": 4,
+    "exitCode": 0
+  },
+  "fourNegativeCasesAdded": true,
+  "allOtherCsharpUnchanged": true,
+  "unityRerunPending": true,
+  "authorityAndHostGuardAccepted": false
+}

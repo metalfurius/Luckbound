@@ -1,0 +1,29 @@
+{
+  "assemblies": [
+    {
+      "assembly": "Luckbound.Core.Tests",
+      "sourceCount": 35,
+      "candidate": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterCatalogCoreTests.cs",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "assembly": "Luckbound.App.Tests",
+      "sourceCount": 6,
+      "candidate": "Assets/Luckbound/Tests/EditMode/Saves/ExpeditionEncounterRewardPolicyTests.cs",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 67,
+      "candidate": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "exitCode": 0,
+      "logSha256": "4c8c1e377a38a1ab316f42e87da4b37158d843f4bde08b8a7278c5e5fe7661d8"
+    }
+  ],
+  "rootSourcesUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "jsonUtilityExecuted": false
+}

@@ -1,0 +1,10 @@
+{
+  "allFourFullByteVectorsAndDigestsMatch": true,
+  "allThreeRewardDistributionsMatch": true,
+  "coreSourcesVerifiedAgainstCompiledManifest": 137,
+  "coreDllSha256": "490dd53b26d7f30733138c0f52ddf235136e27af8e9cf8050c078f95597a8f3e",
+  "runtime": ".NET 9, unchanged pure Core DLL",
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "jsonUtilityExecuted": false
+}

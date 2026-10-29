@@ -1,6 +1,6 @@
 # Luckbound — snapshot de integración y captura V6
 
-Preparado el 29 de octubre de 2026. **Integrado localmente y revisado estáticamente; todavía sin subir ni ejecutar esta CI.** El objetivo completo sigue activo y F10 continúa pendiente.
+Preparado el 29 de octubre de 2026. **Snapshot completo respaldado; la primera CI falló. Sus correcciones están integradas, revisadas y compiladas offline, pendientes de una nueva ejecución Unity.** El objetivo completo sigue activo y F10 continúa pendiente.
 
 ## Qué está cerrado
 
@@ -16,7 +16,7 @@ La compilación offline del candidato corregido pasó con 67 fuentes PlayMode.Te
 
 | Elemento | Identidad | Resultado |
 |---|---|---|
-| Test C# integrado | `5c0dbd8ea291bfa814000c54a3e51362ee86cf52a626669de8913ac3b5fe4f3c` | [Accepted estático](../visual-correction-20261028/SOL-V6-CAPTURE-HARNESS-STATIC.md) |
+| Test C# corregido para NUnit | `b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7` | [Accepted estático de la corrección](SOL-ROOT-CI-FIXES.md) |
 | Verificador Python | `6faf5138c26708ffac8dac99da9e0a54bea7437862c0c273ab2bba2514a0ce39` | [Accepted estático R2](../visual-correction-20261028/SOL-V6-CAPTURE-CI-GATE-R2.md) |
 | Workflow local | `4c152985d354cb8768cc9d399df6d06a7615f5b27df6832dd43cfcb4d32ccf03` | [Accepted en su alcance](../visual-correction-20261028/SOL-V6-CAPTURE-CI-GATE-STATIC.md) |
 | Registros de arte | Regla `docs/art/records/*.json -text` | [Accepted para conservar sus bytes](../visual-correction-20261028/SOL-SNAPSHOT-ART-RECORD-BYTES.md) |
@@ -24,6 +24,12 @@ La compilación offline del candidato corregido pasó con 67 fuentes PlayMode.Te
 El registro Bellator v1 conserva su SHA-256 `b2b61dca9e4b2327c3a0649f54fcbce9130e171d7d9371acde3ab41b90ed72d7`. Sus versiones y los manifests que lo referencian no cambiaron.
 
 La activación se transporta mediante `customParameters`, comprobado en el [wrapper v4.4.0](https://github.com/game-ci/unity-test-runner/blob/v4.4.0/src/test-args.ts) y el [runner CLI v0.1.72](https://github.com/game-ci/cli/blob/v0.1.72/plugins/unity/src/unity-test-runner/dist/platforms/ubuntu/run_tests.sh). No se supone que una variable de ambiente arbitraria atraviese Docker.
+
+## Correcciones de la primera ejecución
+
+La primera [CI completa 40894514320](https://github.com/metalfurius/Luckbound/actions/runs/40894514320), del commit `59d6ce85d0432aaeb0d90bc4b58515f967c6ab53`, ejecutó 565 casos EditMode (534 pasaron,31 fallaron) y336 PlayMode (312 pasaron,24 fallaron), sin omitidos. Los18 casos NativeV6 no arrancaron por callbacks privados inválidos en NUnit3.5; no se capturaron bytes y las builds quedaron omitidas.
+
+Se corrigieron nueve fuentes, con revisión Sol y compilación offline de las seis assemblies afectadas: [NUnit/vectores](SOL-ROOT-CI-FIXES.md), [inventario/pausa/audio](SOL-PLAYMODE-CI-FIXES.md) e [importación de clips r2](SOL-F02-CI-FIXES-R2.md). Se preservan códecs, RNG, economía, versiones, permisos y gates. Las nuevas negativas de clips exigen corrupción realmente persistida y rechazo sin reparar. [Evidencia de fallos y correcciones](fix-evidence-r1/CI-VERIFICATION.json). La eficacia de estos cambios y las capturas NativeV6 requieren la siguiente CI.
 
 ## Próxima ejecución concreta
 

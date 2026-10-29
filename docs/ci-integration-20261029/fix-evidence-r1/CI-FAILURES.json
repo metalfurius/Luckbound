@@ -1,0 +1,766 @@
+{
+  "failures": [
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.App.ExpeditionEncounterRewardPolicyTests.EliteAndVinculoBonusesAreSeparateAndHonorAvariceAndOfferOrdinal",
+      "result": "Failed",
+      "message": "System.ArgumentException : Property Count was not found\nParameter name: name",
+      "stackTrace": "at NUnit.Framework.Constraints.PropertyConstraint.ApplyTo (System.Object actual) [0x00050] in <8b63e8ac0a4746599ed207982825ae6c>:0 \n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x0000e] in <8b63e8ac0a4746599ed207982825ae6c>:0 \n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0 \n  at Luckbound.Tests.App.ExpeditionEncounterRewardPolicyTests.EliteAndVinculoBonusesAreSeparateAndHonorAvariceAndOfferOrdinal () [0x00165] in /github/workspace/Assets/Luckbound/Tests/EditMode/Saves/ExpeditionEncounterRewardPolicyTests.cs:237 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.App.ExpeditionEncounterRewardPolicyTests",
+        "methodname": "EliteAndVinculoBonusesAreSeparateAndHonorAvariceAndOfferOrdinal",
+        "runstate": "Runnable",
+        "seed": "285463805",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.App.ExpeditionEncounterRewardPolicyTests.NormalDropChanceAndMaterialDistributionsAreReproducibleBySector",
+      "result": "Failed",
+      "message": "sector=patio\n  Expected: 62\n  But was:  70",
+      "stackTrace": "at Luckbound.Tests.App.ExpeditionEncounterRewardPolicyTests.NormalDropChanceAndMaterialDistributionsAreReproducibleBySector () [0x001f8] in /github/workspace/Assets/Luckbound/Tests/EditMode/Saves/ExpeditionEncounterRewardPolicyTests.cs:212",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.App.ExpeditionEncounterRewardPolicyTests",
+        "methodname": "NormalDropChanceAndMaterialDistributionsAreReproducibleBySector",
+        "runstate": "Runnable",
+        "seed": "748488772"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Core.Expeditions.EncounterCatalogCoreTests.IndependentCanonicalByteAndDigestVectorsIncludeUtf8MultibyteText",
+      "result": "Failed",
+      "message": "Expected string length 210 but was 208. Strings differ at index 208.\n  Expected: \"...265736f6c7665722d61000000020000000000000000000000000000000000\"\n  But was:  \"...265736f6c7665722d610000000200000000000000000000000000000000\"\n  -------------------------------------------------------------------------^",
+      "stackTrace": "at Luckbound.Tests.Core.Expeditions.EncounterCatalogCoreTests.IndependentCanonicalByteAndDigestVectorsIncludeUtf8MultibyteText () [0x00045] in /github/workspace/Assets/Luckbound/Tests/EditMode/Expeditions/EncounterCatalogCoreTests.cs:235",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Core.Expeditions.EncounterCatalogCoreTests",
+        "methodname": "IndependentCanonicalByteAndDigestVectorsIncludeUtf8MultibyteText",
+        "runstate": "Runnable",
+        "seed": "638767089"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Core.Expeditions.EncounterCatalogCoreTests.IndependentFullRecordVectorsCoverBindingVariantSpawnAndCacheFraming",
+      "result": "Failed",
+      "message": "Expected string length 1098 but was 1110. Strings differ at index 350.\n  Expected: \"...30303030303030303030303030303000000005656e656d790000000100...\"\n  But was:  \"...3030303030303030303030303030303000000005656e656d7900000001...\"\n  --------------------------------------------^",
+      "stackTrace": "at Luckbound.Tests.Core.Expeditions.EncounterCatalogCoreTests.IndependentFullRecordVectorsCoverBindingVariantSpawnAndCacheFraming () [0x00138] in /github/workspace/Assets/Luckbound/Tests/EditMode/Expeditions/EncounterCatalogCoreTests.cs:283",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Core.Expeditions.EncounterCatalogCoreTests",
+        "methodname": "IndependentFullRecordVectorsCoverBindingVariantSpawnAndCacheFraming",
+        "runstate": "Runnable",
+        "seed": "224604194"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ChangedContentCanUseANewVersionedFamilyIdAndOutputFolder",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ChangedContentCanUseANewVersionedFamilyIdAndOutputFolder () [0x00019] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:263 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ChangedContentCanUseANewVersionedFamilyIdAndOutputFolder",
+        "runstate": "Runnable",
+        "seed": "2067215929",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DeclaredPngAddedOutsideOwnershipMarker_IsRejectedWithoutChangingAssets",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DeclaredPngAddedOutsideOwnershipMarker_IsRejectedWithoutChangingAssets () [0x00023] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:1029 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DeclaredPngAddedOutsideOwnershipMarker_IsRejectedWithoutChangingAssets",
+        "runstate": "Runnable",
+        "seed": "61866764",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"BellatorTechnicalFixture.png\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "1562253584",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"BellatorTechnicalFixture.png.meta\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "69324683",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"TechnicalHold.anim\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "1722914064",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"TechnicalHold.anim.meta\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "2066575907",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"bellator-technical-fixture.spriteatlas\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "1705212139",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"bellator-technical-fixture.spriteatlas.meta\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "1860534856",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"F02FamilyOwnership.json\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "725936090",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"F02FamilyOwnership.json.meta\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "1773427690",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"../F02SpriteFamilyPipelineFixture.meta\")",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget (System.String destinationName) [0x00049] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:909 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget",
+        "runstate": "Runnable",
+        "seed": "1637607327",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingAtlasWithForeignPackable_IsRejectedWithoutChangingAssets",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingAtlasWithForeignPackable_IsRejectedWithoutChangingAssets () [0x0003d] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:1061 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ExistingAtlasWithForeignPackable_IsRejectedWithoutChangingAssets",
+        "runstate": "Runnable",
+        "seed": "1196804156",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithAnimationEvent_IsRejectedWithoutAssetsMutation",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.AssertExistingClipRejectedWithoutAssetsMutation (System.Action`1[T] corruptClip, System.String expectedMessage) [0x00005] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:373 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithAnimationEvent_IsRejectedWithoutAssetsMutation () [0x00000] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:360 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ExistingClipWithAnimationEvent_IsRejectedWithoutAssetsMutation",
+        "runstate": "Runnable",
+        "seed": "1082223586",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithExtraFloatCurve_IsRejectedWithoutAssetsMutation",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.AssertExistingClipRejectedWithoutAssetsMutation (System.Action`1[T] corruptClip, System.String expectedMessage) [0x00005] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:373 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithExtraFloatCurve_IsRejectedWithoutAssetsMutation () [0x00000] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:349 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ExistingClipWithExtraFloatCurve_IsRejectedWithoutAssetsMutation",
+        "runstate": "Runnable",
+        "seed": "2095877258",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithExtraSpriteBinding_IsRejectedWithoutAssetsMutation",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.AssertExistingClipRejectedWithoutAssetsMutation (System.Action`1[T] corruptClip, System.String expectedMessage) [0x00005] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:373 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithExtraSpriteBinding_IsRejectedWithoutAssetsMutation () [0x00000] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:334 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ExistingClipWithExtraSpriteBinding_IsRejectedWithoutAssetsMutation",
+        "runstate": "Runnable",
+        "seed": "995463926",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageResourceIdUniqueness_IsOrdinalAndCaseSensitive",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageResourceIdUniqueness_IsOrdinalAndCaseSensitive () [0x00056] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:568 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ImageResourceIdUniqueness_IsOrdinalAndCaseSensitive",
+        "runstate": "Runnable",
+        "seed": "1669052063",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_AcceptsValidPerImageMetadataOverrides",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_AcceptsValidPerImageMetadataOverrides () [0x0011c] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:511 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ImageTraceability_AcceptsValidPerImageMetadataOverrides",
+        "runstate": "Runnable",
+        "seed": "287140420",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_ExplicitNullOverridesInheritFamilyDefaults",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : F02 image traceability metadata is missing, malformed, or has a duplicate resource ID.",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ReadAndValidateManifest (System.String manifestPath) [0x006eb] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:337 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x00000] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:166 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_ExplicitNullOverridesInheritFamilyDefaults () [0x000a8] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:438 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ImageTraceability_ExplicitNullOverridesInheritFamilyDefaults",
+        "runstate": "Runnable",
+        "seed": "808918038",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_InheritsFamilyDefaultsAndAcceptsUniqueImageResourceIdOverride",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_InheritsFamilyDefaultsAndAcceptsUniqueImageResourceIdOverride () [0x00040] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:401 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ImageTraceability_InheritsFamilyDefaultsAndAcceptsUniqueImageResourceIdOverride",
+        "runstate": "Runnable",
+        "seed": "752521739",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImportingFamily_DoesNotPersistAnUnrelatedDirtyAsset",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImportingFamily_DoesNotPersistAnUnrelatedDirtyAsset () [0x000cc] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:872 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ImportingFamily_DoesNotPersistAnUnrelatedDirtyAsset",
+        "runstate": "Runnable",
+        "seed": "1415235593",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: BellatorAttack",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun () [0x000bc] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:307 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun",
+        "runstate": "Runnable",
+        "seed": "1750611003",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsChangedAtlasSettingsWithoutAssetsMutation",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsChangedAtlasSettingsWithoutAssetsMutation () [0x00012] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:236 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "PublishedFamily_RejectsChangedAtlasSettingsWithoutAssetsMutation",
+        "runstate": "Runnable",
+        "seed": "162360045",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsChangedPngAndUpdatedHashWithoutAssetsMutation",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsChangedPngAndUpdatedHashWithoutAssetsMutation () [0x0001a] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:212 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "PublishedFamily_RejectsChangedPngAndUpdatedHashWithoutAssetsMutation",
+        "runstate": "Runnable",
+        "seed": "983862035",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsMissingAtlasWhenItsMarkerEntryIsAlsoOmitted",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsMissingAtlasWhenItsMarkerEntryIsAlsoOmitted () [0x00030] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:969 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "PublishedFamily_RejectsMissingAtlasWhenItsMarkerEntryIsAlsoOmitted",
+        "runstate": "Runnable",
+        "seed": "397038703",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ReorderedManifestObjectProperties_AreTheSamePublishedManifestAndDoNotWrite",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ReorderedManifestObjectProperties_AreTheSamePublishedManifestAndDoNotWrite () [0x00007] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:184 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "ReorderedManifestObjectProperties_AreTheSamePublishedManifestAndDoNotWrite",
+        "runstate": "Runnable",
+        "seed": "2073317197",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.SeparatePngFamily_SecondRunPreservesSpriteClipAtlasAndFiles",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.SeparatePngFamily_SecondRunPreservesSpriteClipAtlasAndFiles () [0x0000b] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:131 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "SeparatePngFamily_SecondRunPreservesSpriteClipAtlasAndFiles",
+        "runstate": "Runnable",
+        "seed": "78092539",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "EditMode",
+      "fullName": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.UndeclaredPng_IsReportedAndLeftUntouched",
+      "result": "Failed",
+      "message": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold",
+      "stackTrace": "at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName) [0x0028f] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:670 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001c2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:624 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.UndeclaredPng_IsReportedAndLeftUntouched () [0x00010] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:939 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests",
+        "methodname": "UndeclaredPng_IsReportedAndLeftUntouched",
+        "runstate": "Runnable",
+        "seed": "1241114787",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.Economy.MerchantApplicationTests.E03_PersistsMerchantTransactionsAndConsecutiveUpgradesAcrossRetryAndRestRestart",
+      "result": "Failed",
+      "message": "System.InvalidOperationException : Sequence contains more than one matching element",
+      "stackTrace": "at System.Linq.Enumerable.Single[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] predicate) [0x0004a] in <ada5ca24c2414cbb9aa0f67c3255a013>:0 \n  at Luckbound.Tests.PlayMode.Economy.MerchantApplicationTests.FindBackpackItem (Luckbound.Core.Inventory.ExpeditionInventory inventory, System.String itemId) [0x0000d] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/MerchantApplicationTests.cs:439 \n  at Luckbound.Tests.PlayMode.Economy.MerchantApplicationTests+<E03_PersistsMerchantTransactionsAndConsecutiveUpgradesAcrossRetryAndRestRestart>d__1.MoveNext () [0x0133f] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/MerchantApplicationTests.cs:199 \n  at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.Economy.MerchantApplicationTests",
+        "methodname": "E03_PersistsMerchantTransactionsAndConsecutiveUpgradesAcrossRetryAndRestRestart",
+        "runstate": "Runnable",
+        "seed": "1982801974",
+        "label": "Error"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Exception] MissingReferenceException: The object of type 'Luckbound.App.ApplicationAudioRouter' has been destroyed but you are still trying to access it.\nYour script should either check if it is null or you should not destroy the object.'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "stackTrace": "UnityEngine.Object+MarshalledUnityObject.TryThrowEditorNullExceptionObject (UnityEngine.Object unityObj, System.String parameterName) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/UnityEngineObject.bindings.cs:1171)\nUnityEngine.Bindings.ThrowHelper.ThrowNullReferenceException (System.Object obj) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/BindingsHelpers.cs:21)\nUnityEngine.Behaviour.get_isActiveAndEnabled () (at <041882d98cde4be487d4a83bd5ec5256>:0)\nLuckbound.App.ApplicationAudioRouter.PlayEffect (System.String effectId, System.Single gain) (at Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs:131)\nLuckbound.App.RestStopServicesPanelController.ClosePanel () (at Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs:222)\nLuckbound.App.RestStopServicesPanelController.RefreshAvailability (System.Boolean force) (at Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs:191)\nLuckbound.App.RestStopServicesPanelController.Update () (at Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs:76)\nUnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:50)",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests",
+        "methodname": "E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+        "runstate": "Runnable",
+        "seed": "1766074792"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.I06_ExplicitCancelAndCloseRoutesRemainDistinct",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Exception] MissingReferenceException: The object of type 'Luckbound.App.ApplicationAudioRouter' has been destroyed but you are still trying to access it.\nYour script should either check if it is null or you should not destroy the object.'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "stackTrace": "UnityEngine.Object+MarshalledUnityObject.TryThrowEditorNullExceptionObject (UnityEngine.Object unityObj, System.String parameterName) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/UnityEngineObject.bindings.cs:1171)\nUnityEngine.Bindings.ThrowHelper.ThrowNullReferenceException (System.Object obj) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/BindingsHelpers.cs:21)\nUnityEngine.Behaviour.get_isActiveAndEnabled () (at <041882d98cde4be487d4a83bd5ec5256>:0)\nLuckbound.App.ApplicationAudioRouter.PlayEffect (System.String effectId, System.Single gain) (at Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs:131)\nLuckbound.App.RestStopServicesPanelController.ClosePanel () (at Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs:222)\nLuckbound.App.RestStopServicesPanelController.RefreshAvailability (System.Boolean force) (at Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs:191)\nLuckbound.App.RestStopServicesPanelController.Update () (at Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs:76)\nUnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:50)",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests",
+        "methodname": "I06_ExplicitCancelAndCloseRoutesRemainDistinct",
+        "runstate": "Runnable",
+        "seed": "648637376"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.ExpeditionPlayerRunBinderTests.PublishesCommittedRoomInventoryToLiveActorAndRefreshesHudCharges",
+      "result": "Failed",
+      "message": "Expected: 2\n  But was:  1",
+      "stackTrace": "at Luckbound.Tests.PlayMode.ExpeditionPlayerRunBinderTests.EquipQuickConsumable (Luckbound.Core.Expeditions.ExpeditionRunConfiguration run, System.String itemId, System.Int32 quantity) [0x00141] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs:1066\nat Luckbound.Tests.PlayMode.ExpeditionPlayerRunBinderTests+<PublishesCommittedRoomInventoryToLiveActorAndRefreshesHudCharges>d__9.MoveNext () [0x0003c] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs:145\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.ExpeditionPlayerRunBinderTests",
+        "methodname": "PublishesCommittedRoomInventoryToLiveActorAndRefreshesHudCharges",
+        "runstate": "Runnable",
+        "seed": "288938163"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.PauseAudioSettingsTests.PendingSettingsSurvivePausePanelDestructionAndAllowANewEdit",
+      "result": "Failed",
+      "message": "The debounced settings write should reach the blocked store.\n  Expected: True\n  But was:  False",
+      "stackTrace": "at Luckbound.Tests.PlayMode.PauseAudioSettingsTests+<PendingSettingsSurvivePausePanelDestructionAndAllowANewEdit>d__8.MoveNext () [0x0026b] in /github/workspace/Assets/Luckbound/Tests/PlayMode/PauseAudioSettingsTests.cs:202\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.PauseAudioSettingsTests",
+        "methodname": "PendingSettingsSurvivePausePanelDestructionAndAllowANewEdit",
+        "runstate": "Runnable",
+        "seed": "1159364821"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.PauseAudioSettingsTests.SuccessfulWriteWhileReopenedPanelWaitsForRetryRestoresConfirmedUi",
+      "result": "Failed",
+      "message": "Expected: True\n  But was:  False",
+      "stackTrace": "at Luckbound.Tests.PlayMode.PauseAudioSettingsTests+<SuccessfulWriteWhileReopenedPanelWaitsForRetryRestoresConfirmedUi>d__9.MoveNext () [0x0024e] in /github/workspace/Assets/Luckbound/Tests/PlayMode/PauseAudioSettingsTests.cs:305\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.PauseAudioSettingsTests",
+        "methodname": "SuccessfulWriteWhileReopenedPanelWaitsForRetryRestoresConfirmedUi",
+        "runstate": "Runnable",
+        "seed": "777394295"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+        "runstate": "Runnable",
+        "seed": "2018749854",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.DeterministicSettingsBuilderHasCompleteLiveAndLegacyProjectionByteEquivalence",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "DeterministicSettingsBuilderHasCompleteLiveAndLegacyProjectionByteEquivalence",
+        "runstate": "Runnable",
+        "seed": "1182478783",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.FalseActiveMarkerExcludesPayloadFromProjectionButSemanticValidationRejectsIt",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "FalseActiveMarkerExcludesPayloadFromProjectionButSemanticValidationRejectsIt",
+        "runstate": "Runnable",
+        "seed": "94822330",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InputOnlyProfileAndSettingsDocumentsReportChecksumMismatch",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "InputOnlyProfileAndSettingsDocumentsReportChecksumMismatch",
+        "runstate": "Runnable",
+        "seed": "2030842474",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InspectionFactoryRejectsNullAndCallerCreatedAccessKeys",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "InspectionFactoryRejectsNullAndCallerCreatedAccessKeys",
+        "runstate": "Runnable",
+        "seed": "1110230197",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InspectionPreimageGetterReturnsDefensiveCopies",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "InspectionPreimageGetterReturnsDefensiveCopies",
+        "runstate": "Runnable",
+        "seed": "1244777212",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.JsonUtilityMalformedInputNeverReportsChecksumValid(\"{\")",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "JsonUtilityMalformedInputNeverReportsChecksumValid",
+        "runstate": "Runnable",
+        "seed": "712507121",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.JsonUtilityMalformedInputNeverReportsChecksumValid(\"not-json\")",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "JsonUtilityMalformedInputNeverReportsChecksumValid",
+        "runstate": "Runnable",
+        "seed": "676389237",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NonV6HeadersAreReportedWithoutRewritingTheInput",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "NonV6HeadersAreReportedWithoutRewritingTheInput",
+        "runstate": "Runnable",
+        "seed": "317711280",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(null)",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "NullOrWhitespaceDocumentsAreMalformed",
+        "runstate": "Runnable",
+        "seed": "585057886",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(\"\")",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "NullOrWhitespaceDocumentsAreMalformed",
+        "runstate": "Runnable",
+        "seed": "1444007666",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(\" \\r\\n\\t\")",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "NullOrWhitespaceDocumentsAreMalformed",
+        "runstate": "Runnable",
+        "seed": "766499429",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.P3NestedJsonStringsRemainLiteralAcrossBothByteProjections",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "P3NestedJsonStringsRemainLiteralAcrossBothByteProjections",
+        "runstate": "Runnable",
+        "seed": "355158806",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.ProfileProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "ProfileProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+        "runstate": "Runnable",
+        "seed": "547622232",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.ProjectionRejectsHeadersOutsideTheFrozenV6Shape",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "ProjectionRejectsHeadersOutsideTheFrozenV6Shape",
+        "runstate": "Runnable",
+        "seed": "1972897401",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence(False)",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence",
+        "runstate": "Runnable",
+        "seed": "436887538",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence(True)",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence",
+        "runstate": "Runnable",
+        "seed": "648477796",
+        "label": "Invalid"
+      }
+    },
+    {
+      "suite": "PlayMode",
+      "fullName": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.SettingsProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+      "result": "Failed",
+      "message": "Invalid signature for SetUp or TearDown method: FinalizeV6CaptureIfRequested",
+      "stackTrace": "",
+      "testCaseAttributes": {
+        "classname": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "methodname": "SettingsProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+        "runstate": "Runnable",
+        "seed": "1012393150",
+        "label": "Invalid"
+      }
+    }
+  ]
+}

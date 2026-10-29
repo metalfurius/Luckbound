@@ -142,7 +142,11 @@ namespace Luckbound.Tests.PlayMode
                 ExpeditionRunConfiguration.HumanRaceId,
                 BellatorSkillLoadout.ChargeId,
                 BellatorSkillLoadout.CircularCutId);
-            InventoryItemStack potion = EquipQuickConsumable(run, PlayerMotor2D.HealthPotionItemId, quantity: 2);
+            InventoryItemStack potion = run.Inventory.QuickConsumable;
+            Assert.That(potion, Is.Not.Null);
+            Assert.That(potion.ItemId, Is.EqualTo(PlayerMotor2D.HealthPotionItemId));
+            Assert.That(potion.Quantity, Is.EqualTo(2),
+                "The starting quick slot already contains the run's two health potions.");
             BindingFixture fixture = CreatePlayer(run, includeRoomProjectiles: false);
             ExpeditionPlayerRunBinder.Bind(run, fixture.ActorId, fixture.Input, GroundLayers(), EnemyLayers(), 0,
                 fixture.Motor, fixture.Collector, run.Inventory.Catalog, fixture.Weapons, fixture.Skills);

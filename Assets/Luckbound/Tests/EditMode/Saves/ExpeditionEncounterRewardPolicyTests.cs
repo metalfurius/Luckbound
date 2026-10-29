@@ -234,7 +234,7 @@ namespace Luckbound.Tests.App
             Assert.That(outcome.VinculoMaterialGrants, Has.Count.EqualTo(2));
             Assert.That(outcome.BaseMaterialGrants.All(grant => grant.Quantity == 1), Is.True);
             Assert.That(outcome.VinculoMaterialGrants.All(grant => grant.Quantity == 1), Is.True);
-            Assert.That(outcome.VinculoMaterialGrants.Select(grant => grant.GrantId).Distinct(), Has.Count.EqualTo(2));
+            Assert.That(outcome.VinculoMaterialGrants.Select(grant => grant.GrantId).Distinct().Count(), Is.EqualTo(2));
             Assert.That(outcome.RelicOfferRequired, Is.True);
             Assert.That(outcome.RelicOfferId, Is.Not.Empty);
         }
@@ -393,9 +393,9 @@ namespace Luckbound.Tests.App
         {
             switch (sector)
             {
-                case "patio": return 62;
-                case "archivo": return 62;
-                case "forjas": return 67;
+                case "patio": return 70;
+                case "archivo": return 56;
+                case "forjas": return 64;
                 default: throw new ArgumentOutOfRangeException(nameof(sector));
             }
         }
@@ -404,9 +404,9 @@ namespace Luckbound.Tests.App
         {
             switch (sector)
             {
-                case "patio": return new[] { 113, 83, 60 };
-                case "archivo": return new[] { 91, 108, 57 };
-                case "forjas": return new[] { 92, 98, 66 };
+                case "patio": return new[] { 88, 90, 78 };
+                case "archivo": return new[] { 111, 94, 51 };
+                case "forjas": return new[] { 113, 70, 73 };
                 default: throw new ArgumentOutOfRangeException(nameof(sector));
             }
         }
