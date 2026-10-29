@@ -1,0 +1,33 @@
+{
+  "tool": "Roslyn 4.14 / .NET SDK 9.0.306, references Unity 6000.6.6f1",
+  "sourceCountVerified": 374,
+  "candidateHashes": {
+    "Logs/AvatarPivotCandidate-20261029/after/Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs": "a2ef193a0de5074ae03ba82ea2563b574c3c5772f067f5a3bb557a554aa40024",
+    "Logs/AvatarPivotCandidate-20261029/after/Assets/Luckbound/Tests/EditMode/Editor/ProjectScaffoldGeneratorTests.cs": "d81a70a073bb896d5af2d89d1711ed6601b353a11124caefa4b1ebcc16b70538"
+  },
+  "assemblies": [
+    {
+      "assembly": "Luckbound.Editor",
+      "exitCode": 0,
+      "sources": 10,
+      "candidateSources": [
+        "Logs/AvatarPivotCandidate-20261029/after/Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "assembly": "Luckbound.Editor.Tests",
+      "exitCode": 0,
+      "sources": 4,
+      "candidateSources": [
+        "Logs/AvatarPivotCandidate-20261029/after/Assets/Luckbound/Tests/EditMode/Editor/ProjectScaffoldGeneratorTests.cs"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "output": "C:/Users/Fran/.codex/visualizations/2026/10/11/01a12b4a-7f52-7bb2-989c-ebe72fc816ab/luckbound-avatar-pivot-candidate-offline-20261029-r1",
+  "rootUnchanged": true,
+  "candidateUnchangedDuringCompile": true,
+  "unityExecuted": false,
+  "nunitExecuted": false
+}

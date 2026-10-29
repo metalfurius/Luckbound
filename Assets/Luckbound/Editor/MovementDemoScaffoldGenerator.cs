@@ -92,8 +92,6 @@ namespace Luckbound.Editor
                 throw new InvalidOperationException("Could not configure prototype texture importer for " + assetPath + ".");
             }
 
-            var textureSettings = new TextureImporterSettings();
-            importer.ReadTextureSettings(textureSettings);
             if (importer.textureType != TextureImporterType.Sprite) { importer.textureType = TextureImporterType.Sprite; changed = true; }
             if (importer.spriteImportMode != SpriteImportMode.Single) { importer.spriteImportMode = SpriteImportMode.Single; changed = true; }
             if (importer.spritePixelsPerUnit != 16f) { importer.spritePixelsPerUnit = 16f; changed = true; }
@@ -101,16 +99,26 @@ namespace Luckbound.Editor
             if (importer.mipmapEnabled) { importer.mipmapEnabled = false; changed = true; }
             if (!importer.alphaIsTransparency) { importer.alphaIsTransparency = true; changed = true; }
             if (importer.wrapMode != wrapMode) { importer.wrapMode = wrapMode; changed = true; }
-            if (textureSettings.spriteMeshType != SpriteMeshType.FullRect)
-            {
-                textureSettings.spriteMeshType = SpriteMeshType.FullRect;
-                importer.SetTextureSettings(textureSettings);
-                changed = true;
-            }
-            if (importer.spritePivot != pivot) { importer.spritePivot = pivot; changed = true; }
             if (importer.textureCompression != TextureImporterCompression.Uncompressed)
             {
                 importer.textureCompression = TextureImporterCompression.Uncompressed;
+                changed = true;
+            }
+
+            var textureSettings = new TextureImporterSettings();
+            importer.ReadTextureSettings(textureSettings);
+            int desiredAlignment = pivot == new Vector2(0.5f, 0.5f)
+                ? (int)SpriteAlignment.Center
+                : (int)SpriteAlignment.Custom;
+            bool spriteSettingsChanged = textureSettings.spriteMeshType != SpriteMeshType.FullRect ||
+                textureSettings.spriteAlignment != desiredAlignment ||
+                textureSettings.spritePivot != pivot;
+            if (spriteSettingsChanged)
+            {
+                textureSettings.spriteMeshType = SpriteMeshType.FullRect;
+                textureSettings.spriteAlignment = desiredAlignment;
+                textureSettings.spritePivot = pivot;
+                importer.SetTextureSettings(textureSettings);
                 changed = true;
             }
 

@@ -99,6 +99,47 @@ jobs:
           targetPlatform: StandaloneWindows64
           buildName: Luckbound
           buildsPath: build
+          customParameters: '-nographics'
+
+      - name: Capture Windows build diagnostics
+        if: failure()
+        shell: bash
+        run: |
+          mkdir -p Logs/WindowsBuildDiagnostics || true
+          {
+            date -u '+%Y-%m-%dT%H:%M:%SZ UTC'
+            echo '$ free -h'
+            free -h
+            echo '$ df -h .'
+            df -h .
+            echo '$ sudo -n dmesg --ctime | rg -i "out of memory|oom-kill|killed process" | tail -n 30'
+            dmesg_status=0
+            dmesg_output="$(sudo -n dmesg --ctime 2>&1)" || dmesg_status=$?
+            printf 'dmesg exit status: %s\n' "$dmesg_status"
+            if [ "$dmesg_status" -ne 0 ]; then
+              printf '%s\n' "$dmesg_output"
+            else
+              matches_status=0
+              dmesg_matches="$(printf '%s\n' "$dmesg_output" | rg -i 'out of memory|oom-kill|killed process')" || matches_status=$?
+              printf 'OOM filter exit status: %s\n' "$matches_status"
+              if [ "$matches_status" -eq 0 ]; then
+                printf '%s\n' "$dmesg_matches" | tail -n 30
+              elif [ "$matches_status" -eq 1 ]; then
+                echo 'No matching OOM entries in readable dmesg output.'
+              else
+                echo 'OOM filter failed; diagnostic is inconclusive.'
+              fi
+            fi
+          } > Logs/WindowsBuildDiagnostics/windows-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log 2>&1 || true
+
+      - name: Upload Windows build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: windows-diagnostics-${{ github.sha }}
+          path: Logs/WindowsBuildDiagnostics
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Verify Windows output
         shell: bash

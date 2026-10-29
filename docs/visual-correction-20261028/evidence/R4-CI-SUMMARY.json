@@ -1,0 +1,83 @@
+{
+  "commit": "66132500eabf17f02af1f332cdefe57b1f9f4649",
+  "run": 40780983399,
+  "runConclusion": "failure",
+  "suite": 110543682299,
+  "artifacts": [
+    {
+      "id": 12857955522,
+      "kind": "tests",
+      "sha256": "b636408650733fbb806dc493ec37b1ace477427f4bcaeb4c1a3e3a074c4c2b7d"
+    },
+    {
+      "id": 12857259151,
+      "kind": "WebGL",
+      "sha256": "f90b0e47a25d078e0799cc568af71d510fccf45f1ad55e52f60cbbbd8b43b774"
+    }
+  ],
+  "tests": [
+    {
+      "mode": "editmode",
+      "sha256": "927c887c290811a6bfdc58a327252dd996e6e92c470df5d6195ccf23be9cd9a8",
+      "summary": {
+        "id": "2",
+        "testcasecount": "349",
+        "result": "Passed",
+        "total": "349",
+        "passed": "349",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-28 22:39:19Z",
+        "end-time": "2026-10-28 22:39:21Z",
+        "duration": "2.2251592"
+      },
+      "selectedTests": [
+        {
+          "name": "MovementDemoCourseSprites_ResolveCanonicalStoneSpriteFromCheckout",
+          "result": "Passed",
+          "output": "StonePrototype GUID=ece714fd4199c9f4481389b1367d40c9; localFileID=21300000"
+        },
+        {
+          "name": "StartupSceneGenerator_IsIdempotentAndLeavesNoProjectDiff",
+          "result": "Passed",
+          "output": "Luckbound startup scaffold reconciled. Created 0 missing scene(s); existing scenes and unrelated build entries were preserved.\nLuckbound startup scaffold reconciled. Created 0 missing scene(s); existing scenes and unrelated build entries were preserved."
+        }
+      ]
+    },
+    {
+      "mode": "playmode",
+      "sha256": "8bf028f64a1c0f0052c14ad6b3fbd52d7e654148ecedfac60010ff24e0149857",
+      "summary": {
+        "id": "2",
+        "testcasecount": "246",
+        "result": "Passed",
+        "total": "246",
+        "passed": "246",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-28 22:36:28Z",
+        "end-time": "2026-10-28 22:38:56Z",
+        "duration": "147.6633932"
+      },
+      "selectedTests": []
+    }
+  ],
+  "webgl": "success",
+  "windows": {
+    "job": 123145142211,
+    "conclusion": "failure",
+    "evidence": "Killed / exit 137 at Editor startup; cause not established.",
+    "logSha256": "d477bd8c4d827d958efa3227858bdb405ab773b91af55c39e61e34e769c1d527"
+  },
+  "release": "skipped",
+  "deploy": "skipped",
+  "scope": "Actual visual branch only; no claim about all unrelated dirty local sources, perception, B07 complete, or F10."
+}

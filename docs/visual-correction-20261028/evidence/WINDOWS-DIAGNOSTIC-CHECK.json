@@ -1,0 +1,27 @@
+{
+  "candidateSha256": "4c736edf0333b901fbbe8c67c7b103e3625572091df0c775ebaf18386633cd95",
+  "bashSyntax": 0,
+  "checks": [
+    {
+      "case": "denied",
+      "exitCode": 0,
+      "output": "dmesg exit status: 7\nsudo: permission denied (fixture)\n"
+    },
+    {
+      "case": "oom",
+      "exitCode": 0,
+      "output": "dmesg exit status: 0\nOOM filter exit status: 0\nOut of memory: Killed process 123 unity (fixture)\n"
+    },
+    {
+      "case": "quiet",
+      "exitCode": 0,
+      "output": "dmesg exit status: 0\nOOM filter exit status: 1\nNo matching OOM entries in readable dmesg output.\n"
+    },
+    {
+      "case": "filter_error",
+      "exitCode": 0,
+      "output": "dmesg exit status: 0\nOOM filter exit status: 2\nOOM filter failed; diagnostic is inconclusive.\nrg: fixture failure\n"
+    }
+  ],
+  "scope": "Exact diagnostic block with synthetic sudo/dmesg output; no real sudo, Unity, CI, or YAML parser execution."
+}

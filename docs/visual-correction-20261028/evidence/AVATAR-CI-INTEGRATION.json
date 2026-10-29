@@ -1,0 +1,43 @@
+{
+  "scope": "Three Avatar pivot outputs plus exact accepted Windows headless CI candidate; visual branch trigger authorized.",
+  "pivotReviewSha256": "e76972ff7c7423de84297a35e75330bc6006372efcf2517d8d66f23c5c501f3a",
+  "windowsReviewSha256": "1cf10145c2d4646dd4f7384308159a07349c413578faecc462a0ffa4aeb3b4b6",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs",
+      "beforeSha256": "1f20e44de2f2a768de4038e783d99548160672cc7a67c77cc7295831921bdaba",
+      "afterSha256": "a2ef193a0de5074ae03ba82ea2563b574c3c5772f067f5a3bb557a554aa40024"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Editor/ProjectScaffoldGeneratorTests.cs",
+      "beforeSha256": "cceca5737726afb37e649327ac74e663e9841919d15746afdea1613481edec40",
+      "afterSha256": "d81a70a073bb896d5af2d89d1711ed6601b353a11124caefa4b1ebcc16b70538"
+    },
+    {
+      "path": "Assets/Luckbound/Art/Prototypes/MovementDemo/BellatorPrototype.png.meta",
+      "beforeSha256": "96704e2631f93b1d2469eb00b35cf3ba316719b52e688e876ff925a44fdfd2c9",
+      "afterSha256": "4fb17c62916665ace5cb7c065dbd420ca85b49ab4726958dc33cb0c6b2f38bdd"
+    },
+    {
+      "path": ".github/workflows/build.yml",
+      "beforeSha256": "1383b43e2905e2ef8baf5ab406c9b74b2dc1a1c27815b2cb188d494f9e1a703a",
+      "afterSha256": "4c736edf0333b901fbbe8c67c7b103e3625572091df0c775ebaf18386633cd95"
+    }
+  ],
+  "guardsUnchanged": {
+    "Assets/Luckbound/Art/Prototypes/MovementDemo/BellatorPrototype.png": "a62de31655f0ccd0bca59cf7f8ef0166890d4e176dd3a2f7d3321adfc24b3ef3",
+    "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png": "bbc831be3163492b1be78b737ad0913f0ce47bec88249483e5f1d7e9b369fd31",
+    "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png.meta": "310eaf50ed1b7421e80b1dd8f23a9329861294b4fcdad2dcf7663d47412e76d0",
+    "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab": "4d9d2a0272354ef682ddc5aed09042d620802852e9fa225d608c4a9d8c878a60",
+    "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab.meta": "b25855a668e2975f604e9c73ea8031374f7859c9c0e3b0d013137f18c35a7897",
+    "Assets/Luckbound/Scenes/Expedition.unity": "d07f07e84c3f50b2cad0e78cccbfdb083a44914ea06e2bae2dbe9c64ce955856",
+    "Assets/Luckbound/Scenes/CombatArena.unity": "91b26d32571b1b9c902b06f81ee599d0d7952c903e649d8f1482dd6098ec02f9",
+    "Assets/Luckbound/Scenes/CustodianArena.unity": "d36d080f3a15401b5892f8dcebd71db3959e9361f8e5664971cbd7dd7e74f96d",
+    "ProjectSettings/ProjectVersion.txt": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661"
+  },
+  "sourceCount": 374,
+  "otherRootSourcesUnchanged": true,
+  "unityOrNunitExecutedLocally": false,
+  "technicalAcceptance": "Offline compile only; CI and perception required.",
+  "localGitHead": "a2590e141c46729e6efa7d01ea33647768b58711"
+}

@@ -13,6 +13,10 @@ namespace Luckbound.Tests.Editor
 {
     public sealed class ProjectScaffoldGeneratorTests
     {
+        private const float ImportedSpriteTolerance = 0.001f;
+        private const string AvatarSpriteGuid = "ef0c7c5cb695aa84cad8cef6f7fd1017";
+        private const string StoneSpriteGuid = "ece714fd4199c9f4481389b1367d40c9";
+
         private static readonly string[] ManagedFiles =
         {
             "Assets/Luckbound/Scenes/Bootstrap.unity",
@@ -117,13 +121,8 @@ namespace Luckbound.Tests.Editor
 
             Sprite stone = AssetDatabase.LoadAssetAtPath<Sprite>(MovementDemoScaffoldGenerator.StoneSpritePath);
             Assert.That(stone, Is.Not.Null, "The canonical single StonePrototype Sprite must load.");
-            Assert.That(AssetDatabase.TryGetGUIDAndLocalFileIdentifier(
-                stone, out string spriteGuid, out long localFileId), Is.True,
-                "Unity must expose the imported Sprite identity.");
-            Assert.That(spriteGuid, Is.EqualTo(
-                AssetDatabase.AssetPathToGUID(MovementDemoScaffoldGenerator.StoneSpritePath)));
-            Assert.That(localFileId, Is.Not.EqualTo(0L));
-            TestContext.WriteLine("StonePrototype GUID=" + spriteGuid + "; localFileID=" + localFileId);
+            AssertImportedSpriteGeometry(stone, 16, 16, new Vector2(8f, 8f), "StonePrototype");
+            AssertSpriteIdentity(stone, StoneSpriteGuid, "StonePrototype");
 
             UnityEngine.SceneManagement.Scene previewScene =
                 UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene(scenePath);
@@ -143,6 +142,100 @@ namespace Luckbound.Tests.Editor
                     Assert.That(renderer.sprite, Is.SameAs(stone),
                         name + " must reference the canonical imported StonePrototype Sprite.");
                 }
+            }
+            finally
+            {
+                if (previewScene.IsValid() && previewScene.isLoaded)
+                {
+                    UnityEditor.SceneManagement.EditorSceneManager.ClosePreviewScene(previewScene);
+                }
+            }
+        }
+
+        [Test]
+        public void MovementDemoAvatar_ImportsBottomPivotAndKeepsConsumerBindings()
+        {
+            Sprite avatar = AssetDatabase.LoadAssetAtPath<Sprite>(MovementDemoScaffoldGenerator.AvatarSpritePath);
+            Assert.That(avatar, Is.Not.Null, "The canonical single BellatorPrototype Sprite must load.");
+            AssertImportedSpriteGeometry(avatar, 32, 48, new Vector2(16f, 0f), "BellatorPrototype");
+            long avatarLocalFileId = AssertSpriteIdentity(avatar, AvatarSpriteGuid, "BellatorPrototype");
+
+            GameObject playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(MovementDemoScaffoldGenerator.PlayerPrefabPath);
+            Assert.That(playerPrefab, Is.Not.Null, "MovementDemoPlayer must load from the canonical prefab path.");
+            AssertPlayerPrefabSprite(playerPrefab, avatar, avatarLocalFileId, "MovementDemoPlayer prefab");
+
+            AssertPlayerCompositionBinding<Luckbound.App.MovementDemoComposition>(
+                "Assets/Luckbound/Scenes/Expedition.unity", avatar, avatarLocalFileId, "movement demo");
+            AssertPlayerCompositionBinding<Luckbound.App.CombatArenaComposition>(
+                "Assets/Luckbound/Scenes/CombatArena.unity", avatar, avatarLocalFileId, "C08 combat arena");
+            AssertPlayerCompositionBinding<Luckbound.App.CustodianArenaComposition>(
+                "Assets/Luckbound/Scenes/CustodianArena.unity", avatar, avatarLocalFileId, "Custodian arena");
+        }
+
+        private static void AssertImportedSpriteGeometry(
+            Sprite sprite,
+            int expectedWidth,
+            int expectedHeight,
+            Vector2 expectedPivotPixels,
+            string description)
+        {
+            Assert.That(sprite.rect.x, Is.EqualTo(0f).Within(ImportedSpriteTolerance), description + " rect x");
+            Assert.That(sprite.rect.y, Is.EqualTo(0f).Within(ImportedSpriteTolerance), description + " rect y");
+            Assert.That(sprite.rect.width, Is.EqualTo(expectedWidth).Within(ImportedSpriteTolerance), description + " rect width");
+            Assert.That(sprite.rect.height, Is.EqualTo(expectedHeight).Within(ImportedSpriteTolerance), description + " rect height");
+            Assert.That(sprite.pixelsPerUnit, Is.EqualTo(16f).Within(ImportedSpriteTolerance), description + " pixels per unit");
+            Assert.That(sprite.pivot.x, Is.EqualTo(expectedPivotPixels.x).Within(ImportedSpriteTolerance), description + " pivot x in pixels");
+            Assert.That(sprite.pivot.y, Is.EqualTo(expectedPivotPixels.y).Within(ImportedSpriteTolerance), description + " pivot y in pixels");
+        }
+
+        private static long AssertSpriteIdentity(Sprite sprite, string expectedGuid, string description)
+        {
+            Assert.That(AssetDatabase.TryGetGUIDAndLocalFileIdentifier(
+                sprite, out string spriteGuid, out long localFileId), Is.True,
+                description + " must expose its imported Sprite identity.");
+            Assert.That(spriteGuid, Is.EqualTo(expectedGuid), description + " GUID");
+            Assert.That(localFileId, Is.Not.EqualTo(0L), description + " localFileID");
+            TestContext.WriteLine(description + " GUID=" + spriteGuid + "; localFileID=" + localFileId);
+            return localFileId;
+        }
+
+        private static void AssertPlayerPrefabSprite(
+            GameObject playerPrefab,
+            Sprite expectedAvatar,
+            long expectedLocalFileId,
+            string description)
+        {
+            Assert.That(AssetDatabase.GetAssetPath(playerPrefab),
+                Is.EqualTo(MovementDemoScaffoldGenerator.PlayerPrefabPath), description + " asset path");
+            SpriteRenderer playerRenderer = playerPrefab.GetComponent<SpriteRenderer>();
+            Assert.That(playerRenderer, Is.Not.Null, description + " SpriteRenderer");
+            Assert.That(playerRenderer.sprite, Is.SameAs(expectedAvatar), description + " imported Avatar binding");
+            long actualLocalFileId = AssertSpriteIdentity(playerRenderer.sprite, AvatarSpriteGuid, description + " Avatar");
+            Assert.That(actualLocalFileId, Is.EqualTo(expectedLocalFileId), description + " Avatar localFileID");
+        }
+
+        private static void AssertPlayerCompositionBinding<TComposition>(
+            string scenePath,
+            Sprite expectedAvatar,
+            long expectedAvatarLocalFileId,
+            string description)
+            where TComposition : Component
+        {
+            UnityEngine.SceneManagement.Scene previewScene =
+                UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene(scenePath);
+            try
+            {
+                TComposition composition = previewScene.GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren<TComposition>(true))
+                    .FirstOrDefault();
+                Assert.That(composition, Is.Not.Null, description + " composition must load from the checkout scene.");
+
+                var serializedComposition = new SerializedObject(composition);
+                SerializedProperty playerPrefabProperty = serializedComposition.FindProperty("_playerPrefab");
+                Assert.That(playerPrefabProperty, Is.Not.Null, description + " _playerPrefab property");
+                GameObject playerPrefab = playerPrefabProperty.objectReferenceValue as GameObject;
+                Assert.That(playerPrefab, Is.Not.Null, description + " _playerPrefab binding");
+                AssertPlayerPrefabSprite(playerPrefab, expectedAvatar, expectedAvatarLocalFileId, description);
             }
             finally
             {
