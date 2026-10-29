@@ -1,0 +1,15 @@
+{
+    "method": "SaveV6ChecksumInspector.InspectProfile(string)",
+    "executed": true,
+    "result": "Returned",
+    "status": "ChecksumValid",
+    "encodeChecksum": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+    "storedChecksum": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+    "computedChecksum": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+    "storedChecksumMatchesEncode": true,
+    "computedChecksumMatchesEncode": true,
+    "preimageAvailable": true,
+    "preimageMatchesLiveProjection": true,
+    "errorType": "",
+    "errorMessage": ""
+}

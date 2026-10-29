@@ -1,0 +1,17 @@
+{
+  "observedAtUtc": "2026-10-29T16:11:02.035Z",
+  "command": "python -B Tools/Automation/verify_v6_capture.py --capture-dir docs/ci-integration-20261029/native-v6-capture-r2 --commit 0baf2d9236b79940f2e45ab6d39df84e688b56fd --project-root Logs/FullIntegrationFix-20261029/v6-exact-project-root",
+  "exitCode": 0,
+  "result": {
+    "commit": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+    "sessionId": "d669925c87ca43949d15cf71ff1be1e4",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "3c1eda61c69f77710fd049ea4ed925accf6e99c0d84083a30366898fdd3d0068",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  },
+  "sourceIdentity": "14 files reconstructed only when both Git blob IDs of verified remote tree and recorded captured SHA-256/byte counts match",
+  "ciVerifierStatus": "skipped after test failure; this offline invocation does not change CI conclusion or accept Gate B"
+}

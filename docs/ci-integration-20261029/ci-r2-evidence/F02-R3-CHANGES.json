@@ -1,0 +1,63 @@
+{
+  "candidate": "F02 CI diagnostics-only r3",
+  "ci": {
+    "run_id": 40904888964,
+    "commit": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+    "suite_id": 110880951641,
+    "attempt": 1
+  },
+  "evidence": {
+    "xml": "Logs/CI-40904888964-review/test-results-0baf2d9236b79940f2e45ab6d39df84e688b56fd-retry/extracted/test-results/editmode-results.xml",
+    "xml_sha256": "731CBCEAC299BF4B639F57C44A3D2452CD5A1066AF101D920ABAD8152D198232",
+    "editmode_log": "Logs/CI-40904888964-review/test-results-0baf2d9236b79940f2e45ab6d39df84e688b56fd-retry/extracted/test-results/editmode.log",
+    "editmode_log_sha256": "59604B9AC3D12A1D08F90E4B183AE2E1D671AAD5001E63769D660EE8A06DFC92",
+    "failure_counts": {
+      "total": 31,
+      "TechnicalHold_duration": 29,
+      "BellatorAttack_duration": 1,
+      "traceability_metadata_explicit_null_fixture": 1
+    },
+    "duration_actual_values_available": false,
+    "serialized_clip_yaml_in_extracted_artifact": false
+  },
+  "scope": [
+    "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+    "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs"
+  ],
+  "hashes": {
+    "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs": {
+      "base_sha256": "128795929a09dc335a52007ac05af7ef02cf76094139a95edd9e74808f0ef712",
+      "proposed_sha256": "2fe7fdcf83cabab5d7b16977ee8d56bf49f0f9da1b782d227dfaa3824fe8b488",
+      "live_sha256_at_preparation": "128795929a09dc335a52007ac05af7ef02cf76094139a95edd9e74808f0ef712"
+    },
+    "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs": {
+      "base_sha256": "134fe32d88c1214b23c181e5b6ac125f7ad4b56b430c8c96189abd05805e0c1f",
+      "proposed_sha256": "134fe32d88c1214b23c181e5b6ac125f7ad4b56b430c8c96189abd05805e0c1f",
+      "live_sha256_at_preparation": "134fe32d88c1214b23c181e5b6ac125f7ad4b56b430c8c96189abd05805e0c1f"
+    }
+  },
+  "claim": "Diagnostics-only proposal. Existing duration and traceability predicates, tolerances, fixture, test names, assertions, and resourceId requirement remain unchanged. No cause or runtime fix verified; no Unity/EditMode run performed.",
+  "proposed_changes": [
+    "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs"
+  ],
+  "unchanged_reviewed_test": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+  "diagnostic_fields": {
+    "duration": [
+      "failed invariant (startTime/stopTime range or AnimationClip.length)",
+      "current clip.length/frameRate/frame count/PPtr key count/start/stop/first/terminal key times",
+      "pre-CreateAsset snapshot for newly created clips"
+    ],
+    "traceability": [
+      "failed predicate names",
+      "string field null/empty/whitespace/value state and length only (no field contents)",
+      "duplicate resourceId/sourcePath state before validation",
+      "numeric image metadata and slice count"
+    ]
+  },
+  "roundtrip_limit": "The pre/post measurements bracket AssetDatabase.CreateAsset only; the proposal does not force a reimport or claim a serialized reload roundtrip.",
+  "artifacts": {
+    "proposal_diff": "Logs/F02CiFixCandidate-20261029-r3/proposal.diff",
+    "proposal_diff_sha256": "097d27597b529ebb1b8b022a3a0fbfae6943bf8d8658af17ee1b4bd00809d906",
+    "report": "Logs/F02CiFixCandidate-20261029-r3/REPORT.md"
+  }
+}

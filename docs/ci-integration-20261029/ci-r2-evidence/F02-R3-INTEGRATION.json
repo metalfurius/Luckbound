@@ -1,0 +1,26 @@
+{
+  "appliedAtUtc": "2026-10-29T16:26:18.498Z",
+  "parentCommit": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+  "parentTree": "b9c1dbf5a91928ed4ab3a972b6eb68030a69c772",
+  "guardedSources": 374,
+  "changesSinceParent": [
+    {
+      "path": "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+      "rawSha256": "2fe7fdcf83cabab5d7b16977ee8d56bf49f0f9da1b782d227dfaa3824fe8b488",
+      "canonicalSha256": "228d2f4c9e65ed24a994e367dea4f5196648a2b43f4be5576129b67ea0ffdc65",
+      "gitBlobSha": "0aa04989fd9b22f36d89c2a92035a26cefe95ca8",
+      "parentBlobSha": "188c96c18e1d3711aaf34bc75db9874c1225477a"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+      "rawSha256": "e7d589612b901d0a7ffbb9b8015d9a170f26ef73c2a7500c02cc7b47d5b78c7b",
+      "canonicalSha256": "07fd73722b54ea18e1b7ee38f8ac6a96a8e497d1a9efc0e38404bbe1517ef14e",
+      "gitBlobSha": "435b38b04ae465377bfefd37f9748c9317f73583",
+      "parentBlobSha": "48b67a6a443475d1a3b42c3f5eb1fb23f57dc5eb"
+    }
+  ],
+  "review": "SOL-F02-R3-DIAGNOSTICS.md",
+  "reviewSha256": "73175a6417751a60cfd6b5a4aef6ac3d5512a586e3e497433a99b0e27e8ee791",
+  "unityExecuted": false,
+  "scope": "Diagnostic only; all F02 predicates and tests preserved; exact I06 correction separate"
+}

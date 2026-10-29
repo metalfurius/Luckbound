@@ -1,0 +1,397 @@
+{
+    "schemaVersion": 1,
+    "sessionId": "d669925c87ca43949d15cf71ff1be1e4",
+    "commit": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+    "unityVersion": "6000.6.6f1",
+    "projectVersionDeclared": "6000.6.6f1",
+    "startedAtUtc": "2026-10-29T15:53:42.9340680Z",
+    "finalizedAtUtc": "2026-10-29T15:53:43.2023380Z",
+    "activationArgumentObserved": true,
+    "activationArgument": "-luckboundV6CaptureDir",
+    "activationValue": "Logs/Scenarios/V6Capture-0baf2d9236b79940f2e45ab6d39df84e688b56fd-40904888964-1",
+    "expectedCaseIds": [
+        "V6-P0-profile-no-active",
+        "V6-P1-active-known-zero",
+        "V6-P1-active-known-nontrivial",
+        "V6-P2-active-unknown-null",
+        "V6-P2-active-unknown-inline-empty",
+        "V6-P3-receipts-full",
+        "V6-P4-null-empty-boundary",
+        "V6-P5-flag-payload-conflict",
+        "V6-S0-settings",
+        "V6-checkpoint-empty-slots",
+        "V6-checkpoint-null-slots"
+    ],
+    "sourceHashesBefore": [
+        {
+            "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+            "bytes": 7266,
+            "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+            "bytes": 16578,
+            "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+            "bytes": 37224,
+            "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+            "bytes": 2163,
+            "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+            "bytes": 71590,
+            "sha256": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+            "bytes": 99,
+            "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+            "bytes": 138741,
+            "sha256": "b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+            "bytes": 11800,
+            "sha256": "22f64d362bc484bec85578e87438851c77867e1eb311bb78624ef01f6f01c3d3",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+            "bytes": 484,
+            "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+            "bytes": 337,
+            "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+            "bytes": 647,
+            "sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+            "error": ""
+        },
+        {
+            "path": "ProjectSettings/ProjectVersion.txt",
+            "bytes": 83,
+            "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+            "error": ""
+        },
+        {
+            "path": "Packages/manifest.json",
+            "bytes": 2165,
+            "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+            "error": ""
+        },
+        {
+            "path": "Packages/packages-lock.json",
+            "bytes": 14044,
+            "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+            "error": ""
+        }
+    ],
+    "sourceHashesAfter": [
+        {
+            "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+            "bytes": 7266,
+            "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+            "bytes": 16578,
+            "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+            "bytes": 37224,
+            "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+            "bytes": 2163,
+            "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+            "bytes": 71590,
+            "sha256": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+            "bytes": 99,
+            "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+            "bytes": 138741,
+            "sha256": "b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+            "bytes": 11800,
+            "sha256": "22f64d362bc484bec85578e87438851c77867e1eb311bb78624ef01f6f01c3d3",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+            "bytes": 484,
+            "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+            "bytes": 337,
+            "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+            "bytes": 647,
+            "sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+            "error": ""
+        },
+        {
+            "path": "ProjectSettings/ProjectVersion.txt",
+            "bytes": 83,
+            "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+            "error": ""
+        },
+        {
+            "path": "Packages/manifest.json",
+            "bytes": 2165,
+            "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+            "error": ""
+        },
+        {
+            "path": "Packages/packages-lock.json",
+            "bytes": 14044,
+            "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+            "error": ""
+        }
+    ],
+    "sourcesStable": true,
+    "sessionDocumentStable": true,
+    "dataComplete": true,
+    "roleRequirementsPassed": true,
+    "attempts": [
+        {
+            "caseId": "V6-P0-profile-no-active",
+            "attemptDirectory": "cases/V6-P0-profile-no-active/attempt-0001",
+            "descriptorPath": "cases/V6-P0-profile-no-active/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "positive-candidate-validity-to-measure",
+            "testMethod": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "P0NoActive",
+            "startedAtUtc": "2026-10-29T15:53:42.9420130Z",
+            "finishedAtUtc": "2026-10-29T15:53:42.9499330Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 8075,
+            "descriptorSha256": "04d5ccecf559b9fd6557416ee8a5a38b4752e4abdcff6bf51fc8b3f59758a9dc"
+        },
+        {
+            "caseId": "V6-P1-active-known-nontrivial",
+            "attemptDirectory": "cases/V6-P1-active-known-nontrivial/attempt-0001",
+            "descriptorPath": "cases/V6-P1-active-known-nontrivial/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "positive-candidate-validity-to-measure",
+            "testMethod": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "P1KnownFrozenNonTrivial",
+            "startedAtUtc": "2026-10-29T15:53:42.9983030Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.0064440Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 8113,
+            "descriptorSha256": "b7c04832e3ca6f8878adbf70a4b377a36cd7a859a3c3590201d739a17d0a7e44"
+        },
+        {
+            "caseId": "V6-P1-active-known-zero",
+            "attemptDirectory": "cases/V6-P1-active-known-zero/attempt-0001",
+            "descriptorPath": "cases/V6-P1-active-known-zero/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "positive-candidate-validity-to-measure",
+            "testMethod": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "P1KnownFrozenZero",
+            "startedAtUtc": "2026-10-29T15:53:42.9770100Z",
+            "finishedAtUtc": "2026-10-29T15:53:42.9853820Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 8089,
+            "descriptorSha256": "4834f20969d1d2a43a14b3f13e24d9134a8b90539c5882264057460f9e9aeebe"
+        },
+        {
+            "caseId": "V6-P2-active-unknown-inline-empty",
+            "attemptDirectory": "cases/V6-P2-active-unknown-inline-empty/attempt-0001",
+            "descriptorPath": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "positive-candidate-validity-to-measure",
+            "testMethod": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "P2UnknownEmptyInlineFrozen",
+            "startedAtUtc": "2026-10-29T15:53:43.0340590Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.0503060Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 8128,
+            "descriptorSha256": "56ea5ada57bff60d6c9e81e77b3ac23c238dd369ff75a892c799525f52aa1bc0"
+        },
+        {
+            "caseId": "V6-P2-active-unknown-null",
+            "attemptDirectory": "cases/V6-P2-active-unknown-null/attempt-0001",
+            "descriptorPath": "cases/V6-P2-active-unknown-null/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "positive-candidate-validity-to-measure",
+            "testMethod": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "P2UnknownNullFrozen",
+            "startedAtUtc": "2026-10-29T15:53:43.0167980Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.0238480Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 8097,
+            "descriptorSha256": "ad244db2c339184d957a6e7fa1d5abafe7310884107c792789977165b1343a5f"
+        },
+        {
+            "caseId": "V6-P3-receipts-full",
+            "attemptDirectory": "cases/V6-P3-receipts-full/attempt-0001",
+            "descriptorPath": "cases/V6-P3-receipts-full/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "positive-candidate-validity-to-measure",
+            "testMethod": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "P3ReceiptsFull",
+            "startedAtUtc": "2026-10-29T15:53:43.0645810Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.0754760Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 8068,
+            "descriptorSha256": "f2905eaaa9253c8d771282dadfcc70da5f8eecacb7520fe9fc498fe6617d4bfc"
+        },
+        {
+            "caseId": "V6-P4-null-empty-boundary",
+            "attemptDirectory": "cases/V6-P4-null-empty-boundary/attempt-0001",
+            "descriptorPath": "cases/V6-P4-null-empty-boundary/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "checksum-serialization-only",
+            "testMethod": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "P4NullEmptyBoundary",
+            "startedAtUtc": "2026-10-29T15:53:43.0905710Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.1006510Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 9212,
+            "descriptorSha256": "045b06233b71a8dd6eb07b4839f3a4704ae9dcbe47e1789430bb543a6d5ac2a8"
+        },
+        {
+            "caseId": "V6-P5-flag-payload-conflict",
+            "attemptDirectory": "cases/V6-P5-flag-payload-conflict/attempt-0001",
+            "descriptorPath": "cases/V6-P5-flag-payload-conflict/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "negative-semantic-candidate",
+            "testMethod": "DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "P5FalseMarkerWithPayload",
+            "startedAtUtc": "2026-10-29T15:53:43.1035760Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.1097950Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 8198,
+            "descriptorSha256": "fe2ce5513d7965d77287cf45b9f8df03efbf725e8c7313c225cd2eb2ecd6a885"
+        },
+        {
+            "caseId": "V6-S0-settings",
+            "attemptDirectory": "cases/V6-S0-settings/attempt-0001",
+            "descriptorPath": "cases/V6-S0-settings/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "positive-candidate-validity-to-measure",
+            "testMethod": "DeterministicSettingsBuilderHasCompleteLiveAndLegacyProjectionByteEquivalence",
+            "variant": "BuildSettingsEnvelope",
+            "startedAtUtc": "2026-10-29T15:53:43.1124270Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.1173070Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 9,
+            "descriptorBytes": 8054,
+            "descriptorSha256": "110204ee2e3138839d9ba8d11f6d8b5b1d464752876a14dcd59204084eaf580e"
+        },
+        {
+            "caseId": "V6-checkpoint-empty-slots",
+            "attemptDirectory": "cases/V6-checkpoint-empty-slots/attempt-0001",
+            "descriptorPath": "cases/V6-checkpoint-empty-slots/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "checkpoint-dto-json-separated-not-envelope",
+            "testMethod": "RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence",
+            "variant": "includeNullSlots=false",
+            "startedAtUtc": "2026-10-29T15:53:43.1541470Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.1582550Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 8,
+            "descriptorBytes": 8102,
+            "descriptorSha256": "fd80cf49adfac5b75b5d4a83186030c3a68b69f9405faa1c3bf4df3794bd7399"
+        },
+        {
+            "caseId": "V6-checkpoint-null-slots",
+            "attemptDirectory": "cases/V6-checkpoint-null-slots/attempt-0001",
+            "descriptorPath": "cases/V6-checkpoint-null-slots/attempt-0001/descriptor.json",
+            "complete": true,
+            "semanticAcceptance": true,
+            "role": "checkpoint-null-boundary-dto-json-separated-not-envelope",
+            "testMethod": "RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence",
+            "variant": "includeNullSlots=true",
+            "startedAtUtc": "2026-10-29T15:53:43.1632750Z",
+            "finishedAtUtc": "2026-10-29T15:53:43.1672190Z",
+            "failureCode": "",
+            "failureMessage": "",
+            "fileCount": 8,
+            "descriptorBytes": 8126,
+            "descriptorSha256": "36ffd1ffb43f794020674be6ad44546df094b13d390cc34055af8cfd5aa03347"
+        }
+    ],
+    "sessionFileBytes": 4551,
+    "sessionFileSha256": "1d041f1003c3594b989f5736f717073204443a6ce5a8483f67b24acc23837ad7",
+    "jsonUtilityAssembly": "UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "jsonUtilityModule": "UnityEngine.JSONSerializeModule.dll",
+    "jsonUtilityMvid": "1f4144d6-4409-465d-9a7a-99a08455999d",
+    "cultureName": "",
+    "cultureNumberDecimalSeparator": "."
+}

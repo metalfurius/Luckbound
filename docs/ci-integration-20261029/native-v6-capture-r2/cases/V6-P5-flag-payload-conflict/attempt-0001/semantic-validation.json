@@ -1,0 +1,11 @@
+{
+    "method": "SaveDataValidation.Validate(ProfileSaveEnvelope)",
+    "executed": true,
+    "result": "Returned",
+    "accepted": false,
+    "errors": [
+        "Active expedition marker must match the saved expedition payload."
+    ],
+    "errorType": "",
+    "errorMessage": ""
+}

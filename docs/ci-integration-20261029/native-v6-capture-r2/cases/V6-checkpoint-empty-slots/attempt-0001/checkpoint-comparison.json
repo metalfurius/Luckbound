@@ -1,0 +1,7 @@
+{
+    "role": "checkpoint-dto-json-separated-not-envelope",
+    "liveLegacyBytesEqual": true,
+    "liveByteCount": 3819,
+    "legacyByteCount": 3819,
+    "claim": "Separate DTO serializer equivalence only; no profile/settings envelope was produced."
+}

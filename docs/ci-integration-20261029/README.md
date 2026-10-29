@@ -1,6 +1,10 @@
 # Luckbound — snapshot de integración y captura V6
 
-Preparado el 29 de octubre de 2026. **Snapshot completo respaldado; la primera CI falló. Sus correcciones están integradas, revisadas y compiladas offline, pendientes de una nueva ejecución Unity.** El objetivo completo sigue activo y F10 continúa pendiente.
+Preparado el 29 de octubre de 2026. **La segunda CI sobre `0baf2d9` ejecutó 905 casos: 873 pasaron y 32 fallaron; ninguno omitido. Los 18 casos V6 pasaron y dejaron once capturas reales verificadas.** Continúan las correcciones F02/I06 y la propuesta de fixtures congeladas. El objetivo completo sigue activo y F10 continúa pendiente.
+
+El corte r3 añade únicamente el arreglo acotado I06 y [diagnósticos F02 revisados](SOL-F02-R3-DIAGNOSTICS.md), ambos compilados offline. Conserva todos los criterios F02 y su caso explícito null. La próxima CI medirá los valores actuales; no se considera aún un arreglo de los 31 fallos de importación.
+
+La [auditoría de la segunda CI](ci-r2-evidence/REPORT.md) conserva los resultados exactos. Sus [capturas V6](native-v6-capture-r2/manifest.json) están preservadas sin editar; el [verificador offline Root](ci-r2-evidence/ROOT-OFFLINE-CAPTURE-GATE.json) pasó contra los blobs exactos del snapshot remoto. Quedan pendientes las pruebas contra fixtures congeladas y Gate B; el workflow omitió su paso de captura tras fallar tests. El [candidato Unity r4](unity-r4-candidate/README.md) está preparado y no aplicado.
 
 ## Qué está cerrado
 

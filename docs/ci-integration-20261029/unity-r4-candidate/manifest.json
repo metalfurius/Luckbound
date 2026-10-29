@@ -1,0 +1,54 @@
+{
+  "candidate": "Unity 6000.6.7f1 / b22767f04f04",
+  "status": "prepared-only-not-applied",
+  "generatedUtc": "2026-10-29T16:05:50Z",
+  "ownerPath": "Logs/UnityUpgradeCandidate-20261029-r4/",
+  "source": {
+    "checkoutBranch": "codex/luckbound-reboot",
+    "checkoutHead": "a2590e141c46729e6efa7d01ea33647768b58711",
+    "checkoutWasDirty": true,
+    "preparationContract": "docs/ci-integration-20261029/SOL-UNITY-R4-PREPARATION.md",
+    "preparationContractSha256": "5e3da229108a68649bb3f82b6451ea9eb015f7ffbc126aa385a37e9c9340fc34",
+    "workflowPath": ".github/workflows/build.yml",
+    "workflowBaseSha256": "4c152985d354cb8768cc9d399df6d06a7615f5b27df6832dd43cfcb4d32ccf03",
+    "projectVersionPath": "ProjectSettings/ProjectVersion.txt",
+    "projectVersionBaseSha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+    "snapshotContextCommitFromContract": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+    "ciContext": {
+      "runId": "40904888964",
+      "outcome": "failure-per-task-instruction",
+      "queried": false
+    },
+    "datedEvidenceReferencedByContract": [
+      {
+        "path": "Logs/UnityReleaseCatalog-20261029/SUMMARY.json",
+        "sha256": "4d490427e7ee911b6fa48b750da476f5f1cbd6ebdcc036353eaf4d6048c66e74",
+        "observedAtUtc": "2026-10-29T13:41:05Z"
+      },
+      {
+        "path": "Logs/UnityReleaseCatalog-20261029/releases.json",
+        "sha256": "e735ea2bada137180ccba79c49b72811b9a6f1e4d48f4da5a5e0eec2a92a5aac"
+      },
+      {
+        "path": "Logs/UnityRegistry-20261028/registry-check.json",
+        "sha256": "8b57e07306e5154df82cbed1552148e017b3233d7941d25cc79bd39cfb296d4d",
+        "observedAtUtc": "2026-10-28T21:33:51Z"
+      }
+    ]
+  },
+  "delta": {
+    "workflowVersionLiteralsReplaced": 11,
+    "pushBranchAdded": "codex/luckbound-unity-20261029",
+    "projectVersionLinesPrepared": 2,
+    "integrationCaptureGuardLinesBefore": 2,
+    "integrationCaptureGuardLinesAfter": 2
+  },
+  "artifacts": {
+    "build.before.yml": "4c152985d354cb8768cc9d399df6d06a7615f5b27df6832dd43cfcb4d32ccf03",
+    "build.candidate.yml": "627461b413c11227591df817d9ea31488819a1d7fff83ed7c68e62bc0995c24b",
+    "ProjectVersion.before.txt": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+    "ProjectVersion.candidate.txt": "2a88e6864b6f54588287bed3bc6e9260e65bd49498910cca4478770ca8a5d674",
+    "candidate.diff": "c6594e8d0cbb3ac6bb872e9309138e30323e87f8a82e814de3ce58eabac5d667",
+    "README.md": "1ba162ee02320dc5af94d2834e2288d048e5f35d3c69c85280536a8a6facb23d"
+  }
+}

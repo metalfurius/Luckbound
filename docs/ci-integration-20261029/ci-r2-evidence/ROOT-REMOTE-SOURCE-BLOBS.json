@@ -1,0 +1,76 @@
+{
+  "commit": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+  "tree": "b9c1dbf5a91928ed4ab3a972b6eb68030a69c772",
+  "sources": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+      "sha": "44cee851931dc470bbff3bf3f6da308aa2c274c9",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+      "sha": "6551c633a2de7e4c15998169618379938077af8c",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "sha": "d62c870fcd0ed5861cce0296c57592fb8d0221b6",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "sha": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "sha": "12ee0d6a179bcb5b5da8432fd406f2bd15995933",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+      "sha": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "sha": "a4d0c1c03f00b66cd06d43d87f56836ccd22fa9d",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+      "sha": "ad135c9696f721b48868b4324eabed7d57b1677a",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "sha": "e2651ceea22370bc71db6eec997af038463ea2c4",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "sha": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+      "sha": "97904300d05845e188c731d5a2e0964855d9ef01",
+      "mode": "100644"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "sha": "99bacd03c32572309212173ef6a8e7dab6cd92e6",
+      "mode": "100644"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "sha": "0df120389f01f83f360d65d0870db74aead1b4d1",
+      "mode": "100644"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "sha": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+      "mode": "100644"
+    }
+  ]
+}

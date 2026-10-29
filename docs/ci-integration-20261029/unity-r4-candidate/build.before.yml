@@ -1,0 +1,379 @@
+name: Luckbound CI
+
+on:
+  pull_request:
+    branches:
+      - Main
+  push:
+    branches:
+      - Main
+      - codex/luckbound-visual-20261028
+      - codex/luckbound-integration-20261029
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: EditMode and PlayMode tests
+    # Unity license secrets are unavailable to fork PRs. Do not use pull_request_target.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      checks: write
+      contents: read
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7.0.1
+
+      - name: Cache Unity Library
+        uses: actions/cache@v6.1.0
+        with:
+          path: Library
+          key: luckbound-linux-6000.6.6f1-tests-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            luckbound-linux-6000.6.6f1-tests-
+
+      - name: Run Unity tests
+        id: unity_tests
+        uses: game-ci/unity-test-runner@v4.4.0
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          # v4.4.0 emits an unsupported --no-coverageEnabled flag for a false action input.
+          # The pinned CLI accepts its documented GAME_CI_* environment option instead.
+          GAME_CI_COVERAGE_ENABLED: 'false'
+        with:
+          cliVersion: v0.1.72
+          customImage: unityci/editor:ubuntu-6000.6.6f1-base-3.2.2
+          testMode: all
+          customParameters: "${{ github.ref == 'refs/heads/codex/luckbound-integration-20261029' && format('-testFilter Luckbound -luckboundV6CaptureDir Logs/Scenarios/V6Capture-{0}-{1}-{2}', github.sha, github.run_id, github.run_attempt) || '-testFilter Luckbound' }}"
+          artifactsPath: test-results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: Unity EditMode and PlayMode
+
+      - name: Verify explicit V6 capture
+        if: ${{ !cancelled() && github.ref == 'refs/heads/codex/luckbound-integration-20261029' && steps.unity_tests.outcome == 'success' }}
+        shell: bash
+        run: |
+          python3 Tools/Automation/verify_v6_capture.py \
+            --capture-dir "Logs/Scenarios/V6Capture-${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --commit "${GITHUB_SHA}"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: test-results-${{ github.sha }}
+          path: |
+            test-results
+            Logs/Scenarios
+          if-no-files-found: ignore
+          retention-days: 14
+
+  build_windows:
+    name: Build Windows x64
+    needs: tests
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7.0.1
+
+      - name: Cache Unity Library
+        uses: actions/cache@v6.1.0
+        with:
+          path: Library
+          key: luckbound-linux-6000.6.6f1-windows-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            luckbound-linux-6000.6.6f1-windows-
+
+      - name: Build Windows player
+        uses: game-ci/unity-builder@v6.0.0
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          cliVersion: v0.1.72
+          customImage: unityci/editor:ubuntu-6000.6.6f1-windows-mono-3.2.2
+          targetPlatform: StandaloneWindows64
+          buildName: Luckbound
+          buildsPath: build
+          customParameters: '-nographics'
+
+      - name: Capture Windows build diagnostics
+        if: failure()
+        shell: bash
+        run: |
+          diagnostics_dir="${RUNNER_TEMP}/Luckbound-WindowsDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          mkdir -p "$diagnostics_dir"
+          {
+            set +e
+            date -u '+%Y-%m-%dT%H:%M:%SZ UTC'
+            echo '$ free -h'
+            free -h
+            free_status=$?
+            printf 'free exit status: %s\n' "$free_status"
+            echo '$ df -h .'
+            df -h .
+            df_status=$?
+            printf 'df exit status: %s\n' "$df_status"
+            echo '$ sudo -n dmesg --ctime | rg -i "out of memory|oom-kill|killed process" | tail -n 30'
+            dmesg_status=0
+            dmesg_output="$(sudo -n dmesg --ctime 2>&1)" || dmesg_status=$?
+            printf 'dmesg exit status: %s\n' "$dmesg_status"
+            if [ "$dmesg_status" -ne 0 ]; then
+              printf '%s\n' "$dmesg_output"
+            else
+              matches_status=0
+              dmesg_matches="$(printf '%s\n' "$dmesg_output" | rg -i 'out of memory|oom-kill|killed process')" || matches_status=$?
+              printf 'OOM filter exit status: %s\n' "$matches_status"
+              if [ "$matches_status" -eq 0 ]; then
+                printf '%s\n' "$dmesg_matches" | tail -n 30
+              elif [ "$matches_status" -eq 1 ]; then
+                echo 'No matching OOM entries in readable dmesg output.'
+              else
+                echo 'OOM filter failed; diagnostic is inconclusive.'
+              fi
+            fi
+          } > "$diagnostics_dir/windows-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log" 2>&1
+
+      - name: Upload Windows build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: windows-diagnostics-${{ github.sha }}
+          path: ${{ runner.temp }}/Luckbound-WindowsDiagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Verify Windows output
+        shell: bash
+        run: test -n "$(find build/StandaloneWindows64 -type f -iname 'Luckbound.exe' -print -quit)"
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: windows-${{ github.sha }}
+          path: build/StandaloneWindows64
+          if-no-files-found: error
+          retention-days: 30
+
+  build_webgl:
+    name: Build WebGL
+    needs: tests
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7.0.1
+
+      - name: Cache Unity Library
+        uses: actions/cache@v6.1.0
+        with:
+          path: Library
+          key: luckbound-linux-6000.6.6f1-webgl-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            luckbound-linux-6000.6.6f1-webgl-
+
+      - name: Build WebGL player
+        uses: game-ci/unity-builder@v6.0.0
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          cliVersion: v0.1.72
+          customImage: unityci/editor:ubuntu-6000.6.6f1-webgl-3.2.2
+          targetPlatform: WebGL
+          buildProfile: Assets/Settings/Build Profiles/WebGL.asset
+          buildsPath: build
+
+      - name: Verify WebGL output
+        shell: bash
+        run: test -n "$(find build/WebGL -type f -name index.html -print -quit)"
+
+      - name: Upload WebGL build
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: webgl-${{ github.sha }}
+          path: build/WebGL
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: Create version release
+    needs:
+      - tests
+      - build_windows
+      - build_webgl
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Download Windows build
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: windows-${{ github.sha }}
+          path: release-input/windows
+
+      - name: Download WebGL build
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: webgl-${{ github.sha }}
+          path: release-input/webgl
+
+      - name: Package builds and provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+
+          tag="$GITHUB_REF_NAME"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Version tags must use vMAJOR.MINOR.PATCH (optional prerelease suffix): $tag"
+            exit 1
+          fi
+
+          windows_exe="$(find release-input/windows -type f -iname 'Luckbound.exe' -print -quit)"
+          webgl_index="$(find release-input/webgl -type f -name index.html -print -quit)"
+          test -n "$windows_exe"
+          test -n "$webgl_index"
+
+          windows_dir="$(dirname "$windows_exe")"
+          webgl_dir="$(dirname "$webgl_index")"
+          windows_zip="release/Luckbound-${tag}-Windows-x64.zip"
+          webgl_zip="release/Luckbound-${tag}-WebGL.zip"
+          (cd "$windows_dir" && zip -qr "$GITHUB_WORKSPACE/$windows_zip" .)
+          (cd "$webgl_dir" && zip -qr "$GITHUB_WORKSPACE/$webgl_zip" .)
+
+          jq -n \
+            --arg tag "$tag" \
+            --arg commit "$GITHUB_SHA" \
+            --arg unity "6000.6.6f1" \
+            --arg workflow "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            --arg windows "$(basename "$windows_zip")" \
+            --arg webgl "$(basename "$webgl_zip")" \
+            '{tag: $tag, sourceCommit: $commit, unityEditor: $unity, sourceWorkflow: $workflow, builds: {windowsX64: $windows, webgl: $webgl}}' \
+            > "release/Luckbound-${tag}-release-metadata.json"
+
+          (cd release && sha256sum "$(basename "$windows_zip")" "$(basename "$webgl_zip")" "Luckbound-${tag}-release-metadata.json" > "Luckbound-${tag}-SHA256SUMS.txt")
+
+      - name: Publish GitHub Release
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$GITHUB_REF_NAME"
+          assets=(release/Luckbound-"$tag"-Windows-x64.zip release/Luckbound-"$tag"-WebGL.zip release/Luckbound-"$tag"-release-metadata.json release/Luckbound-"$tag"-SHA256SUMS.txt)
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "${assets[@]}" --clobber
+          else
+            gh release create "$tag" "${assets[@]}" --verify-tag --title "Luckbound $tag" --generate-notes
+          fi
+
+  deploy_pages:
+    name: Publish versioned WebGL on gh-pages
+    needs:
+      - tests
+      - build_windows
+      - build_webgl
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/Main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: luckbound-gh-pages
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout source commit
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          path: source
+
+      - name: Download WebGL build
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: webgl-${{ github.sha }}
+          path: webgl-build
+
+      - name: Checkout published site
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: gh-pages
+          path: site
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare immutable build and stable entry point
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          latest_main_sha="$(git -C source ls-remote origin refs/heads/Main | cut -f1)"
+          if [[ "$latest_main_sha" != "$SOURCE_COMMIT" ]]; then
+            echo "::notice::Skipping stale publication for $SOURCE_COMMIT; Main is now $latest_main_sha."
+            exit 0
+          fi
+
+          webgl_index="$(find webgl-build -type f -name index.html -print -quit)"
+          if [[ -z "$webgl_index" ]]; then
+            echo "::error::The downloaded WebGL artifact has no index.html."
+            exit 1
+          fi
+          webgl_dir="$(dirname "$webgl_index")"
+          versioned_dir="site/builds/$SOURCE_COMMIT"
+          mkdir -p "$versioned_dir"
+          cp -a "$webgl_dir"/. "$versioned_dir"/
+          touch site/.nojekyll
+
+          cat > site/index.html <<EOF
+          <!doctype html>
+          <html lang="es">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta http-equiv="refresh" content="0; url=./builds/$SOURCE_COMMIT/">
+            <title>Luckbound</title>
+          </head>
+          <body>
+            <p>Abriendo Luckbound… <a href="./builds/$SOURCE_COMMIT/">Continuar</a></p>
+            <script>window.location.replace('./builds/$SOURCE_COMMIT/');</script>
+          </body>
+          </html>
+          EOF
+
+          jq -n \
+            --arg commit "$SOURCE_COMMIT" \
+            --arg unity "6000.6.6f1" \
+            --arg run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            '{sourceCommit: $commit, unityEditor: $unity, sourceWorkflow: $run}' \
+            > site/builds/"$SOURCE_COMMIT"/build-version.json
+
+          git -C site config user.name "github-actions[bot]"
+          git -C site config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C site add -A
+          if git -C site diff --cached --quiet; then
+            echo "No publication changes to commit."
+            exit 0
+          fi
+          git -C site commit -m "Publish Luckbound WebGL $SOURCE_COMMIT"
+          git -C site push origin HEAD:gh-pages

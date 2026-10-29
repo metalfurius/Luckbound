@@ -1,0 +1,12 @@
+{
+  "observedAtUtc": "2026-10-29T16:13:33.690Z",
+  "manifestSha256": "9622d4c72ac28c6dd426ad73056075556db0dd11439f0745d10966015dbd15db",
+  "fileHashErrors": [],
+  "exactWorkflowDelta": true,
+  "workflowReplacementCount": 11,
+  "exactProjectVersionDelta": true,
+  "actualWorkflowIntact": true,
+  "actualVersionIntact": true,
+  "applied": false,
+  "unityExecuted": false
+}

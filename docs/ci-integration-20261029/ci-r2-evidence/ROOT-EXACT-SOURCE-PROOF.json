@@ -1,0 +1,118 @@
+{
+  "commit": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+  "tree": "b9c1dbf5a91928ed4ab3a972b6eb68030a69c772",
+  "sourceProof": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+      "gitBlobSha": "44cee851931dc470bbff3bf3f6da308aa2c274c9",
+      "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+      "bytes": 7266,
+      "source": "Logs/FullIntegrationSnapshot-20261029/publication-r2/files/Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+      "gitBlobSha": "6551c633a2de7e4c15998169618379938077af8c",
+      "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+      "bytes": 16578,
+      "source": "Logs/FullIntegrationSnapshot-20261029/publication-r2/files/Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "gitBlobSha": "d62c870fcd0ed5861cce0296c57592fb8d0221b6",
+      "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+      "bytes": 37224,
+      "source": "Logs/FullIntegrationSnapshot-20261029/publication-r2/files/Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+      "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+      "bytes": 2163,
+      "source": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "normalization": "CRLF-to-LF"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "gitBlobSha": "12ee0d6a179bcb5b5da8432fd406f2bd15995933",
+      "sha256": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+      "bytes": 71590,
+      "source": "Logs/FullIntegrationSnapshot-20261029/publication-r2/files/Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+      "gitBlobSha": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d",
+      "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+      "bytes": 99,
+      "source": "Logs/FullIntegrationSnapshot-20261029/publication-r2/files/Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "gitBlobSha": "a4d0c1c03f00b66cd06d43d87f56836ccd22fa9d",
+      "sha256": "b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7",
+      "bytes": 138741,
+      "source": "Logs/FullIntegrationFix-20261029/publication-r2/files/Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+      "gitBlobSha": "ad135c9696f721b48868b4324eabed7d57b1677a",
+      "sha256": "22f64d362bc484bec85578e87438851c77867e1eb311bb78624ef01f6f01c3d3",
+      "bytes": 11800,
+      "source": "Logs/FullIntegrationSnapshot-20261029/publication-r2/files/Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4",
+      "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+      "bytes": 484,
+      "source": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+      "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+      "bytes": 337,
+      "source": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+      "gitBlobSha": "97904300d05845e188c731d5a2e0964855d9ef01",
+      "sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+      "bytes": 647,
+      "source": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+      "normalization": "raw"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "gitBlobSha": "99bacd03c32572309212173ef6a8e7dab6cd92e6",
+      "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+      "bytes": 83,
+      "source": "ProjectSettings/ProjectVersion.txt",
+      "normalization": "raw"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1",
+      "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+      "bytes": 2165,
+      "source": "Packages/manifest.json",
+      "normalization": "CRLF-to-LF"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+      "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+      "bytes": 14044,
+      "source": "Packages/packages-lock.json",
+      "normalization": "raw"
+    }
+  ]
+}

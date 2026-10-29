@@ -286,6 +286,9 @@ namespace Luckbound.Editor
                 if (image.promptReference == null) image.promptReference = manifest.promptReference;
                 if (image.promptReferenceSha256 == null) image.promptReferenceSha256 = manifest.promptReferenceSha256;
 
+                bool duplicateResourceIdBeforeValidation = !string.IsNullOrWhiteSpace(image.resourceId) &&
+                    resourceIds.Contains(image.resourceId);
+                bool duplicateSourcePathBeforeValidation = sourcePaths.Contains(image.sourcePath ?? string.Empty);
                 if (string.IsNullOrWhiteSpace(image.resourceId) || !resourceIds.Add(image.resourceId) ||
                     (image.status != "Prototype" && image.status != "Final") ||
                     string.IsNullOrWhiteSpace(image.provenance) || string.IsNullOrWhiteSpace(image.referenceId) ||
@@ -296,7 +299,9 @@ namespace Luckbound.Editor
                     !IsSha256(image.sha256) || image.width <= 0 || image.height <= 0 || image.bitDepth != 8 ||
                     (image.colorType != 0 && image.colorType != 2 && image.colorType != 3 &&
                      image.colorType != 4 && image.colorType != 6) || image.slices == null || image.slices.Length == 0)
-                    throw new InvalidDataException("F02 image traceability metadata is missing, malformed, or has a duplicate resource ID.");
+                    throw new InvalidDataException("F02 image traceability metadata is missing, malformed, or has a duplicate resource ID." +
+                        DescribeImageTraceabilityFailure(image, duplicateResourceIdBeforeValidation,
+                            duplicateSourcePathBeforeValidation));
                 ValidateProjectRelativePath(image.sourcePath);
                 ValidateVersionedPromptReference(image.promptReference, image.promptReferenceSha256);
                 ValidateProjectRelativePath(image.referencePath);
@@ -622,11 +627,14 @@ namespace Luckbound.Editor
             settings.stopTime = ExpectedClipDuration(spec);
             settings.loopTime = spec.loop;
             AnimationUtility.SetAnimationClipSettings(clip, settings);
+            string preCreateAssetMeasurements = CaptureClipMeasurements(
+                clip, spec, AnimationUtility.GetAnimationClipSettings(clip), keys, ExpectedClipDuration(spec));
             AssetDatabase.CreateAsset(clip, clipPath);
-            ValidateClip(clip, spec, spritesByName);
+            ValidateClip(clip, spec, spritesByName, preCreateAssetMeasurements);
         }
 
-        private static void ValidateClip(AnimationClip clip, ClipSpec spec, IReadOnlyDictionary<string, Sprite> spritesByName)
+        private static void ValidateClip(AnimationClip clip, ClipSpec spec, IReadOnlyDictionary<string, Sprite> spritesByName,
+            string preCreateAssetMeasurements = null)
         {
             AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
             if (!string.Equals(clip.name, spec.name, StringComparison.Ordinal) ||
@@ -657,7 +665,7 @@ namespace Luckbound.Editor
                 (spec.frames.Length == 1 && IsFiniteAndApproximately(clip.length, 0f));
             if (!IsFiniteAndApproximately(settings.startTime, 0f) ||
                 !IsFiniteAndApproximately(settings.stopTime, expectedDuration))
-                throw new InvalidDataException("Existing F02 clip duration differs from its manifest: " + spec.name);
+                throw new InvalidDataException(DescribeClipDuration(clip, spec, settings, keys, expectedDuration, "AnimationClipSettings.startTime/stopTime", preCreateAssetMeasurements));
             for (int i = 0; i < spec.frames.Length; i++)
             {
                 Sprite expected;
@@ -672,12 +680,103 @@ namespace Luckbound.Editor
             if (!IsFiniteAndApproximately(keys[keys.Length - 1].time, expectedDuration) || keys[keys.Length - 1].value != last)
                 throw new InvalidDataException("Existing F02 clip terminal frame differs from its manifest: " + spec.name);
             if (!serializedLengthMatches)
-                throw new InvalidDataException("Existing F02 clip duration differs from its manifest: " + spec.name);
+                throw new InvalidDataException(DescribeClipDuration(clip, spec, settings, keys, expectedDuration, "AnimationClip.length", preCreateAssetMeasurements));
         }
 
         private static float ExpectedClipDuration(ClipSpec spec)
         {
             return (float)spec.frames.Length / spec.framesPerSecond;
+        }
+
+        private static string DescribeImageTraceabilityFailure(
+            ImageSource image, bool duplicateResourceIdBeforeValidation, bool duplicateSourcePathBeforeValidation)
+        {
+            var failedPredicates = new List<string>();
+            if (string.IsNullOrWhiteSpace(image.resourceId)) failedPredicates.Add("resourceId.blank");
+            if (duplicateResourceIdBeforeValidation) failedPredicates.Add("resourceId.duplicate");
+            if (image.status != "Prototype" && image.status != "Final") failedPredicates.Add("status.invalid");
+            if (string.IsNullOrWhiteSpace(image.provenance)) failedPredicates.Add("provenance.blank");
+            if (string.IsNullOrWhiteSpace(image.referenceId)) failedPredicates.Add("referenceId.blank");
+            if (string.IsNullOrWhiteSpace(image.promptReference)) failedPredicates.Add("promptReference.blank");
+            if (!IsSha256(image.promptReferenceSha256)) failedPredicates.Add("promptReferenceSha256.invalid");
+            if (!IsSha256(image.referenceSha256)) failedPredicates.Add("referenceSha256.invalid");
+            if (!IsSafePngName(image.assetFileName)) failedPredicates.Add("assetFileName.invalid");
+            if (duplicateSourcePathBeforeValidation) failedPredicates.Add("sourcePath.duplicate");
+            if (!IsSha256(image.sha256)) failedPredicates.Add("sha256.invalid");
+            if (image.width <= 0) failedPredicates.Add("width.nonpositive");
+            if (image.height <= 0) failedPredicates.Add("height.nonpositive");
+            if (image.bitDepth != 8) failedPredicates.Add("bitDepth.not8");
+            if (image.colorType != 0 && image.colorType != 2 && image.colorType != 3 &&
+                image.colorType != 4 && image.colorType != 6) failedPredicates.Add("colorType.invalid");
+            if (image.slices == null || image.slices.Length == 0) failedPredicates.Add("slices.empty");
+
+            string sliceCount = image.slices == null
+                ? "<null>"
+                : image.slices.Length.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return " [failedPredicates=" + string.Join(",", failedPredicates.ToArray()) +
+                "; resourceId=" + DescribeStringState(image.resourceId) +
+                "; duplicateResourceIdBeforeValidation=" + duplicateResourceIdBeforeValidation +
+                "; status=" + DescribeStringState(image.status) +
+                "; provenance=" + DescribeStringState(image.provenance) +
+                "; referenceId=" + DescribeStringState(image.referenceId) +
+                "; referencePath=" + DescribeStringState(image.referencePath) +
+                "; referenceSha256=" + DescribeStringState(image.referenceSha256) +
+                "; promptReference=" + DescribeStringState(image.promptReference) +
+                "; promptReferenceSha256=" + DescribeStringState(image.promptReferenceSha256) +
+                "; sourcePath=" + DescribeStringState(image.sourcePath) +
+                "; duplicateSourcePathBeforeValidation=" + duplicateSourcePathBeforeValidation +
+                "; assetFileName=" + DescribeStringState(image.assetFileName) +
+                "; sha256=" + DescribeStringState(image.sha256) +
+                "; width=" + image.width.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                "; height=" + image.height.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                "; bitDepth=" + image.bitDepth.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                "; colorType=" + image.colorType.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                "; sliceCount=" + sliceCount + "]";
+        }
+
+        private static string DescribeStringState(string value)
+        {
+            if (value == null) return "<null>";
+            if (value.Length == 0) return "<empty:length=0>";
+            if (string.IsNullOrWhiteSpace(value)) return "<whitespace:length=" +
+                value.Length.ToString(System.Globalization.CultureInfo.InvariantCulture) + ">";
+            return "<value:length=" + value.Length.ToString(System.Globalization.CultureInfo.InvariantCulture) + ">";
+        }
+
+        private static string DescribeClipDuration(
+            AnimationClip clip, ClipSpec spec, AnimationClipSettings settings,
+            ObjectReferenceKeyframe[] keys, float expectedDuration, string failedInvariant,
+            string preCreateAssetMeasurements)
+        {
+            return "Existing F02 clip duration differs from its manifest: " + spec.name +
+                " [failedInvariant=" + failedInvariant +
+                "; current=" + CaptureClipMeasurements(clip, spec, settings, keys, expectedDuration) +
+                "; preCreateAsset=" + (preCreateAssetMeasurements ?? "<not-created-in-this-call>") + "].";
+        }
+
+        private static string CaptureClipMeasurements(
+            AnimationClip clip, ClipSpec spec, AnimationClipSettings settings,
+            ObjectReferenceKeyframe[] keys, float expectedDuration)
+        {
+            string firstKeyTime = keys == null || keys.Length == 0 ? "<none>" : FormatClipTime(keys[0].time);
+            string terminalKeyTime = keys == null || keys.Length == 0
+                ? "<none>"
+                : FormatClipTime(keys[keys.Length - 1].time);
+            string keyCount = keys == null ? "<null>" : keys.Length.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return "{expectedDurationSeconds=" + FormatClipTime(expectedDuration) +
+                "; clip.length=" + FormatClipTime(clip.length) +
+                "; frameRate=" + FormatClipTime(clip.frameRate) +
+                "; frameCount=" + spec.frames.Length.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                "; objectReferenceKeyCount=" + keyCount +
+                "; startTime=" + FormatClipTime(settings.startTime) +
+                "; stopTime=" + FormatClipTime(settings.stopTime) +
+                "; firstKeyTime=" + firstKeyTime +
+                "; terminalKeyTime=" + terminalKeyTime + "}";
+        }
+
+        private static string FormatClipTime(float value)
+        {
+            return value.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         private static bool IsFiniteAndApproximately(float actual, float expected)

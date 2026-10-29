@@ -1,0 +1,21 @@
+{
+  "assemblies": [
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 67,
+      "candidates": [
+        "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs"
+      ],
+      "exitCode": 0,
+      "logSha256": "4c8c1e377a38a1ab316f42e87da4b37158d843f4bde08b8a7278c5e5fe7661d8"
+    }
+  ],
+  "candidateHashes": {
+    "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs": "e7d589612b901d0a7ffbb9b8015d9a170f26ef73c2a7500c02cc7b47d5b78c7b"
+  },
+  "allChangedSourcesSelected": true,
+  "rootSourcesUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "jsonUtilityExecuted": false
+}

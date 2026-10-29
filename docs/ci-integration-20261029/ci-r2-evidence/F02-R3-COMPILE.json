@@ -1,0 +1,28 @@
+{
+  "assemblies": [
+    {
+      "assembly": "Luckbound.Editor",
+      "sourceCount": 10,
+      "candidates": [
+        "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs"
+      ],
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "assembly": "Luckbound.Editor.Tests",
+      "sourceCount": 4,
+      "candidates": [],
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "candidateHashes": {
+    "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs": "2fe7fdcf83cabab5d7b16977ee8d56bf49f0f9da1b782d227dfaa3824fe8b488"
+  },
+  "allChangedSourcesSelected": true,
+  "rootSourcesUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "jsonUtilityExecuted": false
+}

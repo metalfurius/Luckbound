@@ -1,0 +1,16 @@
+{
+  "appliedAtUtc": "2026-10-29T16:13:07.702Z",
+  "sourceGuardCount": 374,
+  "changes": [
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+      "beforeSha256": "ad86cf1f0721cc2e62aa19d42ffce600512c802003e7d7b9744dd38c999ebd32",
+      "afterSha256": "e7d589612b901d0a7ffbb9b8015d9a170f26ef73c2a7500c02cc7b47d5b78c7b"
+    }
+  ],
+  "review": "SOL-RESTSTOP-TEST-FIX-CONTRACT.md",
+  "reviewSha256": "3e591decde2e9c21a89defa9b5ca7ea6921a9d9c29c435689a8cf5a36722f4f8",
+  "offlineCompile": "ci-r3-offline-r1/RESULTS.json",
+  "unityRun": false,
+  "productionChanged": false
+}

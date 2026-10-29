@@ -1,0 +1,11 @@
+{
+  "generatedAtUtc": "2026-10-29T16:23:38.475Z",
+  "source": "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+  "beforeSha256": "128795929a09dc335a52007ac05af7ef02cf76094139a95edd9e74808f0ef712",
+  "afterSha256": "2fe7fdcf83cabab5d7b16977ee8d56bf49f0f9da1b782d227dfaa3824fe8b488",
+  "reconstructionMatchesBefore": true,
+  "predicateControlFlowAndToleranceSourceUnchanged": true,
+  "addedHelpersScope": "Only diagnostic strings; pre-CreateAsset values are observations, not forced reload",
+  "testsByteIdentical": true,
+  "unityExecuted": false
+}

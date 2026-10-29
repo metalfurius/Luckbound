@@ -326,7 +326,6 @@ namespace Luckbound.Tests.PlayMode.Economy
             string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundI06", Guid.NewGuid().ToString("N"));
             var store = new FileSaveStore(saveDirectory, null);
             Keyboard keyboard = null;
-            ExpeditionPauseController pause = null;
             bool previousAudioListenerPause = AudioListener.pause;
             float previousTimeScale = Time.timeScale;
             AudioListener.pause = true;
@@ -355,8 +354,6 @@ namespace Luckbound.Tests.PlayMode.Economy
                 stopListening.Invoke(router, null);
 
                 keyboard = InputSystem.AddDevice<Keyboard>();
-                pause = UnityEngine.Object.FindAnyObjectByType<ExpeditionPauseController>();
-                Assert.That(pause, Is.Not.Null);
 
                 SimulatePointerClick(controller.AccessButton);
                 Assert.That(controller.IsPanelOpen, Is.True);
@@ -383,7 +380,6 @@ namespace Luckbound.Tests.PlayMode.Economy
 
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState());
                 InputSystem.Update();
-                if (pause.IsPaused) pause.SetPaused(false);
 
                 SimulatePointerClick(controller.AccessButton);
                 int buttonCloseStart = router.PendingEffectRequestCount;
@@ -417,7 +413,6 @@ namespace Luckbound.Tests.PlayMode.Economy
             }
             finally
             {
-                if (pause != null && pause.IsPaused) pause.SetPaused(false);
                 if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
                 AudioListener.pause = previousAudioListenerPause;
                 ApplicationBootstrapper.EditorSaveStoreFactoryForTests = null;

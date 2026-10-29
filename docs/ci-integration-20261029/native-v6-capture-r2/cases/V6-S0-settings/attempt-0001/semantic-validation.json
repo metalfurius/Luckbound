@@ -1,0 +1,9 @@
+{
+    "method": "SaveDataValidation.Validate(SettingsSaveEnvelope)",
+    "executed": true,
+    "result": "Returned",
+    "accepted": true,
+    "errors": [],
+    "errorType": "",
+    "errorMessage": ""
+}
