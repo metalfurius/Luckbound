@@ -10,7 +10,14 @@ namespace Luckbound.Core.Progression.Contracts
         CombatRoomsCompleted = 1,
         CustodiansDefeated = 2,
         BoneguardsDefeated = 3,
-        ItemsCraftedOrUpgraded = 4
+        ItemsCraftedOrUpgraded = 4,
+        StoryFragmentsFound = 5,
+        ExpeditionsExtractedAfterGuardian = 6,
+        MagistersDefeated = 7,
+        SkillHitsApplied = 8,
+        PactsAcceptedBetweenExpeditions = 9,
+        WeaponsUpgradedToPlusThree = 10,
+        EndingsCompleted = 11
     }
 
     public enum ContractProgressEvent
@@ -19,14 +26,22 @@ namespace Luckbound.Core.Progression.Contracts
         CustodianDefeated = 2,
         BoneguardDefeated = 3,
         ItemCrafted = 4,
-        ItemUpgraded = 5
+        ItemUpgraded = 5,
+        StoryFragmentFound = 6,
+        ExpeditionExtractedAfterGuardian = 7,
+        MagisterDefeated = 8,
+        SkillHitApplied = 9,
+        PactAcceptedBetweenExpeditions = 10,
+        WeaponUpgradedToPlusThree = 11,
+        EndingCompleted = 12
     }
 
     public enum ContractUnlockKind
     {
         StartingKit = 1,
         PlayableRace = 2,
-        GuildRecognition = 3
+        GuildRecognition = 3,
+        GuildDecoration = 4
     }
 
     /// <summary>A stable, typed unlock granted by a claimed contract.</summary>

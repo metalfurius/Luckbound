@@ -1,0 +1,14 @@
+{
+  "beforeSha256": "d8fb0de4792538f93822b2c0d235604921299d5e54a3d6ec7a6cb34536e8bf1e",
+  "afterSha256": "b6a1441895df5d8170592eb1bd8c71e4d1d7ac27462bfb6055d78b2bcdfe0a28",
+  "acceptedBy": "1557d332e6bbbd76c9edeb428d02245af822457eecf9d66075023f28aecb1a47",
+  "recordSha256": "b2b61dca9e4b2327c3a0649f54fcbce9130e171d7d9371acde3ab41b90ed72d7",
+  "recordsChanged": false,
+  "gitMutationPerformed": false,
+  "ciExecuted": false,
+  "readOnlyGitVerification": {
+    "gitHashObject": "5b5f8ac0e38b4ce4eb5765268759f575d0dbc6a5",
+    "recordTextAttribute": "unset",
+    "recordV2TextAttribute": "unset"
+  }
+}

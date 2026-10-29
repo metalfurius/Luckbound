@@ -41,7 +41,7 @@
     "report": {
       "bytes": 2725,
       "path": "Tools/Audio/reports/patio_theme.report.json",
-      "sha256": "a059a45f6cb4e7dd38709047f8ce7d727cddd0c4ff5cd3ab9624b8214a1a0df0"
+      "sha256": "39631c3bf47aff0ced1a3acca98834d7a5403e9afab4e8f66c4b536fc1fa29a3"
     },
     "score": {
       "bytes": 49399,
@@ -59,7 +59,7 @@
       "python": "3.14.7",
       "soundfile": "0.14.0"
     },
-    "source_sha256": "7b917da7c07866dd416788745396fa449a4e1da571c56b53308a1a96f6586a35",
+    "source_sha256": "191a5111978fcc24c2756ed4614e49eb4f9b536fa5bcc12800b547567149d246",
     "synthesis_version": "1.0.0"
   },
   "score_contract": {

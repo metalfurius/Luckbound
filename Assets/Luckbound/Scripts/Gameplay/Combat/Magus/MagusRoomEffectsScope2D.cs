@@ -130,19 +130,20 @@ namespace Luckbound.Gameplay.Combat.Magus
             }
         }
 
-        public void ResolveFireballImpact(
+        public bool ResolveFireballImpact(
             Projectile2D projectile,
             MagusFireballActivation activation,
             ProjectileImpact impact,
             long tick)
         {
             EnsureActive();
-            if (projectile == null) return;
+            if (projectile == null) return false;
 
             Vector2 center = projectile.transform.position;
             long statusTick = tick < _lastTick ? _lastTick : tick;
             var affectedActors = new HashSet<ActorId>();
             bool directTargetReceivedBurn = false;
+            bool burnApplied = false;
 
             Collider2D[] overlaps = Physics2D.OverlapCircleAll(center, (float)activation.ExplosionRadius, _targetLayers.value);
             for (int index = 0; index < overlaps.Length; index++)
@@ -167,6 +168,7 @@ namespace Luckbound.Gameplay.Combat.Magus
                     activation.BurnDamagePerSecond,
                     activation.BurnDurationTicks,
                     impact.SourcePositionX);
+                burnApplied = true;
 
                 if (target.ActorId == impact.TargetActorId) directTargetReceivedBurn = true;
             }
@@ -183,8 +185,11 @@ namespace Luckbound.Gameplay.Combat.Magus
                         activation.BurnDamagePerSecond,
                         activation.BurnDurationTicks,
                         impact.SourcePositionX);
+                    burnApplied = true;
                 }
             }
+
+            return burnApplied;
         }
 
         public void Dispose()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Luckbound.Core.Crafting;
@@ -23,6 +24,7 @@ namespace Luckbound.App
         [SerializeField] private Text _craftStatusText;
 
         private bool _crafting;
+        private readonly HashSet<TransactionId> _routedCraftTransactions = new HashSet<TransactionId>();
 
         public TransactionId LastCraftTransactionId { get; private set; }
         public bool IsCrafting => _crafting;
@@ -123,6 +125,9 @@ namespace Luckbound.App
                     LastCraftTransactionId = result.Outcome.TransactionId;
                 if (result.Persisted && result.Outcome != null)
                 {
+                    if (!result.Pending && result.Outcome.Succeeded && result.Outcome.TransactionId.IsValid &&
+                        _routedCraftTransactions.Add(result.Outcome.TransactionId))
+                        app.AudioRouter?.PlayEffect(ApplicationAudioRouter.UiCraftEffectId);
                     _craftStatusText.text = FormatCraftingOutcome(result.Outcome);
                     if (app.ActiveRun != null) RefreshRunSummary(app.ActiveRun, app.ActiveExpedition);
                 }
@@ -155,6 +160,14 @@ namespace Luckbound.App
 
         public void ReturnToTavern()
         {
+            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            if (app != null && app.HasPendingSessionMutation)
+            {
+                if (_craftStatusText != null)
+                    _craftStatusText.text = "No se puede salir mientras haya un guardado en curso o pendiente. Resuelve la operación y vuelve a intentarlo.";
+                return;
+            }
+
             Time.timeScale = 1f;
             SceneManager.LoadScene("Hub", LoadSceneMode.Single);
         }

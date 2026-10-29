@@ -90,6 +90,10 @@ namespace Luckbound.App
 
         public ProfileSaveEnvelope CurrentProfile => _profile;
         public SettingsSaveEnvelope CurrentSettings => _settings;
+        /// <summary>Returns a copy of the exact settings payload retained for retry, if any.</summary>
+        public GameSettingsSaveData PendingSettingsForRetry => _pendingSettings == null
+            ? null
+            : ((SettingsSaveEnvelope)_pendingSettings.Envelope).settings.Clone();
 
         public async Task<SaveLoadResult<ProfileSaveEnvelope>> LoadProfileAsync()
         {
@@ -424,6 +428,14 @@ namespace Luckbound.App
                         legacy.savedAtUtc, ToLegacyProfileV1(legacy.profile), legacy.hasActiveExpedition,
                         legacy.activeExpedition, legacy.profile == null ? null : legacy.profile.progressionPurchaseTransactions);
                 }
+                else if (header.contentVersion == 5)
+                {
+                    LegacyProfileSaveEnvelopeV5 legacy = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV5>(json);
+                    if (legacy == null || !NormalizeLegacyProfileEnvelope(legacy) ||
+                        !string.Equals(legacy.checksum, ComputeLegacyProfileChecksum(legacy), StringComparison.Ordinal))
+                        return DecodeStatus.Corrupted;
+                    envelope = MigrateLegacyCurrentProfile(legacy);
+                }
                 else if (header.contentVersion < SaveFormat.ContentVersion)
                 {
                     LegacyProfileSaveEnvelopeV4 legacy = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV4>(json);
@@ -527,6 +539,15 @@ namespace Luckbound.App
                 };
                 envelope.checksum = ComputeChecksum(envelope);
             }
+            else if (header.contentVersion == 5)
+            {
+                try { envelope = JsonUtility.FromJson<SettingsSaveEnvelope>(json); }
+                catch { return DecodeStatus.Corrupted; }
+                if (envelope == null || !string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal))
+                    return DecodeStatus.Corrupted;
+                envelope.contentVersion = SaveFormat.ContentVersion;
+                envelope.checksum = ComputeChecksum(envelope);
+            }
             else
             {
                 try { envelope = JsonUtility.FromJson<SettingsSaveEnvelope>(json); }
@@ -570,6 +591,14 @@ namespace Luckbound.App
         }
 
         private static bool NormalizeLegacyProfileEnvelope(LegacyProfileSaveEnvelopeV4Brew envelope)
+        {
+            if (envelope.hasActiveExpedition) return envelope.activeExpedition != null;
+            if (HasActiveExpeditionPayload(envelope.activeExpedition)) return false;
+            envelope.activeExpedition = null;
+            return true;
+        }
+
+        private static bool NormalizeLegacyProfileEnvelope(LegacyProfileSaveEnvelopeV5 envelope)
         {
             if (envelope.hasActiveExpedition) return envelope.activeExpedition != null;
             if (HasActiveExpeditionPayload(envelope.activeExpedition)) return false;
@@ -748,7 +777,7 @@ namespace Luckbound.App
                 sequence = legacy.sequence,
                 savedAtUtc = legacy.savedAtUtc,
                 checksum = string.Empty,
-                profile = legacy.profile,
+                profile = MigrateLegacyProfileDataV5(legacy.profile),
                 hasActiveExpedition = legacy.hasActiveExpedition,
                 activeExpedition = legacy.activeExpedition == null
                     ? null
@@ -768,7 +797,7 @@ namespace Luckbound.App
                 sequence = legacy.sequence,
                 savedAtUtc = legacy.savedAtUtc,
                 checksum = string.Empty,
-                profile = legacy.profile,
+                profile = MigrateLegacyProfileDataV5(legacy.profile),
                 hasActiveExpedition = legacy.hasActiveExpedition,
                 activeExpedition = legacy.activeExpedition == null
                     ? null
@@ -776,6 +805,47 @@ namespace Luckbound.App
             };
             migrated.checksum = ComputeChecksum(migrated);
             return migrated;
+        }
+
+        private static ProfileSaveEnvelope MigrateLegacyCurrentProfile(LegacyProfileSaveEnvelopeV5 legacy)
+        {
+            var migrated = new ProfileSaveEnvelope
+            {
+                schemaVersion = legacy.schemaVersion,
+                contentVersion = SaveFormat.ContentVersion,
+                generation = legacy.generation,
+                sequence = legacy.sequence,
+                savedAtUtc = legacy.savedAtUtc,
+                checksum = string.Empty,
+                profile = MigrateLegacyProfileDataV5(legacy.profile),
+                hasActiveExpedition = legacy.hasActiveExpedition,
+                activeExpedition = legacy.activeExpedition == null ? null : legacy.activeExpedition.Clone()
+            };
+            migrated.checksum = ComputeChecksum(migrated);
+            return migrated;
+        }
+
+        private static ProfileSaveData MigrateLegacyProfileDataV5(LegacyProfileSaveDataV5 source)
+        {
+            if (source == null) return null;
+            return new ProfileSaveData
+            {
+                availableRenown = source.availableRenown,
+                healthUpgradeLevel = source.healthUpgradeLevel,
+                energyUpgradeLevel = source.energyUpgradeLevel,
+                additionalPotionUpgradeLevel = source.additionalPotionUpgradeLevel,
+                unlockedRaceIds = Copy(source.unlockedRaceIds),
+                unlockedStartingKitIds = Copy(source.unlockedStartingKitIds),
+                acceptedContractIds = Copy(source.acceptedContractIds),
+                claimedContractIds = Copy(source.claimedContractIds),
+                readStoryFragmentIds = Copy(source.readStoryFragmentIds),
+                contractCounters = source.contractCounters == null ? null : source.contractCounters
+                    .Select(counter => counter == null ? null : counter.Clone()).ToArray(),
+                processedSettlementRunIds = Copy(source.processedSettlementRunIds),
+                processedContractProgressEvents = Array.Empty<ContractProgressEventReceiptSaveData>(),
+                progressionPurchaseTransactions = source.progressionPurchaseTransactions == null ? null : source.progressionPurchaseTransactions
+                    .Select(transaction => transaction == null ? null : transaction.Clone()).ToArray()
+            };
         }
 
         private static ExpeditionSaveData MigrateLegacyCurrentExpedition(LegacyExpeditionSaveDataV4 legacy)
@@ -1006,6 +1076,12 @@ namespace Luckbound.App
             return Hash(JsonUtility.ToJson(source, false));
         }
 
+        private static string ComputeLegacyProfileChecksum(LegacyProfileSaveEnvelopeV5 source)
+        {
+            source.checksum = string.Empty;
+            return Hash(JsonUtility.ToJson(source, false));
+        }
+
         private static string ComputeChecksum(ProfileSaveEnvelope source)
         {
             ExpeditionSaveData canonicalExpedition = source.hasActiveExpedition && source.activeExpedition != null
@@ -1147,7 +1223,9 @@ namespace Luckbound.App
             public long sequence;
             public string savedAtUtc;
             public string checksum;
-            public ProfileSaveData profile;
+            // Content v4 predates durable contract-event receipts. Keep this exact DTO shape so
+            // checksum verification never serializes the newly added v6 field.
+            public LegacyProfileSaveDataV5 profile;
             public bool hasActiveExpedition;
             public LegacyExpeditionSaveDataV4 activeExpedition;
         }
@@ -1161,9 +1239,24 @@ namespace Luckbound.App
             public long sequence;
             public string savedAtUtc;
             public string checksum;
-            public ProfileSaveData profile;
+            // The Brew variation changes the active-expedition DTO only, not the profile shape.
+            public LegacyProfileSaveDataV5 profile;
             public bool hasActiveExpedition;
             public LegacyExpeditionSaveDataV4Brew activeExpedition;
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileSaveEnvelopeV5
+        {
+            public int schemaVersion;
+            public int contentVersion;
+            public int generation;
+            public long sequence;
+            public string savedAtUtc;
+            public string checksum;
+            public LegacyProfileSaveDataV5 profile;
+            public bool hasActiveExpedition;
+            public ExpeditionSaveData activeExpedition;
         }
 
         [Serializable]
@@ -1197,6 +1290,23 @@ namespace Luckbound.App
             public ContractCounterSaveData[] contractCounters;
             public string[] processedSettlementRunIds;
             public PermanentUpgradePurchaseSaveData[] progressionPurchaseTransactions;
+        }
+
+        [Serializable]
+        private sealed class LegacyProfileSaveDataV5
+        {
+            public int availableRenown;
+            public int healthUpgradeLevel;
+            public int energyUpgradeLevel;
+            public int additionalPotionUpgradeLevel;
+            public string[] unlockedRaceIds = Array.Empty<string>();
+            public string[] unlockedStartingKitIds = Array.Empty<string>();
+            public string[] acceptedContractIds = Array.Empty<string>();
+            public string[] claimedContractIds = Array.Empty<string>();
+            public string[] readStoryFragmentIds = Array.Empty<string>();
+            public ContractCounterSaveData[] contractCounters = Array.Empty<ContractCounterSaveData>();
+            public string[] processedSettlementRunIds = Array.Empty<string>();
+            public PermanentUpgradePurchaseSaveData[] progressionPurchaseTransactions = Array.Empty<PermanentUpgradePurchaseSaveData>();
         }
 
         [Serializable]

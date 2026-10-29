@@ -21,6 +21,7 @@ namespace Luckbound.Gameplay.Input
         private readonly InputAction _moveAction;
         private readonly Dictionary<InputAction, PlayerAction> _buttonActions = new Dictionary<InputAction, PlayerAction>();
         private bool _disposed;
+        private bool _gameplayActionsEnabled = true;
 
         public event Action PausePressed;
 
@@ -76,6 +77,15 @@ namespace Luckbound.Gameplay.Input
             return _buffer.Consume(tick);
         }
 
+        /// <summary>Blocks queued movement and gameplay buttons while simulation is held by a pause lease.</summary>
+        public void SetGameplayActionsEnabled(bool enabled)
+        {
+            ThrowIfDisposed();
+            if (_gameplayActionsEnabled == enabled) return;
+            _gameplayActionsEnabled = enabled;
+            if (!enabled) _buffer.ReleaseAll();
+        }
+
         public void Dispose()
         {
             if (_disposed)
@@ -107,7 +117,7 @@ namespace Luckbound.Gameplay.Input
 
         private void OnMovePerformed(InputAction.CallbackContext context)
         {
-            _buffer.SetMoveX(context.ReadValue<float>());
+            _buffer.SetMoveX(_gameplayActionsEnabled ? context.ReadValue<float>() : 0f);
         }
 
         private void OnMoveCanceled(InputAction.CallbackContext context)
@@ -118,6 +128,7 @@ namespace Luckbound.Gameplay.Input
         private void OnButtonPerformed(InputAction.CallbackContext context)
         {
             PlayerAction playerAction = _buttonActions[context.action];
+            if (!_gameplayActionsEnabled && playerAction != PlayerAction.Pause) return;
             _buffer.Press(playerAction);
             if (playerAction == PlayerAction.Pause)
             {

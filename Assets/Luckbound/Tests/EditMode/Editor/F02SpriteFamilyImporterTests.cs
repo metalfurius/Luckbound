@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Luckbound.Editor;
 using NUnit.Framework;
@@ -13,6 +15,91 @@ namespace Luckbound.Tests.Editor
 {
     public sealed class F02SpriteFamilyImporterTests
     {
+#if UNITY_EDITOR_WIN
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true,
+            EntryPoint = "CreateSymbolicLinkW", ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CreateDirectorySymbolicLinkWindows(string symbolicLinkPath, string targetPath, uint flags);
+#else
+        [DllImport("libc", CharSet = CharSet.Ansi, SetLastError = true,
+            EntryPoint = "symlink", ExactSpelling = true)]
+        private static extern int CreateDirectorySymbolicLinkUnix(string targetPath, string symbolicLinkPath);
+#endif
+
+        [Test]
+        public void FixtureOutputDirectoryReparsePoint_IsRejectedBeforeImportCallbackOrExternalWrite()
+        {
+            string probeName = "F02FixtureReparseProbe-" + Guid.NewGuid().ToString("N");
+            string probeDirectory = F02SpriteFamilyImporter.FixtureFolder + "/" + probeName;
+            string probeLink = ProjectFullPath(probeDirectory);
+            string externalDirectory = Path.Combine(Path.GetTempPath(), probeName);
+            string sentinelPath = Path.Combine(externalDirectory, "sentinel.bin");
+            byte[] sentinel = { 0x46, 0x30, 0x32, 0x2D, 0x63, 0x61, 0x6E, 0x61, 0x72, 0x79 };
+            bool linkCreated = false;
+            bool autoRefreshDisallowed = false;
+
+            Assert.That(Directory.Exists(probeLink) || File.Exists(probeLink), Is.False,
+                "The unique probe output directory must not already exist.");
+            Assert.That(Directory.Exists(externalDirectory) || File.Exists(externalDirectory), Is.False,
+                "The unique external target directory must not already exist.");
+            Assert.That(IsInside(
+                    Path.GetFullPath(Directory.GetParent(Application.dataPath).FullName),
+                    Path.GetFullPath(externalDirectory)),
+                Is.False, "The output link target must be outside the Unity project.");
+
+            try
+            {
+                AssetDatabase.DisallowAutoRefresh();
+                autoRefreshDisallowed = true;
+                Directory.CreateDirectory(externalDirectory);
+                File.WriteAllBytes(sentinelPath, sentinel);
+                string sentinelHash = HashFile(sentinelPath);
+                CreateDirectorySymbolicLink(probeLink, externalDirectory);
+                linkCreated = true;
+
+                MethodInfo guardedImport = typeof(F02SpriteFamilyImporter).GetMethod(
+                    "ExecuteWithSafeOutputDirectory", BindingFlags.NonPublic | BindingFlags.Static);
+                Assert.That(guardedImport, Is.Not.Null,
+                    "ImportFixture must use the guarded callback seam before its file and AssetDatabase operations.");
+
+                int callbackCount = 0;
+                TargetInvocationException failure = Assert.Throws<TargetInvocationException>(() =>
+                    guardedImport.Invoke(null, new object[]
+                    {
+                        probeLink,
+                        new Action(() => callbackCount++)
+                    }));
+                Assert.That(failure.InnerException, Is.TypeOf<InvalidDataException>());
+                Assert.That(callbackCount, Is.Zero,
+                    "A rejected output directory must not enter the fixture import callback.");
+                Assert.That(HashFile(sentinelPath), Is.EqualTo(sentinelHash),
+                    "Rejecting the output directory link must leave the external canary bytes unchanged.");
+                CollectionAssert.AreEquivalent(new[] { "sentinel.bin" },
+                    Directory.GetFileSystemEntries(externalDirectory).Select(Path.GetFileName).ToArray(),
+                    "The rejected import callback must not add files to the external target.");
+            }
+            finally
+            {
+                try
+                {
+                    if (linkCreated && IsReparsePoint(probeLink))
+                        Directory.Delete(probeLink, false);
+
+                    if (Directory.Exists(externalDirectory) && !IsReparsePoint(externalDirectory))
+                    {
+                        if (File.Exists(sentinelPath) && !IsReparsePoint(sentinelPath))
+                            File.Delete(sentinelPath);
+                        if (!Directory.GetFileSystemEntries(externalDirectory).Any())
+                            Directory.Delete(externalDirectory, false);
+                    }
+                }
+                finally
+                {
+                    if (autoRefreshDisallowed) AssetDatabase.AllowAutoRefresh();
+                }
+            }
+        }
+
         [Test]
         public void FixtureImport_SecondRunPreservesGuidClipReferencesAndFilesOutsideFixture()
         {
@@ -219,6 +306,37 @@ namespace Luckbound.Tests.Editor
             {
                 byte[] hash = sha256.ComputeHash(stream);
                 return string.Concat(hash.Select(value => value.ToString("x2")));
+            }
+        }
+
+        private static void CreateDirectorySymbolicLink(string linkPath, string targetPath)
+        {
+#if UNITY_EDITOR_WIN
+            const uint directoryFlag = 0x1;
+            const uint allowUnprivilegedCreate = 0x2;
+            if (!CreateDirectorySymbolicLinkWindows(linkPath, targetPath, directoryFlag | allowUnprivilegedCreate))
+                Assert.Inconclusive("The host could not create the directory symlink required by this regression; Win32 error " +
+                    Marshal.GetLastWin32Error() + ".");
+#else
+            if (CreateDirectorySymbolicLinkUnix(targetPath, linkPath) != 0)
+                Assert.Inconclusive("The host could not create the directory symlink required by this regression; errno " +
+                    Marshal.GetLastWin32Error() + ".");
+#endif
+        }
+
+        private static bool IsReparsePoint(string path)
+        {
+            try
+            {
+                return (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0;
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return false;
             }
         }
 

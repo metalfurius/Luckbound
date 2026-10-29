@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -74,6 +75,15 @@ class TavernThemeAcceptanceTests(unittest.TestCase):
         self.assertEqual(manifest["files"]["report"]["sha256"], report_hash)
         self.assertEqual(manifest["acceptance"]["checks"], report["checks"])
         self.assertEqual(manifest["acceptance"]["status"], "passed")
+
+    def test_json_writer_emits_lf_bytes(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="luckbound-report-lf-") as temp_name:
+            report_path = Path(temp_name) / "generated.report.json"
+            synthesize._write_json(report_path, {"status": "passed", "checks": {"ok": True}})
+            report_bytes = report_path.read_bytes()
+
+        self.assertTrue(report_bytes.endswith(b"\n"))
+        self.assertNotIn(b"\r", report_bytes)
 
 
 if __name__ == "__main__":

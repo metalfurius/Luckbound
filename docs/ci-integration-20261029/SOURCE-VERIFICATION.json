@@ -1,0 +1,18 @@
+{
+  "sourceDeltaFiles": 188,
+  "completeInputCount": 4284,
+  "allFrozenFilesVerified": true,
+  "localProjectMatchesPacketWithGitTextNormalization": true,
+  "inheritedBaseFilesMatchingExactRawBytes": [
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Editor/ProjectScaffoldGeneratorTests.cs",
+      "baseBlob": "8fb120aed6661a21ab8a44e92d157231daedc621",
+      "cleanFilterBlob": "5a5abda73f0e956629715294a6c4e30a87203a99"
+    }
+  ],
+  "gitWritesPerformed": false,
+  "unityExecuted": false,
+  "ciExecuted": false,
+  "baseCommit": "97cb2a6fee9ba7bb4ccfaa1b318e161c81d1e705",
+  "branch": "codex/luckbound-integration-20261029"
+}

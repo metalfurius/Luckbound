@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Luckbound.Content;
 using Luckbound.Core.Identifiers;
-using Luckbound.Core.Progression.Contracts;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Input;
 using Luckbound.Gameplay.Movement;
@@ -41,6 +40,7 @@ namespace Luckbound.App
         private readonly List<Huesoguardia2D> _huesoguardias = new List<Huesoguardia2D>();
         private readonly List<Huesoguardia2D> _subscribedHuesoguardias = new List<Huesoguardia2D>();
         private readonly HashSet<ActorId> _reportedEnemyDeaths = new HashSet<ActorId>();
+        private readonly Dictionary<ActorId, int> _reportedEnemyDamageImpacts = new Dictionary<ActorId, int>();
         private CombatEncounterData _encounter;
         private GameObject _playerObject;
         private PlayerInputSource _inputSource;
@@ -51,6 +51,12 @@ namespace Luckbound.App
         private int _waveIndex;
         private int _reportedMeleeAttackActivations;
         private int _reportedMeleeImpacts;
+        private int _reportedSuccessfulJumps;
+        private int _reportedDodgeActivations;
+        private int _reportedSuccessfulPlayerHits;
+        private int _reportedHealthPotionUses;
+        private bool _hasGroundedAudioBaseline;
+        private bool _reportedPlayerGrounded;
         private bool _resultSet;
 
         public PlayerMotor2D PlayerMotor => _playerMotor;
@@ -93,6 +99,14 @@ namespace Luckbound.App
             }
 
             _playerMotor.Initialize(playerId, _inputSource, 1 << groundLayer, enemyLayers: 1 << enemiesLayer);
+            // These counters are cumulative for the motor lifetime. Treat anything present
+            // immediately after initialization as a baseline, not as a new gameplay event.
+            _reportedMeleeAttackActivations = _playerMotor.MeleeAttackActivationCount;
+            _reportedMeleeImpacts = _playerMotor.MeleeImpactsQueuedCount;
+            _reportedSuccessfulJumps = _playerMotor.SuccessfulJumpCount;
+            _reportedDodgeActivations = _playerMotor.DodgeActivationCount;
+            _reportedSuccessfulPlayerHits = CountSuccessfulPlayerHits();
+            _reportedHealthPotionUses = _playerMotor.SuccessfulHealthPotionUseCount;
             visualPresenter.Initialize(_playerMotor);
             _hudPresenter = gameObject.AddComponent<PlayerHudPresenter>();
             _hudPresenter.Initialize(_playerMotor, _telemetryText);
@@ -157,6 +171,7 @@ namespace Luckbound.App
         {
             _slimes.Clear();
             _huesoguardias.Clear();
+            _reportedEnemyDamageImpacts.Clear();
             foreach (CombatEnemySpawnData spawn in wave.spawns)
             {
                 bool isSlime = string.Equals(spawn.enemyId, "enemy.slime", StringComparison.Ordinal);
@@ -172,6 +187,7 @@ namespace Luckbound.App
                     if (slime == null) throw new InvalidOperationException("Slime prototype prefab is missing Slime2D.");
                     slime.Initialize(enemyId, _playerMotor, 1 << groundLayer);
                     _slimes.Add(slime);
+                    SetEnemyDamageAudioBaseline(slime.ActorId, CountEnemyImpacts(slime.MeleeImpactCount, slime.ProjectileImpactCount));
                 }
                 else
                 {
@@ -181,8 +197,12 @@ namespace Luckbound.App
                     huesoguardia.Defeated += OnHuesoguardiaDefeated;
                     _subscribedHuesoguardias.Add(huesoguardia);
                     _huesoguardias.Add(huesoguardia);
+                    SetEnemyDamageAudioBaseline(huesoguardia.ActorId,
+                        CountEnemyImpacts(huesoguardia.MeleeImpactCount, huesoguardia.ProjectileImpactCount));
                 }
             }
+
+            ResetSuccessfulPlayerHitAudioBaselineForWave();
         }
 
         private int CountLivingEnemies()
@@ -198,9 +218,6 @@ namespace Luckbound.App
             if (_resultSet) return;
             Result = result;
             _resultSet = true;
-            if (result == CombatArenaResult.Victory)
-                ApplicationBootstrapper.Instance?.RecordContractProgressEventFromGameplay(
-                    ContractProgressEvent.CombatRoomCompleted);
             RefreshEncounterText();
         }
 
@@ -208,31 +225,81 @@ namespace Luckbound.App
         {
             if (!actorId.IsValid || !_reportedEnemyDeaths.Add(actorId)) return;
             _audioRouter?.PlayEffect(ApplicationAudioRouter.EnemyDeathEffectId);
-            ApplicationBootstrapper.Instance?.RecordContractProgressEventFromGameplay(
-                ContractProgressEvent.BoneguardDefeated);
         }
 
         private void UpdateCombatAudioEvents()
         {
             if (_playerMotor == null) return;
 
-            int attackActivations = _playerMotor.MeleeAttackActivationCount;
-            while (_reportedMeleeAttackActivations < attackActivations)
+            int newSuccessfulJumps = ConsumeCounterDelta(
+                ref _reportedSuccessfulJumps,
+                _playerMotor.SuccessfulJumpCount);
+            for (int index = 0; index < newSuccessfulJumps; index++)
             {
-                _reportedMeleeAttackActivations++;
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.JumpEffectId);
+            }
+
+            int newDodgeActivations = ConsumeCounterDelta(
+                ref _reportedDodgeActivations,
+                _playerMotor.DodgeActivationCount);
+            for (int index = 0; index < newDodgeActivations; index++)
+            {
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.DodgeEffectId);
+            }
+
+            int newAttackActivations = ConsumeCounterDelta(
+                ref _reportedMeleeAttackActivations,
+                _playerMotor.MeleeAttackActivationCount);
+            for (int index = 0; index < newAttackActivations; index++)
+            {
                 _audioRouter?.PlayEffect(ApplicationAudioRouter.SwordSwingEffectId);
             }
 
-            int meleeImpacts = _playerMotor.MeleeImpactsQueuedCount;
-            while (_reportedMeleeImpacts < meleeImpacts)
+            int newMeleeImpacts = ConsumeCounterDelta(
+                ref _reportedMeleeImpacts,
+                _playerMotor.MeleeImpactsQueuedCount);
+            for (int index = 0; index < newMeleeImpacts; index++)
             {
-                _reportedMeleeImpacts++;
                 _audioRouter?.PlayEffect(ApplicationAudioRouter.SwordImpactEffectId);
+            }
+
+            int newPlayerHits = ConsumeCounterDelta(
+                ref _reportedSuccessfulPlayerHits,
+                CountSuccessfulPlayerHits());
+            for (int index = 0; index < newPlayerHits; index++)
+            {
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.PlayerDamageEffectId);
+            }
+
+            int newHealthPotionUses = ConsumeCounterDelta(
+                ref _reportedHealthPotionUses,
+                _playerMotor.SuccessfulHealthPotionUseCount);
+            for (int index = 0; index < newHealthPotionUses; index++)
+            {
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.PotionEffectId);
+            }
+
+            bool playerIsGrounded = _playerMotor.IsGrounded;
+            if (!_hasGroundedAudioBaseline)
+            {
+                if (playerIsGrounded)
+                {
+                    _reportedPlayerGrounded = true;
+                    _hasGroundedAudioBaseline = true;
+                }
+            }
+            else
+            {
+                if (!_reportedPlayerGrounded && playerIsGrounded)
+                    _audioRouter?.PlayEffect(ApplicationAudioRouter.LandingEffectId);
+                _reportedPlayerGrounded = playerIsGrounded;
             }
 
             foreach (Slime2D slime in _slimes)
             {
-                if (slime == null || !slime.IsDead || !slime.ActorId.IsValid ||
+                if (slime == null) continue;
+                UpdateEnemyDamageAudio(slime.ActorId, CountEnemyImpacts(slime.MeleeImpactCount, slime.ProjectileImpactCount));
+                if (!slime.IsDead || !slime.ActorId.IsValid ||
                     !_reportedEnemyDeaths.Add(slime.ActorId))
                 {
                     continue;
@@ -240,6 +307,68 @@ namespace Luckbound.App
 
                 _audioRouter?.PlayEffect(ApplicationAudioRouter.EnemyDeathEffectId);
             }
+
+            foreach (Huesoguardia2D huesoguardia in _huesoguardias)
+            {
+                if (huesoguardia == null) continue;
+                UpdateEnemyDamageAudio(huesoguardia.ActorId,
+                    CountEnemyImpacts(huesoguardia.MeleeImpactCount, huesoguardia.ProjectileImpactCount));
+            }
+        }
+
+        private void SetEnemyDamageAudioBaseline(ActorId actorId, int impactCount)
+        {
+            if (actorId.IsValid) _reportedEnemyDamageImpacts[actorId] = Math.Max(0, impactCount);
+        }
+
+        private void UpdateEnemyDamageAudio(ActorId actorId, int impactCount)
+        {
+            if (!actorId.IsValid) return;
+            if (!_reportedEnemyDamageImpacts.TryGetValue(actorId, out int reportedCount))
+            {
+                SetEnemyDamageAudioBaseline(actorId, impactCount);
+                return;
+            }
+
+            int newImpacts = ConsumeCounterDelta(ref reportedCount, impactCount);
+            _reportedEnemyDamageImpacts[actorId] = reportedCount;
+            for (int index = 0; index < newImpacts; index++)
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.EnemyDamageEffectId);
+        }
+
+        private static int CountEnemyImpacts(int meleeImpacts, int projectileImpacts)
+        {
+            return Math.Max(0, meleeImpacts) + Math.Max(0, projectileImpacts);
+        }
+
+        private static int ConsumeCounterDelta(ref int reportedCount, int currentCount)
+        {
+            if (currentCount < 0) return 0;
+            if (currentCount < reportedCount)
+            {
+                // A replacement/reset counter starts a new baseline; its old value must not replay.
+                reportedCount = currentCount;
+                return 0;
+            }
+
+            int newEvents = currentCount - reportedCount;
+            reportedCount = currentCount;
+            return newEvents;
+        }
+
+        private int CountSuccessfulPlayerHits()
+        {
+            int count = 0;
+            foreach (Slime2D slime in _slimes)
+                if (slime != null) count += Math.Max(0, slime.SuccessfulPlayerHitCount);
+            foreach (Huesoguardia2D huesoguardia in _huesoguardias)
+                if (huesoguardia != null) count += Math.Max(0, huesoguardia.SuccessfulPlayerHitCount);
+            return count;
+        }
+
+        private void ResetSuccessfulPlayerHitAudioBaselineForWave()
+        {
+            _reportedSuccessfulPlayerHits = CountSuccessfulPlayerHits();
         }
 
         private void RefreshEncounterText()

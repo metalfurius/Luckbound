@@ -10,6 +10,7 @@ using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
 using Luckbound.Core.Progression.Contracts;
 using Luckbound.Core.Saves;
+using Luckbound.Tests.PlayMode;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,11 +20,14 @@ namespace Luckbound.Tests.PlayMode.Economy
 {
     public sealed class MerchantApplicationTests
     {
+        private const string HealthPotionRecipeId = "recipe.consumable.health_potion";
+
         [UnityTest]
         public IEnumerator E03_PersistsMerchantTransactionsAndConsecutiveUpgradesAcrossRetryAndRestRestart()
         {
             string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE03", Guid.NewGuid().ToString("N"));
-            var store = new FailOnceProfileWriteStore(new FileSaveStore(saveDirectory, null));
+            var backingStore = new FileSaveStore(saveDirectory, null);
+            var store = new FailOnceProfileWriteStore(backingStore);
             var evidence = new ScenarioEvidenceRecorder("E03", "E03_MerchantTransactionsAndSmithingRestart", 27182818);
             try
             {
@@ -51,6 +55,8 @@ namespace Luckbound.Tests.PlayMode.Economy
                 RequireSuccess(run.Inventory.TryAddMaterial(MaterialKind.Ore, 8, TransactionId.New()), "seed upgrade ore");
                 RequireSuccess(run.Inventory.TryAddMaterial(MaterialKind.ShadowWood, 1, TransactionId.New()), "seed first upgrade wood");
                 RequireSuccess(run.Inventory.TryAddMaterial(MaterialKind.ArcaneDust, 1, TransactionId.New()), "seed second upgrade dust");
+                RequireSuccess(run.Inventory.TryAddMaterial(MaterialKind.UmbraHerb, 2, TransactionId.New()), "seed craft herbs");
+                RequireSuccess(run.Inventory.TryAddMaterial(MaterialKind.DarkResin, 1, TransactionId.New()), "seed craft resin");
                 ItemInstanceId weaponInstanceId = run.Inventory.Weapon.InstanceId;
 
                 Task<SaveWriteResult> begin = app.BeginExpeditionAsync(run);
@@ -125,7 +131,7 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(7));
                 Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(184));
 
-                evidence.RecordInput(3, "UpgradeEquipmentAsync", "Reject a skipped upgrade, then apply weapon +1 and +2 to the same instance");
+                evidence.RecordInput(3, "UpgradeEquipmentAsync/CraftActiveExpeditionAsync", "Reject a skipped upgrade, apply weapon +1 and +2, then craft a health potion");
                 TransactionId skippedUpgradeId = TransactionId.New();
                 Task<ExpeditionMutationCommitResult<SmithingOutcome>> skippedUpgrade = app.UpgradeEquipmentAsync(
                     roomId, "recipe.upgrade.weapon.2", weaponInstanceId, skippedUpgradeId);
@@ -149,6 +155,9 @@ namespace Luckbound.Tests.PlayMode.Economy
                 for (int frame = 0; frame < 120 && app.ContractProgression.GetProgress("CT04") != 1; frame++) yield return null;
                 Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(1),
                     "A persisted successful smithing transaction advances CT04 once.");
+                Assert.That(app.Profile.processedContractProgressEvents.Any(receipt =>
+                    receipt.eventId == "tx/" + firstUpgradeId), Is.True,
+                    "The smithing receipt must share the durable expedition transaction.");
 
                 TransactionId secondUpgradeId = TransactionId.New();
                 Task<ExpeditionMutationCommitResult<SmithingOutcome>> secondUpgrade = app.UpgradeEquipmentAsync(
@@ -164,6 +173,21 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.ArcaneDust), Is.Zero);
                 for (int frame = 0; frame < 120 && app.ContractProgression.GetProgress("CT04") != 2; frame++) yield return null;
                 Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(2));
+                Assert.That(app.Profile.processedContractProgressEvents.Any(receipt =>
+                    receipt.eventId == "tx/" + secondUpgradeId), Is.True);
+
+                TransactionId craftedPotionId = TransactionId.New();
+                Task<CraftingCommitResult> craftedPotion = app.CraftActiveExpeditionAsync(
+                    HealthPotionRecipeId, craftedPotionId);
+                while (!craftedPotion.IsCompleted) yield return null;
+                Assert.That(craftedPotion.Result.Persisted, Is.True, craftedPotion.Result.Message);
+                Assert.That(craftedPotion.Result.Outcome, Is.Not.Null);
+                Assert.That(craftedPotion.Result.Outcome.Succeeded, Is.True);
+                for (int frame = 0; frame < 120 && app.ContractProgression.GetProgress("CT04") != 3; frame++) yield return null;
+                Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(3));
+                Assert.That(app.Profile.processedContractProgressEvents.Any(receipt =>
+                    receipt.eventId == "tx/" + craftedPotionId &&
+                    receipt.progressEvent == (int)ContractProgressEvent.ItemCrafted), Is.True);
 
                 Task<ExpeditionMutationCommitResult<RestStopEntryCommitData>> repeatedEntry = app.EnterRestStopAsync(roomId);
                 while (!repeatedEntry.IsCompleted) yield return null;
@@ -234,8 +258,8 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(2));
                 Assert.That(app.ActiveRun.Inventory.Weapon.InstanceId, Is.EqualTo(weaponInstanceId));
                 Assert.That(app.ActiveRun.Inventory.Weapon.UpgradeLevel, Is.EqualTo(2));
-                Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(2),
-                    "The two successful smithing operations remain in the profile.");
+                Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(3),
+                    "Both smithing operations and the successful craft remain in the profile.");
                 Assert.That(HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"), Is.False);
                 evidence.RecordAssertion("Rejected item sale leaves functional inventory and gold unchanged",
                     !rejectedSale.Result.Outcome.Succeeded && app.ActiveRun.Inventory.Gold == 166 &&
@@ -251,7 +275,12 @@ namespace Luckbound.Tests.PlayMode.Economy
 
                 string runId = app.ActiveRun.RunId.ToString();
                 string nodeId = app.ActiveExpedition.currentNodeId;
-                evidence.RecordInput(6, "ProcessRestart", "Resume the saved rest room and verify confirmed merchant sales and smithing transactions");
+                evidence.RecordInput(6, "WriteLegacyV5AndRestart", "Migrate a v5 profile with CT04 counters and successful source transactions but no event ledger");
+                ProfileSaveData legacyProfile = app.Profile.Clone();
+                // A v5 profile can contain a committed source transaction whose separate CT04 write may or may not have landed.
+                // Keep two counted events beside three durable sources to exercise that ambiguity conservatively.
+                legacyProfile.contractCounters.Single(counter => counter.contractId == "CT04").progress = 2;
+                LegacyProfileV5TestFixture.WriteProfile(backingStore, legacyProfile, app.ActiveExpedition);
                 UnityEngine.Object.Destroy(app.gameObject);
                 yield return null;
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
@@ -272,7 +301,9 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveRun.Inventory.Weapon.UpgradeLevel, Is.EqualTo(2));
                 Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(2));
                 Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(2),
-                    "The two successful upgrades remain in the profile after restart.");
+                    "The legacy CT04 counter is preserved after migration.");
+                Assert.That(app.Profile.processedContractProgressEvents, Is.Empty,
+                    "A v5 profile has no authoritative event receipt ledger to migrate.");
                 Assert.That(HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"), Is.False);
                 MerchantStockSnapshot stockAfterRestart = app.GetActiveMerchantStock();
                 Assert.That(stockAfterRestart, Is.Not.Null);
@@ -291,7 +322,12 @@ namespace Luckbound.Tests.PlayMode.Economy
                     "; weapon=" + app.ActiveRun.Inventory.Weapon.InstanceId + "+" + app.ActiveRun.Inventory.Weapon.UpgradeLevel +
                     "; stock=" + stockAfterRestart.offers.Single(offer => offer.itemId == "consumable.health_potion").remainingQuantity);
 
-                evidence.RecordInput(7, "ReplayTransactions", "Replay the same purchase, sales and upgrade transaction IDs after restart");
+                evidence.RecordInput(7, "ReplayTransactions", "Replay the same purchase, sales, craft and upgrade transaction IDs after v5 migration");
+                int quickConsumablesBeforeCraftReplay = app.ActiveRun.Inventory.QuickConsumable.Quantity;
+                Task<CraftingCommitResult> replayedCraft = app.CraftActiveExpeditionAsync(
+                    HealthPotionRecipeId, craftedPotionId);
+                while (!replayedCraft.IsCompleted) yield return null;
+                Assert.That(replayedCraft.Result.Outcome, Is.Not.Null);
                 Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> replayedPurchase = app.PurchaseFromMerchantAsync(
                     roomId, "consumable.health_potion", 1, 0, purchaseId);
                 while (!replayedPurchase.IsCompleted) yield return null;
@@ -311,8 +347,12 @@ namespace Luckbound.Tests.PlayMode.Economy
 
                 Assert.That(replayedPurchase.Result.Persisted, Is.True);
                 Assert.That(replayedSale.Result.Persisted, Is.True);
+                Assert.That(replayedCraft.Result.Persisted, Is.True);
+                Assert.That(replayedCraft.Result.Outcome.Succeeded, Is.True);
                 Assert.That(replayedFirstUpgrade.Result.Persisted, Is.True);
+                Assert.That(replayedFirstUpgrade.Result.Outcome.Succeeded, Is.True);
                 Assert.That(replayedSecondUpgrade.Result.Persisted, Is.True);
+                Assert.That(replayedSecondUpgrade.Result.Outcome.Succeeded, Is.True);
                 Assert.That(replayedPotionSale.Result.Persisted, Is.True);
                 Assert.That(replayedPotionSale.Result.Outcome.Succeeded, Is.True);
                 Assert.That(replayedPotionSale.Result.Outcome.ItemId, Is.EqualTo("consumable.health_potion"));
@@ -323,8 +363,12 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(166));
                 Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore), Is.EqualTo(2));
                 Assert.That(app.ActiveRun.Inventory.Weapon.UpgradeLevel, Is.EqualTo(2));
+                Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(quickConsumablesBeforeCraftReplay),
+                    "Replaying a legacy craft transaction must not grant its output twice.");
                 Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(2),
-                    "Replaying successful smithing transaction IDs must not count either upgrade again.");
+                    "Replaying successful legacy craft and smithing IDs must not increase the migrated CT04 counter.");
+                Assert.That(app.Profile.processedContractProgressEvents, Is.Empty,
+                    "A replay of a source transaction from v5 must not fabricate a new contract receipt.");
                 Assert.That(HasBackpackItem(app.ActiveRun.Inventory, "consumable.health_potion"), Is.False);
                 Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                     .remainingQuantity, Is.EqualTo(1));

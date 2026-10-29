@@ -8,11 +8,11 @@ using Luckbound.App;
 using Luckbound.Content;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
-using Luckbound.Core.Progression.Contracts;
 using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Movement;
+using Luckbound.Presentation.Audio;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -33,10 +33,17 @@ namespace Luckbound.Tests.PlayMode
         private Func<ISaveStore> _previousSaveStoreFactory;
         private string _contractSaveDirectory;
         private bool _restoreSaveStoreFactory;
+        private bool _previousAudioListenerPaused;
+        private bool _restoreAudioListenerPause;
 
         [UnityTearDown]
         public IEnumerator RestoreContractTestApplication()
         {
+            if (_restoreAudioListenerPause)
+            {
+                AudioListener.pause = _previousAudioListenerPaused;
+                _restoreAudioListenerPause = false;
+            }
             if (!_restoreSaveStoreFactory) yield break;
             try
             {
@@ -75,6 +82,9 @@ namespace Luckbound.Tests.PlayMode
         [UnityTest]
         public IEnumerator D06PlayerReachesTheCustodianAndWinsWithRealCombatThroughBothPhases()
         {
+            _previousAudioListenerPaused = AudioListener.pause;
+            _restoreAudioListenerPause = true;
+            AudioListener.pause = true;
             using (var evidence = new ScenarioEvidenceRecorder("D06", "D06_RealCombatCustodianTwoPhases", 31415927))
             {
                 _contractSaveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Boss", Guid.NewGuid().ToString("N"));
@@ -149,6 +159,8 @@ namespace Luckbound.Tests.PlayMode
                 int transitionWaveSpawnCount = 0;
                 bool attackHeld = false;
                 bool potionHeld = false;
+                bool enemyDamageAudioRouted = false;
+                AudioClip enemyDamageClip = Resources.Load<AudioClip>("Luckbound/Audio/Effects/enemy_damage");
 
                 while (simulatedTicks < 12000 && arena.Result == CustodianArenaResult.Ongoing && !player.IsDead && !boss.IsDead)
                 {
@@ -244,6 +256,13 @@ namespace Luckbound.Tests.PlayMode
 
                     yield return new WaitForFixedUpdate();
                     simulatedTicks++;
+                    if (!enemyDamageAudioRouted && boss.MeleeImpactCount + boss.ProjectileImpactCount > 0)
+                    {
+                        yield return null;
+                        RuntimeAudioDirector audioDirector = app.GetComponent<RuntimeAudioDirector>();
+                        enemyDamageAudioRouted = enemyDamageClip != null && audioDirector != null &&
+                            audioDirector.GetComponentsInChildren<AudioSource>(true).Any(source => source.clip == enemyDamageClip);
+                    }
                     if (attackHeld)
                     {
                         SetKey(Key.J, false);
@@ -285,20 +304,24 @@ namespace Luckbound.Tests.PlayMode
                     "a surviving player with health reduced by a boss attack",
                     "playerHealth=" + player.CurrentHealth + "/" + player.CombatStats.MaximumHealth +
                         "; directBossHits=" + boss.SuccessfulPlayerHitCount);
+                evidence.RecordAssertion("Accepted Custodian impacts request enemy_damage while audio output stays paused",
+                    enemyDamageAudioRouted,
+                    "an applied boss melee or projectile impact assigns the enemy_damage clip to an audio voice",
+                    "routed=" + enemyDamageAudioRouted + "; listenerPaused=" + AudioListener.pause +
+                    "; clipAvailable=" + (enemyDamageClip != null));
                 evidence.RecordAssertion("Custodian death follows player melee impacts and leaves the player alive",
                     arena.Result == CustodianArenaResult.Victory && defeatedThroughCombat && !player.IsDead,
                     "Victory with zero boss health from queued melee impacts; living player",
                     "result=" + arena.Result + "; dead=" + boss.IsDead + "; health=" + boss.CurrentHealth +
                         "; melee=" + boss.MeleeImpactCount + "; playerHealth=" + player.CurrentHealth);
 
-                for (int frame = 0; frame < 120 && app.ContractProgression.GetProgress("CT02") != 1; frame++) yield return null;
                 int custodianProgressAfterCombat = app.ContractProgression.GetProgress("CT02");
                 for (int frame = 0; frame < 10; frame++) yield return null;
-                bool actualDefeatRecordedOnce = arena.Result == CustodianArenaResult.Victory &&
-                    defeatedThroughCombat && custodianProgressAfterCombat == 1 &&
-                    app.ContractProgression.GetProgress("CT02") == 1;
-                evidence.RecordAssertion("A real Custodian defeat records CT02 once despite later arena frames",
-                    actualDefeatRecordedOnce, "CT02=1 after combat and remains 1",
+                bool demoLeftExpeditionContractProgressUnchanged = arena.Result == CustodianArenaResult.Victory &&
+                    defeatedThroughCombat && custodianProgressAfterCombat == 0 &&
+                    app.ContractProgression.GetProgress("CT02") == 0;
+                evidence.RecordAssertion("The standalone Custodian demo does not advance Expedition contracts",
+                    demoLeftExpeditionContractProgressUnchanged, "CT02=0 after the physical demo victory",
                     "victory=" + (arena.Result == CustodianArenaResult.Victory) + "; afterCombat=" +
                     custodianProgressAfterCombat + "; afterExtraFrames=" + app.ContractProgression.GetProgress("CT02"));
 
@@ -309,16 +332,16 @@ namespace Luckbound.Tests.PlayMode
                     !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
                     yield return null;
                 app = ApplicationBootstrapper.Instance;
-                bool custodianProgressPersisted = app != null && app.ContractProgression.GetProgress("CT02") == 1;
-                evidence.RecordAssertion("Custodian contract progress survives an application restart",
-                    custodianProgressPersisted, "reloaded profile CT02=1",
+                bool demoDidNotPersistExpeditionContractProgress = app != null && app.ContractProgression.GetProgress("CT02") == 0;
+                evidence.RecordAssertion("Standalone Custodian demo leaves Expedition contract progress unchanged after restart",
+                    demoDidNotPersistExpeditionContractProgress, "reloaded profile CT02=0",
                     app == null ? "application missing after restart" : "CT02=" + app.ContractProgression.GetProgress("CT02"));
 
                 int exitCode = evidence.Complete();
                 yield return null;
                 Assert.That(exitCode, Is.Zero, "D06 real combat scenario failed. Evidence: " + evidence.ReportPath);
-                Assert.That(actualDefeatRecordedOnce, Is.True);
-                Assert.That(custodianProgressPersisted, Is.True);
+                Assert.That(demoLeftExpeditionContractProgressUnchanged, Is.True);
+                Assert.That(demoDidNotPersistExpeditionContractProgress, Is.True);
             }
         }
 

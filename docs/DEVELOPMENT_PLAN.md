@@ -1,6 +1,40 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.24 — 19 de octubre de 2026.
+**Versión del documento:** 3.51 — 26 de octubre de 2026.
+
+**Actualización 3.36:** se registra el contrato F09.ENCOUNTERS consultado con GPT-6.1 Sol (`xhigh`). El dictamen `Conditional` y sus límites están en [el informe de arquitectura](agent_staging/sol-f09-encounters-architecture-20261025/REPORT.md), SHA-256 `92a7c0f69af6e4a9d6665c9ef6d56f557ef5bb67860475791720a982bf22ab9a`. Toda revisión humana o nueva decisión de diseño continúa delegada a Sol; su dictamen no reemplaza aceptación técnica.
+
+**Actualización 3.37:** se fija el siguiente corte F09.ENCOUNTERS.RUNTIME.TECH según la consulta Sol `Conditional` del 26 de octubre. Informe y contrato detallado: [sol-f09-runtime-next-architecture](agent_staging/sol-f09-runtime-next-architecture-20261026/REPORT.md), SHA-256 `cd6b350313bb65540dc04a2d5593270ec392d98141a252bbb2b4257fb10cb74b`. Es un runtime técnico aislado, sin provider productivo, resolver, pagos, avance de sala ni aceptación F09/F10.
+
+**Actualización 3.38:** tras aceptar Sol estáticamente la fixture RUNTIME.TECH, el siguiente contrato consultado es `F09.ENCOUNTERS.READINESS.SOURCE`, dirección `Conditional` en [su informe](agent_staging/sol-f09-next-integration-architecture-r1-20261026/REPORT.md), SHA-256 `4f538317da23f547e0270ab42107f02aad49d466d76306a5f27a6c4771ecc9fa`. Registra hechos reales de bind, publicación, activación y leases para producir snapshots; no crea un plan productivo ni conecta victoria, recompensas o avance. Los hooks de composición son parte necesaria del mismo paquete y siguen bajo ownership del coordinador.
+
+**Actualización 3.39:** Fran reafirma que **todas** las comprobaciones que requieran criterio humano y cada nueva decisión de diseño se delegan al revisor GPT-6.1 Sol (`xhigh`), incluidas las que surjan fuera de los cinco hitos de la tabla siguiente. Sol recibe el artefacto exacto y emite `Accepted`, `Conditional`, `Rejected` o `Not reviewable` con límites explícitos. No se pide a Fran una comprobación humana rutinaria ni se convierte falta de percepción/silencio en aprobación; los gates técnicos siguen siendo independientes. Para `READINESS.SOURCE`, Sol aceptó la integración a través de una sola operación concreta del owner; dictamen y límites en [su informe](agent_staging/sol-f09-room-services-design-review-20261026/REPORT.md), SHA-256 `e020c28560d1ed4d7191892dd6a2285ec0b03b40b2ae6f067120a6933fc59232`.
+
+**Actualización 3.40:** Sol aceptó capturar el gate global `ApplicationBootstrapper.HasPendingSessionMutation` como campo read-only derivado `hasPendingSessionMutation` de `ExpeditionReadinessAuthorityCapture`, propagado al snapshot. Si está activo, no autoriza arm/drain; no se adquiere/libera ni cachea el gate. Los indicadores separados de publicación y avance se conservan. [Dictamen y límites](agent_staging/sol-f09-pending-mutation-design-review-20261026/REPORT.md), SHA-256 `70dd8ebd5a415e5a9860875e53d2944843207af2fcd433f1d516f998664c2c6d`.
+
+**Actualización 3.41:** la vigencia del publication witness requiere igualdad exacta entre su revisión y la revisión App actual y coincidencia íntegra del estado confirmado JSON; una revisión posterior necesita una constancia nueva, aunque el save sea igual. La sesión restaurada debe conservar igualdad exacta con el checkpoint que pasó por el binder. [Dictamen Sol y límites](agent_staging/sol-f09-publication-witness-currentness-20261026/REPORT.md), SHA-256 `c5a251cfd0008a783b97f60d9b20c0deeb759466962171548132c009a5cbe17e`.
+
+**Actualización 3.42:** se implementó F09.ENCOUNTERS.READINESS.SOURCE dentro del ownership ya fijado: registro por sesión/scope, captura de readiness desde autoridades reales, binds/publicaciones comprobadas y gates de transición/lease. El compile offline comprobó 358/358 fuentes y 16/16 assemblies; el detalle y sus manifiestos están en [PROGRESS.md](PROGRESS.md). Las seis pruebas sintéticas compilan pero no se ejecutaron. Sol revisa los hashes exactos del código integrado; sin Unity ni prefabs productivos no se habilita Runtime.Prepare ni se considera aceptado F09/F10. Todas las comprobaciones humanas y nuevas decisiones de diseño siguen delegadas a Sol xhigh.
+
+**Actualización 3.43:** Sol revisó los seis hashes de READINESS.SOURCE y emitió `Conditional` con F1–F3 P2. El informe identifica el fallback restaurado sin revisión exacta, el replay de publicación con revisión posterior/otra instancia de `ActiveRun` y la ausencia de revalidación del owner activo. La política aprobada permite cerrar readiness temporalmente cuando el componente owner se deshabilita; no dispone la sesión ni crea otra activación. Luna implementa estas correcciones y regresiones; Sol debe revisar el hash corregido. El dictamen no es aceptación Unity ni de F09/F10.
+
+**Actualización 3.44:** Sol `Accepted` el diseño acotado de spawn IDs para el fixture C08: schema 2, `spawnId` ASCII literal, obligatorio y único a nivel de encuentro. La cobertura local corregida también fue aceptada estáticamente; NUnit/Unity siguen sin ejecutarse. La clave local no es aún identidad durable compuesta ni autoridad de muerte/recompensa.
+
+**Actualización 3.45:** Sol fijó condicionalmente la identidad durable de spawn F09 como tuple `(RunId, RouteGenerationVersion, NodeId, RoomInstanceId, EncounterId, LocalSpawnId)` y un codec v1 con framing length-prefix UTF-8 estricto y SHA-256. Se permite implementar el codec puro Core; no se concede permiso productivo sin catálogo autoritativo de encuentros y pin durable del plan por run/nodo. Conserva `room-result.v1` y `encounter-reward.v1`; no añade campos a SaveDocuments ni cambia recompensas. [Contrato Sol y límites](agent_staging/sol-f09-durable-spawn-key-design-20261026/REPORT.md), SHA-256 `f4e2d60d22c899aa641017501c786ce3e74ef6ab3af8507aeea5c7b3a1ac75cf`.
+
+**Actualización 3.46:** Sol fijó condicionalmente el manifest de encuentros schema 1, los digests canónicos, la retención de revisiones y el pin global por run con binding por nodo/checkpoint; el commit inicial y cada transición A→B deben persistirlos en el mismo sobre antes de activar combate. `ContentVersion=7` es una propuesta, no un bump aprobado: exige validar el checksum v6 con DTOs históricos exactos. Un save v6 con expedición activa sin evidencia de pin se conserva y se bloquea para continuación/escrituras que la descarten; nunca se liga al contenido instalado actual. [Contrato Sol y límites](agent_staging/sol-f09-encounter-catalog-pin-design-20261026/REPORT.md), SHA-256 `3c49d050448957b7a4e79a03be0463552f5d4ca64a3ddfa798759d2295a1c4cc`. Luna entregó el codec puro; Sol lo aceptó estáticamente en los hashes exactos, con P3 de cobertura negativa pendiente. El coordinador compiló 360/360 fuentes y 16/16 assemblies, código 0; los tests solo compilaron y no se ejecutaron. [Compile y manifiestos](agent_staging/coordinator-f09-codec-offline-compile-20261026/REPORT.md), SHA-256 `12db930ee14d6cc5cc618dc2072c1ff1fcb231202941241f8d4b079dc3c3e76e`.
+
+**Actualización 3.47:** Luna añadió seis casos negativos al codec, elevando la suite a 23 tests sin cambiar el fuente de producción. Sol aceptó estáticamente el delta exacto y cerró el P3; [revisión R2](agent_staging/sol-f09-spawn-identity-codec-review-r2-20261026/REPORT.md), SHA-256 `0c53169491b58a32baf4fc0af800238e096a139580256cadade12898a6d15c7e`. El coordinador compiló los hashes actuales: 360/360 fuentes, response files exactos, 16/16 assemblies y código 0; 10 avisos CS0618 coinciden con el compile anterior. [Compile R2 y manifiestos](agent_staging/coordinator-f09-codec-offline-compile-r2-20261026/REPORT.md), SHA-256 `54038a52c6107206e022e626725a933d2b8862423924ba9fbfc6afa776290715`. Los tests no se ejecutaron; Unity/PlayMode/build/CI y la autoridad de catálogo/pin siguen sin aceptación.
+
+**Actualización 3.48:** Sol fijó las firmas exactas de la API preproductiva Core→Content: modelos inmutables/factory/tokens/canonicalización en Core; lector JSON estricto y registry inmutable en Content consumen esa API. Dictamen `Conditional`; informe [API Core→Content](agent_staging/sol-f09-catalog-core-content-api-contract-20261026/REPORT.md), SHA-256 `1aace7c5a3b6dcb8dbde913a180383cce06d7eb6e71b30c0d4f230edc8512040`. Luna implementa ahora solo Core en los seis archivos fijados, con datos sintéticos. Content se despachará después de integrar y compilar la API Core exacta. Ningún paquete de este corte añade filas reales, save v7, provider o autoridad productiva.
+
+**Actualización 3.49:** el paquete F09.CATALOG.CORE.TECH quedó estáticamente `Accepted` por GPT-6.1 Sol xhigh en los hashes exactos; los dos P2 de las fixtures están cerrados. La compilación offline r2 cubrió 366/366 fuentes y 16/16 assemblies, código 0, sin avisos nuevos; incluyó cinco fuentes Core y el test corregido. [Dictamen Sol](agent_staging/sol-f09-catalog-core-review-r2-20261026/REPORT.md), SHA-256 `6c8159e1fb0ef04fbe31920a6846d7650cd118bf2d6db67e3320bd4f0b189410`; [compilación y manifiestos](agent_staging/coordinator-f09-catalog-core-offline-compile-r2-20261026/REPORT.md), SHA-256 `bb23a334ca3d537f5d0265f0337bf0801dc3aab386863bac81a2b0cfc16d5d95`. Los tests compilaron pero no se ejecutaron. Ya puede comenzar Content contra la API congelada y con datos sintéticos. No habilita parser productivo, rows, save v7, pin durable, autoridad ni aceptación F09/F10.
+
+**Actualización 3.50:** F09.CATALOG.CONTENT.TECH implementa parser JSON estricto, loader Core y registry exacto inmutable en preproducción. Sol xhigh aceptó estáticamente el código y cerró el P3 con cuatro assertions de claves Unicode equivalentes, shape anidada desconocida/duplicada y escape inválido; [dictamen R2](agent_staging/sol-f09-catalog-content-review-r2-20261026/REPORT.md), SHA-256 `18a7159a163a2b856082cadfa6b51090cdf2bbd06aa73c414c08cb620bff79f6`. Compilación offline r2: 370/370 fuentes, 16/16 assemblies, código 0 y 10 CS0618 idénticos al baseline; [informe y manifiestos](agent_staging/coordinator-f09-catalog-content-offline-compile-r2-20261026/REPORT.md), SHA-256 `2645a2b7737d5186e150f5c060cfa7b5ed6eae51b6d1db20cb930a07c4657d8d`. Tests compilados, no ejecutados. Core/Content no crean filas productivas, retención física, pin durable ni autoridad. Antes de seguir con Save/provider, pedir a Sol xhigh contrato exacto de migración/checksum v6, persistencia y recuperación; no subir ContentVersion v7 por inferencia.
+
+**Actualización 3.51:** Sol aceptó preparar únicamente `F09.SAVE.V6.CHARACTERIZATION.TECH` aditivo, sin wiring a Decode/Repository ni bump de versión. [Contrato Sol](agent_staging/sol-f09-next-catalog-save-pin-contract-20261026/REPORT.md), SHA-256 `99b3becef5c5d83edb9f1d8ad31bb13efd4ff65e9d6e65131e795a30bf0f41a1`, manifiesto `6be9a7e88df91e7fa91729988c1b0d1df65ccae580fb5eea0299ce6afd2284b7`. El corte congela el grafo DTO/checksum v6 del working tree actual mediante inspector read-only y fixtures; no cambia `SaveFormat`, DTOs vivos, decoder, writers, migradores ni App. Los 10 inputs de código del contrato se verificaron contra el checkout sin divergencias. La captura/golden de `JsonUtility` real requiere ejecución Unity identificada; si no puede hacerse con el entorno/licencia vigente, se registra `CapturePending/Not reviewable`, sin fabricar preimágenes. V6 con expedición activa sin pin continúa de solo diagnóstico y no se integra migración/pin; ningún `ContentVersion` se eleva.
+
+**Actualización 3.52 (28 de octubre):** la preparación V6 ya contiene los 16 DTO históricos cerrados, el inspector de checksum read-only y nueve métodos de test estructural con dos entradas `InputOnly`. Sol aceptó estáticamente los hashes exactos de producción y el delta de tests; [revisión de producción](agent_staging/sol-f09-save-v6-code-review-20261028/REPORT.md), SHA-256 `24c00f5bef276482812b679992d515fa076000531c0e08c642705d8335c8e618`; [revisión de tests/fixtures](agent_staging/sol-f09-save-v6-tests-review-20261028/REPORT.md), SHA-256 `9839086480c8cf6a74e812a692a5409aa5901a5d6988905bf5f3c68ff4a2a30b`. La compilación offline cubrió 47/47 fuentes App y 67/67 PlayMode.Tests, código 0; ocho CS0618 coinciden con el baseline. [Informe, fuentes, respuestas y salidas](agent_staging/coordinator-f09-save-v6-offline-compile-20261028/REPORT.md), SHA-256 `36cb412af85de5054ec75de553dbaa026d11db2a8194c49868389ca4fcc5f8e3`. Las pruebas no se ejecutaron. No hay bytes `JsonUtility` medidos, preimágenes ni checksums goldens: Gate B sigue `CapturePending/Not reviewable`. La tarea no cambia decoder, writers, migradores, contenido, autoridad, pin o `ContentVersion`; no acepta F09/F10.
 
 **Estado:** preproducción y especificación de desarrollo completas; el estado de ejecución, las tareas verificadas y las evidencias vigentes están en [PROGRESS.md](PROGRESS.md).
 
@@ -16,9 +50,27 @@ La versión 3.1 añadió la regla general de visibilidad: cualquier ventana ajen
 
 **Instrucción vigente (19 de octubre):** Fran ordenó continuar el desarrollo completo. El coordinador reanuda desde el estado y las evidencias de [PROGRESS.md](PROGRESS.md), selecciona paquetes listos del grafo de [AGENT_EXECUTION.md](AGENT_EXECUTION.md) y prioriza el siguiente hito jugable F10. Una entrega de trabajador no cuenta como aceptación verificada. Las ventanas auxiliares en segundo plano están permitidas si cumplen las garantías de [5.6](#56-ejecución-invisible-y-decisiones-de-fran); solo se muestra una interfaz a Fran cuando necesita usarla para tomar una decisión concreta.
 
+**Orden posterior de Fran (25 de octubre):** las cinco revisiones humanas de hito y las comprobaciones de diseño/arte/narrativa/audio/experiencia se delegan al agente GPT-6.1 Sol (`xhigh`), que también debe asesorar cada nueva decisión de diseño. Reutilizar al agente de esta sesión mediante follow-up mientras esté disponible; si no, asignar un revisor nuevo con el mismo modelo, esfuerzo y contrato. No mostrar a Fran los medios de esas revisiones. Registrar dictamen y evidencia; una modalidad o build inaccesible queda como `Not reviewable` y no como aprobación. Los gates técnicos y las acciones externas reservadas conservan sus requisitos.
+
 La versión 3.5 concreta el redondeo de las mejoras E06 para estadísticas enteras y fija compra en taberna, recibos transaccionales persistentes, escritura atómica, reintento idéntico tras fallo y aplicación solo a expediciones nuevas. La versión 3.6 reforzó la política de visibilidad en todos los niveles operativos. La versión 3.7 registra la nueva orden de Fran para retomar el desarrollo completo. La versión 3.8 establece que solo se abre una interfaz si Fran necesita usarla para decidir; enseñar o demostrar avances nunca basta. La versión 3.9 registra que Fran reanudó el desarrollo completo el 16 de octubre. La versión 3.10 fija los datos de recorrido del proyectil básico de Báculo de ascua. La versión 3.11 registra la reafirmación de Fran: las ventanas que no requieran una decisión suya deben ejecutarse sin interfaz o en un entorno aislado que no pueda aparecer en su escritorio; dejarlas detrás, sin foco o minimizadas no cumple la regla. La versión 3.12 fija expresamente que ninguna interfaz se muestra por defecto y que solo puede mostrarse la interfaz mínima que Fran necesite para tomar una decisión concreta. La versión 3.13 aclara que las salidas de herramientas insertadas automáticamente en el chat también son contenido visible sujeto a esta regla, y registra la arquitectura parcial de audio persistente y los hashes reproducibles con finales LF. La versión 3.14 fija la fuente de raza de la partida y el orden/redondeo del coste Alvari. La versión 3.15 fija la velocidad, el daño y el empuje efectivo de la Embestida Bellator para integrar su impacto real y el rasgo Orcini. La versión 3.16 registra la instrucción vigente de Fran del 17 de octubre y conserva como regla absoluta que ninguna interfaz ajena a una decisión concreta suya se muestra. La versión 3.17 reitera que Fran no debe ver ninguna ventana salvo que necesite usarla personalmente para tomar una decisión concreta: cero interfaz visible por defecto y ejecución sin UI o en aislamiento inaccesible para él para todo lo demás. La versión 3.18 enfatiza que ninguna interfaz innecesaria puede aparecer ni siquiera momentáneamente. La versión 3.19 registra la reiteración explícita de Fran: solo se muestra una ventana si necesita usarla personalmente para tomar una decisión concreta; la relación con el proyecto no basta. La versión 3.20 deja asentado que Fran no quiere ver ninguna interfaz que no necesite usar personalmente para tomar una decisión concreta; toda ejecución restante debe ser headless o estar en un entorno verdaderamente aislado. La versión 3.21 registra de nuevo la orden directa de Fran: cualquier ventana que no necesite usar personalmente para decidir debe permanecer fuera de su vista; el desarrollo y las verificaciones se ejecutan sin interfaz o en un sandbox realmente inaccesible, sin excepciones por conveniencia ni exposición momentánea. La versión 3.22 alinea la versión fijada del Editor con Unity 6000.6.6f1, instalada e integrada en el proyecto y CI.
 
 La versión 3.23 registra la reanudación del objetivo completo el 18 de octubre. La versión 3.24, del 19 de octubre, aclara que se permiten ventanas auxiliares en segundo plano si no son visibles ni audibles, no roban el foco de forma visible y no mueven el ratón; cuando no se pueda garantizar, se usa ejecución headless, ventana oculta o aislamiento real.
+
+La versión 3.25, del 19 de octubre, cierra los detalles reproducibles de recompensas: el tutorial de la muestra no paga recursos, el botín material de élites usa selecciones unitarias con reemplazo del pool sectorial, el bonus de Avaricia se redondea por fuente, el rasgo Dvergar se aplica únicamente al recoger unidades físicas del mundo y aclara que el pago pendiente de una sala es distinto de los pickups físicos no recogidos.
+
+La versión 3.26, del 22 de octubre, registra la auditoría de la nueva versión estable Unity 6000.6.7f1 solicitada por Fran. La revisión estática no encontró incompatibilidades de API evidentes, pero los tres tags GameCI requeridos no se pudieron confirmar y el proyecto no se compiló en esa versión. El proyecto y su CI permanecen en 6000.6.6f1 hasta verificar los tags y ejecutar la actualización con sus pruebas de plataformas.
+
+La versión 3.28, del 25 de octubre, fija en la especificación los IDs estables de los pactos Prisa y Silencio, las ocho reliquias de Fortuna y el desbloqueo de la placa CT12. Son contratos de catálogo integrados parcialmente en Core; la existencia de sus IDs y parámetros no implica que sus efectos, productores, persistencia o presentación estén terminados ni aceptados.
+
+La versión 3.29, del 25 de octubre, fija la identidad idempotente de los eventos E10: el origen asigna y persiste un ID opaco antes de entregarlo; la repetición exacta es no-op y un mismo ID con otro tipo/payload falla cerrado. El recibo aplicado se conserva con el progreso del perfil. Un evento originado en una transición durable permanece en su outbox hasta que el recibo del perfil confirme la aplicación; se drena en FIFO y el consumidor nunca inventa ni reconstruye IDs desde contadores.
+
+La versión 3.30, del 25 de octubre, concreta la atomicidad del progreso CT04: los eventos de fabricación/mejora usan `tx/<TransactionId>` y se guardan en el mismo `ProfileSaveEnvelope` que el inventario y el contador; cualquier retry conserva ese sobre exacto. El perfil solo se publica en memoria después del commit durable. El ContentVersion 6 añade recibos y migra v3–v5 con sus DTO/checksum históricos sin inventarlos; leer un legado no reescribe sus bytes.
+
+La versión 3.31, del 25 de octubre, fija el tratamiento conservador del replay CT04 de transacciones craft/smith ya exitosas en partidas v5 sin ledger: se conserva el contador legado y no se crea un evento ni recibo retrospectivo porque el formato no identifica qué progreso separado ya se confirmó. También fija `ui_focus` solo para cambios efectivos de selección entre los cuatro botones del menú; el foco inicial, la selección nula y los duplicados son silenciosos.
+
+La versión 3.34, del 25 de octubre, registra que Fran delega las cinco revisiones de hito y las comprobaciones humanas de diseño, arte, narrativa, audio y experiencia en un agente revisor GPT-6.1 Sol con esfuerzo xhigh. El dictamen debe citar el artefacto/build y separar lo perceptible de lo que no pudo comprobarse; no reemplaza la aceptación técnica ni autoriza publicaciones, releases, compras o cambios de plataforma/modelo de seguridad.
+
+La versión 3.35, del 25 de octubre, registra la decisión de diseño aceptada por el revisor delegado Sol: `menu_theme` se activará durante la integración de catálogo I05, después de aceptar F08 y de disponer de una versión de Menú aceptada auditivamente y validada con el catálogo ampliado. Hasta entonces, Menú permanece en silencio. La decisión no acepta el WAV ni modifica dependencias del grafo.
 
 ## Índice
 
@@ -111,7 +163,7 @@ Antes de cambiar el proyecto, A02 volverá a comprobar estas referencias. No sob
 
 ### 1.4. Tecnología y reinicio
 
-Se utilizará **Unity 6000.6.6f1**, instalada en el proyecto y validada con las suites y builds actuales. La versión quedará fijada durante el desarrollo; actualizarla posteriormente será una tarea explícita con pruebas de ambas plataformas. [Unity 6000.6.6f1](https://unity.com/releases/editor/whats-new/6000.6.6f1)
+La base reproducible actual usa **Unity 6000.6.6f1**, fijada en el proyecto y validada con las suites y builds actuales. Fran solicitó actualizar a la última versión; Unity publicó **6000.6.7f1** el 21 de octubre de 2026. La auditoría estática no detectó una API usada por Luckbound que haya sido retirada, pero no compiló el proyecto ni verificó los tags `unityci/editor:ubuntu-6000.6.7f1-base-3.2.2`, `...-windows-mono-3.2.2` y `...-webgl-3.2.2`. Para conservar operativas las builds automáticas, completar esa verificación y ejecutar EditMode, PlayMode, Windows x64 y WebGL antes de mover conjuntamente `ProjectVersion.txt`, paquetes, claves de caché y metadatos del workflow. Hasta entonces, 6000.6.6f1 sigue siendo la versión de integración comprobada, no la última publicada. [Unity 6000.6.6f1](https://unity.com/releases/editor/whats-new/6000.6.6f1) · [Unity 6000.6.7f1](https://unity.com/releases/editor/whats-new/6000.6.7f1)
 
 Configuración:
 
@@ -409,6 +461,8 @@ Reglas:
 
 Las operaciones usarán identificadores estables de reclamación dentro de la expedición. Dos peticiones con la misma transacción no repetirán costes o premios. Las escrituras se serializarán; una escritura antigua no podrá reemplazar un estado más reciente.
 
+El "botín pendiente" de una sala es su pago lógico aún no confirmado (oro, Renombre, cargas de Fortuna y ofertas/claims aplicables), incluido en el resultado canónico y en la misma escritura que avanza la ruta. No incluye pickups físicos aún en el suelo. Estos permanecen en la sala activa; si se sale antes de recogerlos, se abandonan con esa sala y no se reclaman ni trasladan. Restaurar el checkpoint de entrada durante un intento fallido recrea el encuentro y los drops deterministas junto con el inventario de entrada.
+
 En Windows se escribirá un archivo temporal, se conservará copia de respaldo y se sustituirá el principal.
 
 En WebGL se cargará la persistencia antes de leer el perfil y se esperará la confirmación de sincronización de IndexedDB al guardar. No se dependerá exclusivamente del cierre de la pestaña.
@@ -626,6 +680,7 @@ Contrato de implementación D04:
 - Arma, armadura y las dos reliquias se mueven entre mochila y equipo. Al equipar desde un índice, el equipo anterior vuelve al mismo índice en una única operación. No se puede equipar la misma definición de reliquia en ambos espacios. El consumible rápido es una referencia a una pila de la mochila y no duplica ni retira sus unidades; si se sustituye o elimina esa pila, la referencia se limpia.
 - Cada orden de recoger, equipar, sustituir, añadir material u oro requiere un `TransactionId`. Repetirlo devuelve el resultado original y no vuelve a mutar el estado, también cuando el primer resultado fue un rechazo. Las operaciones rechazadas no cambian equipo, mochila, bolsa, oro ni instancias; el snapshot sí conserva el recibo técnico de idempotencia para repetir el mismo resultado tras restaurar.
 - Si un botín no cabe ni puede apilarse, se conserva en el mundo. La sustitución explícita identifica un índice y retorna el contenido desplazado para dejarlo como botín del mundo. El componente de juego prepara primero ese botín desplazado sin activarlo; solo confirma la sustitución y activa el objeto desplazado cuando la operación de Core tiene éxito. Un fallo al preparar o validar no consume el botín entrante ni reemplaza el contenido anterior.
+- Los drops físicos no recogidos permanecen en la sala mientras su `RoomLifetimeScope` esté activo. Salir antes de recogerlos los abandona al disponer la sala; no se transfieren, convierten en oro ni se marcan como claims. Si el jugador muere y restaura el checkpoint de entrada, el encuentro y sus drops deterministas reaparecen junto con el inventario restaurado.
 - `Items.json` es la fuente autoritativa de ID, claves localizadas, categoría, límite de pila (tres para consumibles y 99 para materiales) y clases compatibles. `ItemCatalogJsonLoader` valida esquema, categorías, IDs únicos, seis materiales exactos y compatibilidades; Core no contiene Unity, física o referencias a archivos.
 
 ### 3.8. Armas y armaduras
@@ -722,6 +777,10 @@ Distribuciones del material:
 
 Los élites tendrán ×1,5 salud, ×1,25 daño, triple oro y dos materiales garantizados. Tendrán una indicación visual propia.
 
+Cada material generado por un drop es una unidad física. Los materiales garantizados de un élite son dos selecciones independientes, con reemplazo, del pool ponderado de su sector: pueden ser del mismo tipo. Las selecciones de botín usan el flujo versionado `loot`, separado de ruta, combate y presentación, y una identidad estable de sala, spawn y slot de drop; cada spawn del encuentro declara un `spawnId` estable en sus datos. Los dos materiales adicionales de Vínculo son otras dos selecciones independientes con la misma distribución sectorial y se suman a los dos del élite. Los drops permanecen en la sala mientras esta está activa; al salir sin recogerlos se abandonan con ella y no forman parte del pago lógico de la sala. El rasgo Dvergar aplica su resto/bonificación solo al aceptar esas unidades físicas mediante el pickup del mundo, incluidos los drops enemigos. No se aplica al seleccionar el tipo ni a una concesión directa de inventario.
+
+Cada pago de oro es una fuente separada con ID estable (enemigo, sala, caché física o guardián). Calcula primero los valores fijos de élite y Vínculo; después aplica Avaricia (+35 %) a esa fuente y redondea hacia abajo una sola vez. No agregues varias fuentes antes del redondeo.
+
 | Producto | Precio base en oro |
 |---|---:|
 | Arma común / rara / épica | 30 / 45 / 65 |
@@ -773,6 +832,8 @@ Se podrán aceptar como máximo dos pactos por expedición.
 | Gravedad | +15 % de altura de salto | +50 % de empuje recibido |
 | Vínculo | Las tres siguientes salas de combate añaden un élite; cada uno concede quince de oro y dos materiales extra, y el tercero una oferta de reliquia | Enfrentarse a esos élites |
 
+IDs estables de catálogo (en inglés, sin traducir ni cambiar una vez publicados): Avaricia `pact.avarice`, Fervor `pact.fervor`, Prisa `pact.haste`, Clarividencia `pact.clairvoyance`, Ascua `pact.ember`, Silencio `pact.silence`, Gravedad `pact.gravity` y Vínculo `pact.bond`.
+
 Los pactos tendrán una presentación previa con sus consecuencias calculadas.
 
 Un pacto no disponible no se ofrecerá: pacto repetido, límite alcanzado o requisito incumplido.
@@ -808,6 +869,8 @@ Se podrán equipar dos reliquias diferentes.
 | Fortuna | Sigilo de concordia | Amplifica un 25 % los beneficios porcentuales de pactos |
 | Fortuna | Fragmento del juramento | Aceptar un pacto concede una Fortuna |
 
+IDs estables de las ocho reliquias de Fortuna en `Items.json` (no renombrar): Cristal de cuatro ecos `relic.four_echo_crystal`, Moneda marcada `relic.marked_coin`, Dado vital `relic.vital_die`, Rama afortunada `relic.lucky_branch`, Bolsa oculta `relic.hidden_pouch`, Contrapeso del mercader `relic.merchant_counterweight`, Sigilo de concordia `relic.concord_sigil` y Fragmento del juramento `relic.oath_fragment`.
+
 Los contadores de repetición gratuita se conservarán al quitar y equipar la reliquia.
 
 Los modificadores porcentuales de una misma categoría se sumarán antes de aplicarlos. Los límites finales serán:
@@ -830,6 +893,8 @@ Los costes se redondearán hacia arriba y los importes de oro o recompensas haci
 | Rama opcional completada | 5 |
 | Guardián del Patio / Archivo / Forjas | 20 / 30 / 40 |
 | Jefe final | 60 |
+
+El nodo Tutorial de F10 es onboarding y concede cero oro, materiales, Renombre y cargas de Fortuna; no se le asigna un pago por analogía con las actividades de la tabla. La caché de E1/E2 es un pickup opcional: completar la sala de exploración concede sus tres puntos de Renombre, y el oro de caché se concede solo al recoger la caché física.
 
 Una ruta obligatoria completa acumulará 213 antes de contratos y recuperación de botín. Una sala de rama opcional concederá sus cinco puntos una sola vez, en lugar de sumar además el premio base por su tipo.
 
@@ -885,9 +950,15 @@ Habrá un máximo de tres contratos activos. Los objetivos utilizarán contadore
 | CT11 | Completar el desenlace | 80 | Armadura de corteza como opción inicial |
 | CT12 | Encontrar los doce fragmentos | 60 | Placa conmemorativa en el gremio |
 
+El desbloqueo de CT12 usa el ID estable `decoration.guild.oath_plaque` y el tipo `GuildDecoration`; su recurso y consumidor visual se crearán junto al gremio.
+
 Las recompensas se reclamarán en la taberna y serán idempotentes.
 
 El progreso solo procede de resultados confirmados del dominio de una sesión válida: salas de combate realmente vencidas, enemigos derrotados, y fabricación o mejora persistida. La interfaz y las transiciones no conceden objetivos. El adaptador persiste cada evento antes de publicar el contador; si falla la escritura, conserva el payload exacto para reintentar, procesa después los eventos posteriores en orden FIFO y evita duplicados al repetir recibos. Un intento fallido o un replay no cuenta como progreso adicional.
+
+La identidad del evento es opaca para el consumidor y se asigna en su origen durable, no al drenar la cola ni al reconstruir una sesión. El origen guarda juntos su cambio y el evento/outbox con el ID estable; el perfil guarda el mismo ID y tipo junto al contador actualizado. El mismo ID con el mismo tipo es una repetición idempotente; si el tipo o payload difiere, se rechaza sin mutar ningún estado. Solo se retira el elemento de origen después de que el perfil confirme el recibo; cualquier replay pendiente conserva ID y payload originales. Para craft/mejoras se reutiliza la identidad de la transacción durable; para eventos físicos, la del resultado de sala/encuentro autoritativo. No derivar IDs de hora, contadores, orden de enumeración o llamadas del caller.
+
+En una partida legacy v5 migrada con ledger vacío, no emitir CT04 ni fabricar recibo al volver a encontrar en el snapshot de Expedición un `TransactionId` craft/smith ya exitoso. Preservar el contador de perfil migrado: v5 guardaba la operación durable y el progreso en escrituras separadas, por lo que no permite saber si esa operación ya contó. Se acepta que el contador pueda quedar corto para una operación ambigua; evitar una duplicación tiene prioridad y el nuevo esquema cierra la separación mediante un único sobre durable.
 
 ### 3.15. Sectores y enemigos
 
@@ -915,6 +986,16 @@ El progreso solo procede de resultados confirmados del dominio de una sesión v�
 Los enemigos voladores tendrán posiciones alcanzables por todas las clases. El Folletillo nunca ocultará plataformas ni señales de peligro.
 
 Los encuentros usarán dos oleadas y un presupuesto de amenaza por sector. Habrá como máximo ocho enemigos simultáneos en una sala normal y un élite ordinario por sala. El élite de Vínculo podrá añadirse como parte de una oleada adicional respetando el límite de simultáneos.
+
+**Contrato de autoridad F09.ENCOUNTERS (dictamen Sol `Conditional`, 25 de octubre):** el runtime del encuentro pertenece al `RoomLifetimeScope` físico activo y recibe el plan completo, validado y ordenado antes de armarse. Cada spawn esperado se registra con una clave estable y un actor real antes de activarlo; ninguna fila, actor o wave puede omitirse, sustituirse o duplicarse. Solo la señal one-shot del camino de muerte aceptado puede retirar ese actor del roster. Despawn, destrucción, desactivación o ausencia de referencia mientras siga vivo causan `Faulted`, no victoria. El agregado interno conserva `Cleared` como fase terminal y consultable, no como evento de pago; el runtime/coordinador publica el clear una sola vez con un latch propio, después de completar el roster y el paso físico. Las oleadas se habilitan secuencialmente. El caller no envía `won`, roster ni grants; App deriva el settlement desde los hechos del runtime bajo el pipeline de guardado existente. El catálogo o mapa no resuelto deja el encuentro `NotReady`, nunca sustituye el demo C08. Un modelo/test sintético de estas transiciones no demuestra muerte física, settlement durable, recuperación tras reinicio ni aceptación F09/F10.
+
+**Corte F09.ENCOUNTERS.RUNTIME.TECH (dictamen Sol `Conditional`, 26 de octubre):** preparar un `RoomEncounterRuntime` interno como recurso del `RoomLifetimeScope` exacto, con adapter tipado para Slime, actores registrados inactivos, cola de hechos validados después del lote físico y latch propio para notificar clear como máximo una vez. El armado inicial requiere bind de checkpoint y sesión real; en salas siguientes espera fin del commit/activación y liberación de leases, por lo que `IsReady` solo no autoriza. No modifica `ExpeditionGameplayComposition` ni conecta el resolver en este paquete; usa una fixture técnica explícita y nunca C08 como sustituto de contenido. NotReady/fallo no arma actores ni publica clear. El detalle, los archivos, las pruebas y los límites están en [el informe Sol](agent_staging/sol-f09-runtime-next-architecture-20261026/REPORT.md); proveedor canónico de spawn keys/mapa y ticket/settlement/recovery requieren paquetes posteriores. La integración física y F09/F10 siguen sin aceptación.
+
+**Corte siguiente F09.ENCOUNTERS.READINESS.SOURCE (consulta Sol `Conditional`, 26 de octubre):** crear un registro interno de sesión propiedad de la composición y un registro de activación propiedad del scope. El source de snapshots captura el contexto/ActivationGeneration una sola vez y deriva `HasBoundPlayer`, bindings requeridos, publicación confirmada y gates desde owners/operaciones reales. El helper de checkpoint invoca el binder existente y registra éxito solo tras su retorno; la mutación registra publicación solo después de `prepared.Publish()` y de leer el estado confirmado, nunca el candidate previo. La sala B no está lista hasta completar todos sus bindings y liberar commit, transición y leases. Cleanup invalida registros antes de teardown. El source no crea actores, plan, ticket, rewards o clear; sin plan/catálogo productivo no llamar a `Runtime.Prepare`. El coordinador es dueño de `ApplicationBootstrapper.EncounterReadiness.cs`, hooks en `ExpeditionGameplayComposition.cs` y consulta read-only en `ExpeditionRoomTransitionController.cs`; el agente Luna puede tener archivos nuevos de registro/source/tests. No cambiar Save/WAL, binder público, algoritmo de transición ni canon. La ficha completa, acceptance y secuencia posterior están en [el informe Sol](agent_staging/sol-f09-next-integration-architecture-r1-20261026/REPORT.md); el código puede prepararse sin F02/contenido nuevo, pero no demuestra composición real, F09 o F10.
+
+**Contrato F09.ENCOUNTERS.CATALOG/PIN (consulta Sol `Conditional`, 26 de octubre):** el manifest inmutable schema 1 declara catálogo/revisión, codec/resolver, generaciones soportadas, descriptores, bindings, definiciones, variantes, waves y spawns; los digests se calculan con codec binario canónico estricto, no con la serialización incidental de Unity. El registro busca por `(catalogId, catalogRevision, CatalogDigest)` y conserva las revisiones/paquetes mientras las partidas los referencian. Cada run fija catálogo+ruta; cada nodo fija su plan resuelto y referencia desde su checkpoint. La creación inicial persiste ruta+pin+binding en el guardado existente antes de publicar/activar. El avance A→B guarda resultado A y binding/checkpoint B en la misma transición durable antes de activar B. Un restore valida catálogo, ruta, revisión, descriptor y digests exactos; si falta una revisión, conserva datos/claims y bloquea continuación.
+
+El diseño autoriza preproducción aislada del Core y del parser/registro Content, con datos sintéticos y sin filas productivas. Save DTOs/SaveRepository/migración, provider App, composición y escena siguen bajo ownership del coordinador. Antes de cualquier bump de `ContentVersion`, añadir DTO v6 completo y verificar el checksum histórico exacto antes de migrar. Los saves v6 activos sin pin deben seguir preservados/diagnosticables, sin continuación productiva ni escrituras que los sobrescriban o eliminen; los settings pueden migrarse de forma independiente. No integrar un pin productivo ni crear filas finales hasta que existan manifest/descriptores/prefabs autoritativos y sus gates. [Dictamen Sol](agent_staging/sol-f09-encounter-catalog-pin-design-20261026/REPORT.md), SHA-256 `3c49d050448957b7a4e79a03be0463552f5d4ca64a3ddfa798759d2295a1c4cc`; los casos productivos, v7 integrada, recovery y aceptación física siguen `Not reviewable`.
 
 ### 3.16. Jefes
 
@@ -1086,6 +1167,12 @@ Importación:
 
 Cada recurso registrará identificador, origen, prompt, referencia utilizada, dimensiones, hash y estado `Prototype` o `Final`.
 
+En los manifiestos F02 (esquema 3), cada imagen tiene un `resourceId` único (opaco, sensible a mayúsculas y comparado ordinalmente), su `sourcePath`, el SHA-256 y dimensiones de la fuente, el estado efectivo, la procedencia, la referencia y su hash, y `promptReference` más `promptReferenceSha256`. El registro v1 es JSON directamente dentro de `docs/art/records/<recordId>.v<recordVersion>.json`; contiene `schemaVersion`, `recordId`, `recordVersion`, `creationMethod`, y `processing` con herramienta, versión, procedimiento y parámetros. `creationMethod=generated` exige generador y prompt literal; `manual`/`programmatic` exige una descripción de procedencia y no admite un prompt literal. El importador comprueba la ruta exacta, la versión del nombre y del contenido, el SHA-256 declarado, los campos requeridos y que el registro no atraviese enlaces del sistema de archivos. `promptReferenceSha256` se hereda con su ruta y fija los bytes esperados del registro; cambiar prompt, procedencia o procesamiento exige publicar un nuevo `.vN.json` y actualizar intencionalmente el manifiesto. El importer detecta cambios del registro mientras el hash declarado se mantenga; una modificación coordinada de registro y manifiesto se controla mediante el historial Git y revisión del cambio, no con una firma dentro del importer. Las imágenes pueden heredar metadatos comunes de la familia; el valor efectivo debe ser completo y validarse antes de escribir salidas. `null` significa heredar y un override vacío es un error. Una imagen que no se haya generado con un prompt conserva un registro de procedencia que describe el proceso manual o programático y sus parámetros. El identificador de familia agrupa recursos, pero no sustituye el ID único de cada imagen. Una fuente no puede compartir el mismo SHA-256 que su referencia efectiva.
+
+El importador publica familias completas e inmutables: un manifiesto idéntico valida sin escribir; un payload nuevo necesita un ID de familia y una ruta versionados. Antes de mutar `Assets`, registra un marcador durable en `ProjectSettings`, snapshots de las entradas y un WAL. Cada mutación se precede de un intent cerrado y verificado y se sigue de un recibo. Tras un cierre, solo se reintenta desde el preestado exacto con el mismo intent o se sintetiza un recibo cuando la mutación y el inventario global coinciden exactamente con el delta previsto. Los estados mixtos o ambiguos se preservan y bloquean; nunca se adoptan ni limpian por nombre. El diseño de recuperación y sus casos de aceptación están en [la especificación F02 v6](agent_staging/f02-partial-import-recovery-v6/IMPLEMENTATION_DIFF.md). Es contrato de implementación, no evidencia de que el recovery esté integrado.
+
+La comprobación física de archivos usa handles no-follow, identidad y recuento de enlaces; Linux debe impedir cruces de mount con `RESOLVE_NO_XDEV` o verificar un mount ID fiable por descriptor. Si no se demuestra aislamiento, la plataforma falla cerrado. Las llamadas `AssetDatabase` por ruta requieren exclusión comprobada contra sustitución durante todo el side effect; los checks antes/después no bastan. Antes de recuperar en un nuevo proceso Unity, un preflight externo valida estado y roots y conserva el inventario hasta la primera barrera del Editor. Si no se demuestra que esa barrera antecede al autoimport, no se inicia Unity y se solicita resolución manual.
+
 En B07 solo se permiten recursos `Prototype` identificados: un Bellator estático y una sala de entrenamiento de bloques pixelados. F03 los sustituirá por el sprite y animaciones finales del jugador; F05 retirará la geometría provisional de las primeras salas. Ningún recurso provisional llegará a la muestra F10/0.3.
 
 Se utilizará generación de imágenes solo mediante un canal que garantice que el resultado permanece oculto para Fran y no se inserta automáticamente en el chat. Si la herramienta publica su resultado sin requerir una decisión de Fran, no se invoca. Se registrará el bloqueo y se continuará con arte programático u otras tareas independientes. No se sustituirán recursos finales por cajas ni se contratarán servicios.
@@ -1134,7 +1221,7 @@ Objetivos iniciales:
 
 En Windows la música utilizará carga adecuada para pistas largas. En WebGL se mantendrá una cantidad limitada de música cargada y los efectos de mezcla se incorporarán al audio cuando sea necesario, debido a las limitaciones de audio del navegador. [Audio en WebGL](https://docs.unity.com/en-us/engine/6000.6/manual/platform-specific/webgl/develop/audio)
 
-La reproducción pertenece a la raíz persistente de aplicación. `ApplicationAudioRouter` observa cambios de escena y mantiene una sola solicitud de música: `Hub` usa `tavern_theme`; `Expedition` y `CombatArena`, `patio_theme`; `CustodianArena`, `custodian_theme`; `Bootstrap`, `Menu` y escenas desconocidas quedan sin pista. En WebGL, el director no empieza a reproducir hasta la primera pulsación observada por Input System. `RuntimeAudioDirector` limita la música a dos voces para fundidos cruzados y conserva idempotencia al pedir la misma pista. `RuntimeAmbienceDirector` administra por separado los bucles de patio, archivo y forja con un máximo de dos voces y su propio volumen. El contexto de sala seleccionará los ambientes al integrarse los eventos de transición; la muestra F10 usa el patio.
+La reproducción pertenece a la raíz persistente de aplicación. `ApplicationAudioRouter` observa cambios de escena y mantiene una sola solicitud de música: `Hub` usa `tavern_theme`; `Expedition` y `CombatArena`, `patio_theme`; `CustodianArena`, `custodian_theme`. `Bootstrap` y las escenas desconocidas quedan sin pista. `Menu` permanece en silencio hasta integrar I05: solo después de aceptar F08 y de aceptar auditivamente y validar con el catálogo ampliado la versión de Menú, I05 activa `menu_theme`. Esta decisión no acepta por sí sola la pista ni adelanta el paquete. En WebGL, el director no empieza a reproducir hasta la primera pulsación observada por Input System. `RuntimeAudioDirector` limita la música a dos voces para fundidos cruzados y conserva idempotencia al pedir la misma pista. `RuntimeAmbienceDirector` administra por separado los bucles de patio, archivo y forja con un máximo de dos voces y su propio volumen. El contexto de sala seleccionará los ambientes al integrarse los eventos de transición; la muestra F10 usa el patio.
 
 ### 4.4. Ambientes y efectos
 
@@ -1153,6 +1240,18 @@ Ambientes:
 | Progreso, cuatro | Botín, aparición de jefe, muerte de jefe, pacto |
 
 Total: 36 efectos. Se podrá reutilizar un efecto con variaciones moderadas de tono. El azar cosmético no afectará a la generación de partida.
+
+`ui_focus` se solicita solo cuando cambia efectivamente la selección entre Demo, Arena, Custodio y Taberna en el menú principal. La selección programática inicial establece la línea base en silencio; la selección nula, una notificación duplicada y reseleccionar el mismo botón no solicitan sonido. El relay pertenece a esos cuatro botones: no instalar un observador global del `EventSystem` ni extender este cue a hover u otras pantallas sin una decisión de producto.
+
+`ui_cancel` se solicita cuando Fran/jugador pulsa Escape con el panel de servicios de descanso abierto y este se cierra por esa acción. El botón CERRAR y el cierre automático por pérdida de disponibilidad conservan `ui_close`. El binding existente de Escape a Pause permanece independiente: su cue `ui_open` puede acompañar la cancelación; el paquete de audio no redefine el control de pausa.
+
+`burn` se solicita una vez por impacto físico de Fireball del Magus cuando ese impacto aplica o renueva quemadura en al menos un objetivo válido que no sea el dueño. Un área de efecto que queme varios objetivos en un único impacto produce un solo cue; los pulsos periódicos de daño no producen cues adicionales. El evento pasa por el `ApplicationAudioRouter` persistente y no se reproduce desde los enemigos.
+
+`torch` se solicita una vez cuando el consumible `consumable.torch` se consume correctamente y deja activa o renueva la luz de 60 s. Rechazos, inventario cambiado, soporte ausente, writes pendientes/fallidos, ticks y expiración no emiten el cue. El evento pasa por el `ApplicationAudioRouter` persistente.
+
+El cue `enemy_damage` se solicita una vez por cada incremento de impacto aceptado (`MeleeImpactCount` o `ProjectileImpactCount`) del enemigo. Las composiciones `CombatArena` y `CustodianArena` consumen deltas de esos contadores; los impactos rechazados o duplicados no incrementan el contador y no generan sonido. `CombatArena` establece una línea base por actor al iniciar cada oleada; `CustodianArena` la captura después de inicializar al jefe. El audio pasa por el `ApplicationAudioRouter` persistente y mantiene el gate de primer gesto del jugador. Los enemigos no reproducen audio directamente.
+
+`landing` se emite desde la composición al observar que el jugador vuelve a tocar el suelo, después de registrar su estado inicial. Así no se interpreta el contacto de aparición como aterrizaje. No añadir audio en cada frame en el suelo ni modificar el motor compartido solo para obtener esta señal.
 
 Volúmenes iniciales:
 
@@ -1244,10 +1343,10 @@ Estados:
 
 También:
 
-- `NeedsOwnerReview`: técnicamente verificada y pendiente de valoración.
+- `NeedsOwnerReview`: técnicamente verificada y pendiente de valoración del responsable o de su revisor delegado. Por orden vigente de Fran, las revisiones de producto/diseño se remiten al agente GPT-6.1 Sol (`xhigh`); el coordinador registra su dictamen y evidencia.
 - `Blocked`: bloqueo concreto y documentado.
 
-Una revisión pendiente permitirá continuar con tareas disponibles. Nunca contará como aprobación tácita. Las correcciones se identificarán como `FIX-ID-n`.
+Una revisión pendiente permitirá continuar con tareas disponibles. El silencio no cuenta como aprobación; bajo la delegación vigente, solo un dictamen explícito y evidenciado del agente Sol resuelve una revisión de producto. Las correcciones se identificarán como `FIX-ID-n`.
 
 Para cada tarea de desarrollo, la secuencia mínima será: implementación acotada, validación estática pertinente, escenario de prueba, evidencia y registro. No se añadirá contenido extra para evitar terminar una tarea difícil.
 
@@ -1281,7 +1380,7 @@ Los sistemas E, las familias de catálogos G, las salas y enemigos independiente
 
 H11 se implementa y verifica como arena propia después de los patrones de H05/H08 y antes de su integración en H10. H10 depende de H11: no se declara una campaña completa con el jefe final todavía pendiente. Las tareas H de navegación pueden verificar geometría con referencias de enemigos pendientes explícitas; su combate completo se exige al cerrar H10.
 
-Una dependencia de hito exige verificación técnica. La publicación final exige además las revisiones acordadas. Una tarea `NeedsOwnerReview` satisface dependencias técnicas únicamente si sus comprobaciones ya están registradas.
+Una dependencia de hito exige verificación técnica. La publicación final exige además las revisiones acordadas, delegadas al revisor Sol xhigh según §6.3. Una tarea `NeedsOwnerReview` satisface dependencias técnicas únicamente si sus comprobaciones ya están registradas; solo el dictamen correspondiente resuelve la revisión de producto.
 
 ### 5.4. Reglas aplicables por bloque
 
@@ -1310,15 +1409,15 @@ No se añade infraestructura de agentes, servicios de pago o un SDK de orquestac
 
 ### 5.6. Ejecución invisible y decisiones de Fran
 
-**Aclaración directa de Fran del 19 de octubre de 2026:** el estado por defecto es que no vea ni oiga interfaces auxiliares y que estas no muevan su ratón. Se permiten ventanas en segundo plano si permanecen fuera de su vista y oído, no le roban el foco de forma visible, no generan avisos y no mueven el cursor. Puede bastar dejarlas detrás de otra ventana si se verifican esas condiciones; no confíes únicamente en que una herramienta las llame “background”. Preferir ejecución sin interfaz o ventana oculta; usar un escritorio/sandbox aislado si la garantía no es fiable. La regla obliga al coordinador y a todos los subagentes, y cubre aplicaciones, procesos secundarios y ventanas emergentes. Las imágenes, audio, vídeo y previsualizaciones que una herramienta inserte en el chat también son visibles y solo se usan si Fran necesita decidir sobre ellas.
+**Aclaración directa de Fran del 19 de octubre de 2026:** el estado por defecto es que no vea ni oiga interfaces auxiliares y que estas no muevan su ratón. Se permiten ventanas en segundo plano si permanecen fuera de su vista y oído, no le roban el foco de forma visible, no generan avisos y no mueven el cursor. Puede bastar dejarlas detrás de otra ventana si se verifican esas condiciones; no confíes únicamente en que una herramienta las llame “background”. Preferir ejecución sin interfaz o ventana oculta; usar un escritorio/sandbox aislado si la garantía no es fiable. La regla obliga al coordinador y a todos los subagentes, y cubre aplicaciones, procesos secundarios y ventanas emergentes. Las imágenes, audio, vídeo y previsualizaciones que una herramienta inserte en el chat también son visibles. Como las revisiones de diseño se delegaron al agente Sol, no se inserta ese material en la conversación salvo que Fran pida verlo o necesite tomar una decisión personal nueva.
 
 - Ejecutar tests, builds, servidores y herramientas sin interfaz visible cuando sea posible. Se permiten ventanas auxiliares en segundo plano si no aparecen en la pantalla de Fran, no se oyen, no le roban foco de forma visible ni mueven su ratón. No navegar las pestañas de Fran. Comprobar ventanas emergentes, notificaciones, audio y procesos secundarios; usar ventana oculta o escritorio aislado si la aplicación puede romper esas garantías.
 - No enfocar ni traer al frente ventanas, terminales, Explorador, pestañas, paneles, diálogos o previsualizaciones en el escritorio de Fran para enseñar trabajo técnico. Puede mantenerse una ventana auxiliar en segundo plano cuando se cumplan las condiciones anteriores; minimizarla o dejarla detrás no basta por sí solo para garantizarlo.
 - Guardar capturas, resultados, audio y documentos como evidencia; comunicar el resultado brevemente sin abrir previsualizaciones automáticamente.
-- Solo mostrar la interfaz mínima que Fran deba usar para una decisión concreta, y solo mientras la toma; ocultarla al terminar. Una autorización o una de las cinco revisiones acordadas justifica mostrarla únicamente si requiere esa decisión. Una prueba técnica rutinaria no requiere su presencia.
+- Solo mostrar la interfaz mínima que Fran deba usar personalmente para una decisión que no haya delegado, y solo mientras la toma; ocultarla al terminar. Las cinco revisiones y las comprobaciones de diseño delegadas al agente Sol no justifican mostrarle una ventana ni insertar medios. Una prueba técnica rutinaria tampoco requiere su presencia.
 - No mover el ratón de Fran ni emitir sonido desde herramientas auxiliares. Si no se puede garantizar visibilidad, sonido, foco y cursor, usar ejecución headless/oculta o aislamiento real; si tampoco es posible, registrar el bloqueo y usar una alternativa o continuar con trabajo independiente. No presentar una prueba no ejecutada como aprobada.
 
-Las revisiones de Fran mantienen sus criterios y builds. No se abren demostraciones en primer plano por adelantado; las ventanas auxiliares pueden trabajar en segundo plano si cumplen las garantías de visibilidad, sonido, foco y ratón anteriores. Si no se puede garantizar esas condiciones, se elige ejecución headless o aislamiento real.
+Las revisiones mantienen los criterios y builds de cada hito, pero las realiza el agente delegado GPT-6.1 Sol en xhigh. No se abren demostraciones para Fran ni se insertan previsualizaciones por defecto. El agente puede examinar los materiales mediante un flujo que no le muestre ni reproduzca nada a Fran; si no puede garantizar esa privacidad o carece de la modalidad necesaria, deja el punto como `Not reviewable`, documenta la evidencia faltante y continúa trabajo independiente. Una decisión de diseño consulta al agente antes de implementarse. El dictamen de diseño nunca sustituye los gates técnicos ni se extiende a acciones externas reservadas.
 
 ### A. Conservación, entorno y herramientas
 
@@ -1400,7 +1499,7 @@ Las revisiones de Fran mantienen sus criterios y builds. No se abren demostracio
 | F07 | Entorno de composición y síntesis | Genera audio válido desde partitura; conserva fuentes |
 | F08 | Música nueva de taberna, Patio y Custodio; efectos esenciales | Integración y bucles comprobados |
 | F09 | Tutorial y Custodio acabados; recorrido corto integrado | Taberna, tutorial, combate, exploración, jefe y resultado funcionan |
-| F10 | Muestra 0.3 | Sesión breve de 8–12 minutos con Bellator; tercera revisión de Fran sobre combate, arte y sonido |
+| F10 | Muestra 0.3 | Sesión breve de 8–12 minutos con Bellator; tercera revisión delegada a Sol sobre combate, arte y sonido |
 
 F10 será una muestra limitada del producto: sus recursos visibles estarán acabados, pero no representará la campaña completa. Su salida tras el Custodio reutilizará las reglas normales de extracción, con una zona segura construida para esta muestra.
 
@@ -1457,7 +1556,7 @@ G08 auditará el contenido implementado hasta ese momento. No podrá afirmar que
 | H09 | Dos descansos completos | Recuperación, servicios, continuación y extracción |
 | H10 | Expedición completa por tres sectores | 21–24 localizaciones, progreso y retorno correctos |
 | H11 | Eco de Ignis y arena final | Victoria mediante combate; resultado único |
-| H12 | Introducción, doce fragmentos y epílogos, versión 0.6 | Campaña completa ES/EN; cuarta revisión de Fran |
+| H12 | Introducción, doce fragmentos y epílogos, versión 0.6 | Campaña completa ES/EN; cuarta revisión delegada a Sol |
 
 Las tareas de sala verificarán geometría y navegación aunque algún arquetipo de su sector todavía esté pendiente. El combate completo de cada sector se comprobará tras implementar sus enemigos y en H10. No se ocultará una referencia pendiente sustituyéndola silenciosamente por otro enemigo.
 
@@ -1486,7 +1585,7 @@ Las tareas de sala verificarán geometría y navegación aunque algún arquetipo
 | J05 | Optimización medida | Presupuestos de memoria, rendimiento y tamaño |
 | J06 | Accesibilidad y compatibilidad | Controles, idiomas, foco, resoluciones y navegadores |
 | J07 | Builds limpias y ensayo de restauración web | Artefactos del mismo commit; publicación y recuperación comprobadas |
-| J08 | Candidata 0.9 y correcciones | Quinta revisión de Fran; resolver defectos de lanzamiento |
+| J08 | Candidata 0.9 y correcciones | Quinta revisión delegada a Sol; resolver defectos de lanzamiento |
 | J09 | Publicación 1.0 | Windows, WebGL, metadatos, documentación y revisión final satisfechos |
 
 ---
@@ -1532,9 +1631,9 @@ Para A01 la comprobación pertinente es documental: archivos existentes, 111 IDs
 
 Las pruebas de recorrido distinguirán validación estructural, navegación de plantilla y combate. Una ruta válida no demostrará que sus enemigos o equilibrio estén terminados.
 
-### 6.3. Revisiones de Fran
+### 6.3. Revisiones humanas delegadas a Sol
 
-Se solicitarán únicamente las cinco revisiones acordadas:
+Las cinco revisiones de hito acordadas se asignan al agente GPT-6.1 Sol (`xhigh`):
 
 | Hito | Qué valorar |
 |---|---|
@@ -1544,9 +1643,9 @@ Se solicitarán únicamente las cinco revisiones acordadas:
 | H12 · 0.6 | Campaña completa y progresión |
 | J08 · 0.9 | Candidata de lanzamiento |
 
-Cada revisión entregará una build, instrucciones cortas y aspectos concretos que comprobar.
+La delegación también cubre toda comprobación visual, auditiva, narrativa, de usabilidad, equilibrio percibido y experiencia, además de cada decisión nueva de diseño que altere el canon. Para cada revisión se entrega a Sol el artefacto exacto (build, escena, imagen, audio, texto o diseño), su versión/hash, instrucciones cortas y criterios concretos. El agente registra `Accepted`, `Conditional`, `Rejected` o `Not reviewable`, evidencia y límites de percepción. Solo `Accepted` satisface la revisión humana correspondiente. `Not reviewable` significa que el contenido o modalidad no pudo comprobarse; no bloquea tareas independientes y nunca se convierte en aprobación tácita. No se solicita a Fran que cubra esas revisiones delegadas.
 
-Los problemas técnicos se resolverán antes de pedir la revisión. Las correcciones derivadas se convertirán en tareas con evidencia.
+Los problemas técnicos se resolverán antes de pedir la revisión. Los dictámenes de Sol no reemplazan pruebas, compilación, Unity, CI ni acceptance gates técnicos, y no autorizan publicación, release, compra o cambio de plataforma/modelo de seguridad. Las correcciones derivadas se convertirán en tareas con evidencia.
 
 ### 6.4. Presupuestos técnicos
 

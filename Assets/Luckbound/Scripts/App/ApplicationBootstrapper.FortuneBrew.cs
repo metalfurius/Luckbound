@@ -30,7 +30,7 @@ namespace Luckbound.App
             {
                 if (_pendingFortuneMutation != null)
                 {
-                    if (_pendingExpeditionCandidate == null)
+                    if (_pendingExpeditionCandidate == null && _pendingExpeditionSessionPublication == null)
                     {
                         // A generic retry may have persisted the exact candidate without returning
                         // the Fortune result. The durable book receipt handles the subsequent replay.

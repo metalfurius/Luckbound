@@ -11,10 +11,10 @@ namespace Luckbound.Content
         {
             if (string.IsNullOrWhiteSpace(json)) throw new ArgumentException("Encounter JSON cannot be empty.", nameof(json));
             CombatEncounterData data = JsonUtility.FromJson<CombatEncounterData>(json);
-            if (data == null || data.schemaVersion != 1 || string.IsNullOrWhiteSpace(data.encounterId) ||
+            if (data == null || data.schemaVersion != 2 || string.IsNullOrWhiteSpace(data.encounterId) ||
                 data.waves == null || data.waves.Length < 2 || data.waves.Length > 2)
             {
-                throw new FormatException("Encounter data must use schema version 1 and define exactly two waves.");
+                throw new FormatException("Encounter data must use schema version 2 and define exactly two waves.");
             }
 
             if (data.minimumEntranceDistance < 8f || float.IsNaN(data.minimumEntranceDistance) || float.IsInfinity(data.minimumEntranceDistance))
@@ -23,6 +23,7 @@ namespace Luckbound.Content
             }
 
             var waveIds = new HashSet<string>(StringComparer.Ordinal);
+            var spawnIds = new HashSet<string>(StringComparer.Ordinal);
             for (int waveIndex = 0; waveIndex < data.waves.Length; waveIndex++)
             {
                 CombatEncounterWaveData wave = data.waves[waveIndex];
@@ -35,7 +36,8 @@ namespace Luckbound.Content
                 for (int spawnIndex = 0; spawnIndex < wave.spawns.Length; spawnIndex++)
                 {
                     CombatEnemySpawnData spawn = wave.spawns[spawnIndex];
-                    if (spawn == null || (spawn.enemyId != "enemy.slime" && spawn.enemyId != "enemy.huesoguardia") ||
+                    if (spawn == null || !IsStableSpawnId(spawn.spawnId) || !spawnIds.Add(spawn.spawnId) ||
+                        (spawn.enemyId != "enemy.slime" && spawn.enemyId != "enemy.huesoguardia") ||
                         float.IsNaN(spawn.x) || float.IsInfinity(spawn.x) || float.IsNaN(spawn.y) || float.IsInfinity(spawn.y))
                     {
                         throw new FormatException("Encounter spawn " + waveIndex + ":" + spawnIndex + " has an invalid enemy ID or position.");
@@ -50,6 +52,19 @@ namespace Luckbound.Content
             }
 
             return data;
+        }
+
+        private static bool IsStableSpawnId(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            for (int index = 0; index < value.Length; index++)
+            {
+                char character = value[index];
+                bool valid = character >= 'a' && character <= 'z' || character >= 'A' && character <= 'Z' ||
+                    character >= '0' && character <= '9' || character == '.' || character == '_' || character == '-';
+                if (!valid) return false;
+            }
+            return true;
         }
     }
 
@@ -74,6 +89,7 @@ namespace Luckbound.Content
     [Serializable]
     public sealed class CombatEnemySpawnData
     {
+        public string spawnId;
         public string enemyId;
         public float x;
         public float y;

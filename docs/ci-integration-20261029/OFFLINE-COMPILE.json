@@ -1,0 +1,16 @@
+{
+  "tool": "Roslyn 4.14, .NET SDK 9.0.306, Unity 6000.6.6f1 references",
+  "candidateSha256": "5c0dbd8ea291bfa814000c54a3e51362ee86cf52a626669de8913ac3b5fe4f3c",
+  "rootSourceCount": 374,
+  "currentAppSourceCount": 47,
+  "appReferenceSha256": "546759c260698a1b2fd576457c021b04779748ae3e8feaf4a400178f06c7573d",
+  "testSourceCount": 67,
+  "exitCode": 0,
+  "logSha256": "d41d56dcf5fe16da34715ffe4fdc68314ab52884e6ef33eeb937124cc272c585",
+  "sourcesUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "jsonUtilityExecuted": false,
+  "responseSha256": "853ee6862d8a344c7103cd10deea209250124ab6e7c2ed00977388b7a5e4ab27",
+  "output": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/V6CaptureHarnessIntegration-20261029/offline-r2"
+}

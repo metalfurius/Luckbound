@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 3,
+  "familyId": "bellator-technical-fixture",
+  "resourceId": "f02-technical-family",
+  "status": "Prototype",
+  "intendedUse": "technical-fixture-non-runtime",
+  "provenance": "Byte-for-byte F01 Bellator 32x48 reference cell used only to verify the reusable family importer; not approved as an individual production sprite and not runtime art.",
+  "referenceId": "ART-F01-MASTER-001",
+  "referencePath": "docs/art/F01_master_reference.png",
+  "referenceSha256": "05c4cf259dc50b5cc6175bf3f0259b32b42c46cd9507da4a340e446c88f904b0",
+  "promptReference": "docs/art/records/ART-F01-BELLATOR-32X48.v1.json",
+  "promptReferenceSha256": "b2b61dca9e4b2327c3a0649f54fcbce9130e171d7d9371acde3ab41b90ed72d7",
+  "outputFolder": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineFixture",
+  "pixelsPerUnit": 16,
+  "filterMode": "Point",
+  "mipmaps": false,
+  "alphaIsTransparency": true,
+  "images": [
+    {
+      "sourcePath": "docs/art/F01_bellator_32x48.png",
+      "assetFileName": "BellatorTechnicalFixture.png",
+      "resourceId": "f02-bellator-technical-image",
+      "sha256": "64f2078fc1c4d9183b896028918be04affc232d1a14a1ba2c6578fb7c502f457",
+      "width": 32,
+      "height": 48,
+      "bitDepth": 8,
+      "colorType": 6,
+      "slices": [
+        {
+          "name": "BellatorTechnicalFixture_0",
+          "x": 0,
+          "y": 0,
+          "width": 32,
+          "height": 48,
+          "pivotX": 0.5,
+          "pivotY": 0.0
+        }
+      ]
+    }
+  ],
+  "clips": [
+    {
+      "name": "TechnicalHold",
+      "framesPerSecond": 12,
+      "loop": false,
+      "frames": ["BellatorTechnicalFixture_0"]
+    }
+  ],
+  "atlas": {
+    "includeInBuild": false,
+    "padding": 2
+  }
+}

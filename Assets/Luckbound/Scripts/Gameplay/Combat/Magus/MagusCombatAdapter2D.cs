@@ -53,6 +53,9 @@ namespace Luckbound.Gameplay.Combat.Magus
         /// </summary>
         public event Action<MagusBasicAttackRequest> BasicAttackRequested;
 
+        /// <summary>Raised once when one Fireball impact applies or renews burn on at least one valid target.</summary>
+        public event Action FireballBurnApplied;
+
         public int ActiveArcaneSealCount => _roomEffects.ActiveSealCount;
 
         public long LastTick => _lastTick;
@@ -107,6 +110,7 @@ namespace Luckbound.Gameplay.Combat.Magus
             _disposed = true;
             _roomEffects.Dispose();
             BasicAttackRequested = null;
+            FireballBurnApplied = null;
         }
 
         private void ExecuteSkill(
@@ -150,7 +154,8 @@ namespace Luckbound.Gameplay.Combat.Magus
                 {
                     if (!_disposed && !_roomEffects.IsDisposed)
                     {
-                        _roomEffects.ResolveFireballImpact(projectile, activation, impact, _lastTick);
+                        if (_roomEffects.ResolveFireballImpact(projectile, activation, impact, _lastTick))
+                            FireballBurnApplied?.Invoke();
                     }
                 }
                 finally

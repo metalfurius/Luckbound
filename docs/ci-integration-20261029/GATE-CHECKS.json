@@ -1,0 +1,17 @@
+{
+  "performed": true,
+  "kind": "Synthetic filesystem acceptance of artifact verifier only",
+  "testCount": 14,
+  "result": "Passed",
+  "unityExecuted": false,
+  "jsonUtilityExecuted": false,
+  "historicalFixtureCaptured": false,
+  "verifierSha256": "6faf5138c26708ffac8dac99da9e0a54bea7437862c0c273ab2bba2514a0ce39",
+  "checksSha256": "ed36ee36a6338121e2c8a5538f55a227bb6437c766fb0f2de1bfb24995de2138",
+  "command": "python -B Logs/V6CaptureHarnessIntegration-20261029/check_capture_gate.py",
+  "newCoverage": [
+    "Checkpoint cannot be replaced by arbitrary binary file",
+    "Two valid JSON checkpoint files with correct file hashes but different complete bytes fail"
+  ],
+  "limits": "Synthetic filesystem gate only; no Unity capture or golden acceptance."
+}

@@ -44,6 +44,12 @@ def sha256_file(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
 
 
+def sha256_parameter_bytes(data: bytes) -> str:
+    """Hash F08 effect parameters after canonicalizing line endings to LF."""
+    canonical_bytes = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return sha256_bytes(canonical_bytes)
+
+
 def load_parameters(path: Path = PARAMETERS_PATH) -> tuple[dict[str, Any], bytes]:
     raw = path.read_bytes()
     try:
@@ -338,7 +344,7 @@ def render_bundle() -> tuple[dict[str, Any], dict[str, Any]]:
         },
         "parameters": {
             "file": "parameters.json",
-            "sha256": sha256_bytes(parameter_bytes),
+            "sha256": sha256_parameter_bytes(parameter_bytes),
             "sample_rate_hz": sample_rate_hz,
             "channels": parameters["channels"],
             "format": "WAV",
@@ -360,7 +366,7 @@ def render_bundle() -> tuple[dict[str, Any], dict[str, Any]]:
         "scope": "Complete F08 set of 36 planned effects",
         "group_counts": dict(group_counts),
         "files": {
-            "parameters": {"path": "parameters.json", "sha256": sha256_file(PARAMETERS_PATH)},
+            "parameters": {"path": "parameters.json", "sha256": sha256_parameter_bytes(parameter_bytes)},
             "renderer": {"path": "render_effects.py", "sha256": sha256_file(Path(__file__).resolve())},
             "report": {"path": "reports/sample_effects.report.json", "sha256": sha256_file(REPORT_PATH)},
             "masters": {

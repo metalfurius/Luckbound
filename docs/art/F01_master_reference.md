@@ -1,7 +1,7 @@
 # F01 — Referencia maestra artística
 
 **ID:** ART-F01-MASTER-001
-**Estado:** Prototype
+**Estado:** Accepted
 **Paquete:** F01 — Referencia maestra reproducible
 **Uso:** guía de estilo para F02 y generaciones posteriores; no es un sprite de runtime, atlas, prefab ni escena.
 
@@ -101,4 +101,4 @@ Constraints: Preserve a distinct original Luckbound identity. Keep the board sui
 
 ## Límites de verificación
 
-Se comprobaron dimensiones, formato, tabla de paleta, colores usados, ausencia de transparencia y hashes de la lámina maestra. La referencia separada de Bellator pasa la validación técnica reproducible de dimensiones, PNG RGBA, alfa binaria, paleta y máscara conectada. La herramienta `image_gen` indicó que su salida se había mostrado automáticamente a Fran, en incumplimiento de la regla de visibilidad; no se volvió a abrir ni enviar otra previsualización. El reconocimiento visual de los siete estudios de la lámina y de la nueva celda Bellator queda pendiente de aceptación del coordinador. F01 conserva el estado `Prototype`; el prompt y la comprobación técnica no sustituyen una decisión visual.
+Se comprobaron dimensiones, formato, tabla de paleta, colores usados, ausencia de transparencia y hashes de la lámina maestra. La referencia separada de Bellator pasa la validación técnica reproducible de dimensiones, PNG RGBA, alfa binaria, paleta y máscara conectada. Una salida de `image_gen` se mostró automáticamente durante su generación y se registró como incumplimiento de visibilidad; Fran aprobó expresamente la dirección visual de la lámina maestra el 19 de octubre de 2026 («Aprobar la lámina») y la confirmó de nuevo el 24 de octubre. F01 queda `Accepted` en el registro de progreso. La celda Bellator separada acompaña la escala técnica y no es un recurso de runtime.

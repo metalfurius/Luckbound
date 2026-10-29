@@ -13,7 +13,7 @@ namespace Luckbound.Core.Saves
     public static class SaveFormat
     {
         public const int SchemaVersion = 1;
-        public const int ContentVersion = 5;
+        public const int ContentVersion = 6;
         public const int Generation = 1;
     }
 
@@ -31,6 +31,7 @@ namespace Luckbound.Core.Saves
         public string[] readStoryFragmentIds = Array.Empty<string>();
         public ContractCounterSaveData[] contractCounters = Array.Empty<ContractCounterSaveData>();
         public string[] processedSettlementRunIds = Array.Empty<string>();
+        public ContractProgressEventReceiptSaveData[] processedContractProgressEvents = Array.Empty<ContractProgressEventReceiptSaveData>();
         public PermanentUpgradePurchaseSaveData[] progressionPurchaseTransactions = Array.Empty<PermanentUpgradePurchaseSaveData>();
 
         public static ProfileSaveData CreateNewProfile()
@@ -63,6 +64,8 @@ namespace Luckbound.Core.Saves
                 contractCounters = contractCounters == null ? null : contractCounters
                     .Select(counter => counter == null ? null : counter.Clone()).ToArray(),
                 processedSettlementRunIds = Copy(processedSettlementRunIds),
+                processedContractProgressEvents = processedContractProgressEvents == null ? null : processedContractProgressEvents
+                    .Select(receipt => receipt == null ? null : receipt.Clone()).ToArray(),
                 progressionPurchaseTransactions = progressionPurchaseTransactions == null ? null : progressionPurchaseTransactions
                     .Select(transaction => transaction == null ? null : transaction.Clone()).ToArray()
             };
@@ -76,6 +79,11 @@ namespace Luckbound.Core.Saves
             claimedContractIds = Sort(claimedContractIds);
             readStoryFragmentIds = Sort(readStoryFragmentIds);
             processedSettlementRunIds = Sort(processedSettlementRunIds);
+            processedContractProgressEvents = processedContractProgressEvents == null
+                ? null
+                : processedContractProgressEvents
+                    .OrderBy(receipt => receipt == null ? string.Empty : receipt.eventId, StringComparer.Ordinal)
+                    .Select(receipt => receipt == null ? null : receipt.Clone()).ToArray();
             progressionPurchaseTransactions = progressionPurchaseTransactions == null
                 ? Array.Empty<PermanentUpgradePurchaseSaveData>()
                 : progressionPurchaseTransactions
@@ -99,6 +107,19 @@ namespace Luckbound.Core.Saves
         public int progress;
 
         public ContractCounterSaveData Clone() => new ContractCounterSaveData { contractId = contractId, progress = progress };
+    }
+
+    [Serializable]
+    public sealed class ContractProgressEventReceiptSaveData
+    {
+        public string eventId;
+        public int progressEvent;
+
+        public ContractProgressEventReceiptSaveData Clone() => new ContractProgressEventReceiptSaveData
+        {
+            eventId = eventId,
+            progressEvent = progressEvent
+        };
     }
 
     [Serializable]
@@ -433,6 +454,26 @@ namespace Luckbound.Core.Saves
                     if (!RunId.TryParse(value, out _)) errors.Add("Invalid processed settlement RunId: " + value + ".");
                 }
             }
+            if (profile.processedContractProgressEvents == null)
+            {
+                errors.Add("Processed contract progress event receipts cannot be null.");
+            }
+            else
+            {
+                var eventIds = new HashSet<string>(StringComparer.Ordinal);
+                foreach (ContractProgressEventReceiptSaveData receipt in profile.processedContractProgressEvents)
+                {
+                    if (receipt == null || !IsValidContractProgressEventId(receipt.eventId))
+                    {
+                        errors.Add("Processed contract progress receipts require a valid stable event ID.");
+                        continue;
+                    }
+                    if (!eventIds.Add(receipt.eventId))
+                        errors.Add("Processed contract progress event IDs must be unique.");
+                    if (!Enum.IsDefined(typeof(ContractProgressEvent), receipt.progressEvent))
+                        errors.Add("Processed contract progress receipt has an unknown event kind.");
+                }
+            }
             if (profile.progressionPurchaseTransactions == null)
             {
                 errors.Add("Progression purchase transactions cannot be null.");
@@ -470,6 +511,21 @@ namespace Luckbound.Core.Saves
                     if (counter.progress < 0) errors.Add("Contract progress cannot be negative.");
                 }
             }
+        }
+
+        private static bool IsValidContractProgressEventId(string value)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length > 160) return false;
+            foreach (char character in value)
+            {
+                bool valid = character >= 'A' && character <= 'Z' ||
+                    character >= 'a' && character <= 'z' ||
+                    character >= '0' && character <= '9' ||
+                    character == '.' || character == '_' || character == ':' ||
+                    character == '/' || character == '-';
+                if (!valid) return false;
+            }
+            return true;
         }
 
         private static void ValidateExpedition(ExpeditionSaveData expedition, List<string> errors)

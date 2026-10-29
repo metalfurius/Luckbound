@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "recordId": "F02-MULTI-IMAGE-TEST-FIXTURE",
+  "recordVersion": 2,
+  "creationMethod": "programmatic",
+  "provenance": "Deterministic synthetic RGBA marker pixels created only to exercise the F02 multi-image import pipeline; not character art and never included in runtime content.",
+  "processing": {
+    "tool": "Python standard library",
+    "version": "CPython 3.14.7, zlib-ng 1.3.1",
+    "procedure": "docs/agent_staging/f02-multi-family-acceptance/fixtures; encode 32x96 RGBA PNG rows with filter 0 and zlib level 9; place one opaque 4x4 marker at local pixel x=14..17,y=20..23 in each 32x48 cell; all other pixels are transparent. PNG row zero is the top row. The top PNG half is the Unity y=48 attack slice; the bottom PNG half is the Unity y=0 idle slice.",
+    "parameters": "BellatorFramesA: bottom PNG half (Unity Idle_A) #FF00FFFF; top PNG half (Unity Attack_A) #FFFF00FF. BellatorFramesB: bottom PNG half (Unity Idle_B) #00FFFFFF; top PNG half (Unity Attack_B) #00FF00FF. PNG bit depth 8, color type 6. This corrects the orientation wording in v1 without changing the pinned PNG bytes. These files are technical fixtures only."
+  }
+}

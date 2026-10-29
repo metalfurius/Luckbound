@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
+using Luckbound.App;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Consumables;
 using Luckbound.Core.Fortune;
@@ -11,9 +13,11 @@ using Luckbound.Core.Inventory;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Inventory;
 using Luckbound.Gameplay.Movement;
+using Luckbound.Presentation.Audio;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.Rendering.Universal;
 
 namespace Luckbound.Tests.PlayMode
 {
@@ -211,6 +215,138 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator TorchUseQueuesOneCueAfterConsumptionAndLightActivationBehindTheClosedGate()
+        {
+            bool previousListenerPause = AudioListener.pause;
+            PlayerFixture player = null;
+            ApplicationAudioRouter router = null;
+            Action observeTorchActivation = null;
+            var audioObjects = new List<GameObject>();
+            int activationCount = 0;
+            try
+            {
+                AudioListener.pause = true;
+                player = CreatePlayer(PlayerMotor2D.TorchItemId, 2);
+                router = CreatePlayerAudioBridge(player.Motor, audioObjects);
+                observeTorchActivation = () =>
+                {
+                    activationCount++;
+                    InventoryItemStack remaining = player.Inventory.QuickConsumable;
+                    Assert.That(remaining == null ? 0 : remaining.Quantity, Is.EqualTo(2 - activationCount),
+                        "The cue event runs only after the quick stack was consumed.");
+                    Assert.That(player.Motor.IsTorchLightActive, Is.True);
+                    Light2D light = player.GameObject.GetComponentInChildren<Light2D>();
+                    Assert.That(light, Is.Not.Null);
+                    Assert.That(light.enabled, Is.True, "The additional light is active before the cue event.");
+                    Assert.That(player.Motor.TorchLightEndsAtTickExclusive,
+                        Is.EqualTo(player.Motor.SimulationTick + TorchEffect.DurationTicks));
+                };
+                player.Motor.TorchActivated += observeTorchActivation;
+
+                Assert.That(router.UserGestureObserved, Is.False);
+                player.Input.Press(PlayerAction.Consumable);
+                yield return new WaitForFixedUpdate();
+                player.Input.Release(PlayerAction.Consumable);
+
+                long firstEndTick = player.Motor.TorchLightEndsAtTickExclusive;
+                Assert.That(player.Motor.LastConsumableUseOutcome.Status, Is.EqualTo(PlayerConsumableUseStatus.Consumed));
+                Assert.That(activationCount, Is.EqualTo(1));
+                Assert.That(router.UserGestureObserved, Is.False, "The test input buffer must not unlock the audio gate.");
+                Assert.That(router.PendingEffectRequestCount, Is.EqualTo(1));
+                Assert.That(PendingEffectIdAt(router, 0), Is.EqualTo(ApplicationAudioRouter.TorchEffectId));
+                Assert.That(router.GetComponent<RuntimeAudioDirector>().OneShotSourceCount, Is.Zero,
+                    "The closed gate queues the cue without starting a voice.");
+
+                for (int tick = 0; tick < 4; tick++) yield return new WaitForFixedUpdate();
+                player.Input.Press(PlayerAction.Consumable);
+                yield return new WaitForFixedUpdate();
+                player.Input.Release(PlayerAction.Consumable);
+
+                Assert.That(player.Motor.LastConsumableUseOutcome.Status, Is.EqualTo(PlayerConsumableUseStatus.Consumed));
+                Assert.That(activationCount, Is.EqualTo(2));
+                Assert.That(player.Motor.TorchLightEndsAtTickExclusive,
+                    Is.EqualTo(player.Motor.SimulationTick + TorchEffect.DurationTicks));
+                Assert.That(player.Motor.TorchLightEndsAtTickExclusive, Is.GreaterThan(firstEndTick),
+                    "A second successful use renews the light interval and requests one additional cue.");
+                Assert.That(router.PendingEffectRequestCount, Is.EqualTo(2));
+                Assert.That(PendingEffectIdAt(router, 1), Is.EqualTo(ApplicationAudioRouter.TorchEffectId));
+                Assert.That(router.UserGestureObserved, Is.False);
+
+                router.enabled = false;
+                Assert.That(router.PendingEffectRequestCount, Is.Zero, "Disabling the router clears its scene queue.");
+                player.Motor.TorchActivated -= observeTorchActivation;
+            }
+            finally
+            {
+                try
+                {
+                    if (router != null) router.enabled = false;
+                    foreach (GameObject audioObject in audioObjects)
+                    {
+                        if (audioObject != null) UnityEngine.Object.DestroyImmediate(audioObject);
+                    }
+                    if (player != null)
+                    {
+                        if (observeTorchActivation != null) player.Motor.TorchActivated -= observeTorchActivation;
+                        player.Destroy();
+                    }
+                }
+                finally
+                {
+                    AudioListener.pause = previousListenerPause;
+                }
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator UnsupportedTorchUseIsRejectedWithoutRequestingAudio()
+        {
+            bool previousListenerPause = AudioListener.pause;
+            PlayerFixture player = null;
+            ApplicationAudioRouter router = null;
+            var audioObjects = new List<GameObject>();
+            try
+            {
+                AudioListener.pause = true;
+                player = CreatePlayer(PlayerMotor2D.TorchItemId, 1);
+                router = CreatePlayerAudioBridge(player.Motor, audioObjects);
+                FieldInfo lightField = typeof(PlayerMotor2D).GetField("_torchLight",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.That(lightField, Is.Not.Null);
+                lightField.SetValue(player.Motor, null);
+
+                player.Input.Press(PlayerAction.Consumable);
+                yield return new WaitForFixedUpdate();
+                player.Input.Release(PlayerAction.Consumable);
+
+                Assert.That(player.Motor.LastConsumableUseOutcome.Status,
+                    Is.EqualTo(PlayerConsumableUseStatus.RejectedUnsupportedSubsystem));
+                Assert.That(player.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
+                Assert.That(player.Motor.IsTorchLightActive, Is.False);
+                Assert.That(router.PendingEffectRequestCount, Is.Zero);
+                Assert.That(router.UserGestureObserved, Is.False);
+                router.enabled = false;
+                Assert.That(router.PendingEffectRequestCount, Is.Zero);
+            }
+            finally
+            {
+                try
+                {
+                    if (router != null) router.enabled = false;
+                    foreach (GameObject audioObject in audioObjects)
+                    {
+                        if (audioObject != null) UnityEngine.Object.DestroyImmediate(audioObject);
+                    }
+                    if (player != null) player.Destroy();
+                }
+                finally
+                {
+                    AudioListener.pause = previousListenerPause;
+                }
+            }
+        }
+
+        [UnityTest]
         public IEnumerator FortuneBrewDoesNotConsumeWhenTheDurableFortuneMutationAdapterIsAbsent()
         {
             PlayerFixture player = CreatePlayer(PlayerMotor2D.FortuneBrewItemId, 1);
@@ -379,6 +515,49 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(inventory.SetQuickConsumable(slot, TransactionId.New()).Succeeded, Is.True);
             collector.Configure(inventory, catalog);
             return new PlayerFixture(playerObject, motor, input, inventory);
+        }
+
+        private static ApplicationAudioRouter CreatePlayerAudioBridge(PlayerMotor2D motor,
+            List<GameObject> temporaryObjects)
+        {
+            var compositionOwner = new GameObject("I06_TorchAudioComposition");
+            temporaryObjects.Add(compositionOwner);
+            ExpeditionGameplayComposition composition = compositionOwner.AddComponent<ExpeditionGameplayComposition>();
+            SetPrivateField(composition, "_playerMotor", motor);
+
+            var audioOwner = new GameObject("I06_TorchAudioRouter");
+            temporaryObjects.Add(audioOwner);
+            audioOwner.AddComponent<RuntimeAudioDirector>();
+            ApplicationAudioRouter router = audioOwner.AddComponent<ApplicationAudioRouter>();
+            router.SetSceneContext("Expedition");
+            SetPrivateField(composition, "_audioRouter", router);
+
+            MethodInfo bindAudio = typeof(ExpeditionGameplayComposition).GetMethod(
+                "BindPlayerMagusAudio", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(bindAudio, Is.Not.Null, "Use the production Expedition player-audio binding.");
+            bindAudio.Invoke(composition, null);
+            return router;
+        }
+
+        private static void SetPrivateField<T>(object instance, string fieldName, T value)
+        {
+            FieldInfo field = instance.GetType().GetField(fieldName,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null, "Missing private composition field: " + fieldName);
+            field.SetValue(instance, value);
+        }
+
+        private static string PendingEffectIdAt(ApplicationAudioRouter router, int index)
+        {
+            FieldInfo field = typeof(ApplicationAudioRouter).GetField("_pendingEffectRequests",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null);
+            IList requests = (IList)field.GetValue(router);
+            Assert.That(index, Is.InRange(0, requests.Count - 1));
+            PropertyInfo effectId = requests[index].GetType().GetProperty("EffectId",
+                BindingFlags.Instance | BindingFlags.Public);
+            Assert.That(effectId, Is.Not.Null);
+            return (string)effectId.GetValue(requests[index]);
         }
 
         private static ItemCatalog CreateItemCatalog()

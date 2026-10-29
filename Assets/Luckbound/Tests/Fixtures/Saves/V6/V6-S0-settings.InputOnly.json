@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": 6,
+  "generation": 0,
+  "sequence": 0,
+  "savedAtUtc": "2000-01-01T00:00:00Z",
+  "checksum": "candidate-not-captured",
+  "settings": {
+    "languageId": "es",
+    "masterVolume": 1.0,
+    "musicVolume": 0.65,
+    "effectsVolume": 0.8,
+    "ambienceVolume": 0.45
+  }
+}

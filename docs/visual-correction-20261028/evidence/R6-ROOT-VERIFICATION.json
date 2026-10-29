@@ -1,0 +1,70 @@
+{
+  "verifiedAt": "2026-10-29T13:49:13.636Z",
+  "run": 40881364522,
+  "commit": "97cb2a6fee9ba7bb4ccfaa1b318e161c81d1e705",
+  "artifacts": [
+    {
+      "kind": "windows",
+      "files": 210,
+      "bad": [],
+      "zips": [
+        {
+          "file": "artifact.zip",
+          "bytes": 50393104,
+          "sha256": "6d555402e35f4e7a01bf6484399f758ae98d3ce5b1233c07c4d0ea09c6244fbd"
+        }
+      ]
+    },
+    {
+      "kind": "webgl",
+      "files": 17,
+      "bad": [],
+      "zips": [
+        {
+          "file": "artifact.zip",
+          "bytes": 15999021,
+          "sha256": "d7b7d941a7abc790b1e6b41bfab536bea01cae482c61103e23b9e21ced86e1a3"
+        }
+      ]
+    }
+  ],
+  "windowsRawSha256": "c172da6efed9035a6d5a7a8c96fbdf97be0ae8f98ad4fe85f4a94873c219644b",
+  "windowsRawEvidence": [
+    "2026-10-29T13:28:32.8341726Z Region: westcentralus",
+    "2026-10-29T13:28:39.8376960Z   key: luckbound-linux-6000.6.6f1-windows-a51be40ea5917ef0d69c1c5c76c4c952443d3071cd85edb8a927e9b6ccb961ed",
+    "2026-10-29T13:28:39.8377800Z   restore-keys: luckbound-linux-6000.6.6f1-windows-",
+    "2026-10-29T13:28:40.1734105Z Cache hit for restore-key: luckbound-linux-6000.6.6f1-windows-773db8967a75a13168da0d576b15d6d795878b233cc738c18c57641e28a43a7e",
+    "2026-10-29T13:28:47.3975347Z Cache restored from key: luckbound-linux-6000.6.6f1-windows-773db8967a75a13168da0d576b15d6d795878b233cc738c18c57641e28a43a7e",
+    "2026-10-29T13:28:47.4400136Z   customImage: unityci/editor:ubuntu-6000.6.6f1-windows-mono-3.2.2",
+    "2026-10-29T13:28:47.4402083Z   customParameters: -nographics",
+    "2026-10-29T13:28:49.0273818Z [command]/tmp/game-ci-cli-cache/v0.1.72/game-ci build --targetPlatform=StandaloneWindows64 --customImage=unityci/editor:ubuntu-6000.6.6f1-windows-mono-3.2.2 --buildName=Luckbound --buildsPath=build --customParameters=-nographics --versioningStrategy=Semantic --androidExportType=androidPackage --androidSymbolType=none --dockerIsolationMode=default --containerRegistryRep",
+    "2026-10-29T13:28:58.7568922Z [INFO] linux StandaloneWindows64 6000.6.6f1",
+    "2026-10-29T13:28:58.8662659Z Unable to find image 'unityci/editor:ubuntu-6000.6.6f1-windows-mono-3.2.2' locally",
+    "2026-10-29T13:28:59.5484950Z ubuntu-6000.6.6f1-windows-mono-3.2.2: Pulling from unityci/editor",
+    "2026-10-29T13:30:24.6757800Z Digest: sha256:b233d725c25f87395ab7131ff39b7d9df5b4c85eb62986b1714e9415c32799d6",
+    "2026-10-29T13:30:24.6767015Z Status: Downloaded newer image for unityci/editor:ubuntu-6000.6.6f1-windows-mono-3.2.2",
+    "2026-10-29T13:30:25.2897680Z Unity Editor version:    6000.6.6f1 (d20c9ac777da)",
+    "2026-10-29T13:30:25.2903973Z Available memory:        15983 MB",
+    "2026-10-29T13:30:29.1066356Z -nographics",
+    "2026-10-29T13:30:29.2105306Z Unity Editor version:    6000.6.6f1 (d20c9ac777da)",
+    "2026-10-29T13:30:29.2112521Z Available memory:        15983 MB",
+    "2026-10-29T13:30:29.2404301Z -nographics",
+    "2026-10-29T13:30:30.4242478Z Initialize engine version: 6000.6.6f1 (d20c9ac777da)",
+    "2026-10-29T13:31:17.6107271Z Unity Editor version:    6000.6.6f1 (d20c9ac777da)",
+    "2026-10-29T13:31:17.6116071Z Available memory:        15983 MB",
+    "2026-10-29T13:31:33.3054487Z Cache saved with key: luckbound-linux-6000.6.6f1-windows-a51be40ea5917ef0d69c1c5c76c4c952443d3071cd85edb8a927e9b6ccb961ed"
+  ],
+  "xmlSummary": [
+    {
+      "kind": "editmode",
+      "sha": "3c790f6cc77346351cc80877d0cd6632229aa84eedbbf24f26acae8e12ae8c0b",
+      "root": "<test-run id=\"2\" testcasecount=\"350\" result=\"Passed\" total=\"350\" passed=\"350\" failed=\"0\" inconclusive=\"0\" skipped=\"0\" asserts=\"0\" engine-version=\"3.5.0.0\" clr-version=\"4.0.30319.42000\" start-time=\"2026-10-29 13:27:46Z\" end-time=\"2026-10-29 13:27:48Z\" duration=\"2.296587\">"
+    },
+    {
+      "kind": "playmode",
+      "sha": "e3cee7f622c827bafa930771399039da2d2bab40a134e35be79415476e5b53cf",
+      "root": "<test-run id=\"2\" testcasecount=\"246\" result=\"Passed\" total=\"246\" passed=\"246\" failed=\"0\" inconclusive=\"0\" skipped=\"0\" asserts=\"0\" engine-version=\"3.5.0.0\" clr-version=\"4.0.30319.42000\" start-time=\"2026-10-29 13:24:51Z\" end-time=\"2026-10-29 13:27:20Z\" duration=\"148.5282457\">"
+    }
+  ],
+  "noPlayerExecuted": true
+}

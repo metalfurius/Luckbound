@@ -158,5 +158,121 @@ namespace Luckbound.Tests.Core
             Assert.Throws<ArgumentNullException>(() => new PactSnapshot(PactSnapshot.CurrentVersion, 100, 100, null));
             Assert.Throws<ArgumentNullException>(() => PactState.Restore(null));
         }
+
+        [Test]
+        public void HasteAndSilenceExposeStableIdsAndTheirCanonicalEffects()
+        {
+            Assert.That(PactIds.Haste, Is.EqualTo("pact.haste"));
+            Assert.That(PactIds.Silence, Is.EqualTo("pact.silence"));
+            Assert.That(PactIds.IsKnown(PactIds.Haste), Is.True);
+            Assert.That(PactIds.IsKnown(PactIds.Silence), Is.True);
+
+            PactModifierTotals haste = PactModifierTotals.Sum(new[] { PactIds.Haste });
+            Assert.That(haste.HorizontalSpeedBonusPercent, Is.EqualTo(15));
+            Assert.That(haste.DefenseReduction, Is.EqualTo(2));
+            Assert.That(haste.SkillCooldownReductionPercent, Is.Zero);
+            Assert.That(haste.PurchasePriceIncreasePercent, Is.Zero);
+            Assert.That(haste.ApplyHorizontalSpeed(6m), Is.EqualTo(6.9m));
+            Assert.That(haste.ApplyDefense(5), Is.EqualTo(3));
+
+            PactModifierTotals silence = PactModifierTotals.Sum(new[] { PactIds.Silence });
+            Assert.That(silence.SkillCooldownReductionPercent, Is.EqualTo(20));
+            Assert.That(silence.PurchasePriceIncreasePercent, Is.EqualTo(25));
+            Assert.That(silence.HorizontalSpeedBonusPercent, Is.Zero);
+            Assert.That(silence.DefenseReduction, Is.Zero);
+            Assert.That(silence.ApplySkillCooldown(1.5m), Is.EqualTo(1.2m));
+            Assert.That(silence.ApplyPurchasePrice(3), Is.EqualTo(4));
+        }
+
+        [Test]
+        public void NewPactEffectsAccumulateWithExistingPactsAndRehydrateFromSnapshots()
+        {
+            PactModifierTotals avariceAndHaste =
+                PactModifierTotals.Sum(new[] { PactIds.Avarice, PactIds.Haste });
+            Assert.That(avariceAndHaste.GoldRewardBonusPercent, Is.EqualTo(35));
+            Assert.That(avariceAndHaste.MaximumHealthReductionPercent, Is.EqualTo(15));
+            Assert.That(avariceAndHaste.HorizontalSpeedBonusPercent, Is.EqualTo(15));
+            Assert.That(avariceAndHaste.DefenseReduction, Is.EqualTo(2));
+
+            var hasteState = new PactState(100, 90);
+            Assert.That(hasteState.Accept(PactIds.Avarice).Status, Is.EqualTo(PactOperationStatus.Accepted));
+            PactActionResult hastePreview = hasteState.PreviewAcceptance(PactIds.Haste);
+            Assert.That(hastePreview.Status, Is.EqualTo(PactOperationStatus.ReadyToAccept));
+            CollectionAssert.AreEqual(new[] { PactIds.Avarice, PactIds.Haste }, hastePreview.Preview.PactIds);
+            Assert.That(hastePreview.Preview.PreviewHorizontalSpeed(7m), Is.EqualTo(8.05m));
+            Assert.That(hastePreview.Preview.PreviewDefense(1), Is.Zero);
+            Assert.That(hasteState.AcceptedPactIds, Has.Count.EqualTo(1));
+            Assert.That(hasteState.CurrentHealth, Is.EqualTo(85), "Previewing Haste must not mutate health.");
+            Assert.That(hasteState.Accept(PactIds.Haste).Status, Is.EqualTo(PactOperationStatus.Accepted));
+
+            PactState restoredHaste = PactState.Restore(hasteState.CreateSnapshot());
+            CollectionAssert.AreEqual(new[] { PactIds.Avarice, PactIds.Haste }, restoredHaste.AcceptedPactIds);
+            Assert.That(restoredHaste.Modifiers.ApplyHorizontalSpeed(7m), Is.EqualTo(8.05m));
+            Assert.That(restoredHaste.Modifiers.ApplyDefense(1), Is.Zero);
+            Assert.That(restoredHaste.CurrentHealth, Is.EqualTo(hasteState.CurrentHealth));
+
+            PactModifierTotals fervorAndSilence =
+                PactModifierTotals.Sum(new[] { PactIds.Fervor, PactIds.Silence });
+            Assert.That(fervorAndSilence.BasicAttackDamageBonusPercent, Is.EqualTo(20));
+            Assert.That(fervorAndSilence.SkillCostIncreasePercent, Is.EqualTo(25));
+            Assert.That(fervorAndSilence.SkillCooldownReductionPercent, Is.EqualTo(20));
+            Assert.That(fervorAndSilence.PurchasePriceIncreasePercent, Is.EqualTo(25));
+            Assert.That(fervorAndSilence.ApplySkillCost(3), Is.EqualTo(4));
+            Assert.That(fervorAndSilence.ApplyPurchasePrice(3), Is.EqualTo(4));
+
+            var silenceState = new PactState(100, 100);
+            silenceState.Accept(PactIds.Fervor);
+            PactPreview silencePreview = silenceState.PreviewAcceptance(PactIds.Silence).Preview;
+            Assert.That(silencePreview.PreviewSkillCooldown(1.5m), Is.EqualTo(1.2m));
+            Assert.That(silencePreview.PreviewPurchasePrice(3), Is.EqualTo(4));
+            Assert.That(silenceState.AcceptedPactIds, Has.Count.EqualTo(1));
+            Assert.That(silenceState.Accept(PactIds.Silence).Status, Is.EqualTo(PactOperationStatus.Accepted));
+
+            PactState restoredSilence = PactState.Restore(silenceState.CreateSnapshot());
+            CollectionAssert.AreEqual(new[] { PactIds.Fervor, PactIds.Silence }, restoredSilence.AcceptedPactIds);
+            Assert.That(restoredSilence.Modifiers.ApplySkillCooldown(1.5m), Is.EqualTo(1.2m));
+            Assert.That(restoredSilence.Modifiers.ApplyPurchasePrice(3), Is.EqualTo(4));
+            Assert.That(restoredSilence.PreviewAcceptance(PactIds.Haste).Status,
+                Is.EqualTo(PactOperationStatus.RejectedAtCapacity));
+        }
+
+        [Test]
+        public void NewEffectsRespectGlobalLimitsAndRoundPurchasePricesUp()
+        {
+            PactModifierTotals none = PactModifierTotals.Sum(Array.Empty<string>());
+            PactModifierTotals haste = PactModifierTotals.Sum(new[] { PactIds.Haste });
+            PactModifierTotals silence = PactModifierTotals.Sum(new[] { PactIds.Silence });
+
+            Assert.That(none.ApplyHorizontalSpeed(9m), Is.EqualTo(PactModifierTotals.MaximumHorizontalSpeed));
+            Assert.That(haste.ApplyHorizontalSpeed(8m), Is.EqualTo(PactModifierTotals.MaximumHorizontalSpeed));
+            Assert.That(none.ApplySkillCooldown(0.25m),
+                Is.EqualTo(PactModifierTotals.MinimumSkillCooldownSeconds));
+            Assert.That(silence.ApplySkillCooldown(0.25m),
+                Is.EqualTo(PactModifierTotals.MinimumSkillCooldownSeconds));
+            Assert.That(haste.ApplyDefense(1), Is.Zero);
+            Assert.That(haste.ApplyDefense(0), Is.Zero);
+            Assert.That(silence.ApplyPurchasePrice(1), Is.EqualTo(2));
+            Assert.That(silence.ApplyPurchasePrice(3), Is.EqualTo(4));
+            Assert.That(silence.ApplyPurchasePrice(0), Is.Zero);
+        }
+
+        [Test]
+        public void NewEffectCalculatorsRejectInvalidInputsAndPactSets()
+        {
+            PactModifierTotals haste = PactModifierTotals.Sum(new[] { PactIds.Haste });
+            PactModifierTotals silence = PactModifierTotals.Sum(new[] { PactIds.Silence });
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => haste.ApplyHorizontalSpeed(-0.1m));
+            Assert.Throws<ArgumentOutOfRangeException>(() => haste.ApplyDefense(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => silence.ApplySkillCooldown(0m));
+            Assert.Throws<ArgumentOutOfRangeException>(() => silence.ApplyPurchasePrice(-1));
+            Assert.Throws<OverflowException>(() => silence.ApplyPurchasePrice(int.MaxValue));
+
+            Assert.Throws<ArgumentNullException>(() => PactModifierTotals.Sum(null));
+            Assert.Throws<ArgumentException>(() => PactModifierTotals.Sum(new[] { "pact.unknown" }));
+            Assert.Throws<ArgumentException>(() => PactModifierTotals.Sum(new[] { PactIds.Haste, PactIds.Haste }));
+            Assert.Throws<ArgumentException>(() =>
+                PactModifierTotals.Sum(new[] { PactIds.Avarice, PactIds.Fervor, PactIds.Haste }));
+        }
     }
 }

@@ -11,14 +11,14 @@
   },
   "generator": {
     "file": "render_effects.py",
-    "sha256": "20667464490d7f5ab07b24527a94f736cf5ec62006e4776d736587f806c5c8b6",
+    "sha256": "8bf12c943b503a83a2cc46d0d89bd5107bba73399e74913aa7bb6e66aa67def1",
     "python_version": "3.14.7",
     "numpy_version": "2.5.4",
     "soundfile_version": "0.14.0"
   },
   "parameters": {
     "file": "parameters.json",
-    "sha256": "3d726ca2edfd16704ed80d571cb40d069d4c2ff79767a42d116cf81b2ec22b54",
+    "sha256": "659ffcd4527b7f755adea40f9a04cee632f3bd2095a73d5e27874992506e572a",
     "sample_rate_hz": 44100,
     "channels": 1,
     "format": "WAV",

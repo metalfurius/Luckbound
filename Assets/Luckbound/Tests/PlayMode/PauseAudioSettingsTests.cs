@@ -165,12 +165,284 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(panel.IsVisible, Is.True, "Focus loss should present the same pause mixer again.");
         }
 
+        [UnityTest]
+        public IEnumerator PendingSettingsSurvivePausePanelDestructionAndAllowANewEdit()
+        {
+            ApplicationBootstrapper application = ApplicationBootstrapper.Instance;
+            _store.BlockNextSettingsWrite();
+
+            _canvasObject = new GameObject("PauseAudioSettingsLifecycleCanvas", typeof(RectTransform), typeof(Canvas),
+                typeof(CanvasScaler), typeof(GraphicRaycaster));
+            Canvas canvas = _canvasObject.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            GameObject labelObject = new GameObject("PauseLifecycleLabel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            labelObject.transform.SetParent(canvas.transform, false);
+            Text pauseLabel = labelObject.GetComponent<Text>();
+            pauseLabel.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+
+            _pauseObject = new GameObject("PauseControllerBeforeRetry");
+            ExpeditionPauseController pause = _pauseObject.AddComponent<ExpeditionPauseController>();
+            pause.Initialize(pauseLabel);
+            pause.SetPaused(true);
+
+            PauseAudioSettingsPanel panel = canvas.GetComponentInChildren<PauseAudioSettingsPanel>(true);
+            Assert.That(panel, Is.Not.Null);
+            Slider master = panel.transform.Find("AudioMasterSlider").GetComponent<Slider>();
+            Slider music = panel.transform.Find("AudioMusicSlider").GetComponent<Slider>();
+            Slider effects = panel.transform.Find("AudioEffectsSlider").GetComponent<Slider>();
+            Slider ambience = panel.transform.Find("AudioAmbienceSlider").GetComponent<Slider>();
+            master.value = 0.72f;
+            music.value = 0.4f;
+            effects.value = 0.6f;
+            ambience.value = 0.3f;
+
+            for (int frame = 0; frame < 120 && !_store.BlockedSettingsWriteStarted.IsCompleted; frame++)
+                yield return null;
+            Assert.That(_store.BlockedSettingsWriteStarted.IsCompleted, Is.True,
+                "The debounced settings write should reach the blocked store.");
+
+            GameSettingsSaveData confirmed = application.Settings;
+            GameSettingsSaveData pending = application.PendingSettingsForRetry;
+            Assert.That(pending, Is.Not.Null);
+            Assert.That(pending.masterVolume, Is.EqualTo(0.72f).Within(0.0001f));
+            Assert.That(pending.musicVolume, Is.EqualTo(0.4f).Within(0.0001f));
+            Assert.That(confirmed.masterVolume, Is.EqualTo(1f).Within(0.0001f),
+                "The in-flight payload must not be published as saved.");
+
+            UnityEngine.Object.Destroy(_pauseObject);
+            _pauseObject = null;
+            yield return null;
+            Assert.That(panel == null, Is.True, "The pause owner destroys its panel when the owner is destroyed.");
+
+            _store.FailBlockedSettingsWrite();
+            yield return null;
+            yield return null;
+
+            _pauseObject = new GameObject("PauseControllerAfterRetry");
+            ExpeditionPauseController reopenedPause = _pauseObject.AddComponent<ExpeditionPauseController>();
+            reopenedPause.Initialize(pauseLabel);
+            reopenedPause.SetPaused(true);
+            panel = canvas.GetComponentInChildren<PauseAudioSettingsPanel>(true);
+            Assert.That(panel, Is.Not.Null);
+            master = panel.transform.Find("AudioMasterSlider").GetComponent<Slider>();
+            music = panel.transform.Find("AudioMusicSlider").GetComponent<Slider>();
+            effects = panel.transform.Find("AudioEffectsSlider").GetComponent<Slider>();
+            ambience = panel.transform.Find("AudioAmbienceSlider").GetComponent<Slider>();
+            Assert.That(master.value, Is.EqualTo(0.72f).Within(0.0001f));
+            Assert.That(music.value, Is.EqualTo(0.4f).Within(0.0001f));
+            Assert.That(effects.value, Is.EqualTo(0.6f).Within(0.0001f));
+            Assert.That(ambience.value, Is.EqualTo(0.3f).Within(0.0001f));
+            Assert.That(master.interactable, Is.False, "Pending values stay locked until their exact payload is retried.");
+            Text reopenedStatus = panel.transform.Find("AudioSettingsStatus").GetComponent<Text>();
+            string pendingMessage = reopenedStatus.text.ToLowerInvariant();
+            Assert.That(pendingMessage.Contains("pendiente") || pendingMessage.Contains("pending"), Is.True,
+                "The recreated panel must describe the payload as pending, not already saved.");
+
+            Button retry = panel.transform.Find("RetrySettingsButton").GetComponent<Button>();
+            Assert.That(retry.gameObject.activeSelf, Is.True);
+            retry.onClick.Invoke();
+            for (int frame = 0; frame < 60 && retry.gameObject.activeSelf; frame++) yield return null;
+
+            Assert.That(retry.gameObject.activeSelf, Is.False);
+            Assert.That(master.interactable, Is.True);
+            Assert.That(application.Settings.masterVolume, Is.EqualTo(0.72f).Within(0.0001f));
+            Assert.That(application.Settings.musicVolume, Is.EqualTo(0.4f).Within(0.0001f));
+            Assert.That(master.value, Is.EqualTo(0.72f).Within(0.0001f),
+                "The UI must display the payload that the retry actually saved.");
+            string savedMessage = reopenedStatus.text.ToLowerInvariant();
+            Assert.That(savedMessage.Contains("guardados") || savedMessage.Contains("saved"), Is.True,
+                "Only a successful write may change the status to saved.");
+            Assert.That(_store.AttemptedSettingsJson.Count, Is.EqualTo(2));
+            Assert.That(_store.AttemptedSettingsJson[1], Is.EqualTo(_store.AttemptedSettingsJson[0]),
+                "Explicit retry must replay the exact JSON captured by the failed write.");
+
+            master.value = 0.82f;
+            yield return new WaitForSecondsRealtime(0.55f);
+
+            Assert.That(_store.AttemptedSettingsJson.Count, Is.EqualTo(3),
+                "The retry and the later edit should each produce one write; panel recreation must not duplicate either.");
+            Assert.That(_store.AttemptedSettingsJson[2], Is.Not.EqualTo(_store.AttemptedSettingsJson[1]));
+            Assert.That(application.Settings.masterVolume, Is.EqualTo(0.82f).Within(0.0001f));
+            Assert.That(application.Settings.musicVolume, Is.EqualTo(0.4f).Within(0.0001f));
+            Assert.That(application.Settings.effectsVolume, Is.EqualTo(0.6f).Within(0.0001f));
+            Assert.That(application.Settings.ambienceVolume, Is.EqualTo(0.3f).Within(0.0001f));
+        }
+
+        [UnityTest]
+        public IEnumerator SuccessfulWriteWhileReopenedPanelWaitsForRetryRestoresConfirmedUi()
+        {
+            ApplicationBootstrapper application = ApplicationBootstrapper.Instance;
+            _store.BlockNextSettingsWrite();
+
+            _canvasObject = new GameObject("PauseAudioSettingsRaceCanvas", typeof(RectTransform), typeof(Canvas),
+                typeof(CanvasScaler), typeof(GraphicRaycaster));
+            Canvas canvas = _canvasObject.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            GameObject labelObject = new GameObject("PauseRaceLabel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            labelObject.transform.SetParent(canvas.transform, false);
+            Text pauseLabel = labelObject.GetComponent<Text>();
+            pauseLabel.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+
+            _pauseObject = new GameObject("PauseControllerBeforeSuccessfulWrite");
+            ExpeditionPauseController pause = _pauseObject.AddComponent<ExpeditionPauseController>();
+            pause.Initialize(pauseLabel);
+            pause.SetPaused(true);
+
+            PauseAudioSettingsPanel panel = canvas.GetComponentInChildren<PauseAudioSettingsPanel>(true);
+            Slider master = panel.transform.Find("AudioMasterSlider").GetComponent<Slider>();
+            Slider music = panel.transform.Find("AudioMusicSlider").GetComponent<Slider>();
+            Slider effects = panel.transform.Find("AudioEffectsSlider").GetComponent<Slider>();
+            Slider ambience = panel.transform.Find("AudioAmbienceSlider").GetComponent<Slider>();
+            master.value = 0.72f;
+            music.value = 0.4f;
+            effects.value = 0.6f;
+            ambience.value = 0.3f;
+
+            for (int frame = 0; frame < 120 && !_store.BlockedSettingsWriteStarted.IsCompleted; frame++)
+                yield return null;
+            Assert.That(_store.BlockedSettingsWriteStarted.IsCompleted, Is.True);
+
+            UnityEngine.Object.Destroy(_pauseObject);
+            _pauseObject = null;
+            yield return null;
+
+            _pauseObject = new GameObject("PauseControllerWhileWritePending");
+            ExpeditionPauseController reopenedPause = _pauseObject.AddComponent<ExpeditionPauseController>();
+            reopenedPause.Initialize(pauseLabel);
+            reopenedPause.SetPaused(true);
+            panel = canvas.GetComponentInChildren<PauseAudioSettingsPanel>(true);
+            Assert.That(panel, Is.Not.Null);
+            master = panel.transform.Find("AudioMasterSlider").GetComponent<Slider>();
+            Assert.That(master.value, Is.EqualTo(0.72f).Within(0.0001f));
+            Assert.That(master.interactable, Is.False);
+            Button retry = panel.transform.Find("RetrySettingsButton").GetComponent<Button>();
+            Assert.That(retry.gameObject.activeSelf, Is.True);
+            retry.onClick.Invoke();
+            yield return null;
+            Assert.That(retry.gameObject.activeSelf, Is.True,
+                "Retry should wait for the original write's repository gate.");
+            Assert.That(retry.interactable, Is.False,
+                "The retry action must be in progress while the repository gate is held.");
+            Text retryStatus = panel.transform.Find("AudioSettingsStatus").GetComponent<Text>();
+            string retryMessage = retryStatus.text.ToLowerInvariant();
+            Assert.That(retryMessage.Contains("retrying") || retryMessage.Contains("reintentando"), Is.True,
+                "The panel should report that the retry is waiting before the original write is released.");
+
+            _store.CompleteBlockedSettingsWriteSuccessfully();
+            for (int frame = 0; frame < 120 && retry.gameObject.activeSelf; frame++) yield return null;
+
+            Assert.That(application.PendingSettingsForRetry, Is.Null);
+            Assert.That(application.Settings.masterVolume, Is.EqualTo(0.72f).Within(0.0001f));
+            Assert.That(application.Settings.musicVolume, Is.EqualTo(0.4f).Within(0.0001f));
+            Assert.That(application.Settings.effectsVolume, Is.EqualTo(0.6f).Within(0.0001f));
+            Assert.That(application.Settings.ambienceVolume, Is.EqualTo(0.3f).Within(0.0001f));
+            Assert.That(retry.gameObject.activeSelf, Is.False,
+                "A no-pending retry result must clear the stale retry UI after the original write succeeded.");
+            Assert.That(master.interactable, Is.True);
+            Assert.That(master.value, Is.EqualTo(0.72f).Within(0.0001f));
+            Text status = panel.transform.Find("AudioSettingsStatus").GetComponent<Text>();
+            string message = status.text.ToLowerInvariant();
+            Assert.That(message.Contains("guardados") || message.Contains("saved"), Is.True);
+            Assert.That(_store.AttemptedSettingsJson.Count, Is.EqualTo(1),
+                "The stale retry must not start a second store write.");
+        }
+
+        [UnityTest]
+        public IEnumerator PendingSettingsFromApplicationCallerCanBeRetriedFromPausePanel()
+        {
+            ApplicationBootstrapper application = ApplicationBootstrapper.Instance;
+            GameSettingsSaveData requested = application.Settings;
+            requested.masterVolume = 0.61f;
+            requested.musicVolume = 0.22f;
+            requested.effectsVolume = 0.43f;
+            requested.ambienceVolume = 0.37f;
+            _store.FailNextSettingsWrite = true;
+
+            Task<SaveWriteResult> failedWrite = application.SaveSettingsAsync(requested);
+            while (!failedWrite.IsCompleted) yield return null;
+            Assert.That(failedWrite.Result.Succeeded, Is.False);
+            Assert.That(application.PendingSettingsForRetry, Is.Not.Null);
+            Assert.That(application.PendingSettingsForRetry.masterVolume, Is.EqualTo(0.61f).Within(0.0001f));
+            Assert.That(_store.AttemptedSettingsJson.Count, Is.EqualTo(1));
+
+            _canvasObject = new GameObject("PauseAudioSettingsCallerCanvas", typeof(RectTransform), typeof(Canvas),
+                typeof(CanvasScaler), typeof(GraphicRaycaster));
+            Canvas canvas = _canvasObject.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            GameObject labelObject = new GameObject("PauseCallerLabel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            labelObject.transform.SetParent(canvas.transform, false);
+            Text pauseLabel = labelObject.GetComponent<Text>();
+            pauseLabel.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+
+            _pauseObject = new GameObject("PauseControllerForApplicationPendingWrite");
+            ExpeditionPauseController pause = _pauseObject.AddComponent<ExpeditionPauseController>();
+            pause.Initialize(pauseLabel);
+            pause.SetPaused(true);
+            PauseAudioSettingsPanel panel = canvas.GetComponentInChildren<PauseAudioSettingsPanel>(true);
+            Slider master = panel.transform.Find("AudioMasterSlider").GetComponent<Slider>();
+            Button retry = panel.transform.Find("RetrySettingsButton").GetComponent<Button>();
+            Assert.That(master.value, Is.EqualTo(0.61f).Within(0.0001f));
+            Assert.That(master.interactable, Is.False);
+            Assert.That(retry.gameObject.activeSelf, Is.True);
+
+            retry.onClick.Invoke();
+            for (int frame = 0; frame < 60 && retry.gameObject.activeSelf; frame++) yield return null;
+
+            Assert.That(application.PendingSettingsForRetry, Is.Null);
+            Assert.That(application.Settings.masterVolume, Is.EqualTo(0.61f).Within(0.0001f));
+            Assert.That(application.Settings.musicVolume, Is.EqualTo(0.22f).Within(0.0001f));
+            Assert.That(application.Settings.effectsVolume, Is.EqualTo(0.43f).Within(0.0001f));
+            Assert.That(application.Settings.ambienceVolume, Is.EqualTo(0.37f).Within(0.0001f));
+            Assert.That(retry.gameObject.activeSelf, Is.False);
+            Assert.That(master.interactable, Is.True);
+            Assert.That(master.value, Is.EqualTo(0.61f).Within(0.0001f));
+            Assert.That(_store.AttemptedSettingsJson.Count, Is.EqualTo(2));
+            Assert.That(_store.AttemptedSettingsJson[1], Is.EqualTo(_store.AttemptedSettingsJson[0]),
+                "A pending write created through the shared application API must be replayed byte-for-byte.");
+        }
         private sealed class FailFirstSettingsStore : ISaveStore
         {
             private readonly Dictionary<SaveDocument, string> _documents = new Dictionary<SaveDocument, string>();
+            private readonly List<string> _attemptedSettingsJson = new List<string>();
+            private TaskCompletionSource<bool> _blockedSettingsWrite;
+            private TaskCompletionSource<bool> _blockedSettingsWriteStarted;
+            private string _blockedSettingsJson;
             public bool FailNextSettingsWrite { get; set; }
 
             public int SettingsWriteAttempts { get; private set; }
+            public IReadOnlyList<string> AttemptedSettingsJson => _attemptedSettingsJson;
+            public Task BlockedSettingsWriteStarted => _blockedSettingsWriteStarted == null
+                ? Task.CompletedTask
+                : _blockedSettingsWriteStarted.Task;
+
+            public void BlockNextSettingsWrite()
+            {
+                _blockedSettingsWrite = new TaskCompletionSource<bool>();
+                _blockedSettingsWriteStarted = new TaskCompletionSource<bool>();
+            }
+
+            public void FailBlockedSettingsWrite()
+            {
+                if (_blockedSettingsWrite == null)
+                    throw new InvalidOperationException("There is no blocked settings write to fail.");
+                TaskCompletionSource<bool> blocked = _blockedSettingsWrite;
+                _blockedSettingsWrite = null;
+                _blockedSettingsJson = null;
+                blocked.SetException(new IOException("simulated blocked audio settings write failure"));
+            }
+
+            public void CompleteBlockedSettingsWriteSuccessfully()
+            {
+                if (_blockedSettingsWrite == null)
+                    throw new InvalidOperationException("There is no blocked settings write to complete.");
+                TaskCompletionSource<bool> blocked = _blockedSettingsWrite;
+                _blockedSettingsWrite = null;
+                _documents[SaveDocument.Settings] = _blockedSettingsJson;
+                _blockedSettingsJson = null;
+                blocked.SetResult(true);
+            }
 
             public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document)
             {
@@ -183,6 +455,13 @@ namespace Luckbound.Tests.PlayMode
                 if (document == SaveDocument.Settings)
                 {
                     SettingsWriteAttempts++;
+                    _attemptedSettingsJson.Add(json);
+                    if (_blockedSettingsWrite != null)
+                    {
+                        _blockedSettingsJson = json;
+                        _blockedSettingsWriteStarted.TrySetResult(true);
+                        return _blockedSettingsWrite.Task;
+                    }
                     if (FailNextSettingsWrite)
                     {
                         FailNextSettingsWrite = false;

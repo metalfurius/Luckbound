@@ -1,0 +1,58 @@
+{
+  "beforeSha256": "bf2113c6459066e9dcc4310e8352c6e95f3939a3bdb63005492e0e48f60deacf",
+  "afterSha256": "5c0dbd8ea291bfa814000c54a3e51362ee86cf52a626669de8913ac3b5fe4f3c",
+  "beforeLines": 973,
+  "afterLines": 2765,
+  "onlyAdditionsIgnoringEol": true,
+  "ordinaryTestAttributesUnchanged": true,
+  "threePostAssertionCallsPresentOnce": true,
+  "operations": [
+    {
+      "kind": "insert",
+      "beforeLine": 2,
+      "addedLines": 2
+    },
+    {
+      "kind": "insert",
+      "beforeLine": 4,
+      "addedLines": 2
+    },
+    {
+      "kind": "insert",
+      "beforeLine": 5,
+      "addedLines": 1
+    },
+    {
+      "kind": "insert",
+      "beforeLine": 25,
+      "addedLines": 37
+    },
+    {
+      "kind": "insert",
+      "beforeLine": 35,
+      "addedLines": 91
+    },
+    {
+      "kind": "insert",
+      "beforeLine": 258,
+      "addedLines": 1
+    },
+    {
+      "kind": "insert",
+      "beforeLine": 278,
+      "addedLines": 1
+    },
+    {
+      "kind": "insert",
+      "beforeLine": 311,
+      "addedLines": 1
+    },
+    {
+      "kind": "insert",
+      "beforeLine": 972,
+      "addedLines": 1656
+    }
+  ],
+  "runtimeBehaviorVerified": false,
+  "unityExecuted": false
+}

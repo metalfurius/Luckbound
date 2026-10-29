@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using Luckbound.App;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
@@ -9,6 +11,7 @@ using Luckbound.Gameplay.Combat.Magus;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Movement;
 using Luckbound.Gameplay.Rooms;
+using Luckbound.Presentation.Audio;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -19,6 +22,8 @@ namespace Luckbound.Tests.PlayMode.Magus
     public sealed class MagusPlayerMotorTests
     {
         private readonly List<MotorFixture> _fixtures = new List<MotorFixture>();
+        private readonly List<GameObject> _temporaryAudioObjects = new List<GameObject>();
+        private bool _previousAudioListenerPause;
         private Vector2 _previousGravity;
         private float _previousTimeScale;
 
@@ -27,6 +32,7 @@ namespace Luckbound.Tests.PlayMode.Magus
         {
             _previousGravity = Physics2D.gravity;
             _previousTimeScale = Time.timeScale;
+            _previousAudioListenerPause = AudioListener.pause;
             Physics2D.gravity = new Vector2(0f, -9.81f);
             Time.timeScale = 1f;
         }
@@ -34,6 +40,13 @@ namespace Luckbound.Tests.PlayMode.Magus
         [UnityTearDown]
         public IEnumerator TearDown()
         {
+            for (int index = _temporaryAudioObjects.Count - 1; index >= 0; index--)
+            {
+                GameObject temporaryObject = _temporaryAudioObjects[index];
+                if (temporaryObject != null) UnityEngine.Object.DestroyImmediate(temporaryObject);
+            }
+            _temporaryAudioObjects.Clear();
+
             for (int index = _fixtures.Count - 1; index >= 0; index--)
             {
                 _fixtures[index].Dispose();
@@ -42,6 +55,7 @@ namespace Luckbound.Tests.PlayMode.Magus
             _fixtures.Clear();
             Physics2D.gravity = _previousGravity;
             Time.timeScale = _previousTimeScale;
+            AudioListener.pause = _previousAudioListenerPause;
             yield return null;
         }
 
@@ -135,6 +149,90 @@ namespace Luckbound.Tests.PlayMode.Magus
             fixture.CreateGroundObstacle("Magus_Aim_Occluding_Wall", new Vector2(1.15f, 1.3f), new Vector2(0.16f, 0.7f));
 
             yield return AssertBasicAttackFallsBackHorizontally(fixture, target);
+        }
+
+        [UnityTest]
+        public IEnumerator SelectedFireballRoutesOneCueForMultiTargetBurnAndNoAdditionalCueOnBurnTick()
+        {
+            MotorFixture fixture = CreateFixture();
+            ProjectileImpactTarget2D directTarget = fixture.CreateTarget("Magus_Fireball_Audio_Direct", new Vector2(2.2f, 2f));
+            ProjectileImpactTarget2D splashTarget = fixture.CreateTarget("Magus_Fireball_Audio_Splash", new Vector2(2.8f, 2f));
+            Physics2D.SyncTransforms();
+
+            ApplicationAudioRouter router = CreateBurnAudioBridge(fixture.Motor);
+            RuntimeAudioDirector director = router.GetComponent<RuntimeAudioDirector>();
+            AudioListener.pause = true;
+            Assert.That(router.UserGestureObserved, Is.False);
+
+            yield return ActivateSkill(fixture, PlayerAction.Skill1);
+
+            for (int step = 0; step < 40 && directTarget.PendingImpactCount == 0; step++)
+                yield return new WaitForFixedUpdate();
+
+            Assert.That(directTarget.PendingImpactCount, Is.EqualTo(1),
+                "The selected Fireball must reach its direct target through the production projectile.");
+            Assert.That(splashTarget.PendingImpactCount, Is.EqualTo(1),
+                "The same explosion must affect a second eligible actor.");
+            MagusStatusEffectTarget2D directStatus = directTarget.GetComponent<MagusStatusEffectTarget2D>();
+            MagusStatusEffectTarget2D splashStatus = splashTarget.GetComponent<MagusStatusEffectTarget2D>();
+            Assert.That(directStatus, Is.Not.Null);
+            Assert.That(splashStatus, Is.Not.Null);
+
+            for (int step = 0; step < 5 && (!directStatus.StatusSnapshot.IsBurning || !splashStatus.StatusSnapshot.IsBurning); step++)
+                yield return new WaitForFixedUpdate();
+
+            Assert.That(directStatus.StatusSnapshot.IsBurning, Is.True);
+            Assert.That(splashStatus.StatusSnapshot.IsBurning, Is.True);
+            Assert.That(router.PendingEffectRequestCount, Is.EqualTo(1),
+                "One Fireball impact requests one burn cue even when it burns multiple actors.");
+            Assert.That(PendingEffectIdAt(router, 0), Is.EqualTo(ApplicationAudioRouter.BurnEffectId));
+            Assert.That(router.UserGestureObserved, Is.False,
+                "The cue must remain queued behind the first real-input gate.");
+            Assert.That(director.OneShotSourceCount, Is.Zero);
+            Assert.That(director.ActiveOneShotSourceCount, Is.Zero);
+
+            for (int step = 0; step < 140 && directStatus.PendingBurnTickCount == 0; step++)
+                yield return new WaitForFixedUpdate();
+
+            Assert.That(directStatus.PendingBurnTickCount, Is.GreaterThan(0),
+                "The production status clock must reach a later periodic burn tick.");
+            Assert.That(router.PendingEffectRequestCount, Is.EqualTo(1),
+                "Periodic damage ticks do not request additional burn cues.");
+            Assert.That(router.UserGestureObserved, Is.False);
+            Assert.That(director.OneShotSourceCount, Is.Zero);
+            Assert.That(director.ActiveOneShotSourceCount, Is.Zero);
+        }
+
+        [UnityTest]
+        public IEnumerator FireballCollisionWithoutEligibleTargetLeavesBurnAudioSilent()
+        {
+            MotorFixture fixture = CreateFixture();
+            ApplicationAudioRouter router = CreateBurnAudioBridge(fixture.Motor);
+            RuntimeAudioDirector director = router.GetComponent<RuntimeAudioDirector>();
+            AudioListener.pause = true;
+
+            var invalidTarget = new GameObject("Magus_Fireball_No_Eligible_Target");
+            invalidTarget.layer = LayerMask.NameToLayer("Enemies");
+            invalidTarget.transform.position = new Vector2(
+                fixture.Motor.transform.position.x + 2.2f,
+                fixture.Motor.transform.position.y + 0.25f);
+            CircleCollider2D invalidTargetCollider = invalidTarget.AddComponent<CircleCollider2D>();
+            invalidTargetCollider.radius = 0.45f;
+            _temporaryAudioObjects.Add(invalidTarget);
+            Physics2D.SyncTransforms();
+
+            yield return ActivateSkill(fixture, PlayerAction.Skill1);
+
+            for (int step = 0; step < 40 && fixture.ProjectileScope.ActiveProjectileCount > 0; step++)
+                yield return new WaitForFixedUpdate();
+
+            Assert.That(fixture.ProjectileScope.ActiveProjectileCount, Is.Zero,
+                "The physical Fireball must collide with and return from the collider without an initialized impact target.");
+            Assert.That(router.PendingEffectRequestCount, Is.Zero,
+                "A collision without an eligible non-own target must not request burn audio.");
+            Assert.That(router.UserGestureObserved, Is.False);
+            Assert.That(director.OneShotSourceCount, Is.Zero);
+            Assert.That(director.ActiveOneShotSourceCount, Is.Zero);
         }
 
         [UnityTest]
@@ -532,6 +630,49 @@ namespace Luckbound.Tests.PlayMode.Magus
 
             Assert.That(target.PendingImpactCount, Is.Zero,
                 "The physical horizontal projectile must not hit an invalid or occluded candidate above or behind it.");
+        }
+
+        private ApplicationAudioRouter CreateBurnAudioBridge(PlayerMotor2D motor)
+        {
+            var audioOwner = new GameObject("I06_BurnAudioRouter");
+            audioOwner.AddComponent<RuntimeAudioDirector>();
+            ApplicationAudioRouter router = audioOwner.AddComponent<ApplicationAudioRouter>();
+            router.SetSceneContext("Expedition");
+            _temporaryAudioObjects.Add(audioOwner);
+
+            var compositionOwner = new GameObject("I06_BurnAudioComposition");
+            ExpeditionGameplayComposition composition = compositionOwner.AddComponent<ExpeditionGameplayComposition>();
+            SetPrivateField(composition, "_playerMotor", motor);
+            SetPrivateField(composition, "_audioRouter", router);
+            MethodInfo bindAudio = typeof(ExpeditionGameplayComposition).GetMethod(
+                "BindPlayerMagusAudio",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(bindAudio, Is.Not.Null, "Expedition composition must expose its production player-audio binding.");
+            bindAudio.Invoke(composition, null);
+            _temporaryAudioObjects.Add(compositionOwner);
+            return router;
+        }
+
+        private static void SetPrivateField<T>(object instance, string fieldName, T value)
+        {
+            FieldInfo field = instance.GetType().GetField(
+                fieldName,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null, "Missing private composition field: " + fieldName);
+            field.SetValue(instance, value);
+        }
+
+        private static string PendingEffectIdAt(ApplicationAudioRouter router, int index)
+        {
+            FieldInfo pendingField = typeof(ApplicationAudioRouter).GetField(
+                "_pendingEffectRequests",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(pendingField, Is.Not.Null);
+            var requests = (System.Collections.IList)pendingField.GetValue(router);
+            object request = requests[index];
+            PropertyInfo effectId = request.GetType().GetProperty("EffectId");
+            Assert.That(effectId, Is.Not.Null);
+            return (string)effectId.GetValue(request);
         }
 
         private static IEnumerator ActivateSkill(MotorFixture fixture, PlayerAction action)

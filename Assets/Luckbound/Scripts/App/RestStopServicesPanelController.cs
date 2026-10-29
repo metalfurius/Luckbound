@@ -9,6 +9,7 @@ using Luckbound.Core.Economy;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Relics;
 using Luckbound.Core.Saves;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -39,6 +40,8 @@ namespace Luckbound.App
         private Button _restTabButton;
         private ScrollRect _scrollRect;
         private readonly Dictionary<string, Button> _pageButtons = new Dictionary<string, Button>(StringComparer.Ordinal);
+        private readonly HashSet<string> _routedBuyOperationKeys = new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> _routedErrorOperationKeys = new HashSet<string>(StringComparer.Ordinal);
         private ServiceTab _selectedTab = ServiceTab.Rest;
         private string _statusMessage = string.Empty;
         private RoomInstanceId _availableRoomId;
@@ -75,7 +78,7 @@ namespace Luckbound.App
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null || !_offered) return;
             if (keyboard.eKey.wasPressedThisFrame && !IsPanelOpen) OpenPanel();
-            else if (keyboard.escapeKey.wasPressedThisFrame && IsPanelOpen) ClosePanel();
+            else if (keyboard.escapeKey.wasPressedThisFrame && IsPanelOpen) CancelPanel();
         }
 
         private void OnDestroy()
@@ -197,13 +200,29 @@ namespace Luckbound.App
                 return;
             }
 
+            bool wasOpen = IsPanelOpen;
             _selectedTab = ServiceTab.Rest;
             _panelRoot.SetActive(true);
+            if (!wasOpen) _app?.AudioRouter?.PlayEffect(ApplicationAudioRouter.UiOpenEffectId);
             RefreshVisiblePage(null);
             Select(_restTabButton);
         }
 
+        private void CancelPanel()
+        {
+            bool wasOpen = IsPanelOpen;
+            DismissPanel();
+            if (wasOpen) _app?.AudioRouter?.PlayEffect(ApplicationAudioRouter.UiCancelEffectId);
+        }
+
         private void ClosePanel()
+        {
+            bool wasOpen = IsPanelOpen;
+            DismissPanel();
+            if (wasOpen) _app?.AudioRouter?.PlayEffect(ApplicationAudioRouter.UiCloseEffectId);
+        }
+
+        private void DismissPanel()
         {
             if (_panelRoot != null) _panelRoot.SetActive(false);
             if (EventSystem.current != null)
@@ -261,6 +280,7 @@ namespace Luckbound.App
         private void BuildShopPage()
         {
             ExpeditionInventory inventory = _app.ActiveRun.Inventory;
+            int purchaseDiscountPercent = ResolvePurchaseDiscountPercent(inventory);
             AddInfo(L("SALDO · ", "BALANCE · ") + inventory.Gold + L(" oro", " gold"));
             MerchantStockSnapshot stock = _app.GetActiveMerchantStock();
             if (stock == null)
@@ -273,7 +293,8 @@ namespace Luckbound.App
             foreach (MerchantOfferSnapshot offer in stock.offers)
             {
                 if (offer == null || !inventory.Catalog.TryGet(offer.itemId, out ItemDefinition definition)) continue;
-                int price = MerchantPricing.GetPurchaseUnitPrice(definition, (ItemRarity)offer.rarity, 0);
+                int price = MerchantPricing.GetPurchaseUnitPrice(definition, (ItemRarity)offer.rarity,
+                    purchaseDiscountPercent);
                 bool stocked = offer.remainingQuantity > 0;
                 string label = stocked
                     ? L("COMPRAR x1 · ", "BUY 1 · ") + ItemLabel(offer.itemId) + " · " + price + L(" oro · stock ", " gold · stock ") + offer.remainingQuantity
@@ -281,7 +302,7 @@ namespace Luckbound.App
                 if (stocked && inventory.Gold < price) label += L(" · falta oro", " · not enough gold");
                 string capturedItemId = offer.itemId;
                 AddAction("Buy_" + StableUiId(capturedItemId), label,
-                    () => _ = Purchase(capturedItemId), stocked, height: 28f);
+                    () => _ = Purchase(capturedItemId, purchaseDiscountPercent), stocked, height: 28f);
             }
 
             AddInfo(L("VENDER MATERIALES · precio unitario al 25 %", "SELL MATERIALS · unit value at 25 %"));
@@ -394,11 +415,14 @@ namespace Luckbound.App
             if (!CanOfferAction()) return;
             if (await RetryPendingBeforeNewAction()) return;
             _busy = true;
+            LastOperationKey = "rest.enter|" + _app.ActiveRoomInstanceId;
             SetStatus(L("GUARDANDO DESCANSO…", "SAVING REST STOP…"));
             try
             {
                 ExpeditionMutationCommitResult<RestStopEntryCommitData> result =
                     await _app.EnterRestStopAsync(_app.ActiveRoomInstanceId);
+                PlayErrorEffectAfterCommit(LastOperationKey, result.Persisted, result.Pending,
+                    result.Outcome != null && !result.Outcome.RestOutcome.Succeeded);
                 if (result.Persisted && result.Outcome != null && result.Outcome.RestOutcome.Succeeded)
                 {
                     _statusMessage = L("Descanso guardado · +", "Rest saved · +") +
@@ -412,20 +436,22 @@ namespace Luckbound.App
             finally { _busy = false; RefreshVisiblePage(SelectedObjectName()); }
         }
 
-        private async Task Purchase(string itemId)
+        private async Task Purchase(string itemId, int discountPercent)
         {
             if (!CanOfferAction()) return;
             if (await RetryPendingBeforeNewAction()) return;
             _busy = true;
             LastTransactionId = TransactionId.New();
             LastOperationKey = string.Join("|", "merchant.buy", _app.ActiveRoomInstanceId, LastTransactionId,
-                itemId, "1", "0");
+                itemId, "1", discountPercent.ToString(CultureInfo.InvariantCulture));
             SetStatus(L("GUARDANDO COMPRA…", "SAVING PURCHASE…"));
             try
             {
                 ExpeditionMutationCommitResult<EconomyTransactionOutcome> result = await _app.PurchaseFromMerchantAsync(
-                    _app.ActiveRoomInstanceId, itemId, 1, 0, LastTransactionId);
-                ShowEconomyResult(result.Persisted, result.Pending, result.Outcome, L("Compra", "Purchase"), result.Message);
+                    _app.ActiveRoomInstanceId, itemId, 1, discountPercent, LastTransactionId);
+                PlayBuyEffectAfterCommit(LastOperationKey, result);
+                ShowEconomyResult(LastOperationKey, result.Persisted, result.Pending, result.Outcome,
+                    L("Compra", "Purchase"), result.Message);
             }
             catch (Exception exception) { SetStatus(L("No se pudo comprar · ", "Could not purchase · ") + exception.Message); }
             finally { _busy = false; RefreshVisiblePage(SelectedObjectName()); }
@@ -444,7 +470,8 @@ namespace Luckbound.App
             {
                 ExpeditionMutationCommitResult<EconomyTransactionOutcome> result = await _app.SellItemToMerchantAsync(
                     _app.ActiveRoomInstanceId, itemInstanceId, 1, LastTransactionId);
-                ShowEconomyResult(result.Persisted, result.Pending, result.Outcome, L("Venta", "Sale"), result.Message);
+                ShowEconomyResult(LastOperationKey, result.Persisted, result.Pending, result.Outcome,
+                    L("Venta", "Sale"), result.Message);
             }
             catch (Exception exception) { SetStatus(L("No se pudo vender · ", "Could not sell · ") + exception.Message); }
             finally { _busy = false; RefreshVisiblePage(SelectedObjectName()); }
@@ -463,7 +490,8 @@ namespace Luckbound.App
             {
                 ExpeditionMutationCommitResult<EconomyTransactionOutcome> result = await _app.SellMaterialToMerchantAsync(
                     _app.ActiveRoomInstanceId, materialKind, 1, LastTransactionId);
-                ShowEconomyResult(result.Persisted, result.Pending, result.Outcome, L("Venta", "Sale"), result.Message);
+                ShowEconomyResult(LastOperationKey, result.Persisted, result.Pending, result.Outcome,
+                    L("Venta", "Sale"), result.Message);
             }
             catch (Exception exception) { SetStatus(L("No se pudo vender · ", "Could not sell · ") + exception.Message); }
             finally { _busy = false; RefreshVisiblePage(SelectedObjectName()); }
@@ -482,6 +510,8 @@ namespace Luckbound.App
             {
                 ExpeditionMutationCommitResult<SmithingOutcome> result = await _app.UpgradeEquipmentAsync(
                     _app.ActiveRoomInstanceId, recipeId, targetInstanceId, LastTransactionId);
+                PlayErrorEffectAfterCommit(LastOperationKey, result.Persisted, result.Pending,
+                    result.Outcome != null && !result.Outcome.Succeeded);
                 if (result.Pending) SetStatus(PendingRetryText());
                 else if (!result.Persisted) SetStatus(L("No se pudo guardar la mejora · ", "Could not save upgrade · ") + result.Message);
                 else if (result.Outcome != null && result.Outcome.Succeeded)
@@ -505,7 +535,8 @@ namespace Luckbound.App
             {
                 ExpeditionMutationCommitResult<EconomyTransactionOutcome> result = await _app.UseTaliaAsync(
                     _app.ActiveRoomInstanceId, LastTransactionId);
-                ShowEconomyResult(result.Persisted, result.Pending, result.Outcome, L("Servicio de Talia", "Talia's service"), result.Message);
+                ShowEconomyResult(LastOperationKey, result.Persisted, result.Pending, result.Outcome,
+                    L("Servicio de Talia", "Talia's service"), result.Message);
             }
             catch (Exception exception) { SetStatus(L("No se pudo usar el servicio de Talia · ", "Could not use Talia's service · ") + exception.Message); }
             finally { _busy = false; RefreshVisiblePage(SelectedObjectName()); }
@@ -524,12 +555,16 @@ namespace Luckbound.App
                     {
                         ExpeditionMutationCommitResult<RestStopEntryCommitData> retried =
                             await _app.RetryPendingEconomyMutationAsync<RestStopEntryCommitData>(key);
+                        PlayErrorEffectAfterCommit(key, retried.Persisted, retried.Pending,
+                            retried.Outcome != null && !retried.Outcome.RestOutcome.Succeeded);
                         _statusMessage = FormatRestEntryRetry(retried);
                     }
                     else if (key.StartsWith("smith.upgrade|", StringComparison.Ordinal))
                     {
                         ExpeditionMutationCommitResult<SmithingOutcome> retried =
                             await _app.RetryPendingEconomyMutationAsync<SmithingOutcome>(key);
+                        PlayErrorEffectAfterCommit(key, retried.Persisted, retried.Pending,
+                            retried.Outcome != null && !retried.Outcome.Succeeded);
                         _statusMessage = FormatSmithingRetry(retried);
                     }
                     else if (key.StartsWith("merchant.buy|", StringComparison.Ordinal) ||
@@ -539,6 +574,10 @@ namespace Luckbound.App
                     {
                         ExpeditionMutationCommitResult<EconomyTransactionOutcome> retried =
                             await _app.RetryPendingEconomyMutationAsync<EconomyTransactionOutcome>(key);
+                        PlayErrorEffectAfterCommit(key, retried.Persisted, retried.Pending,
+                            retried.Outcome != null && !retried.Outcome.Succeeded);
+                        if (key.StartsWith("merchant.buy|", StringComparison.Ordinal))
+                            PlayBuyEffectAfterCommit(key, retried);
                         _statusMessage = FormatEconomyRetry(retried);
                     }
                     else _statusMessage = L("Hay otro guardado pendiente; no se inició una acción nueva.",
@@ -580,8 +619,10 @@ namespace Luckbound.App
             return false;
         }
 
-        private void ShowEconomyResult(bool persisted, bool pending, EconomyTransactionOutcome outcome, string operation, string message)
+        private void ShowEconomyResult(string operationKey, bool persisted, bool pending,
+            EconomyTransactionOutcome outcome, string operation, string message)
         {
+            PlayErrorEffectAfterCommit(operationKey, persisted, pending, outcome != null && !outcome.Succeeded);
             if (pending) SetStatus(PendingRetryText());
             else if (!persisted) SetStatus(operation + L(" no guardada · ", " not saved · ") + message);
             else if (outcome != null && outcome.Succeeded)
@@ -614,6 +655,25 @@ namespace Luckbound.App
             return result.Outcome.Succeeded ? L("Operación guardada · saldo ", "Operation saved · balance ") +
                 _app.ActiveRun.Inventory.Gold + L(" oro.", " gold.") :
                 L("Operación rechazada · ", "Operation rejected · ") + result.Outcome.Status;
+        }
+
+        private void PlayBuyEffectAfterCommit(string operationKey,
+            ExpeditionMutationCommitResult<EconomyTransactionOutcome> result)
+        {
+            if (string.IsNullOrEmpty(operationKey) ||
+                !operationKey.StartsWith("merchant.buy|", StringComparison.Ordinal) ||
+                !result.Persisted || result.Pending || result.Outcome == null || !result.Outcome.Succeeded ||
+                !_routedBuyOperationKeys.Add(operationKey)) return;
+
+            _app?.AudioRouter?.PlayEffect(ApplicationAudioRouter.UiBuyEffectId);
+        }
+
+        private void PlayErrorEffectAfterCommit(string operationKey, bool persisted, bool pending, bool rejected)
+        {
+            if (string.IsNullOrEmpty(operationKey) || !persisted || pending || !rejected ||
+                !_routedErrorOperationKeys.Add(operationKey)) return;
+
+            _app?.AudioRouter?.PlayEffect(ApplicationAudioRouter.UiErrorEffectId);
         }
 
         private bool CanOfferAction()
@@ -652,6 +712,22 @@ namespace Luckbound.App
                 if (item != null && seen.Add(item.InstanceId)) yield return item;
             foreach (InventoryItemStack item in inventory.Backpack)
                 if (item != null && seen.Add(item.InstanceId)) yield return item;
+        }
+
+        private static int ResolvePurchaseDiscountPercent(ExpeditionInventory inventory)
+        {
+            if (inventory == null) throw new ArgumentNullException(nameof(inventory));
+
+            // Other relic families share these slots but are outside this resolver's contract.
+            // Keep their IDs out of it while resolving both equipped support-relic slots together.
+            string relicOneId = SupportedRelicId(inventory.RelicOne);
+            string relicTwoId = SupportedRelicId(inventory.RelicTwo);
+            return SupportRelicResolver.Resolve(relicOneId, relicTwoId).PurchasePriceReductionPercent;
+        }
+
+        private static string SupportedRelicId(InventoryItemStack item)
+        {
+            return item != null && SupportRelicIds.IsSupported(item.ItemId) ? item.ItemId : null;
         }
 
         private void AddInfo(string text)

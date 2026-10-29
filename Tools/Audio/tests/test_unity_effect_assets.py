@@ -11,6 +11,7 @@ from typing import Any
 EFFECTS_DIR = Path(__file__).resolve().parents[1] / "effects"
 sys.path.insert(0, str(EFFECTS_DIR))
 import import_unity_effects  # noqa: E402
+import render_effects  # noqa: E402
 
 
 class UnityEffectAssetImportTests(unittest.TestCase):
@@ -30,7 +31,7 @@ class UnityEffectAssetImportTests(unittest.TestCase):
     def _refresh_effect_provenance(self, project_root: Path) -> None:
         source_root = project_root / import_unity_effects.EFFECTS_SOURCE
         parameters_path = source_root / "parameters.json"
-        parameter_hash = import_unity_effects.sha256_file(parameters_path)
+        parameter_hash = import_unity_effects.sha256_parameter_bytes(parameters_path.read_bytes())
         report_path = source_root / "reports" / "sample_effects.report.json"
         report = json.loads(report_path.read_text(encoding="utf-8"))
         report["parameters"]["sha256"] = parameter_hash
@@ -41,6 +42,29 @@ class UnityEffectAssetImportTests(unittest.TestCase):
         manifest["files"]["report"]["sha256"] = import_unity_effects.sha256_bytes(report_bytes)
         self._write_json(manifest_path, manifest)
         self.assertEqual(len(import_unity_effects.read_sources(project_root)[1]), 36)
+
+    def test_parameter_hash_is_line_ending_independent(self) -> None:
+        parameter_lf = b'{"package":"F08.Effects.complete"}\n'
+        parameter_crlf = parameter_lf.replace(b"\n", b"\r\n")
+
+        importer_hash = import_unity_effects.sha256_parameter_bytes(parameter_lf)
+        self.assertEqual(importer_hash, import_unity_effects.sha256_parameter_bytes(parameter_crlf))
+        self.assertEqual(importer_hash, render_effects.sha256_parameter_bytes(parameter_lf))
+        self.assertEqual(importer_hash, render_effects.sha256_parameter_bytes(parameter_crlf))
+
+    def test_effect_parameters_checkout_uses_lf(self) -> None:
+        parameters_path = (
+            import_unity_effects.PROJECT_ROOT
+            / import_unity_effects.EFFECTS_SOURCE
+            / "parameters.json"
+        )
+        parameters_bytes = parameters_path.read_bytes()
+        self.assertTrue(parameters_bytes.endswith(b"\n"))
+        self.assertNotIn(b"\r", parameters_bytes)
+
+        attributes_path = parameters_path.parent.parent / ".gitattributes"
+        attributes = attributes_path.read_text(encoding="utf-8").splitlines()
+        self.assertIn("*.json text eol=lf", attributes)
 
     def test_checked_in_catalog_retains_all_effect_ids_and_validates_current_sources(self) -> None:
         validation = import_unity_effects.validate_assets()
@@ -109,7 +133,7 @@ class UnityEffectAssetImportTests(unittest.TestCase):
             parameter_bytes = self._write_json(parameters_path, parameters)
             manifest_path = source_root / "reports" / "sample_effects.manifest.json"
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            manifest["files"]["parameters"]["sha256"] = import_unity_effects.sha256_bytes(parameter_bytes)
+            manifest["files"]["parameters"]["sha256"] = import_unity_effects.sha256_parameter_bytes(parameter_bytes)
             self._write_json(manifest_path, manifest)
 
             with self.assertRaisesRegex(

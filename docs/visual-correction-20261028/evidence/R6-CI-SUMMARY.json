@@ -1,0 +1,293 @@
+{
+  "schema": "luckbound-ci-acceptance-v1",
+  "review_date": "2026-10-29",
+  "scope": {
+    "repository": "metalfurius/Luckbound",
+    "run_id": 40881364522,
+    "run_attempt": 1,
+    "check_suite_id": 110814552535,
+    "branch": "codex/luckbound-visual-20261028",
+    "commit": "97cb2a6fee9ba7bb4ccfaa1b318e161c81d1e705",
+    "tree": "b0cf97c6cefc3a3b05f97a5242d8a68a4034e89d",
+    "run_status": "completed",
+    "run_conclusion": "success",
+    "run_updated_at": "2026-10-29T13:38:15Z"
+  },
+  "sources": {
+    "run": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/40881364522",
+    "jobs": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/40881364522/jobs",
+    "artifacts": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/40881364522/artifacts",
+    "workflow_at_commit": "https://github.com/metalfurius/Luckbound/blob/97cb2a6fee9ba7bb4ccfaa1b318e161c81d1e705/.github/workflows/build.yml",
+    "workflow_blob_sha": "3c6b4532000e59cd1d40593e533adbf1eb82eb26",
+    "windows_raw_log": "https://nightly.link/metalfurius/Luckbound/runs/123476551410.txt"
+  },
+  "jobs": [
+    {
+      "id": 123473435936,
+      "name": "EditMode and PlayMode tests",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123476551410,
+      "name": "Build Windows x64",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123476551406,
+      "name": "Build WebGL",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 123481855066,
+      "name": "Create version release",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 123481855823,
+      "name": "Publish versioned WebGL on gh-pages",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 123476478868,
+      "name": "Unity EditMode and PlayMode",
+      "status": "completed",
+      "conclusion": "neutral",
+      "note": "No steps; duplicate check-run entry."
+    }
+  ],
+  "tests": {
+    "unity_editor_version": "6000.6.6f1 (d20c9ac777da)",
+    "editmode": {
+      "file": "tests-escalated/extracted/test-results/editmode-results.xml",
+      "sha256": "3c790f6cc77346351cc80877d0cd6632229aa84eedbbf24f26acae8e12ae8c0b",
+      "total": 350,
+      "passed": 350,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "result": "Passed"
+    },
+    "playmode": {
+      "file": "tests-escalated/extracted/test-results/playmode-results.xml",
+      "sha256": "e3cee7f622c827bafa930771399039da2d2bab40a134e35be79415476e5b53cf",
+      "total": 246,
+      "passed": 246,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "result": "Passed"
+    },
+    "unity_logs": {
+      "editmode_log_sha256": "64c7d89e506728247e60d98c123a6c34fc9949f91c7ac40db87354f33d96ccf6",
+      "playmode_log_sha256": "845ff234fa467850944b71c1becb7c925dad39512aa4045f6854f29e5ac6a743",
+      "combined_results_log_sha256": "9298d61fdc68274d27f747ada56b0f57dc9b6c72e4b39336c1d31546c0a347e0"
+    },
+    "selected_cases": [
+      {
+        "name": "MovementDemoAvatar_ImportsBottomPivotAndKeepsConsumerBindings",
+        "fullname": "Luckbound.Tests.Editor.ProjectScaffoldGeneratorTests.MovementDemoAvatar_ImportsBottomPivotAndKeepsConsumerBindings",
+        "result": "Passed"
+      },
+      {
+        "name": "MovementDemoCourseSprites_ResolveCanonicalStoneSpriteFromCheckout",
+        "fullname": "Luckbound.Tests.Editor.ProjectScaffoldGeneratorTests.MovementDemoCourseSprites_ResolveCanonicalStoneSpriteFromCheckout",
+        "result": "Passed"
+      },
+      {
+        "name": "StartupSceneGenerator_IsIdempotentAndLeavesNoProjectDiff",
+        "fullname": "Luckbound.Tests.Editor.ProjectScaffoldGeneratorTests.StartupSceneGenerator_IsIdempotentAndLeavesNoProjectDiff",
+        "result": "Passed"
+      }
+    ],
+    "artifact": {
+      "id": 12899809906,
+      "name": "test-results-97cb2a6fee9ba7bb4ccfaa1b318e161c81d1e705",
+      "bytes": 7865454,
+      "sha256": "9b6781c3c989d14437767b52618df17f8c9e697ebadb23f2c41a45a1fc36a8c0",
+      "download_url": "https://nightly.link/metalfurius/Luckbound/suites/110814552535/artifacts/12899809906",
+      "download_manifest": "tests-escalated/DOWNLOAD.json",
+      "download_manifest_sha256": "ceb467095e15da004229bc03d7e3c2cb55530e2b4ffd80b336274b5a42d04a93",
+      "extracted_file_count": 128
+    }
+  },
+  "windows": {
+    "job_id": 123476551410,
+    "conclusion": "success",
+    "runner": {
+      "github_runner_id": 1000004773,
+      "github_runner_name": "GitHub Actions 1000004773",
+      "worker_id": "59c4d84a-6736-48e0-8026-080f9e1b54a2",
+      "region": "westcentralus",
+      "cloud": "Azure",
+      "runner_version": "2.338.0",
+      "os": "Ubuntu 24.04.5 LTS",
+      "runner_image": "ubuntu-24.04",
+      "runner_image_version": "20261025.353.1"
+    },
+    "build": {
+      "target": "StandaloneWindows64",
+      "unity_editor_version": "6000.6.6f1 (d20c9ac777da)",
+      "container_image": "unityci/editor:ubuntu-6000.6.6f1-windows-mono-3.2.2",
+      "container_image_digest": "sha256:b233d725c25f87395ab7131ff39b7d9df5b4c85eb62986b1714e9415c32799d6",
+      "custom_parameters": "-nographics",
+      "cache_restored_key": "luckbound-linux-6000.6.6f1-windows-773db8967a75a13168da0d576b15d6d795878b233cc738c18c57641e28a43a7e",
+      "unity_reported_available_memory_mb": 15983
+    },
+    "steps": {
+      "build_windows_player": "success",
+      "capture_windows_build_diagnostics": "skipped",
+      "upload_windows_build_diagnostics": "skipped",
+      "verify_windows_output": "success",
+      "upload_windows_build": "success"
+    },
+    "artifact": {
+      "id": 12901441192,
+      "name": "windows-97cb2a6fee9ba7bb4ccfaa1b318e161c81d1e705",
+      "bytes": 50393104,
+      "sha256": "6d555402e35f4e7a01bf6484399f758ae98d3ce5b1233c07c4d0ea09c6244fbd",
+      "download_url": "https://nightly.link/metalfurius/Luckbound/suites/110814552535/artifacts/12901441192",
+      "download_manifest": "windows-escalated/DOWNLOAD.json",
+      "download_manifest_sha256": "0e9eb6e43812c8cba4b73a9be80dd6716b80ddc15f4109476f3458adb63c72ae",
+      "extracted_file_count": 210,
+      "executable": {
+        "path": "windows-escalated/extracted/Luckbound.exe",
+        "bytes": 667136,
+        "sha256": "7c5b8f3ecaf9ef88a16646eacc9f817f327e3dde3244ccc627bd2e273188247d",
+        "pe_machine": "x86_64 (0x8664)",
+        "mz_signature": "4d5a",
+        "pe_signature": "50450000",
+        "executed": false
+      }
+    },
+    "raw_log": {
+      "url": "https://nightly.link/metalfurius/Luckbound/runs/123476551410.txt",
+      "path": "raw-elevated/windows-job.log",
+      "bytes": 1099574,
+      "sha256": "c172da6efed9035a6d5a7a8c96fbdf97be0ae8f98ad4fe85f4a94873c219644b",
+      "download_manifest": "raw-elevated/DOWNLOAD.json",
+      "download_manifest_sha256": "7728523d8fac3999574431545fe7687f355cac88d2687ee70809b2e62c7c4579",
+      "line_references": {
+        "worker_id": 7,
+        "region_cloud": [
+          8,
+          9
+        ],
+        "operating_system": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "runner_image": [
+          16,
+          17,
+          18
+        ],
+        "cache_key": [
+          133,
+          142
+        ],
+        "container_and_flags": [
+          146,
+          150,
+          181
+        ],
+        "container_digest": 285,
+        "unity_version_memory": [
+          345,
+          353
+        ]
+      }
+    }
+  },
+  "webgl": {
+    "job_id": 123476551406,
+    "conclusion": "success",
+    "steps": {
+      "build_webgl_player": "success",
+      "verify_webgl_output": "success",
+      "upload_webgl_build": "success"
+    },
+    "artifact": {
+      "id": 12902075733,
+      "name": "webgl-97cb2a6fee9ba7bb4ccfaa1b318e161c81d1e705",
+      "bytes": 15999021,
+      "sha256": "d7b7d941a7abc790b1e6b41bfab536bea01cae482c61103e23b9e21ced86e1a3",
+      "download_url": "https://nightly.link/metalfurius/Luckbound/suites/110814552535/artifacts/12902075733",
+      "download_manifest": "webgl-escalated/DOWNLOAD.json",
+      "download_manifest_sha256": "ea9f1a4c3c0ac09582cf9e2692cacd8105e04f036a08ddd74ee78741ef857c9a",
+      "extracted_file_count": 17,
+      "verified_required_files": [
+        {
+          "path": "WebGL/index.html",
+          "bytes": 6378,
+          "sha256": "5060528da03c4be8a25723a62d3abb7017b19601a94dabef931b8ed22358cad8"
+        },
+        {
+          "path": "WebGL/Build/WebGL.data.br",
+          "bytes": 7807026,
+          "sha256": "6d38f5078ea27e16f8c356fafb12bd88e548ef09e9cf114e9f600514756c62cc"
+        },
+        {
+          "path": "WebGL/Build/WebGL.framework.js.br",
+          "bytes": 73077,
+          "sha256": "04c89ee567c4f8b617a6aeb4835a59db6bd46a6bfda629d0b7c798e642016754"
+        },
+        {
+          "path": "WebGL/Build/WebGL.loader.js",
+          "bytes": 27675,
+          "sha256": "63f81f6ded8fbf56755d53a1e0675602e3dfc89fe3879d27e8dc54665d0aaa38"
+        },
+        {
+          "path": "WebGL/Build/WebGL.wasm.br",
+          "bytes": 8277836,
+          "sha256": "e4db95e90a8b927645482d1640f7304497adc3ade59ab47a29c9d1b88d23f310"
+        }
+      ]
+    }
+  },
+  "limits": [
+    "R5's Sol perceptual Accepted decision is bound to the exact R5 captures/artifact and does not transfer to R6, the Windows executable, or the local checkout as a whole.",
+    "No R6 image/audio/video perception was performed here; no Windows executable or browser/WebGL runtime was launched.",
+    "The successful Windows build on this host/cache does not prove the RUNNER_TEMP change caused or fixed historical exit 137; memory is Unity's reported available-memory value, not a peak or cgroup limit.",
+    "Because Windows build succeeded, failure-only diagnostics correctly skipped; no free/df/dmesg failure capture is available from this run."
+  ],
+  "download_attempts": [
+    {
+      "path": "tests",
+      "result": "failed before transfer",
+      "error": "urllib.error.URLError: [WinError 10013] Intento de acceso a un socket no permitido por sus permisos de acceso",
+      "preserved": true
+    },
+    {
+      "path": "tests-escalated",
+      "result": "verified",
+      "artifact_sha256": "9b6781c3c989d14437767b52618df17f8c9e697ebadb23f2c41a45a1fc36a8c0"
+    },
+    {
+      "path": "windows-escalated",
+      "result": "verified",
+      "artifact_sha256": "6d555402e35f4e7a01bf6484399f758ae98d3ce5b1233c07c4d0ea09c6244fbd"
+    },
+    {
+      "path": "webgl-escalated",
+      "result": "verified",
+      "artifact_sha256": "d7b7d941a7abc790b1e6b41bfab536bea01cae482c61103e23b9e21ced86e1a3"
+    },
+    {
+      "path": "raw-elevated",
+      "result": "downloaded with 16 MiB cap and hashed"
+    }
+  ],
+  "local_checkout": {
+    "branch": "codex/luckbound-reboot",
+    "head": "a2590e141c46729e6efa7d01ea33647768b58711",
+    "matches_remote_commit": false,
+    "working_tree": "Contains modified and untracked files outside this review directory; they were not inspected or changed."
+  }
+}

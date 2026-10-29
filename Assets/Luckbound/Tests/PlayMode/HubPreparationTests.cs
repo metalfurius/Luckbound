@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Luckbound.App;
 using Luckbound.Core.Expeditions;
@@ -540,13 +541,18 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(app != null && app.SaveDataReady, Is.True);
                 for (int index = 0; index < 3; index++)
                 {
-                    Task<ContractProgressionCommitResult> progress = app.RecordContractProgressEventAsync(ContractProgressEvent.CombatRoomCompleted);
+                    Task<ContractProgressionCommitResult> progress = app.RecordContractProgressEventAsync(
+                        ContractProgressEvent.CombatRoomCompleted, "test/hub-contract-room-" + index);
                     while (!progress.IsCompleted) yield return null;
                     Assert.That(progress.Result.Persisted, Is.True, progress.Result.Message);
                 }
 
                 yield return LoadContractHub();
                 HubPreparationController preparation = Object.FindAnyObjectByType<HubPreparationController>();
+                ApplicationAudioRouter audioRouter = app.AudioRouter;
+                Assert.That(audioRouter, Is.Not.Null);
+                Assert.That(audioRouter.UserGestureObserved, Is.False,
+                    "The regression observes queued effects without unlocking or playing audio.");
                 preparation.SelectClass(2);
                 string selectedClassBeforeLanguageChange = preparation.SelectedClassId;
                 string[] selectedSkillsBeforeLanguageChange = preparation.SelectedSkillIds.ToArray();
@@ -568,6 +574,7 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(app.ContractProgression.GetProgress(ContractCatalog.Ct01), Is.EqualTo(3),
                     "Changing language must not discard profile contract progress.");
 
+                int effectCountBeforeAccept = audioRouter.PendingEffectRequestCount;
                 Button accept = FindButton("ContractCT01ActionButton");
                 Assert.That(accept.interactable, Is.True);
                 SimulateButtonClick(accept);
@@ -579,6 +586,9 @@ namespace Luckbound.Tests.PlayMode
                     yield return null;
                 }
                 Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct01), Is.True);
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforeAccept + 1));
+                Assert.That(PendingEffectIdAt(audioRouter, effectCountBeforeAccept),
+                    Is.EqualTo(ApplicationAudioRouter.UiConfirmEffectId));
                 Button claim = FindButton("ContractCT01ActionButton");
                 Assert.That(claim.interactable, Is.True);
                 Assert.That(claim.GetComponentInChildren<Text>(true).text, Is.EqualTo("Claim"));
@@ -586,12 +596,22 @@ namespace Luckbound.Tests.PlayMode
                 for (int frame = 0; frame < 120 && !app.ContractProgression.IsClaimed(ContractCatalog.Ct01); frame++) yield return null;
 
                 Assert.That(app.ContractProgression.IsClaimed(ContractCatalog.Ct01), Is.True);
+                for (int frame = 0; frame < 120 && audioRouter.PendingEffectRequestCount < effectCountBeforeAccept + 2; frame++) yield return null;
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforeAccept + 2));
+                Assert.That(PendingEffectIdAt(audioRouter, effectCountBeforeAccept + 1),
+                    Is.EqualTo(ApplicationAudioRouter.UiConfirmEffectId));
+                for (int frame = 0; frame < 120 && ContractOperationIsInProgress(preparation); frame++) yield return null;
                 Assert.That(app.Profile.availableRenown, Is.EqualTo(20));
                 Assert.That(app.Profile.unlockedStartingKitIds, Does.Contain("weapon.bellator.trail_saber"));
                 ProfileSaveEnvelope persisted = JsonUtility.FromJson<ProfileSaveEnvelope>(
                     File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile)));
                 Assert.That(persisted.profile.claimedContractIds, Does.Contain(ContractCatalog.Ct01));
                 Assert.That(persisted.profile.unlockedStartingKitIds, Does.Contain("weapon.bellator.trail_saber"));
+
+                InvokeContractActivation(preparation, ContractCatalog.Ct01);
+                for (int frame = 0; frame < 120 && ContractOperationIsInProgress(preparation); frame++) yield return null;
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforeAccept + 2),
+                    "An AlreadyClaimed result must not emit another confirmation.");
 
                 yield return LoadBootstrappedApplication(store, value => app = value);
                 Assert.That(app.ContractProgression.IsClaimed(ContractCatalog.Ct01), Is.True,
@@ -622,6 +642,10 @@ namespace Luckbound.Tests.PlayMode
             {
                 yield return LoadBootstrappedApplication(store, value => app = value);
                 yield return LoadContractHub();
+                ApplicationAudioRouter audioRouter = app.AudioRouter;
+                Assert.That(audioRouter, Is.Not.Null);
+                Assert.That(audioRouter.UserGestureObserved, Is.False);
+                int effectCountBeforeAccepts = audioRouter.PendingEffectRequestCount;
                 SimulateButtonClick(FindButton("OpenContractsButton"));
                 foreach (string contractId in new[] { ContractCatalog.Ct01, ContractCatalog.Ct02, ContractCatalog.Ct03 })
                 {
@@ -631,15 +655,19 @@ namespace Luckbound.Tests.PlayMode
                     for (int frame = 0; frame < 120; frame++)
                     {
                         bool accepted = app.ContractProgression.IsAccepted(contractId);
-                        Button next = contractId == ContractCatalog.Ct03 ? null :
-                            FindButton("Contract" + (contractId == ContractCatalog.Ct01 ? ContractCatalog.Ct02 : ContractCatalog.Ct03) + "ActionButton");
-                        if (accepted && (next == null || next.interactable)) break;
+                        Button current = FindButton("Contract" + contractId + "ActionButton");
+                        if (accepted && current != null && !current.interactable) break;
                         yield return null;
                     }
                     Assert.That(app.ContractProgression.IsAccepted(contractId), Is.True, contractId + " should be persisted after its button click.");
                 }
 
                 Assert.That(app.ContractProgression.ActiveContractIds.Count, Is.EqualTo(3));
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforeAccepts + 3),
+                    "Each newly accepted contract should queue one confirmation.");
+                for (int index = 0; index < 3; index++)
+                    Assert.That(PendingEffectIdAt(audioRouter, effectCountBeforeAccepts + index),
+                        Is.EqualTo(ApplicationAudioRouter.UiConfirmEffectId));
                 Button fourthAccept = FindButton("ContractCT04ActionButton");
                 Assert.That(fourthAccept.interactable, Is.False);
                 string beforeRejectedAttempt = File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile));
@@ -652,6 +680,17 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(rejectedAccept.Result.Persisted, Is.False);
                 Assert.That(File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(beforeRejectedAttempt),
                     "A rejected fourth contract must leave the durable profile payload unchanged.");
+
+                InvokeContractActivation(Object.FindAnyObjectByType<HubPreparationController>(), ContractCatalog.Ct04);
+                HubPreparationController preparation = Object.FindAnyObjectByType<HubPreparationController>();
+                for (int frame = 0; frame < 120 && ContractOperationIsInProgress(preparation); frame++) yield return null;
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforeAccepts + 3),
+                    "A rejected active-limit result must stay silent.");
+
+                InvokeContractActivation(preparation, ContractCatalog.Ct01);
+                for (int frame = 0; frame < 120 && ContractOperationIsInProgress(preparation); frame++) yield return null;
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforeAccepts + 3),
+                    "An AlreadyAccepted result must stay silent.");
 
                 int renownBeforeRejectedClaim = app.Profile.availableRenown;
                 string beforeIncompleteClaim = File.ReadAllText(store.GetPrimaryPath(SaveDocument.Profile));
@@ -686,6 +725,10 @@ namespace Luckbound.Tests.PlayMode
             {
                 yield return LoadBootstrappedApplication(failingStore, value => app = value);
                 yield return LoadContractHub();
+                ApplicationAudioRouter audioRouter = app.AudioRouter;
+                Assert.That(audioRouter, Is.Not.Null);
+                Assert.That(audioRouter.UserGestureObserved, Is.False);
+                int effectCountBeforePendingAction = audioRouter.PendingEffectRequestCount;
                 SimulateButtonClick(FindButton("OpenContractsButton"));
                 SimulateButtonClick(FindButton("ContractCT02ActionButton"));
                 for (int frame = 0; frame < 120 && !app.HasPendingContractProgression; frame++) yield return null;
@@ -693,6 +736,71 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(app.HasPendingContractProgression, Is.True);
                 Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct02), Is.False,
                     "The controller must not publish an unpersisted candidate.");
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforePendingAction),
+                    "A pending profile write must not emit a confirmation.");
+                yield return LoadContractHub();
+                SimulateButtonClick(FindButton("OpenContractsButton"));
+                Button retry = FindButton("RetryPendingContractProgressionButton");
+                for (int frame = 0; frame < 120 && (retry == null || !retry.gameObject.activeInHierarchy || !retry.interactable); frame++)
+                {
+                    yield return null;
+                    retry = FindButton("RetryPendingContractProgressionButton");
+                }
+                Assert.That(retry != null && retry.gameObject.activeInHierarchy && retry.interactable, Is.True);
+                SimulateButtonClick(retry);
+                for (int frame = 0; frame < 120 && app.HasPendingContractProgression; frame++) yield return null;
+                for (int frame = 0; frame < 120 && audioRouter.PendingEffectRequestCount < effectCountBeforePendingAction + 1; frame++) yield return null;
+
+                Assert.That(app.HasPendingContractProgression, Is.False);
+                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct02), Is.True);
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforePendingAction + 1),
+                    "The successful retry of this UI acceptance should emit exactly one confirmation.");
+                Assert.That(PendingEffectIdAt(audioRouter, effectCountBeforePendingAction),
+                    Is.EqualTo(ApplicationAudioRouter.UiConfirmEffectId));
+                Assert.That(failingStore.ProfilePayloads.Count, Is.EqualTo(2));
+                Assert.That(failingStore.ProfilePayloads[1], Is.EqualTo(failingStore.ProfilePayloads[0]),
+                    "The retry must write the byte-identical pending profile payload.");
+                Assert.That(File.ReadAllText(failingStore.GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(failingStore.ProfilePayloads[0]));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10_GameplayProgressRetryDoesNotEmitContractUiConfirmation()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Ui", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var failingStore = new FailingOnceProfileWriteStore(new FileSaveStore(saveDirectory, null), failFirstProfileWrite: false);
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadBootstrappedApplication(failingStore, value => app = value);
+                Task<ContractProgressionCommitResult> accepted = app.AcceptContractAsync(ContractCatalog.Ct01);
+                while (!accepted.IsCompleted) yield return null;
+                Assert.That(accepted.Result.Persisted, Is.True);
+                failingStore.FailNextProfileWrite();
+                Task<ContractProgressionCommitResult> progress =
+                    app.RecordContractProgressEventAsync(ContractProgressEvent.CombatRoomCompleted,
+                        "test/hub-pending-room-1");
+                while (!progress.IsCompleted) yield return null;
+                Assert.That(progress.Result.Pending, Is.True);
+                Assert.That(progress.Result.Operation, Is.EqualTo(ContractProgressionCommitOperation.RecordProgress));
+
+                yield return LoadContractHub();
+                ApplicationAudioRouter audioRouter = app.AudioRouter;
+                Assert.That(audioRouter, Is.Not.Null);
+                Assert.That(audioRouter.UserGestureObserved, Is.False);
+                int effectCountBeforeRetry = audioRouter.PendingEffectRequestCount;
+                SimulateButtonClick(FindButton("OpenContractsButton"));
                 Button retry = FindButton("RetryPendingContractProgressionButton");
                 for (int frame = 0; frame < 120 && (retry == null || !retry.gameObject.activeInHierarchy || !retry.interactable); frame++)
                 {
@@ -704,11 +812,11 @@ namespace Luckbound.Tests.PlayMode
                 for (int frame = 0; frame < 120 && app.HasPendingContractProgression; frame++) yield return null;
 
                 Assert.That(app.HasPendingContractProgression, Is.False);
-                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct02), Is.True);
-                Assert.That(failingStore.ProfilePayloads.Count, Is.EqualTo(2));
-                Assert.That(failingStore.ProfilePayloads[1], Is.EqualTo(failingStore.ProfilePayloads[0]),
-                    "The retry must write the byte-identical pending profile payload.");
-                Assert.That(File.ReadAllText(failingStore.GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(failingStore.ProfilePayloads[0]));
+                Assert.That(app.ContractProgression.GetProgress(ContractCatalog.Ct01), Is.EqualTo(1));
+                Assert.That(audioRouter.PendingEffectRequestCount, Is.EqualTo(effectCountBeforeRetry),
+                    "A successful RecordProgress retry is gameplay persistence, not a contract-board confirmation.");
+                Assert.That(audioRouter.UserGestureObserved, Is.False,
+                    "The test observes the router queue without unlocking or playing audio.");
             }
             finally
             {
@@ -753,22 +861,56 @@ namespace Luckbound.Tests.PlayMode
             ExecuteEvents.Execute(button.gameObject, click, ExecuteEvents.pointerClickHandler);
         }
 
+        private static void InvokeContractActivation(HubPreparationController preparation, string contractId)
+        {
+            MethodInfo method = typeof(HubPreparationController).GetMethod("ActivateContract",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null);
+            method.Invoke(preparation, new object[] { contractId });
+        }
+
+        private static bool ContractOperationIsInProgress(HubPreparationController preparation)
+        {
+            FieldInfo field = typeof(HubPreparationController).GetField("_contractOperationInProgress",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            return (bool)field.GetValue(preparation);
+        }
+
+        private static string PendingEffectIdAt(ApplicationAudioRouter router, int index)
+        {
+            FieldInfo field = typeof(ApplicationAudioRouter).GetField("_pendingEffectRequests",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            var requests = (IList)field.GetValue(router);
+            object request = requests[index];
+            return (string)request.GetType().GetProperty("EffectId").GetValue(request, null);
+        }
+
         private sealed class FailingOnceProfileWriteStore : ISaveStore
         {
             private readonly ISaveStore _inner;
             private readonly System.Collections.Generic.List<string> _profilePayloads = new System.Collections.Generic.List<string>();
+            private int _profileWritesToFail;
 
-            public FailingOnceProfileWriteStore(ISaveStore inner) { _inner = inner; }
+            public FailingOnceProfileWriteStore(ISaveStore inner, bool failFirstProfileWrite = true)
+            {
+                _inner = inner;
+                _profileWritesToFail = failFirstProfileWrite ? 1 : 0;
+            }
             public IReadOnlyList<string> ProfilePayloads => _profilePayloads;
             public string GetPrimaryPath(SaveDocument document) => ((FileSaveStore)_inner).GetPrimaryPath(document);
             public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
+            public void FailNextProfileWrite() => _profileWritesToFail++;
 
             public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
             {
                 if (document == SaveDocument.Profile)
                 {
                     _profilePayloads.Add(json);
-                    if (_profilePayloads.Count == 1) throw new IOException("Injected first profile write failure.");
+                    if (_profileWritesToFail > 0)
+                    {
+                        _profileWritesToFail--;
+                        throw new IOException("Injected profile write failure.");
+                    }
                 }
                 await _inner.WriteAsync(document, json, lastKnownGoodPrimaryJson);
             }

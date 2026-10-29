@@ -51,7 +51,8 @@ namespace Luckbound.App
             _application = application;
             _audioDirector = application.GetComponent<RuntimeAudioDirector>();
             _ambienceDirector = application.GetComponent<RuntimeAmbienceDirector>();
-            _settingsTemplate = application.Settings ?? new GameSettingsSaveData();
+            GameSettingsSaveData pendingSettings = application.PendingSettingsForRetry;
+            _settingsTemplate = pendingSettings ?? application.Settings ?? new GameSettingsSaveData();
             _english = string.Equals(_settingsTemplate.languageId, "en", StringComparison.OrdinalIgnoreCase);
             _whiteSprite = CreateWhiteSprite();
             BuildPanel();
@@ -61,10 +62,23 @@ namespace Luckbound.App
             BindSlider(_effectsSlider, RefreshEffectsValue);
             BindSlider(_ambienceSlider, RefreshAmbienceValue);
             _retryButton.onClick.AddListener(RetryPendingSave);
-            _retryButton.gameObject.SetActive(false);
-            StatusText.text = _english
-                ? "Volume changes preview immediately and save automatically."
-                : "El volumen se previsualiza y se guarda automáticamente.";
+            if (pendingSettings != null)
+            {
+                _pendingSettings = pendingSettings.Clone();
+                SetSlidersInteractable(false);
+                _retryButton.gameObject.SetActive(true);
+                ApplyLivePreview(_pendingSettings);
+                StatusText.text = _english
+                    ? "A previous settings save is pending. Retry it before changing values."
+                    : "Hay un guardado de ajustes pendiente. Reinténtalo antes de cambiar valores.";
+            }
+            else
+            {
+                _retryButton.gameObject.SetActive(false);
+                StatusText.text = _english
+                    ? "Volume changes preview immediately and save automatically."
+                    : "El volumen se previsualiza y se guarda automáticamente.";
+            }
             _initialized = true;
         }
 
@@ -374,31 +388,68 @@ namespace Luckbound.App
             }
             catch (Exception exception)
             {
-                CompleteWriteFailure(exception.Message);
+                ReconcileAfterRetry(false, exception.Message);
+                _saveCoroutine = null;
                 yield break;
             }
 
             while (!writeTask.IsCompleted) yield return null;
             if (writeTask.IsFaulted)
             {
-                CompleteWriteFailure(writeTask.Exception == null
+                ReconcileAfterRetry(false, writeTask.Exception == null
                     ? (_english ? "Unknown settings retry failure." : "Fallo desconocido al reintentar los ajustes.")
                     : writeTask.Exception.GetBaseException().Message);
             }
             else if (writeTask.IsCanceled)
             {
-                CompleteWriteFailure(_english ? "The settings retry was cancelled." : "Se canceló el reintento de ajustes.");
-            }
-            else if (writeTask.Result.Succeeded)
-            {
-                CompleteWriteSuccess();
+                ReconcileAfterRetry(false,
+                    _english ? "The settings retry was cancelled." : "Se canceló el reintento de ajustes.");
             }
             else
             {
-                CompleteWriteFailure(writeTask.Result.Message);
+                ReconcileAfterRetry(writeTask.Result.Succeeded, writeTask.Result.Message);
             }
 
             _saveCoroutine = null;
+        }
+
+        private void ReconcileAfterRetry(bool succeeded, string message)
+        {
+            _isSaving = false;
+            GameSettingsSaveData pending = _application.PendingSettingsForRetry;
+            if (pending != null)
+            {
+                _pendingSettings = pending.Clone();
+                _settingsTemplate = pending.Clone();
+                SetVolumeValues(pending);
+                ApplyLivePreview(pending);
+                SetSlidersInteractable(false);
+                _retryButton.gameObject.SetActive(true);
+                _retryButton.interactable = true;
+                StatusText.text = succeeded
+                    ? (_english
+                        ? "A settings save is still pending. Retry it before changing values."
+                        : "Aún hay un guardado de ajustes pendiente. Reinténtalo antes de cambiar valores.")
+                    : (_english ? "Couldn't save audio settings: " : "No se pudieron guardar los ajustes: ") +
+                      (string.IsNullOrWhiteSpace(message)
+                          ? (_english ? "unknown error" : "error desconocido")
+                          : message);
+                return;
+            }
+
+            GameSettingsSaveData confirmed = _application.Settings;
+            _pendingSettings = null;
+            _settingsTemplate = confirmed.Clone();
+            SetVolumeValues(confirmed);
+            ApplyLivePreview(confirmed);
+            SetSlidersInteractable(true);
+            _retryButton.interactable = true;
+            _retryButton.gameObject.SetActive(false);
+            StatusText.text = succeeded
+                ? (_english ? "Audio settings saved." : "Ajustes de audio guardados.")
+                : (_english
+                    ? "No settings save is pending. Latest saved values restored."
+                    : "No hay guardado pendiente. Se restauraron los últimos valores guardados.");
         }
 
         private void CompleteWriteSuccess()
@@ -406,6 +457,7 @@ namespace Luckbound.App
             _isSaving = false;
             _pendingSettings = null;
             _settingsTemplate = _application.Settings;
+            SetVolumeValues(_settingsTemplate);
             SetSlidersInteractable(true);
             _retryButton.interactable = true;
             _retryButton.gameObject.SetActive(false);

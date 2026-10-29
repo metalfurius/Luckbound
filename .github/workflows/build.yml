@@ -8,6 +8,7 @@ on:
     branches:
       - Main
       - codex/luckbound-visual-20261028
+      - codex/luckbound-integration-20261029
     tags:
       - 'v*'
   workflow_dispatch:
@@ -51,10 +52,18 @@ jobs:
           cliVersion: v0.1.72
           customImage: unityci/editor:ubuntu-6000.6.6f1-base-3.2.2
           testMode: all
-          customParameters: '-testFilter Luckbound'
+          customParameters: "${{ github.ref == 'refs/heads/codex/luckbound-integration-20261029' && format('-testFilter Luckbound -luckboundV6CaptureDir Logs/Scenarios/V6Capture-{0}-{1}-{2}', github.sha, github.run_id, github.run_attempt) || '-testFilter Luckbound' }}"
           artifactsPath: test-results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: Unity EditMode and PlayMode
+
+      - name: Verify explicit V6 capture
+        if: ${{ !cancelled() && github.ref == 'refs/heads/codex/luckbound-integration-20261029' && steps.unity_tests.outcome == 'success' }}
+        shell: bash
+        run: |
+          python3 Tools/Automation/verify_v6_capture.py \
+            --capture-dir "Logs/Scenarios/V6Capture-${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --commit "${GITHUB_SHA}"
 
       - name: Upload test results
         if: always()

@@ -143,6 +143,23 @@ namespace Luckbound.Tests.PlayMode
                 for (int frame = 0; frame < 120 && app.ContractProgression.GetProgress("CT04") != 1; frame++) yield return null;
                 Assert.That(app.ContractProgression.GetProgress("CT04"), Is.EqualTo(1),
                     "Only the persisted successful crafting transaction should advance CT04.");
+                ProfileSaveEnvelope committedEnvelope = JsonUtility.FromJson<ProfileSaveEnvelope>(
+                    failingStore.LastSuccessfulProfileJson);
+                ExpeditionInventorySnapshot committedInventory = JsonUtility.FromJson<ExpeditionInventorySnapshot>(
+                    committedEnvelope.activeExpedition.inventorySnapshotJson);
+                bool transactionAndContractReceiptShareCommit =
+                    committedInventory.transactions.Any(transaction =>
+                        transaction.transactionId == committedCraftId.ToString() &&
+                        transaction.craftingStatus == (int)CraftingOperationStatus.Succeeded) &&
+                    committedEnvelope.profile.contractCounters.Any(counter =>
+                        counter.contractId == "CT04" && counter.progress == 1) &&
+                    committedEnvelope.profile.processedContractProgressEvents.Any(receipt =>
+                        receipt.eventId == "tx/" + committedCraftId &&
+                        receipt.progressEvent == (int)ContractProgressEvent.ItemCrafted);
+                Assert.That(transactionAndContractReceiptShareCommit, Is.True,
+                    "The inventory transaction, CT04 counter and stable event receipt must be in one profile envelope.");
+                Assert.That(failingStore.LastFailedProfileJson, Is.EqualTo(failingStore.LastSuccessfulProfileJson),
+                    "Retrying the v6 CT04 craft must commit the exact envelope that failed on its first write.");
 
                 evidence.RecordInput(6, "TransactionReplay", "Submit the committed crafting TransactionId again");
                 Task<CraftingCommitResult> replay = app.CraftActiveExpeditionAsync(HealthPotionRecipeId, committedCraftId);
@@ -152,7 +169,9 @@ namespace Luckbound.Tests.PlayMode
                     CraftingOperationStatus.Succeeded);
                 bool replayIsUnique = replay.Result.Persisted && replay.Result.Outcome != null &&
                     replay.Result.Outcome.Succeeded && inventory.QuickConsumable.Quantity == 3 &&
-                    successfulReceiptsAfterReplay == 1 && app.ContractProgression.GetProgress("CT04") == 1;
+                    successfulReceiptsAfterReplay == 1 && app.ContractProgression.GetProgress("CT04") == 1 &&
+                    app.Profile.processedContractProgressEvents.Count(receipt =>
+                        receipt.eventId == "tx/" + committedCraftId) == 1;
                 evidence.RecordAssertion("Replaying the same transaction returns success without a second potion",
                     replayIsUnique, "same success result; potion quantity stays 3; exactly one success receipt",
                     "persisted=" + replay.Result.Persisted + "; potions=" + inventory.QuickConsumable.Quantity +
@@ -315,6 +334,8 @@ namespace Luckbound.Tests.PlayMode
             private bool _failNextProfileWrite;
 
             public FailOnceProfileWriteStore(ISaveStore inner) { _inner = inner; }
+            public string LastSuccessfulProfileJson { get; private set; }
+            public string LastFailedProfileJson { get; private set; }
             public void FailNextProfileWrite() => _failNextProfileWrite = true;
             public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
 
@@ -323,9 +344,11 @@ namespace Luckbound.Tests.PlayMode
                 if (document == SaveDocument.Profile && _failNextProfileWrite)
                 {
                     _failNextProfileWrite = false;
+                    LastFailedProfileJson = json;
                     throw new IOException("simulated profile storage failure");
                 }
                 await _inner.WriteAsync(document, json, lastKnownGoodPrimaryJson);
+                if (document == SaveDocument.Profile) LastSuccessfulProfileJson = json;
             }
         }
     }

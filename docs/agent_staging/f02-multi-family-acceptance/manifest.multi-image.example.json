@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 3,
+  "familyId": "f02-bellator-cross-image-fixture",
+  "resourceId": "f02-bellator-cross-image-family",
+  "status": "Prototype",
+  "intendedUse": "technical-fixture-non-runtime",
+  "provenance": "Deterministic synthetic marker PNGs used only to verify multiple source images, slices, clips and cross-image sprite references; not Luckbound production art.",
+  "referenceId": "ART-F01-MASTER-001",
+  "referencePath": "docs/art/F01_master_reference.png",
+  "referenceSha256": "05c4cf259dc50b5cc6175bf3f0259b32b42c46cd9507da4a340e446c88f904b0",
+  "promptReference": "docs/art/records/F02-MULTI-IMAGE-TEST-FIXTURE.v2.json",
+  "promptReferenceSha256": "22c9b29a1ed3745bd78cd0ff239a43e6e6b29b8b035a8195f6fee733526b2125",
+  "outputFolder": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture",
+  "pixelsPerUnit": 16,
+  "filterMode": "Point",
+  "mipmaps": false,
+  "alphaIsTransparency": true,
+  "images": [
+    {
+      "sourcePath": "docs/agent_staging/f02-multi-family-acceptance/fixtures/BellatorFramesA.png",
+      "assetFileName": "BellatorFramesA.png",
+      "resourceId": "f02-bellator-frames-a",
+      "sha256": "afe593bf2a10dbc2a9a1eb4dd8828375f2f8ad3cfcc55123f785dd1b8e47cb8f",
+      "width": 32,
+      "height": 96,
+      "bitDepth": 8,
+      "colorType": 6,
+      "slices": [
+        {
+          "name": "BellatorIdle_A",
+          "x": 0,
+          "y": 0,
+          "width": 32,
+          "height": 48,
+          "pivotX": 0.5,
+          "pivotY": 0.0
+        },
+        {
+          "name": "BellatorAttack_A",
+          "x": 0,
+          "y": 48,
+          "width": 32,
+          "height": 48,
+          "pivotX": 0.5,
+          "pivotY": 0.125
+        }
+      ]
+    },
+    {
+      "sourcePath": "docs/agent_staging/f02-multi-family-acceptance/fixtures/BellatorFramesB.png",
+      "assetFileName": "BellatorFramesB.png",
+      "resourceId": "f02-bellator-frames-b",
+      "sha256": "130f779fae52edb17749a0981fc8ad40be727b8adbcae004b018fcf777028617",
+      "width": 32,
+      "height": 96,
+      "bitDepth": 8,
+      "colorType": 6,
+      "slices": [
+        {
+          "name": "BellatorIdle_B",
+          "x": 0,
+          "y": 0,
+          "width": 32,
+          "height": 48,
+          "pivotX": 0.5,
+          "pivotY": 0.0
+        },
+        {
+          "name": "BellatorAttack_B",
+          "x": 0,
+          "y": 48,
+          "width": 32,
+          "height": 48,
+          "pivotX": 0.5,
+          "pivotY": 0.125
+        }
+      ]
+    }
+  ],
+  "clips": [
+    {
+      "name": "BellatorIdle",
+      "framesPerSecond": 12,
+      "loop": true,
+      "frames": ["BellatorIdle_A", "BellatorIdle_B", "BellatorIdle_A"]
+    },
+    {
+      "name": "BellatorAttack",
+      "framesPerSecond": 12,
+      "loop": false,
+      "frames": ["BellatorAttack_B", "BellatorAttack_A", "BellatorAttack_B"]
+    }
+  ],
+  "atlas": {
+    "includeInBuild": false,
+    "padding": 2
+  }
+}

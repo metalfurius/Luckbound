@@ -5,6 +5,40 @@ using System.Linq;
 
 namespace Luckbound.Core.Progression.Contracts
 {
+    /// <summary>Stable identity and type for one processed profile-progress event.</summary>
+    public sealed class ContractProgressEventReceipt
+    {
+        public ContractProgressEventReceipt(string eventId, ContractProgressEvent @event)
+        {
+            if (!IsValidEventId(eventId))
+                throw new ArgumentException("A progress event ID must contain 1-160 ASCII letters, digits, '.', '_', ':', '/', or '-'.", nameof(eventId));
+            if (!Enum.IsDefined(typeof(ContractProgressEvent), @event))
+                throw new ArgumentOutOfRangeException(nameof(@event));
+
+            EventId = eventId;
+            Event = @event;
+        }
+
+        public string EventId { get; }
+        public ContractProgressEvent Event { get; }
+
+        private static bool IsValidEventId(string eventId)
+        {
+            if (string.IsNullOrEmpty(eventId) || eventId.Length > 160) return false;
+
+            foreach (char value in eventId)
+            {
+                bool allowed = value >= 'A' && value <= 'Z' ||
+                               value >= 'a' && value <= 'z' ||
+                               value >= '0' && value <= '9' ||
+                               value == '.' || value == '_' || value == ':' || value == '/' || value == '-';
+                if (!allowed) return false;
+            }
+
+            return true;
+        }
+    }
+
     /// <summary>One persisted profile counter, keyed by the stable contract ID.</summary>
     public sealed class ContractProgressCounter
     {
@@ -23,8 +57,8 @@ namespace Luckbound.Core.Progression.Contracts
     }
 
     /// <summary>
-    /// Immutable E10 projection of profile state. Its arrays map directly to the existing profile save
-    /// fields, leaving the save DTO and persistence transaction owned by the coordinator.
+    /// Immutable E10 projection of profile progression, including processed event receipts. The save
+    /// DTO mapping and persistence transaction remain owned by the coordinator.
     /// </summary>
     public sealed class ContractProgressionSnapshot
     {
@@ -34,13 +68,15 @@ namespace Luckbound.Core.Progression.Contracts
         private readonly ReadOnlyCollection<string> _claimedContractIds;
         private readonly ReadOnlyCollection<ContractProgressCounter> _contractCounters;
         private readonly ReadOnlyCollection<string> _activeContractIds;
+        private readonly ReadOnlyCollection<ContractProgressEventReceipt> _processedEvents;
 
         public ContractProgressionSnapshot(int availableRenown,
             IEnumerable<string> unlockedRaceIds,
             IEnumerable<string> unlockedStartingKitIds,
             IEnumerable<string> acceptedContractIds,
             IEnumerable<string> claimedContractIds,
-            IEnumerable<ContractProgressCounter> contractCounters)
+            IEnumerable<ContractProgressCounter> contractCounters,
+            IEnumerable<ContractProgressEventReceipt> processedEvents = null)
         {
             if (availableRenown < 0) throw new ArgumentOutOfRangeException(nameof(availableRenown));
 
@@ -56,6 +92,8 @@ namespace Luckbound.Core.Progression.Contracts
                 throw new ArgumentException("A profile cannot have more than three active contracts.", nameof(acceptedContractIds));
 
             ContractProgressCounter[] counters = NormalizeCounters(contractCounters);
+            ContractProgressEventReceipt[] receipts = NormalizeProcessedEvents(
+                processedEvents ?? Array.Empty<ContractProgressEventReceipt>());
 
             AvailableRenown = availableRenown;
             _unlockedRaceIds = Array.AsReadOnly(races);
@@ -64,6 +102,7 @@ namespace Luckbound.Core.Progression.Contracts
             _claimedContractIds = Array.AsReadOnly(claimed);
             _contractCounters = Array.AsReadOnly(counters);
             _activeContractIds = Array.AsReadOnly(active);
+            _processedEvents = Array.AsReadOnly(receipts);
         }
 
         public int AvailableRenown { get; }
@@ -73,6 +112,7 @@ namespace Luckbound.Core.Progression.Contracts
         public IReadOnlyList<string> ClaimedContractIds => _claimedContractIds;
         public IReadOnlyList<ContractProgressCounter> ContractCounters => _contractCounters;
         public IReadOnlyList<string> ActiveContractIds => _activeContractIds;
+        public IReadOnlyList<ContractProgressEventReceipt> ProcessedEvents => _processedEvents;
 
         public int GetProgress(string contractId)
         {
@@ -116,6 +156,12 @@ namespace Luckbound.Core.Progression.Contracts
             return Copy(contractCounters: counters);
         }
 
+        internal ContractProgressionSnapshot WithProcessedEvent(ContractProgressEventReceipt receipt)
+        {
+            if (receipt == null) throw new ArgumentNullException(nameof(receipt));
+            return Copy(processedEvents: _processedEvents.Concat(new[] { receipt }));
+        }
+
         internal ContractProgressionSnapshot WithAcceptedContract(string contractId)
         {
             return Copy(acceptedContractIds: _acceptedContractIds.Concat(new[] { contractId }));
@@ -133,7 +179,8 @@ namespace Luckbound.Core.Progression.Contracts
                 .Select(unlock => unlock.UnlockId)).Distinct(StringComparer.Ordinal).ToArray();
 
             return new ContractProgressionSnapshot(checked(AvailableRenown + reward.Renown), races, kits,
-                _acceptedContractIds, _claimedContractIds.Concat(new[] { contractId }), _contractCounters);
+                _acceptedContractIds, _claimedContractIds.Concat(new[] { contractId }), _contractCounters,
+                _processedEvents);
         }
 
         private ContractProgressionSnapshot Copy(
@@ -142,14 +189,16 @@ namespace Luckbound.Core.Progression.Contracts
             IEnumerable<string> unlockedStartingKitIds = null,
             IEnumerable<string> acceptedContractIds = null,
             IEnumerable<string> claimedContractIds = null,
-            IEnumerable<ContractProgressCounter> contractCounters = null)
+            IEnumerable<ContractProgressCounter> contractCounters = null,
+            IEnumerable<ContractProgressEventReceipt> processedEvents = null)
         {
             return new ContractProgressionSnapshot(availableRenown ?? AvailableRenown,
                 unlockedRaceIds ?? _unlockedRaceIds,
                 unlockedStartingKitIds ?? _unlockedStartingKitIds,
                 acceptedContractIds ?? _acceptedContractIds,
                 claimedContractIds ?? _claimedContractIds,
-                contractCounters ?? _contractCounters);
+                contractCounters ?? _contractCounters,
+                processedEvents ?? _processedEvents);
         }
 
         private static bool Contains(IReadOnlyList<string> values, string value)
@@ -185,6 +234,18 @@ namespace Luckbound.Core.Progression.Contracts
                     progress = Math.Min(progress, definition.RequiredProgress);
                 return new ContractProgressCounter(counter.ContractId, progress);
             }).OrderBy(counter => counter.ContractId, StringComparer.Ordinal).ToArray();
+        }
+
+        private static ContractProgressEventReceipt[] NormalizeProcessedEvents(
+            IEnumerable<ContractProgressEventReceipt> values)
+        {
+            ContractProgressEventReceipt[] source = values.ToArray();
+            if (source.Any(receipt => receipt == null))
+                throw new ArgumentException("Processed progress events cannot contain null entries.", nameof(values));
+            if (source.Select(receipt => receipt.EventId).Distinct(StringComparer.Ordinal).Count() != source.Length)
+                throw new ArgumentException("Processed progress event IDs must be unique.", nameof(values));
+
+            return source.OrderBy(receipt => receipt.EventId, StringComparer.Ordinal).ToArray();
         }
     }
 }

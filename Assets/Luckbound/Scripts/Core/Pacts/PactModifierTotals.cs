@@ -6,22 +6,74 @@ namespace Luckbound.Core.Pacts
     /// <summary>Deterministic additive percentage modifiers supplied by accepted pacts.</summary>
     public readonly struct PactModifierTotals
     {
+        public const decimal MaximumHorizontalSpeed = 8.5m;
+        public const decimal MinimumSkillCooldownSeconds = 0.5m;
+
         internal PactModifierTotals(
             int goldRewardBonusPercent,
             int basicAttackDamageBonusPercent,
             int maximumHealthReductionPercent,
-            int skillCostIncreasePercent)
+            int skillCostIncreasePercent,
+            int horizontalSpeedBonusPercent,
+            int defenseReduction,
+            int skillCooldownReductionPercent,
+            int purchasePriceIncreasePercent)
         {
             GoldRewardBonusPercent = goldRewardBonusPercent;
             BasicAttackDamageBonusPercent = basicAttackDamageBonusPercent;
             MaximumHealthReductionPercent = maximumHealthReductionPercent;
             SkillCostIncreasePercent = skillCostIncreasePercent;
+            HorizontalSpeedBonusPercent = horizontalSpeedBonusPercent;
+            DefenseReduction = defenseReduction;
+            SkillCooldownReductionPercent = skillCooldownReductionPercent;
+            PurchasePriceIncreasePercent = purchasePriceIncreasePercent;
         }
 
         public int GoldRewardBonusPercent { get; }
         public int BasicAttackDamageBonusPercent { get; }
         public int MaximumHealthReductionPercent { get; }
         public int SkillCostIncreasePercent { get; }
+        public int HorizontalSpeedBonusPercent { get; }
+        public int DefenseReduction { get; }
+        public int SkillCooldownReductionPercent { get; }
+        public int PurchasePriceIncreasePercent { get; }
+
+        /// <summary>Applies the summed horizontal-speed bonus and global maximum.</summary>
+        public decimal ApplyHorizontalSpeed(decimal baseSpeed)
+        {
+            if (baseSpeed < 0m) throw new ArgumentOutOfRangeException(nameof(baseSpeed));
+
+            decimal multiplier = (100m + HorizontalSpeedBonusPercent) / 100m;
+            if (multiplier <= 0m) return 0m;
+            if (baseSpeed >= MaximumHorizontalSpeed / multiplier) return MaximumHorizontalSpeed;
+            return baseSpeed * multiplier;
+        }
+
+        /// <summary>Applies the flat defense penalty and global zero minimum.</summary>
+        public int ApplyDefense(int baseDefense)
+        {
+            if (baseDefense < 0) throw new ArgumentOutOfRangeException(nameof(baseDefense));
+            return Math.Max(0, baseDefense - DefenseReduction);
+        }
+
+        /// <summary>Applies the summed cooldown reduction and global minimum in seconds.</summary>
+        public decimal ApplySkillCooldown(decimal baseCooldownSeconds)
+        {
+            if (baseCooldownSeconds <= 0m) throw new ArgumentOutOfRangeException(nameof(baseCooldownSeconds));
+
+            decimal multiplier = (100m - SkillCooldownReductionPercent) / 100m;
+            if (multiplier <= 0m) return MinimumSkillCooldownSeconds;
+            if (baseCooldownSeconds <= MinimumSkillCooldownSeconds / multiplier)
+                return MinimumSkillCooldownSeconds;
+            return baseCooldownSeconds * multiplier;
+        }
+
+        /// <summary>Applies the summed purchase-price increase and rounds the price up.</summary>
+        public int ApplyPurchasePrice(int basePrice)
+        {
+            if (basePrice < 0) throw new ArgumentOutOfRangeException(nameof(basePrice));
+            return ScaleUp(basePrice, 100 + PurchasePriceIncreasePercent);
+        }
 
         /// <summary>Applies the summed basic-attack damage bonus without rounding fractional damage.</summary>
         public decimal ApplyBasicAttackDamage(decimal baseDamage)
@@ -40,6 +92,10 @@ namespace Luckbound.Core.Pacts
             int basicDamage = 0;
             int maximumHealthReduction = 0;
             int skillCost = 0;
+            int horizontalSpeed = 0;
+            int defenseReduction = 0;
+            int skillCooldownReduction = 0;
+            int purchasePriceIncrease = 0;
 
             foreach (string pactId in pactIds)
             {
@@ -55,9 +111,21 @@ namespace Luckbound.Core.Pacts
                 basicDamage = checked(basicDamage + pact.BasicAttackDamageBonusPercent);
                 maximumHealthReduction = checked(maximumHealthReduction + pact.MaximumHealthReductionPercent);
                 skillCost = checked(skillCost + pact.SkillCostIncreasePercent);
+                horizontalSpeed = checked(horizontalSpeed + pact.HorizontalSpeedBonusPercent);
+                defenseReduction = checked(defenseReduction + pact.DefenseReduction);
+                skillCooldownReduction = checked(skillCooldownReduction + pact.SkillCooldownReductionPercent);
+                purchasePriceIncrease = checked(purchasePriceIncrease + pact.PurchasePriceIncreasePercent);
             }
 
-            return new PactModifierTotals(gold, basicDamage, maximumHealthReduction, skillCost);
+            return new PactModifierTotals(
+                gold,
+                basicDamage,
+                maximumHealthReduction,
+                skillCost,
+                horizontalSpeed,
+                defenseReduction,
+                skillCooldownReduction,
+                purchasePriceIncrease);
         }
 
         /// <summary>Applies a gold reward bonus and rounds the resulting reward down.</summary>

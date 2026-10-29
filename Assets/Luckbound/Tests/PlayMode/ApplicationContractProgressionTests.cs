@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,13 +29,52 @@ namespace Luckbound.Tests.PlayMode
                 yield return StartApplication(value => app = value);
                 ContractProgressionSnapshot before = app.ContractProgression;
                 Task<ContractProgressionCommitResult> invalidEvent = app.RecordContractProgressEventAsync(
-                    (ContractProgressEvent)int.MaxValue);
+                    (ContractProgressEvent)int.MaxValue, "test/invalid-event");
                 while (!invalidEvent.IsCompleted) yield return null;
 
                 Assert.That(invalidEvent.IsFaulted, Is.True);
                 Assert.That(invalidEvent.Exception.GetBaseException(), Is.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(app.ContractProgression, Is.SameAs(before));
                 Assert.That(app.Profile.contractCounters, Is.Empty);
+            }
+            finally
+            {
+                DestroyApplication();
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                DeleteSaveDirectory(directory);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10_EventReceiptSurvivesRestartAndReplayDoesNotAdvanceAgain()
+        {
+            string directory = CreateSaveDirectory();
+            Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => new FileSaveStore(directory, null);
+            try
+            {
+                ApplicationBootstrapper app = null;
+                yield return StartApplication(value => app = value);
+
+                ContractProgressionCommitResult first = null;
+                yield return Complete(app.RecordContractProgressEventAsync(
+                    ContractProgressEvent.CombatRoomCompleted, "test/restart/room-1"), value => first = value);
+                Assert.That(first.Persisted, Is.True, first.Message);
+                Assert.That(app.ContractProgression.GetProgress("CT01"), Is.EqualTo(1));
+                Assert.That(app.Profile.processedContractProgressEvents, Has.Length.EqualTo(1));
+
+                DestroyApplication();
+                yield return StartApplication(value => app = value);
+                Assert.That(app.ContractProgression.GetProgress("CT01"), Is.EqualTo(1));
+                Assert.That(app.ContractProgression.ProcessedEvents, Has.Count.EqualTo(1));
+
+                ContractProgressionCommitResult replay = null;
+                yield return Complete(app.RecordContractProgressEventAsync(
+                    ContractProgressEvent.CombatRoomCompleted, "test/restart/room-1"), value => replay = value);
+                Assert.That(replay.Persisted, Is.True, replay.Message);
+                Assert.That(replay.ProgressStatus, Is.EqualTo(ContractProgressStatus.DuplicateEvent));
+                Assert.That(app.ContractProgression.GetProgress("CT01"), Is.EqualTo(1));
+                Assert.That(app.Profile.processedContractProgressEvents, Has.Length.EqualTo(1));
             }
             finally
             {
@@ -58,7 +98,8 @@ namespace Luckbound.Tests.PlayMode
                 for (int index = 0; index < 2; index++)
                 {
                     ContractProgressionCommitResult progress = null;
-                    yield return Complete(app.RecordContractProgressEventAsync(ContractProgressEvent.CombatRoomCompleted),
+                    yield return Complete(app.RecordContractProgressEventAsync(ContractProgressEvent.CombatRoomCompleted,
+                            "test/pre-acceptance/room-" + index),
                         value => progress = value);
                     Assert.That(progress.Succeeded, Is.True, progress.Message);
                     Assert.That(progress.Snapshot.GetProgress("CT01"), Is.EqualTo(index + 1));
@@ -72,10 +113,12 @@ namespace Luckbound.Tests.PlayMode
                     "Milestones recorded before acceptance must remain available to the contract.");
 
                 ContractProgressionCommitResult finalRoom = null;
-                yield return Complete(app.RecordContractProgressEventAsync(ContractProgressEvent.CombatRoomCompleted),
+                yield return Complete(app.RecordContractProgressEventAsync(ContractProgressEvent.CombatRoomCompleted,
+                        "test/pre-acceptance/room-3"),
                     value => finalRoom = value);
                 Assert.That(finalRoom.Snapshot.GetProgress("CT01"), Is.EqualTo(3));
                 Assert.That(finalRoom.Snapshot.IsComplete("CT01"), Is.True);
+                Assert.That(finalRoom.Snapshot.ProcessedEvents, Has.Count.EqualTo(3));
 
                 ContractProgressionCommitResult second = null;
                 ContractProgressionCommitResult third = null;
@@ -113,7 +156,8 @@ namespace Luckbound.Tests.PlayMode
                 for (int index = 0; index < 3; index++)
                 {
                     ContractProgressionCommitResult progress = null;
-                    yield return Complete(app.RecordContractProgressEventAsync(ContractProgressEvent.ItemCrafted),
+                    yield return Complete(app.RecordContractProgressEventAsync(ContractProgressEvent.ItemCrafted,
+                            "test/craft/" + index),
                         value => progress = value);
                     Assert.That(progress.Succeeded, Is.True, progress.Message);
                 }
@@ -233,6 +277,67 @@ namespace Luckbound.Tests.PlayMode
             }
         }
 
+        [UnityTest]
+        public IEnumerator E10_GameplayProgressQueueRetriesTheHeadBeforeDrainingNextEvent()
+        {
+            string directory = CreateSaveDirectory();
+            var store = new FailOnceProfileWriteStore(new FileSaveStore(directory, null));
+            Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => store;
+            try
+            {
+                ApplicationBootstrapper app = null;
+                yield return StartApplication(value => app = value);
+                int successfulWritesBeforeEvents = store.SuccessfulProfileWrites.Count;
+                store.FailNextProfileWrite();
+
+                app.RecordContractProgressEventFromGameplay(ContractProgressEvent.CombatRoomCompleted,
+                    "test/queue/room-1");
+                app.RecordContractProgressEventFromGameplay(ContractProgressEvent.BoneguardDefeated,
+                    "test/queue/boneguard-1");
+                for (int frame = 0; frame < 120 && !app.HasPendingContractProgression; frame++) yield return null;
+
+                bool failedHeadStayedUnpublished = app.HasPendingContractProgression &&
+                    app.ContractProgression.GetProgress("CT01") == 0 && app.ContractProgression.GetProgress("CT03") == 0 &&
+                    store.FailedProfileJson != null && app.PendingProfileExport == store.FailedProfileJson;
+                Assert.That(failedHeadStayedUnpublished, Is.True,
+                    "The failed first event remains pending and neither queued event publishes early.");
+
+                ContractProgressionCommitResult retried = null;
+                yield return Complete(app.RetryPendingContractProgressionAsync(), value => retried = value);
+                Assert.That(retried.Persisted, Is.True, retried.Message);
+                for (int frame = 0; frame < 120 &&
+                    (app.ContractProgression.GetProgress("CT01") != 1 || app.ContractProgression.GetProgress("CT03") != 1); frame++)
+                    yield return null;
+
+                string firstSuccessfulEventWrite = successfulWritesBeforeEvents < store.SuccessfulProfileWrites.Count
+                    ? store.SuccessfulProfileWrites[successfulWritesBeforeEvents]
+                    : null;
+                string secondSuccessfulEventWrite = successfulWritesBeforeEvents + 1 < store.SuccessfulProfileWrites.Count
+                    ? store.SuccessfulProfileWrites[successfulWritesBeforeEvents + 1]
+                    : null;
+                bool exactHeadRetriedFirst = firstSuccessfulEventWrite == store.FailedProfileJson &&
+                    ProgressInProfileJson(firstSuccessfulEventWrite, "CT01") == 1 &&
+                    ProgressInProfileJson(firstSuccessfulEventWrite, "CT03") == 0;
+                bool fifoQueueDrainedOnce = secondSuccessfulEventWrite != null &&
+                    ProgressInProfileJson(secondSuccessfulEventWrite, "CT01") == 1 &&
+                    ProgressInProfileJson(secondSuccessfulEventWrite, "CT03") == 1 &&
+                    app.ContractProgression.GetProgress("CT01") == 1 &&
+                    app.ContractProgression.GetProgress("CT03") == 1;
+
+                Assert.That(exactHeadRetriedFirst, Is.True,
+                    "The retried profile write must be byte-for-byte the failed room-clear event payload.");
+                Assert.That(fifoQueueDrainedOnce, Is.True,
+                    "The queued Boneguard event must commit after the retried room-clear event and only once.");
+            }
+            finally
+            {
+                DestroyApplication();
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                DeleteSaveDirectory(directory);
+            }
+        }
+
         private static string CreateSaveDirectory()
         {
             return Path.Combine(Path.GetTempPath(), "LuckboundE10", Guid.NewGuid().ToString("N"));
@@ -287,30 +392,47 @@ namespace Luckbound.Tests.PlayMode
             if (Directory.Exists(fullDirectory)) Directory.Delete(fullDirectory, recursive: true);
         }
 
+        private static int ProgressInProfileJson(string json, string contractId)
+        {
+            if (string.IsNullOrEmpty(json)) return -1;
+            ProfileSaveEnvelope envelope = JsonUtility.FromJson<ProfileSaveEnvelope>(json);
+            ProfileSaveData profile = envelope == null ? null : envelope.profile;
+            if (profile?.contractCounters == null) return 0;
+            foreach (ContractCounterSaveData counter in profile.contractCounters)
+            {
+                if (counter != null && string.Equals(counter.contractId, contractId, System.StringComparison.Ordinal))
+                    return counter.progress;
+            }
+            return 0;
+        }
+
         private sealed class FailOnceProfileWriteStore : ISaveStore
         {
             private readonly ISaveStore _inner;
             private bool _failNextProfileWrite;
+            private readonly List<string> _successfulProfileWrites = new List<string>();
 
             public FailOnceProfileWriteStore(ISaveStore inner) { _inner = inner; }
             public string FailedProfileJson { get; private set; }
             public string LastSuccessfulProfileJson { get; private set; }
+            public IReadOnlyList<string> SuccessfulProfileWrites => _successfulProfileWrites;
             public void FailNextProfileWrite() => _failNextProfileWrite = true;
             public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
 
             public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
             {
-                if (document == SaveDocument.Profile)
+                if (document == SaveDocument.Profile && _failNextProfileWrite)
                 {
-                    if (_failNextProfileWrite)
-                    {
-                        _failNextProfileWrite = false;
-                        FailedProfileJson = json;
-                        throw new IOException("simulated profile storage failure");
-                    }
-                    LastSuccessfulProfileJson = json;
+                    _failNextProfileWrite = false;
+                    FailedProfileJson = json;
+                    throw new IOException("simulated profile storage failure");
                 }
                 await _inner.WriteAsync(document, json, lastKnownGoodPrimaryJson);
+                if (document == SaveDocument.Profile)
+                {
+                    LastSuccessfulProfileJson = json;
+                    _successfulProfileWrites.Add(json);
+                }
             }
         }
     }

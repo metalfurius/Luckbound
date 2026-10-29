@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "encounterId": "encounter.c08_arena",
   "entranceX": -11.5,
   "entranceY": -3.5,
@@ -8,15 +8,15 @@
     {
       "id": "wave.slimes",
       "spawns": [
-        { "enemyId": "enemy.slime", "x": 0, "y": -3.5 },
-        { "enemyId": "enemy.slime", "x": 4.5, "y": -3.5 }
+        { "spawnId": "spawn.slime.01", "enemyId": "enemy.slime", "x": 0, "y": -3.5 },
+        { "spawnId": "spawn.slime.02", "enemyId": "enemy.slime", "x": 4.5, "y": -3.5 }
       ]
     },
     {
       "id": "wave.huesoguardias",
       "spawns": [
-        { "enemyId": "enemy.huesoguardia", "x": -2, "y": -3.5 },
-        { "enemyId": "enemy.huesoguardia", "x": 4, "y": -3.5 }
+        { "spawnId": "spawn.huesoguardia.01", "enemyId": "enemy.huesoguardia", "x": -2, "y": -3.5 },
+        { "spawnId": "spawn.huesoguardia.02", "enemyId": "enemy.huesoguardia", "x": 4, "y": -3.5 }
       ]
     }
   ]

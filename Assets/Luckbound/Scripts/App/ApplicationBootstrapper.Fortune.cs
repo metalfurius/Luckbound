@@ -127,7 +127,7 @@ namespace Luckbound.App
             {
                 if (_pendingFortuneMutation != null)
                 {
-                    if (_pendingExpeditionCandidate == null)
+                    if (_pendingExpeditionCandidate == null && _pendingExpeditionSessionPublication == null)
                     {
                         // A generic expedition retry may have committed the pending Fortune snapshot
                         // without returning its typed result. The saved book now owns replay semantics.
@@ -186,7 +186,7 @@ namespace Luckbound.App
 
         private async Task<ExpeditionMutationCommitResult<T>> RetryPendingFortuneMutationUnderGateAsync<T>(T outcome)
         {
-            if (_pendingExpeditionCandidate == null)
+            if (!HasPendingExpeditionWrite)
             {
                 _pendingFortuneMutation = null;
                 return new ExpeditionMutationCommitResult<T>(outcome, true, false,

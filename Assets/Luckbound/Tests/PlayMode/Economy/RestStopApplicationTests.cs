@@ -1,17 +1,26 @@
+using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Luckbound.App;
+using Luckbound.Content;
+using Luckbound.Core.Armor;
+using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Economy;
 using Luckbound.Core.Identifiers;
+using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;
 using Luckbound.Core.Saves;
+using Luckbound.Gameplay.Inventory;
+using Luckbound.Gameplay.Movement;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Luckbound.Tests.PlayMode.Economy
 {
@@ -293,6 +302,210 @@ namespace Luckbound.Tests.PlayMode.Economy
             }
         }
 
+        [UnityTest]
+        public IEnumerator F09_RestAndTaliaHealthReachBoundActorOnlyAfterDurablePublicationRetry()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundF09Session", System.Guid.NewGuid().ToString("N"));
+            GameObject player = null;
+            GameObject pauseOwner = null;
+            ApplicationBootstrapper app = null;
+            IDisposable pauseBinding = null;
+            IDisposable publicationBinding = null;
+            int leasesAcquired = 0;
+            int leasesReleased = 0;
+            int captures = 0;
+            int preparations = 0;
+            int publicationAttempts = 0;
+            bool failNextPublication = false;
+            float previousTimeScale = Time.timeScale;
+            SimulationMode2D previousPhysicsMode = Physics2D.simulationMode;
+            try
+            {
+                Time.timeScale = 1f;
+                Physics2D.simulationMode = SimulationMode2D.FixedUpdate;
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => new FileSaveStore(saveDirectory, null);
+                if (ApplicationBootstrapper.Instance != null)
+                    Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                yield return null;
+
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
+                    !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
+                    yield return null;
+                app = ApplicationBootstrapper.Instance;
+                Assert.That(app, Is.Not.Null);
+
+                ExpeditionRunConfiguration run = CreateRunStartingAtRest();
+                Assert.That(run.Inventory.TryAddGold(100, TransactionId.New()).Succeeded, Is.True);
+                Task<SaveWriteResult> begin = app.BeginExpeditionAsync(run);
+                while (!begin.IsCompleted) yield return null;
+                Assert.That(begin.Result.Succeeded, Is.True, begin.Result.Message);
+
+                ExpeditionSaveData injured = app.ActiveExpedition.Clone();
+                injured.currentHealth = 20;
+                Task<SaveWriteResult> injury = app.SaveActiveExpeditionStateAsync(injured);
+                while (!injury.IsCompleted) yield return null;
+                Assert.That(injury.Result.Succeeded, Is.True, injury.Result.Message);
+
+                var actorId = ActorId.New();
+                var input = new PlayerInputBuffer(actorId);
+                player = new GameObject("F09 Rest Session Projection Player");
+                Rigidbody2D body = player.AddComponent<Rigidbody2D>();
+                body.gravityScale = 0f;
+                body.constraints = RigidbodyConstraints2D.FreezeAll;
+                CapsuleCollider2D collider = player.AddComponent<CapsuleCollider2D>();
+                collider.direction = CapsuleDirection2D.Vertical;
+                collider.size = new Vector2(0.75f, 1.5f);
+                PlayerMotor2D motor = player.AddComponent<PlayerMotor2D>();
+                ItemCollector2D collector = player.AddComponent<ItemCollector2D>();
+
+                TextAsset weaponsSource = Resources.Load<TextAsset>("Luckbound/Data/Weapons");
+                TextAsset skillsSource = Resources.Load<TextAsset>("Luckbound/Data/Skills");
+                TextAsset armorsSource = Resources.Load<TextAsset>("Luckbound/Data/Items/Armors");
+                Assert.That(weaponsSource, Is.Not.Null);
+                Assert.That(skillsSource, Is.Not.Null);
+                Assert.That(armorsSource, Is.Not.Null);
+                WeaponCatalog weapons = WeaponCatalogJsonLoader.Load(weaponsSource.text, run.Inventory.Catalog);
+                SkillCatalog skills = SkillCatalogJsonLoader.Load(skillsSource.text);
+                ArmorCatalog armors = ArmorCatalogJsonLoader.Load(armorsSource.text, run.Inventory.Catalog);
+                int groundLayer = LayerMask.NameToLayer("Ground");
+                int enemyLayer = LayerMask.NameToLayer("Enemies");
+                Assert.That(groundLayer, Is.GreaterThanOrEqualTo(0));
+                Assert.That(enemyLayer, Is.GreaterThanOrEqualTo(0));
+                ExpeditionPlayerRunBinder.BindFromCheckpoint(run, app.ActiveExpedition, actorId, input,
+                    1 << groundLayer, 1 << enemyLayer, 0, motor, collector, run.Inventory.Catalog,
+                    weapons, skills, armorCatalog: armors);
+                Assert.That(motor.CurrentHealth, Is.EqualTo(20));
+
+                pauseOwner = new GameObject("F09 Rest Session Pause Owner");
+                var pauseLabelObject = new GameObject("PauseLabel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+                pauseLabelObject.transform.SetParent(pauseOwner.transform, false);
+                ExpeditionPauseController pauseController = pauseOwner.AddComponent<ExpeditionPauseController>();
+                pauseController.Initialize(pauseLabelObject.GetComponent<Text>());
+                pauseBinding = app.BindExpeditionSimulationPauseLeaseProvider(pauseController, () =>
+                {
+                    leasesAcquired++;
+                    IDisposable lease = pauseController.AcquireSimulationPauseLease();
+                    return new CountingPauseLease(() =>
+                    {
+                        lease.Dispose();
+                        leasesReleased++;
+                    });
+                });
+                publicationBinding = app.BindExpeditionSessionMutationPublication(pauseController,
+                    (candidateRun, candidateSave) =>
+                    {
+                        captures++;
+                        Assert.That(candidateRun.RunId, Is.EqualTo(run.RunId));
+                        Assert.That(pauseController.IsSimulationPaused, Is.True);
+                        Assert.That(pauseController.IsPaused, Is.False,
+                            "The durable session lease must stay separate from the manual pause state.");
+                        Assert.That(leasesReleased, Is.LessThan(leasesAcquired),
+                            "The actor must be captured while its mutation lease is held.");
+                        candidateSave.maximumHealth = motor.CombatStats.MaximumHealth;
+                        candidateSave.currentHealth = motor.CurrentHealth;
+                        candidateSave.maximumEnergy = motor.MaximumEnergy;
+                        candidateSave.currentEnergy = motor.CurrentEnergy;
+                    },
+                    (candidateRun, candidateSave) =>
+                    {
+                        preparations++;
+                        ExpeditionPlayerRunBinder.PreparedCommittedRunPublication prepared =
+                            ExpeditionPlayerRunBinder.PrepareCommittedRunPublication(
+                                candidateRun, candidateSave, motor, collector, weapons, armors);
+                        prepared.ApplyToSave(candidateSave);
+                        return () =>
+                        {
+                            publicationAttempts++;
+                            Assert.That(pauseController.IsSimulationPaused, Is.True);
+                            Assert.That(leasesReleased, Is.LessThan(leasesAcquired),
+                                "The prepared actor must publish before its mutation lease is released.");
+                            if (failNextPublication)
+                            {
+                                failNextPublication = false;
+                                throw new System.InvalidOperationException("simulated actor publication fault");
+                            }
+                            prepared.Publish();
+                        };
+                    });
+
+                RoomInstanceId roomId = app.ActiveRoomInstanceId;
+                failNextPublication = true;
+                Task<ExpeditionMutationCommitResult<RestStopEntryCommitData>> entry = app.EnterRestStopAsync(roomId);
+                while (!entry.IsCompleted) yield return null;
+                Assert.That(entry.Result.Persisted, Is.False);
+                Assert.That(entry.Result.Pending, Is.True, entry.Result.Message);
+                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(40),
+                    "The recovery is durable before publication, while the simulation remains paused.");
+                Assert.That(motor.CurrentHealth, Is.EqualTo(20),
+                    "A failed publisher must not partly apply recovery to the actor.");
+                Assert.That(leasesAcquired, Is.EqualTo(1));
+                Assert.That(leasesReleased, Is.Zero);
+                Assert.That(Time.timeScale, Is.EqualTo(0f));
+
+                Task<ExpeditionMutationCommitResult<RestStopEntryCommitData>> entryRetry = app.EnterRestStopAsync(roomId);
+                while (!entryRetry.IsCompleted) yield return null;
+                Assert.That(entryRetry.Result.Persisted, Is.True, entryRetry.Result.Message);
+                Assert.That(entryRetry.Result.Pending, Is.False);
+                Assert.That(motor.CurrentHealth, Is.EqualTo(40));
+                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(motor.CurrentHealth));
+                Assert.That(leasesReleased, Is.EqualTo(1));
+                Assert.That(Time.timeScale, Is.EqualTo(1f));
+
+                int energyBeforeTalia = motor.CurrentEnergy;
+                int goldBeforeTalia = app.ActiveRun.Inventory.Gold;
+                TransactionId taliaId = TransactionId.New();
+                failNextPublication = true;
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> talia =
+                    app.UseTaliaAsync(roomId, taliaId);
+                while (!talia.IsCompleted) yield return null;
+                Assert.That(talia.Result.Persisted, Is.False);
+                Assert.That(talia.Result.Pending, Is.True, talia.Result.Message);
+                Assert.That(talia.Result.Outcome.Succeeded, Is.True);
+                int taliaHealth = talia.Result.Outcome.ResultingHealth;
+                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(taliaHealth));
+                Assert.That(motor.CurrentHealth, Is.EqualTo(40),
+                    "Talia's durable health delta must not apply before its actor publisher succeeds.");
+                Assert.That(collector.Inventory.Gold, Is.EqualTo(goldBeforeTalia),
+                    "The composed actor inventory must remain at its last published snapshot while paused.");
+                Assert.That(leasesAcquired, Is.EqualTo(2));
+                Assert.That(leasesReleased, Is.EqualTo(1));
+                Assert.That(Time.timeScale, Is.EqualTo(0f));
+
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> taliaRetry =
+                    app.UseTaliaAsync(roomId, taliaId);
+                while (!taliaRetry.IsCompleted) yield return null;
+                Assert.That(taliaRetry.Result.Persisted, Is.True, taliaRetry.Result.Message);
+                Assert.That(taliaRetry.Result.Outcome.ResultingHealth, Is.EqualTo(taliaHealth));
+                Assert.That(motor.CurrentHealth, Is.EqualTo(taliaHealth));
+                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(taliaHealth));
+                Assert.That(motor.CurrentEnergy, Is.EqualTo(energyBeforeTalia));
+                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(goldBeforeTalia - RestStopService.TaliaGoldCost));
+                Assert.That(collector.Inventory.Gold, Is.EqualTo(app.ActiveRun.Inventory.Gold));
+                Assert.That(leasesReleased, Is.EqualTo(2));
+                Assert.That(captures, Is.EqualTo(2), "Exact retries must reuse the original captured state.");
+                Assert.That(preparations, Is.EqualTo(2), "Exact retries must reuse the prepared publication.");
+                Assert.That(publicationAttempts, Is.EqualTo(4));
+                Assert.That(app.HasPendingEconomyMutation, Is.False);
+                Assert.That(app.HasPendingExpeditionWrite, Is.False);
+                Assert.That(Time.timeScale, Is.EqualTo(1f));
+            }
+            finally
+            {
+                publicationBinding?.Dispose();
+                pauseBinding?.Dispose();
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = null;
+                if (player != null) Object.DestroyImmediate(player);
+                if (pauseOwner != null) Object.DestroyImmediate(pauseOwner);
+                if (app != null) Object.DestroyImmediate(app.gameObject);
+                else if (ApplicationBootstrapper.Instance != null)
+                    Object.DestroyImmediate(ApplicationBootstrapper.Instance.gameObject);
+                Time.timeScale = previousTimeScale;
+                Physics2D.simulationMode = previousPhysicsMode;
+                DeleteIsolatedSaveDirectory(saveDirectory);
+            }
+        }
+
         private static ExpeditionRunConfiguration CreateRunStartingAtRest()
         {
             // Keep the canonical route invariants but start this adapter fixture at a rest node. This avoids
@@ -338,6 +551,20 @@ namespace Luckbound.Tests.PlayMode.Economy
             if (!fullDirectory.StartsWith(tempRoot, System.StringComparison.OrdinalIgnoreCase))
                 throw new System.InvalidOperationException("Refusing to delete a save directory outside the system temp root.");
             if (Directory.Exists(fullDirectory)) Directory.Delete(fullDirectory, recursive: true);
+        }
+
+        private sealed class CountingPauseLease : System.IDisposable
+        {
+            private System.Action _onDispose;
+
+            public CountingPauseLease(System.Action onDispose) { _onDispose = onDispose; }
+
+            public void Dispose()
+            {
+                System.Action callback = _onDispose;
+                _onDispose = null;
+                callback?.Invoke();
+            }
         }
 
         private sealed class FailOnceProfileWriteStore : ISaveStore

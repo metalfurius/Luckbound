@@ -33,6 +33,15 @@ namespace Luckbound.App
         public bool IsDisposed => _disposed;
         public string LastTransitionError { get; private set; } = string.Empty;
 
+        internal ExpeditionReadinessTransitionView CaptureReadinessTransitionView()
+        {
+            RoomLifetimeScope scope = _activeScope;
+            return new ExpeditionReadinessTransitionView(this, scope, _activeRoomRoot, CurrentNodeId,
+                scope == null ? string.Empty : scope.TemplateId,
+                scope == null ? string.Empty : scope.RoomInstanceId.ToString(),
+                _initialized, _disposed, _transitioning, _preparedTransition != null);
+        }
+
         public void Initialize(RunId runId, ExpeditionRoutePlan route, Func<string, GameObject> prefabResolver,
             Transform sessionPlayer)
         {

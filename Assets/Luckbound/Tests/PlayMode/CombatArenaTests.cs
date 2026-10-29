@@ -9,11 +9,11 @@ using Luckbound.App;
 using Luckbound.Content;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
-using Luckbound.Core.Progression.Contracts;
 using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Movement;
+using Luckbound.Presentation.Audio;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -34,10 +34,17 @@ namespace Luckbound.Tests.PlayMode
         private Func<ISaveStore> _previousSaveStoreFactory;
         private string _contractSaveDirectory;
         private bool _restoreSaveStoreFactory;
+        private bool _previousAudioListenerPaused;
+        private bool _restoreAudioListenerPause;
 
         [UnityTearDown]
         public IEnumerator RestoreContractTestApplication()
         {
+            if (_restoreAudioListenerPause)
+            {
+                AudioListener.pause = _previousAudioListenerPaused;
+                _restoreAudioListenerPause = false;
+            }
             if (!_restoreSaveStoreFactory) yield break;
             try
             {
@@ -60,8 +67,18 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(json, Is.Not.Null);
             CombatEncounterData encounter = CombatEncounterJsonLoader.Load(json.text);
 
+            Assert.That(encounter.schemaVersion, Is.EqualTo(2));
             Assert.That(encounter.encounterId, Is.EqualTo("encounter.c08_arena"));
             Assert.That(encounter.waves, Has.Length.EqualTo(2));
+            CollectionAssert.AreEqual(new[] { "wave.slimes", "wave.huesoguardias" },
+                encounter.waves.Select(wave => wave.id).ToArray());
+            string[] spawnIds = encounter.waves.SelectMany(wave => wave.spawns)
+                .Select(spawn => spawn.spawnId).ToArray();
+            CollectionAssert.AreEqual(new[]
+            {
+                "spawn.slime.01", "spawn.slime.02", "spawn.huesoguardia.01", "spawn.huesoguardia.02"
+            }, spawnIds);
+            Assert.That(spawnIds.Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(spawnIds.Length));
             Assert.That(encounter.waves[0].spawns.Count(spawn => spawn.enemyId == "enemy.slime"), Is.EqualTo(2));
             Assert.That(encounter.waves[1].spawns.Count(spawn => spawn.enemyId == "enemy.huesoguardia"), Is.EqualTo(2));
             Assert.That(encounter.waves.SelectMany(wave => wave.spawns).All(spawn =>
@@ -69,17 +86,109 @@ namespace Luckbound.Tests.PlayMode
 
             string invalid = json.text.Replace("\"x\": 0, \"y\": -3.5", "\"x\": -11.5, \"y\": -3.5");
             Assert.Throws<System.FormatException>(() => CombatEncounterJsonLoader.Load(invalid));
+
+            string wrongSchema = json.text.Replace("\"schemaVersion\": 2", "\"schemaVersion\": 1");
+            Assert.Throws<System.FormatException>(() => CombatEncounterJsonLoader.Load(wrongSchema));
+
+            const string firstSpawnIdField = "\"spawnId\": \"spawn.slime.01\"";
+            string missingSpawnId = ReplaceFirstOccurrence(json.text, firstSpawnIdField + ", ", string.Empty);
+            Assert.Throws<System.FormatException>(() => CombatEncounterJsonLoader.Load(missingSpawnId));
+
+            string nullSpawnId = ReplaceFirstOccurrence(json.text, firstSpawnIdField, "\"spawnId\": null");
+            Assert.Throws<System.FormatException>(() => CombatEncounterJsonLoader.Load(nullSpawnId));
+
+            string[] invalidSpawnIds =
+            {
+                "spawn.sl\u00edme.01", "spawn/slime.01", "spawn\\slime.01", "spawn slime.01",
+                " spawn.slime.01", "spawn.slime.01 "
+            };
+            foreach (string invalidSpawnId in invalidSpawnIds)
+            {
+                string jsonSpawnId = invalidSpawnId.Replace("\\", "\\\\");
+                string invalidSpawnJson = ReplaceFirstOccurrence(json.text, firstSpawnIdField,
+                    "\"spawnId\": \"" + jsonSpawnId + "\"");
+                if (invalidSpawnId.IndexOf('\\') >= 0)
+                {
+                    CombatEncounterData deserializedInvalidSpawn = JsonUtility.FromJson<CombatEncounterData>(invalidSpawnJson);
+                    Assert.That(deserializedInvalidSpawn, Is.Not.Null);
+                    Assert.That(deserializedInvalidSpawn.waves[0].spawns[0].spawnId, Is.EqualTo(invalidSpawnId),
+                        "JSON decoding should preserve one literal backslash in spawnId");
+                }
+                Assert.Throws<System.FormatException>(() => CombatEncounterJsonLoader.Load(invalidSpawnJson),
+                    "Invalid spawnId should be rejected: " + invalidSpawnId);
+            }
+
+            string duplicateSpawnId = json.text.Replace("spawn.slime.02", "spawn.slime.01");
+            Assert.Throws<System.FormatException>(() => CombatEncounterJsonLoader.Load(duplicateSpawnId));
+
+            string duplicateAcrossWaves = ReplaceFirstOccurrence(json.text,
+                "\"spawnId\": \"spawn.huesoguardia.01\"", "\"spawnId\": \"spawn.slime.01\"");
+            Assert.Throws<System.FormatException>(() => CombatEncounterJsonLoader.Load(duplicateAcrossWaves));
+        }
+
+        [Test]
+        public void C08SpawnIdUniquenessUsesOrdinalCaseSensitiveComparison()
+        {
+            TextAsset json = Resources.Load<TextAsset>("Luckbound/Data/Encounters/C08Arena");
+            Assert.That(json, Is.Not.Null);
+
+            string caseVariant = ReplaceFirstOccurrence(json.text,
+                "\"spawnId\": \"spawn.slime.02\"", "\"spawnId\": \"Spawn.Slime.01\"");
+            CombatEncounterData encounter = CombatEncounterJsonLoader.Load(caseVariant);
+            string[] spawnIds = encounter.waves.SelectMany(wave => wave.spawns)
+                .Select(spawn => spawn.spawnId).ToArray();
+
+            CollectionAssert.AreEqual(new[]
+            {
+                "spawn.slime.01", "Spawn.Slime.01", "spawn.huesoguardia.01", "spawn.huesoguardia.02"
+            }, spawnIds);
+            Assert.That(StringComparer.OrdinalIgnoreCase.Equals(spawnIds[0], spawnIds[1]), Is.True);
+            Assert.That(spawnIds.Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(spawnIds.Length));
+        }
+
+        [Test]
+        public void C08SpawnIdsStayExplicitAcrossSpawnOrderAndPositionChangesWhileWaveOrderIsPreserved()
+        {
+            TextAsset json = Resources.Load<TextAsset>("Luckbound/Data/Encounters/C08Arena");
+            Assert.That(json, Is.Not.Null);
+
+            const string firstSpawn = "{ \"spawnId\": \"spawn.slime.01\", \"enemyId\": \"enemy.slime\", \"x\": 0, \"y\": -3.5 }";
+            const string secondSpawn = "{ \"spawnId\": \"spawn.slime.02\", \"enemyId\": \"enemy.slime\", \"x\": 4.5, \"y\": -3.5 }";
+            string reordered = ReplaceFirstOccurrence(json.text, firstSpawn,
+                "{ \"spawnId\": \"spawn.slime.02\", \"enemyId\": \"enemy.slime\", \"x\": 12, \"y\": -3.5 }");
+            reordered = ReplaceFirstOccurrence(reordered, secondSpawn,
+                "{ \"spawnId\": \"spawn.slime.01\", \"enemyId\": \"enemy.slime\", \"x\": 9, \"y\": -3.5 }");
+
+            CombatEncounterData encounter = CombatEncounterJsonLoader.Load(reordered);
+            CollectionAssert.AreEqual(new[] { "wave.slimes", "wave.huesoguardias" },
+                encounter.waves.Select(wave => wave.id).ToArray());
+            CollectionAssert.AreEqual(new[] { "spawn.slime.02", "spawn.slime.01" },
+                encounter.waves[0].spawns.Select(spawn => spawn.spawnId).ToArray());
+            CollectionAssert.AreEqual(new[] { 12f, 9f },
+                encounter.waves[0].spawns.Select(spawn => spawn.x).ToArray());
+            CollectionAssert.AreEqual(new[] { "spawn.huesoguardia.01", "spawn.huesoguardia.02" },
+                encounter.waves[1].spawns.Select(spawn => spawn.spawnId).ToArray());
+        }
+
+        private static string ReplaceFirstOccurrence(string source, string search, string replacement)
+        {
+            int index = source.IndexOf(search, StringComparison.Ordinal);
+            if (index < 0) throw new InvalidOperationException("Expected encounter JSON text was not found: " + search);
+            return source.Substring(0, index) + replacement + source.Substring(index + search.Length);
         }
 
         [UnityTest]
         public IEnumerator PlayerCanWinTheGeneratedArenaWithKeyboardCombatAndWithoutForcedEnemyRemoval()
         {
+            _previousAudioListenerPaused = AudioListener.pause;
+            _restoreAudioListenerPause = true;
+            AudioListener.pause = true;
             using (var evidence = new ScenarioEvidenceRecorder("C08", "C08_RealKeyboardTwoWaveCombat", 17320508))
             {
                 _contractSaveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Combat", Guid.NewGuid().ToString("N"));
-                var eventStore = new FailOnceProfileWriteStore(new FileSaveStore(_contractSaveDirectory, null));
+                var saveStore = new FileSaveStore(_contractSaveDirectory, null);
                 _previousSaveStoreFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
-                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => eventStore;
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => saveStore;
                 _restoreSaveStoreFactory = true;
                 if (ApplicationBootstrapper.Instance != null)
                     Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
@@ -101,9 +210,6 @@ namespace Luckbound.Tests.PlayMode
                 ContractProgressionCommitResult acceptedBoneguards = null;
                 yield return Complete(app.AcceptContractAsync("CT03"), value => acceptedBoneguards = value);
                 Assert.That(acceptedBoneguards.Succeeded, Is.True, acceptedBoneguards.Message);
-                int successfulProfileWritesBeforeCombat = eventStore.SuccessfulProfileWrites.Count;
-                eventStore.FailNextProfileWrite();
-
                 _pressedKeys.Clear();
                 _leftHeld = false;
                 _rightHeld = false;
@@ -132,10 +238,31 @@ namespace Luckbound.Tests.PlayMode
                 int simulatedTicks = 0;
                 int lastAttackTick = -100;
                 int lastDodgeTick = -100;
+                int groundedWaitTicks = 0;
                 int lastPotionTick = -1000;
                 bool attackHeld = false;
                 bool waveTransitionRecorded = false;
                 bool meleeStayedQueuedUntilTheFollowingFixedTick = false;
+                bool enemyDamageAudioRouted = false;
+                AudioClip enemyDamageClip = Resources.Load<AudioClip>("Luckbound/Audio/Effects/enemy_damage");
+                AudioClip landingClip = Resources.Load<AudioClip>("Luckbound/Audio/Effects/landing");
+                bool jumpStartedForLandingTest = false;
+                bool sawAirborneAfterLandingTestJump = false;
+                bool landingAudioRouted = false;
+                int pendingAudioEffectsBeforeFirstPlayerGesture = app.AudioRouter.PendingEffectRequestCount;
+                while (!player.IsGrounded && groundedWaitTicks < 60)
+                {
+                    yield return new WaitForFixedUpdate();
+                    groundedWaitTicks++;
+                }
+                if (player.IsGrounded)
+                {
+                    SetKey(Key.Space, true);
+                    evidence.RecordInput(simulatedTicks, "Jump", "Space: one real jump to verify the landing cue");
+                    yield return new WaitForFixedUpdate();
+                    SetKey(Key.Space, false);
+                    jumpStartedForLandingTest = player.SuccessfulJumpCount > 0;
+                }
                 while (simulatedTicks < 12000 && arena.Result == CombatArenaResult.Ongoing && !player.IsDead)
                 {
                     IEnumerable<Transform> liveTargets = arena.Slimes.Where(enemy => enemy != null && !enemy.IsDead).Select(enemy => enemy.transform)
@@ -201,6 +328,24 @@ namespace Luckbound.Tests.PlayMode
                         ProjectileImpactTarget2D[] targets = Object.FindObjectsByType<ProjectileImpactTarget2D>(FindObjectsSortMode.None);
                         if (targets.Any(target => target.PendingMeleeImpactCount > 0)) meleeStayedQueuedUntilTheFollowingFixedTick = true;
                     }
+                    int acceptedEnemyImpacts = arena.Slimes.Sum(enemy => enemy == null ? 0 : enemy.MeleeImpactCount + enemy.ProjectileImpactCount) +
+                        arena.Huesoguardias.Sum(enemy => enemy == null ? 0 : enemy.MeleeImpactCount + enemy.ProjectileImpactCount);
+                    if (!enemyDamageAudioRouted && acceptedEnemyImpacts > 0)
+                    {
+                        yield return null;
+                        RuntimeAudioDirector audioDirector = app.GetComponent<RuntimeAudioDirector>();
+                        enemyDamageAudioRouted = enemyDamageClip != null && audioDirector != null &&
+                            audioDirector.GetComponentsInChildren<AudioSource>(true).Any(source => source.clip == enemyDamageClip);
+                    }
+                    if (jumpStartedForLandingTest && !player.IsGrounded)
+                        sawAirborneAfterLandingTestJump = true;
+                    if (!landingAudioRouted && sawAirborneAfterLandingTestJump && player.IsGrounded)
+                    {
+                        yield return null;
+                        RuntimeAudioDirector audioDirector = app.GetComponent<RuntimeAudioDirector>();
+                        landingAudioRouted = landingClip != null && audioDirector != null &&
+                            audioDirector.GetComponentsInChildren<AudioSource>(true).Any(source => source.clip == landingClip);
+                    }
                     if (attackHeld && simulatedTicks - lastAttackTick >= 1)
                     {
                         SetKey(Key.J, false);
@@ -234,6 +379,19 @@ namespace Luckbound.Tests.PlayMode
                     meleeStayedQueuedUntilTheFollowingFixedTick,
                     "a collected hit remains pending during its collection tick",
                     "delayedResolutionObserved=" + meleeStayedQueuedUntilTheFollowingFixedTick);
+                evidence.RecordAssertion("Accepted physical enemy impacts request the enemy_damage effect while audio output stays paused",
+                    enemyDamageAudioRouted,
+                    "an applied Slime or Huesoguardia impact assigns the enemy_damage clip to an audio voice",
+                    "routed=" + enemyDamageAudioRouted + "; listenerPaused=" + AudioListener.pause +
+                    "; clipAvailable=" + (enemyDamageClip != null));
+                evidence.RecordAssertion("Spawn contact stays silent and a real jump landing requests the landing effect",
+                    pendingAudioEffectsBeforeFirstPlayerGesture == 0 && jumpStartedForLandingTest &&
+                        sawAirborneAfterLandingTestJump && landingAudioRouted,
+                    "the player leaves the floor, returns to grounded, and assigns the landing clip to an audio voice",
+                    "pendingAtSpawn=" + pendingAudioEffectsBeforeFirstPlayerGesture +
+                        "; jumpStarted=" + jumpStartedForLandingTest + "; airborne=" + sawAirborneAfterLandingTestJump +
+                    "; routed=" + landingAudioRouted + "; listenerPaused=" + AudioListener.pause +
+                    "; clipAvailable=" + (landingClip != null));
                 evidence.RecordAssertion("Both Slimes die through combat before the next wave",
                     bothSlimesDied && arena.CurrentWave == 2,
                     "two Slimes dead and wave 2 reached",
@@ -247,35 +405,16 @@ namespace Luckbound.Tests.PlayMode
                     "Victory; zero living enemies; player alive",
                     "result=" + arena.Result + "; alive=" + arena.LivingEnemyCount + "; playerHealth=" + player.CurrentHealth);
 
-                for (int frame = 0; frame < 120 && !app.HasPendingContractProgression; frame++) yield return null;
-                bool firstCombatEventWaitsForItsFailedProfileWrite = app.HasPendingContractProgression &&
-                    app.ContractProgression.GetProgress("CT01") == 0 && app.ContractProgression.GetProgress("CT03") == 0;
-                evidence.RecordAssertion("A failed combat event stays pending without publishing later queued room events",
-                    firstCombatEventWaitsForItsFailedProfileWrite, "CT01=0; CT03=0 until exact profile retry",
-                    "pending=" + app.HasPendingContractProgression + "; CT01=" + app.ContractProgression.GetProgress("CT01") +
-                    "; CT03=" + app.ContractProgression.GetProgress("CT03"));
-                ContractProgressionCommitResult retriedProgress = null;
-                yield return Complete(app.RetryPendingContractProgressionAsync(), value => retriedProgress = value);
-                Assert.That(retriedProgress.Persisted, Is.True, retriedProgress.Message);
-
-                for (int frame = 0; frame < 120 && (app.ContractProgression.GetProgress("CT01") != 1 ||
-                    app.ContractProgression.GetProgress("CT03") != 2); frame++) yield return null;
                 int clearedRoomsAfterCombat = app.ContractProgression.GetProgress("CT01");
                 int boneguardsAfterCombat = app.ContractProgression.GetProgress("CT03");
-                bool exactFailedEventWasRetriedBeforeQueuedEvents = eventStore.FailedProfileJson != null &&
-                    eventStore.SuccessfulProfileWrites.Count >= successfulProfileWritesBeforeCombat + 3 &&
-                    string.Equals(eventStore.FailedProfileJson,
-                        eventStore.SuccessfulProfileWrites[successfulProfileWritesBeforeCombat], StringComparison.Ordinal);
                 for (int frame = 0; frame < 10; frame++) yield return null;
-                bool actualEventsRecordedOnce = won && clearedRoomsAfterCombat == 1 && boneguardsAfterCombat == 2 &&
-                    app.ContractProgression.GetProgress("CT01") == 1 && app.ContractProgression.GetProgress("CT03") == 2 &&
-                    exactFailedEventWasRetriedBeforeQueuedEvents;
-                evidence.RecordAssertion("Only the actual full-room clear and two real Huesoguardia deaths advance accepted contracts",
-                    actualEventsRecordedOnce, "CT01=1; CT03=2; exact failed event payload persisted before queued events; counts stay fixed",
+                bool demoLeftExpeditionContractProgressUnchanged = won && clearedRoomsAfterCombat == 0 && boneguardsAfterCombat == 0 &&
+                    app.ContractProgression.GetProgress("CT01") == 0 && app.ContractProgression.GetProgress("CT03") == 0;
+                evidence.RecordAssertion("The standalone combat demo does not advance Expedition contracts",
+                    demoLeftExpeditionContractProgressUnchanged, "CT01=0 and CT03=0 after a physical demo victory",
                     "won=" + won + "; CT01=" + clearedRoomsAfterCombat + "; CT03=" + boneguardsAfterCombat +
                     "; afterExtraFrames=" + app.ContractProgression.GetProgress("CT01") + "/" +
-                    app.ContractProgression.GetProgress("CT03") + "; exactRetryFirst=" +
-                    exactFailedEventWasRetriedBeforeQueuedEvents);
+                    app.ContractProgression.GetProgress("CT03"));
 
                 Object.Destroy(app.gameObject);
                 yield return null;
@@ -284,19 +423,18 @@ namespace Luckbound.Tests.PlayMode
                     !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
                     yield return null;
                 app = ApplicationBootstrapper.Instance;
-                bool eventsPersisted = app != null && app.ContractProgression.GetProgress("CT01") == 1 &&
-                    app.ContractProgression.GetProgress("CT03") == 2;
-                evidence.RecordAssertion("Combat event counts survive an application restart",
-                    eventsPersisted, "reloaded profile CT01=1 and CT03=2",
+                bool demoDidNotPersistExpeditionContractProgress = app != null &&
+                    app.ContractProgression.GetProgress("CT01") == 0 && app.ContractProgression.GetProgress("CT03") == 0;
+                evidence.RecordAssertion("Standalone demo victories leave Expedition contract progress unchanged after restart",
+                    demoDidNotPersistExpeditionContractProgress, "reloaded profile CT01=0 and CT03=0",
                     app == null ? "application missing after restart" : "CT01=" +
                     app.ContractProgression.GetProgress("CT01") + "; CT03=" + app.ContractProgression.GetProgress("CT03"));
                 int exitCode = evidence.Complete();
                 yield return null;
 
                 Assert.That(exitCode, Is.Zero, "C08 real keyboard combat scenario failed. Evidence: " + evidence.ReportPath);
-                Assert.That(firstCombatEventWaitsForItsFailedProfileWrite, Is.True);
-                Assert.That(actualEventsRecordedOnce, Is.True);
-                Assert.That(eventsPersisted, Is.True);
+                Assert.That(demoLeftExpeditionContractProgressUnchanged, Is.True);
+                Assert.That(demoDidNotPersistExpeditionContractProgress, Is.True);
             }
         }
 
@@ -317,31 +455,6 @@ namespace Luckbound.Tests.PlayMode
             if (!fullDirectory.StartsWith(tempRoot, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Refusing to delete a save directory outside the system temp root.");
             if (Directory.Exists(fullDirectory)) Directory.Delete(fullDirectory, recursive: true);
-        }
-
-        private sealed class FailOnceProfileWriteStore : ISaveStore
-        {
-            private readonly ISaveStore _inner;
-            private bool _failNextProfileWrite;
-            private readonly List<string> _successfulProfileWrites = new List<string>();
-
-            public FailOnceProfileWriteStore(ISaveStore inner) { _inner = inner; }
-            public string FailedProfileJson { get; private set; }
-            public IReadOnlyList<string> SuccessfulProfileWrites => _successfulProfileWrites;
-            public void FailNextProfileWrite() => _failNextProfileWrite = true;
-            public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
-
-            public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
-            {
-                if (document == SaveDocument.Profile && _failNextProfileWrite)
-                {
-                    _failNextProfileWrite = false;
-                    FailedProfileJson = json;
-                    throw new IOException("simulated profile storage failure during a combat progress event");
-                }
-                await _inner.WriteAsync(document, json, lastKnownGoodPrimaryJson);
-                if (document == SaveDocument.Profile) _successfulProfileWrites.Add(json);
-            }
         }
 
         private bool IsImminentAttack(CombatArenaComposition arena, Transform target, float dx)

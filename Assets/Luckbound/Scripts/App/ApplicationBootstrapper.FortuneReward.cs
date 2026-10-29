@@ -26,7 +26,7 @@ namespace Luckbound.App
             {
                 if (_pendingFortuneMutation != null)
                 {
-                    if (_pendingExpeditionCandidate == null)
+                    if (_pendingExpeditionCandidate == null && _pendingExpeditionSessionPublication == null)
                     {
                         // A generic expedition retry may have committed the combined candidate.
                         _pendingFortuneMutation = null;

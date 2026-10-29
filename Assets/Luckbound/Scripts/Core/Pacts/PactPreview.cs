@@ -58,5 +58,10 @@ namespace Luckbound.Core.Pacts
 
         public int PreviewGoldReward(int baseReward) => Modifiers.ApplyGoldReward(baseReward);
         public int PreviewSkillCost(int baseCost) => Modifiers.ApplySkillCost(baseCost);
+        public decimal PreviewHorizontalSpeed(decimal baseSpeed) => Modifiers.ApplyHorizontalSpeed(baseSpeed);
+        public int PreviewDefense(int baseDefense) => Modifiers.ApplyDefense(baseDefense);
+        public decimal PreviewSkillCooldown(decimal baseCooldownSeconds) =>
+            Modifiers.ApplySkillCooldown(baseCooldownSeconds);
+        public int PreviewPurchasePrice(int basePrice) => Modifiers.ApplyPurchasePrice(basePrice);
     }
 }

@@ -70,6 +70,12 @@ def sha256_file(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
 
 
+def sha256_parameter_bytes(data: bytes) -> str:
+    """Hash F08 effect parameters after canonicalizing line endings to LF."""
+    canonical_bytes = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return sha256_bytes(canonical_bytes)
+
+
 def stable_guid(project_path: PurePosixPath) -> str:
     """Return a deterministic Unity GUID for a project-relative asset path."""
     canonical_path = project_path.as_posix()
@@ -190,7 +196,7 @@ def read_sources(project_root: Path) -> tuple[dict[str, Any], list[dict[str, Any
     if not all(isinstance(document, dict) for document in (parameters, manifest, report)):
         raise ImportValidationError("Effect parameters, manifest, and report must be JSON objects.")
 
-    parameter_hash = sha256_bytes(parameters_bytes)
+    parameter_hash = sha256_parameter_bytes(parameters_bytes)
     report_hash = sha256_bytes(report_bytes)
     renderer_hash = sha256_bytes(renderer_bytes)
     manifest_files = manifest.get("files")

@@ -13,10 +13,26 @@ namespace Luckbound.App
     public sealed class ApplicationAudioRouter : MonoBehaviour
     {
         public const string EnemyDeathEffectId = "enemy_death";
+        public const string EnemyDamageEffectId = "enemy_damage";
+        public const string BurnEffectId = "burn";
+        public const string TorchEffectId = "torch";
+        public const string LandingEffectId = "landing";
         public const string BossAppearEffectId = "boss_appear";
         public const string BossDeathEffectId = "boss_death";
         public const string SwordSwingEffectId = "sword_swing";
         public const string SwordImpactEffectId = "sword_impact";
+        public const string JumpEffectId = "jump";
+        public const string DodgeEffectId = "dodge";
+        public const string PlayerDamageEffectId = "player_damage";
+        public const string PotionEffectId = "potion";
+        public const string UiOpenEffectId = "ui_open";
+        public const string UiCloseEffectId = "ui_close";
+        public const string UiCancelEffectId = "ui_cancel";
+        public const string UiBuyEffectId = "ui_buy";
+        public const string UiCraftEffectId = "ui_craft";
+        public const string UiConfirmEffectId = "ui_confirm";
+        public const string UiErrorEffectId = "ui_error";
+        public const string UiFocusEffectId = "ui_focus";
 
         private const int MaximumPendingEffectRequests = 32;
 

@@ -34,6 +34,10 @@ namespace Luckbound.App
             "CONTRATO DE HISTORIA",
             "CONTRATO DE FABRICACIÓN"
         };
+        private static ApplicationBootstrapper _contractUiAudioStateOwner;
+        private static PendingContractUiOperation _pendingContractUiOperation;
+        private static readonly HashSet<string> RoutedContractUiConfirmations =
+            new HashSet<string>(StringComparer.Ordinal);
 
         [SerializeField] private Button[] _classButtons;
         [SerializeField] private Button[] _skillButtons;
@@ -539,6 +543,8 @@ namespace Luckbound.App
                 RefreshContractBoard();
                 return;
             }
+            EnsureContractUiAudioStateOwner(app);
+            ReconcilePendingContractUiOperation(app.ContractProgression);
             if (app.HasPendingContractProgression)
             {
                 _contractFeedback = LocalizedStatus("Reintenta primero el guardado pendiente.", "Retry the pending save first.");
@@ -548,6 +554,11 @@ namespace Luckbound.App
 
             ContractProgressionSnapshot before = app.ContractProgression;
             bool claim = before.IsAccepted(contractId) && before.IsComplete(contractId);
+            ContractProgressionCommitOperation operation = claim
+                ? ContractProgressionCommitOperation.Claim
+                : ContractProgressionCommitOperation.Accept;
+            var uiOperation = new PendingContractUiOperation(contractId, operation, before);
+            _pendingContractUiOperation = null;
             _contractOperationInProgress = true;
             _contractFeedback = string.Empty;
             RefreshContractBoard();
@@ -557,6 +568,15 @@ namespace Luckbound.App
                     ? await app.ClaimContractRewardAsync(contractId)
                     : await app.AcceptContractAsync(contractId);
                 _contractFeedback = FormatContractResult(result);
+                if (result != null && result.Pending)
+                {
+                    if (HasExpectedPendingUiResult(result, uiOperation))
+                        _pendingContractUiOperation = uiOperation;
+                }
+                else
+                {
+                    RouteContractUiConfirmation(app, uiOperation, result);
+                }
             }
             catch (Exception exception)
             {
@@ -573,14 +593,29 @@ namespace Luckbound.App
         {
             if (_contractOperationInProgress) return;
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
-            if (app == null || !app.HasPendingContractProgression) return;
+            if (app == null) return;
+            EnsureContractUiAudioStateOwner(app);
+            ReconcilePendingContractUiOperation(app.ContractProgression);
+            if (!app.HasPendingContractProgression) return;
 
+            PendingContractUiOperation uiOperation = _pendingContractUiOperation;
             _contractOperationInProgress = true;
             RefreshContractBoard();
             try
             {
                 ContractProgressionCommitResult result = await app.RetryPendingContractProgressionAsync();
                 _contractFeedback = FormatContractResult(result);
+                if (result != null && result.Pending)
+                {
+                    if (uiOperation != null && result.Operation != uiOperation.Operation)
+                        _pendingContractUiOperation = null;
+                }
+                else
+                {
+                    if (uiOperation != null)
+                        RouteContractUiConfirmation(app, uiOperation, result);
+                    _pendingContractUiOperation = null;
+                }
             }
             catch (Exception exception)
             {
@@ -591,6 +626,105 @@ namespace Luckbound.App
                 _contractOperationInProgress = false;
                 RefreshView();
             }
+        }
+
+        private static void EnsureContractUiAudioStateOwner(ApplicationBootstrapper app)
+        {
+            if (ReferenceEquals(_contractUiAudioStateOwner, app)) return;
+            _contractUiAudioStateOwner = app;
+            _pendingContractUiOperation = null;
+            RoutedContractUiConfirmations.Clear();
+        }
+
+        private static void ReconcilePendingContractUiOperation(ContractProgressionSnapshot snapshot)
+        {
+            if (_pendingContractUiOperation != null &&
+                HasContractUiTransition(_pendingContractUiOperation, snapshot))
+                _pendingContractUiOperation = null;
+        }
+
+        private static bool HasExpectedPendingUiResult(
+            ContractProgressionCommitResult result, PendingContractUiOperation uiOperation)
+        {
+            if (result == null || uiOperation == null || !result.Pending || result.Persisted ||
+                result.Operation != uiOperation.Operation)
+                return false;
+
+            switch (uiOperation.Operation)
+            {
+                case ContractProgressionCommitOperation.Accept:
+                    return result.AcceptStatus == ContractAcceptStatus.Accepted;
+                case ContractProgressionCommitOperation.Claim:
+                    return result.ClaimStatus == ContractClaimStatus.Claimed;
+                default:
+                    return false;
+            }
+        }
+
+        private static void RouteContractUiConfirmation(ApplicationBootstrapper app,
+            PendingContractUiOperation uiOperation, ContractProgressionCommitResult result)
+        {
+            if (app == null || !IsNewDurableContractUiAction(uiOperation, result)) return;
+
+            string operationKey = uiOperation.Operation.ToString() + ":" + uiOperation.ContractId;
+            if (!RoutedContractUiConfirmations.Add(operationKey)) return;
+            app.AudioRouter?.PlayEffect(ApplicationAudioRouter.UiConfirmEffectId);
+        }
+
+        private static bool IsNewDurableContractUiAction(
+            PendingContractUiOperation uiOperation, ContractProgressionCommitResult result)
+        {
+            if (uiOperation == null || result == null || result.Pending || !result.Persisted ||
+                result.Operation != uiOperation.Operation || result.Snapshot == null ||
+                !HasContractUiTransition(uiOperation, result.Snapshot))
+                return false;
+
+            switch (uiOperation.Operation)
+            {
+                case ContractProgressionCommitOperation.Accept:
+                    return result.AcceptStatus == ContractAcceptStatus.Accepted &&
+                        result.ClaimStatus == null;
+                case ContractProgressionCommitOperation.Claim:
+                    return result.ClaimStatus == ContractClaimStatus.Claimed &&
+                        result.Reward != null && result.AcceptStatus == null;
+                default:
+                    return false;
+            }
+        }
+
+        private static bool HasContractUiTransition(
+            PendingContractUiOperation uiOperation, ContractProgressionSnapshot after)
+        {
+            if (uiOperation == null || uiOperation.Before == null || after == null) return false;
+
+            switch (uiOperation.Operation)
+            {
+                case ContractProgressionCommitOperation.Accept:
+                    return !uiOperation.Before.IsAccepted(uiOperation.ContractId) &&
+                        after.IsAccepted(uiOperation.ContractId);
+                case ContractProgressionCommitOperation.Claim:
+                    return uiOperation.Before.IsAccepted(uiOperation.ContractId) &&
+                        uiOperation.Before.IsComplete(uiOperation.ContractId) &&
+                        !uiOperation.Before.IsClaimed(uiOperation.ContractId) &&
+                        after.IsClaimed(uiOperation.ContractId);
+                default:
+                    return false;
+            }
+        }
+
+        private sealed class PendingContractUiOperation
+        {
+            public PendingContractUiOperation(string contractId, ContractProgressionCommitOperation operation,
+                ContractProgressionSnapshot before)
+            {
+                ContractId = contractId;
+                Operation = operation;
+                Before = before;
+            }
+
+            public string ContractId { get; }
+            public ContractProgressionCommitOperation Operation { get; }
+            public ContractProgressionSnapshot Before { get; }
         }
 
         private void ChangeContractLanguage()

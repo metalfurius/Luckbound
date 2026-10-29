@@ -29,7 +29,7 @@ namespace Luckbound.Core.Combat
             CurrentHealth = health;
         }
 
-        public CombatStats Stats { get; }
+        public CombatStats Stats { get; private set; }
 
         public int DirectImpactProtectionTicks { get; }
 
@@ -54,6 +54,17 @@ namespace Luckbound.Core.Combat
             int previousHealth = CurrentHealth;
             CurrentHealth = (int)Math.Min(Stats.MaximumHealth, (long)CurrentHealth + amount);
             return CurrentHealth - previousHealth;
+        }
+
+        /// <summary>Publishes committed equipment stats while preserving hit and protection history.</summary>
+        public void ReplaceStats(CombatStats stats, int currentHealth)
+        {
+            if (stats == null) throw new ArgumentNullException(nameof(stats));
+            if (currentHealth < 0 || currentHealth > Stats.MaximumHealth)
+                throw new ArgumentOutOfRangeException(nameof(currentHealth));
+
+            Stats = stats;
+            CurrentHealth = Math.Min(currentHealth, stats.MaximumHealth);
         }
 
         public bool IsDirectImpactProtectedAt(long tick)

@@ -135,6 +135,168 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator PublishesCommittedRoomInventoryToLiveActorAndRefreshesHudCharges()
+        {
+            ExpeditionRunConfiguration run = CreateRun(
+                BellatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                BellatorSkillLoadout.ChargeId,
+                BellatorSkillLoadout.CircularCutId);
+            InventoryItemStack potion = EquipQuickConsumable(run, PlayerMotor2D.HealthPotionItemId, quantity: 2);
+            BindingFixture fixture = CreatePlayer(run, includeRoomProjectiles: false);
+            ExpeditionPlayerRunBinder.Bind(run, fixture.ActorId, fixture.Input, GroundLayers(), EnemyLayers(), 0,
+                fixture.Motor, fixture.Collector, run.Inventory.Catalog, fixture.Weapons, fixture.Skills);
+            Assert.That(fixture.Motor.HealthPotionCharges, Is.EqualTo(2));
+
+            ExpeditionInventory committedInventory = ExpeditionInventory.Restore(
+                run.Inventory.Catalog, run.Inventory.CreateSnapshot());
+            Assert.That(committedInventory.TryConsumeQuickConsumable(potion.InstanceId, potion.ItemId,
+                TransactionId.New()).Succeeded, Is.True);
+            ExpeditionRunConfiguration committedRun = run.WithInventory(committedInventory);
+
+            ExpeditionPlayerRunBinder.PublishCommittedRunInventory(committedRun, fixture.Motor, fixture.Collector);
+
+            Assert.That(fixture.Collector.Inventory, Is.SameAs(committedInventory));
+            Assert.That(fixture.Motor.HealthPotionCharges, Is.EqualTo(1));
+            Assert.That(fixture.Collector.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator PreparedCommittedRunPublicationPersistsAndProjectsEquipmentWithoutHealing()
+        {
+            ExpeditionRunConfiguration run = CreateRun(
+                MagusSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                MagusSkillLoadout.FireballId,
+                MagusSkillLoadout.FrostNovaId);
+            BindingFixture fixture = CreatePlayer(run, includeRoomProjectiles: true);
+            ExpeditionPlayerRunBinder.Bind(run, fixture.ActorId, fixture.Input, GroundLayers(), EnemyLayers(), 0,
+                fixture.Motor, fixture.Collector, run.Inventory.Catalog, fixture.Weapons, fixture.Skills,
+                fixture.ProjectilePool, fixture.ProjectileScope, fixture.Room);
+
+            Assert.That(run.Inventory.Armor.ItemId, Is.EqualTo(ArmorCatalog.TravelerRobeItemId));
+            fixture.Motor.SkillUses.SetCurrentEnergy(53);
+            var damage = new DamageCalculationRequest(
+                baseDamage: 38m,
+                rarityMultiplier: 1m,
+                upgradeMultiplier: 1m,
+                offensiveBonusPercent: 0m,
+                defensePenetration: 0,
+                incomingDamageReductionPercent: 0m,
+                targetStats: fixture.Motor.CombatStats,
+                targetIsInvulnerable: false);
+            fixture.Motor.ReceiveDirectImpact(HitId.New(), damage, impactTick: 0,
+                knockbackVelocity: Vector2.zero, stunDurationTicks: 30);
+            int healthBeforeReplacement = fixture.Motor.CurrentHealth;
+            Assert.That(healthBeforeReplacement, Is.LessThan(fixture.Motor.CombatStats.MaximumHealth));
+
+            ExpeditionInventory lowEnergyInventory = ExpeditionInventory.Restore(
+                run.Inventory.Catalog, run.Inventory.CreateSnapshot());
+            ExpeditionRunConfiguration lowEnergyRun = run.WithInventory(lowEnergyInventory);
+            ReplaceArmor(lowEnergyRun, ArmorCatalog.BarkArmorItemId, upgradeLevel: 1, rarity: ItemRarity.Rare);
+            InventoryItemStack oldQuick = lowEnergyInventory.QuickConsumable;
+            Assert.That(lowEnergyInventory.TryConsumeQuickConsumable(oldQuick.InstanceId, oldQuick.ItemId,
+                TransactionId.New()).Succeeded, Is.True);
+            ExpeditionSaveData firstCandidateSave = ExpeditionSaveMapper.Create(run);
+            firstCandidateSave.maximumHealth = fixture.Motor.CombatStats.MaximumHealth;
+            firstCandidateSave.currentHealth = healthBeforeReplacement;
+            firstCandidateSave.maximumEnergy = fixture.Motor.MaximumEnergy;
+            firstCandidateSave.currentEnergy = fixture.Motor.CurrentEnergy;
+            ExpeditionPlayerRunBinder.PreparedCommittedRunPublication lowerMaximum =
+                ExpeditionPlayerRunBinder.PrepareCommittedRunPublication(lowEnergyRun, firstCandidateSave,
+                    fixture.Motor, fixture.Collector, fixture.Weapons, LoadArmors(run.Inventory.Catalog));
+            lowerMaximum.ApplyToSave(firstCandidateSave);
+
+            Assert.That(firstCandidateSave.maximumEnergy, Is.EqualTo(50));
+            Assert.That(firstCandidateSave.currentEnergy, Is.EqualTo(50));
+            Assert.That(firstCandidateSave.currentHealth, Is.EqualTo(healthBeforeReplacement));
+            Assert.That(fixture.Motor.EquippedArmorResolution.Armor.ItemId,
+                Is.EqualTo(ArmorCatalog.TravelerRobeItemId), "Preparation must not publish before the save succeeds.");
+            Assert.That(fixture.Collector.Inventory, Is.SameAs(run.Inventory));
+
+            lowerMaximum.Publish();
+            Assert.That(fixture.Motor.ActorId, Is.EqualTo(fixture.ActorId));
+            Assert.That(fixture.Motor.CurrentHealth, Is.EqualTo(healthBeforeReplacement));
+            Assert.That(fixture.Motor.MaximumEnergy, Is.EqualTo(50));
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(50));
+            Assert.That(fixture.Motor.EquippedArmorResolution.Rarity, Is.EqualTo(ItemRarity.Rare));
+            Assert.That(fixture.Motor.EquippedArmorResolution.UpgradeLevel, Is.EqualTo(1));
+            Assert.That(fixture.Motor.EquippedArmorInstanceId, Is.EqualTo(lowEnergyInventory.Armor.InstanceId));
+            Assert.That(fixture.Motor.EquippedWeaponInstanceId, Is.EqualTo(lowEnergyInventory.Weapon.InstanceId));
+            Assert.That(fixture.Collector.Inventory, Is.SameAs(lowEnergyInventory));
+            Assert.That(fixture.Motor.HealthPotionCharges, Is.EqualTo(1));
+
+            ExpeditionInventory restoredEnergyInventory = ExpeditionInventory.Restore(
+                lowEnergyInventory.Catalog, lowEnergyInventory.CreateSnapshot());
+            ExpeditionRunConfiguration restoredEnergyRun = lowEnergyRun.WithInventory(restoredEnergyInventory);
+            ReplaceArmor(restoredEnergyRun, ArmorCatalog.TravelerRobeItemId, upgradeLevel: 0);
+            ExpeditionSaveData secondCandidateSave = firstCandidateSave.Clone();
+            ExpeditionPlayerRunBinder.PreparedCommittedRunPublication higherMaximum =
+                ExpeditionPlayerRunBinder.PrepareCommittedRunPublication(restoredEnergyRun, secondCandidateSave,
+                    fixture.Motor, fixture.Collector, fixture.Weapons, LoadArmors(run.Inventory.Catalog));
+            higherMaximum.ApplyToSave(secondCandidateSave);
+
+            Assert.That(secondCandidateSave.maximumEnergy, Is.EqualTo(55));
+            Assert.That(secondCandidateSave.currentEnergy, Is.EqualTo(50), "Increasing a maximum must not restore energy.");
+            higherMaximum.Publish();
+            Assert.That(fixture.Motor.MaximumEnergy, Is.EqualTo(55));
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(50));
+            Assert.That(fixture.Motor.EquippedArmorInstanceId, Is.EqualTo(restoredEnergyInventory.Armor.InstanceId));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator PreparedCommittedRunPublicationAppliesServiceHealthDeltaOnlyAfterCommit()
+        {
+            ExpeditionRunConfiguration run = CreateRun(
+                BellatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                BellatorSkillLoadout.ChargeId,
+                BellatorSkillLoadout.CircularCutId);
+            BindingFixture fixture = CreatePlayer(run, includeRoomProjectiles: false);
+            ExpeditionPlayerRunBinder.Bind(run, fixture.ActorId, fixture.Input, GroundLayers(), EnemyLayers(), 0,
+                fixture.Motor, fixture.Collector, run.Inventory.Catalog, fixture.Weapons, fixture.Skills);
+            var damage = new DamageCalculationRequest(
+                baseDamage: 30m,
+                rarityMultiplier: 1m,
+                upgradeMultiplier: 1m,
+                offensiveBonusPercent: 0m,
+                defensePenetration: 0,
+                incomingDamageReductionPercent: 0m,
+                targetStats: fixture.Motor.CombatStats,
+                targetIsInvulnerable: false);
+            fixture.Motor.ReceiveDirectImpact(HitId.New(), damage, impactTick: 0,
+                knockbackVelocity: Vector2.zero, stunDurationTicks: 0);
+            int healthBeforeService = fixture.Motor.CurrentHealth;
+            int energyBeforeService = 31;
+            fixture.Motor.SkillUses.SetCurrentEnergy(energyBeforeService);
+            int healedHealth = Mathf.Min(fixture.Motor.CombatStats.MaximumHealth, healthBeforeService + 20);
+            ExpeditionSaveData candidateSave = ExpeditionSaveMapper.Create(run);
+            candidateSave.maximumHealth = fixture.Motor.CombatStats.MaximumHealth;
+            candidateSave.currentHealth = healedHealth;
+            candidateSave.maximumEnergy = fixture.Motor.MaximumEnergy;
+            candidateSave.currentEnergy = energyBeforeService;
+
+            ExpeditionPlayerRunBinder.PreparedCommittedRunPublication prepared =
+                ExpeditionPlayerRunBinder.PrepareCommittedRunPublication(run, candidateSave, fixture.Motor,
+                    fixture.Collector, fixture.Weapons, LoadArmors(run.Inventory.Catalog));
+            prepared.ApplyToSave(candidateSave);
+
+            Assert.That(candidateSave.currentHealth, Is.EqualTo(healedHealth));
+            Assert.That(candidateSave.currentEnergy, Is.EqualTo(energyBeforeService));
+            Assert.That(fixture.Motor.CurrentHealth, Is.EqualTo(healthBeforeService),
+                "Preparing a service mutation must not heal before the profile write succeeds.");
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(energyBeforeService));
+
+            prepared.Publish();
+            Assert.That(fixture.Motor.CurrentHealth, Is.EqualTo(healedHealth));
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(energyBeforeService));
+            Assert.That(fixture.Motor.ActorId, Is.EqualTo(fixture.ActorId));
+            yield return null;
+        }
+
+        [UnityTest]
         public IEnumerator BindsConfirmedVenatorRunEquipmentSkillsRaceAndRoomScopes()
         {
             ExpeditionRunConfiguration run = CreateRun(
@@ -165,6 +327,67 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(fixture.Motor.IsBellator || fixture.Motor.IsMagus, Is.False);
             Assert.That(fixture.Motor.CombatStats.Defense, Is.EqualTo(5));
             Assert.That(fixture.Collector.GrantsDvergarBonus, Is.False);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator VenatorRoomRebindPreservesSkillCooldownPreparationAndEnergyState()
+        {
+            ExpeditionRunConfiguration run = CreateRun(
+                VenatorSkillLoadout.ClassId,
+                ExpeditionRunConfiguration.HumanRaceId,
+                VenatorSkillLoadout.PiercingArrowId,
+                VenatorSkillLoadout.TripleShotId);
+            BindingFixture fixture = CreatePlayer(run, includeRoomProjectiles: true);
+            ExpeditionPlayerRunBinder.Bind(
+                run,
+                fixture.ActorId,
+                fixture.Input,
+                GroundLayers(),
+                EnemyLayers(),
+                0,
+                fixture.Motor,
+                fixture.Collector,
+                run.Inventory.Catalog,
+                fixture.Weapons,
+                fixture.Skills,
+                fixture.ProjectilePool,
+                fixture.ProjectileScope,
+                fixture.Room);
+
+            SkillUseState sessionState = fixture.Motor.SkillUses;
+            SkillDefinition firstSkill = fixture.Skills.Get(VenatorSkillLoadout.PiercingArrowId);
+            SkillDefinition secondSkill = fixture.Skills.Get(VenatorSkillLoadout.TripleShotId);
+            SkillUseOutcome preparingFirst = sessionState.Update(0, firstSkill, actionValid: true, interrupted: false);
+            Assert.That(preparingFirst.Status, Is.EqualTo(SkillUseStatus.Preparing));
+            long activationTick = System.Math.Max(1, firstSkill.PreparationTicks);
+            SkillUseOutcome activatedFirst = sessionState.Update(activationTick, firstSkill,
+                actionValid: true, interrupted: false);
+            Assert.That(activatedFirst.Status, Is.EqualTo(SkillUseStatus.Activated));
+            Assert.That(activatedFirst.ReadyAtTick, Is.GreaterThan(activationTick + 1));
+
+            long roomChangeTick = activatedFirst.ReadyAtTick - 1;
+            SkillUseOutcome preparingSecond = sessionState.Update(roomChangeTick, secondSkill,
+                actionValid: true, interrupted: false);
+            Assert.That(preparingSecond.Status, Is.EqualTo(SkillUseStatus.Preparing));
+            Assert.That(sessionState.IsReady(firstSkill.Id, roomChangeTick), Is.False);
+            Assert.That(sessionState.IsPreparing, Is.True);
+            int energyBeforeRebind = sessionState.CurrentEnergy;
+
+            fixture.Room.Dispose();
+            CreateRoomProjectiles(fixture, initializeProjectilePool: true);
+            fixture.Motor.ConfigureVenator(fixture.Skills, run.SkillIds, fixture.ProjectilePool,
+                fixture.ProjectileScope, fixture.Room, EnemyLayers());
+
+            Assert.That(fixture.Motor.SkillUses, Is.SameAs(sessionState),
+                "A room transition must rebind room projectiles without replacing session combat state.");
+            Assert.That(fixture.Motor.SkillUses.IsPreparing, Is.True);
+            Assert.That(fixture.Motor.SkillUses.PreparingSkillId, Is.EqualTo(secondSkill.Id));
+            Assert.That(fixture.Motor.SkillUses.IsReady(firstSkill.Id, roomChangeTick), Is.False,
+                "The first skill's cooldown must survive the room-scope replacement.");
+            Assert.That(fixture.Motor.CurrentEnergy, Is.EqualTo(energyBeforeRebind));
+            Assert.That(fixture.Motor.IsVenator, Is.True);
+            Assert.That(fixture.Motor.IsVenatorSkillReady(firstSkill.Id), Is.False);
             yield return null;
         }
 

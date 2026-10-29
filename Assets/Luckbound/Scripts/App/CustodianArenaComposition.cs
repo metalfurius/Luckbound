@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Identifiers;
-using Luckbound.Core.Progression.Contracts;
 using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Input;
 using Luckbound.Gameplay.Movement;
@@ -45,6 +44,7 @@ namespace Luckbound.App
         private PlayerHudPresenter _hudPresenter;
         private ExpeditionPauseController _pauseController;
         private readonly HashSet<ActorId> _reportedCustodianDefeats = new HashSet<ActorId>();
+        private int _reportedBossDamageImpacts;
         private bool _resultSet;
 
         public PlayerMotor2D PlayerMotor => _playerMotor;
@@ -85,6 +85,7 @@ namespace Luckbound.App
             _boss = bossObject.GetComponent<CustodianBoss2D>();
             if (_boss == null) throw new InvalidOperationException("Custodian prototype prefab is missing CustodianBoss2D.");
             _boss.Initialize(ActorId.New(), _playerMotor, definition, _wavePrefab, _waveRoot);
+            _reportedBossDamageImpacts = CountBossImpacts(_boss.MeleeImpactCount, _boss.ProjectileImpactCount);
             _boss.Defeated += OnCustodianDefeated;
             _audioRouter?.PlayEffect(ApplicationAudioRouter.BossAppearEffectId);
 
@@ -100,6 +101,7 @@ namespace Luckbound.App
 
         private void Update()
         {
+            UpdateBossDamageAudio();
             if (_playerMotor == null || _boss == null || _pauseController != null && _pauseController.IsPaused || _resultSet) return;
             if (_playerMotor.IsDead)
             {
@@ -112,6 +114,27 @@ namespace Luckbound.App
                 return;
             }
             RefreshBossStatus();
+        }
+
+        private void UpdateBossDamageAudio()
+        {
+            if (_boss == null) return;
+            int currentImpacts = CountBossImpacts(_boss.MeleeImpactCount, _boss.ProjectileImpactCount);
+            if (currentImpacts < _reportedBossDamageImpacts)
+            {
+                _reportedBossDamageImpacts = currentImpacts;
+                return;
+            }
+
+            int newImpacts = currentImpacts - _reportedBossDamageImpacts;
+            _reportedBossDamageImpacts = currentImpacts;
+            for (int index = 0; index < newImpacts; index++)
+                _audioRouter?.PlayEffect(ApplicationAudioRouter.EnemyDamageEffectId);
+        }
+
+        private static int CountBossImpacts(int meleeImpacts, int projectileImpacts)
+        {
+            return Math.Max(0, meleeImpacts) + Math.Max(0, projectileImpacts);
         }
 
         private void OnDestroy()
@@ -131,8 +154,6 @@ namespace Luckbound.App
         {
             if (!actorId.IsValid || !_reportedCustodianDefeats.Add(actorId)) return;
             _audioRouter?.PlayEffect(ApplicationAudioRouter.BossDeathEffectId);
-            ApplicationBootstrapper.Instance?.RecordContractProgressEventFromGameplay(
-                ContractProgressEvent.CustodianDefeated);
         }
 
         public void ReturnToMenu()

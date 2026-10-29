@@ -5,6 +5,7 @@ using Luckbound.Core.Armor;
 using Luckbound.Core.Combat;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
+using Luckbound.Core.Inventory;
 using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Input;
@@ -36,21 +37,39 @@ namespace Luckbound.App
         [SerializeField] private ExpeditionRoomTransitionController _roomTransitions;
 
         private ApplicationBootstrapper _application;
+        private ApplicationAudioRouter _audioRouter;
         private ExpeditionRunConfiguration _run;
+        private ItemCatalog _itemCatalog;
+        private WeaponCatalog _weaponCatalog;
+        private ArmorCatalog _armorCatalog;
         private SkillCatalog _skillCatalog;
         private PlayerInputSource _inputSource;
         private PlayerMotor2D _playerMotor;
+        private ItemCollector2D _itemCollector;
         private PlayerHudPresenter _hudPresenter;
         private ExpeditionPauseController _pauseController;
+        private ExpeditionSessionReadinessRegistration _readinessRegistration;
+        private IDisposable _simulationPauseLeaseProviderBinding;
+        private IDisposable _sessionMutationPublicationBinding;
+        private Text _returnToTavernButtonLabel;
         private GameObject _playerObject;
         private bool _attempted;
         private bool _cameraBound;
+        private bool _retryingPendingRoomAdvance;
 
         public bool IsReady { get; private set; }
         public string LastError { get; private set; } = string.Empty;
         public PlayerMotor2D PlayerMotor => _playerMotor;
         public GameObject PlayerObject => _playerObject;
         public ExpeditionRoomTransitionController RoomTransitions => _roomTransitions;
+
+        internal ExpeditionReadinessCompositionView CaptureReadinessCompositionView()
+        {
+            return new ExpeditionReadinessCompositionView(this, _application, _readinessRegistration, _run,
+                _playerObject, _playerMotor, _itemCollector, _roomTransitions, _inputSource,
+                _pauseController, _cameraRig, _projectilePrefab, _skillCatalog, _itemCatalog,
+                _weaponCatalog, _armorCatalog, IsReady);
+        }
 
         public bool TryInitialize(ExpeditionRunConfiguration run, ExpeditionSaveData checkpoint, out string error)
         {
@@ -116,6 +135,9 @@ namespace Luckbound.App
                 _skillCatalog = SkillCatalogJsonLoader.Load(skillsSource.text);
                 ArmorCatalog armors = ArmorCatalogJsonLoader.Load(
                     RequireResource("Luckbound/Data/Items/Armors").text, run.Inventory.Catalog);
+                _itemCatalog = run.Inventory.Catalog;
+                _weaponCatalog = weapons;
+                _armorCatalog = armors;
 
                 _run = run;
                 ActorId actorId = ActorId.New();
@@ -123,11 +145,12 @@ namespace Luckbound.App
                 _playerObject = Instantiate(_productionPlayerPrefab, transform.position, transform.rotation, transform);
                 _playerObject.name = "ExpeditionPlayerSession";
                 _playerMotor = _playerObject.GetComponent<PlayerMotor2D>();
-                ItemCollector2D collector = _playerObject.GetComponent<ItemCollector2D>();
+                _itemCollector = _playerObject.GetComponent<ItemCollector2D>();
                 PlayerVisualStatePresenter visualPresenter = _playerObject.GetComponent<PlayerVisualStatePresenter>();
 
                 if (_roomTransitions == null) _roomTransitions = GetComponent<ExpeditionRoomTransitionController>();
                 if (_roomTransitions == null) _roomTransitions = gameObject.AddComponent<ExpeditionRoomTransitionController>();
+                _readinessRegistration = ExpeditionSessionReadinessRegistration.Create(_application, this);
                 _roomTransitions.RoomActivated += OnRoomActivated;
                 _roomTransitions.Initialize(run.RunId, run.Route, ResolveRoomPrefab, _playerObject.transform,
                     checkpoint.visitedNodeIds);
@@ -137,11 +160,13 @@ namespace Luckbound.App
                 if (requiresProjectiles)
                     CreateProjectileScope(_roomTransitions.ActiveScope, out projectilePool, out projectileScope);
 
-                ExpeditionPlayerRunBinder.BindFromCheckpoint(
+                _readinessRegistration.BindFromCheckpoint(new ExpeditionCheckpointBindingArguments(
                     run, checkpoint, actorId, _inputSource, LayerMask.GetMask("Ground"), LayerMask.GetMask("Enemies"),
-                    0, _playerMotor, collector, run.Inventory.Catalog, weapons, _skillCatalog,
+                    0, _playerMotor, _itemCollector, run.Inventory.Catalog, weapons, _skillCatalog,
                     projectilePool, projectileScope, requiresProjectiles ? _roomTransitions.ActiveScope : null,
-                    fortuneBrewRuntime: _application as IPlayerFortuneBrewRuntime, armorCatalog: armors);
+                    fortuneBrewRuntime: _application as IPlayerFortuneBrewRuntime, armorCatalog: armors));
+                _audioRouter = _application.AudioRouter;
+                BindPlayerMagusAudio();
                 visualPresenter.Initialize(_playerMotor);
 
                 _gameplayHudRoot.SetActive(true);
@@ -151,8 +176,14 @@ namespace Luckbound.App
                 _pauseController = GetComponent<ExpeditionPauseController>();
                 if (_pauseController == null) _pauseController = gameObject.AddComponent<ExpeditionPauseController>();
                 _pauseController.Initialize(_pauseLabelText);
+                _simulationPauseLeaseProviderBinding = _application.BindExpeditionSimulationPauseLeaseProvider(
+                    this, _pauseController.AcquireSimulationPauseLease);
+                _sessionMutationPublicationBinding = _application.BindExpeditionSessionMutationPublication(
+                    this, CaptureCommittedRunState, PrepareCommittedRunMutation);
+                _returnToTavernButtonLabel = _returnToTavernButton.GetComponentInChildren<Text>(true);
                 _inputSource.PausePressed += _pauseController.TogglePause;
                 _pauseController.PauseChanged += OnPauseChanged;
+                _pauseController.SimulationPauseChanged += OnSimulationPauseChanged;
                 _returnToTavernButton.onClick.AddListener(ReturnToTavern);
                 _returnToTavernButton.gameObject.SetActive(false);
                 IsReady = true;
@@ -167,6 +198,25 @@ namespace Luckbound.App
             }
         }
 
+        private void BindPlayerMagusAudio()
+        {
+            if (_playerMotor == null) return;
+            _playerMotor.FireballBurnApplied -= OnPlayerFireballBurnApplied;
+            _playerMotor.FireballBurnApplied += OnPlayerFireballBurnApplied;
+            _playerMotor.TorchActivated -= OnPlayerTorchActivated;
+            _playerMotor.TorchActivated += OnPlayerTorchActivated;
+        }
+
+        private void OnPlayerFireballBurnApplied()
+        {
+            _audioRouter?.PlayEffect(ApplicationAudioRouter.BurnEffectId);
+        }
+
+        private void OnPlayerTorchActivated()
+        {
+            _audioRouter?.PlayEffect(ApplicationAudioRouter.TorchEffectId);
+        }
+
         private GameObject ResolveRoomPrefab(string templateId)
         {
             if (ExpeditionRoomPrefabRegistry.TryResolve(templateId, _roomPrefabs,
@@ -174,11 +224,22 @@ namespace Luckbound.App
             throw new InvalidOperationException(error);
         }
 
-        private void OnRoomActivated(RoomLifetimeScope scope)
+        internal ExpeditionReadinessRoomBindingResult BindReadinessRoomServices(RoomLifetimeScope scope)
         {
-            RoomTemplatePrefab2D room = _roomTransitions.ActiveRoomRoot.GetComponentsInChildren<RoomTemplatePrefab2D>(true)
+            if (scope == null || scope.IsDisposed || !scope.isActiveAndEnabled ||
+                _roomTransitions == null || _roomTransitions.IsDisposed ||
+                !ReferenceEquals(_roomTransitions.ActiveScope, scope) ||
+                !_roomTransitions.IsCurrentRoom(scope.RoomInstanceId))
+                throw new InvalidOperationException("Readiness room services require the exact active room scope.");
+
+            GameObject activeRoomRoot = _roomTransitions.ActiveRoomRoot;
+            if (activeRoomRoot == null || !activeRoomRoot.activeInHierarchy)
+                throw new InvalidOperationException("Readiness room services require the active room root.");
+            RoomTemplatePrefab2D room = activeRoomRoot.GetComponentsInChildren<RoomTemplatePrefab2D>(true)
                 .SingleOrDefault();
-            if (room == null) throw new InvalidOperationException("The active room has no unique RoomTemplatePrefab2D camera bounds.");
+            if (room == null || room.CameraBounds == null)
+                throw new InvalidOperationException("The active room has no unique RoomTemplatePrefab2D camera bounds.");
+
             if (_cameraBound) _cameraRig.RebindRoom(room.CameraBounds);
             else
             {
@@ -188,14 +249,84 @@ namespace Luckbound.App
             }
 
             _application.BindExpeditionRoomAmbience(_roomTransitions);
+            SynchronizeCommittedRunInventory();
+
+            ProjectilePool2D projectilePool = null;
+            RoomProjectileScope projectileScope = null;
             if (_playerMotor != null && _playerMotor.ActorId.IsValid &&
                 (_playerMotor.IsVenator || _playerMotor.IsMagus))
-                BindRangedClassToRoom(scope);
+                BindRangedClassToRoom(scope, out projectilePool, out projectileScope);
+
+            return new ExpeditionReadinessRoomBindingResult(_application, _roomTransitions, scope,
+                _cameraRig, room.CameraBounds, _playerMotor, _itemCollector, _run,
+                projectilePool, projectileScope);
         }
 
-        private void BindRangedClassToRoom(RoomLifetimeScope roomLifetimeScope)
+        private void OnRoomActivated(RoomLifetimeScope scope)
         {
-            CreateProjectileScope(roomLifetimeScope, out ProjectilePool2D pool, out RoomProjectileScope scope);
+            if (_readinessRegistration == null || _readinessRegistration.IsDisposed)
+                throw new InvalidOperationException("The expedition session readiness registration is unavailable.");
+            _readinessRegistration.BindActivatedRoom(scope);
+        }
+
+        private void SynchronizeCommittedRunInventory()
+        {
+            if (_application == null || _run == null || _playerMotor == null || _itemCollector == null ||
+                !_playerMotor.ActorId.IsValid || _itemCollector.Inventory == null)
+                return;
+
+            ExpeditionRunConfiguration committedRun = _application.ActiveRun;
+            if (committedRun == null || !committedRun.RunId.Equals(_run.RunId))
+                throw new InvalidOperationException("The committed inventory belongs to a different expedition run.");
+
+            ExpeditionPlayerRunBinder.PublishCommittedRunInventory(committedRun, _playerMotor, _itemCollector);
+            _run = committedRun;
+        }
+
+        private Action PrepareCommittedRunMutation(ExpeditionRunConfiguration committedRun,
+            ExpeditionSaveData candidateSave)
+        {
+            if (!IsReady || _playerMotor == null || _itemCollector == null ||
+                _itemCatalog == null || _weaponCatalog == null || _armorCatalog == null ||
+                _readinessRegistration == null || _readinessRegistration.IsDisposed)
+                throw new InvalidOperationException("The live expedition actor is not ready to prepare a committed mutation.");
+            if (_run == null || committedRun == null || !committedRun.RunId.Equals(_run.RunId))
+                throw new InvalidOperationException("A committed mutation must retain the live expedition RunId.");
+
+            ExpeditionReadinessPreparedPublication prepared =
+                _readinessRegistration.PrepareCommittedPublication(committedRun, candidateSave,
+                    _weaponCatalog, _armorCatalog);
+            prepared.ApplyToSave(candidateSave);
+            return () =>
+            {
+                prepared.PublishConfirmed();
+                _run = prepared.Run;
+            };
+        }
+
+        private void CaptureCommittedRunState(ExpeditionRunConfiguration committedRun,
+            ExpeditionSaveData candidateSave)
+        {
+            if (!IsReady || _playerMotor == null || _itemCollector == null ||
+                committedRun == null || candidateSave == null || _run == null ||
+                !committedRun.RunId.Equals(_run.RunId) ||
+                !string.Equals(candidateSave.runId, committedRun.RunId.ToString(), StringComparison.Ordinal))
+                throw new InvalidOperationException("The live actor cannot capture a snapshot for another or inactive expedition.");
+            if (_playerMotor.CombatStats == null || _itemCollector.Inventory == null)
+                throw new InvalidOperationException("The live actor and collector must be bound before saving session state.");
+
+            candidateSave.inventorySnapshotJson = JsonUtility.ToJson(committedRun.Inventory.CreateSnapshot());
+            candidateSave.healthPotionCharges = ExpeditionSaveMapper.GetHealthPotionCharges(committedRun.Inventory);
+            candidateSave.maximumHealth = _playerMotor.CombatStats.MaximumHealth;
+            candidateSave.currentHealth = _playerMotor.CurrentHealth;
+            candidateSave.maximumEnergy = _playerMotor.MaximumEnergy;
+            candidateSave.currentEnergy = _playerMotor.CurrentEnergy;
+        }
+
+        private void BindRangedClassToRoom(RoomLifetimeScope roomLifetimeScope,
+            out ProjectilePool2D pool, out RoomProjectileScope scope)
+        {
+            CreateProjectileScope(roomLifetimeScope, out pool, out scope);
             if (_run.ClassId == "class.venator")
                 _playerMotor.ConfigureVenator(_skillCatalog, _run.SkillIds, pool, scope, roomLifetimeScope,
                     LayerMask.GetMask("Enemies"));
@@ -219,13 +350,68 @@ namespace Luckbound.App
         private void OnPauseChanged(bool paused)
         {
             if (_returnToTavernButton != null) _returnToTavernButton.gameObject.SetActive(paused);
+            if (paused) RefreshReturnToTavernButtonLabel();
         }
 
-        private void ReturnToTavern()
+        private void OnSimulationPauseChanged(bool paused)
         {
+            _inputSource?.SetGameplayActionsEnabled(!paused);
+        }
+
+        private async void ReturnToTavern()
+        {
+            if (_application != null && _application.HasPendingRoomAdvance)
+            {
+                if (_retryingPendingRoomAdvance) return;
+                RefreshReturnToTavernButtonLabel();
+                _retryingPendingRoomAdvance = true;
+                if (_returnToTavernButton != null) _returnToTavernButton.interactable = false;
+                if (_pauseLabelText != null) _pauseLabelText.text = "Reintentando el guardado de la sala...";
+                try
+                {
+                    RoomAdvanceCommitResult result = await _application.RetryPendingRoomAdvanceAsync();
+                    if (_pauseLabelText != null)
+                    {
+                        _pauseLabelText.text = result.Pending || !result.Persisted
+                            ? "El guardado sigue pendiente. Puedes reintentarlo desde aquí. " + result.Message
+                            : result.Activated
+                                ? "La sala y su avance se han guardado. " + result.Message
+                                : "El avance se guardó, pero la sala no pudo activarse. " + result.Message;
+                    }
+                }
+                catch (Exception exception)
+                {
+                    if (_pauseLabelText != null)
+                        _pauseLabelText.text = "No se pudo reintentar el guardado. Puedes volver a intentarlo. " + exception.Message;
+                }
+                finally
+                {
+                    _retryingPendingRoomAdvance = false;
+                    if (_returnToTavernButton != null) _returnToTavernButton.interactable = true;
+                    RefreshReturnToTavernButtonLabel();
+                }
+                return;
+            }
+
+            if (_application != null && _application.HasPendingSessionMutation)
+            {
+                if (_pauseLabelText != null)
+                    _pauseLabelText.text = "No se puede salir mientras haya un guardado en curso o pendiente. Resuelve la operación y vuelve a intentarlo.";
+                return;
+            }
+
             if (_pauseController != null) _pauseController.SetPaused(false);
-            Time.timeScale = 1f;
             SceneManager.LoadScene("Hub", LoadSceneMode.Single);
+        }
+
+        private void RefreshReturnToTavernButtonLabel()
+        {
+            if (_returnToTavernButtonLabel == null) return;
+            _returnToTavernButtonLabel.text = _application != null && _application.HasPendingRoomAdvance
+                ? "Reintentar guardado"
+                : _application != null && _application.IsRoomAdvanceInFlight
+                    ? "Guardando sala…"
+                    : "Volver a la Taberna";
         }
 
         private bool Fail(string message, out string error)
@@ -244,6 +430,16 @@ namespace Luckbound.App
 
         private void CleanupRuntime()
         {
+            IsReady = false;
+            ExpeditionSessionReadinessRegistration readiness = _readinessRegistration;
+            _readinessRegistration = null;
+            readiness?.Dispose();
+
+            if (_playerMotor != null)
+            {
+                _playerMotor.FireballBurnApplied -= OnPlayerFireballBurnApplied;
+                _playerMotor.TorchActivated -= OnPlayerTorchActivated;
+            }
             if (_roomTransitions != null)
             {
                 _roomTransitions.RoomActivated -= OnRoomActivated;
@@ -258,13 +454,23 @@ namespace Luckbound.App
             if (_pauseController != null)
             {
                 _pauseController.PauseChanged -= OnPauseChanged;
+                _pauseController.SimulationPauseChanged -= OnSimulationPauseChanged;
                 _pauseController.SetPaused(false);
             }
+            _sessionMutationPublicationBinding?.Dispose();
+            _sessionMutationPublicationBinding = null;
+            _simulationPauseLeaseProviderBinding?.Dispose();
+            _simulationPauseLeaseProviderBinding = null;
             if (_returnToTavernButton != null) _returnToTavernButton.onClick.RemoveListener(ReturnToTavern);
             if (_application != null) _application.UnbindExpeditionRoomAmbience();
             if (_playerObject != null) Destroy(_playerObject);
             _playerObject = null;
             _playerMotor = null;
+            _audioRouter = null;
+            _itemCollector = null;
+            _itemCatalog = null;
+            _weaponCatalog = null;
+            _armorCatalog = null;
             if (_gameplayHudRoot != null) _gameplayHudRoot.SetActive(false);
             IsReady = false;
         }

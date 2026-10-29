@@ -155,6 +155,54 @@
       "compatibleClassIds": []
     },
     {
+      "id": "relic.four_echo_crystal",
+      "nameKey": "item.relic.four_echo_crystal.name",
+      "descriptionKey": "item.relic.four_echo_crystal.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.vital_die",
+      "nameKey": "item.relic.vital_die.name",
+      "descriptionKey": "item.relic.vital_die.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.lucky_branch",
+      "nameKey": "item.relic.lucky_branch.name",
+      "descriptionKey": "item.relic.lucky_branch.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.merchant_counterweight",
+      "nameKey": "item.relic.merchant_counterweight.name",
+      "descriptionKey": "item.relic.merchant_counterweight.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.concord_sigil",
+      "nameKey": "item.relic.concord_sigil.name",
+      "descriptionKey": "item.relic.concord_sigil.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.oath_fragment",
+      "nameKey": "item.relic.oath_fragment.name",
+      "descriptionKey": "item.relic.oath_fragment.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
       "id": "relic.pale_bone",
       "nameKey": "item.relic.pale_bone.name",
       "descriptionKey": "item.relic.pale_bone.description",
@@ -214,6 +262,70 @@
       "id": "relic.merchant_seal",
       "nameKey": "item.relic.merchant_seal.name",
       "descriptionKey": "item.relic.merchant_seal.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.umbra_fang",
+      "nameKey": "item.relic.umbra_fang.name",
+      "descriptionKey": "item.relic.umbra_fang.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.shattered_clock",
+      "nameKey": "item.relic.shattered_clock.name",
+      "descriptionKey": "item.relic.shattered_clock.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.arrow_feather",
+      "nameKey": "item.relic.arrow_feather.name",
+      "descriptionKey": "item.relic.arrow_feather.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.inlaid_ember",
+      "nameKey": "item.relic.inlaid_ember.name",
+      "descriptionKey": "item.relic.inlaid_ember.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.first_echo_medallion",
+      "nameKey": "item.relic.first_echo_medallion.name",
+      "descriptionKey": "item.relic.first_echo_medallion.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.black_needle",
+      "nameKey": "item.relic.black_needle.name",
+      "descriptionKey": "item.relic.black_needle.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.hunter_ring",
+      "nameKey": "item.relic.hunter_ring.name",
+      "descriptionKey": "item.relic.hunter_ring.description",
+      "kind": "Relic",
+      "maxStack": 1,
+      "compatibleClassIds": []
+    },
+    {
+      "id": "relic.oak_mace",
+      "nameKey": "item.relic.oak_mace.name",
+      "descriptionKey": "item.relic.oak_mace.description",
       "kind": "Relic",
       "maxStack": 1,
       "compatibleClassIds": []

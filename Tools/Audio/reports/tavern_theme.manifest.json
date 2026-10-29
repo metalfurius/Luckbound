@@ -41,7 +41,7 @@
     "report": {
       "bytes": 2751,
       "path": "Tools/Audio/reports/tavern_theme.report.json",
-      "sha256": "1dcdd46399ec3858b83dc441c9566056ba054dd697d6a3399d661f314cdd21d4"
+      "sha256": "56b1fc8aa3c8fa60272c643798eca20a1b708995338af2c497dc8eb51a1b763a"
     },
     "score": {
       "bytes": 71180,
@@ -59,7 +59,7 @@
       "python": "3.14.7",
       "soundfile": "0.14.0"
     },
-    "source_sha256": "7b917da7c07866dd416788745396fa449a4e1da571c56b53308a1a96f6586a35",
+    "source_sha256": "191a5111978fcc24c2756ed4614e49eb4f9b536fa5bcc12800b547567149d246",
     "synthesis_version": "1.0.0"
   },
   "score_contract": {

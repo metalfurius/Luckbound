@@ -65,8 +65,8 @@ namespace Luckbound.App
                 plan.EnemyLayers,
                 run.RaceId,
                 plan.ArmorResolution);
-            playerMotor.ConfigureEquippedWeapon(plan.EquippedWeapon, run.Inventory.Weapon.Rarity,
-                run.Inventory.Weapon.UpgradeLevel);
+            playerMotor.ConfigureEquippedWeapon(run, weaponCatalog);
+            playerMotor.ConfigureEquippedArmorInstanceId(run.Inventory.Armor.InstanceId);
 
             if (string.Equals(run.ClassId, BellatorSkillLoadout.ClassId, StringComparison.Ordinal))
             {
@@ -113,6 +113,135 @@ namespace Luckbound.App
             Bind(run, actorId, inputSource, groundLayers, enemyLayers, defense, playerMotor, itemCollector,
                 itemCatalog, weaponCatalog, skillCatalog, projectilePool, projectileScope, roomLifetimeScope,
                 dropStager, fortuneBrewRuntime, armorCatalog, checkpoint);
+        }
+
+        /// <summary>Publishes a durably committed run inventory to its already-composed live actor.</summary>
+        public static void PublishCommittedRunInventory(ExpeditionRunConfiguration committedRun,
+            PlayerMotor2D playerMotor, ItemCollector2D itemCollector)
+        {
+            if (committedRun == null) throw new ArgumentNullException(nameof(committedRun));
+            if (committedRun.Inventory == null)
+                throw new ArgumentException("A committed run must carry its inventory.", nameof(committedRun));
+            if (playerMotor == null) throw new ArgumentNullException(nameof(playerMotor));
+            if (itemCollector == null) throw new ArgumentNullException(nameof(itemCollector));
+            if (!playerMotor.ActorId.IsValid || playerMotor.CombatStats == null || itemCollector.Inventory == null)
+                throw new InvalidOperationException("The player actor and collector must be bound before publishing a run inventory.");
+
+            bool classMatches =
+                (committedRun.ClassId == BellatorSkillLoadout.ClassId && playerMotor.IsBellator) ||
+                (committedRun.ClassId == VenatorSkillLoadout.ClassId && playerMotor.IsVenator) ||
+                (committedRun.ClassId == MagusSkillLoadout.ClassId && playerMotor.IsMagus);
+            if (!classMatches || !string.Equals(committedRun.RaceId, playerMotor.RaceId, StringComparison.Ordinal) ||
+                !string.Equals(committedRun.RaceId, itemCollector.RaceId, StringComparison.Ordinal))
+                throw new InvalidOperationException("The committed run must retain the live actor's class and race.");
+
+            itemCollector.PublishCommittedInventory(committedRun.Inventory);
+            playerMotor.RefreshConsumableChargesFromInventory();
+        }
+
+        /// <summary>Validates and prepares a live actor projection before its inventory snapshot is saved.</summary>
+        public static PreparedCommittedRunPublication PrepareCommittedRunPublication(
+            ExpeditionRunConfiguration committedRun, ExpeditionSaveData candidateSave,
+            PlayerMotor2D playerMotor, ItemCollector2D itemCollector,
+            WeaponCatalog weaponCatalog, ArmorCatalog armorCatalog)
+        {
+            if (committedRun == null) throw new ArgumentNullException(nameof(committedRun));
+            if (candidateSave == null) throw new ArgumentNullException(nameof(candidateSave));
+            if (playerMotor == null) throw new ArgumentNullException(nameof(playerMotor));
+            if (itemCollector == null) throw new ArgumentNullException(nameof(itemCollector));
+            if (weaponCatalog == null) throw new ArgumentNullException(nameof(weaponCatalog));
+            if (armorCatalog == null) throw new ArgumentNullException(nameof(armorCatalog));
+            if (!string.Equals(candidateSave.runId, committedRun.RunId.ToString(), StringComparison.Ordinal) ||
+                !string.Equals(candidateSave.classId, committedRun.ClassId, StringComparison.Ordinal) ||
+                !string.Equals(candidateSave.raceId, committedRun.RaceId, StringComparison.Ordinal))
+                throw new InvalidOperationException("The candidate checkpoint must belong to the committed run, class, and race.");
+            if (!playerMotor.ActorId.IsValid || playerMotor.CombatStats == null || itemCollector.Inventory == null ||
+                !playerMotor.isActiveAndEnabled || !itemCollector.isActiveAndEnabled ||
+                playerMotor.gameObject != itemCollector.gameObject)
+                throw new InvalidOperationException("A live actor and collector must be active before preparing a committed run.");
+            if (!ReferenceEquals(committedRun.Inventory.Catalog, itemCollector.Catalog) ||
+                !string.Equals(committedRun.Inventory.ClassId, itemCollector.Inventory.ClassId, StringComparison.Ordinal) ||
+                !string.Equals(committedRun.ClassId, playerMotor.IsBellator ? BellatorSkillLoadout.ClassId :
+                    playerMotor.IsVenator ? VenatorSkillLoadout.ClassId :
+                    playerMotor.IsMagus ? MagusSkillLoadout.ClassId : string.Empty, StringComparison.Ordinal) ||
+                !string.Equals(committedRun.RaceId, playerMotor.RaceId, StringComparison.Ordinal) ||
+                !string.Equals(committedRun.RaceId, itemCollector.RaceId, StringComparison.Ordinal))
+                throw new InvalidOperationException("The committed run must retain the live actor's class, race, and item catalog.");
+
+            ValidateEquippedItems(committedRun, committedRun.Inventory.Catalog);
+            InventoryItemStack armorStack = committedRun.Inventory.Armor;
+            if (!armorCatalog.TryGet(armorStack.ItemId, out ArmorProfile nextArmor) ||
+                !string.Equals(nextArmor.ItemId, armorStack.ItemId, StringComparison.Ordinal))
+                throw new ArgumentException("The committed armor must resolve from the authoritative armor catalog.", nameof(committedRun));
+            ArmorResolution currentArmor = playerMotor.EquippedArmorResolution;
+            if (currentArmor == null || candidateSave.maximumHealth != playerMotor.CombatStats.MaximumHealth ||
+                candidateSave.maximumEnergy != playerMotor.MaximumEnergy ||
+                candidateSave.currentHealth < 0 || candidateSave.currentHealth > playerMotor.CombatStats.MaximumHealth ||
+                candidateSave.currentEnergy < 0 || candidateSave.currentEnergy > playerMotor.MaximumEnergy)
+                throw new InvalidOperationException("The live actor has no valid armor projection or resource snapshot.");
+
+            ArmorResolution nextArmorResolution = ArmorReplacementResolver.Resolve(currentArmor, nextArmor,
+                armorStack.UpgradeLevel, candidateSave.currentHealth, candidateSave.currentEnergy, armorStack.Rarity);
+            WeaponProfile nextWeapon = PlayerMotor2D.ResolveEquippedWeaponProfile(committedRun, weaponCatalog);
+            _ = WeaponBasicAttackProfile.Create(nextWeapon, committedRun.Inventory.Weapon.Rarity,
+                committedRun.Inventory.Weapon.UpgradeLevel);
+            int baseDefense = playerMotor.CombatStats.Defense - currentArmor.Defense;
+            if (baseDefense < 0) throw new InvalidOperationException("The live actor defense does not include its current armor exactly once.");
+            _ = new CombatStats(nextArmorResolution.MaximumHealth, nextArmorResolution.MaximumEnergy,
+                checked(baseDefense + nextArmorResolution.Defense));
+
+            return new PreparedCommittedRunPublication(committedRun, playerMotor, itemCollector,
+                nextWeapon, nextArmorResolution);
+        }
+
+        public sealed class PreparedCommittedRunPublication
+        {
+            private readonly ExpeditionRunConfiguration _run;
+            private readonly PlayerMotor2D _playerMotor;
+            private readonly ItemCollector2D _itemCollector;
+            private readonly WeaponProfile _weapon;
+            private readonly ArmorResolution _armor;
+            private bool _published;
+
+            internal PreparedCommittedRunPublication(ExpeditionRunConfiguration run, PlayerMotor2D playerMotor,
+                ItemCollector2D itemCollector, WeaponProfile weapon, ArmorResolution armor)
+            {
+                _run = run;
+                _playerMotor = playerMotor;
+                _itemCollector = itemCollector;
+                _weapon = weapon;
+                _armor = armor;
+            }
+
+            public ExpeditionRunConfiguration Run => _run;
+            public int MaximumHealth => _armor.MaximumHealth;
+            public int CurrentHealth => _armor.HealthAfterMaximumClamp;
+            public int MaximumEnergy => _armor.MaximumEnergy;
+            public int CurrentEnergy => _armor.EnergyAfterMaximumClamp;
+
+            public void ApplyToSave(ExpeditionSaveData candidateSave)
+            {
+                if (candidateSave == null) throw new ArgumentNullException(nameof(candidateSave));
+                if (!string.Equals(candidateSave.runId, _run.RunId.ToString(), StringComparison.Ordinal))
+                    throw new InvalidOperationException("The prepared run publication cannot update another expedition checkpoint.");
+                candidateSave.inventorySnapshotJson = JsonUtility.ToJson(_run.Inventory.CreateSnapshot());
+                candidateSave.healthPotionCharges = ExpeditionSaveMapper.GetHealthPotionCharges(_run.Inventory);
+                candidateSave.maximumHealth = MaximumHealth;
+                candidateSave.currentHealth = CurrentHealth;
+                candidateSave.maximumEnergy = MaximumEnergy;
+                candidateSave.currentEnergy = CurrentEnergy;
+            }
+
+            public void Publish()
+            {
+                if (_published) return;
+                _playerMotor.PublishCommittedEquipment(_weapon, _run.Inventory.Weapon.InstanceId,
+                    _run.Inventory.Weapon.Rarity, _run.Inventory.Weapon.UpgradeLevel,
+                    _run.Inventory.Armor.InstanceId, _armor);
+                _itemCollector.PublishCommittedInventory(_run.Inventory);
+                _playerMotor.RefreshConsumableChargesFromInventory();
+                _published = true;
+            }
         }
 
         private static BindingPlan Validate(

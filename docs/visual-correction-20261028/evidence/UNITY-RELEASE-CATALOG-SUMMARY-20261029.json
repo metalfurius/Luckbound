@@ -1,0 +1,140 @@
+{
+  "url": "https://services.api.unity.com/unity/editor/release/v1/releases?limit=25&offset=0",
+  "observedAtUtc": "2026-10-29T13:41:05.212930+00:00",
+  "rawSha256": "e735ea2bada137180ccba79c49b72811b9a6f1e4d48f4da5a5e0eec2a92a5aac",
+  "resultCount": 25,
+  "latestStableAmongReturned": {
+    "version": "6000.6.7f1",
+    "revision": "b22767f04f04",
+    "releaseDate": "2026-10-21T09:54:08.135Z",
+    "stream": "SUPPORTED"
+  },
+  "returnedVersions": [
+    {
+      "version": "7000.0.0a12",
+      "date": "2026-10-22T09:56:27.460Z",
+      "stream": "ALPHA"
+    },
+    {
+      "version": "6000.6.7f1",
+      "date": "2026-10-21T09:54:08.135Z",
+      "stream": "SUPPORTED"
+    },
+    {
+      "version": "6000.7.0b6",
+      "date": "2026-10-21T09:53:58.835Z",
+      "stream": "BETA"
+    },
+    {
+      "version": "6000.3.27f1",
+      "date": "2026-10-20T13:42:16.544Z",
+      "stream": "LTS"
+    },
+    {
+      "version": "7000.0.0a11",
+      "date": "2026-10-20T12:36:29.174Z",
+      "stream": "ALPHA"
+    },
+    {
+      "version": "6000.0.85f1",
+      "date": "2026-10-15T11:57:40.778Z",
+      "stream": "LTS"
+    },
+    {
+      "version": "6000.6.6f1",
+      "date": "2026-10-15T10:53:45.590Z",
+      "stream": "SUPPORTED"
+    },
+    {
+      "version": "6000.7.0b5",
+      "date": "2026-10-15T10:14:33.572Z",
+      "stream": "BETA"
+    },
+    {
+      "version": "7000.0.0a10",
+      "date": "2026-10-15T09:46:00.632Z",
+      "stream": "ALPHA"
+    },
+    {
+      "version": "7000.0.0a9",
+      "date": "2026-10-13T09:49:46.563Z",
+      "stream": "ALPHA"
+    },
+    {
+      "version": "6000.3.26f1",
+      "date": "2026-10-08T13:38:24.193Z",
+      "stream": "LTS"
+    },
+    {
+      "version": "6000.6.5f1",
+      "date": "2026-10-08T12:57:26.317Z",
+      "stream": "SUPPORTED"
+    },
+    {
+      "version": "6000.7.0b4",
+      "date": "2026-10-08T12:35:27.300Z",
+      "stream": "BETA"
+    },
+    {
+      "version": "7000.0.0a8",
+      "date": "2026-10-08T11:35:03.927Z",
+      "stream": "ALPHA"
+    },
+    {
+      "version": "7000.0.0a7",
+      "date": "2026-10-06T09:17:12.796Z",
+      "stream": "ALPHA"
+    },
+    {
+      "version": "6000.7.0b3",
+      "date": "2026-10-05T11:02:38.770Z",
+      "stream": "BETA"
+    },
+    {
+      "version": "6000.6.4f1",
+      "date": "2026-10-01T09:17:15.974Z",
+      "stream": "SUPPORTED"
+    },
+    {
+      "version": "6000.3.25f1",
+      "date": "2026-09-24T12:52:52.227Z",
+      "stream": "LTS"
+    },
+    {
+      "version": "6000.6.3f1",
+      "date": "2026-09-24T12:16:52.273Z",
+      "stream": "SUPPORTED"
+    },
+    {
+      "version": "6000.7.0b2",
+      "date": "2026-09-23T11:23:51.399Z",
+      "stream": "BETA"
+    },
+    {
+      "version": "6000.6.2f1",
+      "date": "2026-09-18T09:11:19.349Z",
+      "stream": "SUPPORTED"
+    },
+    {
+      "version": "6000.7.0b1",
+      "date": "2026-09-17T12:15:56.099Z",
+      "stream": "BETA"
+    },
+    {
+      "version": "6000.6.1f1",
+      "date": "2026-09-16T14:52:02.514Z",
+      "stream": "SUPPORTED"
+    },
+    {
+      "version": "6000.0.84f1",
+      "date": "2026-09-16T08:37:48.008Z",
+      "stream": "LTS"
+    },
+    {
+      "version": "6000.3.24f1",
+      "date": "2026-09-10T14:47:57.906Z",
+      "stream": "LTS"
+    }
+  ],
+  "scope": "Published release API ordered by date (documented default), latest numeric stable among first25. No installation or project mutation."
+}

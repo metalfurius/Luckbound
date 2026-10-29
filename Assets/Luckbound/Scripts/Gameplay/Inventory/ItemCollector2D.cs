@@ -11,6 +11,9 @@ namespace Luckbound.Gameplay.Inventory
     {
         [SerializeField] private LootPickupDropStager2D _dropStager;
 
+        /// <summary>Raised once after a world pickup has been fully accepted by this collector.</summary>
+        public event System.Action<ItemCollector2D> LootPickupSucceeded;
+
         public ExpeditionInventory Inventory { get; private set; }
         public ItemCatalog Catalog { get; private set; }
         public string RaceId { get; private set; }
@@ -69,6 +72,7 @@ namespace Luckbound.Gameplay.Inventory
 
             pickup.MarkCollected();
             LastInteractionStatus = LootPickupInteractionStatus.Collected;
+            NotifyLootPickupSucceeded();
             return true;
         }
 
@@ -97,6 +101,7 @@ namespace Luckbound.Gameplay.Inventory
 
             pickup.MarkCollected();
             LastInteractionStatus = LootPickupInteractionStatus.Collected;
+            NotifyLootPickupSucceeded();
             return true;
         }
 
@@ -149,7 +154,26 @@ namespace Luckbound.Gameplay.Inventory
                 incomingPickup.MarkCollected();
                 stagedDrop?.Commit();
                 LastInteractionStatus = LootPickupInteractionStatus.Collected;
+                NotifyLootPickupSucceeded();
                 return true;
+            }
+        }
+
+        private void NotifyLootPickupSucceeded()
+        {
+            System.Action<ItemCollector2D> handlers = LootPickupSucceeded;
+            if (handlers == null) return;
+
+            foreach (System.Action<ItemCollector2D> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(this);
+                }
+                catch (System.Exception)
+                {
+                    // A presentation listener must not change the result of a committed inventory operation.
+                }
             }
         }
     }

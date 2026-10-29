@@ -27,6 +27,11 @@ namespace Luckbound.App
     {
         private static ApplicationBootstrapper _instance;
         private ApplicationAudioRouter _audioRouter;
+        private object _expeditionSimulationPauseLeaseProviderOwner;
+        private Func<IDisposable> _expeditionSimulationPauseLeaseProvider;
+        private object _expeditionSessionMutationPublicationOwner;
+        private Action<ExpeditionRunConfiguration, ExpeditionSaveData> _expeditionSessionStateCapture;
+        private Func<ExpeditionRunConfiguration, ExpeditionSaveData, Action> _expeditionSessionMutationPreparer;
         private ExpeditionSettlementLedger _settlementLedger = new ExpeditionSettlementLedger();
         private SaveRepository _saveRepository;
         private ProfileSaveData _profileData = ProfileSaveData.CreateNewProfile();
@@ -37,13 +42,16 @@ namespace Luckbound.App
         private PendingContractProgression _pendingContractProgression;
         private PendingCraft _pendingCraft;
         private PendingEconomyMutation _pendingEconomyMutation;
-        private readonly Queue<ContractProgressEvent> _queuedGameplayProgressEvents = new Queue<ContractProgressEvent>();
+        private readonly Queue<ContractProgressEventReceipt> _queuedGameplayProgressEvents = new Queue<ContractProgressEventReceipt>();
         private readonly SemaphoreSlim _profileMutationGate = new SemaphoreSlim(1, 1);
         private bool _isDrainingGameplayProgressEvents;
         private ExpeditionSaveData _activeExpedition;
         private long _activeExpeditionRevision;
         private ExpeditionSaveData _pendingExpeditionCandidate;
+        private ProfileSaveData _pendingExpeditionProfile;
         private ExpeditionRunConfiguration _pendingExpeditionRun;
+        private Action _pendingExpeditionSessionPublication;
+        private IDisposable _pendingExpeditionSessionPauseLease;
         private string _activeExpeditionLoadError = string.Empty;
 
         public static ApplicationBootstrapper Instance => _instance;
@@ -53,6 +61,8 @@ namespace Luckbound.App
 #endif
 
         public ExpeditionRunConfiguration ActiveRun { get; private set; }
+        /// <summary>Monotonic optimistic-concurrency token for snapshots derived from the active expedition.</summary>
+        public long ActiveExpeditionRevision => _activeExpeditionRevision;
         public ExpeditionSaveData ActiveExpedition => _activeExpedition == null ? null : _activeExpedition.Clone();
         public string ActiveExpeditionLoadError => _activeExpeditionLoadError;
         public ExpeditionSettlementLedger SettlementLedger => _settlementLedger;
@@ -60,6 +70,8 @@ namespace Luckbound.App
         public ProfileSaveData Profile => _profileData.Clone();
         public ContractProgressionSnapshot ContractProgression => _contractProgression;
         public GameSettingsSaveData Settings => _settingsData.Clone();
+        public GameSettingsSaveData PendingSettingsForRetry =>
+            _saveRepository?.PendingSettingsForRetry?.Clone();
         public bool SaveDataReady { get; private set; }
         public SaveLoadStatus ProfileLoadStatus { get; private set; } = SaveLoadStatus.Missing;
         public string ProfileLoadMessage { get; private set; } = string.Empty;
@@ -80,7 +92,8 @@ namespace Luckbound.App
         public RoomInstanceId ActiveRoomInstanceId => ActiveRun == null || _activeExpedition == null
             ? default
             : ExpeditionRoomIdentity.ForNode(ActiveRun.RunId, _activeExpedition.currentNodeId);
-        public bool HasPendingExpeditionWrite => _pendingExpeditionCandidate != null;
+        public bool HasPendingExpeditionWrite => _pendingExpeditionCandidate != null ||
+            _pendingExpeditionSessionPublication != null;
         public bool CanStartNewExpedition => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
             !HasPendingSettlement && !HasPendingPermanentUpgradePurchase && !HasPendingContractProgression &&
             !HasPendingExpeditionWrite && !HasActiveExpedition;
@@ -88,6 +101,136 @@ namespace Luckbound.App
             !HasPendingSettlement && !HasPendingContractProgression && !HasPendingExpeditionWrite && HasActiveExpedition &&
             string.IsNullOrEmpty(_activeExpeditionLoadError);
         public string PendingProfileExport => _saveRepository == null ? null : _saveRepository.ExportPendingJson(SaveDocument.Profile);
+
+        /// <summary>
+        /// Registers the active expedition session as the owner of temporary simulation pause leases.
+        /// The returned registration must be disposed when that session is unbound.
+        /// </summary>
+        public IDisposable BindExpeditionSimulationPauseLeaseProvider(object owner, Func<IDisposable> provider)
+        {
+            if (owner == null) throw new ArgumentNullException(nameof(owner));
+            if (provider == null) throw new ArgumentNullException(nameof(provider));
+            if (_expeditionSimulationPauseLeaseProviderOwner != null &&
+                !ReferenceEquals(_expeditionSimulationPauseLeaseProviderOwner, owner))
+                throw new InvalidOperationException("An expedition session already owns the simulation pause lease provider.");
+
+            _expeditionSimulationPauseLeaseProviderOwner = owner;
+            _expeditionSimulationPauseLeaseProvider = provider;
+            return new ExpeditionSimulationPauseLeaseProviderBinding(this, owner);
+        }
+
+        /// <summary>Registers a prevalidated actor publication that follows the matching durable run commit.</summary>
+        public IDisposable BindExpeditionSessionMutationPublication(object owner,
+            Action<ExpeditionRunConfiguration, ExpeditionSaveData> capture,
+            Func<ExpeditionRunConfiguration, ExpeditionSaveData, Action> preparer)
+        {
+            if (owner == null) throw new ArgumentNullException(nameof(owner));
+            if (capture == null) throw new ArgumentNullException(nameof(capture));
+            if (preparer == null) throw new ArgumentNullException(nameof(preparer));
+            if (!ReferenceEquals(_expeditionSimulationPauseLeaseProviderOwner, owner))
+                throw new InvalidOperationException("The live session publisher must share the active session's pause-lease owner.");
+            if (_expeditionSessionMutationPublicationOwner != null &&
+                !ReferenceEquals(_expeditionSessionMutationPublicationOwner, owner))
+                throw new InvalidOperationException("An expedition session publisher is already bound.");
+
+            _expeditionSessionMutationPublicationOwner = owner;
+            _expeditionSessionStateCapture = capture;
+            _expeditionSessionMutationPreparer = preparer;
+            return new ExpeditionSessionMutationPublicationBinding(this, owner);
+        }
+
+        private bool TryAcquireRoomAdvanceSimulationPauseLease(out IDisposable lease, out string error)
+        {
+            lease = null;
+            error = string.Empty;
+            if (_pendingRoomAdvance != null || ActiveRun == null) return true;
+
+            return TryAcquireExpeditionSimulationPauseLease(out lease, out error);
+        }
+
+        /// <summary>Acquires a short simulation lease before gameplay captures a durable room result.</summary>
+        public bool TryAcquireExpeditionSimulationPauseLease(out IDisposable lease, out string error)
+        {
+            lease = null;
+            error = string.Empty;
+            if (ActiveRun == null)
+            {
+                error = "There is no active expedition session to pause.";
+                return false;
+            }
+
+            Func<IDisposable> provider = _expeditionSimulationPauseLeaseProvider;
+            if (provider == null)
+            {
+                error = "Cannot advance an active expedition because its simulation pause owner is not bound.";
+                return false;
+            }
+
+            try
+            {
+                lease = provider();
+            }
+            catch (Exception exception)
+            {
+                error = "Cannot pause the active expedition before advancing its room: " + exception.Message;
+                return false;
+            }
+
+            if (lease != null) return true;
+            error = "Cannot advance an active expedition because its simulation pause owner returned no lease.";
+            return false;
+        }
+
+        private void UnbindExpeditionSimulationPauseLeaseProvider(object owner)
+        {
+            if (!ReferenceEquals(_expeditionSimulationPauseLeaseProviderOwner, owner)) return;
+            _expeditionSimulationPauseLeaseProviderOwner = null;
+            _expeditionSimulationPauseLeaseProvider = null;
+        }
+
+        private void UnbindExpeditionSessionMutationPublication(object owner)
+        {
+            if (!ReferenceEquals(_expeditionSessionMutationPublicationOwner, owner)) return;
+            _expeditionSessionMutationPublicationOwner = null;
+            _expeditionSessionStateCapture = null;
+            _expeditionSessionMutationPreparer = null;
+        }
+
+        private sealed class ExpeditionSimulationPauseLeaseProviderBinding : IDisposable
+        {
+            private ApplicationBootstrapper _application;
+            private readonly object _owner;
+
+            public ExpeditionSimulationPauseLeaseProviderBinding(ApplicationBootstrapper application, object owner)
+            {
+                _application = application;
+                _owner = owner;
+            }
+
+            public void Dispose()
+            {
+                ApplicationBootstrapper application = Interlocked.Exchange(ref _application, null);
+                if (application != null) application.UnbindExpeditionSimulationPauseLeaseProvider(_owner);
+            }
+        }
+
+        private sealed class ExpeditionSessionMutationPublicationBinding : IDisposable
+        {
+            private ApplicationBootstrapper _application;
+            private readonly object _owner;
+
+            public ExpeditionSessionMutationPublicationBinding(ApplicationBootstrapper application, object owner)
+            {
+                _application = application;
+                _owner = owner;
+            }
+
+            public void Dispose()
+            {
+                ApplicationBootstrapper application = Interlocked.Exchange(ref _application, null);
+                if (application != null) application.UnbindExpeditionSessionMutationPublication(_owner);
+            }
+        }
 
         /// <summary>Durably accepts one implemented guild contract. A rejected attempt leaves the profile unchanged.</summary>
         public async Task<ContractProgressionCommitResult> AcceptContractAsync(string contractId)
@@ -119,25 +262,27 @@ namespace Luckbound.App
         }
 
         /// <summary>
-        /// Records one validated session event from an application/gameplay event source. Presentation must not call
-        /// this method to award progress; callers pass only an existing ContractProgressEvent value.
+        /// Applies one contract event to the durable profile. This method has no gameplay authority by itself;
+        /// production encounter events must first be validated by the active F09 room scope and stable event identity.
         /// </summary>
-        public async Task<ContractProgressionCommitResult> RecordContractProgressEventAsync(
-            ContractProgressEvent progressEvent)
+        internal async Task<ContractProgressionCommitResult> RecordContractProgressEventAsync(
+            ContractProgressEvent progressEvent, string eventId)
         {
             if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
                 throw new ArgumentOutOfRangeException(nameof(progressEvent));
+            var receipt = new ContractProgressEventReceipt(eventId, progressEvent);
 
             await _profileMutationGate.WaitAsync();
-            try { return await RecordContractProgressEventUnderGateAsync(progressEvent); }
+            try { return await RecordContractProgressEventUnderGateAsync(receipt.Event, receipt.EventId); }
             finally { _profileMutationGate.Release(); }
         }
 
         /// <summary>
-        /// Runtime gameplay event sources use this fire-and-forget boundary after a real event. It keeps storage
+        /// App internals use this boundary after a durable mutation or an authorized gameplay event. It keeps storage
         /// failures out of input/physics callbacks and drains later events after the exact pending write is retried.
+        /// Standalone menu demos have no session authority and must never emit contract progress through this method.
         /// </summary>
-        internal void RecordContractProgressEventFromGameplay(ContractProgressEvent progressEvent)
+        internal void RecordContractProgressEventFromGameplay(ContractProgressEvent progressEvent, string eventId)
         {
             if (!SaveDataReady) return;
             if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
@@ -146,26 +291,39 @@ namespace Luckbound.App
                 return;
             }
 
-            _queuedGameplayProgressEvents.Enqueue(progressEvent);
+            ContractProgressEventReceipt receipt;
+            try { receipt = new ContractProgressEventReceipt(eventId, progressEvent); }
+            catch (ArgumentException exception)
+            {
+                Debug.LogWarning("Ignored a gameplay contract progress event with an invalid identity: " + exception.Message, this);
+                return;
+            }
+            _queuedGameplayProgressEvents.Enqueue(receipt);
             ScheduleGameplayProgressEventDrain();
         }
 
         private async Task<ContractProgressionCommitResult> RecordContractProgressEventUnderGateAsync(
-            ContractProgressEvent progressEvent)
+            ContractProgressEvent progressEvent, string eventId)
         {
             if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
                 throw new ArgumentOutOfRangeException(nameof(progressEvent));
+            var receipt = new ContractProgressEventReceipt(eventId, progressEvent);
             if (HasPendingContractProgression)
                 return PendingContractProgressionResult(ContractProgressionCommitOperation.RecordProgress,
                     "Retry the exact pending contract progression write before recording another event.");
             if (!CanMutateContractProgression(out string unavailableReason))
                 return ContractProgressionFailure(ContractProgressionCommitOperation.RecordProgress, unavailableReason);
 
-            ContractProgressOutcome outcome = ContractProgressionRules.RecordProgress(_contractProgression, progressEvent);
+            ContractProgressOutcome outcome = ContractProgressionRules.RecordProgress(
+                _contractProgression, receipt.Event, receipt.EventId);
+            if (outcome.Status == ContractProgressStatus.EventIdConflict)
+                return new ContractProgressionCommitResult(ContractProgressionCommitOperation.RecordProgress,
+                    _contractProgression, null, outcome.Status, null, null, false, false,
+                    "The stable event ID was already used for a different contract progress event.");
             if (!outcome.ChangesProfile)
                 return new ContractProgressionCommitResult(ContractProgressionCommitOperation.RecordProgress,
                     _contractProgression, null, outcome.Status, null, null, true, false,
-                    "All implemented counters for this event are already complete.");
+                    "This stable event ID was already recorded.");
 
             ProfileSaveData candidate = _profileData.Clone();
             ApplyContractProgressionSnapshot(candidate, outcome.Snapshot);
@@ -194,9 +352,9 @@ namespace Luckbound.App
                         if (HasPendingContractProgression)
                             return;
 
-                        ContractProgressEvent progressEvent = _queuedGameplayProgressEvents.Peek();
+                        ContractProgressEventReceipt receipt = _queuedGameplayProgressEvents.Peek();
                         ContractProgressionCommitResult result =
-                            await RecordContractProgressEventUnderGateAsync(progressEvent);
+                            await RecordContractProgressEventUnderGateAsync(receipt.Event, receipt.EventId);
                         if (result.Persisted)
                         {
                             _queuedGameplayProgressEvents.Dequeue();
@@ -209,6 +367,13 @@ namespace Luckbound.App
                             // queued until that payload is retried successfully.
                             _queuedGameplayProgressEvents.Dequeue();
                             return;
+                        }
+
+                        if (result.ProgressStatus == ContractProgressStatus.EventIdConflict)
+                        {
+                            _queuedGameplayProgressEvents.Dequeue();
+                            Debug.LogWarning("A gameplay contract progress event reused an ID with a different payload; the event was rejected.", this);
+                            continue;
                         }
 
                         Debug.LogWarning("A gameplay contract progress event was not committed: " + result.Message, this);
@@ -486,13 +651,19 @@ namespace Luckbound.App
             ContractCounterSaveData[] counters = profile.contractCounters ?? Array.Empty<ContractCounterSaveData>();
             if (counters.Any(counter => counter == null))
                 throw new FormatException("The saved contract counter ledger contains a null entry.");
+            ContractProgressEventReceiptSaveData[] receipts = profile.processedContractProgressEvents ??
+                Array.Empty<ContractProgressEventReceiptSaveData>();
+            if (receipts.Any(receipt => receipt == null))
+                throw new FormatException("The saved contract progress receipt ledger contains a null entry.");
 
             return new ContractProgressionSnapshot(profile.availableRenown,
                 profile.unlockedRaceIds ?? Array.Empty<string>(),
                 profile.unlockedStartingKitIds ?? Array.Empty<string>(),
                 profile.acceptedContractIds ?? Array.Empty<string>(),
                 profile.claimedContractIds ?? Array.Empty<string>(),
-                counters.Select(counter => new ContractProgressCounter(counter.contractId, counter.progress)));
+                counters.Select(counter => new ContractProgressCounter(counter.contractId, counter.progress)),
+                receipts.Select(receipt => new ContractProgressEventReceipt(receipt.eventId,
+                    (ContractProgressEvent)receipt.progressEvent)));
         }
 
         private static void ApplyContractProgressionSnapshot(
@@ -510,6 +681,12 @@ namespace Luckbound.App
                 contractId = counter.ContractId,
                 progress = counter.Progress
             }).ToArray();
+            profile.processedContractProgressEvents = snapshot.ProcessedEvents.Select(receipt =>
+                new ContractProgressEventReceiptSaveData
+                {
+                    eventId = receipt.EventId,
+                    progressEvent = (int)receipt.Event
+                }).ToArray();
         }
 
         private ContractProgressionCommitResult ContractProgressionFailure(
@@ -610,8 +787,8 @@ namespace Luckbound.App
                 if (result.Succeeded)
                 {
                     _activeExpedition = candidate.Clone();
-                    _activeExpeditionRevision++;
                     ActiveRun = run;
+                    _activeExpeditionRevision++;
                 }
                 else if (_saveRepository.ExportPendingJson(SaveDocument.Profile) != null)
                 {
@@ -647,6 +824,9 @@ namespace Luckbound.App
                 if (_pendingContractProgression != null)
                     return new SaveWriteResult(false,
                         "Retry the exact pending contract progression operation through RetryPendingContractProgressionAsync.");
+                if (_pendingCraft != null)
+                    return new SaveWriteResult(false,
+                        "Retry the exact pending crafting operation through RetryPendingCraftingAsync.");
                 return await RetryPendingExpeditionWriteUnderGateAsync();
             }
             finally
@@ -674,7 +854,7 @@ namespace Luckbound.App
                     return await RetryPendingCraftingUnderGateAsync();
                 }
 
-                if (_pendingExpeditionCandidate != null)
+                if (HasPendingExpeditionWrite)
                     return new CraftingCommitResult(null, persisted: false, pending: true,
                         "Retry the pending expedition write before starting another crafting operation.");
                 if (_pendingContractProgression != null)
@@ -686,7 +866,8 @@ namespace Luckbound.App
 
                 RecipeCatalog recipeCatalog = RecipeCatalogJsonLoader.Load(
                     LoadRequired("Luckbound/Data/Items/Recipes").text, ActiveRun.Inventory.Catalog);
-                bool transactionAlreadySucceeded = HasSuccessfulCraftReceipt(ActiveRun.Inventory, transactionId);
+                bool transactionAlreadySucceeded = HasSuccessfulCraftOrSmithingTransaction(
+                    ActiveRun.Inventory, transactionId);
                 ExpeditionInventory candidateInventory = ExpeditionInventory.Restore(
                     ActiveRun.Inventory.Catalog, ActiveRun.Inventory.CreateSnapshot());
                 CraftingOutcome outcome = candidateInventory.TryCraft(
@@ -694,24 +875,33 @@ namespace Luckbound.App
                 ContractProgressEvent? progressEvent = transactionAlreadySucceeded
                     ? (ContractProgressEvent?)null
                     : GetCraftProgressEvent(recipeCatalog, recipeId, outcome);
+                ProfileSaveData candidateProfile = null;
+                if (progressEvent.HasValue)
+                {
+                    ContractProgressOutcome progress = ContractProgressionRules.RecordProgress(
+                        _contractProgression, progressEvent.Value, GetTransactionProgressEventId(transactionId));
+                    if (progress.Status == ContractProgressStatus.EventIdConflict)
+                        return new CraftingCommitResult(outcome, persisted: false, pending: false,
+                            "The crafting transaction ID already identifies a different contract progress event.");
+                    if (progress.ChangesProfile)
+                    {
+                        candidateProfile = _profileData.Clone();
+                        ApplyContractProgressionSnapshot(candidateProfile, progress.Snapshot);
+                    }
+                }
                 ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);
                 ExpeditionSaveData candidateSave = _activeExpedition.Clone();
                 candidateSave.inventorySnapshotJson = JsonUtility.ToJson(candidateInventory.CreateSnapshot());
                 candidateSave.healthPotionCharges = ExpeditionSaveMapper.GetHealthPotionCharges(candidateInventory);
 
                 SaveWriteResult save = await SaveExpeditionCandidateUnderGateAsync(
-                    candidateSave, _activeExpeditionRevision, candidateRun);
+                    candidateSave, _activeExpeditionRevision, candidateRun, profileToCommit: candidateProfile);
                 if (save.Succeeded)
-                {
-                    if (progressEvent.HasValue)
-                        RecordContractProgressEventFromGameplay(progressEvent.Value);
                     return new CraftingCommitResult(outcome, persisted: true, pending: false, save.Message);
-                }
 
                 if (HasPendingExpeditionWrite)
                 {
-                    _pendingCraft = new PendingCraft(recipeId, transactionId, upgradeTargetInstanceId, outcome,
-                        progressEvent);
+                    _pendingCraft = new PendingCraft(recipeId, transactionId, upgradeTargetInstanceId, outcome);
                     return new CraftingCommitResult(outcome, persisted: false, pending: true, save.Message);
                 }
                 return new CraftingCommitResult(outcome, persisted: false, pending: false, save.Message);
@@ -742,8 +932,6 @@ namespace Luckbound.App
 
             PendingCraft pending = _pendingCraft;
             SaveWriteResult save = await RetryPendingExpeditionWriteUnderGateAsync();
-            if (save.Succeeded && pending.ProgressEvent.HasValue)
-                RecordContractProgressEventFromGameplay(pending.ProgressEvent.Value);
             return new CraftingCommitResult(pending.Outcome, persisted: save.Succeeded,
                 pending: !save.Succeeded && HasPendingExpeditionWrite, save.Message);
         }
@@ -817,18 +1005,17 @@ namespace Luckbound.App
             ItemInstanceId targetInstanceId, TransactionId transactionId)
         {
             bool transactionAlreadySucceeded = false;
-            ExpeditionMutationCommitResult<SmithingOutcome> result = await ExecuteEconomyMutationAsync(
+            return await ExecuteEconomyMutationAsync(
                 operationKey, roomInstanceId, requiresRestStop: true,
                 (run, inventory, _) =>
                 {
-                    transactionAlreadySucceeded = HasSuccessfulCraftReceipt(run.Inventory, transactionId);
+                    transactionAlreadySucceeded = HasSuccessfulCraftOrSmithingTransaction(
+                        run.Inventory, transactionId);
                     return SmithingService.TryUpgrade(inventory,
                         LoadRecipeCatalog(run), recipeId, targetInstanceId, transactionId);
-                });
-
-            if (!transactionAlreadySucceeded && result.Persisted && result.Outcome != null && result.Outcome.Succeeded)
-                RecordContractProgressEventFromGameplay(ContractProgressEvent.ItemUpgraded);
-            return result;
+                },
+                ContractProgressEvent.ItemUpgraded, GetTransactionProgressEventId(transactionId),
+                outcome => !transactionAlreadySucceeded && outcome != null && outcome.Succeeded);
         }
 
         public Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> UseTaliaAsync(
@@ -862,16 +1049,9 @@ namespace Luckbound.App
                 if (!(_pendingEconomyMutation.Outcome is T outcome))
                     return new ExpeditionMutationCommitResult<T>(default, false, true,
                         "The pending economy operation has a different result type.");
-                bool smithingAlreadyCommitted = outcome is SmithingOutcome pendingSmithing &&
-                    ActiveRun != null && HasSuccessfulCraftReceipt(ActiveRun.Inventory,
-                        pendingSmithing.CraftingOutcome.TransactionId);
-
-                if (_pendingExpeditionCandidate == null)
+                if (!HasPendingExpeditionWrite)
                 {
                     _pendingEconomyMutation = null;
-                    if (!smithingAlreadyCommitted && outcome is SmithingOutcome alreadyCommittedSmithing &&
-                        alreadyCommittedSmithing.Succeeded)
-                        RecordContractProgressEventFromGameplay(ContractProgressEvent.ItemUpgraded);
                     return new ExpeditionMutationCommitResult<T>(outcome, true, false,
                         "The economy operation was already durably committed.");
                 }
@@ -881,8 +1061,6 @@ namespace Luckbound.App
                     return new ExpeditionMutationCommitResult<T>(outcome, false, HasPendingExpeditionWrite, save.Message);
 
                 _pendingEconomyMutation = null;
-                if (!smithingAlreadyCommitted && outcome is SmithingOutcome committedSmithing && committedSmithing.Succeeded)
-                    RecordContractProgressEventFromGameplay(ContractProgressEvent.ItemUpgraded);
                 return new ExpeditionMutationCommitResult<T>(outcome, true, false, save.Message);
             }
             finally
@@ -896,9 +1074,13 @@ namespace Luckbound.App
             string operationKey,
             RoomInstanceId roomInstanceId,
             bool requiresRestStop,
-            Func<ExpeditionRunConfiguration, ExpeditionInventory, ExpeditionSaveData, T> mutation)
+            Func<ExpeditionRunConfiguration, ExpeditionInventory, ExpeditionSaveData, T> mutation,
+            ContractProgressEvent? progressEvent = null,
+            string progressEventId = null,
+            Func<T, bool> shouldRecordProgress = null)
         {
             await _profileMutationGate.WaitAsync();
+            IDisposable sessionPauseLease = null;
             try
             {
                 if (_pendingEconomyMutation != null)
@@ -927,21 +1109,55 @@ namespace Luckbound.App
                     return new ExpeditionMutationCommitResult<T>(default, false, false,
                         "Merchant and rest-stop services are only available in a rest room.");
 
+                if (_expeditionSessionMutationPreparer != null &&
+                    !TryAcquireExpeditionSimulationPauseLease(out sessionPauseLease, out string pauseError))
+                    return new ExpeditionMutationCommitResult<T>(default, false, false, pauseError);
+
+                ExpeditionSaveData candidateSave = _activeExpedition.Clone();
+                if (_expeditionSessionStateCapture != null)
+                {
+                    try { _expeditionSessionStateCapture(ActiveRun, candidateSave); }
+                    catch (Exception exception)
+                    {
+                        return new ExpeditionMutationCommitResult<T>(default, false, false,
+                            "The live expedition state could not be captured: " + exception.Message);
+                    }
+                }
                 ExpeditionInventory candidateInventory = ExpeditionInventory.Restore(
                     ActiveRun.Inventory.Catalog, ActiveRun.Inventory.CreateSnapshot());
-                ExpeditionSaveData candidateSave = _activeExpedition.Clone();
                 T outcome = mutation(ActiveRun, candidateInventory, candidateSave);
+                ProfileSaveData candidateProfile = null;
+                if (progressEvent.HasValue && (shouldRecordProgress == null || shouldRecordProgress(outcome)))
+                {
+                    ContractProgressOutcome progress = ContractProgressionRules.RecordProgress(
+                        _contractProgression, progressEvent.Value, progressEventId);
+                    if (progress.Status == ContractProgressStatus.EventIdConflict)
+                        return new ExpeditionMutationCommitResult<T>(outcome, false, false,
+                            "The source transaction ID already identifies a different contract progress event.");
+                    if (progress.ChangesProfile)
+                    {
+                        candidateProfile = _profileData.Clone();
+                        ApplyContractProgressionSnapshot(candidateProfile, progress.Snapshot);
+                    }
+                }
                 candidateSave.inventorySnapshotJson = JsonUtility.ToJson(candidateInventory.CreateSnapshot());
                 candidateSave.healthPotionCharges = ExpeditionSaveMapper.GetHealthPotionCharges(candidateInventory);
                 ExpeditionRunConfiguration candidateRun = ActiveRun.WithInventory(candidateInventory);
 
-                if (string.Equals(candidateSave.inventorySnapshotJson, _activeExpedition.inventorySnapshotJson, StringComparison.Ordinal) &&
-                    candidateSave.currentHealth == _activeExpedition.currentHealth)
+                if (candidateProfile == null &&
+                    string.Equals(candidateSave.inventorySnapshotJson, _activeExpedition.inventorySnapshotJson, StringComparison.Ordinal) &&
+                    candidateSave.currentHealth == _activeExpedition.currentHealth &&
+                    candidateSave.currentEnergy == _activeExpedition.currentEnergy &&
+                    candidateSave.maximumHealth == _activeExpedition.maximumHealth &&
+                    candidateSave.maximumEnergy == _activeExpedition.maximumEnergy)
                     return new ExpeditionMutationCommitResult<T>(outcome, true, false,
                         "The operation was already represented by the saved expedition state.");
 
-                SaveWriteResult save = await SaveExpeditionCandidateUnderGateAsync(
-                    candidateSave, _activeExpeditionRevision, candidateRun);
+                Task<SaveWriteResult> saveTask = SaveExpeditionCandidateUnderGateAsync(
+                    candidateSave, _activeExpeditionRevision, candidateRun, sessionPauseLease,
+                    sessionStateCaptured: _expeditionSessionStateCapture != null, profileToCommit: candidateProfile);
+                sessionPauseLease = null;
+                SaveWriteResult save = await saveTask;
                 if (save.Succeeded)
                     return new ExpeditionMutationCommitResult<T>(outcome, true, false, save.Message);
                 if (HasPendingExpeditionWrite)
@@ -953,14 +1169,18 @@ namespace Luckbound.App
             }
             finally
             {
-                _profileMutationGate.Release();
-                ScheduleGameplayProgressEventDrain();
+                try { sessionPauseLease?.Dispose(); }
+                finally
+                {
+                    try { _profileMutationGate.Release(); }
+                    finally { ScheduleGameplayProgressEventDrain(); }
+                }
             }
         }
 
         private async Task<ExpeditionMutationCommitResult<T>> RetryPendingEconomyMutationUnderGateAsync<T>(T outcome)
         {
-            if (_pendingExpeditionCandidate == null)
+            if (!HasPendingExpeditionWrite)
             {
                 _pendingEconomyMutation = null;
                 return new ExpeditionMutationCommitResult<T>(outcome, true, false,
@@ -991,13 +1211,25 @@ namespace Luckbound.App
                 : ContractProgressEvent.ItemCrafted;
         }
 
-        private static bool HasSuccessfulCraftReceipt(ExpeditionInventory inventory, TransactionId transactionId)
+        private static bool HasSuccessfulCraftOrSmithingTransaction(
+            ExpeditionInventory inventory, TransactionId transactionId)
         {
             if (inventory == null || !transactionId.IsValid) return false;
             InventoryTransactionSnapshot[] transactions = inventory.CreateSnapshot().transactions;
+            string transactionKey = transactionId.ToString();
             return transactions != null && transactions.Any(transaction => transaction != null &&
-                string.Equals(transaction.transactionId, transactionId.ToString(), StringComparison.Ordinal) &&
-                transaction.craftingStatus == (int)CraftingOperationStatus.Succeeded);
+                string.Equals(transaction.transactionId, transactionKey, StringComparison.Ordinal) &&
+                transaction.craftingStatus == (int)CraftingOperationStatus.Succeeded &&
+                !string.IsNullOrEmpty(transaction.signature) &&
+                (transaction.signature.StartsWith("craft|", StringComparison.Ordinal) ||
+                 transaction.signature.StartsWith("smith|", StringComparison.Ordinal)));
+        }
+
+        private static string GetTransactionProgressEventId(TransactionId transactionId)
+        {
+            if (!transactionId.IsValid)
+                throw new ArgumentException("A stable transaction ID is required for contract progress.", nameof(transactionId));
+            return "tx/" + transactionId;
         }
 
         private static RecipeCatalog LoadRecipeCatalog(ExpeditionRunConfiguration run)
@@ -1008,6 +1240,24 @@ namespace Luckbound.App
 
         private async Task<SaveWriteResult> RetryPendingExpeditionWriteUnderGateAsync()
         {
+            if (_pendingExpeditionCandidate == null && _pendingExpeditionSessionPublication != null)
+            {
+                try
+                {
+                    _pendingExpeditionSessionPublication();
+                    _pendingExpeditionSessionPublication = null;
+                    IDisposable completedLease = _pendingExpeditionSessionPauseLease;
+                    _pendingExpeditionSessionPauseLease = null;
+                    completedLease?.Dispose();
+                    _pendingCraft = null;
+                    return new SaveWriteResult(true, "The saved expedition and live actor are synchronized.");
+                }
+                catch (Exception exception)
+                {
+                    return new SaveWriteResult(false,
+                        "The expedition is saved, but its live actor publication remains pending: " + exception.Message);
+                }
+            }
             if (_pendingExpeditionCandidate == null)
                 return new SaveWriteResult(false, "There is no pending expedition write.");
 
@@ -1015,10 +1265,31 @@ namespace Luckbound.App
             if (result.Succeeded)
             {
                 _activeExpedition = _pendingExpeditionCandidate.Clone();
-                _activeExpeditionRevision++;
                 if (_pendingExpeditionRun != null) ActiveRun = _pendingExpeditionRun;
+                if (_pendingExpeditionProfile != null)
+                {
+                    CommitContractProgressionProfile(_pendingExpeditionProfile, CreateContractProgressionSnapshot(_pendingExpeditionProfile));
+                    _pendingExpeditionProfile = null;
+                }
+                _activeExpeditionRevision++;
                 _pendingExpeditionCandidate = null;
                 _pendingExpeditionRun = null;
+                if (_pendingExpeditionSessionPublication != null)
+                {
+                    try
+                    {
+                        _pendingExpeditionSessionPublication();
+                        _pendingExpeditionSessionPublication = null;
+                        IDisposable completedLease = _pendingExpeditionSessionPauseLease;
+                        _pendingExpeditionSessionPauseLease = null;
+                        completedLease?.Dispose();
+                    }
+                    catch (Exception exception)
+                    {
+                        return new SaveWriteResult(false,
+                            "The expedition is saved, but its live actor publication remains pending: " + exception.Message);
+                    }
+                }
                 _pendingCraft = null;
             }
             return result;
@@ -1076,36 +1347,104 @@ namespace Luckbound.App
         }
 
         private async Task<SaveWriteResult> SaveExpeditionCandidateUnderGateAsync(
-            ExpeditionSaveData candidate, long expectedRevision, ExpeditionRunConfiguration runToCommit)
+            ExpeditionSaveData candidate, long expectedRevision, ExpeditionRunConfiguration runToCommit,
+            IDisposable preacquiredSessionPauseLease = null, bool sessionStateCaptured = false,
+            ProfileSaveData profileToCommit = null)
         {
-            if (_activeExpedition == null || !SameExpeditionIdentity(_activeExpedition, candidate))
-                return new SaveWriteResult(false, "The active expedition changed before this update could be saved.");
-            if (_activeExpeditionRevision != expectedRevision)
-                return ExpeditionStatesEqual(_activeExpedition, candidate)
-                    ? new SaveWriteResult(true, "This expedition snapshot was already committed.")
-                    : new SaveWriteResult(false, "A newer expedition snapshot was committed before this update could be saved.");
-            if (HasPendingSettlement)
-                return new SaveWriteResult(false, "A settlement is pending; expedition progress cannot be overwritten.");
-            if (_pendingContractProgression != null)
-                return new SaveWriteResult(false, "A contract progression write is pending; retry it before saving expedition progress.");
-            if (HasPendingExpeditionWrite)
-                return new SaveWriteResult(false, "An expedition write is already pending; retry that exact payload before making another change.");
-            IReadOnlyList<string> errors = SaveDataValidation.Validate(candidate);
-            if (errors.Count != 0) return new SaveWriteResult(false, string.Join(" ", errors));
+            IDisposable sessionPauseLease = preacquiredSessionPauseLease;
+            bool retainSessionPauseLease = false;
+            Action publishSession = null;
+            try
+            {
+                if (_activeExpedition == null || !SameExpeditionIdentity(_activeExpedition, candidate))
+                    return new SaveWriteResult(false, "The active expedition changed before this update could be saved.");
+                if (_activeExpeditionRevision != expectedRevision)
+                    return ExpeditionStatesEqual(_activeExpedition, candidate)
+                        ? new SaveWriteResult(true, "This expedition snapshot was already committed.")
+                        : new SaveWriteResult(false, "A newer expedition snapshot was committed before this update could be saved.");
+                if (HasPendingSettlement)
+                    return new SaveWriteResult(false, "A settlement is pending; expedition progress cannot be overwritten.");
+                if (_pendingContractProgression != null)
+                    return new SaveWriteResult(false, "A contract progression write is pending; retry it before saving expedition progress.");
+                if (HasPendingExpeditionWrite)
+                    return new SaveWriteResult(false, "An expedition write is already pending; retry that exact payload before making another change.");
 
-            SaveWriteResult result = await _saveRepository.SaveProfileAsync(_profileData, candidate);
-            if (result.Succeeded)
-            {
-                _activeExpedition = candidate.Clone();
-                _activeExpeditionRevision++;
-                if (runToCommit != null) ActiveRun = runToCommit;
+                if (_expeditionSessionMutationPreparer != null)
+                {
+                    if (ActiveRun == null || !string.Equals(ActiveRun.RunId.ToString(), candidate.runId, StringComparison.Ordinal))
+                        return new SaveWriteResult(false, "The live expedition session does not match this saved candidate.");
+                    if (sessionPauseLease == null && !TryAcquireExpeditionSimulationPauseLease(
+                            out sessionPauseLease, out string pauseError))
+                        return new SaveWriteResult(false, pauseError);
+                    try
+                    {
+                        ExpeditionRunConfiguration publicationRun = runToCommit ?? ActiveRun;
+                        if (!sessionStateCaptured)
+                            _expeditionSessionStateCapture(publicationRun, candidate);
+                        publishSession = _expeditionSessionMutationPreparer(publicationRun, candidate);
+                        if (publishSession == null)
+                            throw new InvalidOperationException("The live session publisher returned no prepared publication.");
+                    }
+                    catch (Exception exception)
+                    {
+                        return new SaveWriteResult(false, "The live expedition state could not be prepared: " + exception.Message);
+                    }
+                }
+
+                IReadOnlyList<string> errors = SaveDataValidation.Validate(candidate);
+                if (errors.Count != 0) return new SaveWriteResult(false, string.Join(" ", errors));
+                ProfileSaveData candidateProfile = profileToCommit?.Clone();
+                if (candidateProfile != null)
+                {
+                    IReadOnlyList<string> profileErrors = SaveDataValidation.Validate(candidateProfile);
+                    if (profileErrors.Count != 0)
+                        return new SaveWriteResult(false, string.Join(" ", profileErrors));
+                }
+
+                SaveWriteResult result;
+                try { result = await _saveRepository.SaveProfileAsync(candidateProfile ?? _profileData, candidate); }
+                catch (Exception exception) { result = new SaveWriteResult(false, exception.Message); }
+                if (result.Succeeded)
+                {
+                    _activeExpedition = candidate.Clone();
+                    if (runToCommit != null) ActiveRun = runToCommit;
+                    if (candidateProfile != null)
+                        CommitContractProgressionProfile(candidateProfile, CreateContractProgressionSnapshot(candidateProfile));
+                    _pendingExpeditionProfile = null;
+                    _activeExpeditionRevision++;
+                    if (publishSession != null)
+                    {
+                        try { publishSession(); }
+                        catch (Exception exception)
+                        {
+                            _pendingExpeditionSessionPublication = publishSession;
+                            _pendingExpeditionSessionPauseLease = sessionPauseLease;
+                            sessionPauseLease = null;
+                            retainSessionPauseLease = true;
+                            return new SaveWriteResult(false,
+                                "The expedition is saved, but its live actor publication remains pending: " + exception.Message);
+                        }
+                    }
+                }
+                else if (_saveRepository.ExportPendingJson(SaveDocument.Profile) != null)
+                {
+                    _pendingExpeditionCandidate = candidate.Clone();
+                    _pendingExpeditionRun = runToCommit ?? ActiveRun;
+                    _pendingExpeditionProfile = candidateProfile;
+                    if (publishSession != null)
+                    {
+                        _pendingExpeditionSessionPublication = publishSession;
+                        _pendingExpeditionSessionPauseLease = sessionPauseLease;
+                        sessionPauseLease = null;
+                        retainSessionPauseLease = true;
+                    }
+                }
+                return result;
             }
-            else if (_saveRepository.ExportPendingJson(SaveDocument.Profile) != null)
+            finally
             {
-                _pendingExpeditionCandidate = candidate.Clone();
-                _pendingExpeditionRun = runToCommit ?? ActiveRun;
+                if (!retainSessionPauseLease) sessionPauseLease?.Dispose();
             }
-            return result;
         }
 
         private static TextAsset LoadRequired(string resourcePath)
@@ -1260,7 +1599,7 @@ namespace Luckbound.App
         public async Task<SaveWriteResult> RetryPendingSettingsAsync()
         {
             SaveWriteResult result = await _saveRepository.RetryPendingAsync(SaveDocument.Settings);
-            if (result.Succeeded && _saveRepository.CurrentSettings?.settings != null)
+            if (_saveRepository.PendingSettingsForRetry == null && _saveRepository.CurrentSettings?.settings != null)
             {
                 _settingsData = _saveRepository.CurrentSettings.settings.Clone();
                 ApplyRuntimeAudioSettings();
@@ -1407,21 +1746,18 @@ namespace Luckbound.App
         private sealed class PendingCraft
         {
             public PendingCraft(string recipeId, TransactionId transactionId,
-                ItemInstanceId upgradeTargetInstanceId, CraftingOutcome outcome,
-                ContractProgressEvent? progressEvent)
+                ItemInstanceId upgradeTargetInstanceId, CraftingOutcome outcome)
             {
                 RecipeId = recipeId;
                 TransactionId = transactionId;
                 UpgradeTargetInstanceId = upgradeTargetInstanceId;
                 Outcome = outcome;
-                ProgressEvent = progressEvent;
             }
 
             public string RecipeId { get; }
             public TransactionId TransactionId { get; }
             public ItemInstanceId UpgradeTargetInstanceId { get; }
             public CraftingOutcome Outcome { get; }
-            public ContractProgressEvent? ProgressEvent { get; }
         }
 
         private sealed class PendingEconomyMutation

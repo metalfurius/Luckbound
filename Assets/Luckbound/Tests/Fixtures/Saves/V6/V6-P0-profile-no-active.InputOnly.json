@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": 6,
+  "generation": 0,
+  "sequence": 0,
+  "savedAtUtc": "2000-01-01T00:00:00Z",
+  "checksum": "candidate-not-captured",
+  "profile": {
+    "availableRenown": 0,
+    "healthUpgradeLevel": 0,
+    "energyUpgradeLevel": 0,
+    "additionalPotionUpgradeLevel": 0,
+    "unlockedRaceIds": [],
+    "unlockedStartingKitIds": [],
+    "acceptedContractIds": [],
+    "claimedContractIds": [],
+    "readStoryFragmentIds": [],
+    "contractCounters": [],
+    "processedSettlementRunIds": [],
+    "processedContractProgressEvents": [],
+    "progressionPurchaseTransactions": []
+  },
+  "hasActiveExpedition": false,
+  "activeExpedition": null
+}

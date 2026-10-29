@@ -12,15 +12,15 @@
   "files": {
     "parameters": {
       "path": "parameters.json",
-      "sha256": "3d726ca2edfd16704ed80d571cb40d069d4c2ff79767a42d116cf81b2ec22b54"
+      "sha256": "659ffcd4527b7f755adea40f9a04cee632f3bd2095a73d5e27874992506e572a"
     },
     "renderer": {
       "path": "render_effects.py",
-      "sha256": "20667464490d7f5ab07b24527a94f736cf5ec62006e4776d736587f806c5c8b6"
+      "sha256": "8bf12c943b503a83a2cc46d0d89bd5107bba73399e74913aa7bb6e66aa67def1"
     },
     "report": {
       "path": "reports/sample_effects.report.json",
-      "sha256": "5b620953b6d5133cd467930a48d1020637df775cc6fdc86780a29f89ce23a301"
+      "sha256": "f895fba9eccef431d8d8462432f7e9312b39df9de382d987e5ec79a1787eebc3"
     },
     "masters": {
       "stone_step": {

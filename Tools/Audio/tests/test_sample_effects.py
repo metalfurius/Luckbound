@@ -132,11 +132,14 @@ class F08EffectSetTests(unittest.TestCase):
             self.report["generator"]["sha256"],
             render_effects.sha256_file(EFFECTS_ROOT / "render_effects.py"),
         )
-        self.assertEqual(self.report["parameters"]["sha256"], hashlib.sha256(self.parameter_bytes).hexdigest())
+        self.assertEqual(
+            self.report["parameters"]["sha256"],
+            render_effects.sha256_parameter_bytes(self.parameter_bytes),
+        )
         self.assertEqual(self.manifest["acceptance"]["status"], "passed")
         self.assertEqual(
             self.manifest["files"]["parameters"]["sha256"],
-            hashlib.sha256(self.parameter_bytes).hexdigest(),
+            render_effects.sha256_parameter_bytes(self.parameter_bytes),
         )
         self.assertEqual(
             self.manifest["files"]["renderer"]["sha256"],

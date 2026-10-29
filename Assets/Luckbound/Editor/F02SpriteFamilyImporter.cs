@@ -11,8 +11,8 @@ using UnityEngine;
 namespace Luckbound.Editor
 {
     /// <summary>
-    /// Reconciles only the isolated F02 technical fixture. It is deliberately not a catalog
-    /// importer: F01 is still awaiting visual approval, so this path cannot promote art to Final.
+    /// Reconciles only the isolated F02 technical fixture. F01's visual direction is approved;
+    /// the Bellator cell remains a technical Prototype and this path never promotes it to Final.
     /// </summary>
     public static class F02SpriteFamilyImporter
     {
@@ -74,6 +74,11 @@ namespace Luckbound.Editor
         }
 
         public static void ImportFixture()
+        {
+            ExecuteWithSafeOutputDirectory(ProjectFullPath(FixtureFolder), ImportFixtureAfterOutputPreflight);
+        }
+
+        private static void ImportFixtureAfterOutputPreflight()
         {
             Manifest manifest = ReadAndValidateManifest();
             string sourceFullPath = ProjectSourceFullPath(manifest.sourcePath);
@@ -584,6 +589,63 @@ namespace Luckbound.Editor
                 throw new InvalidDataException("F02 output path escaped its dedicated fixture folder.");
             }
             return fullPath;
+        }
+
+        private static void ExecuteWithSafeOutputDirectory(string outputDirectoryFullPath, Action operation)
+        {
+            if (operation == null) throw new ArgumentNullException(nameof(operation));
+            RejectReparsePointsInOutputDirectory(outputDirectoryFullPath);
+            operation();
+        }
+
+        private static void RejectReparsePointsInOutputDirectory(string outputDirectoryFullPath)
+        {
+            string projectRoot = Path.GetFullPath(Directory.GetParent(Application.dataPath).FullName);
+            string projectPrefix = projectRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) +
+                Path.DirectorySeparatorChar;
+            string assetsRoot = Path.GetFullPath(Application.dataPath)
+                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string assetsPrefix = assetsRoot + Path.DirectorySeparatorChar;
+            string normalizedOutputDirectory = Path.GetFullPath(outputDirectoryFullPath);
+            StringComparison pathComparison = Path.DirectorySeparatorChar == '\\'
+                ? StringComparison.OrdinalIgnoreCase
+                : StringComparison.Ordinal;
+
+            if (!normalizedOutputDirectory.StartsWith(projectPrefix, pathComparison) ||
+                !normalizedOutputDirectory.StartsWith(assetsPrefix, pathComparison))
+            {
+                throw new InvalidDataException("F02 output directory is not under the project's Assets directory.");
+            }
+
+            string relativeDirectory = normalizedOutputDirectory.Substring(projectPrefix.Length);
+            string current = projectRoot;
+            foreach (string segment in relativeDirectory.Split(
+                         new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                         StringSplitOptions.RemoveEmptyEntries))
+            {
+                current = Path.Combine(current, segment);
+                RejectReparsePointIfPresent(current);
+            }
+        }
+
+        private static void RejectReparsePointIfPresent(string fullPath)
+        {
+            FileAttributes attributes;
+            try
+            {
+                attributes = File.GetAttributes(fullPath);
+            }
+            catch (FileNotFoundException)
+            {
+                return;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return;
+            }
+
+            if ((attributes & FileAttributes.ReparsePoint) != 0)
+                throw new InvalidDataException("F02 output directory traverses a filesystem reparse point: " + fullPath);
         }
 
         private static string ProjectSourceFullPath(string projectRelativePath)

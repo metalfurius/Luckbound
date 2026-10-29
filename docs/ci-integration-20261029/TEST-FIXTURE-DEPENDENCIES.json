@@ -1,0 +1,127 @@
+{
+  "schema": "luckbound-f02-outside-assets-test-inputs-v1",
+  "scope": "Static file dependencies discovered by literal path scan of Assets/Luckbound/Tests, Assets/Luckbound/Editor and Tools; no recursive staging capture.",
+  "sourceScan": "rg -n -i --glob *.cs --glob *.ps1 --glob *.py --glob *.json docs/|agent_staging|art/(source|records)|manifest.example|fixture*.png|.md Assets/Luckbound/Tests Assets/Luckbound/Editor Tools",
+  "counts": {
+    "requiredF02StaticInputs": 8,
+    "requiredUntrackedAdds": 6,
+    "requiredTrackedBaseFiles": 2,
+    "toolOnlyInputs": 1
+  },
+  "notes": [
+    "The two F02 JSON manifests declare image/record paths and SHA-256 values; the listed image and record files are all direct static dependencies.",
+    "The 6 untracked required files are outside the 4,277-path project-input inventory; include these exact paths for F02 test execution.",
+    "No .meta is required for these docs paths because the importer reads them as project-root files, not as Assets database items.",
+    "No docs/art/source literal was found in this scan."
+  ],
+  "requiredTestInputs": [
+    {
+      "path": "docs/agent_staging/f02-family-pipeline/manifest.example.json",
+      "role": "Main F02 importer static manifest",
+      "requiredForF02Tests": true,
+      "directReference": "F02SpriteFamilyManifestImporterTests.cs:22; references docs/art/F01_master_reference.png, docs/art/F01_bellator_32x48.png, docs/art/records/ART-F01-BELLATOR-32X48.v1.json",
+      "workingTreeStatus": "?? docs/agent_staging/f02-family-pipeline/manifest.example.json",
+      "trackedAtHead": false,
+      "headBlob": null,
+      "sha256": "e4d908f24cb832d718a37fed0036626488b6659a0d49bf39c46d5daa695107fd",
+      "canonicalGitBlob": "3797e60fde7703f02f3ee86778ea0217de358182",
+      "snapshotAction": "add exact untracked file"
+    },
+    {
+      "path": "docs/art/F01_bellator_32x48.png",
+      "role": "Source image for main F02 manifest",
+      "requiredForF02Tests": true,
+      "directReference": "F02SpriteFamilyManifestImporterTests.cs:29; manifest.example.json images[0].sourcePath",
+      "workingTreeStatus": "",
+      "trackedAtHead": true,
+      "headBlob": "9cdc30b6407a94a46724a8e73af0a4f5d92cc645",
+      "sha256": "64f2078fc1c4d9183b896028918be04affc232d1a14a1ba2c6578fb7c502f457",
+      "canonicalGitBlob": "9cdc30b6407a94a46724a8e73af0a4f5d92cc645",
+      "snapshotAction": "already present in local HEAD; unchanged"
+    },
+    {
+      "path": "docs/art/F01_master_reference.png",
+      "role": "Reference image and foreign-source rejection test",
+      "requiredForF02Tests": true,
+      "directReference": "F02SpriteFamilyManifestImporterTests.cs:30; both manifests referencePath",
+      "workingTreeStatus": "",
+      "trackedAtHead": true,
+      "headBlob": "7c9d3ced75b6e4108feb95828169e0ece6826c16",
+      "sha256": "05c4cf259dc50b5cc6175bf3f0259b32b42c46cd9507da4a340e446c88f904b0",
+      "canonicalGitBlob": "7c9d3ced75b6e4108feb95828169e0ece6826c16",
+      "snapshotAction": "already present in local HEAD; unchanged"
+    },
+    {
+      "path": "docs/art/records/ART-F01-BELLATOR-32X48.v1.json",
+      "role": "Versioned prompt record for main F02 manifest",
+      "requiredForF02Tests": true,
+      "directReference": "F02SpriteFamilyManifestImporterTests.cs:31; manifest.example.json promptReference",
+      "workingTreeStatus": "?? docs/art/records/ART-F01-BELLATOR-32X48.v1.json",
+      "trackedAtHead": false,
+      "headBlob": null,
+      "sha256": "b2b61dca9e4b2327c3a0649f54fcbce9130e171d7d9371acde3ab41b90ed72d7",
+      "canonicalGitBlob": "9ac6a1d673e8eb13bea94d42a087833e69588fe5",
+      "snapshotAction": "add exact untracked file"
+    },
+    {
+      "path": "docs/agent_staging/f02-multi-family-acceptance/manifest.multi-image.example.json",
+      "role": "Multi-image F02 importer static manifest",
+      "requiredForF02Tests": true,
+      "directReference": "F02SpriteFamilyManifestImporterTests.cs:32; references fixtures A/B and F02-MULTI-IMAGE-TEST-FIXTURE.v2.json",
+      "workingTreeStatus": "?? docs/agent_staging/f02-multi-family-acceptance/manifest.multi-image.example.json",
+      "trackedAtHead": false,
+      "headBlob": null,
+      "sha256": "e2830bd6675bd079d00b10afca7eece2032cbd03b1fd5d419c155ff7d8c4c193",
+      "canonicalGitBlob": "df5f8a1f90d4e39cea952f1da3acd0f20035e07d",
+      "snapshotAction": "add exact untracked file"
+    },
+    {
+      "path": "docs/agent_staging/f02-multi-family-acceptance/fixtures/BellatorFramesA.png",
+      "role": "Multi-image synthetic source A",
+      "requiredForF02Tests": true,
+      "directReference": "F02SpriteFamilyManifestImporterTests.cs:294; multi-image manifest images[0].sourcePath",
+      "workingTreeStatus": "?? docs/agent_staging/f02-multi-family-acceptance/fixtures/BellatorFramesA.png",
+      "trackedAtHead": false,
+      "headBlob": null,
+      "sha256": "afe593bf2a10dbc2a9a1eb4dd8828375f2f8ad3cfcc55123f785dd1b8e47cb8f",
+      "canonicalGitBlob": "ce34547980768456729b2fcd73cc102fe2ef8d26",
+      "snapshotAction": "add exact untracked file"
+    },
+    {
+      "path": "docs/agent_staging/f02-multi-family-acceptance/fixtures/BellatorFramesB.png",
+      "role": "Multi-image synthetic source B",
+      "requiredForF02Tests": true,
+      "directReference": "F02SpriteFamilyManifestImporterTests.cs:295; multi-image manifest images[1].sourcePath",
+      "workingTreeStatus": "?? docs/agent_staging/f02-multi-family-acceptance/fixtures/BellatorFramesB.png",
+      "trackedAtHead": false,
+      "headBlob": null,
+      "sha256": "130f779fae52edb17749a0981fc8ad40be727b8adbcae004b018fcf777028617",
+      "canonicalGitBlob": "b1f81916e73d409af65f3b6696bfc28db04b7c80",
+      "snapshotAction": "add exact untracked file"
+    },
+    {
+      "path": "docs/art/records/F02-MULTI-IMAGE-TEST-FIXTURE.v2.json",
+      "role": "Versioned creation record for multi-image manifest",
+      "requiredForF02Tests": true,
+      "directReference": "F02SpriteFamilyManifestImporterTests.cs:296; multi-image manifest promptReference",
+      "workingTreeStatus": "?? docs/art/records/F02-MULTI-IMAGE-TEST-FIXTURE.v2.json",
+      "trackedAtHead": false,
+      "headBlob": null,
+      "sha256": "22c9b29a1ed3745bd78cd0ff239a43e6e6b29b8b035a8195f6fee733526b2125",
+      "canonicalGitBlob": "09fd81caee50e7f322f5b67272f7763e31e8e31b",
+      "snapshotAction": "add exact untracked file"
+    }
+  ],
+  "toolReproductionOnly": {
+    "path": "docs/art/F01_bellator_generated.png",
+    "role": "Input for Tools/Art/normalize_f01_bellator.ps1; tool-reproduction only",
+    "requiredForF02Tests": false,
+    "directReference": "Tools/Art/normalize_f01_bellator.ps1:5; output is docs/art/F01_bellator_32x48.png",
+    "workingTreeStatus": "",
+    "trackedAtHead": true,
+    "headBlob": "3b8adeabaeca4a1f7653b51da0c8661de46c99df",
+    "sha256": "eb63b6da0b9dacf8104a5f0687d3624037f1279f131e44d2f1dc96a9c1fc7f5b",
+    "canonicalGitBlob": "3b8adeabaeca4a1f7653b51da0c8661de46c99df",
+    "snapshotAction": "already present in local HEAD; unchanged"
+  }
+}

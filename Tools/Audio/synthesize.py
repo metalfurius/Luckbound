@@ -379,7 +379,7 @@ def validate_audio(score: dict[str, Any], score_bytes: bytes, wav_path: Path) ->
 
 def _write_json(path: Path, value: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
 
 
 def _cmd_render(args: argparse.Namespace) -> int:

@@ -104,6 +104,10 @@ namespace Luckbound.Gameplay.Movement
         private string _configuredClassId;
         private WeaponProfile _equippedWeaponProfile;
         private WeaponBasicAttackProfile _weaponBasicAttackProfile;
+        private ItemInstanceId _equippedWeaponInstanceId;
+        private ItemInstanceId _equippedArmorInstanceId;
+        private ItemRarity _equippedWeaponRarity;
+        private int _equippedWeaponUpgradeLevel;
         private ActorId _actorId;
         private string _raceId;
         private Collider2D _collider;
@@ -145,6 +149,7 @@ namespace Luckbound.Gameplay.Movement
         private long _nextMagusEnergyRecoveryTick;
         private long _nextArmorEnergyRecoveryTick;
         private ArmorResolution _equippedArmorResolution;
+        private int _baseDefense;
         private float _armorMovementSpeedMultiplier = 1f;
         private int _armorEnergyRegenerationPerSecondBonus;
         private int _harmfulStatusDurationReductionPercent;
@@ -239,6 +244,12 @@ namespace Luckbound.Gameplay.Movement
 
         public int MagusSkillActivationCount { get; private set; }
 
+        /// <summary>Raised once per Fireball impact that applies or renews burn to at least one valid target.</summary>
+        public event Action FireballBurnApplied;
+
+        /// <summary>Raised once after a torch stack is consumed and its additional light is active.</summary>
+        public event Action TorchActivated;
+
         public int MagusBasicAttackProjectileSpawnCount { get; private set; }
 
         public int CurrentEnergy => _skillUseState != null ? _skillUseState.CurrentEnergy : 0;
@@ -246,6 +257,8 @@ namespace Luckbound.Gameplay.Movement
         public int MaximumEnergy => _skillUseState != null ? _skillUseState.MaximumEnergy : 0;
 
         public int HealthPotionCharges => _healthPotionUseState != null ? _healthPotionUseState.CurrentCharges : 0;
+
+        public int SuccessfulHealthPotionUseCount { get; private set; }
 
         public int EnergyTonicCharges => _energyTonicUseState != null ? _energyTonicUseState.CurrentCharges : 0;
 
@@ -268,6 +281,10 @@ namespace Luckbound.Gameplay.Movement
 
         public WeaponProfile EquippedWeaponProfile => _equippedWeaponProfile;
         public WeaponBasicAttackProfile EquippedWeaponBasicAttackProfile => _weaponBasicAttackProfile;
+        public ItemInstanceId EquippedWeaponInstanceId => _equippedWeaponInstanceId;
+        public ItemInstanceId EquippedArmorInstanceId => _equippedArmorInstanceId;
+        public ItemRarity EquippedWeaponRarity => _equippedWeaponRarity;
+        public int EquippedWeaponUpgradeLevel => _equippedWeaponUpgradeLevel;
 
         public long SimulationTick => Math.Max(0L, _tick - 1);
 
@@ -300,6 +317,8 @@ namespace Luckbound.Gameplay.Movement
             WeaponBasicAttackProfile runtimeProfile = WeaponBasicAttackProfile.Create(weaponProfile, rarity, upgradeLevel);
             _equippedWeaponProfile = weaponProfile;
             _weaponBasicAttackProfile = runtimeProfile;
+            _equippedWeaponRarity = rarity;
+            _equippedWeaponUpgradeLevel = upgradeLevel;
             ApplyWeaponBasicAttackProfile();
         }
 
@@ -314,6 +333,62 @@ namespace Luckbound.Gameplay.Movement
 
             WeaponProfile equippedProfile = ResolveEquippedWeaponProfile(run, weaponCatalog);
             ConfigureEquippedWeapon(equippedProfile, run.Inventory.Weapon.Rarity, run.Inventory.Weapon.UpgradeLevel);
+            _equippedWeaponInstanceId = run.Inventory.Weapon.InstanceId;
+        }
+
+        /// <summary>Applies prevalidated committed weapon and armor to this actor without rebuilding its state.</summary>
+        public void PublishCommittedEquipment(WeaponProfile weaponProfile, ItemInstanceId weaponInstanceId,
+            ItemRarity weaponRarity, int weaponUpgradeLevel, ItemInstanceId armorInstanceId,
+            ArmorResolution armorResolution)
+        {
+            if (!_initialized || _damageState == null || _skillUseState == null)
+                throw new InvalidOperationException("PlayerMotor2D must be initialized before publishing committed equipment.");
+            if (weaponProfile == null) throw new ArgumentNullException(nameof(weaponProfile));
+            if (!weaponInstanceId.IsValid) throw new ArgumentException("A committed weapon instance is required.", nameof(weaponInstanceId));
+            if (!armorInstanceId.IsValid) throw new ArgumentException("A committed armor instance is required.", nameof(armorInstanceId));
+            if (armorResolution == null) throw new ArgumentNullException(nameof(armorResolution));
+            if (_configuredClassId != null &&
+                !string.Equals(_configuredClassId, weaponProfile.ClassId, StringComparison.Ordinal))
+                throw new ArgumentException("The equipped weapon is incompatible with the configured player class.", nameof(weaponProfile));
+
+            WeaponBasicAttackProfile runtimeWeapon = WeaponBasicAttackProfile.Create(
+                weaponProfile, weaponRarity, weaponUpgradeLevel);
+            bool weaponChanged = !_equippedWeaponInstanceId.IsValid ||
+                _equippedWeaponInstanceId != weaponInstanceId ||
+                !string.Equals(_equippedWeaponProfile?.ItemId, weaponProfile.ItemId, StringComparison.Ordinal) ||
+                _equippedWeaponRarity != weaponRarity || _equippedWeaponUpgradeLevel != weaponUpgradeLevel;
+            CombatStats nextStats = new CombatStats(armorResolution.MaximumHealth,
+                armorResolution.MaximumEnergy, checked(_baseDefense + armorResolution.Defense));
+            ValidateArmorResolution(armorResolution, nextStats);
+            int nextHealth = armorResolution.HealthAfterMaximumClamp;
+            int nextEnergy = armorResolution.EnergyAfterMaximumClamp;
+            if (nextHealth > _damageState.Stats.MaximumHealth || nextEnergy > _skillUseState.MaximumEnergy)
+                throw new InvalidOperationException("The prepared actor resources exceed their current committed maximums.");
+
+            // All validation happens above this point so the durable publication cannot partially replace equipment.
+            _damageState.ReplaceStats(nextStats, nextHealth);
+            _skillUseState.ReplaceEnergyLimits(nextStats.MaximumEnergy, nextEnergy);
+            if (weaponChanged)
+            {
+                _equippedWeaponProfile = weaponProfile;
+                _weaponBasicAttackProfile = runtimeWeapon;
+                _equippedWeaponInstanceId = weaponInstanceId;
+                _equippedWeaponRarity = weaponRarity;
+                _equippedWeaponUpgradeLevel = weaponUpgradeLevel;
+            }
+            _equippedArmorInstanceId = armorInstanceId;
+            _equippedArmorResolution = armorResolution;
+            _armorMovementSpeedMultiplier = (100f + armorResolution.MovementSpeedPercentModifier) / 100f;
+            _armorEnergyRegenerationPerSecondBonus = armorResolution.EnergyRegenerationPerSecondBonus;
+            _harmfulStatusDurationReductionPercent = armorResolution.HarmfulStatusDurationReductionPercent;
+            if (weaponChanged) ApplyWeaponBasicAttackProfile();
+        }
+
+        public void ConfigureEquippedArmorInstanceId(ItemInstanceId armorInstanceId)
+        {
+            if (!_initialized) throw new InvalidOperationException("Initialize the player before binding armor identity.");
+            if (!armorInstanceId.IsValid) throw new ArgumentException("The equipped armor requires a valid instance ID.", nameof(armorInstanceId));
+            _equippedArmorInstanceId = armorInstanceId;
         }
 
         /// <summary>Resolves the authoritative profile for the weapon currently equipped by a run.</summary>
@@ -449,6 +524,9 @@ namespace Luckbound.Gameplay.Movement
                 resolvedCombatStats,
                 DirectHitProtectionTicks,
                 armorResolution?.HealthAfterMaximumClamp);
+            _baseDefense = resolvedCombatStats.Defense - (armorResolution?.Defense ?? 0);
+            if (_baseDefense < 0)
+                throw new ArgumentException("Combat stats cannot have less defense than the equipped armor.", nameof(combatStats));
             _skillUseState = new SkillUseState(
                 _damageState.Stats.MaximumEnergy,
                 armorResolution?.EnergyAfterMaximumClamp ?? _damageState.Stats.MaximumEnergy,
@@ -781,6 +859,7 @@ namespace Luckbound.Gameplay.Movement
                     roomLifetimeScope,
                     targetLayers);
                 adapter.BasicAttackRequested += HandleMagusBasicAttackRequested;
+                adapter.FireballBurnApplied += HandleMagusFireballBurnApplied;
                 binding = new MagusRoomBinding(this, adapter, projectileScope);
                 roomLifetimeScope.OwnResource(binding);
             }
@@ -795,6 +874,7 @@ namespace Luckbound.Gameplay.Movement
                     if (adapter != null)
                     {
                         adapter.BasicAttackRequested -= HandleMagusBasicAttackRequested;
+                        adapter.FireballBurnApplied -= HandleMagusFireballBurnApplied;
                         adapter.Dispose();
                     }
 
@@ -1021,6 +1101,7 @@ namespace Luckbound.Gameplay.Movement
                 }
 
                 int restored = _damageState.RestoreHealth(healthOutcome.HealthRestored);
+                if (restored > 0) SuccessfulHealthPotionUseCount++;
                 LastConsumableUseOutcome = new PlayerConsumableUseOutcome(
                     PlayerConsumableUseStatus.Consumed, HealthPotionItemId, healthRestored: restored);
                 return LastConsumableUseOutcome;
@@ -1210,6 +1291,7 @@ namespace Luckbound.Gameplay.Movement
 
             _torchActivation = torchActivation.Value;
             UpdateTorchLight(tick);
+            TorchActivated?.Invoke();
             return new PlayerConsumableUseOutcome(PlayerConsumableUseStatus.Consumed, itemId);
         }
 
@@ -2084,6 +2166,11 @@ namespace Luckbound.Gameplay.Movement
             return new Vector2(
                 transform.position.x + (_facingDirection * 0.55f),
                 transform.position.y + 0.25f);
+        }
+
+        private void HandleMagusFireballBurnApplied()
+        {
+            FireballBurnApplied?.Invoke();
         }
 
         private void HandleMagusBasicAttackRequested(MagusBasicAttackRequest request)

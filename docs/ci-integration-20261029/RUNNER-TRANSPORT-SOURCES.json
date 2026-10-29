@@ -1,0 +1,40 @@
+{
+  "retrievedAt": "2026-10-29T13:53:47.154Z",
+  "files": [
+    {
+      "path": "src/test-args.ts",
+      "repo": "game-ci/unity-test-runner",
+      "ref": "v4.4.0",
+      "sha256": "b3c8df2a377f027a73a4f3698e9d1aba15a5a49ffaeeb79f0bc4318a51fbed1a",
+      "file": "src__test-args.ts"
+    },
+    {
+      "path": "plugins/unity/src/unity-test-runner/model/docker.ts",
+      "repo": "game-ci/cli",
+      "ref": "v0.1.72",
+      "sha256": "1b8c925f51b31087566cb9a36869a3595ee1683f82e6a646e771098788b1336b",
+      "file": "plugins__unity__src__unity-test-runner__model__docker.ts"
+    },
+    {
+      "path": "plugins/unity/src/unity-test-runner/dist/platforms/ubuntu/run_tests.sh",
+      "repo": "game-ci/cli",
+      "ref": "v0.1.72",
+      "sha256": "b87e32d371955632b3099a7c365b0c1453c07e8a27bee117c0aebb1f9fd3417e",
+      "file": "plugins__unity__src__unity-test-runner__dist__platforms__ubuntu__run_tests.sh"
+    },
+    {
+      "path": "plugins/unity/src/unity-test-runner/model/input.ts",
+      "repo": "game-ci/cli",
+      "ref": "v0.1.72",
+      "sha256": "39b70a1034b1c2c59e778c4a86c74359fa9ff7f0fdc0a9a7f33bbd46821291ca",
+      "file": "plugins__unity__src__unity-test-runner__model__input.ts"
+    },
+    {
+      "path": "plugins/unity/src/unity-test-runner/model/image-environment-factory.ts",
+      "repo": "game-ci/cli",
+      "ref": "v0.1.72",
+      "sha256": "52359342326cf2e91e771d43a2765b382278717e6ac75b25918ee91689cb0a5f",
+      "file": "plugins__unity__src__unity-test-runner__model__image-environment-factory.ts"
+    }
+  ]
+}

@@ -57,7 +57,7 @@ namespace Luckbound.Core.Combat
             _raceId = raceId;
         }
 
-        public int MaximumEnergy { get; }
+        public int MaximumEnergy { get; private set; }
 
         public string RaceId => _raceId;
 
@@ -75,6 +75,17 @@ namespace Luckbound.Core.Combat
             }
 
             CurrentEnergy = value;
+        }
+
+        /// <summary>Publishes a committed energy maximum without resetting cooldowns or cast preparation.</summary>
+        public void ReplaceEnergyLimits(int maximumEnergy, int currentEnergy)
+        {
+            if (maximumEnergy < 0) throw new ArgumentOutOfRangeException(nameof(maximumEnergy));
+            if (currentEnergy < 0 || currentEnergy > MaximumEnergy)
+                throw new ArgumentOutOfRangeException(nameof(currentEnergy));
+
+            MaximumEnergy = maximumEnergy;
+            CurrentEnergy = Math.Min(currentEnergy, maximumEnergy);
         }
 
         public SkillUseOutcome Update(long tick, SkillDefinition requestedSkill, bool actionValid, bool interrupted)

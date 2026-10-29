@@ -1,0 +1,46 @@
+{
+  "schema": "luckbound-v6-capture-integration-v1",
+  "createdAt": "2026-10-29T14:27:23.299Z",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "before": "bf2113c6459066e9dcc4310e8352c6e95f3939a3bdb63005492e0e48f60deacf",
+      "after": "5c0dbd8ea291bfa814000c54a3e51362ee86cf52a626669de8913ac3b5fe4f3c"
+    },
+    {
+      "path": ".github/workflows/build.yml",
+      "before": "94837f105a6368aaeb2d6041f2aac09f2522f1c6ecf649a3c39da63b12e18c03",
+      "after": "4c152985d354cb8768cc9d399df6d06a7615f5b27df6832dd43cfcb4d32ccf03"
+    },
+    {
+      "path": "Tools/Automation/verify_v6_capture.py",
+      "before": null,
+      "after": "6faf5138c26708ffac8dac99da9e0a54bea7437862c0c273ab2bba2514a0ce39"
+    }
+  ],
+  "csharpSourceCount": 374,
+  "onlyCsharpDelta": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+  "guardHashesUnchanged": {
+    "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+    "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+    "Assets/Luckbound/Scripts/App/SaveRepository.cs": "9f5283e58129bff637ccc9b43e62e9ee38100461c7b538b6a1bd510f361d1a3a",
+    "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs": "8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574",
+    "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs": "5664d1d555c438d408267d144f77f6d134cdf71cc1e272b6eed732223caee6af",
+    "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json": "22f64d362bc484bec85578e87438851c77867e1eb311bb78624ef01f6f01c3d3",
+    "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P0-profile-no-active.InputOnly.json": "0e62286209d3771665a878aba426d258811bc4d83aca569287b60b2ec2b7be02",
+    "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-S0-settings.InputOnly.json": "41b40aab0c02c2a45027b1efda7b937aad4318747448d21f98acb5fe1aa96121",
+    "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs.meta": "d29fc3b0bc62860533e6708c6aa07109263c12c98a8d80067c40e1b40aac9c63",
+    "ProjectSettings/ProjectVersion.txt": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+    "Packages/manifest.json": "fabd6552f12e60cf99e21dd9a6a91af3aa31187912ec9c57b096a1f35d9f7762",
+    "Packages/packages-lock.json": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
+  },
+  "staticReviews": {
+    "csharp": "7ad565f78babeaafafa06dda4f0d8ed8ed50ae50ebfee0643ed0649cb9f8bbd9",
+    "ciGate": "33f0bfaef88f7471dd0d4224d7749a5175a734ddf7a2d2f04285acf9a362b94b",
+    "recordBytes": "1557d332e6bbbd76c9edeb428d02245af822457eecf9d66075023f28aecb1a47"
+  },
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "ciExecuted": false,
+  "published": false
+}

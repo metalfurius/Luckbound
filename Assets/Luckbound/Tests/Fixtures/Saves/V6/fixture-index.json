@@ -1,0 +1,206 @@
+{
+  "contract": "F09.SAVE.V6.CHARACTERIZATION.TECH",
+  "state": "CapturePending",
+  "reviewStatus": "Not reviewable",
+  "capture": {
+    "performed": false,
+    "unityVersion": null,
+    "jsonUtilityVersion": null,
+    "capturedAtUtc": null,
+    "method": null,
+    "reason": "This assignment did not execute Unity or JsonUtility; no measured preimage or checksum is claimed."
+  },
+  "git": {
+    "head": "a2590e141c46729e6efa7d01ea33647768b58711",
+    "workingTree": "dirty shared integration checkout"
+  },
+  "sourceHashesSha256": {
+    "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+    "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+    "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs": "8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574",
+    "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs": "5664d1d555c438d408267d144f77f6d134cdf71cc1e272b6eed732223caee6af",
+    "Assets/Luckbound/Scripts/App/SaveRepository.cs": "9f5283e58129bff637ccc9b43e62e9ee38100461c7b538b6a1bd510f361d1a3a"
+  },
+  "fieldInventory": [
+    {
+      "dto": "LegacyProfileSaveEnvelopeV6",
+      "sourceType": "ProfileSaveEnvelope",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["int schemaVersion", "int contentVersion", "int generation", "long sequence", "string savedAtUtc", "string checksum", "ProfileSaveData profile", "bool hasActiveExpedition", "ExpeditionSaveData activeExpedition"]
+    },
+    {
+      "dto": "LegacySettingsSaveEnvelopeV6",
+      "sourceType": "SettingsSaveEnvelope",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["int schemaVersion", "int contentVersion", "int generation", "long sequence", "string savedAtUtc", "string checksum", "GameSettingsSaveData settings"]
+    },
+    {
+      "dto": "LegacyProfileSaveDataV6",
+      "sourceType": "ProfileSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["int availableRenown", "int healthUpgradeLevel", "int energyUpgradeLevel", "int additionalPotionUpgradeLevel", "string[] unlockedRaceIds", "string[] unlockedStartingKitIds", "string[] acceptedContractIds", "string[] claimedContractIds", "string[] readStoryFragmentIds", "ContractCounterSaveData[] contractCounters", "string[] processedSettlementRunIds", "ContractProgressEventReceiptSaveData[] processedContractProgressEvents", "PermanentUpgradePurchaseSaveData[] progressionPurchaseTransactions"]
+    },
+    {
+      "dto": "LegacyContractCounterSaveDataV6",
+      "sourceType": "ContractCounterSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["string contractId", "int progress"]
+    },
+    {
+      "dto": "LegacyContractProgressEventReceiptSaveDataV6",
+      "sourceType": "ContractProgressEventReceiptSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["string eventId", "int progressEvent"]
+    },
+    {
+      "dto": "LegacyPermanentUpgradePurchaseSaveDataV6",
+      "sourceType": "PermanentUpgradePurchaseSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["string transactionId", "int kind", "int cost"]
+    },
+    {
+      "dto": "LegacyExpeditionSaveDataV6",
+      "sourceType": "ExpeditionSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["string runId", "uint seed", "int generationVersion", "int contentVersion", "string classId", "string raceId", "string[] selectedSkillIds", "string[] startingEquipmentInstanceIds", "string routeSnapshotJson", "string currentNodeId", "string[] visitedNodeIds", "string[] completedRoomIds", "ExpeditionRoomCompletionSaveData[] completedRoomResults", "string roomEntryCheckpointJson", "string inventorySnapshotJson", "int maximumHealth", "int currentHealth", "int maximumEnergy", "int currentEnergy", "int healthPotionCharges", "ExpeditionPermanentUpgradeSnapshotSaveData frozenPermanentUpgrades", "bool hasFrozenPermanentUpgrades", "int accumulatedRenown", "string[] pactIds", "FortuneOfferBookSnapshot fortuneOfferBookSnapshot", "string[] collectedItemIds", "string[] claimedRewardIds"]
+    },
+    {
+      "dto": "LegacyExpeditionPermanentUpgradeSnapshotSaveDataV6",
+      "sourceType": "ExpeditionPermanentUpgradeSnapshotSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["int healthUpgradeLevel", "int energyUpgradeLevel", "int additionalPotionUpgradeLevel"]
+    },
+    {
+      "dto": "LegacyExpeditionRoomCheckpointSaveDataV6",
+      "sourceType": "ExpeditionRoomCheckpointSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["string roomNodeId", "string inventorySnapshotJson", "int maximumHealth", "int currentHealth", "int maximumEnergy", "int currentEnergy", "int healthPotionCharges", "int accumulatedRenown", "FortuneOfferBookSnapshot fortuneOfferBookSnapshot", "string[] pactIds", "string[] collectedItemIds", "string[] claimedRewardIds"]
+    },
+    {
+      "dto": "LegacyExpeditionRoomCompletionSaveDataV6",
+      "sourceType": "ExpeditionRoomCompletionSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["string roomNodeId", "string resultId", "string resultJson"]
+    },
+    {
+      "dto": "LegacyFortuneOfferBookSnapshotV6",
+      "sourceType": "FortuneOfferBookSnapshot",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "fieldsInDeclarationOrder": ["int snapshotVersion", "int generationVersion", "uint seed", "string raceId", "int charges", "FortuneOfferSnapshot[] offers", "string[] processedGuardianIds", "FortuneRerollReceiptSnapshot[] rerollReceipts", "FortuneBrewReceiptSnapshot[] fortuneBrewReceipts"]
+    },
+    {
+      "dto": "LegacyFortuneOfferSnapshotV6",
+      "sourceType": "FortuneOfferSnapshot",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "fieldsInDeclarationOrder": ["string offerId", "string contextId", "string[] eligibleOptionIds", "FortuneOfferHistorySnapshot[] history", "string selectedOptionId", "bool claimed"]
+    },
+    {
+      "dto": "LegacyFortuneOfferHistorySnapshotV6",
+      "sourceType": "FortuneOfferHistorySnapshot",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "fieldsInDeclarationOrder": ["string[] optionIds"]
+    },
+    {
+      "dto": "LegacyFortuneRerollReceiptSnapshotV6",
+      "sourceType": "FortuneRerollReceiptSnapshot",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "fieldsInDeclarationOrder": ["string transactionId", "string offerId", "int status", "string contextId", "string[] optionIds", "string selectedOptionId", "int rerollCount", "bool claimed", "int remainingCharges", "bool hasOffer"]
+    },
+    {
+      "dto": "LegacyFortuneBrewReceiptSnapshotV6",
+      "sourceType": "FortuneBrewReceiptSnapshot",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "fieldsInDeclarationOrder": ["string transactionId", "string itemInstanceId", "int status", "int currentCharges"]
+    },
+    {
+      "dto": "LegacyGameSettingsSaveDataV6",
+      "sourceType": "GameSettingsSaveData",
+      "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "fieldsInDeclarationOrder": ["string languageId", "float masterVolume", "float musicVolume", "float effectsVolume", "float ambienceVolume"]
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "V6-P0-profile-no-active",
+      "role": "input-only-candidate",
+      "inputFile": "V6-P0-profile-no-active.InputOnly.json",
+      "inputSha256": "0e62286209d3771665a878aba426d258811bc4d83aca569287b60b2ec2b7be02",
+      "claim": "Synthetic header and empty profile shape only; not asserted to be a semantically valid or historical save.",
+      "checksum": "candidate-not-captured placeholder; deliberately not a digest",
+      "captureStatus": "CapturePending",
+      "testBuilder": "P0NoActive builder is separate from this InputOnly JSON; not executed and not captured.",
+      "outputs": {
+        "envelope.json": "CapturePending",
+        "checksum-preimage.utf8": "CapturePending; file not created",
+        "checksum.sha256.txt": "CapturePending; file not created",
+        "JsonUtility result": "CapturePending"
+      }
+    },
+    {
+      "id": "V6-S0-settings",
+      "role": "input-only-candidate",
+      "inputFile": "V6-S0-settings.InputOnly.json",
+      "inputSha256": "41b40aab0c02c2a45027b1efda7b937aad4318747448d21f98acb5fe1aa96121",
+      "claim": "Synthetic settings input using declared defaults; no serialized representation is claimed.",
+      "checksum": "candidate-not-captured placeholder; deliberately not a digest",
+      "captureStatus": "CapturePending",
+      "testBuilder": "S0 builder is separate from this InputOnly JSON; not executed and not captured.",
+      "outputs": {
+        "envelope.json": "CapturePending",
+        "checksum-preimage.utf8": "CapturePending; file not created",
+        "checksum.sha256.txt": "CapturePending; file not created",
+        "JsonUtility result": "CapturePending"
+      }
+    },
+    {
+      "id": "V6-P1-active-known",
+      "role": "positive-input-pending",
+      "inputFile": null,
+      "testBuilder": "P1KnownFrozenZero and P1KnownFrozenNonTrivial; test source only, not executed.",
+      "captureStatus": "CapturePending; no external input file or bytes captured"
+    },
+    {
+      "id": "V6-P2-active-unknown",
+      "role": "positive-input-pending",
+      "inputFile": null,
+      "testBuilder": "P2UnknownNullFrozen and P2UnknownEmptyInlineFrozen; test source only, not executed.",
+      "captureStatus": "CapturePending; no external input file or bytes captured"
+    },
+    {
+      "id": "V6-P3-receipts-full",
+      "role": "positive-input-pending",
+      "inputFile": null,
+      "testBuilder": "P3ReceiptsFull; test source only, not executed; semantic validity is unverified.",
+      "captureStatus": "CapturePending; no external input file or bytes captured"
+    },
+    {
+      "id": "V6-P4-null-empty-boundary",
+      "role": "checksum-only-input-pending",
+      "inputFile": null,
+      "testBuilder": "P4NullEmptyBoundary; checksum-only boundary builder in test source, not executed.",
+      "captureStatus": "CapturePending; JsonUtility null/empty behavior is unmeasured"
+    },
+    {
+      "id": "V6-P5-flag-payload-conflict",
+      "role": "negative-semantic-input-pending",
+      "inputFile": null,
+      "testBuilder": "P5FalseMarkerWithPayload; projection/semantic-negative test source, not executed.",
+      "captureStatus": "CapturePending; no semantic acceptance claim"
+    },
+    {
+      "id": "V6-N0-corruption",
+      "role": "negative-input-pending",
+      "inputFile": null,
+      "captureStatus": "CapturePending; no captured baseline exists to corrupt"
+    }
+  ],
+  "gates": {
+    "dtoFieldInventory": "Recorded against the source hashes above; not independently reviewed.",
+    "unityJsonUtilityBytes": "CapturePending",
+    "frozenPreimageComparisons": "CapturePending",
+    "capturedSha256Comparisons": "CapturePending",
+    "checksumValidClassification": "CapturePending; no caller-created ChecksumValid result",
+    "UnityTestsExecuted": false,
+    "buildOrCiExecuted": false
+  }
+}
