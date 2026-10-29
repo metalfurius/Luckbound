@@ -1,0 +1,12 @@
+{
+  "integratedAtUtc": "2026-10-29T17:39:05.231Z",
+  "path": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+  "beforeSha256": "d20c8f000ed8522519da84974f141dd43027dba2b0950525d057956681783577",
+  "afterSha256": "3b2b6b00c2e59af3f4bcceeb38aeceb210b9fa2199247a53c885aa117363cdb5",
+  "review": "SOL-F02-R6-OBSERVATION.md",
+  "reviewSha256": "65a3f1f3e34f9f49cd02a1dad4b592afa1a01e0ebe1f0a2d85e950990e4eb4c4",
+  "compile": "r6-observation-offline-r1/RESULTS.json",
+  "productionChanged": false,
+  "assertionsChanged": false,
+  "unityExecuted": false
+}

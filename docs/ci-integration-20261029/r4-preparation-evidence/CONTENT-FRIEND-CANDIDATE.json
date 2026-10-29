@@ -1,0 +1,17 @@
+{
+  "scope": "Exact Content friend to Luckbound.Editor per Sol F02 r4 contract; prepared only",
+  "contract": "docs/ci-integration-20261029/SOL-F02-R4-FIX-CONTRACT.md",
+  "contractSha256": "ce6e6c3fb98bc71f13a44344460fb28cd2822e2761f6f22c08ed23738e86eb8c",
+  "newFiles": [
+    {
+      "path": "Assets/Luckbound/Scripts/Content/AssemblyInfo.cs",
+      "sha256": "6a9305b99ba81c815af8b14f59af51767796169c55975c85139a4c518620c8c3"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/AssemblyInfo.cs.meta",
+      "sha256": "d87174ca9d1d443bcbc10f6765777ba30d75129719f056dfb9d2a42ba9bcbc72",
+      "guid": "695a039cdc0d4cb6ade26da89325af79"
+    }
+  ],
+  "liveSourceChanged": false
+}

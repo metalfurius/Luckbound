@@ -1,0 +1,22 @@
+{
+  "appliedAtUtc": "2026-10-29T17:05:24.057Z",
+  "parentCommit": "561f1c94dba4f36781c3110b3817382aa2aa0270",
+  "sourceGuardCount": 374,
+  "changes": [
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+      "beforeSha256": "e7d589612b901d0a7ffbb9b8015d9a170f26ef73c2a7500c02cc7b47d5b78c7b",
+      "afterSha256": "f3588449345701c04d723f99110af91076117333a008d128d70d6cbbe046fd42"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs",
+      "beforeSha256": "19b0f3a9ace138c3f82d6249cbbb460621841647bd7c2ee26d961cce48c9e22e",
+      "afterSha256": "706b9704f76cdb08558bc0325e8ab6bfe9029a4e063bdfb13d5500e3f4683cf1"
+    }
+  ],
+  "review": "SOL-PLAYMODE-R4-FIXES.md",
+  "reviewSha256": "262cba52bb1f3669c9c889ad8d15defc13e5ce10d2a2a147b8ad14f5e63b7b53",
+  "graphCompile": "r4-graph-offline-r3/RESULTS.json",
+  "unityExecuted": false,
+  "productionChanged": false
+}

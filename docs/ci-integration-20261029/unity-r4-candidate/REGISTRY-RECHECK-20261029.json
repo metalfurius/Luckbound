@@ -1,0 +1,33 @@
+{
+  "observedAtUtc": "2026-10-29T16:34:21.754534+00:00",
+  "scope": "Read-only public anonymous Registry v2 manifest HEAD metadata; no image layers downloaded, no project edits",
+  "tags": [
+    {
+      "tag": "ubuntu-6000.6.7f1-base-3.2.2",
+      "profile": "base",
+      "url": "https://registry-1.docker.io/v2/unityci/editor/manifests/ubuntu-6000.6.7f1-base-3.2.2",
+      "httpStatus": 200,
+      "digest": "sha256:6da56cace1a56d0961c987497a833fdc64c945cab263564a27fe700d26561e10",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "matchesDatedPreviousDigest": true
+    },
+    {
+      "tag": "ubuntu-6000.6.7f1-windows-mono-3.2.2",
+      "profile": "windows-mono",
+      "url": "https://registry-1.docker.io/v2/unityci/editor/manifests/ubuntu-6000.6.7f1-windows-mono-3.2.2",
+      "httpStatus": 200,
+      "digest": "sha256:3ce2d6381a68b5cc425b45e33ed70cfd860107c1452afd51760dc03106df2c54",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "matchesDatedPreviousDigest": true
+    },
+    {
+      "tag": "ubuntu-6000.6.7f1-webgl-3.2.2",
+      "profile": "webgl",
+      "url": "https://registry-1.docker.io/v2/unityci/editor/manifests/ubuntu-6000.6.7f1-webgl-3.2.2",
+      "httpStatus": 200,
+      "digest": "sha256:333a3a2523b7744bcb6babe1f663e5737dcac65445a47172e11f64a28a4d26c9",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "matchesDatedPreviousDigest": true
+    }
+  ]
+}

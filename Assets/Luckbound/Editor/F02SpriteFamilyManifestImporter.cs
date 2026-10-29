@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Luckbound.Content;
+using Luckbound.Core.Expeditions;
 using UnityEditor;
 using UnityEditor.U2D;
 using UnityEditor.U2D.Sprites;
@@ -243,7 +245,47 @@ namespace Luckbound.Editor
             if (!File.Exists(manifestFullPath))
                 throw new FileNotFoundException("F02 family manifest is missing.", manifestFullPath);
 
-            FamilyManifest manifest = JsonUtility.FromJson<FamilyManifest>(File.ReadAllText(manifestFullPath, Encoding.UTF8));
+            byte[] manifestSnapshot = File.ReadAllBytes(manifestFullPath);
+            EncounterCatalogJsonValueV1 manifestTokens;
+            EncounterCatalogError jsonError;
+            if (!EncounterCatalogStrictJsonReaderV1.TryRead(manifestSnapshot, out manifestTokens, out jsonError))
+                throw new InvalidDataException("F02 family manifest JSON is invalid: code=" + jsonError.Code +
+                    "; path=" + jsonError.Path + ".");
+            if (manifestTokens == null || manifestTokens.Kind != EncounterCatalogJsonValueKindV1.Object)
+                throw new InvalidDataException("F02 family manifest JSON root must be an object.");
+
+            RequireFamilyJsonString(manifestTokens, "familyId");
+            RequireFamilyJsonString(manifestTokens, "resourceId");
+            RequireFamilyJsonString(manifestTokens, "status");
+            RequireFamilyJsonString(manifestTokens, "intendedUse");
+            RequireFamilyJsonString(manifestTokens, "provenance");
+            RequireFamilyJsonString(manifestTokens, "referenceId");
+            RequireFamilyJsonString(manifestTokens, "referencePath");
+            RequireFamilyJsonString(manifestTokens, "referenceSha256");
+            RequireFamilyJsonString(manifestTokens, "promptReference");
+            RequireFamilyJsonString(manifestTokens, "promptReferenceSha256");
+
+            EncounterCatalogJsonValueV1 imageArray;
+            if (!manifestTokens.Members.TryGetValue("images", out imageArray) || imageArray == null ||
+                imageArray.Kind != EncounterCatalogJsonValueKindV1.Array || imageArray.Items == null)
+                throw new InvalidDataException("F02 family manifest JSON images must be an array.");
+            ValidateImageTraceabilityTokenTypes(imageArray);
+
+            string manifestJson;
+            try
+            {
+                manifestJson = new UTF8Encoding(false, true).GetString(manifestSnapshot);
+            }
+            catch (DecoderFallbackException)
+            {
+                throw new InvalidDataException("F02 family manifest JSON must be valid UTF-8.");
+            }
+
+            FamilyManifest manifest = JsonUtility.FromJson<FamilyManifest>(manifestJson);
+            if (manifest == null || manifest.images == null || manifest.images.Length != imageArray.Items.Count)
+                throw new InvalidDataException("F02 family manifest JSON images do not match the image DTO array.");
+            ResolveImageTraceabilityOverrides(manifest, imageArray);
+
             if (manifest == null || manifest.schemaVersion != SchemaVersion || !IsSafeAssetName(manifest.familyId) ||
                 string.IsNullOrWhiteSpace(manifest.resourceId) ||
                 (manifest.status != "Prototype" && manifest.status != "Final") ||
@@ -272,20 +314,6 @@ namespace Luckbound.Editor
             var spriteNamesWithoutCase = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (ImageSource image in manifest.images)
             {
-                if (image == null)
-                    throw new InvalidDataException("F02 family image source is missing, duplicated, or malformed.");
-
-                // Family metadata remains the default. An explicit empty override is retained and
-                // rejected below instead of silently falling back to a family value.
-                if (image.resourceId == null) image.resourceId = manifest.resourceId;
-                if (image.status == null) image.status = manifest.status;
-                if (image.provenance == null) image.provenance = manifest.provenance;
-                if (image.referenceId == null) image.referenceId = manifest.referenceId;
-                if (image.referencePath == null) image.referencePath = manifest.referencePath;
-                if (image.referenceSha256 == null) image.referenceSha256 = manifest.referenceSha256;
-                if (image.promptReference == null) image.promptReference = manifest.promptReference;
-                if (image.promptReferenceSha256 == null) image.promptReferenceSha256 = manifest.promptReferenceSha256;
-
                 bool duplicateResourceIdBeforeValidation = !string.IsNullOrWhiteSpace(image.resourceId) &&
                     resourceIds.Contains(image.resourceId);
                 bool duplicateSourcePathBeforeValidation = sourcePaths.Contains(image.sourcePath ?? string.Empty);
@@ -340,6 +368,80 @@ namespace Luckbound.Editor
             }
             ValidateOutputFileNames(manifest);
             return manifest;
+        }
+
+        private static void RequireFamilyJsonString(EncounterCatalogJsonValueV1 manifestTokens, string propertyName)
+        {
+            EncounterCatalogJsonValueV1 value;
+            if (!manifestTokens.Members.TryGetValue(propertyName, out value) || value == null ||
+                value.Kind != EncounterCatalogJsonValueKindV1.String)
+                throw new InvalidDataException("F02 family metadata field must be a JSON string: " + propertyName + ".");
+        }
+
+        private static void ResolveImageTraceabilityOverrides(
+            FamilyManifest manifest, EncounterCatalogJsonValueV1 imageArray)
+        {
+            for (int index = 0; index < imageArray.Items.Count; index++)
+            {
+                EncounterCatalogJsonValueV1 imageTokens = imageArray.Items[index];
+                ImageSource image = manifest.images[index];
+                if (imageTokens == null || imageTokens.Kind != EncounterCatalogJsonValueKindV1.Object ||
+                    imageTokens.Members == null || image == null)
+                    throw new InvalidDataException("F02 family images must contain matching objects: index=" +
+                        index.ToString(System.Globalization.CultureInfo.InvariantCulture) + ".");
+
+                image.resourceId = ResolveImageMetadataString(imageTokens, "resourceId", manifest.resourceId, index);
+                image.status = ResolveImageMetadataString(imageTokens, "status", manifest.status, index);
+                image.provenance = ResolveImageMetadataString(imageTokens, "provenance", manifest.provenance, index);
+                image.referenceId = ResolveImageMetadataString(imageTokens, "referenceId", manifest.referenceId, index);
+                image.referencePath = ResolveImageMetadataString(imageTokens, "referencePath", manifest.referencePath, index);
+                image.referenceSha256 = ResolveImageMetadataString(imageTokens, "referenceSha256", manifest.referenceSha256, index);
+                image.promptReference = ResolveImageMetadataString(imageTokens, "promptReference", manifest.promptReference, index);
+                image.promptReferenceSha256 = ResolveImageMetadataString(
+                    imageTokens, "promptReferenceSha256", manifest.promptReferenceSha256, index);
+            }
+        }
+
+        private static void ValidateImageTraceabilityTokenTypes(EncounterCatalogJsonValueV1 imageArray)
+        {
+            string[] metadataFields =
+            {
+                "resourceId", "status", "provenance", "referenceId", "referencePath", "referenceSha256",
+                "promptReference", "promptReferenceSha256"
+            };
+            for (int index = 0; index < imageArray.Items.Count; index++)
+            {
+                EncounterCatalogJsonValueV1 imageTokens = imageArray.Items[index];
+                if (imageTokens == null || imageTokens.Kind != EncounterCatalogJsonValueKindV1.Object ||
+                    imageTokens.Members == null)
+                    throw new InvalidDataException("F02 family images must contain matching objects: index=" +
+                        index.ToString(System.Globalization.CultureInfo.InvariantCulture) + ".");
+
+                foreach (string propertyName in metadataFields)
+                {
+                    EncounterCatalogJsonValueV1 value;
+                    if (imageTokens.Members.TryGetValue(propertyName, out value) && value != null &&
+                        value.Kind != EncounterCatalogJsonValueKindV1.Null &&
+                        value.Kind != EncounterCatalogJsonValueKindV1.String)
+                        throw new InvalidDataException("F02 image metadata override must be a JSON string or null: images[" +
+                            index.ToString(System.Globalization.CultureInfo.InvariantCulture) + "]." + propertyName +
+                            " (type=" + value.Kind + ").");
+                }
+            }
+        }
+
+        private static string ResolveImageMetadataString(
+            EncounterCatalogJsonValueV1 imageTokens, string propertyName, string familyDefault, int imageIndex)
+        {
+            EncounterCatalogJsonValueV1 value;
+            if (!imageTokens.Members.TryGetValue(propertyName, out value) || value == null ||
+                value.Kind == EncounterCatalogJsonValueKindV1.Null)
+                return familyDefault;
+            if (value.Kind != EncounterCatalogJsonValueKindV1.String)
+                throw new InvalidDataException("F02 image metadata override must be a JSON string or null: images[" +
+                    imageIndex.ToString(System.Globalization.CultureInfo.InvariantCulture) + "]." + propertyName +
+                    " (type=" + value.Kind + ").");
+            return value.Text;
         }
 
         private static void ValidateVersionedPromptReference(string projectRelativePath, string expectedSha256)
@@ -612,14 +714,9 @@ namespace Luckbound.Editor
             }
 
             var clip = new AnimationClip { name = spec.name, frameRate = spec.framesPerSecond };
-            var keys = new ObjectReferenceKeyframe[spec.frames.Length + 1];
+            var keys = new ObjectReferenceKeyframe[spec.frames.Length];
             for (int i = 0; i < spec.frames.Length; i++)
                 keys[i] = new ObjectReferenceKeyframe { time = (float)i / spec.framesPerSecond, value = spritesByName[spec.frames[i]] };
-            keys[keys.Length - 1] = new ObjectReferenceKeyframe
-            {
-                time = (float)spec.frames.Length / spec.framesPerSecond,
-                value = spritesByName[spec.frames[spec.frames.Length - 1]]
-            };
             EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
             AnimationUtility.SetObjectReferenceCurve(clip, binding, keys);
             AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
@@ -658,11 +755,9 @@ namespace Luckbound.Editor
                 throw new InvalidDataException("An F02 clip cannot contain undeclared animation events: " + spec.name);
 
             ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
-            if (keys == null || keys.Length != spec.frames.Length + 1)
+            if (keys == null || keys.Length != spec.frames.Length)
                 throw new InvalidDataException("Existing F02 clip frame count differs from its manifest: " + spec.name);
             float expectedDuration = ExpectedClipDuration(spec);
-            bool serializedLengthMatches = IsFiniteAndApproximately(clip.length, expectedDuration) ||
-                (spec.frames.Length == 1 && IsFiniteAndApproximately(clip.length, 0f));
             if (!IsFiniteAndApproximately(settings.startTime, 0f) ||
                 !IsFiniteAndApproximately(settings.stopTime, expectedDuration))
                 throw new InvalidDataException(DescribeClipDuration(clip, spec, settings, keys, expectedDuration, "AnimationClipSettings.startTime/stopTime", preCreateAssetMeasurements));
@@ -674,12 +769,7 @@ namespace Luckbound.Editor
                     keys[i].value != expected)
                     throw new InvalidDataException("Existing F02 clip frame reference differs from its manifest: " + spec.name);
             }
-            Sprite last;
-            if (!spritesByName.TryGetValue(spec.frames[spec.frames.Length - 1], out last))
-                throw new InvalidDataException("Existing F02 clip references a sprite not yet owned by the family: " + spec.name);
-            if (!IsFiniteAndApproximately(keys[keys.Length - 1].time, expectedDuration) || keys[keys.Length - 1].value != last)
-                throw new InvalidDataException("Existing F02 clip terminal frame differs from its manifest: " + spec.name);
-            if (!serializedLengthMatches)
+            if (!IsFiniteAndApproximately(clip.length, expectedDuration))
                 throw new InvalidDataException(DescribeClipDuration(clip, spec, settings, keys, expectedDuration, "AnimationClip.length", preCreateAssetMeasurements));
         }
 
@@ -759,11 +849,16 @@ namespace Luckbound.Editor
             ObjectReferenceKeyframe[] keys, float expectedDuration)
         {
             string firstKeyTime = keys == null || keys.Length == 0 ? "<none>" : FormatClipTime(keys[0].time);
-            string terminalKeyTime = keys == null || keys.Length == 0
+            string lastFrameKeyTime = keys == null || keys.Length == 0
                 ? "<none>"
                 : FormatClipTime(keys[keys.Length - 1].time);
             string keyCount = keys == null ? "<null>" : keys.Length.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            string keyTimes = keys == null
+                ? "<null>"
+                : "[" + string.Join(",", keys.Select((key, index) =>
+                    index.ToString(System.Globalization.CultureInfo.InvariantCulture) + "@" + FormatClipTime(key.time)).ToArray()) + "]";
             return "{expectedDurationSeconds=" + FormatClipTime(expectedDuration) +
+                "; durationBoundary=" + FormatClipTime(expectedDuration) +
                 "; clip.length=" + FormatClipTime(clip.length) +
                 "; frameRate=" + FormatClipTime(clip.frameRate) +
                 "; frameCount=" + spec.frames.Length.ToString(System.Globalization.CultureInfo.InvariantCulture) +
@@ -771,7 +866,8 @@ namespace Luckbound.Editor
                 "; startTime=" + FormatClipTime(settings.startTime) +
                 "; stopTime=" + FormatClipTime(settings.stopTime) +
                 "; firstKeyTime=" + firstKeyTime +
-                "; terminalKeyTime=" + terminalKeyTime + "}";
+                "; lastFrameKeyTime=" + lastFrameKeyTime +
+                "; keyTimes=" + keyTimes + "}";
         }
 
         private static string FormatClipTime(float value)

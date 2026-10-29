@@ -1,0 +1,37 @@
+{
+  "checkedAtUtc": "2026-10-29T17:19:22.895Z",
+  "newDataFiles": 31,
+  "metaColonCorrectionsOnly": 31,
+  "dataAndGuidsPreserved": true,
+  "sourceCSharpUnchanged": true,
+  "indexSha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+  "indexGit": {
+    "head": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+    "workingTree": "not observed in CI capture",
+    "preCaptureIndexObservation": {
+      "recordedValue": "dirty shared integration checkout",
+      "sourceHead": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "meaning": "This was recorded in the incoming fixture-index only; it is not evidence of the CI capture run's working-tree status."
+    },
+    "treeSha": "b9c1dbf5a91928ed4ab3a972b6eb68030a69c772",
+    "workingTreeEvidence": "CI capture at the recorded commit; the manifest attests stable before/after source hashes but does not record a separate working-tree status."
+  },
+  "invariants": {
+    "captureCopiesByteExact": true,
+    "capturedChecksumFilesMatchTheirPreimages": true,
+    "newFixtureDataFiles": 31,
+    "newFixtureMetaFiles": 31,
+    "newMetaGuidCount": 31,
+    "newMetaGuidsUnique": true,
+    "collisionsWithExistingAssetsGuids": 0,
+    "n0IsInMemoryMutationOnly": true,
+    "noN0GoldenClaim": true,
+    "positiveNegativeChecksumOnlyCheckpointRolesSeparated": true,
+    "originalInputOnlyFilesRetained": true,
+    "newMetaImporterHeadersHaveColon": true,
+    "metaRepairAddedOnlyImporterColonByte": true,
+    "measuredDataFilesUnchangedInR2": true
+  },
+  "errors": [],
+  "unityExecuted": false
+}

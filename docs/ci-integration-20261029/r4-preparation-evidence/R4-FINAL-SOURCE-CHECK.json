@@ -1,0 +1,51 @@
+{
+  "checkedAtUtc": "2026-10-29T17:39:05.231Z",
+  "parentCommit": "561f1c94dba4f36781c3110b3817382aa2aa0270",
+  "sourceCount": 375,
+  "reviewedSourceChanges": [
+    {
+      "path": "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+      "sha256": "e20d54eb2714e3895ca568f1089f878f1189f985a9c39c2150c27606912360d6",
+      "parentBlobSha": "0aa04989fd9b22f36d89c2a92035a26cefe95ca8"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/AssemblyInfo.cs",
+      "sha256": "6a9305b99ba81c815af8b14f59af51767796169c55975c85139a4c518620c8c3",
+      "parentBlobSha": null
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+      "sha256": "3b2b6b00c2e59af3f4bcceeb38aeceb210b9fa2199247a53c885aa117363cdb5",
+      "parentBlobSha": "3184924810725cadcd6ea28aa1f6f5e53ee6e4d3"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+      "sha256": "f3588449345701c04d723f99110af91076117333a008d128d70d6cbbe046fd42",
+      "parentBlobSha": "435b38b04ae465377bfefd37f9748c9317f73583"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs",
+      "sha256": "706b9704f76cdb08558bc0325e8ab6bfe9029a4e063bdfb13d5500e3f4683cf1",
+      "parentBlobSha": "516553cbcc21d7c301095efdbc3e577b3a9d53ba"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "sha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+      "parentBlobSha": "a4d0c1c03f00b66cd06d43d87f56836ccd22fa9d"
+    }
+  ],
+  "unchangedSourceCount": 369,
+  "configGuards": [
+    {
+      "path": ".github/workflows/build.yml",
+      "sha256": "4c152985d354cb8768cc9d399df6d06a7615f5b27df6832dd43cfcb4d32ccf03"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661"
+    }
+  ],
+  "unityExecuted": false,
+  "pin": "6000.6.6f1",
+  "scope": "Final source graph plus accepted read-only observation test variant; runtime pending"
+}

@@ -1,0 +1,52 @@
+{
+  "sourceCount": 375,
+  "assemblyCount": 16,
+  "compiledAssemblies": 16,
+  "allPassed": true,
+  "warningCount": 10,
+  "liveSourcesUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "warnings": [
+    {
+      "assembly": "Luckbound.Gameplay",
+      "line": "Assets\\Luckbound\\Scripts\\Gameplay\\Combat\\Magus\\MagusRoomEffectsScope2D.cs(263,113): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'"
+    },
+    {
+      "assembly": "Luckbound.Gameplay",
+      "line": "Assets\\Luckbound\\Scripts\\Gameplay\\Combat\\Magus\\MagusRoomEffectsScope2D.cs(263,50): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "line": "Assets\\Luckbound\\Tests\\PlayMode\\CraftingSessionTests.cs(274,94): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "line": "Assets\\Luckbound\\Tests\\PlayMode\\CraftingSessionTests.cs(274,20): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "line": "Assets\\Luckbound\\Tests\\PlayMode\\CombatArenaTests.cs(328,113): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "line": "Assets\\Luckbound\\Tests\\PlayMode\\CombatArenaTests.cs(328,62): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "line": "Assets\\Luckbound\\Tests\\PlayMode\\HubPreparationProfileIntegrationTests.cs(197,46): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "line": "Assets\\Luckbound\\Tests\\PlayMode\\HubPreparationProfileIntegrationTests.cs(196,64): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "line": "Assets\\Luckbound\\Tests\\PlayMode\\PermanentUpgradeFlowTests.cs(174,46): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "line": "Assets\\Luckbound\\Tests\\PlayMode\\PermanentUpgradeFlowTests.cs(173,64): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'"
+    }
+  ]
+}

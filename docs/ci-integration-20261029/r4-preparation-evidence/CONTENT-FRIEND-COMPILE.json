@@ -1,0 +1,29 @@
+{
+  "sourceCount": 18,
+  "exitCode": 0,
+  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "friendSourceSha256": "6a9305b99ba81c815af8b14f59af51767796169c55975c85139a4c518620c8c3",
+  "liveSourcesUnchanged": true,
+  "unityExecuted": false,
+  "sourceHashes": {
+    "Assets/Luckbound/Scripts/Content/ArmorCatalogJsonLoader.cs": "5fa711102d66b696e1bfa84ddded3d4cf449a92998dda79186b1fba556fcf927",
+    "Assets/Luckbound/Scripts/Content/CombatEncounterJsonLoader.cs": "943230c2f217453b7abd7f9ec289d1c3f674761d5565249153d206306360a1d4",
+    "Assets/Luckbound/Scripts/Content/ContentAssemblyMarker.cs": "515aeaef39427f8797aaec2d900f64c4deae3b5ceabab5943cd1988096f39264",
+    "Assets/Luckbound/Scripts/Content/CustodianBossJsonLoader.cs": "7e53da687fd344740038e1edab373874b263dcc22ea787e76b0b2f0e5268f047",
+    "Assets/Luckbound/Scripts/Content/ExpeditionRouteCatalogJsonLoader.cs": "10eec6abaf1ba65651123c756931d1e7020133ce1a23e5e1e82d39274c7c3575",
+    "Assets/Luckbound/Scripts/Content/ExpeditionSampleRouteJsonLoader.cs": "c8374b1e11446ecf479b3d5ab8d50444e55cadafce4cf9d8fb3dcc194ba1bdab",
+    "Assets/Luckbound/Scripts/Content/ItemCatalogJsonLoader.cs": "1d49a53ea14cf7054fab86259b8aace35fca04f87b7b912a6f6afc2a2813e885",
+    "Assets/Luckbound/Scripts/Content/RecipeCatalogJsonLoader.cs": "403718d37043ff4de964724c0b93833962459780522ae1aa1d8281dcc5e95a99",
+    "Assets/Luckbound/Scripts/Content/RoomTemplateJsonLoader.cs": "890c847f76d6f9404599987c265c451460391f7c6ecdd191a79f6321458d9037",
+    "Assets/Luckbound/Scripts/Content/SkillCatalogJsonLoader.cs": "dbfee22790b35ced83b480773206c7b3e712f2b4bdb9bf0249524ccefe88ee9c",
+    "Assets/Luckbound/Scripts/Content/WeaponCatalogJsonLoader.cs": "cd7196cafa0bec0a6c4ad9489b6e875a0128b166084fd723a0170864a78bfdb5",
+    "Assets/Luckbound/Scripts/Content/Localization/LocalizationJsonLoader.cs": "c413e2db17cad6d6b0ffd79090fa983ab6aafc8188b4e923802b8f84a3850b0b",
+    "Assets/Luckbound/Scripts/Content/Localization/LocalizationService.cs": "6c8cd9ce6882f1fbdcbf2bb54a088c1f0001f3a534f1e8cdd926d220133f2cbc",
+    "Assets/Luckbound/Scripts/Content/Localization/LocalizedTextCatalog.cs": "1e6aa624fa8c34bc353e2fb98ae3bcc8434934be350054b654a15511bc75c53d",
+    "Assets/Luckbound/Scripts/Content/EncounterCatalogStrictJsonReaderV1.cs": "7f14271a9d1e947a7560662f1764c9147a1e90626e6878d0aa67f8534c69a360",
+    "Assets/Luckbound/Scripts/Content/EncounterCatalogJsonLoaderV1.cs": "ef1ac28095cf89a5c66bc5c0e61f059c3c47018b16a5ed7b58c309e791f99122",
+    "Assets/Luckbound/Scripts/Content/EncounterCatalogRegistryV1.cs": "b16f917ab26dd4615acecbd94bd16c6d07b0bad15122a755de31cd47ee8d3b23"
+  },
+  "friend": "Luckbound.Editor",
+  "referenceDllSha256": "0f86f29b3b1bd48a6eba26a15d4b81722d75ab4961b2a8c4f786d8e43415ea4f"
+}

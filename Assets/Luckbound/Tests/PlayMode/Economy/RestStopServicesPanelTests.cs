@@ -22,7 +22,7 @@ using UnityEngine.UI;
 
 namespace Luckbound.Tests.PlayMode.Economy
 {
-    public sealed class RestStopServicesPanelTests
+    public sealed class RestStopServicesPanelTests : LuckboundInputTestFixture
     {
         [UnityTest]
         public IEnumerator E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase()
@@ -360,6 +360,10 @@ namespace Luckbound.Tests.PlayMode.Economy
                 int cancelStart = router.PendingEffectRequestCount;
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.Escape));
                 InputSystem.Update();
+                Assert.That(Keyboard.current, Is.SameAs(keyboard),
+                    "The isolated simulated keyboard must own this input update.");
+                Assert.That(keyboard.escapeKey.wasPressedThisFrame, Is.True,
+                    "The simulated Escape press must be processed before the real panel Update.");
                 MethodInfo update = typeof(RestStopServicesPanelController).GetMethod("Update",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 Assert.That(update, Is.Not.Null);

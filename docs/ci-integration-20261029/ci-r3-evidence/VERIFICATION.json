@@ -1,0 +1,1521 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-10-29T16:51:44.026011+00:00",
+  "task": "Read-only finite acceptance of existing GitHub Actions CI run",
+  "run": {
+    "id": 40912026026,
+    "checkSuiteId": 110901037996,
+    "attempt": 1,
+    "branch": "codex/luckbound-integration-20261029",
+    "headSha": "561f1c94dba4f36781c3110b3817382aa2aa0270",
+    "treeSha": "8527f7d2eaa2d648bb59ae34e60656aba33bba8b",
+    "status": "completed",
+    "conclusion": "failure",
+    "createdAtUtc": "2026-10-29T16:29:08Z",
+    "startedAtUtc": "2026-10-29T16:29:08Z",
+    "completedAtUtc": "2026-10-29T16:37:50Z",
+    "runUrl": "https://github.com/metalfurius/Luckbound/actions/runs/40912026026"
+  },
+  "jobs": [
+    {
+      "id": 123582245313,
+      "name": "EditMode and PlayMode tests",
+      "status": "completed",
+      "conclusion": "failure",
+      "startedAtUtc": "2026-10-29T16:29:11Z",
+      "completedAtUtc": "2026-10-29T16:37:49Z",
+      "steps": [
+        {
+          "name": "Run Unity tests",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Verify explicit V6 capture",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Upload test results",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 123587326172,
+      "name": "Build Windows x64",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 123587325547,
+      "name": "Build WebGL",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 123587327672,
+      "name": "Create version release",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 123587327039,
+      "name": "Publish versioned WebGL on gh-pages",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "testResults": {
+    "suites": {
+      "EditMode": {
+        "xmlPath": "test-results/editmode-results.xml",
+        "logPath": "test-results/editmode.log",
+        "xmlBytes": 559324,
+        "xmlSha256": "d54da00d9c7fa569a85ee169c0ba0b7f54c558d0aeafd6137b4ead36d5925726",
+        "logBytes": 188626,
+        "logSha256": "7804275ab91ae2e1c553878136149c3df55bbfeec4b696d87ee25145e37bfeb1",
+        "engineVersion": "3.5.0.0",
+        "startedAtUtc": "2026-10-29 16:36:17Z",
+        "endedAtUtc": "2026-10-29 16:37:11Z",
+        "durationSeconds": 54.4682546,
+        "total": 569,
+        "passed": 538,
+        "failed": 31,
+        "skipped": 0,
+        "inconclusive": 0,
+        "failureMessageCounts": {
+          "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold [failedInvariant=AnimationClip.length; current={expectedDurationSeconds=0.0833333358; clip.length=0.166666672; frameRate=12; frameCount=1; objectReferenceKeyCount=2; startTime=0; stopTime=0.0833333358; firstKeyTime=0; terminalKeyTime=0.0833333358}; preCreateAsset={expectedDurationSeconds=0.0833333358; clip.length=0.166666672; frameRate=12; frameCount=1; objectReferenceKeyCount=2; startTime=0; stopTime=0.0833333358; firstKeyTime=0; terminalKeyTime=0.0833333358}].": 29,
+          "System.IO.InvalidDataException : F02 image traceability metadata is missing, malformed, or has a duplicate resource ID. [failedPredicates=status.invalid,provenance.blank,referenceId.blank,promptReference.blank,promptReferenceSha256.invalid,referenceSha256.invalid; resourceId=<value:length=32>; duplicateResourceIdBeforeValidation=False; status=<empty:length=0>; provenance=<empty:length=0>; referenceId=<empty:length=0>; referencePath=<empty:length=0>; referenceSha256=<empty:length=0>; promptReference=<empty:length=0>; promptReferenceSha256=<empty:length=0>; sourcePath=<value:length=51>; duplicateSourcePathBeforeValidation=False; assetFileName=<value:length=40>; sha256=<value:length=64>; width=32; height=48; bitDepth=8; colorType=6; sliceCount=1]": 1,
+          "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: BellatorAttack [failedInvariant=AnimationClip.length; current={expectedDurationSeconds=0.25; clip.length=0.333333343; frameRate=12; frameCount=3; objectReferenceKeyCount=4; startTime=0; stopTime=0.25; firstKeyTime=0; terminalKeyTime=0.25}; preCreateAsset={expectedDurationSeconds=0.25; clip.length=0.333333343; frameRate=12; frameCount=3; objectReferenceKeyCount=4; startTime=0; stopTime=0.25; firstKeyTime=0; terminalKeyTime=0.25}].": 1
+        }
+      },
+      "PlayMode": {
+        "xmlPath": "test-results/playmode-results.xml",
+        "logPath": "test-results/playmode.log",
+        "xmlBytes": 994162,
+        "xmlSha256": "cd36ae27c9f3508248c1477bd3f7a995559777bcee96b406dfd6773050b994e3",
+        "logBytes": 2983976,
+        "logSha256": "0eb4de2a568743f7530d43dcbcba4f9228c2ffd718628cd98adfab096d17c9f9",
+        "engineVersion": "3.5.0.0",
+        "startedAtUtc": "2026-10-29 16:33:11Z",
+        "endedAtUtc": "2026-10-29 16:35:51Z",
+        "durationSeconds": 160.5553745,
+        "total": 336,
+        "passed": 334,
+        "failed": 2,
+        "skipped": 0,
+        "inconclusive": 0,
+        "failureMessageCounts": {
+          "  Expected: False\n  But was:  True\n": 1,
+          "Unhandled log message: '[Exception] InvalidOperationException: Skill use state must be updated once per increasing simulation tick.'. Use UnityEngine.TestTools.LogAssert.Expect": 1
+        }
+      }
+    },
+    "total": 905,
+    "passed": 872,
+    "failed": 33,
+    "skipped": 0,
+    "failureIndexPath": "FAILURE-INDEX.md",
+    "failuresJsonPath": "FAILURES.json",
+    "failuresJsonSha256": "e113d04ec1bd8f2b7be3af99e4182254fc7abe031ae445cb5cd6f50980cf7e02"
+  },
+  "f02MeasurementsPath": "MEASUREMENTS.json",
+  "f02MeasurementsSha256": "b8c600de5af3a77bdf17fd87fe9c7352ae7c3d5902d53152bc8a7eb939368ac5",
+  "i06Observed": {
+    "test": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.I06_ExplicitCancelAndCloseRoutesRemainDistinct",
+    "message": "  Expected: False\n  But was:  True\n",
+    "stackTrace": "at Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests+<I06_ExplicitCancelAndCloseRoutesRemainDistinct>d__2.MoveNext () [0x002ee] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs:368\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+    "sourceLine": 368,
+    "testFileGitBlobSha": "435b38b04ae465377bfefd37f9748c9317f73583",
+    "testFileCommitUrl": "https://github.com/metalfurius/Luckbound/blob/561f1c94dba4f36781c3110b3817382aa2aa0270/Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+    "failureLocationInterpretation": "The fetched test at the exact commit has Assert.That(controller.IsPanelOpen, Is.False) on this line immediately after invoking controller.Update. Later cue-routing assertions follow it."
+  },
+  "otherPlayModeFailure": {
+    "test": "Luckbound.Tests.PlayMode.ExpeditionPlayerRunBinderTests.VenatorRoomRebindPreservesSkillCooldownPreparationAndEnergyState",
+    "message": "Unhandled log message: '[Exception] InvalidOperationException: Skill use state must be updated once per increasing simulation tick.'. Use UnityEngine.TestTools.LogAssert.Expect",
+    "stackTrace": "Luckbound.Core.Combat.SkillUseState.Update (System.Int64 tick, Luckbound.Core.Combat.SkillDefinition requestedSkill, System.Boolean actionValid, System.Boolean interrupted) (at Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs:156)\nLuckbound.Core.Combat.VenatorCombatState.Tick (Luckbound.Core.Input.PlayerCommand command, System.Boolean isAlive, System.Boolean interrupted) (at Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatState.cs:66)\nLuckbound.Gameplay.Movement.PlayerMotor2D.TickVenatorCommand (Luckbound.Core.Input.PlayerCommand command, System.Boolean canAct) (at Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs:1897)\nLuckbound.Gameplay.Movement.PlayerMotor2D.FixedUpdate () (at Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs:1652)\nUnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:50)\n\n"
+  },
+  "artifact": {
+    "id": 12915530542,
+    "name": "test-results-561f1c94dba4f36781c3110b3817382aa2aa0270",
+    "suiteId": 110901037996,
+    "sizeInBytesFromApi": 8952903,
+    "apiDigest": "sha256:dc8e78ce0844bf6bfa05aaeaef6b4e0453ca59aa6743d79cbfed7d963fef63b4",
+    "downloadUrl": "https://nightly.link/metalfurius/Luckbound/suites/110901037996/artifacts/12915530542",
+    "archivePath": "test-results-561f1c94dba4f36781c3110b3817382aa2aa0270-retry/artifact.zip",
+    "archiveBytes": 8952903,
+    "archiveSha256Verified": "dc8e78ce0844bf6bfa05aaeaef6b4e0453ca59aa6743d79cbfed7d963fef63b4",
+    "downloadManifestPath": "test-results-561f1c94dba4f36781c3110b3817382aa2aa0270-retry/DOWNLOAD.json",
+    "downloadManifestSha256": "1c984936f738ead3e74f869aa251263564c68788ae0d470090d82708863949d3",
+    "extractedFileCount": 241,
+    "allExtractedFilesMatchDownloadManifest": true,
+    "downloadMethod": "Logs/VisualCorrection-20261028/download_artifact.py; public nightly.link",
+    "firstAttempt": "Failed with WinError 10013 while opening the socket.",
+    "retry": "Read-only network escalation was authorized and succeeded with the exact artifact ID and digest."
+  },
+  "nativeV6Capture": {
+    "capturePath": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1",
+    "manifestBytes": 17874,
+    "manifestSha256": "7cbd379ac2ce9175a8ce72225e1fe0accfff3077459b0844a85486507ac16d38",
+    "sessionBytes": 4551,
+    "sessionSha256": "bff919206c82d531b3cd35bfe5f2402d9708e57bb1d9b3ed86f053c2a70cf219",
+    "sessionId": "21b90a05fcd94c30a95cd7508b9f1047",
+    "commit": "561f1c94dba4f36781c3110b3817382aa2aa0270",
+    "unityVersion": "6000.6.6f1",
+    "projectVersionDeclared": "6000.6.6f1",
+    "startedAtUtc": "2026-10-29T16:35:31.4851520Z",
+    "finalizedAtUtc": "2026-10-29T16:35:31.6926100Z",
+    "activationArgumentObserved": true,
+    "activationArgument": "-luckboundV6CaptureDir",
+    "activationValue": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1",
+    "expectedCaseIds": [
+      "V6-P0-profile-no-active",
+      "V6-P1-active-known-zero",
+      "V6-P1-active-known-nontrivial",
+      "V6-P2-active-unknown-null",
+      "V6-P2-active-unknown-inline-empty",
+      "V6-P3-receipts-full",
+      "V6-P4-null-empty-boundary",
+      "V6-P5-flag-payload-conflict",
+      "V6-S0-settings",
+      "V6-checkpoint-empty-slots",
+      "V6-checkpoint-null-slots"
+    ],
+    "attemptCount": 11,
+    "caseIdsUniqueAndComplete": true,
+    "dataCompleteDeclared": true,
+    "dataCompleteRechecked": true,
+    "roleRequirementsPassedDeclared": true,
+    "roleRequirementsRechecked": true,
+    "sourceHashCountBefore": 14,
+    "sourceHashCountAfter": 14,
+    "sourceHashErrors": 0,
+    "sourcesStableDeclared": true,
+    "sourceHashesStableRechecked": true,
+    "sourceHashes": [
+      {
+        "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+        "bytes": 7266,
+        "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+        "bytes": 16578,
+        "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "bytes": 37224,
+        "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "bytes": 2163,
+        "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+        "bytes": 71590,
+        "sha256": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+        "bytes": 99,
+        "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+        "bytes": 138741,
+        "sha256": "b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+        "bytes": 11800,
+        "sha256": "22f64d362bc484bec85578e87438851c77867e1eb311bb78624ef01f6f01c3d3"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+        "bytes": 484,
+        "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+        "bytes": 337,
+        "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+        "bytes": 647,
+        "sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7"
+      },
+      {
+        "path": "ProjectSettings/ProjectVersion.txt",
+        "bytes": 83,
+        "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661"
+      },
+      {
+        "path": "Packages/manifest.json",
+        "bytes": 2165,
+        "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595"
+      },
+      {
+        "path": "Packages/packages-lock.json",
+        "bytes": 14044,
+        "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
+      }
+    ],
+    "sessionMatchesManifestRechecked": true,
+    "jsonUtilityAssembly": "UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "jsonUtilityModule": "UnityEngine.JSONSerializeModule.dll",
+    "jsonUtilityMvid": "1f4144d6-4409-465d-9a7a-99a08455999d",
+    "descriptorCount": 11,
+    "descriptorHashesMatchManifest": true,
+    "descriptorHashes": [
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/descriptor.json",
+        "bytes": 8075,
+        "sha256": "66e69dd09a09deff50ceba68da3364ab81f891107b2291a457e1856f38edcfdf",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/descriptor.json",
+        "bytes": 8113,
+        "sha256": "148808bf1f6af7c2c1a5f1f42288a25ab8dbdba29144aabbd1c67c9eb77485e4",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/descriptor.json",
+        "bytes": 8089,
+        "sha256": "ec0314920c0cea198491b0e8a9e201035ba6d0913bdd0370b9290674088779e1",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/descriptor.json",
+        "bytes": 8128,
+        "sha256": "a9f779dd95e282a1c382164b4004dfc80e1421b21f1aed2fa263b38e6d7956d8",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/descriptor.json",
+        "bytes": 8097,
+        "sha256": "0105a96e2f8262fac95e0bb78ce8c8e36b3751bfd3721e1bf4c1d1a4fc2a1789",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/descriptor.json",
+        "bytes": 8068,
+        "sha256": "e69f17d244df233ae8563f24d33d35c16b8031f373f8e86d3974152c3a5585c6",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/descriptor.json",
+        "bytes": 9212,
+        "sha256": "be227f2604dc87d5f6cb79c8fec1ed184b6697d9ec3b325c59694c4401c5fe1a",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/descriptor.json",
+        "bytes": 8198,
+        "sha256": "453ae9f5c484c4c29db6c25cad82e4e3d3b7773d26517f2273c166759b5c7018",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/descriptor.json",
+        "bytes": 8054,
+        "sha256": "e7d58d918a6b91e3e94ea442fc6a09805123abe1cfea689e01fff9fc6c4661ea",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/descriptor.json",
+        "bytes": 8102,
+        "sha256": "66f6e3b9c541481705ed6894fdab3b6a523c95608b84d37ceb9431471d35eef1",
+        "matchesManifest": true
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/descriptor.json",
+        "bytes": 8126,
+        "sha256": "50b520c6de8c7b1f7f2171481c91678ac00b5525600f1ae22129f76d5209cc9b",
+        "matchesManifest": true
+      }
+    ],
+    "dataFileCount": 97,
+    "dataFileHashesMatchDescriptors": true,
+    "cases": [
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "role": "positive-candidate-validity-to-measure",
+        "variant": "P0NoActive",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "66e69dd09a09deff50ceba68da3364ab81f891107b2291a457e1856f38edcfdf",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": true,
+          "errors": []
+        },
+        "decode": {
+          "executed": true,
+          "status": "Valid",
+          "valid": true
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/input.json",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/envelope.json",
+            "bytes": 2227,
+            "sha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/checksum-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/inspector-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P0-profile-no-active/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "role": "positive-candidate-validity-to-measure",
+        "variant": "P1KnownFrozenNonTrivial",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "148808bf1f6af7c2c1a5f1f42288a25ab8dbdba29144aabbd1c67c9eb77485e4",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": true,
+          "errors": []
+        },
+        "decode": {
+          "executed": true,
+          "status": "Valid",
+          "valid": true
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/input.json",
+            "bytes": 13170,
+            "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/envelope.json",
+            "bytes": 15920,
+            "sha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/checksum-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/inspector-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-nontrivial/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "19f1ab85733ee44cd4a5277e565ec6414281d138980f0b44461cea1207ce3816",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "role": "positive-candidate-validity-to-measure",
+        "variant": "P1KnownFrozenZero",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "ec0314920c0cea198491b0e8a9e201035ba6d0913bdd0370b9290674088779e1",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": true,
+          "errors": []
+        },
+        "decode": {
+          "executed": true,
+          "status": "Valid",
+          "valid": true
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/input.json",
+            "bytes": 13170,
+            "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/envelope.json",
+            "bytes": 15920,
+            "sha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/checksum-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/inspector-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P1-active-known-zero/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "1882651f928bc9825a4e66d15c522b136d6f44f69cfce0904ac07f139e71e322",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "role": "positive-candidate-validity-to-measure",
+        "variant": "P2UnknownEmptyInlineFrozen",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "a9f779dd95e282a1c382164b4004dfc80e1421b21f1aed2fa263b38e6d7956d8",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": true,
+          "errors": []
+        },
+        "decode": {
+          "executed": true,
+          "status": "Valid",
+          "valid": true
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/input.json",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/envelope.json",
+            "bytes": 11338,
+            "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "role": "positive-candidate-validity-to-measure",
+        "variant": "P2UnknownNullFrozen",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "0105a96e2f8262fac95e0bb78ce8c8e36b3751bfd3721e1bf4c1d1a4fc2a1789",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": true,
+          "errors": []
+        },
+        "decode": {
+          "executed": true,
+          "status": "Valid",
+          "valid": true
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/input.json",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/envelope.json",
+            "bytes": 11338,
+            "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/checksum-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/inspector-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P2-active-unknown-null/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "role": "positive-candidate-validity-to-measure",
+        "variant": "P3ReceiptsFull",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "e69f17d244df233ae8563f24d33d35c16b8031f373f8e86d3974152c3a5585c6",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": true,
+          "errors": []
+        },
+        "decode": {
+          "executed": true,
+          "status": "Valid",
+          "valid": true
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/input.json",
+            "bytes": 9345,
+            "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/envelope.json",
+            "bytes": 12973,
+            "sha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/checksum-preimage.utf8",
+            "bytes": 9345,
+            "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 9345,
+            "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/inspector-preimage.utf8",
+            "bytes": 9345,
+            "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P3-receipts-full/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "6ee492d12b3dc1e1f601f71f57a784ee6939d8d0859ba6bd94c1c046d3b0d8b6",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "role": "checksum-serialization-only",
+        "variant": "P4NullEmptyBoundary",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "be227f2604dc87d5f6cb79c8fec1ed184b6697d9ec3b325c59694c4401c5fe1a",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": false,
+          "errors": [
+            "unlocked race IDs cannot be null.",
+            "read story fragment IDs cannot be null.",
+            "Processed contract progress event receipts cannot be null.",
+            "Progression purchase transactions require a valid transaction ID.",
+            "Contract counters require a contract ID.",
+            "active expedition skill IDs cannot be null.",
+            "starting equipment instance IDs cannot be empty.",
+            "Active expedition requires the two starting equipment instance IDs.",
+            "visited route node IDs cannot be null.",
+            "Active expedition route history is invalid: Value cannot be null.\nParameter name: visitedNodeIds",
+            "Completed room results require a node, stable result ID and serialized result.",
+            "Completed room result has no matching completed room ID: patio.combat.01.",
+            "Every completed room must have exactly one saved result.",
+            "Active expedition Fortuna offer book snapshot is invalid: Fortune offer snapshot has invalid root state.",
+            "collected item IDs cannot be null."
+          ]
+        },
+        "decode": {
+          "executed": true,
+          "status": "Corrupted",
+          "valid": false
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/input.json",
+            "bytes": 10665,
+            "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/envelope.json",
+            "bytes": 12060,
+            "sha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/checksum-preimage.utf8",
+            "bytes": 10665,
+            "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 10665,
+            "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/inspector-preimage.utf8",
+            "bytes": 10665,
+            "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/semantic-validation.json",
+            "bytes": 1259,
+            "sha256": "2b84445773f61ddab7c778aa6ab073c21dab4f18eaebc6303a2e5b6fa9b2d552",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/decode.json",
+            "bytes": 213,
+            "sha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P4-null-empty-boundary/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "ba84c0cc50843d5390dde0ee23b27c62eafc21da833a9ee50823394a22fddc08",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "role": "negative-semantic-candidate",
+        "variant": "P5FalseMarkerWithPayload",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "453ae9f5c484c4c29db6c25cad82e4e3d3b7773d26517f2273c166759b5c7018",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": false,
+          "errors": [
+            "Active expedition marker must match the saved expedition payload."
+          ]
+        },
+        "decode": {
+          "executed": true,
+          "status": "Corrupted",
+          "valid": false
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/input.json",
+            "bytes": 13171,
+            "sha256": "c93c3d01328b590b06ebbc5eef06ae7190b1f22835e2391b731cb2b48bc83b0e",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/envelope.json",
+            "bytes": 15921,
+            "sha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/checksum-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/inspector-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/semantic-validation.json",
+            "bytes": 283,
+            "sha256": "f67cb61a394181bb2191bc08214bdb016bbc53b6ea01bca574784e77972eb85f",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/decode.json",
+            "bytes": 213,
+            "sha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-P5-flag-payload-conflict/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "role": "positive-candidate-validity-to-measure",
+        "variant": "BuildSettingsEnvelope",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "e7d58d918a6b91e3e94ea442fc6a09805123abe1cfea689e01fff9fc6c4661ea",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 9,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": true,
+          "accepted": true,
+          "errors": []
+        },
+        "decode": {
+          "executed": true,
+          "status": "Valid",
+          "valid": true
+        },
+        "inspector": {
+          "status": "ChecksumValid",
+          "storedChecksumMatchesEncode": true,
+          "computedChecksumMatchesEncode": true,
+          "preimageMatchesLiveProjection": true
+        },
+        "checkpointComparison": {
+          "role": "",
+          "liveLegacyBytesEqual": false,
+          "liveByteCount": 0,
+          "legacyByteCount": 0,
+          "claim": ""
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/input.json",
+            "bytes": 285,
+            "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/envelope.json",
+            "bytes": 447,
+            "sha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/checksum-preimage.utf8",
+            "bytes": 285,
+            "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 285,
+            "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/inspector-preimage.utf8",
+            "bytes": 285,
+            "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/semantic-validation.json",
+            "bytes": 202,
+            "sha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/decode.json",
+            "bytes": 209,
+            "sha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-S0-settings/attempt-0001/inspector.json",
+            "bytes": 621,
+            "sha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "role": "checkpoint-dto-json-separated-not-envelope",
+        "variant": "includeNullSlots=false",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "66f6e3b9c541481705ed6894fdab3b6a523c95608b84d37ceb9431471d35eef1",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 8,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": false,
+          "accepted": false,
+          "errors": []
+        },
+        "decode": {
+          "executed": false,
+          "status": "",
+          "valid": false
+        },
+        "inspector": {
+          "status": "",
+          "storedChecksumMatchesEncode": false,
+          "computedChecksumMatchesEncode": false,
+          "preimageMatchesLiveProjection": false
+        },
+        "checkpointComparison": {
+          "role": "checkpoint-dto-json-separated-not-envelope",
+          "liveLegacyBytesEqual": true,
+          "liveByteCount": 3819,
+          "legacyByteCount": 3819,
+          "claim": "Separate DTO serializer equivalence only; no profile/settings envelope was produced."
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.json",
+            "bytes": 3819,
+            "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.json",
+            "bytes": 3819,
+            "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.sha256.txt",
+            "bytes": 64,
+            "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+            "bytes": 64,
+            "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-comparison.json",
+            "bytes": 251,
+            "sha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-empty-slots/attempt-0001/semantic-validation.json",
+            "bytes": 284,
+            "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-empty-slots/attempt-0001/decode.json",
+            "bytes": 281,
+            "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-empty-slots/attempt-0001/inspector.json",
+            "bytes": 503,
+            "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+            "matchesDescriptor": true
+          }
+        ]
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "role": "checkpoint-null-boundary-dto-json-separated-not-envelope",
+        "variant": "includeNullSlots=true",
+        "complete": true,
+        "semanticAcceptance": true,
+        "roleRequirementsRechecked": true,
+        "failureCode": "",
+        "failureMessage": "",
+        "descriptorSha256": "50b520c6de8c7b1f7f2171481c91678ac00b5525600f1ae22129f76d5209cc9b",
+        "descriptorMatchesManifest": true,
+        "dataFileCount": 8,
+        "allDataFileHashesMatchDescriptor": true,
+        "semanticValidation": {
+          "executed": false,
+          "accepted": false,
+          "errors": []
+        },
+        "decode": {
+          "executed": false,
+          "status": "",
+          "valid": false
+        },
+        "inspector": {
+          "status": "",
+          "storedChecksumMatchesEncode": false,
+          "computedChecksumMatchesEncode": false,
+          "preimageMatchesLiveProjection": false
+        },
+        "checkpointComparison": {
+          "role": "checkpoint-null-boundary-dto-json-separated-not-envelope",
+          "liveLegacyBytesEqual": true,
+          "liveByteCount": 3821,
+          "legacyByteCount": 3821,
+          "claim": "Separate DTO serializer equivalence only; no profile/settings envelope was produced."
+        },
+        "projectionAssertionsMatch": true,
+        "dataFiles": [
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.json",
+            "bytes": 3821,
+            "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.json",
+            "bytes": 3821,
+            "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.sha256.txt",
+            "bytes": 64,
+            "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+            "bytes": 64,
+            "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-comparison.json",
+            "bytes": 265,
+            "sha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-null-slots/attempt-0001/semantic-validation.json",
+            "bytes": 284,
+            "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-null-slots/attempt-0001/decode.json",
+            "bytes": 281,
+            "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+            "matchesDescriptor": true
+          },
+          {
+            "path": "Logs/Scenarios/V6Capture-561f1c94dba4f36781c3110b3817382aa2aa0270-40912026026-1/cases/V6-checkpoint-null-slots/attempt-0001/inspector.json",
+            "bytes": 503,
+            "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+            "matchesDescriptor": true
+          }
+        ]
+      }
+    ],
+    "workflowExplicitVerifierStep": "skipped because Run Unity tests failed"
+  },
+  "nativeV6SourceFilesVerifiedAgainstExactCommit": {
+    "repository": "metalfurius/Luckbound",
+    "ref": "561f1c94dba4f36781c3110b3817382aa2aa0270",
+    "method": "Fetched raw base64 file contents from the exact public GitHub commit and recomputed SHA-256 in memory; compared bytes and SHA-256 against the V6 capture manifest.",
+    "allMatched": true,
+    "files": [
+      {
+        "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+        "bytes": 7266,
+        "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+        "matches": true,
+        "gitBlobSha": "44cee851931dc470bbff3bf3f6da308aa2c274c9"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+        "bytes": 16578,
+        "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+        "matches": true,
+        "gitBlobSha": "6551c633a2de7e4c15998169618379938077af8c"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "bytes": 37224,
+        "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+        "matches": true,
+        "gitBlobSha": "d62c870fcd0ed5861cce0296c57592fb8d0221b6"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "bytes": 2163,
+        "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+        "matches": true,
+        "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+        "bytes": 71590,
+        "sha256": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+        "matches": true,
+        "gitBlobSha": "12ee0d6a179bcb5b5da8432fd406f2bd15995933"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+        "bytes": 99,
+        "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+        "matches": true,
+        "gitBlobSha": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+        "bytes": 138741,
+        "sha256": "b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7",
+        "matches": true,
+        "gitBlobSha": "a4d0c1c03f00b66cd06d43d87f56836ccd22fa9d"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+        "bytes": 11800,
+        "sha256": "22f64d362bc484bec85578e87438851c77867e1eb311bb78624ef01f6f01c3d3",
+        "matches": true,
+        "gitBlobSha": "ad135c9696f721b48868b4324eabed7d57b1677a"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+        "bytes": 484,
+        "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+        "matches": true,
+        "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+        "bytes": 337,
+        "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+        "matches": true,
+        "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+        "bytes": 647,
+        "sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+        "matches": true,
+        "gitBlobSha": "97904300d05845e188c731d5a2e0964855d9ef01"
+      },
+      {
+        "path": "ProjectSettings/ProjectVersion.txt",
+        "bytes": 83,
+        "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+        "matches": true,
+        "gitBlobSha": "99bacd03c32572309212173ef6a8e7dab6cd92e6"
+      },
+      {
+        "path": "Packages/manifest.json",
+        "bytes": 2165,
+        "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+        "matches": true,
+        "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1"
+      },
+      {
+        "path": "Packages/packages-lock.json",
+        "bytes": 14044,
+        "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+        "matches": true,
+        "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c"
+      }
+    ]
+  },
+  "gateState": {
+    "explicitCaptureVerifierStep": "skipped because Run Unity tests failed",
+    "gateB": "not accepted by this run",
+    "newGoldens": "none"
+  },
+  "buildAndPublication": {
+    "windows": "Build Windows x64 skipped; no Windows process, exit 137, or Windows diagnostic log for this run.",
+    "webgl": "Build WebGL skipped; no WebGL archive, extracted output, or PE produced.",
+    "release": "Create version release skipped.",
+    "deployment": "Publish versioned WebGL on gh-pages skipped; no deployment initiated by this review."
+  },
+  "reviewActions": {
+    "reranCi": false,
+    "ranUnityLocally": false,
+    "checkedOutRemoteCommit": false,
+    "mutatedGit": false,
+    "publishedOrDeployed": false
+  }
+}

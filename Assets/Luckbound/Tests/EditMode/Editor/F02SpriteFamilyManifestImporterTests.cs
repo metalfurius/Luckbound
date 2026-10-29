@@ -10,6 +10,7 @@ using System.Reflection;
 using Luckbound.Editor;
 using NUnit.Framework;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEditor.U2D;
 using UnityEditor.U2D.Sprites;
 using UnityEngine;
@@ -157,7 +158,7 @@ namespace Luckbound.Tests.Editor
                 Assert.That(first.PhysicsShapeCount, Is.Zero);
                 Assert.That(first.SpriteRect, Is.EqualTo(new Rect(0, 0, 32, 48)));
                 Assert.That(first.SpritePivot, Is.EqualTo(new Vector2(0.5f, 0f)));
-                Assert.That(first.ClipKeyCount, Is.EqualTo(2));
+                Assert.That(first.ClipKeyCount, Is.EqualTo(1));
                 Assert.That(first.AtlasPackableGuids.Length, Is.EqualTo(1));
                 Assert.That(first.AtlasIncludeInBuild, Is.False);
                 Assert.That(first.AtlasFilterMode, Is.EqualTo(FilterMode.Point));
@@ -329,6 +330,65 @@ namespace Luckbound.Tests.Editor
         }
 
         [Test]
+        public void MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary()
+        {
+            const string outputFolder = MultiOutputFolder + "-animator-evaluation";
+            const string controllerFolder = "Assets/Luckbound/Tests/EditMode";
+            string controllerPath = controllerFolder + "/F02RuntimeProbe-" + Guid.NewGuid().ToString("N") + ".controller";
+            string manifestPath = null;
+            GameObject animatedObject = null;
+            AssertOutputFolderAbsent(outputFolder);
+            try
+            {
+                string manifestJson = ReplaceJsonStringProperty(
+                    File.ReadAllText(ProjectFullPath(MultiManifestPath)), "outputFolder", outputFolder);
+                string repeatedLoopFrames = "\"frames\": [\"BellatorIdle_A\", \"BellatorIdle_B\", \"BellatorIdle_A\"]";
+                string distinctFrames = "\"frames\": [\"BellatorIdle_A\", \"BellatorAttack_A\", \"BellatorIdle_B\"]";
+                string repeatedAttackFrames = "\"frames\": [\"BellatorAttack_B\", \"BellatorAttack_A\", \"BellatorAttack_B\"]";
+                Assert.That(manifestJson.Contains(repeatedLoopFrames), Is.True, "The loop fixture sequence must be present.");
+                Assert.That(manifestJson.Contains(repeatedAttackFrames), Is.True, "The non-loop fixture sequence must be present.");
+                manifestJson = manifestJson.Replace(repeatedLoopFrames, distinctFrames)
+                    .Replace(repeatedAttackFrames, distinctFrames);
+                manifestPath = WriteTemporaryManifest(manifestJson);
+                F02SpriteFamilyManifestImporter.ImportFamily(manifestPath);
+
+                var sprites = new Dictionary<string, Sprite>(StringComparer.Ordinal);
+                foreach (string path in Directory.GetFiles(ProjectFullPath(outputFolder), "*.png", SearchOption.TopDirectoryOnly))
+                    foreach (Sprite sprite in AssetDatabase.LoadAllAssetsAtPath(
+                        outputFolder + "/" + Path.GetFileName(path)).OfType<Sprite>())
+                        sprites.Add(sprite.name, sprite);
+                string[] frames = { "BellatorIdle_A", "BellatorAttack_A", "BellatorIdle_B" };
+                Assert.That(sprites[frames[0]], Is.Not.EqualTo(sprites[frames[2]]),
+                    "The runtime fixture must distinguish the first and final sprites.");
+
+                AnimatorController controller = AnimatorController.CreateAnimatorControllerAtPath(controllerPath);
+                Assert.That(controller, Is.Not.Null);
+                AnimatorStateMachine stateMachine = controller.layers[0].stateMachine;
+                stateMachine.defaultState = stateMachine.AddState("F02ImportedClip");
+                AnimatorState state = controller.layers[0].stateMachine.defaultState;
+                Assert.That(state, Is.Not.Null);
+                animatedObject = new GameObject("F02 isolated clip evaluator") { hideFlags = HideFlags.HideAndDontSave };
+                Animator animator = animatedObject.AddComponent<Animator>();
+                animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                animator.applyRootMotion = false;
+                SpriteRenderer renderer = animatedObject.AddComponent<SpriteRenderer>();
+                animator.runtimeAnimatorController = controller;
+
+                AssertClipAnimatorPlayback(outputFolder + "/BellatorIdle.anim", true,
+                    frames, sprites, controller, state, animator, renderer);
+                AssertClipAnimatorPlayback(outputFolder + "/BellatorAttack.anim", false,
+                    frames, sprites, controller, state, animator, renderer);
+            }
+            finally
+            {
+                if (animatedObject != null) UnityEngine.Object.DestroyImmediate(animatedObject);
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                CleanupOutputFolder(outputFolder);
+                AssetDatabase.DeleteAsset(controllerPath);
+            }
+        }
+
+        [Test]
         public void ExistingClipWithExtraSpriteBinding_IsRejectedWithoutAssetsMutation()
         {
             AssertExistingClipRejectedWithoutAssetsMutation(clip =>
@@ -367,7 +427,7 @@ namespace Luckbound.Tests.Editor
         [Test]
         public void ExistingClipWithCorruptStartTime_IsRejectedWithoutRepair()
         {
-            float corruptedStartTime = float.NaN;
+            float corruptedStartTime = 0f;
             AssertExistingClipTimeCorruptionRejectedWithoutRepair(clip =>
             {
                 AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
@@ -398,40 +458,40 @@ namespace Luckbound.Tests.Editor
         public void ExistingClipWithCorruptFrameKeyTime_IsRejectedWithoutRepair()
         {
             float corruptedFrameTime = float.NaN;
-            AssertExistingClipTimeCorruptionRejectedWithoutRepair(clip =>
+            AssertExistingMultiClipTimeCorruptionRejectedWithoutRepair(clip =>
             {
                 EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
                 ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
-                corruptedFrameTime = keys[0].time + 0.005f / clip.frameRate;
-                keys[0].time = corruptedFrameTime;
+                corruptedFrameTime = keys[1].time + 0.005f / clip.frameRate;
+                keys[1].time = corruptedFrameTime;
                 AnimationUtility.SetObjectReferenceCurve(clip, binding, keys);
             }, clip =>
             {
                 EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
                 ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
-                AssertPersistedTimeIsOutsidePreviousApproximation(keys[0].time, corruptedFrameTime, 0f);
+                AssertPersistedTimeIsOutsidePreviousApproximation(keys[1].time, corruptedFrameTime, 1f / clip.frameRate);
             }, "frame reference differs from its manifest");
         }
 
         [Test]
-        public void ExistingClipWithCorruptTerminalKeyTime_IsRejectedWithoutRepair()
+        public void ExistingClipWithCorruptLastFrameKeyTime_IsRejectedWithoutRepair()
         {
-            float corruptedTerminalTime = float.NaN;
-            AssertExistingClipTimeCorruptionRejectedWithoutRepair(clip =>
+            float corruptedLastFrameTime = float.NaN;
+            AssertExistingMultiClipTimeCorruptionRejectedWithoutRepair(clip =>
             {
                 EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
                 ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
-                int terminalIndex = keys.Length - 1;
-                corruptedTerminalTime = keys[terminalIndex].time + 0.005f / clip.frameRate;
-                keys[terminalIndex].time = corruptedTerminalTime;
+                int lastFrameIndex = keys.Length - 1;
+                corruptedLastFrameTime = keys[lastFrameIndex].time + 0.005f / clip.frameRate;
+                keys[lastFrameIndex].time = corruptedLastFrameTime;
                 AnimationUtility.SetObjectReferenceCurve(clip, binding, keys);
             }, clip =>
             {
                 EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
                 ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
                 AssertPersistedTimeIsOutsidePreviousApproximation(keys[keys.Length - 1].time,
-                    corruptedTerminalTime, 1f / clip.frameRate);
-            }, "terminal frame differs from its manifest");
+                    corruptedLastFrameTime, 2f / clip.frameRate);
+            }, "frame reference differs from its manifest");
         }
 
         private static void AssertExistingClipRejectedWithoutAssetsMutation(
@@ -488,6 +548,49 @@ namespace Luckbound.Tests.Editor
             finally
             {
                 CleanupOutputFolder();
+            }
+        }
+
+        private static void AssertExistingMultiClipTimeCorruptionRejectedWithoutRepair(
+            Action<AnimationClip> corruptClip, Action<AnimationClip> assertCorruptionPersisted,
+            string expectedMessage)
+        {
+            const string outputFolder = MultiOutputFolder;
+            const string clipPath = MultiOutputFolder + "/BellatorAttack.anim";
+            AssertOutputFolderAbsent(outputFolder);
+            string manifestPath = null;
+            try
+            {
+                string manifestJson = ReplaceJsonStringProperty(
+                    File.ReadAllText(ProjectFullPath(MultiManifestPath)), "outputFolder", outputFolder);
+                manifestPath = WriteTemporaryManifest(manifestJson);
+                F02SpriteFamilyManifestImporter.ImportFamily(manifestPath);
+                string clipFullPath = ProjectFullPath(clipPath);
+                AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(clipPath);
+                Assert.That(clip, Is.Not.Null);
+                string originalHash = HashFile(clipFullPath);
+
+                corruptClip(clip);
+                EditorUtility.SetDirty(clip);
+                AssetDatabase.SaveAssetIfDirty(clip);
+                AssetDatabase.ImportAsset(clipPath, ImportAssetOptions.ForceSynchronousImport);
+
+                AnimationClip reloadedClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(clipPath);
+                Assert.That(reloadedClip, Is.Not.Null);
+                assertCorruptionPersisted(reloadedClip);
+                string corruptedHash = HashFile(clipFullPath);
+                Assert.That(corruptedHash, Is.Not.EqualTo(originalHash),
+                    "The time corruption must be present in the serialized clip before validation.");
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), expectedMessage);
+                Assert.That(HashFile(clipFullPath), Is.EqualTo(corruptedHash),
+                    "Rejecting a corrupt existing clip must leave its serialized bytes unchanged.");
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                CleanupOutputFolder(outputFolder);
             }
         }
 
@@ -553,6 +656,256 @@ namespace Luckbound.Tests.Editor
             {
                 if (manifestPath != null) DeleteProjectFile(manifestPath);
                 DeleteProjectFile(tempSource);
+                CleanupOutputFolder();
+            }
+        }
+
+        [Test]
+        public void ImageTraceability_NullResourceIdInheritsFamilyDefaultWithUniqueEffectiveIds()
+        {
+            AssertOutputFolderAbsent();
+            string tempSource = CopySourceToTemp();
+            string manifestPath = null;
+            try
+            {
+                string json = InsertImageJsonStringProperty(
+                    File.ReadAllText(ProjectFullPath(ManifestPath)), "resourceId", "f02-existing-image-override");
+                string image = BuildImageJson(tempSource, "BellatorTechnicalFixtureNullResourceId.png",
+                    "BellatorTechnicalFixtureNullResourceId_0", 32);
+                image = InsertJsonNullProperty(image, "resourceId");
+                manifestPath = WriteTemporaryManifest(InsertIntoJsonArray(json, "images", image));
+
+                F02SpriteFamilyManifestImporter.ImportFamily(manifestPath);
+
+                Assert.That(File.Exists(ProjectFullPath(OutputFolder + "/BellatorTechnicalFixtureNullResourceId.png")), Is.True);
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                DeleteProjectFile(tempSource);
+                CleanupOutputFolder();
+            }
+        }
+
+        [TestCase("resourceId", "17", "Number")]
+        [TestCase("status", "true", "True")]
+        [TestCase("provenance", "[]", "Array")]
+        [TestCase("referenceId", "{}", "Object")]
+        public void ImageTraceability_NonStringOverrideTypesAreRejectedWithoutAssetMutation(
+            string field, string rawValue, string expectedType)
+        {
+            AssertOutputFolderAbsent();
+            string tempSource = CopySourceToTemp();
+            string manifestPath = null;
+            try
+            {
+                string image = BuildImageJson(tempSource, "BellatorTechnicalFixtureWrongType.png",
+                    "BellatorTechnicalFixtureWrongType_0", 32);
+                image = InsertJsonRawProperty(image, "\"" + field + "\"", rawValue);
+                string json = File.ReadAllText(ProjectFullPath(ManifestPath));
+                manifestPath = WriteTemporaryManifest(InsertIntoJsonArray(json, "images", image));
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath),
+                    "must be a JSON string or null: images[1]." + field + " (type=" + expectedType + ")");
+                AssertOutputFolderAbsent();
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                DeleteProjectFile(tempSource);
+                CleanupOutputFolder();
+            }
+        }
+
+        [Test]
+        public void ImageTraceability_StringNullRemainsTextAndUsesExistingStatusValidation()
+        {
+            AssertOutputFolderAbsent();
+            string tempSource = CopySourceToTemp();
+            string manifestPath = null;
+            try
+            {
+                string image = BuildImageJson(tempSource, "BellatorTechnicalFixtureStringNull.png",
+                    "BellatorTechnicalFixtureStringNull_0", 32);
+                image = InsertJsonStringProperty(image, "status", "null");
+                string json = File.ReadAllText(ProjectFullPath(ManifestPath));
+                manifestPath = WriteTemporaryManifest(InsertIntoJsonArray(json, "images", image));
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), "traceability metadata");
+                AssertOutputFolderAbsent();
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                DeleteProjectFile(tempSource);
+                CleanupOutputFolder();
+            }
+        }
+
+        [Test]
+        public void ImageTraceability_WhitespaceOverrideIsRetainedAndRejectedWithoutAssetMutation()
+        {
+            AssertOutputFolderAbsent();
+            string tempSource = CopySourceToTemp();
+            string manifestPath = null;
+            try
+            {
+                string image = BuildImageJson(tempSource, "BellatorTechnicalFixtureWhitespaceMetadata.png",
+                    "BellatorTechnicalFixtureWhitespaceMetadata_0", 32);
+                image = InsertJsonStringProperty(image, "provenance", " \t ");
+                string json = File.ReadAllText(ProjectFullPath(ManifestPath));
+                manifestPath = WriteTemporaryManifest(InsertIntoJsonArray(json, "images", image));
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), "traceability metadata");
+                AssertOutputFolderAbsent();
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                DeleteProjectFile(tempSource);
+                CleanupOutputFolder();
+            }
+        }
+
+        [Test]
+        public void ImageTraceability_EscapedPropertyNameAndJsonLookingStringAreHandledAsTokens()
+        {
+            AssertOutputFolderAbsent();
+            string tempSource = CopySourceToTemp();
+            string manifestPath = null;
+            try
+            {
+                string image = BuildImageJson(tempSource, "BellatorTechnicalFixtureEscapedMetadata.png",
+                    "BellatorTechnicalFixtureEscapedMetadata_0", 32);
+                image = InsertJsonRawProperty(image, "\"resource\\u0049d\"", "\"f02-bellator-escaped-metadata-image\"");
+                image = InsertJsonStringProperty(image, "provenance", "Test fixture text: \"resourceId\": null");
+                string json = File.ReadAllText(ProjectFullPath(ManifestPath));
+                manifestPath = WriteTemporaryManifest(InsertIntoJsonArray(json, "images", image));
+
+                F02SpriteFamilyManifestImporter.ImportFamily(manifestPath);
+
+                Assert.That(File.Exists(ProjectFullPath(OutputFolder + "/BellatorTechnicalFixtureEscapedMetadata.png")), Is.True);
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                DeleteProjectFile(tempSource);
+                CleanupOutputFolder();
+            }
+        }
+
+        [Test]
+        public void ImageTraceability_DuplicateMetadataPropertyIsRejectedBeforeAssetMutation()
+        {
+            AssertOutputFolderAbsent();
+            string tempSource = CopySourceToTemp();
+            string manifestPath = null;
+            try
+            {
+                string image = BuildImageJson(tempSource, "BellatorTechnicalFixtureDuplicateMetadata.png",
+                    "BellatorTechnicalFixtureDuplicateMetadata_0", 32);
+                image = InsertJsonRawProperty(image, "\"resourceId\"", "\"f02-bellator-first-image-id\"");
+                image = InsertJsonRawProperty(image, "\"resourceId\"", "\"f02-bellator-second-image-id\"");
+                string json = File.ReadAllText(ProjectFullPath(ManifestPath));
+                manifestPath = WriteTemporaryManifest(InsertIntoJsonArray(json, "images", image));
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), "DuplicateMember");
+                AssertOutputFolderAbsent();
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                DeleteProjectFile(tempSource);
+                CleanupOutputFolder();
+            }
+        }
+
+        [TestCase("null")]
+        [TestCase("17")]
+        [TestCase("[]")]
+        public void ImageArrayNonObjectEntriesAreRejectedWithoutAssetMutation(string rawValue)
+        {
+            AssertOutputFolderAbsent();
+            string manifestPath = null;
+            try
+            {
+                string json = File.ReadAllText(ProjectFullPath(ManifestPath));
+                manifestPath = WriteTemporaryManifest(InsertIntoJsonArray(json, "images", rawValue));
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), "images");
+                AssertOutputFolderAbsent();
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                CleanupOutputFolder();
+            }
+        }
+
+        [Test]
+        public void FamilyRequiredMetadataMustBeJsonStrings()
+        {
+            AssertOutputFolderAbsent();
+            string manifestPath = null;
+            try
+            {
+                string json = ReplaceJsonPropertyWithRawValue(
+                    File.ReadAllText(ProjectFullPath(ManifestPath)), "resourceId", "null");
+                manifestPath = WriteTemporaryManifest(json);
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath),
+                    "family metadata field must be a JSON string: resourceId");
+                AssertOutputFolderAbsent();
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
+                CleanupOutputFolder();
+            }
+        }
+
+        [Test]
+        public void FamilyManifestRootMustBeJsonObject()
+        {
+            AssertOutputFolderAbsent();
+            string manifestPath = WriteTemporaryManifest("[]");
+            try
+            {
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), "root must be an object");
+                AssertOutputFolderAbsent();
+            }
+            finally
+            {
+                DeleteProjectFile(manifestPath);
+                CleanupOutputFolder();
+            }
+        }
+
+        [Test]
+        public void FamilyImagesPropertyMustBeJsonArray()
+        {
+            AssertOutputFolderAbsent();
+            string manifestPath = null;
+            try
+            {
+                string json = ReplaceJsonArrayPropertyWithRawValue(
+                    File.ReadAllText(ProjectFullPath(ManifestPath)), "images", "null");
+                manifestPath = WriteTemporaryManifest(json);
+
+                AssertRejectedWithoutAssetsMutation(() =>
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), "images must be an array");
+                AssertOutputFolderAbsent();
+            }
+            finally
+            {
+                if (manifestPath != null) DeleteProjectFile(manifestPath);
                 CleanupOutputFolder();
             }
         }
@@ -1677,6 +2030,76 @@ namespace Luckbound.Tests.Editor
             return json.Insert(objectStart + 1, property);
         }
 
+        private static string InsertJsonRawProperty(string json, string rawPropertyName, string rawValue)
+        {
+            int objectStart = json.IndexOf('{');
+            Assert.That(objectStart, Is.GreaterThanOrEqualTo(0), "JSON object is missing.");
+            return json.Insert(objectStart + 1, "\n  " + rawPropertyName + ": " + rawValue + ",");
+        }
+
+        private static string ReplaceJsonPropertyWithRawValue(string json, string propertyName, string rawValue)
+        {
+            string key = "\"" + propertyName + "\"";
+            int keyIndex = json.IndexOf(key, StringComparison.Ordinal);
+            Assert.That(keyIndex, Is.GreaterThanOrEqualTo(0), "JSON property missing: " + propertyName);
+            int colonIndex = json.IndexOf(':', keyIndex + key.Length);
+            Assert.That(colonIndex, Is.GreaterThan(keyIndex));
+            int valueStart = colonIndex + 1;
+            while (valueStart < json.Length && char.IsWhiteSpace(json[valueStart])) valueStart++;
+            Assert.That(valueStart, Is.LessThan(json.Length));
+            Assert.That(json[valueStart], Is.EqualTo('"'), "The selected fixture property must be a JSON string.");
+            int valueEnd = valueStart + 1;
+            while (valueEnd < json.Length)
+            {
+                if (json[valueEnd] == '"' && json[valueEnd - 1] != '\\') break;
+                valueEnd++;
+            }
+            Assert.That(valueEnd, Is.LessThan(json.Length), "The selected JSON string must be closed.");
+            return json.Substring(0, valueStart) + rawValue + json.Substring(valueEnd + 1);
+        }
+
+        private static string ReplaceJsonArrayPropertyWithRawValue(string json, string propertyName, string rawValue)
+        {
+            string key = "\"" + propertyName + "\"";
+            int keyIndex = json.IndexOf(key, StringComparison.Ordinal);
+            Assert.That(keyIndex, Is.GreaterThanOrEqualTo(0), "JSON property missing: " + propertyName);
+            int colonIndex = json.IndexOf(':', keyIndex + key.Length);
+            Assert.That(colonIndex, Is.GreaterThan(keyIndex));
+            int valueStart = json.IndexOf('[', colonIndex + 1);
+            Assert.That(valueStart, Is.GreaterThan(colonIndex), "The selected fixture property must be an array.");
+
+            int depth = 0;
+            bool inString = false;
+            bool escaped = false;
+            int valueEnd = -1;
+            for (int index = valueStart; index < json.Length; index++)
+            {
+                char current = json[index];
+                if (inString)
+                {
+                    if (escaped) escaped = false;
+                    else if (current == '\\') escaped = true;
+                    else if (current == '"') inString = false;
+                    continue;
+                }
+
+                if (current == '"') inString = true;
+                else if (current == '[' || current == '{') depth++;
+                else if (current == ']' || current == '}')
+                {
+                    depth--;
+                    if (depth == 0)
+                    {
+                        valueEnd = index;
+                        break;
+                    }
+                }
+            }
+
+            Assert.That(valueEnd, Is.GreaterThan(valueStart), "The selected JSON array must be closed.");
+            return json.Substring(0, valueStart) + rawValue + json.Substring(valueEnd + 1);
+        }
+
         private static string InsertJsonNullProperty(string json, string propertyName)
         {
             int objectStart = json.IndexOf('{');
@@ -1904,12 +2327,13 @@ namespace Luckbound.Tests.Editor
             AssetDatabase.ImportAsset(clipPath, ImportAssetOptions.ForceSynchronousImport);
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(clipPath);
             Assert.That(clip, Is.Not.Null, clipPath);
+            RecordClipObservation(clip, "reloaded-clip");
             Assert.That(clip.frameRate, Is.EqualTo(12f));
             Assert.That(clip.length, Is.EqualTo((float)frames.Length / 12f).Within(0.0001f), clipPath);
             AnimationClipSettings clipSettings = AnimationUtility.GetAnimationClipSettings(clip);
             AssertFiniteAndApproximately(clipSettings.startTime, 0f, clipPath + " start time");
             AssertFiniteAndApproximately(clipSettings.stopTime, (float)frames.Length / clip.frameRate,
-                clipPath + " stop time");
+                clipPath + " duration boundary");
             Assert.That(clipSettings.loopTime, Is.EqualTo(loop));
             identities.Add("clip:" + clipPath + ":" + StableIdentity(clip));
 
@@ -1924,7 +2348,7 @@ namespace Luckbound.Tests.Editor
 
             ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, expectedBinding);
             Assert.That(keys, Is.Not.Null);
-            Assert.That(keys.Length, Is.EqualTo(frames.Length + 1), clipPath);
+            Assert.That(keys.Length, Is.EqualTo(frames.Length), clipPath);
             var referencedTexturePaths = new HashSet<string>(StringComparer.Ordinal);
             var curve = new List<string>
             {
@@ -1944,11 +2368,115 @@ namespace Luckbound.Tests.Editor
                 curve.Add(index + ":" + StableIdentity(keys[index].value));
             }
 
-            Assert.That(keys[keys.Length - 1].time, Is.EqualTo((float)frames.Length / 12f).Within(0.0001f), clipPath);
-            Assert.That(keys[keys.Length - 1].value, Is.EqualTo(sprites[frames[frames.Length - 1]]), clipPath);
-            curve.Add(frames.Length + ":" + StableIdentity(keys[keys.Length - 1].value));
+            Assert.That(keys[keys.Length - 1].time, Is.EqualTo((float)(frames.Length - 1) / 12f).Within(0.0001f), clipPath);
             Assert.That(referencedTexturePaths.Count, Is.EqualTo(2), clipPath + " must reference sprites from both source images.");
             clipCurves.Add(string.Join("|", curve));
+        }
+
+        private static void AssertClipAnimatorPlayback(
+            string clipPath, bool loop, string[] frames, IReadOnlyDictionary<string, Sprite> sprites,
+            AnimatorController controller, AnimatorState state, Animator animator, SpriteRenderer renderer)
+        {
+            AssetDatabase.ImportAsset(clipPath, ImportAssetOptions.ForceSynchronousImport);
+            AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(clipPath);
+            Assert.That(clip, Is.Not.Null, clipPath);
+            RecordClipObservation(clip, "reloaded-clip");
+            Assert.That(AnimationUtility.GetAnimationClipSettings(clip).loopTime, Is.EqualTo(loop), clipPath);
+            state.motion = clip;
+            EditorUtility.SetDirty(controller);
+            AssetDatabase.SaveAssets();
+            animator.runtimeAnimatorController = null;
+            animator.runtimeAnimatorController = controller;
+            animator.Rebind();
+
+            float frameDuration = 1f / clip.frameRate;
+            float expectedDuration = (float)frames.Length / clip.frameRate;
+            AssertFiniteAndApproximately(clip.length, expectedDuration,
+                clipPath + " AnimationClip.length before Animator clock samples");
+            float durationBoundary = clip.length;
+            AssertAnimatorSpriteAtTime(animator, state, renderer, sprites[frames[0]], 0f, clipPath);
+            for (int index = 0; index < frames.Length; index++)
+                AssertAnimatorSpriteAtTime(animator, state, renderer, sprites[frames[index]],
+                    (index + 0.5f) * frameDuration, clipPath);
+            for (int boundaryIndex = 1; boundaryIndex < frames.Length; boundaryIndex++)
+            {
+                float boundary = boundaryIndex * frameDuration;
+                AssertAnimatorSpriteAtTime(animator, state, renderer, sprites[frames[boundaryIndex - 1]],
+                    boundary - 0.25f * frameDuration, clipPath);
+                AssertAnimatorSpriteAtTime(animator, state, renderer, sprites[frames[boundaryIndex]],
+                    boundary, clipPath);
+                AssertAnimatorSpriteAtTime(animator, state, renderer, sprites[frames[boundaryIndex]],
+                    boundary + 0.25f * frameDuration, clipPath);
+            }
+
+            Sprite expectedAtDurationBoundary = loop ? sprites[frames[0]] : sprites[frames[frames.Length - 1]];
+            AssertAnimatorSpriteAtTime(animator, state, renderer, sprites[frames[frames.Length - 1]],
+                durationBoundary - 0.25f * frameDuration, clipPath);
+            AssertAnimatorSpriteAtTime(animator, state, renderer, expectedAtDurationBoundary,
+                durationBoundary, clipPath);
+            AssertAnimatorSpriteAtTime(animator, state, renderer, expectedAtDurationBoundary,
+                durationBoundary + 0.25f * frameDuration, clipPath);
+        }
+
+        private static void AssertAnimatorSpriteAtTime(
+            Animator animator, AnimatorState state, SpriteRenderer renderer, Sprite expected,
+            float elapsedSeconds, string clipPath)
+        {
+            animator.Rebind();
+            animator.Play(Animator.StringToHash("Base Layer." + state.name), 0, 0f);
+            animator.Update(0f);
+            animator.Update(elapsedSeconds);
+            AnimatorStateInfo observedState = animator.GetCurrentAnimatorStateInfo(0);
+            Debug.Log("F02_ANIMATOR_OBSERVATION " + JsonUtility.ToJson(new AnimatorObservation
+            {
+                unityVersion = Application.unityVersion,
+                commit = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? string.Empty,
+                clipPath = clipPath,
+                elapsedSeconds = elapsedSeconds.ToString("R", CultureInfo.InvariantCulture),
+                normalizedTime = observedState.normalizedTime.ToString("R", CultureInfo.InvariantCulture),
+                stateLength = observedState.length.ToString("R", CultureInfo.InvariantCulture),
+                actualSprite = renderer.sprite == null ? "<null>" : renderer.sprite.name,
+                expectedSprite = expected == null ? "<null>" : expected.name
+            }));
+            Assert.That(renderer.sprite, Is.EqualTo(expected),
+                clipPath + " Animator sprite at elapsed seconds " + elapsedSeconds.ToString("R", CultureInfo.InvariantCulture));
+        }
+
+        [Serializable]
+        private sealed class ClipObservation
+        {
+            public string phase, unityVersion, commit, clipPath, length, framesPerSecond, startTime, stopTime;
+            public bool loopTime;
+            public string[] keyTimes, spriteNames;
+        }
+
+        [Serializable]
+        private sealed class AnimatorObservation
+        {
+            public string unityVersion, commit, clipPath, elapsedSeconds, normalizedTime, stateLength;
+            public string actualSprite, expectedSprite;
+        }
+
+        private static void RecordClipObservation(AnimationClip clip, string phase)
+        {
+            AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
+            EditorCurveBinding binding = EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite");
+            ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding) ??
+                Array.Empty<ObjectReferenceKeyframe>();
+            Debug.Log("F02_CLIP_OBSERVATION " + JsonUtility.ToJson(new ClipObservation
+            {
+                phase = phase,
+                unityVersion = Application.unityVersion,
+                commit = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? string.Empty,
+                clipPath = AssetDatabase.GetAssetPath(clip),
+                length = clip.length.ToString("R", CultureInfo.InvariantCulture),
+                framesPerSecond = clip.frameRate.ToString("R", CultureInfo.InvariantCulture),
+                startTime = settings.startTime.ToString("R", CultureInfo.InvariantCulture),
+                stopTime = settings.stopTime.ToString("R", CultureInfo.InvariantCulture),
+                loopTime = settings.loopTime,
+                keyTimes = keys.Select(key => key.time.ToString("R", CultureInfo.InvariantCulture)).ToArray(),
+                spriteNames = keys.Select(key => key.value == null ? "<null>" : key.value.name).ToArray()
+            }));
         }
 
         private static string StableIdentity(UnityEngine.Object asset)
@@ -1989,6 +2517,7 @@ namespace Luckbound.Tests.Editor
             SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(AtlasPath);
             Assert.That(texture, Is.Not.Null);
             Assert.That(clip, Is.Not.Null);
+            RecordClipObservation(clip, "single-reload");
             Assert.That(atlas, Is.Not.Null);
 
             string textureGuid;
@@ -2017,14 +2546,14 @@ namespace Luckbound.Tests.Editor
             ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(
                 clip, EditorCurveBinding.PPtrCurve("", typeof(SpriteRenderer), "m_Sprite"));
             Assert.That(keys, Is.Not.Null);
-            Assert.That(keys.Length, Is.EqualTo(2));
+            Assert.That(keys.Length, Is.EqualTo(1));
             AnimationClipSettings clipSettings = AnimationUtility.GetAnimationClipSettings(clip);
             AssertFiniteAndApproximately(clipSettings.startTime, 0f, "A one-frame clip must retain its start time after reload.");
             AssertFiniteAndApproximately(clipSettings.stopTime, 1f / clip.frameRate,
                 "A one-frame clip must retain an explicit one-frame stop time after AssetDatabase reload.");
             AssertFiniteAndApproximately(keys[0].time, 0f, "The first PPtr key must remain at the start after reload.");
-            AssertFiniteAndApproximately(keys[1].time, 1f / clip.frameRate,
-                "The terminal PPtr key is the duration boundary even if AnimationClip.length is zero for one frame.");
+            AssertFiniteAndApproximately(clip.length, 1f / clip.frameRate,
+                "A one-frame clip must retain one-frame AnimationClip.length after AssetDatabase reload.");
             foreach (ObjectReferenceKeyframe key in keys) Assert.That(key.value, Is.EqualTo(sprite));
 
             UnityEngine.Object[] packables = SpriteAtlasExtensions.GetPackables(atlas);

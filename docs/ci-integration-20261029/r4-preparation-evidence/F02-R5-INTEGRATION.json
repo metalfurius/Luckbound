@@ -1,0 +1,52 @@
+{
+  "integratedAtUtc": "2026-10-29T17:31:05.622Z",
+  "review": "SOL-F02-R5-ANIMATOR-FIX.md",
+  "reviewSha256": "f805cb36fdb0289e5bb26dadf03d95ff4fc48889e5d2f2aa402191ee4d7b9288",
+  "sourceGuardCount": 374,
+  "newCSharpSourceCount": 1,
+  "files": [
+    {
+      "path": "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+      "sha256": "e20d54eb2714e3895ca568f1089f878f1189f985a9c39c2150c27606912360d6",
+      "kind": "changed",
+      "size": 92364
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+      "sha256": "d20c8f000ed8522519da84974f141dd43027dba2b0950525d057956681783577",
+      "kind": "changed",
+      "size": 137701
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/AssemblyInfo.cs",
+      "sha256": "6a9305b99ba81c815af8b14f59af51767796169c55975c85139a4c518620c8c3",
+      "kind": "added",
+      "size": 91
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/AssemblyInfo.cs.meta",
+      "sha256": "d87174ca9d1d443bcbc10f6765777ba30d75129719f056dfb9d2a42ba9bcbc72",
+      "kind": "added",
+      "size": 240
+    }
+  ],
+  "existingSourceChanges": [
+    {
+      "path": "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+      "beforeSha256": "2fe7fdcf83cabab5d7b16977ee8d56bf49f0f9da1b782d227dfaa3824fe8b488",
+      "afterSha256": "e20d54eb2714e3895ca568f1089f878f1189f985a9c39c2150c27606912360d6"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+      "beforeSha256": "134fe32d88c1214b23c181e5b6ac125f7ad4b56b430c8c96189abd05805e0c1f",
+      "afterSha256": "d20c8f000ed8522519da84974f141dd43027dba2b0950525d057956681783577"
+    }
+  ],
+  "compilerEvidence": [
+    "r4-graph-offline-r4/RESULTS.json",
+    "r5-animator-offline-r1/RESULTS.json"
+  ],
+  "unityExecuted": false,
+  "formatWriterPinReaderAsmdefsChanged": false,
+  "scope": "F02 clip duration+JSON metadata correction and exact Editor-only Content friendship; no F02 authority gate closure"
+}

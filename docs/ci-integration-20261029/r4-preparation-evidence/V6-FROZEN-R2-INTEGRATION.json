@@ -1,0 +1,405 @@
+{
+  "integratedAtUtc": "2026-10-29T17:21:31.583Z",
+  "review": "SOL-V6-FROZEN-CANDIDATE-R2.md",
+  "reviewSha256": "75f87990fdc018c282d2b04a25739a7ce02138ce9e965495d67d48c4e0fd62fa",
+  "sourceGuardCount": 374,
+  "files": [
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "sha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+      "kind": "changed",
+      "size": 163348
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+      "sha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+      "kind": "changed",
+      "size": 40662
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P0-profile-no-active.Frozen.envelope.json",
+      "sha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+      "kind": "new",
+      "size": 2227
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P0-profile-no-active.Frozen.envelope.json.meta",
+      "sha256": "2ff53adfa7fd35de42af022f87f88d8679d2459acf1fb229cf20e8573bbea1d9",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P0-profile-no-active.Frozen.checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "kind": "new",
+      "size": 1442
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P0-profile-no-active.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "d7c464496d77316008e5e803ca4f6660f4548d7d71fd09851d642607f453305d",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P0-profile-no-active.Frozen.checksum.sha256.txt",
+      "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P0-profile-no-active.Frozen.checksum.sha256.txt.meta",
+      "sha256": "585c887daaeb830b7aad1503be60ea6900a44c1a6903e5551c7c47d4ae7d9773",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-zero.Frozen.envelope.json",
+      "sha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d",
+      "kind": "new",
+      "size": 15920
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-zero.Frozen.envelope.json.meta",
+      "sha256": "4618bf873ddf936d642e113c0104fc25976c30963d028a18600192d0d6d43165",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-zero.Frozen.checksum-preimage.utf8",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "kind": "new",
+      "size": 13170
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-zero.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "32cb0f6482a7244e8475ad6235e531c7f8b617ab018c3248077ade1b435a311c",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-zero.Frozen.checksum.sha256.txt",
+      "sha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-zero.Frozen.checksum.sha256.txt.meta",
+      "sha256": "8c455848426d88fb6b410edd55414a04695cc80979148cb3b5196526f55304eb",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-nontrivial.Frozen.envelope.json",
+      "sha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3",
+      "kind": "new",
+      "size": 15920
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-nontrivial.Frozen.envelope.json.meta",
+      "sha256": "42349a4f3fcdbf80c6de6907ba56756b5ef52e3e0cd0b0f1299a16992d28be90",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-nontrivial.Frozen.checksum-preimage.utf8",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "kind": "new",
+      "size": 13170
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-nontrivial.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "3f113977e6099276a3b28691bc3261e0bbe987670a5ec08cb42aff764a303574",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-nontrivial.Frozen.checksum.sha256.txt",
+      "sha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P1-active-known-nontrivial.Frozen.checksum.sha256.txt.meta",
+      "sha256": "d308b29f76d1aed13fec5d2d8ac29cac12d7dcffacadfe66a0622322355f66c3",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-null.Frozen.envelope.json",
+      "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "kind": "new",
+      "size": 11338
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-null.Frozen.envelope.json.meta",
+      "sha256": "041d49ea5e6b7b8e63b5d69058f13c242d98497d396808bb87fe9d257c052e54",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-null.Frozen.checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "kind": "new",
+      "size": 10461
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-null.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "daf05e9a2e4fe521b4a342e3f6838db4b3344eeb8e9e2352d0161aa627845fc9",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-null.Frozen.checksum.sha256.txt",
+      "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-null.Frozen.checksum.sha256.txt.meta",
+      "sha256": "9ebc329fa9702e35db615095d192e33eb078daefe911c1661fad3bc7db3669e9",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-inline-empty.Frozen.envelope.json",
+      "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "kind": "new",
+      "size": 11338
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-inline-empty.Frozen.envelope.json.meta",
+      "sha256": "5a392b7eac4de6a28d55fbc88439133673c87e5b9b9af7634b887e4303684d2e",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-inline-empty.Frozen.checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "kind": "new",
+      "size": 10461
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-inline-empty.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "674564c5005c25ccd4b3640a8ad23517ab203d4feb4326b67c87ed4a4513aaa1",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-inline-empty.Frozen.checksum.sha256.txt",
+      "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P2-active-unknown-inline-empty.Frozen.checksum.sha256.txt.meta",
+      "sha256": "a1e39ab7d507b827e88a54026257fef883496deb1f173ac7fc152510c76a2524",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P3-receipts-full.Frozen.envelope.json",
+      "sha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c",
+      "kind": "new",
+      "size": 12973
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P3-receipts-full.Frozen.envelope.json.meta",
+      "sha256": "e2dc352fdd78a9ec4131993eb4e6d4b657172a13c8e940401b5dc8cd0ffbd585",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P3-receipts-full.Frozen.checksum-preimage.utf8",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "kind": "new",
+      "size": 9345
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P3-receipts-full.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "9c3c45ac55c594b29812c5b06377d16c8ddee978c753a21449239eba71f4fe74",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P3-receipts-full.Frozen.checksum.sha256.txt",
+      "sha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P3-receipts-full.Frozen.checksum.sha256.txt.meta",
+      "sha256": "83f1ed6ca557d16307f037dd4dba8937384417ac7c0accf236645b8e0cccb444",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P4-null-empty-boundary.Frozen.envelope.json",
+      "sha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f",
+      "kind": "new",
+      "size": 12060
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P4-null-empty-boundary.Frozen.envelope.json.meta",
+      "sha256": "73202096317f6e8776da73fe958cdfe186e97548cc79972582541ff7948f12f7",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P4-null-empty-boundary.Frozen.checksum-preimage.utf8",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "kind": "new",
+      "size": 10665
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P4-null-empty-boundary.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "aa959e0657ee235dc62b567f290872bfef0f9e0bb429811365b5c359a9ed8a18",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P4-null-empty-boundary.Frozen.checksum.sha256.txt",
+      "sha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P4-null-empty-boundary.Frozen.checksum.sha256.txt.meta",
+      "sha256": "6baef459138feb5ff1b2da6a4fa8f2acafe94968033c6529dcc150def0500d09",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P5-flag-payload-conflict.Frozen.envelope.json",
+      "sha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536",
+      "kind": "new",
+      "size": 15921
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P5-flag-payload-conflict.Frozen.envelope.json.meta",
+      "sha256": "aeeabb8041a0ebe2407ae8ddc882e327cc0aacec58c223ffd4954a8e4e5f8b35",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P5-flag-payload-conflict.Frozen.checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "kind": "new",
+      "size": 1442
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P5-flag-payload-conflict.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "cb77e944db3d0ba6368b6f1d998ac666c3efa941df64243b06b60c3eaeea7a2a",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P5-flag-payload-conflict.Frozen.checksum.sha256.txt",
+      "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-P5-flag-payload-conflict.Frozen.checksum.sha256.txt.meta",
+      "sha256": "08340d83f813092e516e46a325f48bf174f9278ddc26ac59f5a6a30ce9c3fb3e",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-S0-settings.Frozen.envelope.json",
+      "sha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139",
+      "kind": "new",
+      "size": 447
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-S0-settings.Frozen.envelope.json.meta",
+      "sha256": "8457321196c8d8a509bdb25f45ca931f77221ea8b9078109a2a731812cbfcbff",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-S0-settings.Frozen.checksum-preimage.utf8",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "kind": "new",
+      "size": 285
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-S0-settings.Frozen.checksum-preimage.utf8.meta",
+      "sha256": "638bb2cea541bfef20b63bd310a235d4be64f5fb139b6a6598c8510e9269f17a",
+      "kind": "new",
+      "size": 159
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-S0-settings.Frozen.checksum.sha256.txt",
+      "sha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-S0-settings.Frozen.checksum.sha256.txt.meta",
+      "sha256": "01ba5e3440935dcce0766d0bc50728b51083eeb974e4763b4055b2a5a5aa83be",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-checkpoint-empty-slots.Frozen.checkpoint-legacy.json",
+      "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "kind": "new",
+      "size": 3819
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-checkpoint-empty-slots.Frozen.checkpoint-legacy.json.meta",
+      "sha256": "a89d671cc23557740c975c950e842badb571be95f7e8c3fe889981942d9ec534",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-checkpoint-empty-slots.Frozen.checkpoint-legacy.sha256.txt",
+      "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-checkpoint-empty-slots.Frozen.checkpoint-legacy.sha256.txt.meta",
+      "sha256": "dd9902dac623848103d4b1d9271fbfdab83be09fb43179b450d757f2404e4899",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-checkpoint-null-slots.Frozen.checkpoint-legacy.json",
+      "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "kind": "new",
+      "size": 3821
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-checkpoint-null-slots.Frozen.checkpoint-legacy.json.meta",
+      "sha256": "e01c7734ec8427bbe282babb7bc14d0732946a74af7cf1fd045207ae6ba56c78",
+      "kind": "new",
+      "size": 162
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-checkpoint-null-slots.Frozen.checkpoint-legacy.sha256.txt",
+      "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "kind": "new",
+      "size": 64
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/V6-checkpoint-null-slots.Frozen.checkpoint-legacy.sha256.txt.meta",
+      "sha256": "5f90fd273e7f61641751bb2abac3c1dcf15d71e77f6c5037821f30c9190494f4",
+      "kind": "new",
+      "size": 162
+    }
+  ],
+  "sourceDiff": [
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "beforeSha256": "b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7",
+      "afterSha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9"
+    }
+  ],
+  "measuredDataFiles": 31,
+  "metas": 31,
+  "allMeasuredBytesPreserved": true,
+  "unityExecuted": false,
+  "gateB": "pending real execution and acceptance",
+  "formatOrWriterChanged": false
+}

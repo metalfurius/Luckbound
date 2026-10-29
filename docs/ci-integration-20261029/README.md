@@ -1,6 +1,6 @@
 # Luckbound — snapshot de integración y captura V6
 
-Preparado el 29 de octubre de 2026. **La segunda CI sobre `0baf2d9` ejecutó 905 casos: 873 pasaron y 32 fallaron; ninguno omitido. Los 18 casos V6 pasaron y dejaron once capturas reales verificadas.** Continúan las correcciones F02/I06 y la propuesta de fixtures congeladas. El objetivo completo sigue activo y F10 continúa pendiente.
+Actualizado el 29 de octubre de 2026. **El corte r4 integra correcciones F02/PlayMode y fixtures V6 medidas. Sus revisiones estáticas y compilaciones pasaron; la CI nueva está pendiente.** La última CI, `561f1c9` / run `40912026026`, registró 872/905 Passed, 33 fallos y cero omitidos. F10 y los gates de ejecución siguen abiertos.
 
 El corte r3 añade únicamente el arreglo acotado I06 y [diagnósticos F02 revisados](SOL-F02-R3-DIAGNOSTICS.md), ambos compilados offline. Conserva todos los criterios F02 y su caso explícito null. La próxima CI medirá los valores actuales; no se considera aún un arreglo de los 31 fallos de importación.
 

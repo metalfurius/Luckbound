@@ -1,0 +1,157 @@
+{
+  "sourceCount": 375,
+  "assemblyCount": 16,
+  "assemblies": [
+    {
+      "assembly": "Luckbound.Core",
+      "sourceCount": 137,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Content",
+      "sourceCount": 18,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": [
+        "Assets/Luckbound/Scripts/Content/AssemblyInfo.cs"
+      ]
+    },
+    {
+      "assembly": "Luckbound.Core.Tests",
+      "sourceCount": 36,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.ArmorCatalog.Tests",
+      "sourceCount": 1,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Content.Route.Tests",
+      "sourceCount": 2,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Crafting.Tests",
+      "sourceCount": 2,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Gameplay",
+      "sourceCount": 36,
+      "exitCode": 0,
+      "logSha256": "602629f83e8c90babe65bac3cf04a2b78f899f7f97a29b59f4d69c36c578211e",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Localization.Tests",
+      "sourceCount": 1,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Presentation",
+      "sourceCount": 6,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.SkillCatalog.Tests",
+      "sourceCount": 1,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.WeaponCatalog.Tests",
+      "sourceCount": 1,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.App",
+      "sourceCount": 47,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.App.Tests",
+      "sourceCount": 5,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Editor",
+      "sourceCount": 10,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": [
+        "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs"
+      ]
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 68,
+      "exitCode": 0,
+      "logSha256": "4c8c1e377a38a1ab316f42e87da4b37158d843f4bde08b8a7278c5e5fe7661d8",
+      "overrides": [
+        "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+        "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs",
+        "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs"
+      ]
+    },
+    {
+      "assembly": "Luckbound.Editor.Tests",
+      "sourceCount": 4,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": [
+        "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs"
+      ]
+    }
+  ],
+  "overrides": {
+    "Assets/Luckbound/Scripts/Content/AssemblyInfo.cs": {
+      "sha256": "6a9305b99ba81c815af8b14f59af51767796169c55975c85139a4c518620c8c3",
+      "package": "ContentEditorFriendCandidate-20261029"
+    },
+    "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs": {
+      "sha256": "f3588449345701c04d723f99110af91076117333a008d128d70d6cbbe046fd42",
+      "package": "PlayModeCiFixCandidate-20261029-r4"
+    },
+    "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs": {
+      "sha256": "706b9704f76cdb08558bc0325e8ab6bfe9029a4e063bdfb13d5500e3f4683cf1",
+      "package": "PlayModeCiFixCandidate-20261029-r4"
+    },
+    "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs": {
+      "sha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+      "package": "V6FrozenCandidate-20261029-r2"
+    },
+    "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs": {
+      "sha256": "e20d54eb2714e3895ca568f1089f878f1189f985a9c39c2150c27606912360d6",
+      "package": "F02CiFixCandidate-20261029-r4"
+    },
+    "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs": {
+      "sha256": "bed03cfcc8c8411c305dc5695f32b5c5a1fee426bc5c8e42f9a6f7007009922d",
+      "package": "F02CiFixCandidate-20261029-r4"
+    }
+  },
+  "liveSourcesUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false
+}

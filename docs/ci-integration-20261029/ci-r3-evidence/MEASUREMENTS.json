@@ -1,0 +1,156 @@
+{
+  "runId": 40912026026,
+  "attempt": 1,
+  "commit": "561f1c94dba4f36781c3110b3817382aa2aa0270",
+  "editModeF02": {
+    "failureCount": 31,
+    "groupCount": 3,
+    "groups": [
+      {
+        "kind": "clip-measurement",
+        "clip": "TechnicalHold",
+        "failedInvariant": "AnimationClip.length",
+        "occurrenceCount": 29,
+        "testNames": [
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ChangedContentCanUseANewVersionedFamilyIdAndOutputFolder",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DeclaredPngAddedOutsideOwnershipMarker_IsRejectedWithoutChangingAssets",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"BellatorTechnicalFixture.png\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"BellatorTechnicalFixture.png.meta\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"TechnicalHold.anim\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"TechnicalHold.anim.meta\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"bellator-technical-fixture.spriteatlas\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"bellator-technical-fixture.spriteatlas.meta\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"F02FamilyOwnership.json\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"F02FamilyOwnership.json.meta\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DestinationFileReparsePoint_IsRejectedBeforeChangingItsExternalTarget(\"../F02SpriteFamilyPipelineFixture.meta\")",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingAtlasWithForeignPackable_IsRejectedWithoutChangingAssets",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithAnimationEvent_IsRejectedWithoutAssetsMutation",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithCorruptFrameKeyTime_IsRejectedWithoutRepair",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithCorruptStartTime_IsRejectedWithoutRepair",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithCorruptStopTime_IsRejectedWithoutRepair",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithCorruptTerminalKeyTime_IsRejectedWithoutRepair",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithExtraFloatCurve_IsRejectedWithoutAssetsMutation",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithExtraSpriteBinding_IsRejectedWithoutAssetsMutation",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageResourceIdUniqueness_IsOrdinalAndCaseSensitive",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_AcceptsValidPerImageMetadataOverrides",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_InheritsFamilyDefaultsAndAcceptsUniqueImageResourceIdOverride",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImportingFamily_DoesNotPersistAnUnrelatedDirtyAsset",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsChangedAtlasSettingsWithoutAssetsMutation",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsChangedPngAndUpdatedHashWithoutAssetsMutation",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.PublishedFamily_RejectsMissingAtlasWhenItsMarkerEntryIsAlsoOmitted",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ReorderedManifestObjectProperties_AreTheSamePublishedManifestAndDoNotWrite",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.SeparatePngFamily_SecondRunPreservesSpriteClipAtlasAndFiles",
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.UndeclaredPng_IsReportedAndLeftUntouched"
+        ],
+        "rawMessage": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: TechnicalHold [failedInvariant=AnimationClip.length; current={expectedDurationSeconds=0.0833333358; clip.length=0.166666672; frameRate=12; frameCount=1; objectReferenceKeyCount=2; startTime=0; stopTime=0.0833333358; firstKeyTime=0; terminalKeyTime=0.0833333358}; preCreateAsset={expectedDurationSeconds=0.0833333358; clip.length=0.166666672; frameRate=12; frameCount=1; objectReferenceKeyCount=2; startTime=0; stopTime=0.0833333358; firstKeyTime=0; terminalKeyTime=0.0833333358}].",
+        "stackTrace": "  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.String preCreateAssetMeasurements) [0x002e2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:684 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001f3] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:633 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ChangedContentCanUseANewVersionedFamilyIdAndOutputFolder () [0x00019] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:263 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0 ",
+        "currentMeasurements": {
+          "expectedDurationSeconds": "0.0833333358",
+          "clip.length": "0.166666672",
+          "frameRate": "12",
+          "frameCount": "1",
+          "objectReferenceKeyCount": "2",
+          "startTime": "0",
+          "stopTime": "0.0833333358",
+          "firstKeyTime": "0",
+          "terminalKeyTime": "0.0833333358"
+        },
+        "preCreateAssetMeasurements": {
+          "expectedDurationSeconds": "0.0833333358",
+          "clip.length": "0.166666672",
+          "frameRate": "12",
+          "frameCount": "1",
+          "objectReferenceKeyCount": "2",
+          "startTime": "0",
+          "stopTime": "0.0833333358",
+          "firstKeyTime": "0",
+          "terminalKeyTime": "0.0833333358"
+        },
+        "currentRaw": "expectedDurationSeconds=0.0833333358; clip.length=0.166666672; frameRate=12; frameCount=1; objectReferenceKeyCount=2; startTime=0; stopTime=0.0833333358; firstKeyTime=0; terminalKeyTime=0.0833333358",
+        "preCreateAssetRaw": "{expectedDurationSeconds=0.0833333358; clip.length=0.166666672; frameRate=12; frameCount=1; objectReferenceKeyCount=2; startTime=0; stopTime=0.0833333358; firstKeyTime=0; terminalKeyTime=0.0833333358}",
+        "measurementOrigin": {
+          "preCreateAssetMeasurements": "Captured immediately before AssetDatabase.CreateAsset. The object-reference key array passed to CaptureClipMeasurements is the locally built array passed to AnimationUtility.SetObjectReferenceCurve.",
+          "currentMeasurements": "Captured by ValidateClip immediately after AssetDatabase.CreateAsset on the same AnimationClip reference; the object-reference keys are obtained with AnimationUtility.GetObjectReferenceCurve. This is not an AssetDatabase reload."
+        }
+      },
+      {
+        "kind": "metadata-validation",
+        "occurrenceCount": 1,
+        "testNames": [
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_ExplicitNullOverridesInheritFamilyDefaults"
+        ],
+        "rawMessage": "System.IO.InvalidDataException : F02 image traceability metadata is missing, malformed, or has a duplicate resource ID. [failedPredicates=status.invalid,provenance.blank,referenceId.blank,promptReference.blank,promptReferenceSha256.invalid,referenceSha256.invalid; resourceId=<value:length=32>; duplicateResourceIdBeforeValidation=False; status=<empty:length=0>; provenance=<empty:length=0>; referenceId=<empty:length=0>; referencePath=<empty:length=0>; referenceSha256=<empty:length=0>; promptReference=<empty:length=0>; promptReferenceSha256=<empty:length=0>; sourcePath=<value:length=51>; duplicateSourcePathBeforeValidation=False; assetFileName=<value:length=40>; sha256=<value:length=64>; width=32; height=48; bitDepth=8; colorType=6; sliceCount=1]",
+        "stackTrace": "  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ReadAndValidateManifest (System.String manifestPath) [0x00735] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:342 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x00000] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:166 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_ExplicitNullOverridesInheritFamilyDefaults () [0x000b1] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:545 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0 ",
+        "observedFields": {
+          "failedPredicates": "status.invalid,provenance.blank,referenceId.blank,promptReference.blank,promptReferenceSha256.invalid,referenceSha256.invalid",
+          "resourceId": "<value:length=32>",
+          "duplicateResourceIdBeforeValidation": "False",
+          "status": "<empty:length=0>",
+          "provenance": "<empty:length=0>",
+          "referenceId": "<empty:length=0>",
+          "referencePath": "<empty:length=0>",
+          "referenceSha256": "<empty:length=0>",
+          "promptReference": "<empty:length=0>",
+          "promptReferenceSha256": "<empty:length=0>",
+          "sourcePath": "<value:length=51>",
+          "duplicateSourcePathBeforeValidation": "False",
+          "assetFileName": "<value:length=40>",
+          "sha256": "<value:length=64>",
+          "width": "32",
+          "height": "48",
+          "bitDepth": "8",
+          "colorType": "6",
+          "sliceCount": "1"
+        },
+        "rawFields": "failedPredicates=status.invalid,provenance.blank,referenceId.blank,promptReference.blank,promptReferenceSha256.invalid,referenceSha256.invalid; resourceId=<value:length=32>; duplicateResourceIdBeforeValidation=False; status=<empty:length=0>; provenance=<empty:length=0>; referenceId=<empty:length=0>; referencePath=<empty:length=0>; referenceSha256=<empty:length=0>; promptReference=<empty:length=0>; promptReferenceSha256=<empty:length=0>; sourcePath=<value:length=51>; duplicateSourcePathBeforeValidation=False; assetFileName=<value:length=40>; sha256=<value:length=64>; width=32; height=48; bitDepth=8; colorType=6; sliceCount=1"
+      },
+      {
+        "kind": "clip-measurement",
+        "clip": "BellatorAttack",
+        "failedInvariant": "AnimationClip.length",
+        "occurrenceCount": 1,
+        "testNames": [
+          "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun"
+        ],
+        "rawMessage": "System.IO.InvalidDataException : Existing F02 clip duration differs from its manifest: BellatorAttack [failedInvariant=AnimationClip.length; current={expectedDurationSeconds=0.25; clip.length=0.333333343; frameRate=12; frameCount=3; objectReferenceKeyCount=4; startTime=0; stopTime=0.25; firstKeyTime=0; terminalKeyTime=0.25}; preCreateAsset={expectedDurationSeconds=0.25; clip.length=0.333333343; frameRate=12; frameCount=3; objectReferenceKeyCount=4; startTime=0; stopTime=0.25; firstKeyTime=0; terminalKeyTime=0.25}].",
+        "stackTrace": "  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ValidateClip (UnityEngine.AnimationClip clip, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.String preCreateAssetMeasurements) [0x002e2] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:684 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.EnsureClip (System.String outputFolder, Luckbound.Editor.F02SpriteFamilyManifestImporter+ClipSpec spec, System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue] spritesByName, System.Boolean alreadyOwned) [0x001f3] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:633 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x003a5] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:234 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun () [0x000bc] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:307 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0 ",
+        "currentMeasurements": {
+          "expectedDurationSeconds": "0.25",
+          "clip.length": "0.333333343",
+          "frameRate": "12",
+          "frameCount": "3",
+          "objectReferenceKeyCount": "4",
+          "startTime": "0",
+          "stopTime": "0.25",
+          "firstKeyTime": "0",
+          "terminalKeyTime": "0.25"
+        },
+        "preCreateAssetMeasurements": {
+          "expectedDurationSeconds": "0.25",
+          "clip.length": "0.333333343",
+          "frameRate": "12",
+          "frameCount": "3",
+          "objectReferenceKeyCount": "4",
+          "startTime": "0",
+          "stopTime": "0.25",
+          "firstKeyTime": "0",
+          "terminalKeyTime": "0.25"
+        },
+        "currentRaw": "expectedDurationSeconds=0.25; clip.length=0.333333343; frameRate=12; frameCount=3; objectReferenceKeyCount=4; startTime=0; stopTime=0.25; firstKeyTime=0; terminalKeyTime=0.25",
+        "preCreateAssetRaw": "{expectedDurationSeconds=0.25; clip.length=0.333333343; frameRate=12; frameCount=3; objectReferenceKeyCount=4; startTime=0; stopTime=0.25; firstKeyTime=0; terminalKeyTime=0.25}",
+        "measurementOrigin": {
+          "preCreateAssetMeasurements": "Captured immediately before AssetDatabase.CreateAsset. The object-reference key array passed to CaptureClipMeasurements is the locally built array passed to AnimationUtility.SetObjectReferenceCurve.",
+          "currentMeasurements": "Captured by ValidateClip immediately after AssetDatabase.CreateAsset on the same AnimationClip reference; the object-reference keys are obtained with AnimationUtility.GetObjectReferenceCurve. This is not an AssetDatabase reload."
+        }
+      }
+    ]
+  },
+  "sourceInterpretation": {
+    "file": "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+    "commit": "561f1c94dba4f36781c3110b3817382aa2aa0270",
+    "gitBlobSha": "0aa04989fd9b22f36d89c2a92035a26cefe95ca8",
+    "fetchedLineRange": "620-710",
+    "logicObserved": "The code constructs the local keys array, calls AnimationUtility.SetObjectReferenceCurve, captures preCreateAsset measurements with that keys array, calls AssetDatabase.CreateAsset, then immediately calls ValidateClip. ValidateClip obtains keys from AnimationUtility.GetObjectReferenceCurve(clip, binding) and records those as current.",
+    "terminology": "preCreateAsset keyCount/firstKeyTime/terminalKeyTime describe the key array requested before CreateAsset; current key fields describe keys read back after CreateAsset. The code does not call LoadAssetAtPath here, so do not describe this as a reload."
+  }
+}

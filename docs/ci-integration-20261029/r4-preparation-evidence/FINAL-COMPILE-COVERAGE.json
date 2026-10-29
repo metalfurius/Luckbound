@@ -1,0 +1,18 @@
+{
+  "fullGraph": "GRAPH-WITH-F02-R4.json",
+  "fullGraphSourceCount": 375,
+  "fullGraphAssemblies": 16,
+  "fullGraphExitCode": 0,
+  "supersededSource": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+  "oldHash": "bed03cfcc8c8411c305dc5695f32b5c5a1fee426bc5c8e42f9a6f7007009922d",
+  "finalHash": "3b2b6b00c2e59af3f4bcceeb38aeceb210b9fa2199247a53c885aa117363cdb5",
+  "finalFixtureCompile": "F02-R6-FINAL-TEST-COMPILE.json",
+  "recompiledEditorTestSources": 4,
+  "finalFixtureCompileExitCode": 0,
+  "dependencyReferences": "Exact same compiled graph; only two fixture lines added",
+  "finalIntegratedSourceProof": "R4-FINAL-SOURCE-CHECK.json",
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "previousAcceptedFixtureHash": "d20c8f000ed8522519da84974f141dd43027dba2b0950525d057956681783577",
+  "readOnlyObservationsAdded": true
+}

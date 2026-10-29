@@ -359,6 +359,8 @@ namespace Luckbound.Tests.PlayMode
                 fixture.ProjectileScope,
                 fixture.Room);
 
+            // This case owns the Core skill timeline directly.
+            fixture.Motor.enabled = false;
             SkillUseState sessionState = fixture.Motor.SkillUses;
             SkillDefinition firstSkill = fixture.Skills.Get(VenatorSkillLoadout.PiercingArrowId);
             SkillDefinition secondSkill = fixture.Skills.Get(VenatorSkillLoadout.TripleShotId);

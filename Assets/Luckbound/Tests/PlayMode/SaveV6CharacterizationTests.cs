@@ -469,6 +469,358 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(resultJson, Is.EqualTo("{\"outcome\":\"cleared\",\"renown\":12,\"lootId\":\"reward.d09.test\"}"));
         }
 
+        [TestCase("V6-P0-profile-no-active", "P0NoActive", true, "Valid")]
+        [TestCase("V6-P1-active-known-zero", "P1KnownFrozenZero", true, "Valid")]
+        [TestCase("V6-P1-active-known-nontrivial", "P1KnownFrozenNonTrivial", true, "Valid")]
+        [TestCase("V6-P2-active-unknown-null", "P2UnknownNullFrozen", true, "Valid")]
+        [TestCase("V6-P2-active-unknown-inline-empty", "P2UnknownEmptyInlineFrozen", true, "Valid")]
+        [TestCase("V6-P3-receipts-full", "P3ReceiptsFull", true, "Valid")]
+        [TestCase("V6-P4-null-empty-boundary", "P4NullEmptyBoundary", false, "Corrupted")]
+        [TestCase("V6-P5-flag-payload-conflict", "P5FalseMarkerWithPayload", false, "Corrupted")]
+        public void CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(
+            string fixtureId,
+            string profileCaseName,
+            bool expectedSemanticAcceptance,
+            string expectedDecodeStatus)
+        {
+            ProfileCase profileCase = (ProfileCase)Enum.Parse(typeof(ProfileCase), profileCaseName, false);
+            string fixturePrefix = fixtureId + ".Frozen.";
+            byte[] capturedEnvelopeBytes = ReadFixtureBytes(fixturePrefix + "envelope.json");
+            byte[] capturedPreimage = ReadFixtureBytes(fixturePrefix + "checksum-preimage.utf8");
+            byte[] capturedChecksumBytes = ReadFixtureBytes(fixturePrefix + "checksum.sha256.txt");
+            string capturedEnvelope = new UTF8Encoding(false, true).GetString(capturedEnvelopeBytes);
+            string capturedChecksum = Encoding.ASCII.GetString(capturedChecksumBytes);
+
+            Assert.That(capturedChecksumBytes.Length, Is.EqualTo(64), "Captured checksum text is exact ASCII hex, without a newline.");
+            Assert.That(ComputeSha256(capturedPreimage), Is.EqualTo(capturedChecksum));
+
+            SaveV6ChecksumInspection capturedInspection = SaveV6ChecksumInspector.InspectProfile(capturedEnvelope);
+            Assert.That(capturedInspection.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+            Assert.That(capturedInspection.OriginalJson, Is.EqualTo(capturedEnvelope));
+            Assert.That(capturedInspection.StoredChecksum, Is.EqualTo(capturedChecksum));
+            Assert.That(capturedInspection.ComputedChecksum, Is.EqualTo(capturedChecksum));
+            CollectionAssert.AreEqual(capturedPreimage, capturedInspection.GetPreimageUtf8(),
+                "The inspector must reproduce the frozen Unity JsonUtility bytes exactly.");
+
+            ProfileSaveEnvelope live = BuildProfileEnvelope(profileCase);
+            byte[] liveProjection = BuildCurrentProfileProjectionBytes(live);
+            byte[] legacyProjection = SaveV6ChecksumInspector.GetProfileChecksumPreimage(
+                AdaptProfileEnvelopeToLegacyV6(live));
+            CollectionAssert.AreEqual(capturedPreimage, liveProjection,
+                "Frozen bytes must match the current profile projection for the fixed builder.");
+            CollectionAssert.AreEqual(capturedPreimage, legacyProjection,
+                "Frozen bytes must match the independent frozen-v6 DTO projection.");
+
+            string encodedEnvelope = SaveJsonCodec.Encode(live);
+            byte[] encodedEnvelopeBytes = V6CaptureUtf8NoBom.GetBytes(encodedEnvelope);
+            CollectionAssert.AreEqual(capturedEnvelopeBytes, encodedEnvelopeBytes,
+                "The real encoder must reproduce the exact captured envelope bytes.");
+            SaveV6ChecksumInspection encodedInspection = SaveV6ChecksumInspector.InspectProfile(encodedEnvelope);
+            Assert.That(encodedInspection.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+            Assert.That(encodedInspection.StoredChecksum, Is.EqualTo(capturedChecksum));
+            Assert.That(encodedInspection.ComputedChecksum, Is.EqualTo(capturedChecksum));
+            CollectionAssert.AreEqual(capturedPreimage, encodedInspection.GetPreimageUtf8());
+
+            ProfileSaveEnvelope decoded;
+            object decodeStatus = SaveJsonCodec.Decode(capturedEnvelope, out decoded);
+            Assert.That(decodeStatus.ToString(), Is.EqualTo(expectedDecodeStatus));
+            IReadOnlyList<string> validationErrors = SaveDataValidation.Validate(live);
+            Assert.That(validationErrors.Any(), Is.EqualTo(!expectedSemanticAcceptance));
+
+            if (profileCase == ProfileCase.P5FalseMarkerWithPayload)
+            {
+                Assert.That(live.hasActiveExpedition, Is.False);
+                Assert.That(live.activeExpedition, Is.Not.Null);
+                Assert.That(validationErrors.Any(error =>
+                        error.Contains("Active expedition marker must match the saved expedition payload.")),
+                    Is.True,
+                    "A checksum-valid negative-semantic fixture must remain semantically rejected.");
+            }
+        }
+
+        [Test]
+        public void CapturedFrozenSettingsFixtureMatchesMeasuredBytesAndEncoder()
+        {
+            const string fixturePrefix = "V6-S0-settings.Frozen.";
+            byte[] capturedEnvelopeBytes = ReadFixtureBytes(fixturePrefix + "envelope.json");
+            byte[] capturedPreimage = ReadFixtureBytes(fixturePrefix + "checksum-preimage.utf8");
+            byte[] capturedChecksumBytes = ReadFixtureBytes(fixturePrefix + "checksum.sha256.txt");
+            string capturedEnvelope = new UTF8Encoding(false, true).GetString(capturedEnvelopeBytes);
+            string capturedChecksum = Encoding.ASCII.GetString(capturedChecksumBytes);
+
+            Assert.That(capturedChecksumBytes.Length, Is.EqualTo(64));
+            Assert.That(ComputeSha256(capturedPreimage), Is.EqualTo(capturedChecksum));
+
+            SaveV6ChecksumInspection inspection = SaveV6ChecksumInspector.InspectSettings(capturedEnvelope);
+            Assert.That(inspection.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+            Assert.That(inspection.OriginalJson, Is.EqualTo(capturedEnvelope));
+            Assert.That(inspection.StoredChecksum, Is.EqualTo(capturedChecksum));
+            Assert.That(inspection.ComputedChecksum, Is.EqualTo(capturedChecksum));
+            CollectionAssert.AreEqual(capturedPreimage, inspection.GetPreimageUtf8());
+
+            SettingsSaveEnvelope live = BuildSettingsEnvelope();
+            CollectionAssert.AreEqual(capturedPreimage, BuildCurrentSettingsProjectionBytes(live));
+            CollectionAssert.AreEqual(capturedPreimage, SaveV6ChecksumInspector.GetSettingsChecksumPreimage(
+                AdaptSettingsEnvelopeToLegacyV6(live)));
+
+            string encodedEnvelope = SaveJsonCodec.Encode(live);
+            CollectionAssert.AreEqual(capturedEnvelopeBytes, V6CaptureUtf8NoBom.GetBytes(encodedEnvelope),
+                "The real settings encoder must reproduce the exact captured envelope bytes.");
+            SaveV6ChecksumInspection encodedInspection = SaveV6ChecksumInspector.InspectSettings(encodedEnvelope);
+            Assert.That(encodedInspection.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+            Assert.That(encodedInspection.StoredChecksum, Is.EqualTo(capturedChecksum));
+            Assert.That(encodedInspection.ComputedChecksum, Is.EqualTo(capturedChecksum));
+            CollectionAssert.AreEqual(capturedPreimage, encodedInspection.GetPreimageUtf8());
+        }
+
+        [TestCase(false, "V6-checkpoint-empty-slots")]
+        [TestCase(true, "V6-checkpoint-null-slots")]
+        public void CapturedFrozenCheckpointBytesMatchMeasuredSeparateJson(bool includeNullSlots, string fixtureId)
+        {
+            string fixturePrefix = fixtureId + ".Frozen.";
+            byte[] capturedCheckpoint = ReadFixtureBytes(fixturePrefix + "checkpoint-legacy.json");
+            byte[] capturedChecksumBytes = ReadFixtureBytes(fixturePrefix + "checkpoint-legacy.sha256.txt");
+            string capturedChecksum = Encoding.ASCII.GetString(capturedChecksumBytes);
+
+            Assert.That(capturedChecksumBytes.Length, Is.EqualTo(64));
+            Assert.That(ComputeSha256(capturedCheckpoint), Is.EqualTo(capturedChecksum));
+
+            ExpeditionSaveData expedition = BuildActiveExpedition(ProfileCase.P1KnownFrozenNonTrivial);
+            ExpeditionRoomCheckpointSaveData live = BuildRoomEntryCheckpoint(expedition, includeNullSlots);
+            LegacyExpeditionRoomCheckpointSaveDataV6 legacy = AdaptCheckpointToLegacyV6(live);
+            byte[] liveBytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(live, false));
+            byte[] legacyBytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(legacy, false));
+
+            CollectionAssert.AreEqual(capturedCheckpoint, liveBytes,
+                "The checkpoint's captured live JSON remains separate from parent-save checksum data.");
+            CollectionAssert.AreEqual(capturedCheckpoint, legacyBytes,
+                "The captured checkpoint bytes must match the frozen-v6 checkpoint DTO.");
+        }
+
+        [Test]
+        public void N0MutationOfCapturedEnvelopeKeepsOriginalChecksumAndDiffersFromMalformed()
+        {
+            const string fixturePrefix = "V6-P0-profile-no-active.Frozen.";
+            byte[] capturedEnvelopeBytes = ReadFixtureBytes(fixturePrefix + "envelope.json");
+            string capturedEnvelope = new UTF8Encoding(false, true).GetString(capturedEnvelopeBytes);
+            byte[] capturedChecksumBytes = ReadFixtureBytes(fixturePrefix + "checksum.sha256.txt");
+            string capturedChecksum = Encoding.ASCII.GetString(capturedChecksumBytes);
+            const string originalToken = "\"availableRenown\": 0";
+            const string changedToken = "\"availableRenown\": 1";
+
+            int mutationIndex = capturedEnvelope.IndexOf(originalToken, StringComparison.Ordinal);
+            Assert.That(mutationIndex, Is.GreaterThanOrEqualTo(0), "The frozen source field must exist before mutation.");
+            Assert.That(capturedEnvelope.IndexOf(originalToken, mutationIndex + originalToken.Length,
+                    StringComparison.Ordinal),
+                Is.EqualTo(-1), "The corruption must change exactly one captured profile value.");
+            string corruptedEnvelope = capturedEnvelope.Substring(0, mutationIndex) + changedToken +
+                capturedEnvelope.Substring(mutationIndex + originalToken.Length);
+            byte[] corruptedEnvelopeBytes = V6CaptureUtf8NoBom.GetBytes(corruptedEnvelope);
+            Assert.That(ByteArraysEqual(capturedEnvelopeBytes, corruptedEnvelopeBytes), Is.False,
+                "N0 must be an actual byte change to a measured envelope.");
+
+            SaveV6ChecksumInspection originalInspection = SaveV6ChecksumInspector.InspectProfile(capturedEnvelope);
+            SaveV6ChecksumInspection corruptedInspection = SaveV6ChecksumInspector.InspectProfile(corruptedEnvelope);
+            SaveV6ChecksumInspection malformedInspection = SaveV6ChecksumInspector.InspectProfile("{");
+
+            Assert.That(originalInspection.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+            Assert.That(originalInspection.StoredChecksum, Is.EqualTo(capturedChecksum));
+            Assert.That(corruptedInspection.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumMismatch));
+            Assert.That(corruptedInspection.OriginalJson, Is.EqualTo(corruptedEnvelope));
+            Assert.That(corruptedInspection.StoredChecksum, Is.EqualTo(capturedChecksum),
+                "The mutation retains the frozen envelope's original stored checksum.");
+            Assert.That(corruptedInspection.ComputedChecksum, Is.Not.EqualTo(capturedChecksum));
+            Assert.That(malformedInspection.Status, Is.EqualTo(SaveV6ChecksumStatus.Malformed));
+            Assert.That(corruptedInspection.Status, Is.Not.EqualTo(malformedInspection.Status),
+                "A parseable checksum mismatch is distinct from malformed JSON.");
+            CollectionAssert.AreEqual(capturedEnvelopeBytes, ReadFixtureBytes(fixturePrefix + "envelope.json"),
+                "N0 is mutated in memory only; the frozen positive fixture remains unchanged.");
+        }
+
+        [Test]
+        public void FrozenInspectionIsRepeatableAcrossCultureAndReturnsUnmodifiedCapturedBytes()
+        {
+            const string profilePrefix = "V6-P3-receipts-full.Frozen.";
+            const string settingsPrefix = "V6-S0-settings.Frozen.";
+            string profileJson = new UTF8Encoding(false, true).GetString(
+                ReadFixtureBytes(profilePrefix + "envelope.json"));
+            string settingsJson = new UTF8Encoding(false, true).GetString(
+                ReadFixtureBytes(settingsPrefix + "envelope.json"));
+            byte[] expectedProfilePreimage = ReadFixtureBytes(profilePrefix + "checksum-preimage.utf8");
+            byte[] expectedSettingsPreimage = ReadFixtureBytes(settingsPrefix + "checksum-preimage.utf8");
+            CultureInfo originalCulture = CultureInfo.CurrentCulture;
+
+            try
+            {
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
+                SaveV6ChecksumInspection profileFirst = SaveV6ChecksumInspector.InspectProfile(profileJson);
+                SaveV6ChecksumInspection profileSecond = SaveV6ChecksumInspector.InspectProfile(profileJson);
+                SaveV6ChecksumInspection settingsFirst = SaveV6ChecksumInspector.InspectSettings(settingsJson);
+                SaveV6ChecksumInspection settingsSecond = SaveV6ChecksumInspector.InspectSettings(settingsJson);
+
+                Assert.That(profileFirst.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+                Assert.That(settingsFirst.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+                Assert.That(profileFirst.OriginalJson, Is.EqualTo(profileJson));
+                Assert.That(settingsFirst.OriginalJson, Is.EqualTo(settingsJson));
+                Assert.That(profileFirst.ComputedChecksum, Is.EqualTo(profileSecond.ComputedChecksum));
+                Assert.That(settingsFirst.ComputedChecksum, Is.EqualTo(settingsSecond.ComputedChecksum));
+                CollectionAssert.AreEqual(expectedProfilePreimage, profileFirst.GetPreimageUtf8());
+                CollectionAssert.AreEqual(expectedProfilePreimage, profileSecond.GetPreimageUtf8());
+                CollectionAssert.AreEqual(expectedSettingsPreimage, settingsFirst.GetPreimageUtf8());
+                CollectionAssert.AreEqual(expectedSettingsPreimage, settingsSecond.GetPreimageUtf8());
+
+                CollectionAssert.AreEqual(expectedProfilePreimage,
+                    BuildCurrentProfileProjectionBytes(BuildProfileEnvelope(ProfileCase.P3ReceiptsFull)));
+                CollectionAssert.AreEqual(expectedSettingsPreimage,
+                    BuildCurrentSettingsProjectionBytes(BuildSettingsEnvelope()));
+
+                byte[] mutableCopy = profileFirst.GetPreimageUtf8();
+                byte[] untouchedCopy = profileFirst.GetPreimageUtf8();
+                mutableCopy[0] = mutableCopy[0] == byte.MaxValue ? (byte)0 : (byte)(mutableCopy[0] + 1);
+                CollectionAssert.AreEqual(expectedProfilePreimage, untouchedCopy);
+                CollectionAssert.AreEqual(expectedProfilePreimage, profileFirst.GetPreimageUtf8());
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture;
+            }
+
+            Assert.That(profileJson, Is.EqualTo(new UTF8Encoding(false, true).GetString(
+                ReadFixtureBytes(profilePrefix + "envelope.json"))));
+            Assert.That(settingsJson, Is.EqualTo(new UTF8Encoding(false, true).GetString(
+                ReadFixtureBytes(settingsPrefix + "envelope.json"))));
+        }
+
+        [Test]
+        public void FrozenP3RetainsNestedJsonStringsAndSerializedArrayOrder()
+        {
+            const string fixturePrefix = "V6-P3-receipts-full.Frozen.";
+            string capturedEnvelope = new UTF8Encoding(false, true).GetString(
+                ReadFixtureBytes(fixturePrefix + "envelope.json"));
+            ProfileSaveEnvelope captured;
+            object decodeStatus = SaveJsonCodec.Decode(capturedEnvelope, out captured);
+            Assert.That(decodeStatus.ToString(), Is.EqualTo("Valid"));
+
+            ProfileSaveEnvelope expected = BuildProfileEnvelope(ProfileCase.P3ReceiptsFull);
+            Assert.That(captured.activeExpedition, Is.Not.Null);
+            CollectionAssert.AreEqual(expected.profile.unlockedRaceIds, captured.profile.unlockedRaceIds);
+            CollectionAssert.AreEqual(expected.profile.unlockedStartingKitIds, captured.profile.unlockedStartingKitIds);
+            CollectionAssert.AreEqual(expected.profile.processedSettlementRunIds, captured.profile.processedSettlementRunIds);
+            CollectionAssert.AreEqual(
+                expected.profile.processedContractProgressEvents.Select(receipt =>
+                    receipt.eventId + ":" + receipt.progressEvent),
+                captured.profile.processedContractProgressEvents.Select(receipt =>
+                    receipt.eventId + ":" + receipt.progressEvent));
+            CollectionAssert.AreEqual(
+                expected.profile.progressionPurchaseTransactions.Select(transaction =>
+                    transaction.transactionId + ":" + transaction.kind + ":" + transaction.cost),
+                captured.profile.progressionPurchaseTransactions.Select(transaction =>
+                    transaction.transactionId + ":" + transaction.kind + ":" + transaction.cost));
+            CollectionAssert.AreEqual(expected.activeExpedition.selectedSkillIds,
+                captured.activeExpedition.selectedSkillIds);
+            CollectionAssert.AreEqual(expected.activeExpedition.startingEquipmentInstanceIds,
+                captured.activeExpedition.startingEquipmentInstanceIds);
+            CollectionAssert.AreEqual(expected.activeExpedition.visitedNodeIds,
+                captured.activeExpedition.visitedNodeIds);
+            CollectionAssert.AreEqual(expected.activeExpedition.completedRoomIds,
+                captured.activeExpedition.completedRoomIds);
+            CollectionAssert.AreEqual(expected.activeExpedition.pactIds, captured.activeExpedition.pactIds);
+            CollectionAssert.AreEqual(expected.activeExpedition.collectedItemIds,
+                captured.activeExpedition.collectedItemIds);
+            CollectionAssert.AreEqual(expected.activeExpedition.claimedRewardIds,
+                captured.activeExpedition.claimedRewardIds);
+
+            Assert.That(captured.activeExpedition.routeSnapshotJson,
+                Is.EqualTo(expected.activeExpedition.routeSnapshotJson));
+            Assert.That(captured.activeExpedition.inventorySnapshotJson,
+                Is.EqualTo(expected.activeExpedition.inventorySnapshotJson));
+            Assert.That(captured.activeExpedition.roomEntryCheckpointJson,
+                Is.EqualTo(expected.activeExpedition.roomEntryCheckpointJson));
+            Assert.That(captured.activeExpedition.completedRoomResults[0].resultJson,
+                Is.EqualTo(expected.activeExpedition.completedRoomResults[0].resultJson));
+        }
+
+        [Test]
+        public void CapturedNullEmptyAndFalseMarkerCasesKeepTheirDistinctRolesDespiteSharedBytes()
+        {
+            byte[] unknownNullEnvelope = ReadFixtureBytes(
+                "V6-P2-active-unknown-null.Frozen.envelope.json");
+            byte[] unknownInlineEmptyEnvelope = ReadFixtureBytes(
+                "V6-P2-active-unknown-inline-empty.Frozen.envelope.json");
+            byte[] unknownNullPreimage = ReadFixtureBytes(
+                "V6-P2-active-unknown-null.Frozen.checksum-preimage.utf8");
+            byte[] unknownInlineEmptyPreimage = ReadFixtureBytes(
+                "V6-P2-active-unknown-inline-empty.Frozen.checksum-preimage.utf8");
+            CollectionAssert.AreEqual(unknownNullEnvelope, unknownInlineEmptyEnvelope,
+                "The captured JsonUtility representation for these two builder variants is byte-identical.");
+            CollectionAssert.AreEqual(unknownNullPreimage, unknownInlineEmptyPreimage);
+
+            byte[] noActiveEnvelope = ReadFixtureBytes("V6-P0-profile-no-active.Frozen.envelope.json");
+            byte[] falseMarkerEnvelope = ReadFixtureBytes("V6-P5-flag-payload-conflict.Frozen.envelope.json");
+            byte[] noActivePreimage = ReadFixtureBytes("V6-P0-profile-no-active.Frozen.checksum-preimage.utf8");
+            byte[] falseMarkerPreimage = ReadFixtureBytes("V6-P5-flag-payload-conflict.Frozen.checksum-preimage.utf8");
+            CollectionAssert.AreEqual(noActivePreimage, falseMarkerPreimage,
+                "The false marker excludes its payload from this checksum projection.");
+            Assert.That(ByteArraysEqual(noActiveEnvelope, falseMarkerEnvelope), Is.False,
+                "The captured full envelope remains different even when projected checksum bytes coincide.");
+
+            string noActiveJson = new UTF8Encoding(false, true).GetString(noActiveEnvelope);
+            string falseMarkerJson = new UTF8Encoding(false, true).GetString(falseMarkerEnvelope);
+            Assert.That(SaveV6ChecksumInspector.InspectProfile(noActiveJson).Status,
+                Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+            Assert.That(SaveV6ChecksumInspector.InspectProfile(falseMarkerJson).Status,
+                Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
+            ProfileSaveEnvelope noActive;
+            ProfileSaveEnvelope falseMarker;
+            object noActiveDecode = SaveJsonCodec.Decode(noActiveJson, out noActive);
+            object falseMarkerDecode = SaveJsonCodec.Decode(falseMarkerJson, out falseMarker);
+            Assert.That(noActiveDecode.ToString(), Is.EqualTo("Valid"));
+            Assert.That(falseMarkerDecode.ToString(), Is.EqualTo("Corrupted"));
+            Assert.That(SaveDataValidation.Validate(noActive).Any(), Is.False);
+            Assert.That(SaveDataValidation.Validate(falseMarker).Any(), Is.True);
+            Assert.That(falseMarker.hasActiveExpedition, Is.False);
+            Assert.That(falseMarker.activeExpedition, Is.Not.Null);
+        }
+
+        [Test]
+        public void FrozenPositiveProfilesAndSettingsAreReadByAnIsolatedRepositoryWithoutRewritingEitherCopy()
+        {
+            byte[] profileBytes = ReadFixtureBytes("V6-P1-active-known-nontrivial.Frozen.envelope.json");
+            byte[] settingsBytes = ReadFixtureBytes("V6-S0-settings.Frozen.envelope.json");
+            string directory = Path.Combine(Path.GetTempPath(), "Luckbound.SaveV6Frozen." + Guid.NewGuid().ToString("N"));
+            var store = new FileSaveStore(directory, null);
+
+            try
+            {
+                Directory.CreateDirectory(directory);
+                string profilePrimary = store.GetPrimaryPath(SaveDocument.Profile);
+                string profileBackup = store.GetBackupPath(SaveDocument.Profile);
+                string settingsPrimary = store.GetPrimaryPath(SaveDocument.Settings);
+                string settingsBackup = store.GetBackupPath(SaveDocument.Settings);
+                File.WriteAllBytes(profilePrimary, profileBytes);
+                File.WriteAllBytes(profileBackup, profileBytes);
+                File.WriteAllBytes(settingsPrimary, settingsBytes);
+                File.WriteAllBytes(settingsBackup, settingsBytes);
+
+                var repository = new SaveRepository(store);
+                SaveLoadResult<ProfileSaveEnvelope> profile = repository.LoadProfileAsync().GetAwaiter().GetResult();
+                SaveLoadResult<SettingsSaveEnvelope> settings = repository.LoadSettingsAsync().GetAwaiter().GetResult();
+
+                Assert.That(profile.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
+                Assert.That(profile.Data, Is.Not.Null);
+                Assert.That(settings.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
+                Assert.That(settings.Data, Is.Not.Null);
+                CollectionAssert.AreEqual(profileBytes, File.ReadAllBytes(profilePrimary));
+                CollectionAssert.AreEqual(profileBytes, File.ReadAllBytes(profileBackup));
+                CollectionAssert.AreEqual(settingsBytes, File.ReadAllBytes(settingsPrimary));
+                CollectionAssert.AreEqual(settingsBytes, File.ReadAllBytes(settingsBackup));
+            }
+            finally
+            {
+                if (Directory.Exists(directory)) Directory.Delete(directory, true);
+            }
+        }
+
         private enum ProfileCase
         {
             P0NoActive,
@@ -1104,6 +1456,12 @@ namespace Luckbound.Tests.PlayMode
         {
             string fixturePath = Path.Combine(Application.dataPath, "Luckbound", "Tests", "Fixtures", "Saves", "V6", fileName);
             return File.ReadAllText(fixturePath);
+        }
+
+        private static byte[] ReadFixtureBytes(string fileName)
+        {
+            string fixturePath = Path.Combine(Application.dataPath, "Luckbound", "Tests", "Fixtures", "Saves", "V6", fileName);
+            return File.ReadAllBytes(fixturePath);
         }
 
         private static bool TryReadV6CaptureArgument(out string captureValue)

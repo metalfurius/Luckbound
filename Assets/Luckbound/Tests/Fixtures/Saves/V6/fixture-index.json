@@ -1,122 +1,288 @@
 {
   "contract": "F09.SAVE.V6.CHARACTERIZATION.TECH",
-  "state": "CapturePending",
-  "reviewStatus": "Not reviewable",
+  "state": "MeasuredCaptureProposal-GateBPending",
+  "reviewStatus": "Capture baseline Accepted by Sol; this fixture/assertion proposal is not yet reviewed for integration.",
   "capture": {
-    "performed": false,
-    "unityVersion": null,
-    "jsonUtilityVersion": null,
-    "capturedAtUtc": null,
-    "method": null,
-    "reason": "This assignment did not execute Unity or JsonUtility; no measured preimage or checksum is claimed."
+    "performed": true,
+    "unityVersion": "6000.6.6f1",
+    "jsonUtilityVersion": {
+      "assembly": "UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "module": "UnityEngine.JSONSerializeModule.dll",
+      "moduleMvid": "1f4144d6-4409-465d-9a7a-99a08455999d"
+    },
+    "capturedAtUtc": "2026-10-29T15:53:43.202338Z",
+    "method": "Native Unity test capture using -luckboundV6CaptureDir in GitHub Actions run 40904888964, attempt 1; see capture artifact, manifest, and descriptors.",
+    "reason": "Measured bytes are copied verbatim from the verified artifact into the proposal fixture tree. This proposal adds new assertions that have not run in Unity; Gate B is not accepted by this index.",
+    "startedAtUtc": "2026-10-29T15:53:42.934068Z",
+    "finalizedAtUtc": "2026-10-29T15:53:43.202338Z",
+    "ciRunId": 40904888964,
+    "artifactId": 12911198575,
+    "artifactSha256": "8839cd36bc59e0aab15f11c91d9f7ee316c44abc1a4c931a8d76eb0b316f7df0",
+    "manifestSha256": "3c1eda61c69f77710fd049ea4ed925accf6e99c0d84083a30366898fdd3d0068",
+    "verificationSha256": "2f4cb7edbb2bfdf3cd54c24e0019be655405b25f87e8d5108eb48e0c340e3f4d",
+    "baselineReview": {
+      "status": "Accepted",
+      "reviewer": "GPT-6.1 Sol, esfuerzo xhigh",
+      "report": "docs/ci-integration-20261029/SOL-NATIVE-V6-CAPTURE-R2.md",
+      "reportSha256": "1247fd7a2058cb675d6ffeef4fe25dfcfefb759cebba654164c7ace3f13e7e4e",
+      "scope": "Captura exacta como baseline medido; no acepta Gate B ni estas nuevas assertions."
+    }
   },
   "git": {
-    "head": "a2590e141c46729e6efa7d01ea33647768b58711",
-    "workingTree": "dirty shared integration checkout"
+    "head": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+    "workingTree": "not observed in CI capture",
+    "preCaptureIndexObservation": {
+      "recordedValue": "dirty shared integration checkout",
+      "sourceHead": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "meaning": "This was recorded in the incoming fixture-index only; it is not evidence of the CI capture run's working-tree status."
+    },
+    "treeSha": "b9c1dbf5a91928ed4ab3a972b6eb68030a69c772",
+    "workingTreeEvidence": "CI capture at the recorded commit; the manifest attests stable before/after source hashes but does not record a separate working-tree status."
   },
   "sourceHashesSha256": {
     "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
     "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
-    "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs": "8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574",
-    "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs": "5664d1d555c438d408267d144f77f6d134cdf71cc1e272b6eed732223caee6af",
-    "Assets/Luckbound/Scripts/App/SaveRepository.cs": "9f5283e58129bff637ccc9b43e62e9ee38100461c7b538b6a1bd510f361d1a3a"
+    "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+    "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+    "Assets/Luckbound/Scripts/App/SaveRepository.cs": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+    "Assets/Luckbound/Scripts/App/AssemblyInfo.cs": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+    "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs": "b67a0c3e6ffe3c9df054035b238212c769190169f70d4a353d5ff81e659dfaa7",
+    "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json": "22f64d362bc484bec85578e87438851c77867e1eb311bb78624ef01f6f01c3d3",
+    "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+    "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+    "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+    "ProjectSettings/ProjectVersion.txt": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+    "Packages/manifest.json": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+    "Packages/packages-lock.json": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
   },
   "fieldInventory": [
     {
       "dto": "LegacyProfileSaveEnvelopeV6",
       "sourceType": "ProfileSaveEnvelope",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["int schemaVersion", "int contentVersion", "int generation", "long sequence", "string savedAtUtc", "string checksum", "ProfileSaveData profile", "bool hasActiveExpedition", "ExpeditionSaveData activeExpedition"]
+      "fieldsInDeclarationOrder": [
+        "int schemaVersion",
+        "int contentVersion",
+        "int generation",
+        "long sequence",
+        "string savedAtUtc",
+        "string checksum",
+        "ProfileSaveData profile",
+        "bool hasActiveExpedition",
+        "ExpeditionSaveData activeExpedition"
+      ]
     },
     {
       "dto": "LegacySettingsSaveEnvelopeV6",
       "sourceType": "SettingsSaveEnvelope",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["int schemaVersion", "int contentVersion", "int generation", "long sequence", "string savedAtUtc", "string checksum", "GameSettingsSaveData settings"]
+      "fieldsInDeclarationOrder": [
+        "int schemaVersion",
+        "int contentVersion",
+        "int generation",
+        "long sequence",
+        "string savedAtUtc",
+        "string checksum",
+        "GameSettingsSaveData settings"
+      ]
     },
     {
       "dto": "LegacyProfileSaveDataV6",
       "sourceType": "ProfileSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["int availableRenown", "int healthUpgradeLevel", "int energyUpgradeLevel", "int additionalPotionUpgradeLevel", "string[] unlockedRaceIds", "string[] unlockedStartingKitIds", "string[] acceptedContractIds", "string[] claimedContractIds", "string[] readStoryFragmentIds", "ContractCounterSaveData[] contractCounters", "string[] processedSettlementRunIds", "ContractProgressEventReceiptSaveData[] processedContractProgressEvents", "PermanentUpgradePurchaseSaveData[] progressionPurchaseTransactions"]
+      "fieldsInDeclarationOrder": [
+        "int availableRenown",
+        "int healthUpgradeLevel",
+        "int energyUpgradeLevel",
+        "int additionalPotionUpgradeLevel",
+        "string[] unlockedRaceIds",
+        "string[] unlockedStartingKitIds",
+        "string[] acceptedContractIds",
+        "string[] claimedContractIds",
+        "string[] readStoryFragmentIds",
+        "ContractCounterSaveData[] contractCounters",
+        "string[] processedSettlementRunIds",
+        "ContractProgressEventReceiptSaveData[] processedContractProgressEvents",
+        "PermanentUpgradePurchaseSaveData[] progressionPurchaseTransactions"
+      ]
     },
     {
       "dto": "LegacyContractCounterSaveDataV6",
       "sourceType": "ContractCounterSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["string contractId", "int progress"]
+      "fieldsInDeclarationOrder": [
+        "string contractId",
+        "int progress"
+      ]
     },
     {
       "dto": "LegacyContractProgressEventReceiptSaveDataV6",
       "sourceType": "ContractProgressEventReceiptSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["string eventId", "int progressEvent"]
+      "fieldsInDeclarationOrder": [
+        "string eventId",
+        "int progressEvent"
+      ]
     },
     {
       "dto": "LegacyPermanentUpgradePurchaseSaveDataV6",
       "sourceType": "PermanentUpgradePurchaseSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["string transactionId", "int kind", "int cost"]
+      "fieldsInDeclarationOrder": [
+        "string transactionId",
+        "int kind",
+        "int cost"
+      ]
     },
     {
       "dto": "LegacyExpeditionSaveDataV6",
       "sourceType": "ExpeditionSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["string runId", "uint seed", "int generationVersion", "int contentVersion", "string classId", "string raceId", "string[] selectedSkillIds", "string[] startingEquipmentInstanceIds", "string routeSnapshotJson", "string currentNodeId", "string[] visitedNodeIds", "string[] completedRoomIds", "ExpeditionRoomCompletionSaveData[] completedRoomResults", "string roomEntryCheckpointJson", "string inventorySnapshotJson", "int maximumHealth", "int currentHealth", "int maximumEnergy", "int currentEnergy", "int healthPotionCharges", "ExpeditionPermanentUpgradeSnapshotSaveData frozenPermanentUpgrades", "bool hasFrozenPermanentUpgrades", "int accumulatedRenown", "string[] pactIds", "FortuneOfferBookSnapshot fortuneOfferBookSnapshot", "string[] collectedItemIds", "string[] claimedRewardIds"]
+      "fieldsInDeclarationOrder": [
+        "string runId",
+        "uint seed",
+        "int generationVersion",
+        "int contentVersion",
+        "string classId",
+        "string raceId",
+        "string[] selectedSkillIds",
+        "string[] startingEquipmentInstanceIds",
+        "string routeSnapshotJson",
+        "string currentNodeId",
+        "string[] visitedNodeIds",
+        "string[] completedRoomIds",
+        "ExpeditionRoomCompletionSaveData[] completedRoomResults",
+        "string roomEntryCheckpointJson",
+        "string inventorySnapshotJson",
+        "int maximumHealth",
+        "int currentHealth",
+        "int maximumEnergy",
+        "int currentEnergy",
+        "int healthPotionCharges",
+        "ExpeditionPermanentUpgradeSnapshotSaveData frozenPermanentUpgrades",
+        "bool hasFrozenPermanentUpgrades",
+        "int accumulatedRenown",
+        "string[] pactIds",
+        "FortuneOfferBookSnapshot fortuneOfferBookSnapshot",
+        "string[] collectedItemIds",
+        "string[] claimedRewardIds"
+      ]
     },
     {
       "dto": "LegacyExpeditionPermanentUpgradeSnapshotSaveDataV6",
       "sourceType": "ExpeditionPermanentUpgradeSnapshotSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["int healthUpgradeLevel", "int energyUpgradeLevel", "int additionalPotionUpgradeLevel"]
+      "fieldsInDeclarationOrder": [
+        "int healthUpgradeLevel",
+        "int energyUpgradeLevel",
+        "int additionalPotionUpgradeLevel"
+      ]
     },
     {
       "dto": "LegacyExpeditionRoomCheckpointSaveDataV6",
       "sourceType": "ExpeditionRoomCheckpointSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["string roomNodeId", "string inventorySnapshotJson", "int maximumHealth", "int currentHealth", "int maximumEnergy", "int currentEnergy", "int healthPotionCharges", "int accumulatedRenown", "FortuneOfferBookSnapshot fortuneOfferBookSnapshot", "string[] pactIds", "string[] collectedItemIds", "string[] claimedRewardIds"]
+      "fieldsInDeclarationOrder": [
+        "string roomNodeId",
+        "string inventorySnapshotJson",
+        "int maximumHealth",
+        "int currentHealth",
+        "int maximumEnergy",
+        "int currentEnergy",
+        "int healthPotionCharges",
+        "int accumulatedRenown",
+        "FortuneOfferBookSnapshot fortuneOfferBookSnapshot",
+        "string[] pactIds",
+        "string[] collectedItemIds",
+        "string[] claimedRewardIds"
+      ]
     },
     {
       "dto": "LegacyExpeditionRoomCompletionSaveDataV6",
       "sourceType": "ExpeditionRoomCompletionSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["string roomNodeId", "string resultId", "string resultJson"]
+      "fieldsInDeclarationOrder": [
+        "string roomNodeId",
+        "string resultId",
+        "string resultJson"
+      ]
     },
     {
       "dto": "LegacyFortuneOfferBookSnapshotV6",
       "sourceType": "FortuneOfferBookSnapshot",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
-      "fieldsInDeclarationOrder": ["int snapshotVersion", "int generationVersion", "uint seed", "string raceId", "int charges", "FortuneOfferSnapshot[] offers", "string[] processedGuardianIds", "FortuneRerollReceiptSnapshot[] rerollReceipts", "FortuneBrewReceiptSnapshot[] fortuneBrewReceipts"]
+      "fieldsInDeclarationOrder": [
+        "int snapshotVersion",
+        "int generationVersion",
+        "uint seed",
+        "string raceId",
+        "int charges",
+        "FortuneOfferSnapshot[] offers",
+        "string[] processedGuardianIds",
+        "FortuneRerollReceiptSnapshot[] rerollReceipts",
+        "FortuneBrewReceiptSnapshot[] fortuneBrewReceipts"
+      ]
     },
     {
       "dto": "LegacyFortuneOfferSnapshotV6",
       "sourceType": "FortuneOfferSnapshot",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
-      "fieldsInDeclarationOrder": ["string offerId", "string contextId", "string[] eligibleOptionIds", "FortuneOfferHistorySnapshot[] history", "string selectedOptionId", "bool claimed"]
+      "fieldsInDeclarationOrder": [
+        "string offerId",
+        "string contextId",
+        "string[] eligibleOptionIds",
+        "FortuneOfferHistorySnapshot[] history",
+        "string selectedOptionId",
+        "bool claimed"
+      ]
     },
     {
       "dto": "LegacyFortuneOfferHistorySnapshotV6",
       "sourceType": "FortuneOfferHistorySnapshot",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
-      "fieldsInDeclarationOrder": ["string[] optionIds"]
+      "fieldsInDeclarationOrder": [
+        "string[] optionIds"
+      ]
     },
     {
       "dto": "LegacyFortuneRerollReceiptSnapshotV6",
       "sourceType": "FortuneRerollReceiptSnapshot",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
-      "fieldsInDeclarationOrder": ["string transactionId", "string offerId", "int status", "string contextId", "string[] optionIds", "string selectedOptionId", "int rerollCount", "bool claimed", "int remainingCharges", "bool hasOffer"]
+      "fieldsInDeclarationOrder": [
+        "string transactionId",
+        "string offerId",
+        "int status",
+        "string contextId",
+        "string[] optionIds",
+        "string selectedOptionId",
+        "int rerollCount",
+        "bool claimed",
+        "int remainingCharges",
+        "bool hasOffer"
+      ]
     },
     {
       "dto": "LegacyFortuneBrewReceiptSnapshotV6",
       "sourceType": "FortuneBrewReceiptSnapshot",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
-      "fieldsInDeclarationOrder": ["string transactionId", "string itemInstanceId", "int status", "int currentCharges"]
+      "fieldsInDeclarationOrder": [
+        "string transactionId",
+        "string itemInstanceId",
+        "int status",
+        "int currentCharges"
+      ]
     },
     {
       "dto": "LegacyGameSettingsSaveDataV6",
       "sourceType": "GameSettingsSaveData",
       "sourceFile": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
-      "fieldsInDeclarationOrder": ["string languageId", "float masterVolume", "float musicVolume", "float effectsVolume", "float ambienceVolume"]
+      "fieldsInDeclarationOrder": [
+        "string languageId",
+        "float masterVolume",
+        "float musicVolume",
+        "float effectsVolume",
+        "float ambienceVolume"
+      ]
     }
   ],
   "fixtures": [
@@ -195,12 +361,551 @@
     }
   ],
   "gates": {
-    "dtoFieldInventory": "Recorded against the source hashes above; not independently reviewed.",
-    "unityJsonUtilityBytes": "CapturePending",
-    "frozenPreimageComparisons": "CapturePending",
-    "capturedSha256Comparisons": "CapturePending",
-    "checksumValidClassification": "CapturePending; no caller-created ChecksumValid result",
+    "dtoFieldInventory": "Recorded against the exact capture source hashes; no source DTO changes are proposed.",
+    "unityJsonUtilityBytes": "Measured in the accepted NativeV6 capture baseline; exact Unity/JsonUtility identity is recorded.",
+    "frozenPreimageComparisons": "Assertions are proposed against copied captured bytes; the new assertions have not run in Unity.",
+    "capturedSha256Comparisons": "Copied fixture files were rehashed against descriptor records and match byte-for-byte.",
+    "checksumValidClassification": "Capture evidence keeps semantic-positive, checksum-only P4, negative-semantic P5, settings, and separate checkpoint roles distinct.",
     "UnityTestsExecuted": false,
-    "buildOrCiExecuted": false
-  }
+    "buildOrCiExecuted": false,
+    "n0Corruption": "Test-only deterministic mutation of a captured positive envelope, keeping its stored checksum; no N0 golden or capture was fabricated.",
+    "candidateAssertionsExecuted": false,
+    "gateB": "Pending; no claim of acceptance for the new frozen assertions."
+  },
+  "inputOnlyHistory": {
+    "preservedVerbatim": true,
+    "originalIndexSha256": "22f64d362bc484bec85578e87438851c77867e1eb311bb78624ef01f6f01c3d3",
+    "fixtureRecords": "The original fixtures[] entries remain unchanged and retain their InputOnly roles/placeholders.",
+    "files": [
+      {
+        "path": "V6-P0-profile-no-active.InputOnly.json",
+        "sha256": "0e62286209d3771665a878aba426d258811bc4d83aca569287b60b2ec2b7be02"
+      },
+      {
+        "path": "V6-S0-settings.InputOnly.json",
+        "sha256": "41b40aab0c02c2a45027b1efda7b937aad4318747448d21f98acb5fe1aa96121"
+      }
+    ]
+  },
+  "frozenFixtures": [
+    {
+      "id": "V6-P0-profile-no-active",
+      "role": "positive-candidate-validity-to-measure",
+      "variant": "P0NoActive",
+      "captureAttempt": "cases/V6-P0-profile-no-active/attempt-0001",
+      "files": [
+        {
+          "file": "V6-P0-profile-no-active.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-P0-profile-no-active/attempt-0001/envelope.json",
+          "bytes": 2227,
+          "sha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+          "metaGuid": "47db0a08198340a1bf93d480d063e975"
+        },
+        {
+          "file": "V6-P0-profile-no-active.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-P0-profile-no-active/attempt-0001/checksum-preimage.utf8",
+          "bytes": 1442,
+          "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+          "metaGuid": "809087d558b746b58a20c59627bbe59b"
+        },
+        {
+          "file": "V6-P0-profile-no-active.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-P0-profile-no-active/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+          "metaGuid": "cf1f5f51e9294cf998890234c11ac234"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": true,
+        "semanticValidationErrors": [],
+        "decodeStatus": "Valid",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 1442
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-P1-active-known-zero",
+      "role": "positive-candidate-validity-to-measure",
+      "variant": "P1KnownFrozenZero",
+      "captureAttempt": "cases/V6-P1-active-known-zero/attempt-0001",
+      "files": [
+        {
+          "file": "V6-P1-active-known-zero.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-P1-active-known-zero/attempt-0001/envelope.json",
+          "bytes": 15920,
+          "sha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d",
+          "metaGuid": "8cbe7deec4f44fb28e4b5b10dabc240e"
+        },
+        {
+          "file": "V6-P1-active-known-zero.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-P1-active-known-zero/attempt-0001/checksum-preimage.utf8",
+          "bytes": 13170,
+          "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+          "metaGuid": "713a020cebf44a66a6ff4b9ca1f202fb"
+        },
+        {
+          "file": "V6-P1-active-known-zero.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-P1-active-known-zero/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9",
+          "metaGuid": "e1037237c8664781b54ee59a7eeb40bd"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": true,
+        "semanticValidationErrors": [],
+        "decodeStatus": "Valid",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 13170
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-P1-active-known-nontrivial",
+      "role": "positive-candidate-validity-to-measure",
+      "variant": "P1KnownFrozenNonTrivial",
+      "captureAttempt": "cases/V6-P1-active-known-nontrivial/attempt-0001",
+      "files": [
+        {
+          "file": "V6-P1-active-known-nontrivial.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-P1-active-known-nontrivial/attempt-0001/envelope.json",
+          "bytes": 15920,
+          "sha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3",
+          "metaGuid": "f57f473770134ad399218bae57fff397"
+        },
+        {
+          "file": "V6-P1-active-known-nontrivial.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-P1-active-known-nontrivial/attempt-0001/checksum-preimage.utf8",
+          "bytes": 13170,
+          "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+          "metaGuid": "195a477293c848b0b7d3bc99ff692886"
+        },
+        {
+          "file": "V6-P1-active-known-nontrivial.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-P1-active-known-nontrivial/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589",
+          "metaGuid": "91236deef2764304826f7982f7a8ebda"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": true,
+        "semanticValidationErrors": [],
+        "decodeStatus": "Valid",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 13170
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-P2-active-unknown-null",
+      "role": "positive-candidate-validity-to-measure",
+      "variant": "P2UnknownNullFrozen",
+      "captureAttempt": "cases/V6-P2-active-unknown-null/attempt-0001",
+      "files": [
+        {
+          "file": "V6-P2-active-unknown-null.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-P2-active-unknown-null/attempt-0001/envelope.json",
+          "bytes": 11338,
+          "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+          "metaGuid": "d91dcf8533424caa998d35fc9804879d"
+        },
+        {
+          "file": "V6-P2-active-unknown-null.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-P2-active-unknown-null/attempt-0001/checksum-preimage.utf8",
+          "bytes": 10461,
+          "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+          "metaGuid": "91d7adfe4bdd4e649dee23003ed0622c"
+        },
+        {
+          "file": "V6-P2-active-unknown-null.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-P2-active-unknown-null/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+          "metaGuid": "df4b5135e90446709fd9bc2a134c1288"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": true,
+        "semanticValidationErrors": [],
+        "decodeStatus": "Valid",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 10461
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-P2-active-unknown-inline-empty",
+      "role": "positive-candidate-validity-to-measure",
+      "variant": "P2UnknownEmptyInlineFrozen",
+      "captureAttempt": "cases/V6-P2-active-unknown-inline-empty/attempt-0001",
+      "files": [
+        {
+          "file": "V6-P2-active-unknown-inline-empty.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/envelope.json",
+          "bytes": 11338,
+          "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+          "metaGuid": "d8d3fbca33e24fda8c43b21d03dfc959"
+        },
+        {
+          "file": "V6-P2-active-unknown-inline-empty.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum-preimage.utf8",
+          "bytes": 10461,
+          "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+          "metaGuid": "a5889e452b9d47e8a96b3b54c0cbd5ea"
+        },
+        {
+          "file": "V6-P2-active-unknown-inline-empty.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+          "metaGuid": "c1ac6127a44646ba81eedc1ed45f73a9"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": true,
+        "semanticValidationErrors": [],
+        "decodeStatus": "Valid",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 10461
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-P3-receipts-full",
+      "role": "positive-candidate-validity-to-measure",
+      "variant": "P3ReceiptsFull",
+      "captureAttempt": "cases/V6-P3-receipts-full/attempt-0001",
+      "files": [
+        {
+          "file": "V6-P3-receipts-full.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-P3-receipts-full/attempt-0001/envelope.json",
+          "bytes": 12973,
+          "sha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c",
+          "metaGuid": "947e8b3f63a54f0aa3c57f737fe8414d"
+        },
+        {
+          "file": "V6-P3-receipts-full.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-P3-receipts-full/attempt-0001/checksum-preimage.utf8",
+          "bytes": 9345,
+          "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+          "metaGuid": "af91d9a4495540f48bb404892b4e52c3"
+        },
+        {
+          "file": "V6-P3-receipts-full.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-P3-receipts-full/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3",
+          "metaGuid": "fa2b53ced97042379520d3411e10e91a"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": true,
+        "semanticValidationErrors": [],
+        "decodeStatus": "Valid",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 9345
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-P4-null-empty-boundary",
+      "role": "checksum-serialization-only",
+      "variant": "P4NullEmptyBoundary",
+      "captureAttempt": "cases/V6-P4-null-empty-boundary/attempt-0001",
+      "files": [
+        {
+          "file": "V6-P4-null-empty-boundary.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-P4-null-empty-boundary/attempt-0001/envelope.json",
+          "bytes": 12060,
+          "sha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f",
+          "metaGuid": "6898ce97c7e048d29a9c91b933d259f1"
+        },
+        {
+          "file": "V6-P4-null-empty-boundary.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-P4-null-empty-boundary/attempt-0001/checksum-preimage.utf8",
+          "bytes": 10665,
+          "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+          "metaGuid": "126a2c6e81ab410084a9440e0d632dae"
+        },
+        {
+          "file": "V6-P4-null-empty-boundary.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-P4-null-empty-boundary/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae",
+          "metaGuid": "af35fe46ef8149c2aa91a1c07b601dd7"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": false,
+        "semanticValidationErrors": [
+          "unlocked race IDs cannot be null.",
+          "read story fragment IDs cannot be null.",
+          "Processed contract progress event receipts cannot be null.",
+          "Progression purchase transactions require a valid transaction ID.",
+          "Contract counters require a contract ID.",
+          "active expedition skill IDs cannot be null.",
+          "starting equipment instance IDs cannot be empty.",
+          "Active expedition requires the two starting equipment instance IDs.",
+          "visited route node IDs cannot be null.",
+          "Active expedition route history is invalid: Value cannot be null.\nParameter name: visitedNodeIds",
+          "Completed room results require a node, stable result ID and serialized result.",
+          "Completed room result has no matching completed room ID: patio.combat.01.",
+          "Every completed room must have exactly one saved result.",
+          "Active expedition Fortuna offer book snapshot is invalid: Fortune offer snapshot has invalid root state.",
+          "collected item IDs cannot be null."
+        ],
+        "decodeStatus": "Corrupted",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 10665
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-P5-flag-payload-conflict",
+      "role": "negative-semantic-candidate",
+      "variant": "P5FalseMarkerWithPayload",
+      "captureAttempt": "cases/V6-P5-flag-payload-conflict/attempt-0001",
+      "files": [
+        {
+          "file": "V6-P5-flag-payload-conflict.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-P5-flag-payload-conflict/attempt-0001/envelope.json",
+          "bytes": 15921,
+          "sha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536",
+          "metaGuid": "3c0a1f6e18f445ca8f653a3e192ca075"
+        },
+        {
+          "file": "V6-P5-flag-payload-conflict.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-P5-flag-payload-conflict/attempt-0001/checksum-preimage.utf8",
+          "bytes": 1442,
+          "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+          "metaGuid": "7bbfa8f0456e45aaaccfee34eabd876b"
+        },
+        {
+          "file": "V6-P5-flag-payload-conflict.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-P5-flag-payload-conflict/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+          "metaGuid": "f246a6df65f94b5d810eba5ddf5e1017"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": false,
+        "semanticValidationErrors": [
+          "Active expedition marker must match the saved expedition payload."
+        ],
+        "decodeStatus": "Corrupted",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 1442
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-S0-settings",
+      "role": "positive-candidate-validity-to-measure",
+      "variant": "BuildSettingsEnvelope",
+      "captureAttempt": "cases/V6-S0-settings/attempt-0001",
+      "files": [
+        {
+          "file": "V6-S0-settings.Frozen.envelope.json",
+          "sourceArtifactPath": "cases/V6-S0-settings/attempt-0001/envelope.json",
+          "bytes": 447,
+          "sha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139",
+          "metaGuid": "bf8c601a52cb440c95785480c77438b3"
+        },
+        {
+          "file": "V6-S0-settings.Frozen.checksum-preimage.utf8",
+          "sourceArtifactPath": "cases/V6-S0-settings/attempt-0001/checksum-preimage.utf8",
+          "bytes": 285,
+          "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+          "metaGuid": "1dd80326bd244bc084047dc47a02a9de"
+        },
+        {
+          "file": "V6-S0-settings.Frozen.checksum.sha256.txt",
+          "sourceArtifactPath": "cases/V6-S0-settings/attempt-0001/checksum.sha256.txt",
+          "bytes": 64,
+          "sha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+          "metaGuid": "ec136e6ecba541d09cb15301df84dad6"
+        }
+      ],
+      "observed": {
+        "semanticValidationAccepted": true,
+        "semanticValidationErrors": [],
+        "decodeStatus": "Valid",
+        "checksumStatus": "ChecksumValid",
+        "storedChecksumMatchesEncode": true,
+        "computedChecksumMatchesEncode": true,
+        "preimageMatchesLiveProjection": true,
+        "liveProjectionBytes": 285
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-checkpoint-empty-slots",
+      "role": "checkpoint-dto-json-separated-not-envelope",
+      "variant": "includeNullSlots=false",
+      "captureAttempt": "cases/V6-checkpoint-empty-slots/attempt-0001",
+      "files": [
+        {
+          "file": "V6-checkpoint-empty-slots.Frozen.checkpoint-legacy.json",
+          "sourceArtifactPath": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.json",
+          "bytes": 3819,
+          "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+          "metaGuid": "a85ed23d3db7408b848988798699d767"
+        },
+        {
+          "file": "V6-checkpoint-empty-slots.Frozen.checkpoint-legacy.sha256.txt",
+          "sourceArtifactPath": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+          "bytes": 64,
+          "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+          "metaGuid": "e920a9283fb74fdabb5b3bf415ad3bd2"
+        }
+      ],
+      "observed": {
+        "liveLegacyBytesEqual": true,
+        "liveByteCount": 3819,
+        "legacyByteCount": 3819,
+        "currentCaptureSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+        "legacyCaptureSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+        "currentAndLegacyCaptureBytesIdentical": true,
+        "roleClaim": "Separate DTO serializer equivalence only; no profile/settings envelope was produced."
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    },
+    {
+      "id": "V6-checkpoint-null-slots",
+      "role": "checkpoint-null-boundary-dto-json-separated-not-envelope",
+      "variant": "includeNullSlots=true",
+      "captureAttempt": "cases/V6-checkpoint-null-slots/attempt-0001",
+      "files": [
+        {
+          "file": "V6-checkpoint-null-slots.Frozen.checkpoint-legacy.json",
+          "sourceArtifactPath": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.json",
+          "bytes": 3821,
+          "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+          "metaGuid": "304d6224721c405bb279529060b73313"
+        },
+        {
+          "file": "V6-checkpoint-null-slots.Frozen.checkpoint-legacy.sha256.txt",
+          "sourceArtifactPath": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+          "bytes": 64,
+          "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+          "metaGuid": "1d80b39bf427478cbc993496db543bd7"
+        }
+      ],
+      "observed": {
+        "liveLegacyBytesEqual": true,
+        "liveByteCount": 3821,
+        "legacyByteCount": 3821,
+        "currentCaptureSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+        "legacyCaptureSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+        "currentAndLegacyCaptureBytesIdentical": true,
+        "roleClaim": "Separate DTO serializer equivalence only; no profile/settings envelope was produced."
+      },
+      "claim": "Measured capture evidence only. The frozen-assertion proposal remains unexecuted and does not itself satisfy Gate B."
+    }
+  ],
+  "measuredRelationships": [
+    {
+      "cases": [
+        "V6-P2-active-unknown-null",
+        "V6-P2-active-unknown-inline-empty"
+      ],
+      "envelopeBytesIdentical": true,
+      "envelopeSha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "checksumPreimageBytesIdentical": true,
+      "checksumPreimageSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "rolesRemainDistinctAndBothPositiveCandidates": true
+    },
+    {
+      "cases": [
+        "V6-P0-profile-no-active",
+        "V6-P5-flag-payload-conflict"
+      ],
+      "envelopeBytesIdentical": false,
+      "checksumPreimageBytesIdentical": true,
+      "checksumPreimageSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bothInspectorStatus": "ChecksumValid",
+      "p0": {
+        "role": "positive-candidate-validity-to-measure",
+        "decodeStatus": "Valid",
+        "envelopeSha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+        "semanticValidationAccepted": true
+      },
+      "p5": {
+        "role": "negative-semantic-candidate",
+        "decodeStatus": "Corrupted",
+        "envelopeSha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536",
+        "semanticValidationAccepted": false
+      }
+    }
+  ],
+  "proposalAssertions": [
+    {
+      "test": "CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles",
+      "cases": 8,
+      "status": "proposed-unexecuted"
+    },
+    {
+      "test": "CapturedFrozenSettingsFixtureMatchesMeasuredBytesAndEncoder",
+      "cases": 1,
+      "status": "proposed-unexecuted"
+    },
+    {
+      "test": "CapturedFrozenCheckpointBytesMatchMeasuredSeparateJson",
+      "cases": 2,
+      "status": "proposed-unexecuted"
+    },
+    {
+      "test": "N0MutationOfCapturedEnvelopeKeepsOriginalChecksumAndDiffersFromMalformed",
+      "cases": 1,
+      "status": "proposed-unexecuted; mutation held in memory; no golden file"
+    },
+    {
+      "test": "FrozenInspectionIsRepeatableAcrossCultureAndReturnsUnmodifiedCapturedBytes",
+      "cases": 1,
+      "status": "proposed-unexecuted"
+    },
+    {
+      "test": "FrozenP3RetainsNestedJsonStringsAndSerializedArrayOrder",
+      "cases": 1,
+      "status": "proposed-unexecuted"
+    },
+    {
+      "test": "CapturedNullEmptyAndFalseMarkerCasesKeepTheirDistinctRolesDespiteSharedBytes",
+      "cases": 1,
+      "status": "proposed-unexecuted"
+    },
+    {
+      "test": "FrozenPositiveProfilesAndSettingsAreReadByAnIsolatedRepositoryWithoutRewritingEitherCopy",
+      "cases": 1,
+      "status": "proposed-unexecuted"
+    }
+  ]
 }

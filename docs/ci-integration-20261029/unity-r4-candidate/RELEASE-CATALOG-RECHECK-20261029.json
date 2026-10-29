@@ -1,0 +1,13 @@
+{
+  "url": "https://services.api.unity.com/unity/editor/release/v1/releases?limit=25&offset=0",
+  "observedAtUtc": "2026-10-29T16:33:39.112645+00:00",
+  "rawSha256": "76646b92b305e6fece809b54912b81241a1986a0868680ccb935edb906815ab3",
+  "resultCount": 25,
+  "latestStableAmongReturned": {
+    "version": "6000.6.7f1",
+    "shortRevision": "b22767f04f04",
+    "releaseDate": "2026-10-21T09:54:08.135Z",
+    "stream": "SUPPORTED"
+  },
+  "scope": "Read-only official Unity release feed; no install or adoption"
+}
