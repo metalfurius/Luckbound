@@ -1,0 +1,71 @@
+{
+  "commit": "852698512281e45c1ac2e84c32808dfafb394f44",
+  "run": 40872571136,
+  "suite": 110789925826,
+  "testArtifact": 12896468312,
+  "testZipSha256": "de89784dbb7fdb5eef979ac5d2da6e42c5d8c2f202bdb581310daa9b9aefc17c",
+  "tests": [
+    {
+      "mode": "editmode",
+      "sha256": "f73aa2973e4eaf81ac053bdb6fd7aeef830cb65e89508c6735cdf2b85b7af5f9",
+      "summary": {
+        "id": "2",
+        "testcasecount": "350",
+        "result": "Passed",
+        "total": "350",
+        "passed": "350",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-29 12:26:39Z",
+        "end-time": "2026-10-29 12:26:41Z",
+        "duration": "1.7882437"
+      },
+      "unityVersionLog": "6000.6.6f1 (d20c9ac777da)",
+      "selectedTests": [
+        {
+          "name": "MovementDemoAvatar_ImportsBottomPivotAndKeepsConsumerBindings",
+          "result": "Passed",
+          "output": "BellatorPrototype GUID=ef0c7c5cb695aa84cad8cef6f7fd1017; localFileID=21300000\nMovementDemoPlayer prefab Avatar GUID=ef0c7c5cb695aa84cad8cef6f7fd1017; localFileID=21300000\nmovement demo Avatar GUID=ef0c7c5cb695aa84cad8cef6f7fd1017; localFileID=21300000\nC08 combat arena Avatar GUID=ef0c7c5cb695aa84cad8cef6f7fd1017; localFileID=21300000\nCustodian arena Avatar GUID=ef0c7c5cb695aa84cad8cef6f7fd1017; localFileID=21300000"
+        },
+        {
+          "name": "MovementDemoCourseSprites_ResolveCanonicalStoneSpriteFromCheckout",
+          "result": "Passed",
+          "output": "StonePrototype GUID=ece714fd4199c9f4481389b1367d40c9; localFileID=21300000"
+        },
+        {
+          "name": "StartupSceneGenerator_IsIdempotentAndLeavesNoProjectDiff",
+          "result": "Passed",
+          "output": "Luckbound startup scaffold reconciled. Created 0 missing scene(s); existing scenes and unrelated build entries were preserved.\nLuckbound startup scaffold reconciled. Created 0 missing scene(s); existing scenes and unrelated build entries were preserved."
+        }
+      ]
+    },
+    {
+      "mode": "playmode",
+      "sha256": "4737e38bc0ce4ab98aaa3e73b407f642a3d2052fd9fad32690de8f99fe1c25d5",
+      "summary": {
+        "id": "2",
+        "testcasecount": "246",
+        "result": "Passed",
+        "total": "246",
+        "passed": "246",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-29 12:23:47Z",
+        "end-time": "2026-10-29 12:26:14Z",
+        "duration": "147.1702292"
+      },
+      "unityVersionLog": "6000.6.6f1 (d20c9ac777da)",
+      "selectedTests": []
+    }
+  ],
+  "importedSpriteResult": "Avatar32x48 PPU16 pivot(16,0), Stone16x16 pivot(8,8), imported GUID/localID and prefab/three-scene bindings assertions passed.",
+  "scope": "Actual R5 CI tests only. Windows failed137; WebGL/build perception is separate. Unrelated dirty local sources are not covered."
+}

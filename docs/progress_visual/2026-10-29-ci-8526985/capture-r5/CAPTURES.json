@@ -1,0 +1,46 @@
+{
+  "status": "blocked",
+  "source": {
+    "commit": "852698512281e45c1ac2e84c32808dfafb394f44",
+    "branch": "codex/luckbound-visual-20261028",
+    "workflowRun": 40872571136,
+    "workflowRunUrl": "https://github.com/metalfurius/Luckbound/actions/runs/40872571136",
+    "webglJob": 123445960173,
+    "webglConclusion": "success",
+    "artifactId": 12897587564,
+    "artifactName": "webgl-852698512281e45c1ac2e84c32808dfafb394f44",
+    "artifactSha256": "88ac1dd4024ca6af7e107af2ffd1734216efd4f188ff48e4e190d5ed6a1766e2",
+    "artifactSuite": 110789925826,
+    "artifactDownloadManifest": "../../../../Logs/CI-40872571136-review/builds/WebGL/DOWNLOAD.json"
+  },
+  "captureRequirement": {
+    "nativeSizes": ["960x600", "1280x720"],
+    "requiredActions": ["menu to demo", "entry and normal movement", "normal Space jump", "landing", "arena and Custodian shared-Avatar coverage"],
+    "screenshotApi": "tab.screenshot({clip:{x:0,y:0,width,height}})",
+    "captureMethodUsed": null
+  },
+  "captures": [],
+  "blockingEvidence": {
+    "tool": "CUA",
+    "operation": "createBrowserTab('iab', 'http://127.0.0.1:8098/', {visible:false})",
+    "error": "IAB visibility is not supported in a subagent thread",
+    "gameplayLoaded": false,
+    "gameplayInputSent": false,
+    "audioPlaybackStarted": false,
+    "visualReviewPerformed": false,
+    "actionTimestampAvailable": false
+  },
+  "server": {
+    "address": "127.0.0.1",
+    "port": 8098,
+    "launchMetadata": "../../../Logs/R5VisualCapture-20261029/server-launch.json",
+    "closed": true,
+    "listenersVerifiedAbsentAfterClose": true,
+    "httpProbe": {
+      "status": 200,
+      "dateUtc": "2026-10-29T12:48:12Z",
+      "purpose": "Serve-only probe; no gameplay page was loaded in a browser."
+    }
+  },
+  "result": "No images exist for delegated visual review. The visual repair and B07/F10 remain unaccepted by this capture attempt."
+}

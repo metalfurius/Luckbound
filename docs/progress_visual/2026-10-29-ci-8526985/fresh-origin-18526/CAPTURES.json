@@ -1,0 +1,274 @@
+{
+  "commit": "852698512281e45c1ac2e84c32808dfafb394f44",
+  "runId": 40872571136,
+  "webglArtifactId": 12897587564,
+  "artifactZipSha256": "88ac1dd4024ca6af7e107af2ffd1734216efd4f188ff48e4e190d5ed6a1766e2",
+  "origin": "http://127.0.0.1:18526",
+  "cachePolicy": "Fresh origin, all responses no-store, HTTP200 GETs for actual R5 loader/framework/wasm/data recorded.",
+  "captures": [
+    {
+      "path": "01-menu-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:03:39.442Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Fresh origin18526; server logs verify200 responses for loader/framework/wasm/data from verified R5 artifact. No gameplay input.",
+      "bytes": 71656,
+      "sha256": "6b90451fa496c730ab852c7a1817024c18541648cd8344dc90181fb913f08d1a"
+    },
+    {
+      "path": "02-demo-entry-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:03:39.709Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Clicked JUGAR DEMO (310,395), before movement.",
+      "bytes": 71194,
+      "sha256": "ab95b8b284a760681e3581e4ffbc278f5a64901144fcf9f17b94188bdbef4f80"
+    },
+    {
+      "path": "03-demo-walk-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:03:50.401Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Held D700ms, released normally.",
+      "bytes": 73277,
+      "sha256": "6ed97c114128c071c2632a71c4ef782b6932f5985ea283eab7580fa54f625378"
+    },
+    {
+      "path": "04-demo-after-space-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:03:50.785Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Pressed Space180ms and captured immediately after normal key release and AX observation; airborne status is for reviewer to inspect.",
+      "bytes": 80294,
+      "sha256": "2de18ec4dabb25f33e70b0dbddf66e29de27f5dea022198b6613144a17b21638"
+    },
+    {
+      "path": "05-demo-after-jump-walk-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:03:51.892Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "After Space180ms, held D900ms; captured after real elapsed gameplay, without forcing landing.",
+      "bytes": 70940,
+      "sha256": "c900ee36e0d3cf7e837c2f9842ce96aeb78a84d087d0a3f6c9545b24790303d1"
+    },
+    {
+      "path": "06-menu-returned-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:04:31.705Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Clicked normal return-to-menu control from demo.",
+      "bytes": 71887,
+      "sha256": "5ba811e96d3188d0963c74d5751d9f85abc18a9782303630dde7adc523516b29"
+    },
+    {
+      "path": "07-arena-entry-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:04:31.940Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Clicked LUCHAR ARENA from returned menu, before movement.",
+      "bytes": 74658,
+      "sha256": "a34aa96914d5580235853a370a53b4b39c0903b9728959ad9013bd8919c58117"
+    },
+    {
+      "path": "08-arena-walk-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:04:32.967Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Held D700ms in arena; normal collisions/damage remain enabled.",
+      "bytes": 74627,
+      "sha256": "eb23ae453dec40923bd946ff661e230b4e7c9ec7ab3d693f0096ae154d3b8cbb"
+    },
+    {
+      "path": "09-menu-from-arena-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:04:42.488Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Clicked normal return-to-menu control from arena.",
+      "bytes": 71887,
+      "sha256": "5ba811e96d3188d0963c74d5751d9f85abc18a9782303630dde7adc523516b29"
+    },
+    {
+      "path": "10-custodian-entry-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:04:42.737Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Clicked ENFRENTAR CUSTODIO from menu; no attacks or state manipulation.",
+      "bytes": 75871,
+      "sha256": "f3da60a5240d6e9af4f9e537fbd36580b3b5700dafcd671952fcc1dc448029cb"
+    },
+    {
+      "path": "11-custodian-walk-1280x720.jpg",
+      "captureUtc": "2026-10-29T13:04:43.809Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 1280,
+      "height": 720,
+      "action": "Held D700ms in Custodian scene with ordinary collisions/damage.",
+      "bytes": 75687,
+      "sha256": "82bd6e90ec46fe60c914057ae1474bd944ba69f9c65ec44c641123f599034ff5"
+    },
+    {
+      "path": "12-menu-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:09.565Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Menu at canvas960x600; native clip, unchanged viewport.",
+      "bytes": 47624,
+      "sha256": "7529440814ceb1ef9a4a32c78eca83eec2a44e61dabb726bfccc6e2e0728fa57"
+    },
+    {
+      "path": "13-demo-entry-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:09.805Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Clicked JUGAR DEMO (240,330), before movement.",
+      "bytes": 63864,
+      "sha256": "5b13cac33f63782703e3b13aeb03b498fb1854fbcac052d3483de7e02b2a600a"
+    },
+    {
+      "path": "14-demo-walk-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:10.717Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Held D700ms, released normally.",
+      "bytes": 65222,
+      "sha256": "56ae06a36fc53534926e37b7f365b096996e55bc8c84dd7b388a827e42a557be"
+    },
+    {
+      "path": "15-demo-after-space-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:11.084Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Space180ms, immediate capture after release and AX observation.",
+      "bytes": 71107,
+      "sha256": "0b94b3a66f4c84b752f1efa0eace5ece749ae204f565c3a968ab02c654249dd3"
+    },
+    {
+      "path": "16-demo-after-jump-walk-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:12.235Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "After Space180ms held D900ms; no forced landing.",
+      "bytes": 66183,
+      "sha256": "9d4de140c6214a4de01d0e7c3c262891ae28d707c788ccb378cc90495610eb39"
+    },
+    {
+      "path": "17-menu-returned-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:42.648Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Normal return from demo.",
+      "bytes": 47817,
+      "sha256": "e911075d96325dc3629da579f6f098637cc4fbd0783355e3b923ec777ed2f550"
+    },
+    {
+      "path": "18-arena-entry-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:42.883Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Clicked arena from menu.",
+      "bytes": 66108,
+      "sha256": "1b85814257b22b64c2355056eedf64eb9eadb20c0069d710352993aba3c5ca88"
+    },
+    {
+      "path": "19-arena-walk-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:43.810Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Held D700ms in arena; no invulnerability or state mutation.",
+      "bytes": 66116,
+      "sha256": "5a619e38d09e3aa4379f8bf22e595975108cdeda84739276767034714800783a"
+    },
+    {
+      "path": "20-menu-from-arena-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:44.049Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Normal return from arena.",
+      "bytes": 47817,
+      "sha256": "e911075d96325dc3629da579f6f098637cc4fbd0783355e3b923ec777ed2f550"
+    },
+    {
+      "path": "21-custodian-entry-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:44.448Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Clicked Custodian from menu; no attacks.",
+      "bytes": 66995,
+      "sha256": "5609338f876c2268ea585bbe842161142b3b13ad9126c4a279b5e28916c4ab70"
+    },
+    {
+      "path": "22-custodian-walk-960x600.jpg",
+      "captureUtc": "2026-10-29T13:07:45.385Z",
+      "method": "Tab.screenshot, native JPEG",
+      "width": 960,
+      "height": 600,
+      "action": "Held D700ms in Custodian scene; ordinary damage/collision.",
+      "bytes": 66610,
+      "sha256": "044025e401284c8c5e0902991de3d2a8b28332c022be1394b218b70cfd9c64a5"
+    }
+  ],
+  "probes": {
+    "canvas1280": [
+      {
+        "level": "log",
+        "message": "LUCKBOUND_RENDER_PROBE stage=start activeRun=False courseSelf=True courseHierarchy=True camera=(0.000, 0.000, -10.000) ortho=5,625 near=0,3 far=1000 mask=-1 | renderer=StoneBackdrop active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=0 sorting=0/-100 bounds=Center: (0.00, 0.00, 8.00), Extents: (50.00, 20.00, 0.10) viewportCenter=(0.500, 0.500, 18.000) | renderer=TrainingFloor active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/0 bounds=Center: (0.00, -4.00, 0.00), Extents: (50.00, 0.50, 0.10) viewportCenter=(0.500, 0.144, 10.000) | renderer=JumpBarrierOne active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (-20.00, -2.50, 0.00), Extents: (0.75, 1.00, 0.10) viewportCenter=(-0.500, 0.278, 10.000) | renderer=JumpBarrierTwo active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (0.00, -2.60, 0.00), Extents: (0.75, 0.90, 0.10) viewportCenter=(0.500, 0.269, 10.000) | renderer=JumpBarrierThree active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (20.00, -2.50, 0.00), Extents: (0.75, 1.00, 0.10) viewportCenter=(1.500, 0.278, 10.000) | renderer=MovementDemoPortal active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=0 sorting=0/5 bounds=Center: (40.00, -2.00, 0.00), Extents: (0.50, 1.50, 0.10) viewportCenter=(2.500, 0.322, 10.000)\n",
+        "timestamp": "2026-10-29T13:03:39.517Z",
+        "url": "http://127.0.0.1:18526/Build/WebGL.framework.js.br"
+      },
+      {
+        "level": "log",
+        "message": "LUCKBOUND_RENDER_PROBE stage=after-two-frames activeRun=False courseSelf=True courseHierarchy=True camera=(-35.000, -2.250, -10.000) ortho=5,625 near=0,1 far=1000 mask=-1 | renderer=StoneBackdrop active=True enabled=True visible=True sprite=StonePrototype material=Sprite-Lit-Default layer=0 sorting=0/-100 bounds=Center: (0.00, 0.00, 8.00), Extents: (50.00, 20.00, 0.10) viewportCenter=(2.250, 0.700, 18.000) | renderer=TrainingFloor active=True enabled=True visible=True sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/0 bounds=Center: (0.00, -4.00, 0.00), Extents: (50.00, 0.50, 0.10) viewportCenter=(2.250, 0.344, 10.000) | renderer=JumpBarrierOne active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (-20.00, -2.50, 0.00), Extents: (0.75, 1.00, 0.10) viewportCenter=(1.250, 0.478, 10.000) | renderer=JumpBarrierTwo active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (0.00, -2.60, 0.00), Extents: (0.75, 0.90, 0.10) viewportCenter=(2.250, 0.469, 10.000) | renderer=JumpBarrierThree active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (20.00, -2.50, 0.00), Extents: (0.75, 1.00, 0.10) viewportCenter=(3.250, 0.478, 10.000) | renderer=MovementDemoPortal active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=0 sorting=0/5 bounds=Center: (40.00, -2.00, 0.00), Extents: (0.50, 1.50, 0.10) viewportCenter=(4.250, 0.522, 10.000)\n",
+        "timestamp": "2026-10-29T13:03:39.613Z",
+        "url": "http://127.0.0.1:18526/Build/WebGL.framework.js.br"
+      }
+    ],
+    "canvas960": [
+      {
+        "level": "log",
+        "message": "LUCKBOUND_RENDER_PROBE stage=start activeRun=False courseSelf=True courseHierarchy=True camera=(0.000, 0.000, -10.000) ortho=5,625 near=0,3 far=1000 mask=-1 | renderer=StoneBackdrop active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=0 sorting=0/-100 bounds=Center: (0.00, 0.00, 8.00), Extents: (50.00, 20.00, 0.10) viewportCenter=(0.500, 0.500, 18.000) | renderer=TrainingFloor active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/0 bounds=Center: (0.00, -4.00, 0.00), Extents: (50.00, 0.50, 0.10) viewportCenter=(0.500, 0.144, 10.000) | renderer=JumpBarrierOne active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (-20.00, -2.50, 0.00), Extents: (0.75, 1.00, 0.10) viewportCenter=(-0.500, 0.278, 10.000) | renderer=JumpBarrierTwo active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (0.00, -2.60, 0.00), Extents: (0.75, 0.90, 0.10) viewportCenter=(0.500, 0.269, 10.000) | renderer=JumpBarrierThree active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (20.00, -2.50, 0.00), Extents: (0.75, 1.00, 0.10) viewportCenter=(1.500, 0.278, 10.000) | renderer=MovementDemoPortal active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=0 sorting=0/5 bounds=Center: (40.00, -2.00, 0.00), Extents: (0.50, 1.50, 0.10) viewportCenter=(2.500, 0.322, 10.000)\n",
+        "timestamp": "2026-10-29T13:07:09.644Z",
+        "url": "http://127.0.0.1:18526/Build/WebGL.framework.js.br"
+      },
+      {
+        "level": "log",
+        "message": "LUCKBOUND_RENDER_PROBE stage=after-two-frames activeRun=False courseSelf=True courseHierarchy=True camera=(-35.000, -2.249, -10.000) ortho=5,625 near=0,1 far=1000 mask=-1 | renderer=StoneBackdrop active=True enabled=True visible=True sprite=StonePrototype material=Sprite-Lit-Default layer=0 sorting=0/-100 bounds=Center: (0.00, 0.00, 8.00), Extents: (50.00, 20.00, 0.10) viewportCenter=(2.250, 0.700, 18.000) | renderer=TrainingFloor active=True enabled=True visible=True sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/0 bounds=Center: (0.00, -4.00, 0.00), Extents: (50.00, 0.50, 0.10) viewportCenter=(2.250, 0.344, 10.000) | renderer=JumpBarrierOne active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (-20.00, -2.50, 0.00), Extents: (0.75, 1.00, 0.10) viewportCenter=(1.250, 0.478, 10.000) | renderer=JumpBarrierTwo active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (0.00, -2.60, 0.00), Extents: (0.75, 0.90, 0.10) viewportCenter=(2.250, 0.469, 10.000) | renderer=JumpBarrierThree active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=6 sorting=0/2 bounds=Center: (20.00, -2.50, 0.00), Extents: (0.75, 1.00, 0.10) viewportCenter=(3.250, 0.478, 10.000) | renderer=MovementDemoPortal active=True enabled=True visible=False sprite=StonePrototype material=Sprite-Lit-Default layer=0 sorting=0/5 bounds=Center: (40.00, -2.00, 0.00), Extents: (0.50, 1.50, 0.10) viewportCenter=(4.250, 0.522, 10.000)\n",
+        "timestamp": "2026-10-29T13:07:09.748Z",
+        "url": "http://127.0.0.1:18526/Build/WebGL.framework.js.br"
+      }
+    ]
+  },
+  "limitations": [
+    "No complete three-obstacle course, dodge, portal or full combat run.",
+    "No auditory or final-art approval.",
+    "Windows build still failed137."
+  ],
+  "cleanup": {
+    "Pid6372Stopped": true,
+    "RemainingCaptureListeners": 0,
+    "RemainingLuckboundServers": 0,
+    "TabsOwnClosed": true
+  },
+  "excludedAttempt": "../root-capture-20261029/EXCLUDED.json",
+  "subagentAttempt": "../capture-r5/README.md",
+  "visualApproval": "Pending delegated Sol review; no B07/F10 or Windows acceptance"
+}

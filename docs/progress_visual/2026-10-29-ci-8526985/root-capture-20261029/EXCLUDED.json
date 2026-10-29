@@ -1,0 +1,21 @@
+{
+  "status": "Excluded from R5 acceptance; resource cache identity not proven",
+  "reason": "Only index GET and capture POSTs reached the18526 predecessor server8098; no Build resource GETs. Byte identity with old R4 entry image adds suspicion. Do not attribute these images to R5.",
+  "captures": [
+    {
+      "path": "01-menu-1280x720.jpg",
+      "bytes": 71656,
+      "sha256": "6b90451fa496c730ab852c7a1817024c18541648cd8344dc90181fb913f08d1a"
+    },
+    {
+      "path": "02-demo-entry-1280x720.jpg",
+      "bytes": 71057,
+      "sha256": "15af5e4487f9e8d77f1fff9050a74a58b34e9f5b21395ddccc61e40c61507d0e"
+    },
+    {
+      "path": "03-demo-walk-1280x720.jpg",
+      "bytes": 73123,
+      "sha256": "803f1d5a2bc868b764d36b4e6d43454330441c29879e8205a6d4ba52f810d4d2"
+    }
+  ]
+}

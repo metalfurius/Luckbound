@@ -1,0 +1,28 @@
+{
+  "parentCommit": "852698512281e45c1ac2e84c32808dfafb394f44",
+  "file": ".github/workflows/build.yml",
+  "beforeSha256": "4c736edf0333b901fbbe8c67c7b103e3625572091df0c775ebaf18386633cd95",
+  "afterSha256": "94837f105a6368aaeb2d6041f2aac09f2522f1c6ecf649a3c39da63b12e18c03",
+  "reviewSha256": "39221351d83dc29ba61cc08987bafba93397050759911e88ccc12c9c5b2e8e1e",
+  "scope": "Only two Windows diagnostics steps use runner temp; no game/source/pin/cache/flag/target/gate changes.",
+  "sourcesUnchanged": 374,
+  "guardsUnchanged": {
+    "Assets/Luckbound/Art/Prototypes/MovementDemo/BellatorPrototype.png": "a62de31655f0ccd0bca59cf7f8ef0166890d4e176dd3a2f7d3321adfc24b3ef3",
+    "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png": "bbc831be3163492b1be78b737ad0913f0ce47bec88249483e5f1d7e9b369fd31",
+    "Assets/Luckbound/Art/Prototypes/MovementDemo/StonePrototype.png.meta": "310eaf50ed1b7421e80b1dd8f23a9329861294b4fcdad2dcf7663d47412e76d0",
+    "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab": "4d9d2a0272354ef682ddc5aed09042d620802852e9fa225d608c4a9d8c878a60",
+    "Assets/Luckbound/Prefabs/MovementDemoPlayer.prefab.meta": "b25855a668e2975f604e9c73ea8031374f7859c9c0e3b0d013137f18c35a7897",
+    "Assets/Luckbound/Scenes/Expedition.unity": "d07f07e84c3f50b2cad0e78cccbfdb083a44914ea06e2bae2dbe9c64ce955856",
+    "Assets/Luckbound/Scenes/CombatArena.unity": "91b26d32571b1b9c902b06f81ee599d0d7952c903e649d8f1482dd6098ec02f9",
+    "Assets/Luckbound/Scenes/CustodianArena.unity": "d36d080f3a15401b5892f8dcebd71db3959e9361f8e5664971cbd7dd7e74f96d",
+    "ProjectSettings/ProjectVersion.txt": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+    "Assets/Luckbound/Editor/MovementDemoScaffoldGenerator.cs": "a2ef193a0de5074ae03ba82ea2563b574c3c5772f067f5a3bb557a554aa40024",
+    "Assets/Luckbound/Tests/EditMode/Editor/ProjectScaffoldGeneratorTests.cs": "d81a70a073bb896d5af2d89d1711ed6601b353a11124caefa4b1ebcc16b70538",
+    "Assets/Luckbound/Art/Prototypes/MovementDemo/BellatorPrototype.png.meta": "4fb17c62916665ace5cb7c065dbd420ca85b49ab4726958dc33cb0c6b2f38bdd"
+  },
+  "authorization": "One diagnostic CI run on the existing authorized visual branch; no Main/gh-pages/releases.",
+  "expectedCacheRestore": "luckbound-linux-6000.6.6f1-windows-773db8967a75a13168da0d576b15d6d795878b233cc738c18c57641e28a43a7e",
+  "expectedWindowsImageDigest": "sha256:b233d725c25f87395ab7131ff39b7d9df5b4c85eb62986b1714e9415c32799d6",
+  "hostDifference": "New GitHub runner host may differ; capture actual facts, do not infer cause137 from a pass/fail.",
+  "ciExecuted": false
+}

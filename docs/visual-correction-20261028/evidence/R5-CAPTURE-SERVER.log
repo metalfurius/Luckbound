@@ -1,0 +1,52 @@
+R5 capture server starting; pid=3796; argv=['C:/Users/Fran/Documents/GitHub/Luckbound/Logs/R5RootCapture-20261029/serve_capture_review.py', '1280']
+Capture only: C:\Users\Fran\Documents\GitHub\Luckbound\Logs\CI-40872571136-review\builds\WebGL\extracted\WebGL; canvas 1280x720; loopback 8098
+127.0.0.1 - - [29/Oct/2026 13:56:59] "GET /?luckboundRenderProbe=1 HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 13:58:08] "POST /__capture__/01-menu-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 13:59:15] "POST /__capture__/02-demo-entry-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 13:59:16] "POST /__capture__/03-demo-walk-1280x720.jpg HTTP/1.1" 201 -
+R5 capture server starting; pid=21060; argv=['C:/Users/Fran/Documents/GitHub/Luckbound/Logs/R5RootCapture-20261029/serve_capture_fresh.py', '1280']
+Capture only: C:\Users\Fran\Documents\GitHub\Luckbound\Logs\CI-40872571136-review\builds\WebGL\extracted\WebGL; canvas 1280x720; loopback 18526
+127.0.0.1 - - [29/Oct/2026 14:02:57] "GET /?luckboundRenderProbe=1&r5=8526985 HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /TemplateData/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /Build/WebGL.loader.js HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /Build/WebGL.framework.js.br HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /TemplateData/unity-logo-dark.png HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /TemplateData/progress-bar-empty-dark.png HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /TemplateData/progress-bar-full-dark.png HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /Build/WebGL.wasm.br HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /TemplateData/favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:02:58] "GET /Build/WebGL.data.br HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:03:39] "POST /__capture__/01-menu-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:03:39] "POST /__capture__/02-demo-entry-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:03:50] "POST /__capture__/03-demo-walk-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:03:50] "POST /__capture__/04-demo-after-space-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:03:51] "POST /__capture__/05-demo-after-jump-walk-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:04:31] "POST /__capture__/06-menu-returned-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:04:31] "POST /__capture__/07-arena-entry-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:04:32] "POST /__capture__/08-arena-walk-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:04:42] "POST /__capture__/09-menu-from-arena-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:04:42] "POST /__capture__/10-custodian-entry-1280x720.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:04:43] "POST /__capture__/11-custodian-walk-1280x720.jpg HTTP/1.1" 201 -
+R5 capture server starting; pid=6372; argv=['C:/Users/Fran/Documents/GitHub/Luckbound/Logs/R5RootCapture-20261029/serve_capture_fresh.py', '960']
+Capture only: C:\Users\Fran\Documents\GitHub\Luckbound\Logs\CI-40872571136-review\builds\WebGL\extracted\WebGL; canvas 960x600; loopback 18526
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /?luckboundRenderProbe=1&r5=8526985&capture=960 HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /TemplateData/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /Build/WebGL.loader.js HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /Build/WebGL.framework.js.br HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /TemplateData/unity-logo-dark.png HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /TemplateData/progress-bar-empty-dark.png HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /TemplateData/progress-bar-full-dark.png HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /Build/WebGL.wasm.br HTTP/1.1" 200 -
+127.0.0.1 - - [29/Oct/2026 14:06:20] "GET /Build/WebGL.data.br HTTP/1.1" 304 -
+127.0.0.1 - - [29/Oct/2026 14:07:09] "POST /__capture__/12-menu-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:09] "POST /__capture__/13-demo-entry-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:10] "POST /__capture__/14-demo-walk-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:11] "POST /__capture__/15-demo-after-space-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:12] "POST /__capture__/16-demo-after-jump-walk-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:42] "POST /__capture__/17-menu-returned-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:42] "POST /__capture__/18-arena-entry-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:43] "POST /__capture__/19-arena-walk-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:44] "POST /__capture__/20-menu-from-arena-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:44] "POST /__capture__/21-custodian-entry-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:45] "POST /__capture__/22-custodian-walk-960x600.jpg HTTP/1.1" 201 -
+127.0.0.1 - - [29/Oct/2026 14:07:45] "POST /__capture_metadata__ HTTP/1.1" 201 -

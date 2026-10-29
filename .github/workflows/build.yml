@@ -105,13 +105,19 @@ jobs:
         if: failure()
         shell: bash
         run: |
-          mkdir -p Logs/WindowsBuildDiagnostics || true
+          diagnostics_dir="${RUNNER_TEMP}/Luckbound-WindowsDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          mkdir -p "$diagnostics_dir"
           {
+            set +e
             date -u '+%Y-%m-%dT%H:%M:%SZ UTC'
             echo '$ free -h'
             free -h
+            free_status=$?
+            printf 'free exit status: %s\n' "$free_status"
             echo '$ df -h .'
             df -h .
+            df_status=$?
+            printf 'df exit status: %s\n' "$df_status"
             echo '$ sudo -n dmesg --ctime | rg -i "out of memory|oom-kill|killed process" | tail -n 30'
             dmesg_status=0
             dmesg_output="$(sudo -n dmesg --ctime 2>&1)" || dmesg_status=$?
@@ -130,15 +136,15 @@ jobs:
                 echo 'OOM filter failed; diagnostic is inconclusive.'
               fi
             fi
-          } > Logs/WindowsBuildDiagnostics/windows-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log 2>&1 || true
+          } > "$diagnostics_dir/windows-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log" 2>&1
 
       - name: Upload Windows build diagnostics
         if: failure()
         uses: actions/upload-artifact@v7.0.2
         with:
           name: windows-diagnostics-${{ github.sha }}
-          path: Logs/WindowsBuildDiagnostics
-          if-no-files-found: ignore
+          path: ${{ runner.temp }}/Luckbound-WindowsDiagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
           retention-days: 14
 
       - name: Verify Windows output

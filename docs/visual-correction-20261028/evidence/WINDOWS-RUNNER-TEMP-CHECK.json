@@ -1,0 +1,42 @@
+{
+  "candidateSha256": "94837f105a6368aaeb2d6041f2aac09f2522f1c6ecf649a3c39da63b12e18c03",
+  "bashSyntaxExitCode": 0,
+  "checks": [
+    {
+      "case": "denied",
+      "exitCode": 0,
+      "capturedInRunnerTemp": true,
+      "workspaceLogsUntouched": true,
+      "output": "2026-10-29T12:56:15Z UTC\n$ free -h\nfixture memory snapshot\nfree exit status: 0\n$ df -h .\nfixture disk snapshot\ndf exit status: 0\n$ sudo -n dmesg --ctime | rg -i \"out of memory|oom-kill|killed process\" | tail -n 30\ndmesg exit status: 7\nsudo: fixture permission denied\n"
+    },
+    {
+      "case": "oom",
+      "exitCode": 0,
+      "capturedInRunnerTemp": true,
+      "workspaceLogsUntouched": true,
+      "output": "2026-10-29T12:56:16Z UTC\n$ free -h\nfixture memory snapshot\nfree exit status: 0\n$ df -h .\nfixture disk snapshot\ndf exit status: 0\n$ sudo -n dmesg --ctime | rg -i \"out of memory|oom-kill|killed process\" | tail -n 30\ndmesg exit status: 0\nOOM filter exit status: 0\nOut of memory: Killed process 123 (fixture)\n"
+    },
+    {
+      "case": "quiet",
+      "exitCode": 0,
+      "capturedInRunnerTemp": true,
+      "workspaceLogsUntouched": true,
+      "output": "2026-10-29T12:56:16Z UTC\n$ free -h\nfixture memory snapshot\nfree exit status: 0\n$ df -h .\nfixture disk snapshot\ndf exit status: 0\n$ sudo -n dmesg --ctime | rg -i \"out of memory|oom-kill|killed process\" | tail -n 30\ndmesg exit status: 0\nOOM filter exit status: 1\nNo matching OOM entries in readable dmesg output.\n"
+    },
+    {
+      "case": "filter_error",
+      "exitCode": 0,
+      "capturedInRunnerTemp": true,
+      "workspaceLogsUntouched": true,
+      "output": "2026-10-29T12:56:16Z UTC\n$ free -h\nfixture memory snapshot\nfree exit status: 0\n$ df -h .\nfixture disk snapshot\ndf exit status: 0\n$ sudo -n dmesg --ctime | rg -i \"out of memory|oom-kill|killed process\" | tail -n 30\ndmesg exit status: 0\nrg: fixture failure\nOOM filter exit status: 2\nOOM filter failed; diagnostic is inconclusive.\n"
+    },
+    {
+      "case": "resource_errors",
+      "exitCode": 0,
+      "capturedInRunnerTemp": true,
+      "workspaceLogsUntouched": true,
+      "output": "2026-10-29T12:56:16Z UTC\n$ free -h\nfree: fixture failure\nfree exit status: 17\n$ df -h .\ndf: fixture failure\ndf exit status: 18\n$ sudo -n dmesg --ctime | rg -i \"out of memory|oom-kill|killed process\" | tail -n 30\ndmesg exit status: 7\nsudo: fixture permission denied\n"
+    }
+  ],
+  "scope": "Exact diagnostic run block, synthetic free/df/sudo outputs, runner temp with spaces and unusable workspace Logs sentinel. No real Unity, sudo, kernel/OOM measurement, CI or YAML parser."
+}
