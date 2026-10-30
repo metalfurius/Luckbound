@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "runId": 41092941448,
+  "commit": "3ada68c782c2cc9e7a6f0c6b2c9b4ca1d0aa7322",
+  "artifactId": 12996065290,
+  "artifactZipBytes": 9336537,
+  "artifactSha256": "13bf797c22d81beb139e9881bd9e4e56494c1bbc502e084a508d7f18c62410b5",
+  "conclusion": "failure",
+  "tests": {
+    "editModePassed": 585,
+    "editModeTotal": 585,
+    "playModePassed": 432,
+    "playModeTotal": 433,
+    "passed": 1017,
+    "total": 1018,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0,
+    "all29V5ReaderTestsPassed": true,
+    "all31NewIsolationTestsPassed": true
+  },
+  "failure": {
+    "test": "CapturedNullEmptyAndFalseMarkerCasesKeepTheirDistinctRolesDespiteSharedBytes",
+    "sourceLine": 788,
+    "exception": "NullReferenceException",
+    "cause": "Existing test dereferenced rejected live diagnostic output; authenticated reader now returns no verified data."
+  },
+  "observability": {
+    "canonicalSource": "test-results/playmode.log",
+    "verifiedInvocations": 77,
+    "phaseCounts": {
+      "codec": 24,
+      "file-store": 1,
+      "fallback": 2,
+      "repository": 48,
+      "settings-independent": 2
+    },
+    "duplicateRows": 0,
+    "failedMarkers": 0
+  },
+  "realGateV6": "skipped",
+  "realSentinel": "failure",
+  "builds": "skipped",
+  "release": "skipped",
+  "deploy": "skipped",
+  "fix": {
+    "productionChanges": 0,
+    "testFile": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+    "beforeSha256": "c06d716deb425ba58f2aab70b5ca6bce91a0cb443f70134345ba89eb49afc54c",
+    "afterSha256": "53cb04469f12e32d03b5aa6477e96664dea401afd257445db6a4ae6f757b347b",
+    "reviewSha256": "273db803604e82b7a22e9dc0eeb835955bdde6321fc9cc691bf25a7782f6015c",
+    "nativeExecutionPending": true
+  },
+  "gateDAccepted": false
+}

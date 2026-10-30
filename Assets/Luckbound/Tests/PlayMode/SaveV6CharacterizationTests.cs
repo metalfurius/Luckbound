@@ -784,9 +784,16 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(noActiveDecode.ToString(), Is.EqualTo("Valid"));
             Assert.That(falseMarkerDecode.ToString(), Is.EqualTo("Corrupted"));
             Assert.That(SaveDataValidation.Validate(noActive).Any(), Is.False);
-            Assert.That(SaveDataValidation.Validate(falseMarker).Any(), Is.True);
-            Assert.That(falseMarker.hasActiveExpedition, Is.False);
-            Assert.That(falseMarker.activeExpedition, Is.Not.Null);
+            LegacyProfileSaveEnvelopeV6 rejectedFrozen;
+            Assert.That(SaveV6HistoricalReader.ReadProfile(falseMarkerJson, out rejectedFrozen),
+                Is.EqualTo(DecodeStatus.Corrupted));
+            Assert.That(rejectedFrozen, Is.Null, "Rejected data must not cross the authenticated reader boundary.");
+
+            LegacyProfileSaveEnvelopeV6 rawFalseMarker =
+                JsonUtility.FromJson<LegacyProfileSaveEnvelopeV6>(falseMarkerJson);
+            Assert.That(rawFalseMarker, Is.Not.Null);
+            Assert.That(rawFalseMarker.hasActiveExpedition, Is.False);
+            Assert.That(rawFalseMarker.activeExpedition, Is.Not.Null);
         }
 
         [Test]

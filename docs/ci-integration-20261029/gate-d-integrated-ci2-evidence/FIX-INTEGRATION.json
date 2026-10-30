@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "review": "docs/ci-integration-20261029/SOL-GATE-D-CI2-CHARACTERIZATION-FIX.md",
+  "reviewSha256": "273db803604e82b7a22e9dc0eeb835955bdde6321fc9cc691bf25a7782f6015c",
+  "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+  "beforeSha256": "c06d716deb425ba58f2aab70b5ca6bce91a0cb443f70134345ba89eb49afc54c",
+  "afterSha256": "53cb04469f12e32d03b5aa6477e96664dea401afd257445db6a4ae6f757b347b",
+  "guardedSources": 383,
+  "unchangedSources": 382,
+  "fixtureFilesPreserved": 423,
+  "productionSourcesChanged": 0,
+  "testsExecutedForThisFix": false
+}

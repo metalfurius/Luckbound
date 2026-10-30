@@ -1,0 +1,32 @@
+[
+  {
+    "path": "editmode-results.xml",
+    "origin": "Logs/CI-41092941448-root/download-attempt1/extracted/test-results/editmode-results.xml",
+    "bytes": 511035,
+    "sha256": "cfa4d13d5216901866a98d72cb1cc33aec342e0fbb32aa90e86e35b4cc28d06f"
+  },
+  {
+    "path": "playmode-results.xml",
+    "origin": "Logs/CI-41092941448-root/download-attempt1/extracted/test-results/playmode-results.xml",
+    "bytes": 1012258,
+    "sha256": "0af84a54dd7ac77ebe34f715d0543f590e0f961c479211403ea4c973ddcbbb87"
+  },
+  {
+    "path": "OBSERVABILITY-VERIFICATION.json",
+    "origin": "Logs/CI-41092941448-root/OBSERVABILITY-VERIFICATION.json",
+    "bytes": 26683,
+    "sha256": "49fc8099059cf93935426bf31b4a6a2da2bd1f01dbb18df91aa59fc721bbb141"
+  },
+  {
+    "path": "FIX-COMPILE.json",
+    "origin": "Logs/GateDCharacterizationFix-20261030-r1/offline-r1/RESULTS.json",
+    "bytes": 41004,
+    "sha256": "999bc68fd9e04f9a7e9e6411330b89b61a46cff654fc686eca231f97a8ae692c"
+  },
+  {
+    "path": "FIX-INTEGRATION.json",
+    "origin": "Logs/GateDCharacterizationFix-20261030-r1/INTEGRATION.json",
+    "bytes": 594,
+    "sha256": "6fb4f64b97cc5cad5a70e0c7fa9e2cda7dfae48fb7a2f2bff10b74d51cba159e"
+  }
+]
