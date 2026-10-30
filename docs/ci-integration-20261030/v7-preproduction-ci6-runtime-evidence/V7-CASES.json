@@ -1,0 +1,553 @@
+{
+  "count": 78,
+  "passed": 78,
+  "cases": [
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "ActiveV7RequiresTypedPinAndUnfinishedCheckpointMarker",
+      "name": "ActiveV7RequiresTypedPinAndUnfinishedCheckpointMarker",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.ActiveV7RequiresTypedPinAndUnfinishedCheckpointMarker",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CheckpointBindingAllowsEmptyCheckpointForInactiveOrCompletedCurrentState",
+      "name": "CheckpointBindingAllowsEmptyCheckpointForInactiveOrCompletedCurrentState",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingAllowsEmptyCheckpointForInactiveOrCompletedCurrentState",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CheckpointBindingComparesPactsAsAnOrdinalSetAndAllowsZeroEnergy",
+      "name": "CheckpointBindingComparesPactsAsAnOrdinalSetAndAllowsZeroEnergy",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingComparesPactsAsAnOrdinalSetAndAllowsZeroEnergy",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference",
+      "name": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"seed\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"seed\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference",
+      "name": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"generation\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"generation\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference",
+      "name": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"race\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"race\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference",
+      "name": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"pacts\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"pacts\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CheckpointRejectsNegativeOrOverMaximumEnergyAndActiveRunStillRequiresPositiveMaximum",
+      "name": "CheckpointRejectsNegativeOrOverMaximumEnergyAndActiveRunStillRequiresPositiveMaximum",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointRejectsNegativeOrOverMaximumEnergyAndActiveRunStillRequiresPositiveMaximum",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CheckpointRequiresExactCurrentNodeAndPinnedPlanReference",
+      "name": "CheckpointRequiresExactCurrentNodeAndPinnedPlanReference",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointRequiresExactCurrentNodeAndPinnedPlanReference",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreAcceptsNontrivialProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreAcceptsNontrivialProfileAndCheckpointBooksWithoutMutatingDtos",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreAcceptsNontrivialProfileAndCheckpointBooksWithoutMutatingDtos",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"future-version\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"future-version\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"charges\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"charges\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"status\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"status\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"duplicate-offer\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"duplicate-offer\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"duplicate-transaction\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"duplicate-transaction\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-selection\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-selection\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-history\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-history\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-brew-id\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-brew-id\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"unknown-status\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"unknown-status\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "name": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"unknown-options\")",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"unknown-options\")",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "NullPinAndCheckpointArraysAreRejectedAndErrorsHaveNonNullText",
+      "name": "NullPinAndCheckpointArraysAreRejectedAndErrorsHaveNonNullText",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.NullPinAndCheckpointArraysAreRejectedAndErrorsHaveNonNullText",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "PinEntryMustNameTheCurrentRouteCursor",
+      "name": "PinEntryMustNameTheCurrentRouteCursor",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.PinEntryMustNameTheCurrentRouteCursor",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "RouteMutationCannotPassThePinnedCanonicalRouteDigest",
+      "name": "RouteMutationCannotPassThePinnedCanonicalRouteDigest",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.RouteMutationCannotPassThePinnedCanonicalRouteDigest",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "SettingsV7UsesFrozenFieldsAndDefaultsWithoutChangingLiveSaveFormat",
+      "name": "SettingsV7UsesFrozenFieldsAndDefaultsWithoutChangingLiveSaveFormat",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.SettingsV7UsesFrozenFieldsAndDefaultsWithoutChangingLiveSaveFormat",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "TypedCloneDeepCopiesNestedDtosAndPreservesValuesOrderAndNulls",
+      "name": "TypedCloneDeepCopiesNestedDtosAndPreservesValuesOrderAndNulls",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.TypedCloneDeepCopiesNestedDtosAndPreservesValuesOrderAndNulls",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "method": "TypedClonePreservesNullArraysWithoutFillingDefaults",
+      "name": "TypedClonePreservesNullArraysWithoutFillingDefaults",
+      "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.TypedClonePreservesNullArraysWithoutFillingDefaults",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "CandidateCapturesInputsAndEnvelopeGettersWithoutAliases",
+      "name": "CandidateCapturesInputsAndEnvelopeGettersWithoutAliases",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.CandidateCapturesInputsAndEnvelopeGettersWithoutAliases",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "ExplicitV6InactiveMigrationPreservesProfileArraysReceiptsAndAdvancesDurableIdentity",
+      "name": "ExplicitV6InactiveMigrationPreservesProfileArraysReceiptsAndAdvancesDurableIdentity",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.ExplicitV6InactiveMigrationPreservesProfileArraysReceiptsAndAdvancesDurableIdentity",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "FileStoreCommitsInitialAndTransitionAtomicallyAndRestoresExactRetainedRevisionAndBackup",
+      "name": "FileStoreCommitsInitialAndTransitionAtomicallyAndRestoresExactRetainedRevisionAndBackup",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.FileStoreCommitsInitialAndTransitionAtomicallyAndRestoresExactRetainedRevisionAndBackup",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "FileStoreFinalizationFailureRetainsExactPendingBytesAndIndependentSettings",
+      "name": "FileStoreFinalizationFailureRetainsExactPendingBytesAndIndependentSettings",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.FileStoreFinalizationFailureRetainsExactPendingBytesAndIndependentSettings",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "FuturePrimaryNeverFallsBackAndOperationalV6RejectsARealV7Document",
+      "name": "FuturePrimaryNeverFallsBackAndOperationalV6RejectsARealV7Document",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.FuturePrimaryNeverFallsBackAndOperationalV6RejectsARealV7Document",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "InitialCommitRejectsCatalogMissingOnlyAFutureNodeWithoutWritingOrResolvingItsVariant",
+      "name": "InitialCommitRejectsCatalogMissingOnlyAFutureNodeWithoutWritingOrResolvingItsVariant",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.InitialCommitRejectsCatalogMissingOnlyAFutureNodeWithoutWritingOrResolvingItsVariant",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "PendingV6PreventsLatchWithoutReadOrCacheChangeAndRetriesOriginalProtocol",
+      "name": "PendingV6PreventsLatchWithoutReadOrCacheChangeAndRetriesOriginalProtocol",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.PendingV6PreventsLatchWithoutReadOrCacheChangeAndRetriesOriginalProtocol",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "PendingV7NeverReadsOrReencodesAndSerializesConcurrentV6Access",
+      "name": "PendingV7NeverReadsOrReencodesAndSerializesConcurrentV6Access",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.PendingV7NeverReadsOrReencodesAndSerializesConcurrentV6Access",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "PinAdapterMatchesOriginalCoreBytesAndRejectsLossyInputs",
+      "name": "PinAdapterMatchesOriginalCoreBytesAndRejectsLossyInputs(False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.PinAdapterMatchesOriginalCoreBytesAndRejectsLossyInputs(False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "PinAdapterMatchesOriginalCoreBytesAndRejectsLossyInputs",
+      "name": "PinAdapterMatchesOriginalCoreBytesAndRejectsLossyInputs(True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.PinAdapterMatchesOriginalCoreBytesAndRejectsLossyInputs(True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "RejectsMutableEnvelopeTamperingMissingRevisionAndRewrittenEntryCheckpoint",
+      "name": "RejectsMutableEnvelopeTamperingMissingRevisionAndRewrittenEntryCheckpoint",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.RejectsMutableEnvelopeTamperingMissingRevisionAndRewrittenEntryCheckpoint",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "SignedUnknownInventorySchemaAndMissingEnteredBindingFailBeforeStorageOrPublication",
+      "name": "SignedUnknownInventorySchemaAndMissingEnteredBindingFailBeforeStorageOrPublication",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.SignedUnknownInventorySchemaAndMissingEnteredBindingFailBeforeStorageOrPublication",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(1,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(1,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(1,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(1,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(2,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(2,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(2,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(2,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(3,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(3,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(3,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(3,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(4,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(4,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(4,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(4,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(5,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(5,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(5,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(5,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(6,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(6,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly",
+      "name": "V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(6,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(6,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(1,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(1,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(1,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(1,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(2,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(2,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(2,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(2,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(3,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(3,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(3,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(3,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(4,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(4,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(4,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(4,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(5,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(5,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(5,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(5,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(6,False)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(6,False)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit",
+      "name": "V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(6,True)",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(6,True)",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "method": "V7ProfileLatchLeavesFrozenV6SettingsOnTheIndependentOperationalPath",
+      "name": "V7ProfileLatchLeavesFrozenV6SettingsOnTheIndependentOperationalPath",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7ProfileLatchLeavesFrozenV6SettingsOnTheIndependentOperationalPath",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "CheckpointCodec_IsTypedAndStrictWithoutAnIndependentChecksum",
+      "name": "CheckpointCodec_IsTypedAndStrictWithoutAnIndependentChecksum",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.CheckpointCodec_IsTypedAndStrictWithoutAnIndependentChecksum",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "ChecksumTamperingAndSemanticMutationAreRejectedWithoutRepair",
+      "name": "ChecksumTamperingAndSemanticMutationAreRejectedWithoutRepair",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ChecksumTamperingAndSemanticMutationAreRejectedWithoutRepair",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "EmbeddedCheckpointMustMatchThePinFromTheSameProfile",
+      "name": "EmbeddedCheckpointMustMatchThePinFromTheSameProfile",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.EmbeddedCheckpointMustMatchThePinFromTheSameProfile",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "NullArrayIsNotNormalizedToEmptyByEncode",
+      "name": "NullArrayIsNotNormalizedToEmptyByEncode",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.NullArrayIsNotNormalizedToEmptyByEncode",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "ProfileAuthenticationRejectsMutationWithoutReplacingChecksum",
+      "name": "ProfileAuthenticationRejectsMutationWithoutReplacingChecksum",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileAuthenticationRejectsMutationWithoutReplacingChecksum",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "ProfileEncode_EmitsExplicitEncounterPayloadOnlyForEncounterMode",
+      "name": "ProfileEncode_EmitsExplicitEncounterPayloadOnlyForEncounterMode",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileEncode_EmitsExplicitEncounterPayloadOnlyForEncounterMode",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "ProfileEncode_EscapesDeterministicallyAndPreservesOpaqueUnicode",
+      "name": "ProfileEncode_EscapesDeterministicallyAndPreservesOpaqueUnicode",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileEncode_EscapesDeterministicallyAndPreservesOpaqueUnicode",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "ProfileEncode_RejectsUnpairedSurrogateWithoutMutatingInput",
+      "name": "ProfileEncode_RejectsUnpairedSurrogateWithoutMutatingInput",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileEncode_RejectsUnpairedSurrogateWithoutMutatingInput",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "ProfileRoundTrip_DoesNotCreateCheckpointForCompletedOrInactiveRuns",
+      "name": "ProfileRoundTrip_DoesNotCreateCheckpointForCompletedOrInactiveRuns",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileRoundTrip_DoesNotCreateCheckpointForCompletedOrInactiveRuns",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "ProfileRoundTrip_PreservesSixteenClosedDtosAndTypedPin",
+      "name": "ProfileRoundTrip_PreservesSixteenClosedDtosAndTypedPin",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileRoundTrip_PreservesSixteenClosedDtosAndTypedPin",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "SettingsEncode_RequiresAnEmptyOrWellFormedInputChecksum",
+      "name": "SettingsEncode_RequiresAnEmptyOrWellFormedInputChecksum",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.SettingsEncode_RequiresAnEmptyOrWellFormedInputChecksum",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "SettingsVector_IsInvariantAcrossCulturesAndRoundTrips",
+      "name": "SettingsVector_IsInvariantAcrossCulturesAndRoundTrips",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.SettingsVector_IsInvariantAcrossCulturesAndRoundTrips",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "SettingsVector_UsesIndependentBytesAndSha256",
+      "name": "SettingsVector_UsesIndependentBytesAndSha256",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.SettingsVector_UsesIndependentBytesAndSha256",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "StrictReaderRejectsInvalidUtf8SurrogatesUnknownDuplicateMissingAndTrailingData",
+      "name": "StrictReaderRejectsInvalidUtf8SurrogatesUnknownDuplicateMissingAndTrailingData",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.StrictReaderRejectsInvalidUtf8SurrogatesUnknownDuplicateMissingAndTrailingData",
+      "result": "Passed"
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "method": "StrictReaderRejectsModeNumbersCasingAndNonePayloadKeys",
+      "name": "StrictReaderRejectsModeNumbersCasingAndNonePayloadKeys",
+      "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.StrictReaderRejectsModeNumbersCasingAndNonePayloadKeys",
+      "result": "Passed"
+    }
+  ],
+  "attributeRepresentation": "Decoded XML attribute values (predefined/numeric entities); original XML unchanged"
+}

@@ -1,0 +1,71 @@
+{
+  "run": 41129868274,
+  "suite": 111496859992,
+  "commit": "2c01f23d44068719f37d03d6b20de48e2800fd29",
+  "tree": "6238328760afc230b82f4d8fdc6b14f6f5ad82cf",
+  "testsArtifact": 13012313660,
+  "testsArtifactBytes": 9436815,
+  "testsArtifactSha256": "fde92a7e0231cf43b2b5c3920a82f60a300e4bd2571b0bd7a8808bf16acbef3e",
+  "extractedFiles": 241,
+  "editMode": {
+    "passed": 633,
+    "total": 633
+  },
+  "playMode": {
+    "passed": 497,
+    "total": 497
+  },
+  "total": 1130,
+  "passed": 1130,
+  "failed": 0,
+  "skipped": 0,
+  "inconclusive": 0,
+  "newV7Cases": 78,
+  "v7Groups": [
+    {
+      "class": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests",
+      "count": 26,
+      "passed": 26
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7CodecTests",
+      "count": 15,
+      "passed": 15
+    },
+    {
+      "class": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests",
+      "count": 37,
+      "passed": 37
+    }
+  ],
+  "capture": {
+    "cases": 11,
+    "attempts": 11,
+    "dataFiles": 97,
+    "sources": 14,
+    "stable": true,
+    "complete": true,
+    "rolesPassed": true,
+    "byteIdenticalToGateD": 97,
+    "observationsIdenticalToGateD": 77
+  },
+  "testJob": "success",
+  "v6Gate": "success",
+  "sentinel": "success",
+  "overallCi": "success",
+  "windows": "success",
+  "webgl": "success",
+  "windowsArtifactVerified": true,
+  "webglArtifactVerified": true,
+  "release": "skipped",
+  "deploy": "skipped",
+  "unityLocal": false,
+  "playersExecuted": false,
+  "v7Operational": false,
+  "fullGameAccepted": false,
+  "formalRuntimeReview": {
+    "verdict": "Accepted",
+    "report": "../SOL-V7-PREPRODUCTION-CI6-RUNTIME.md",
+    "sha256": "8f15efbb81781e609b36f442baf844e3a6cbd759a1f8a478bfd9830cfb22395b"
+  }
+}

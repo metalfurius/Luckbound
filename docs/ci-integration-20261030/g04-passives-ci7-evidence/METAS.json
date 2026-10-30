@@ -1,0 +1,38 @@
+{
+  "status": "prepared under Logs only",
+  "beforeUniqueGuids": 863,
+  "added": 5,
+  "afterUniqueGuids": 868,
+  "files": [
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Relics/SupportRelicSkillUseTests.cs.meta",
+      "guid": "07fc258d41caa74cb1b02c33a1ee8c35",
+      "sha256": "b77380595f6c2ff210b531e3529b3266bae4bfe218eac225f777a0bbf41a4807",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Relics/SupportRelicHealingUseTests.cs.meta",
+      "guid": "65033ea7414633dd78b0809a2fb86aa0",
+      "sha256": "1ea192aa7ecbd08c7cab52f4a8b2bceabacf96bec21babd7a0ac93c0ccc7e816",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs.meta",
+      "guid": "a726d65cc526006b3ac7b1c3c52be1fa",
+      "sha256": "7b8f73e5155b371a25637bda243efdae25db9ad16c69a3be26232efc0c093d02",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Relics/SupportRelicActorRulesTests.cs.meta",
+      "guid": "2aa5617e0f03cf7697ab2c2f3b194106",
+      "sha256": "692bad8625a2d380916cf3f5392d8bc837d0f3fec65a1f260349722be6135d94",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs.meta",
+      "guid": "afb8d98c03d62f1e235f1f045c8c8089",
+      "sha256": "99c0f7edd84a8e4817bd032f3c3eeba98b6c12164345003b56bd14d005c594ef",
+      "bytes": 240
+    }
+  ]
+}

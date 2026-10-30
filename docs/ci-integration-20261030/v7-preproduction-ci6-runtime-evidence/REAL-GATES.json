@@ -1,0 +1,85 @@
+{
+  "testJob": 124317744706,
+  "testJobConclusion": "success",
+  "unityOutcome": "success",
+  "v6GateOutcome": "success",
+  "sentinelConclusion": "success",
+  "evidence": {
+    "verifierCommand": "python3 Tools/Automation/verify_v6_capture.py",
+    "sentinel": [
+      "test \"${UNITY_TEST_OUTCOME}\" = success",
+      "test \"${V6_GATE_OUTCOME}\" = success",
+      "  UNITY_TEST_OUTCOME: success",
+      "  V6_GATE_OUTCOME: success"
+    ],
+    "rawLogSha256": "fa3c37a656f96696a429deaa2f45140e25f91ae40cf94b1c4d7912b555399ddd",
+    "rawLogBytes": 4448813,
+    "rawLogPublished": false
+  },
+  "verifier": {
+    "commit": "2c01f23d44068719f37d03d6b20de48e2800fd29",
+    "sessionId": "5d52de146c1f416ba745fd13a2fb191a",
+    "expectedUnityVersion": "6000.6.7f1",
+    "observedUnityVersion": "6000.6.7f1",
+    "projectVersionDeclared": "6000.6.7f1",
+    "projectPinUnityVersion": "6000.6.7f1",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "aa653c4cf2a69a1b2a35e1a55c961f2cfc41e3a90f5b7593fcbe3e597a75cb77",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  },
+  "steps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Checkout source",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Cache Unity Library",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run Unity tests",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Verify explicit V6 capture",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Require successful tests and explicit V6 capture",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Upload test results",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Cache Unity Library",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Checkout source",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}

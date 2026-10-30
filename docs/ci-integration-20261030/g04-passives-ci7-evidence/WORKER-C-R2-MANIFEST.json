@@ -1,0 +1,121 @@
+{
+  "manifest_version": 1,
+  "package": "G04 actor rules and composite tests R2",
+  "date": "2026-10-30",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-G04-REMAINING-CONSUMERS-NEXT-CONTRACT.md",
+    "sha256": "89ae78ead029597d6d881b82a9dd430d949f57b29c2e07733fca596f6dd08ca6"
+  },
+  "r1_static_review": {
+    "path": "docs/ci-integration-20261030/SOL-G04-ACTOR-COMPOSED-STATIC-R1.md",
+    "sha256": "34a58ddf523eaf758681e91233315c8724234304f16897a188b853db521fae31",
+    "status": "Conditional; exactly two PlayMode P2 findings addressed in R2"
+  },
+  "baseline_r1": {
+    "candidate_root": "Logs/G04RemainingConsumers-20261030-r1/actor/candidate",
+    "candidate_files": [
+      {
+        "path": "candidate/Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+        "bytes": 2165,
+        "sha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9"
+      },
+      {
+        "path": "candidate/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicActorRulesTests.cs",
+        "bytes": 3893,
+        "sha256": "0f4f6aa4de93594da5dffe14379ec1039ad6aeb632f9c9562f62c46329e9d2c4"
+      },
+      {
+        "path": "candidate/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+        "bytes": 54183,
+        "sha256": "0ef945b99df200bfff72c1c6ad9995c5cf52f50d2f7dc1fb12db066e71d8349d"
+      }
+    ],
+    "report": "Logs/G04RemainingConsumers-20261030-r1/actor/REPORT.md",
+    "manifest": "Logs/G04RemainingConsumers-20261030-r1/actor/MANIFEST.json"
+  },
+  "candidate_root": "Logs/G04RemainingConsumers-20261030-r1/actor-r2/candidate",
+  "candidate_files": [
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+      "bytes": 2165,
+      "sha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicActorRulesTests.cs",
+      "bytes": 3893,
+      "sha256": "0f4f6aa4de93594da5dffe14379ec1039ad6aeb632f9c9562f62c46329e9d2c4"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "bytes": 54301,
+      "sha256": "749a142755d449b943ab1b7cddf83ffe85e7c0b9bce0d5f3cae9e8787f7d6e60"
+    }
+  ],
+  "delta": {
+    "only_file_changed": "candidate/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+    "changes": [
+      "V6 readonly StartApplication expectedSceneName changed from Expedition to Menu; ActiveRun null, ActiveExpedition diagnostic, read-only and zero-write assertions retained.",
+      "Repeated-swap cooldown tautology replaced by real SkillUses.IsReady(firstSkill.Id, readyAtBefore - 1) == false and IsReady(firstSkill.Id, readyAtBefore) == true queries; no clock or Motor advancement added."
+    ],
+    "verified_diff_hunks": 2,
+    "r1_unchanged": true
+  },
+  "composite_dependencies": [
+    {
+      "owner": "Root",
+      "path": "Logs/G04RemainingConsumers-20261030-r1/root/after/Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+      "bytes": 34713,
+      "sha256": "165e6d7a404380afe2b2dcbc2e2c761a4c4f8a778dbd7f0ea022529d9fd65a41"
+    },
+    {
+      "owner": "Root",
+      "path": "Logs/G04RemainingConsumers-20261030-r1/root/after/Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+      "bytes": 117926,
+      "sha256": "6ca7326e509702c9f6a256dbd4f3b6803330aa0d94b59e5356fdffbbd2403ebd"
+    },
+    {
+      "owner": "Luna A",
+      "path": "Logs/G04RemainingConsumers-20261030-r1/skill/after/Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+      "bytes": 8483,
+      "sha256": "627e7ee9dff01ae818d2190baefb3748e598a8ca7aa0518a662ef80eb45d01fd"
+    },
+    {
+      "owner": "Luna B",
+      "path": "Logs/G04RemainingConsumers-20261030-r1/healing/after/Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+      "bytes": 5488,
+      "sha256": "288f8f34b3f256dd03ad182d43f7d62e499d0ed6ab184bd306eab76578ff249f"
+    },
+    {
+      "owner": "Fixture",
+      "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+      "bytes": 84566,
+      "sha256": "6b931ee940c626a2e9ee9c18add62496b04ce0de93a1529994947c1d4dcda8dc"
+    }
+  ],
+  "verification": {
+    "contract_sha256_verified": true,
+    "r1_candidate_sources_unchanged": true,
+    "delta_diff_verified": "exactly the two review-requested hunks",
+    "root_composite_roslyn_r1": {
+      "status": "passed for R1 only",
+      "source_inputs": 380,
+      "all_assemblies_exit_code": 0,
+      "assemblies": {
+        "Luckbound.Core": 146,
+        "Luckbound.Content": 19,
+        "Luckbound.Core.Tests": 42,
+        "Luckbound.Content.Route.Tests": 3,
+        "Luckbound.Gameplay": 36,
+        "Luckbound.App": 56,
+        "Luckbound.PlayMode.Tests": 78
+      },
+      "warnings": "10 pre-existing CS0618 warnings in other files; none from R1 actor package"
+    },
+    "root_composite_roslyn_r2": "pending; Root will compile the frozen R2 PlayMode delta with composed references",
+    "static_review_r2": "pending Sol closure",
+    "nunit": "not run",
+    "unity_or_editor": "not run; prohibited by task scope and license code 198",
+    "native_ci": "not run by this package",
+    "assets_or_project_settings_changed": false
+  }
+}

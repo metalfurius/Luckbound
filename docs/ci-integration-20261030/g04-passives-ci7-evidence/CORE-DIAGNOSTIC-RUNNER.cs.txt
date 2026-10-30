@@ -1,0 +1,68 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Security.Cryptography;
+using System.Text.Json;
+
+internal static class G04CoreMethodDiagnostic
+{
+    private static int Main(string[] args)
+    {
+        // Supplemental pure .NET calls with real NUnit assertions, not a Unity/NUnit runner.
+        string directory = Path.GetFullPath(args[0]);
+        AssemblyLoadContext.Default.Resolving += (_, name) => name.Name != null && name.Name.StartsWith("Luckbound.", StringComparison.Ordinal)
+            ? AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(directory, name.Name + ".dll")) : null;
+        AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(args[1]));
+        string testsPath = Path.Combine(directory, "Luckbound.Core.Tests.dll");
+        Assembly tests = AssemblyLoadContext.Default.LoadFromAssemblyPath(testsPath);
+        var fixtures = new[]
+        {
+            (name: "Luckbound.Tests.Core.SupportRelicSkillUseTests", count: 7),
+            (name: "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests", count: 8),
+            (name: "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests", count: 6)
+        };
+        var results = new List<object>();
+        int failed = 0;
+        foreach (var item in fixtures)
+        {
+            Type fixture = tests.GetType(item.name, true)!;
+            MethodInfo[] methods = fixture.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(m => m.CustomAttributes.Any(a => a.AttributeType.FullName == "NUnit.Framework.TestAttribute"))
+                .OrderBy(m => m.Name, StringComparer.Ordinal).ToArray();
+            if (methods.Length != item.count || methods.Any(m => m.GetParameters().Length != 0 || m.ReturnType != typeof(void)) ||
+                fixture.GetMethods().Any(m => m.CustomAttributes.Any(a => a.AttributeType.FullName is
+                    "NUnit.Framework.TestCaseAttribute" or "NUnit.Framework.SetUpAttribute" or "NUnit.Framework.TearDownAttribute" or
+                    "NUnit.Framework.OneTimeSetUpAttribute" or "NUnit.Framework.OneTimeTearDownAttribute")))
+                throw new InvalidOperationException("Only the exact synchronous, parameterless fixtures without lifecycle are supported.");
+            foreach (MethodInfo method in methods)
+            {
+                try
+                {
+                    method.Invoke(Activator.CreateInstance(fixture), null);
+                    results.Add(new { fixture = item.name, method = method.Name, passed = true, error = (string?)null });
+                }
+                catch (TargetInvocationException exception)
+                {
+                    failed++;
+                    results.Add(new { fixture = item.name, method = method.Name, passed = false,
+                        error = exception.InnerException?.ToString() ?? exception.ToString() });
+                }
+            }
+        }
+        var report = new
+        {
+            kind = "Supplemental pure .NET method invocation with NUnit assertions",
+            unityExecuted = false, nunitRunnerExecuted = false,
+            framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
+            testsAssemblySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(testsPath))).ToLowerInvariant(),
+            coreAssemblySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(directory, "Luckbound.Core.dll")))).ToLowerInvariant(),
+            total = 21, passed = 21 - failed, failed, results
+        };
+        File.WriteAllText(Path.GetFullPath(args[2]), JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        Console.WriteLine(JsonSerializer.Serialize(new { total = 21, passed = 21 - failed, failed }));
+        return failed == 0 ? 0 : 1;
+    }
+}

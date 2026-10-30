@@ -1,0 +1,30 @@
+{
+  "status": "staging, not compiled",
+  "contract": "89ae78ead029597d6d881b82a9dd430d949f57b29c2e07733fca596f6dd08ca6",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+      "before": {
+        "bytes": 115500,
+        "sha256": "cc9bde9b5876b85ceab06e789ebf7aa1233a1335915dc1338aac715de330ab0f"
+      },
+      "after": {
+        "bytes": 117926,
+        "sha256": "6ca7326e509702c9f6a256dbd4f3b6803330aa0d94b59e5356fdffbbd2403ebd"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+      "before": {
+        "bytes": 32924,
+        "sha256": "36e88f8a93740f15832d80a5cad87da26884e3c820a36aa16457deca5fc52402"
+      },
+      "after": {
+        "bytes": 34713,
+        "sha256": "165e6d7a404380afe2b2dcbc2e2c761a4c4f8a778dbd7f0ea022529d9fd65a41"
+      }
+    }
+  ],
+  "reportSha256": "39e16ff8e55f7d907f9bbbb51858ea6ec50f73fadead91582f73d5caa621697c",
+  "liveAssetsChanged": false
+}

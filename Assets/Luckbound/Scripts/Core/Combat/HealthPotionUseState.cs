@@ -1,4 +1,5 @@
 using System;
+using Luckbound.Core.Relics;
 
 namespace Luckbound.Core.Combat
 {
@@ -12,6 +13,7 @@ namespace Luckbound.Core.Combat
 
         private long _lastTick = -1;
         private long _preparationStartTick;
+        private SupportRelicModifiers _supportRelicModifiers;
 
         public HealthPotionUseState(int initialCharges = DefaultInitialCharges, int maximumCharges = DefaultMaximumCharges)
         {
@@ -27,6 +29,12 @@ namespace Luckbound.Core.Combat
 
             MaximumCharges = maximumCharges;
             CurrentCharges = initialCharges;
+        }
+
+        /// <summary>Replaces the durable support relic snapshot used by future potion consumption.</summary>
+        public void ReplaceSupportRelicModifiers(SupportRelicModifiers support)
+        {
+            _supportRelicModifiers = support;
         }
 
         public int MaximumCharges { get; }
@@ -84,7 +92,7 @@ namespace Luckbound.Core.Combat
                     return CreateOutcome(HealthPotionUseStatus.RejectedAtFullHealth);
                 }
 
-                int restored = Math.Min(HealingAmount, maximumHealth - currentHealth);
+                int restored = Math.Min(ResolveHealingAmount(), maximumHealth - currentHealth);
                 CurrentCharges--;
                 return new HealthPotionUseOutcome(HealthPotionUseStatus.Healed, restored, CurrentCharges);
             }
@@ -133,6 +141,13 @@ namespace Luckbound.Core.Combat
         {
             IsPreparing = false;
             _preparationStartTick = 0;
+        }
+
+        private int ResolveHealingAmount()
+        {
+            long percent = 100L + _supportRelicModifiers.ConsumableHealingBonusPercent;
+            long adjustedHealing = (long)HealingAmount * percent / 100L;
+            return checked((int)adjustedHealing);
         }
 
         private HealthPotionUseOutcome CreateOutcome(HealthPotionUseStatus status)

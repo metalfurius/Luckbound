@@ -1,0 +1,27 @@
+{
+  "package": "G04 skill modifiers (Luna A)",
+  "baselineSha256": "b3d57413331b973f1e4d46024ba5f11fbdc2da7b6084aa0ccf0ef72381651fb5",
+  "files": [
+    {
+      "path": "before/Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+      "bytes": 6892,
+      "sha256": "b3d57413331b973f1e4d46024ba5f11fbdc2da7b6084aa0ccf0ef72381651fb5"
+    },
+    {
+      "path": "after/Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+      "bytes": 8483,
+      "sha256": "627e7ee9dff01ae818d2190baefb3748e598a8ca7aa0518a662ef80eb45d01fd"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicSkillUseTests.cs",
+      "bytes": 10605,
+      "sha256": "a10e8e0e5707c44b3fe482d80fdce77edaa931c36376770ea719e72e181edd40"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1432,
+      "sha256": "f44284e0a83a34a955389d637ec94ba9013b4dd391478909456fb62cb5b3356e"
+    }
+  ],
+  "execution": "Static review only; Unity, NUnit, and compilation not run by this candidate."
+}

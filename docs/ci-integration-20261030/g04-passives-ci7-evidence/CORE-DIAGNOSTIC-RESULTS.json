@@ -1,0 +1,139 @@
+{
+  "kind": "Supplemental pure .NET method invocation with NUnit assertions",
+  "unityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "framework": ".NET 9.0.17",
+  "testsAssemblySha256": "9580b9ea1cffc33db9ad9bc5cd233c02f3bc4bce5e7f916e2b54321df6a672ba",
+  "coreAssemblySha256": "e6fa64e2bad3069e8a2374d453d86c47a6a56d1fd128a316f18044580ca0e499",
+  "total": 21,
+  "passed": 21,
+  "failed": 0,
+  "results": [
+    {
+      "fixture": "Luckbound.Tests.Core.SupportRelicSkillUseTests",
+      "method": "CombinedCooldownUsesCeilingAndThirtyTickMinimum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.SupportRelicSkillUseTests",
+      "method": "CombinedCostUsesAddedPercentagesThenAlvariHalfUpAtEffectStart",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.SupportRelicSkillUseTests",
+      "method": "CooldownsRemainIndependentPerSkillWithCombinedModifiers",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.SupportRelicSkillUseTests",
+      "method": "EffectStartRevalidatesEnergyAgainstLatestCommittedModifiers",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.SupportRelicSkillUseTests",
+      "method": "InterruptedPreparationRemainsFreeAfterModifierReplacement",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.SupportRelicSkillUseTests",
+      "method": "ReplacementsDuringPreparationApplyAtEffectWithoutRefillOrClockReset",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.SupportRelicSkillUseTests",
+      "method": "SkillCostUsesCeilingAndPreservesOnePointMinimum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests",
+      "method": "BlessedVialHealingClampsToMissingHealth",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests",
+      "method": "BlessedVialMakesTheConsumedPotionRestoreThirty",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests",
+      "method": "DefaultPotionStillRestoresTwentyFiveAfterTwentyOneTicks",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests",
+      "method": "EquippingVialDuringPreparationPreservesClockAndAppliesAtConsumption",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests",
+      "method": "FullHealthRejectsVialPotionWithoutStartingOrSpending",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests",
+      "method": "InterruptedVialPreparationCancelsWithoutConsumingCharge",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests",
+      "method": "RemovingVialDuringPreparationPreservesClockAndUsesBaseHealing",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests",
+      "method": "RepeatedEquipAndRemovalDoNotHealOrRefillPotionCharges",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests",
+      "method": "HarmfulDurationAddsArmorAndBarkBeforeHalfUpRounding",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests",
+      "method": "HarmfulDurationClampsReductionAndPreservesPositiveMinimum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests",
+      "method": "HarmfulDurationRejectsNegativeBaseAndCheckedPercentageOverflow",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests",
+      "method": "HorizontalSpeedAddsArmorPactAndTwoSlotSupportPercentagesOnce",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests",
+      "method": "HorizontalSpeedRejectsNegativeBaseAndCheckedOverflow",
+      "passed": true,
+      "error": null
+    },
+    {
+      "fixture": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests",
+      "method": "HorizontalSpeedUsesDecimalArithmeticAndCapsAtEightPointFive",
+      "passed": true,
+      "error": null
+    }
+  ]
+}

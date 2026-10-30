@@ -1,0 +1,81 @@
+{
+  "manifest_version": 1,
+  "package": "G04 actor rules and composite tests",
+  "date": "2026-10-30",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-G04-REMAINING-CONSUMERS-NEXT-CONTRACT.md",
+    "sha256": "89ae78ead029597d6d881b82a9dd430d949f57b29c2e07733fca596f6dd08ca6"
+  },
+  "candidate_root": "Logs/G04RemainingConsumers-20261030-r1/actor/candidate",
+  "candidate_files": [
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+      "bytes": 2165,
+      "sha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicActorRulesTests.cs",
+      "bytes": 3893,
+      "sha256": "0f4f6aa4de93594da5dffe14379ec1039ad6aeb632f9c9562f62c46329e9d2c4"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "bytes": 54183,
+      "sha256": "0ef945b99df200bfff72c1c6ad9995c5cf52f50d2f7dc1fb12db066e71d8349d"
+    }
+  ],
+  "composite_dependencies": [
+    {
+      "owner": "Root",
+      "path": "Logs/G04RemainingConsumers-20261030-r1/root/after/Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+      "bytes": 34713,
+      "sha256": "165e6d7a404380afe2b2dcbc2e2c761a4c4f8a778dbd7f0ea022529d9fd65a41"
+    },
+    {
+      "owner": "Root",
+      "path": "Logs/G04RemainingConsumers-20261030-r1/root/after/Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+      "bytes": 117926,
+      "sha256": "6ca7326e509702c9f6a256dbd4f3b6803330aa0d94b59e5356fdffbbd2403ebd"
+    },
+    {
+      "owner": "Luna A",
+      "path": "Logs/G04RemainingConsumers-20261030-r1/skill/after/Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+      "bytes": 8483,
+      "sha256": "627e7ee9dff01ae818d2190baefb3748e598a8ca7aa0518a662ef80eb45d01fd"
+    },
+    {
+      "owner": "Luna B",
+      "path": "Logs/G04RemainingConsumers-20261030-r1/healing/after/Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+      "bytes": 5488,
+      "sha256": "288f8f34b3f256dd03ad182d43f7d62e499d0ed6ab184bd306eab76578ff249f"
+    }
+  ],
+  "fixture_reference": {
+    "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+    "bytes": 84566,
+    "sha256": "6b931ee940c626a2e9ee9c18add62496b04ce0de93a1529994947c1d4dcda8dc",
+    "usage": "Read-only reference; the class and helpers are sealed/private. The candidate follows its App/store/actor setup and frozen V6 read-only fixture criterion."
+  },
+  "verification": {
+    "contract_sha256_verified": true,
+    "candidate_sha256_verified": true,
+    "root_composite_roslyn": {
+      "status": "passed",
+      "source_inputs": 380,
+      "all_assemblies_exit_code": 0,
+      "assemblies": {
+        "Luckbound.Core": 146,
+        "Luckbound.Content": 19,
+        "Luckbound.Core.Tests": 42,
+        "Luckbound.Content.Route.Tests": 3,
+        "Luckbound.Gameplay": 36,
+        "Luckbound.App": 56,
+        "Luckbound.PlayMode.Tests": 78
+      },
+      "warnings": "10 pre-existing CS0618 warnings in other files; none from this package"
+    },
+    "nunit": "not run",
+    "unity_or_editor": "not run; prohibited by task scope and license code 198",
+    "native_ci": "not run by this package"
+  }
+}

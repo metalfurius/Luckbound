@@ -1,0 +1,35 @@
+{
+  "sha": "2c01f23d44068719f37d03d6b20de48e2800fd29",
+  "node_id": "C_kwDONB2jd9oAKDJjMDFmMjNkNDQwNjg3MTlmMzdkMDNkNmIyMGRlNDhlMjgwMGZkMjk",
+  "url": "https://api.github.com/repos/metalfurius/Luckbound/git/commits/2c01f23d44068719f37d03d6b20de48e2800fd29",
+  "html_url": "https://github.com/metalfurius/Luckbound/commit/2c01f23d44068719f37d03d6b20de48e2800fd29",
+  "author": {
+    "name": "metalfurius",
+    "email": "75508084+metalfurius@users.noreply.github.com",
+    "date": "2026-10-30T21:16:47Z"
+  },
+  "committer": {
+    "name": "metalfurius",
+    "email": "75508084+metalfurius@users.noreply.github.com",
+    "date": "2026-10-30T21:16:47Z"
+  },
+  "tree": {
+    "sha": "6238328760afc230b82f4d8fdc6b14f6f5ad82cf",
+    "url": "https://api.github.com/repos/metalfurius/Luckbound/git/trees/6238328760afc230b82f4d8fdc6b14f6f5ad82cf"
+  },
+  "message": "Add isolated V7 save transactions and strict typed codec\n\nKeep operational saves at v6. Add Editor-only profile transactions with exact encounter pins, a single protocol-tagged pending, lossless legacy diagnostics, and independent settings.\n\nStatic A/B/Root reviews accepted. Six assemblies / 339 inputs compile; supplemental pure .NET assertions pass 41/41. Native Unity acceptance and V6 97/77/14 gates remain pending CI.",
+  "parents": [
+    {
+      "sha": "6926505b744aabd4543723a6c0fffb640c2836fa",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/git/commits/6926505b744aabd4543723a6c0fffb640c2836fa",
+      "html_url": "https://github.com/metalfurius/Luckbound/commit/6926505b744aabd4543723a6c0fffb640c2836fa"
+    }
+  ],
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}

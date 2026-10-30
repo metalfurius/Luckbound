@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "package": "G04 Luna B — Healing consumer",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-G04-REMAINING-CONSUMERS-NEXT-CONTRACT.md",
+    "sha256": "89ae78ead029597d6d881b82a9dd430d949f57b29c2e07733fca596f6dd08ca6"
+  },
+  "baseline": {
+    "path": "before/Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+    "bytes": 4841,
+    "sha256": "7f9aa774f64eac318f7c4605ca9159ba27bbf40b5bbda60f06576ff5338c2a4e"
+  },
+  "afterMirror": {
+    "path": "after/Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+    "bytes": 5488,
+    "sha256": "288f8f34b3f256dd03ad182d43f7d62e499d0ed6ab184bd306eab76578ff249f"
+  },
+  "candidate": [
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+      "bytes": 5488,
+      "sha256": "288f8f34b3f256dd03ad182d43f7d62e499d0ed6ab184bd306eab76578ff249f"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicHealingUseTests.cs",
+      "bytes": 9454,
+      "sha256": "739e4bc55d42c6cad5d48b4a3c0c9e6fbacba5f00b9a5185a15a532e8281a250"
+    }
+  ],
+  "verification": {
+    "compiler": "Roslyn 9.0.306 via dotnet exec; R5 offline response-file references",
+    "coreSubsetCompileExitCode": 0,
+    "editModeFixtureCompileExitCode": 0,
+    "nunitOrUnityTestsExecuted": false,
+    "artifacts": [
+      {
+        "path": "verification/Luckbound.Core.Healing.dll",
+        "bytes": 10752,
+        "sha256": "e204eecba62204eeb23be5fa5a254b14f3e0fc6c5932abb435210b849c2b53c8"
+      },
+      {
+        "path": "verification/Luckbound.Core.Healing.Tests.dll",
+        "bytes": 6656,
+        "sha256": "e5ae0fc1237c04e3351b85ed46bd8c92d32ad2c0587d1dcbde34379f1b7c3192"
+      }
+    ]
+  }
+}

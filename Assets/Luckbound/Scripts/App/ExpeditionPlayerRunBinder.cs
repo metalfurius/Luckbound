@@ -7,6 +7,7 @@ using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Pacts;
 using Luckbound.Core.Relics;
 using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Combat;
@@ -94,6 +95,7 @@ namespace Luckbound.App
                     plan.EnemyLayers);
             }
 
+            playerMotor.ConfigureCommittedModifiers(plan.SupportModifiers, plan.PactModifiers);
             itemCollector.Configure(run.Inventory, itemCatalog, dropStager, run.RaceId);
             playerMotor.RefreshConsumableChargesFromInventory();
             if (fortuneBrewRuntime != null)
@@ -182,6 +184,7 @@ namespace Luckbound.App
                 throw new InvalidOperationException("The live actor has no valid armor projection or resource snapshot.");
 
             SupportRelicModifiers nextSupport = ResolveEquippedSupportModifiers(committedRun.Inventory);
+            PactModifierTotals nextPacts = PactModifierTotals.Sum(candidateSave.pactIds);
             ArmorResolution nextArmorResolution;
             if (committedRun.HasKnownStartingLoadout)
             {
@@ -208,8 +211,13 @@ namespace Luckbound.App
             _ = new CombatStats(nextArmorResolution.MaximumHealth, nextArmorResolution.MaximumEnergy,
                 checked(baseDefense + nextArmorResolution.Defense));
 
+            _ = SupportRelicActorRules.ResolveHorizontalSpeed((decimal)PlayerMotor2D.MaximumHorizontalSpeed,
+                nextArmorResolution.MovementSpeedPercentModifier, nextPacts, nextSupport);
+            _ = SupportRelicActorRules.ResolveHarmfulDurationTicks(1,
+                nextArmorResolution.HarmfulStatusDurationReductionPercent, nextSupport);
+
             return new PreparedCommittedRunPublication(committedRun, playerMotor, itemCollector,
-                nextWeapon, nextArmorResolution);
+                nextWeapon, nextArmorResolution, nextSupport, nextPacts);
         }
 
         public sealed class PreparedCommittedRunPublication
@@ -219,16 +227,21 @@ namespace Luckbound.App
             private readonly ItemCollector2D _itemCollector;
             private readonly WeaponProfile _weapon;
             private readonly ArmorResolution _armor;
+            private readonly SupportRelicModifiers _support;
+            private readonly PactModifierTotals _pacts;
             private bool _published;
 
             internal PreparedCommittedRunPublication(ExpeditionRunConfiguration run, PlayerMotor2D playerMotor,
-                ItemCollector2D itemCollector, WeaponProfile weapon, ArmorResolution armor)
+                ItemCollector2D itemCollector, WeaponProfile weapon, ArmorResolution armor,
+                SupportRelicModifiers support, PactModifierTotals pacts)
             {
                 _run = run;
                 _playerMotor = playerMotor;
                 _itemCollector = itemCollector;
                 _weapon = weapon;
                 _armor = armor;
+                _support = support;
+                _pacts = pacts;
             }
 
             public ExpeditionRunConfiguration Run => _run;
@@ -255,7 +268,7 @@ namespace Luckbound.App
                 if (_published) return;
                 _playerMotor.PublishCommittedEquipment(_weapon, _run.Inventory.Weapon.InstanceId,
                     _run.Inventory.Weapon.Rarity, _run.Inventory.Weapon.UpgradeLevel,
-                    _run.Inventory.Armor.InstanceId, _armor);
+                    _run.Inventory.Armor.InstanceId, _armor, _support, _pacts);
                 _itemCollector.PublishCommittedInventory(_run.Inventory);
                 _playerMotor.RefreshConsumableChargesFromInventory();
                 _published = true;
@@ -344,7 +357,14 @@ namespace Luckbound.App
                     roomLifetimeScope);
             }
 
-            return new BindingPlan(combatStats, equippedWeapon, effectiveEnemyLayers, armorResolution);
+            SupportRelicModifiers support = ResolveEquippedSupportModifiers(run.Inventory);
+            PactModifierTotals pacts = checkpoint == null
+                ? default(PactModifierTotals) : PactModifierTotals.Sum(checkpoint.pactIds);
+            _ = SupportRelicActorRules.ResolveHorizontalSpeed((decimal)PlayerMotor2D.MaximumHorizontalSpeed,
+                armorResolution.MovementSpeedPercentModifier, pacts, support);
+            _ = SupportRelicActorRules.ResolveHarmfulDurationTicks(1,
+                armorResolution.HarmfulStatusDurationReductionPercent, support);
+            return new BindingPlan(combatStats, equippedWeapon, effectiveEnemyLayers, armorResolution, support, pacts);
         }
 
         internal static ArmorResolution ResolveEquippedArmor(ExpeditionRunConfiguration run, ItemCatalog itemCatalog,
@@ -525,18 +545,23 @@ namespace Luckbound.App
                 CombatStats combatStats,
                 WeaponProfile equippedWeapon,
                 LayerMask enemyLayers,
-                ArmorResolution armorResolution)
+                ArmorResolution armorResolution,
+                SupportRelicModifiers supportModifiers, PactModifierTotals pactModifiers)
             {
                 CombatStats = combatStats;
                 EquippedWeapon = equippedWeapon;
                 EnemyLayers = enemyLayers;
                 ArmorResolution = armorResolution;
+                SupportModifiers = supportModifiers;
+                PactModifiers = pactModifiers;
             }
 
             public CombatStats CombatStats { get; }
             public WeaponProfile EquippedWeapon { get; }
             public LayerMask EnemyLayers { get; }
             public ArmorResolution ArmorResolution { get; }
+            public SupportRelicModifiers SupportModifiers { get; }
+            public PactModifierTotals PactModifiers { get; }
         }
     }
 }

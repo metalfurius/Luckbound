@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Pacts;
+using Luckbound.Core.Relics;
 
 namespace Luckbound.Core.Combat
 {
@@ -12,7 +13,8 @@ namespace Luckbound.Core.Combat
         private long _lastTick = -1;
         private SkillDefinition _preparingSkill;
         private long _preparationStartTick;
-        private readonly PactModifierTotals _pactModifiers;
+        private PactModifierTotals _pactModifiers;
+        private SupportRelicModifiers _supportRelicModifiers;
         private readonly string _raceId;
 
         public SkillUseState(int maximumEnergy, int initialEnergy)
@@ -88,6 +90,13 @@ namespace Luckbound.Core.Combat
             CurrentEnergy = Math.Min(currentEnergy, maximumEnergy);
         }
 
+        /// <summary>Replaces committed pact and support-relic modifiers without changing run state.</summary>
+        public void ReplaceCommittedModifiers(PactModifierTotals pacts, SupportRelicModifiers support)
+        {
+            _pactModifiers = pacts;
+            _supportRelicModifiers = support;
+        }
+
         public SkillUseOutcome Update(long tick, SkillDefinition requestedSkill, bool actionValid, bool interrupted)
         {
             if (tick < 0)
@@ -125,7 +134,7 @@ namespace Luckbound.Core.Combat
 
                 SkillDefinition activatedSkill = _preparingSkill;
                 CurrentEnergy -= preparedSkillCost;
-                long readyAtTick = tick + activatedSkill.CooldownTicks;
+                long readyAtTick = tick + GetCooldownTicks(activatedSkill);
                 _readyAtTicks[activatedSkill.Id] = readyAtTick;
                 ClearPreparation();
                 return new SkillUseOutcome(SkillUseStatus.Activated, activatedSkill.Id, preparedSkillCost, readyAtTick);
@@ -174,8 +183,34 @@ namespace Luckbound.Core.Combat
 
         private int GetSkillCost(SkillDefinition skill)
         {
-            int pactAdjustedCost = _pactModifiers.ApplySkillCost(skill.EnergyCost);
-            return PlayableRaceRules.ApplySkillCost(_raceId, pactAdjustedCost);
+            decimal percentage = 100m + _pactModifiers.SkillCostIncreasePercent - _supportRelicModifiers.SkillCostReductionPercent;
+            decimal adjustedCost = (decimal)skill.EnergyCost * percentage / 100m;
+            decimal roundedCost = decimal.Ceiling(adjustedCost);
+            if (roundedCost > int.MaxValue)
+            {
+                throw new OverflowException("Pact-adjusted skill cost exceeds the supported integer range.");
+            }
+
+            int additiveCost = roundedCost < 1m ? 1 : (int)roundedCost;
+            return Math.Max(1, PlayableRaceRules.ApplySkillCost(_raceId, additiveCost));
+        }
+
+        private int GetCooldownTicks(SkillDefinition skill)
+        {
+            decimal percentage = 100m - _pactModifiers.SkillCooldownReductionPercent - _supportRelicModifiers.SkillCooldownReductionPercent;
+            decimal adjustedTicks = (decimal)skill.CooldownTicks * percentage / 100m;
+            decimal roundedTicks = decimal.Ceiling(adjustedTicks);
+            if (roundedTicks <= 30m)
+            {
+                return 30;
+            }
+
+            if (roundedTicks > int.MaxValue)
+            {
+                throw new OverflowException("Pact-adjusted skill cooldown exceeds the supported integer range.");
+            }
+
+            return (int)roundedTicks;
         }
     }
 }

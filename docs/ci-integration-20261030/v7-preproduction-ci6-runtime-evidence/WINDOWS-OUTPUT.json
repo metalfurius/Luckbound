@@ -1,0 +1,16 @@
+{
+  "run": 41129868274,
+  "commit": "2c01f23d44068719f37d03d6b20de48e2800fd29",
+  "job": 124321354202,
+  "jobConclusion": "success",
+  "artifact": 13013202570,
+  "artifactBytes": 50563383,
+  "artifactSha256": "027c510976bf18fc42cfb8723cfe665ab8bf1de1e1d7db0afb9a330a7226dd0e",
+  "files": 210,
+  "exe": "Luckbound.exe",
+  "exeSha256": "9806abde4a406ed68647e9505852c49f6aa72a372f4f084e2aa2821affea57a2",
+  "header": "MZ/PE",
+  "machine": "AMD64 0x8664",
+  "executed": false,
+  "uiOpened": false
+}

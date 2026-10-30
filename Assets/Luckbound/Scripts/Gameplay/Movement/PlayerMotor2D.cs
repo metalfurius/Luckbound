@@ -9,6 +9,7 @@ using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;
 using Luckbound.Core.Pacts;
+using Luckbound.Core.Relics;
 using Luckbound.Core.Presentation;
 using Luckbound.Content;
 using Luckbound.Gameplay.Combat;
@@ -153,6 +154,8 @@ namespace Luckbound.Gameplay.Movement
         private float _armorMovementSpeedMultiplier = 1f;
         private int _armorEnergyRegenerationPerSecondBonus;
         private int _harmfulStatusDurationReductionPercent;
+        private SupportRelicModifiers _committedSupportModifiers;
+        private PactModifierTotals _committedPactModifiers;
 
         public bool IsGrounded { get; private set; }
 
@@ -182,11 +185,14 @@ namespace Luckbound.Gameplay.Movement
 
         public float ArmorMovementSpeedMultiplier => _armorMovementSpeedMultiplier;
 
-        public float EffectiveMaximumHorizontalSpeed => MaximumHorizontalSpeed * _armorMovementSpeedMultiplier;
+        public float EffectiveMaximumHorizontalSpeed => (float)SupportRelicActorRules.ResolveHorizontalSpeed(
+            (decimal)MaximumHorizontalSpeed, _equippedArmorResolution?.MovementSpeedPercentModifier ?? 0,
+            _committedPactModifiers, _committedSupportModifiers);
 
         public int ArmorEnergyRegenerationPerSecondBonus => _armorEnergyRegenerationPerSecondBonus;
 
-        public int HarmfulStatusDurationReductionPercent => _harmfulStatusDurationReductionPercent;
+        public int HarmfulStatusDurationReductionPercent => Math.Min(100, Math.Max(0,
+            checked(_harmfulStatusDurationReductionPercent + _committedSupportModifiers.HarmfulStatusDurationReductionPercent)));
 
         public SkillUseState SkillUses => _skillUseState;
 
@@ -341,6 +347,15 @@ namespace Luckbound.Gameplay.Movement
             ItemRarity weaponRarity, int weaponUpgradeLevel, ItemInstanceId armorInstanceId,
             ArmorResolution armorResolution)
         {
+            PublishCommittedEquipment(weaponProfile, weaponInstanceId, weaponRarity, weaponUpgradeLevel,
+                armorInstanceId, armorResolution, _committedSupportModifiers, _committedPactModifiers);
+        }
+
+        /// <summary>Publishes one prevalidated equipment and modifier snapshot without rebuilding action state.</summary>
+        public void PublishCommittedEquipment(WeaponProfile weaponProfile, ItemInstanceId weaponInstanceId,
+            ItemRarity weaponRarity, int weaponUpgradeLevel, ItemInstanceId armorInstanceId,
+            ArmorResolution armorResolution, SupportRelicModifiers support, PactModifierTotals pacts)
+        {
             if (!_initialized || _damageState == null || _skillUseState == null)
                 throw new InvalidOperationException("PlayerMotor2D must be initialized before publishing committed equipment.");
             if (weaponProfile == null) throw new ArgumentNullException(nameof(weaponProfile));
@@ -365,6 +380,8 @@ namespace Luckbound.Gameplay.Movement
             if (nextHealth > _damageState.Stats.MaximumHealth || nextEnergy > _skillUseState.MaximumEnergy)
                 throw new InvalidOperationException("The prepared actor resources exceed their current committed maximums.");
 
+            ValidateCommittedModifiers(armorResolution, support, pacts);
+
             // All validation happens above this point so the durable publication cannot partially replace equipment.
             _damageState.ReplaceStats(nextStats, nextHealth);
             _skillUseState.ReplaceEnergyLimits(nextStats.MaximumEnergy, nextEnergy);
@@ -381,7 +398,31 @@ namespace Luckbound.Gameplay.Movement
             _armorMovementSpeedMultiplier = (100f + armorResolution.MovementSpeedPercentModifier) / 100f;
             _armorEnergyRegenerationPerSecondBonus = armorResolution.EnergyRegenerationPerSecondBonus;
             _harmfulStatusDurationReductionPercent = armorResolution.HarmfulStatusDurationReductionPercent;
+            _skillUseState.ReplaceCommittedModifiers(pacts, support);
+            _healthPotionUseState.ReplaceSupportRelicModifiers(support);
+            _committedSupportModifiers = support;
+            _committedPactModifiers = pacts;
             if (weaponChanged) ApplyWeaponBasicAttackProfile();
+        }
+
+        /// <summary>Replaces durably published passive modifiers; keeps resources and every action clock intact.</summary>
+        public void ConfigureCommittedModifiers(SupportRelicModifiers support, PactModifierTotals pacts)
+        {
+            if (!_initialized || _skillUseState == null || _healthPotionUseState == null)
+                throw new InvalidOperationException("Initialize the player before publishing modifiers.");
+            ValidateCommittedModifiers(_equippedArmorResolution, support, pacts);
+            _skillUseState.ReplaceCommittedModifiers(pacts, support);
+            _healthPotionUseState.ReplaceSupportRelicModifiers(support);
+            _committedSupportModifiers = support;
+            _committedPactModifiers = pacts;
+        }
+
+        private static void ValidateCommittedModifiers(ArmorResolution armor, SupportRelicModifiers support, PactModifierTotals pacts)
+        {
+            _ = SupportRelicActorRules.ResolveHorizontalSpeed((decimal)MaximumHorizontalSpeed,
+                armor?.MovementSpeedPercentModifier ?? 0, pacts, support);
+            _ = SupportRelicActorRules.ResolveHarmfulDurationTicks(1,
+                armor?.HarmfulStatusDurationReductionPercent ?? 0, support);
         }
 
         public void ConfigureEquippedArmorInstanceId(ItemInstanceId armorInstanceId)
@@ -1486,11 +1527,8 @@ namespace Luckbound.Gameplay.Movement
 
         private int ApplyHarmfulStatusDurationReduction(int durationTicks)
         {
-            if (durationTicks <= 0 || _harmfulStatusDurationReductionPercent <= 0) return durationTicks;
-            decimal remainingPercent = 100m - _harmfulStatusDurationReductionPercent;
-            decimal remainingTicks = durationTicks * remainingPercent / 100m;
-            if (remainingTicks <= 0m) return 0;
-            return Math.Max(1, decimal.ToInt32(decimal.Round(remainingTicks, 0, MidpointRounding.AwayFromZero)));
+            return SupportRelicActorRules.ResolveHarmfulDurationTicks(durationTicks,
+                _harmfulStatusDurationReductionPercent, _committedSupportModifiers);
         }
 
         private bool IsBellatorGuardActiveAt(long tick)

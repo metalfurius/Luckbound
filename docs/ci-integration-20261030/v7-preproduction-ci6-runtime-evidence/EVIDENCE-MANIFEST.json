@@ -1,0 +1,76 @@
+{
+  "run": 41129868274,
+  "status": "Native technical Accepted by Sol; explicit V7 preproduction only",
+  "files": [
+    {
+      "path": "ACCEPTANCE-SUMMARY.json",
+      "bytes": 1732,
+      "sha256": "18faca8833812f8b05003e634aa02a99f2dbe960400b00aa83b934afe8723ce5"
+    },
+    {
+      "path": "CI-RUN.json",
+      "bytes": 14112,
+      "sha256": "a2905d2f0aff74d3c6ce102f0f637ca0068afed00d8d3b4a5df6e34c5272969e"
+    },
+    {
+      "path": "DATA-COMPARISON.json",
+      "bytes": 30756,
+      "sha256": "b5d9323733ef8747c8fe1349e431893fd7fbf28772b78bc7a195136c1c71de90"
+    },
+    {
+      "path": "editmode-results.xml",
+      "bytes": 552087,
+      "sha256": "d375b334c52f3c33da6cec2993fb268fcfc12d6713dd3f5ad4f920f35f93ffce"
+    },
+    {
+      "path": "NATIVE-MANIFEST.json",
+      "bytes": 17874,
+      "sha256": "aa653c4cf2a69a1b2a35e1a55c961f2cfc41e3a90f5b7593fcbe3e597a75cb77"
+    },
+    {
+      "path": "OBSERVABILITY-VERIFICATION.json",
+      "bytes": 26423,
+      "sha256": "4c37b7351f333d3f688db30df3b613282470590fadc0970e56f399c893459153"
+    },
+    {
+      "path": "playmode-results.xml",
+      "bytes": 1036365,
+      "sha256": "42e164402169137a3d644bceae96e48c644406d51eb64ca79b63639104380e5d"
+    },
+    {
+      "path": "REAL-GATES.json",
+      "bytes": 2312,
+      "sha256": "199b2a3959029c507bea627638a90fee9a32a106bcff23fdad2ee970f4b5067c"
+    },
+    {
+      "path": "REMOTE-COMMIT.json",
+      "bytes": 1744,
+      "sha256": "17872e7fd0e5df10280fffe6571b3f987811fb826b40e7632178ead31cfa698a"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2273,
+      "sha256": "ea2936a3db808dab13323f31a176262966ab7663d446960082ce47153e0fc082"
+    },
+    {
+      "path": "SOURCE-BINDING.json",
+      "bytes": 4926,
+      "sha256": "46dd98fb0df2362db5a57fc844f62ea83f64606b6b8f6aeb5ce1414ea970db8c"
+    },
+    {
+      "path": "V7-CASES.json",
+      "bytes": 32664,
+      "sha256": "15d1094649daf3f9c867ce948a48537e0d5f104d8da356ae56fba682e56de606"
+    },
+    {
+      "path": "WEBGL-OUTPUT.json",
+      "bytes": 620,
+      "sha256": "224ef02739f30e1641c365864eee776590a9fb8bca39d4924f9556aeb30e6a76"
+    },
+    {
+      "path": "WINDOWS-OUTPUT.json",
+      "bytes": 495,
+      "sha256": "f86a070f37c726515d084df0db783f5b109d2f486440b6832b61d60d3043060b"
+    }
+  ]
+}

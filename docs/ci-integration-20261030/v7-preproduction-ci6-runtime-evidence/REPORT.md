@@ -1,0 +1,11 @@
+# V7 preproducción — CI6 nativa verificada
+
+[CI41129868274](https://github.com/metalfurius/Luckbound/actions/runs/41129868274), commit2c01f23d44068719f37d03d6b20de48e2800fd29, árbol6238328760afc230b82f4d8fdc6b14f6f5ad82cf, terminó **success**. Artifacttests13012313660 SHA fde92a7e0231cf43b2b5c3920a82f60a300e4bd2571b0bd7a8808bf16acbef3e: digest/ZIP/CRC y241archivos extraídos verificados.
+
+XML nativos: **633/633EditMode+497/497PlayMode=1130/1130Passed**, cero fallos/skips/inconclusos. Las tres suites V7 aportan78casos:26Core,15codec y37repositorio; estos últimos incluyen24filas legado1–6×activo/inactivo×primaria/backup. Las identidades concretas están en V7-CASES.json ylosXML originales. No son resultados inferidos de los diagnósticos .NET anteriores.
+
+Gate V6 ysentinel reales success, stdout11casos/11intentos/97datos/14fuentes. Los97 archivos son byteidénticos al Gate D aceptado CI41095991782; las77 observaciones SUT también coinciden directamente con susXML, grupos24codec/1file-store/2fallback/48repository/2settings. Ocho filas de logs de clips F02 pertenecen a otra modalidad yno forman parte del contrato SUT; la extracción no descarta ninguna fila de suscinco grupos. Catorce fuentes antes/después estables yligadas al Git exacto;11raw/3normalización CRLF→LF en memoria documentada. Ninguna fixture se reescribió.
+
+Builds Windows/WebGL success. ZIPs verificados por digest/extracción210/17archivos; cabecera PE AMD64 yWasm/index comprobados, **players no ejecutados**. Release ydeploy skipped. No Unity local, Hub, browser, audio, ventana o ratón usados. El log del job se mantiene privado: portable solo incluye hashes yextractos del checker/sentinel, sin licencias.
+
+[Sol Accepted técnico](../SOL-V7-PREPRODUCTION-CI6-RUNTIME.md), SHA8f15efbb81781e609b36f442baf844e3a6cbd759a1f8a478bfd9830cfb22395b, para este transporte Editor-only de preproducción. Este corte comprueba almacenamiento V7 explícito Editor-only, transacción/backup/retry/latch/restauración lógica exacta ycompatibilidad histórica. SaveFormat operativo sigue6; no Bootstrap/Continue/Ready, autoridad física, recuperación de crash Windows/WebGL ni F09/F10globales aceptados. Fallos previos ycorrecciones están conservados en el paquete estático yactas.
