@@ -1,0 +1,16 @@
+{
+  "state": "IntegratedNotRuntimeVerified",
+  "parent": "6e3b471afb81f2a3f69c7fabbb5d517280f79490",
+  "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs",
+  "beforeSha256": "68a1b97a10e4406da1ed50713ad7da91ddd8ac684221d216aebc9224e4328f79",
+  "afterSha256": "e3add91ecfaff68c53c88aba3da06413e4a3844da0e0abd4982e85be91f40955",
+  "reviewSha256": "b3fca9906ba9be97c434ba1ff23e071e4911785b09cc3d24e6c97836f451dc30",
+  "totalSources": 392,
+  "unchangedOtherSources": 391,
+  "unchangedSaveFiles": 492,
+  "expectedTotal": 1042,
+  "expectedEditMode": 599,
+  "expectedPlayMode": 443,
+  "unityExecuted": false,
+  "otherSourcesIntegrated": false
+}

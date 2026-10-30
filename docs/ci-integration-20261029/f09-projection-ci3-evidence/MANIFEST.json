@@ -1,0 +1,62 @@
+{
+  "task": "F09 projection PlayMode test fixture runtime correction",
+  "staging": "Logs/F09ProjectionRuntimeFix-20261030-r1",
+  "baseline": {
+    "path": "before/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs",
+    "sha256": "68a1b97a10e4406da1ed50713ad7da91ddd8ac684221d216aebc9224e4328f79",
+    "byteExactSource": "Logs/F09PlanProjection-20261030-r1/candidate/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs"
+  },
+  "outputs": [
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs",
+      "sha256": "e3add91ecfaff68c53c88aba3da06413e4a3844da0e0abd4982e85be91f40955"
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "31e54c780156ad4cd611b2b863c0f82af2a30cae38025f5fa0b38fce4a9156c8"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs",
+      "sha256": "7fd457ef32d618b92455b4d6279e0c5abfcf93160e52eb6e675452904e8428fd"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemDefinition.cs",
+      "sha256": "468ca1cc8d98dc62e18581a929d1b08f99131fea10454d5b0cd5aa6da69be790"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
+      "sha256": "d6c61f839e6553a3a7122b5d50ec51934bc010b551cb9d869384c37e1a05ec63"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
+      "sha256": "f6df7b19c86c9ba961491bd881865621ee98396e39bbadfc52519ee32b36402e"
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanResolutionV1Tests.cs",
+      "sha256": "de8ea3e36ec507b9eb365b71550d29cb4a6a9303913403788171c22d148c0e52"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+      "sha256": "f81a7c0b9c012a0152003ecfe4b9c06fdd43bce72c0b727e7f46ef3a24f226da"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+      "sha256": "1feb3f6f1b1284ed22cff5cbcb6be54f1b87697201e588c7dd0137f796539ddc"
+    },
+    {
+      "path": "Logs/CI-41107242435-root/download-attempt1/extracted/test-results/playmode-results.xml",
+      "sha256": "ca6aa8779f86b3f6c0efdc8d95fdf1fb8266d77e58c911a07f919f04f7128b48"
+    }
+  ],
+  "change": "Replace empty ItemCatalog fixture with six MaterialKind ItemDefinitions as in API A's passing CreateRun helper.",
+  "verification": {
+    "before_sha_matches_reported_source": true,
+    "diff_scope": "CreateSampleRun inventory construction only",
+    "compile": "not_run",
+    "tests": "not_run",
+    "unity": "not_run",
+    "ci": "not_run"
+  }
+}

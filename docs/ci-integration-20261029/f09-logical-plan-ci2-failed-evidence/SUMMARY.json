@@ -1,0 +1,157 @@
+{
+  "run": 41107242435,
+  "commit": "6e3b471afb81f2a3f69c7fabbb5d517280f79490",
+  "tree": "2c8b93d406c79dfdf9befadcc09bd8774ce03650",
+  "artifact": 13001559177,
+  "artifactSha256": "cc7787ca4c7e915c499fd1b476a65fa23c2eac4c8c03636ffdd5628ada612091",
+  "status": "completed",
+  "conclusion": "failure",
+  "editMode": {
+    "passed": 599,
+    "total": 599
+  },
+  "playMode": {
+    "passed": 440,
+    "total": 443
+  },
+  "passed": 1039,
+  "total": 1042,
+  "failed": 3,
+  "skipped": 0,
+  "inconclusive": 0,
+  "newG04": [
+    {
+      "method": "ApplicationRelicSwapsReplayAndMerchantSealNeverNeedAnUnequipOperation",
+      "result": "Passed"
+    },
+    {
+      "method": "ArmorAndRelicCommitsPreserveActorSkillTimelineAndUnfilledResources",
+      "result": "Passed"
+    },
+    {
+      "method": "CheckpointRoomRebindAndUnknownLegacyMaximumGuardUseTheExactPersistedState",
+      "result": "Passed"
+    },
+    {
+      "method": "DuplicateWrongItemSlotKeyConflictAndV6ReadonlyRejectWithoutFalseSuccess",
+      "result": "Passed"
+    },
+    {
+      "method": "DurableSaveWithFailedPublicationRetriesWithoutAnotherWriteAndPreservesManualPause",
+      "result": "Passed"
+    },
+    {
+      "method": "FailedWriteKeepsOldActorAndRetriesTheExactCandidateAndLease",
+      "result": "Passed"
+    },
+    {
+      "method": "NewBindingsApplyKnownBonusesInBothOrdersAndIgnoreCombatRelicsAcrossAllClasses",
+      "result": "Passed"
+    }
+  ],
+  "newF09A": [
+    {
+      "method": "ChangingPlanSemanticsChangesPlanDigestButKeepsPrimarySpawnKey",
+      "result": "Passed"
+    },
+    {
+      "method": "IndependentEncounterCanonicalByteAndSha256VectorIncludesUtf8AndDescriptorClosure",
+      "result": "Passed"
+    },
+    {
+      "method": "IndependentNoneCanonicalByteAndSha256Vector",
+      "result": "Passed"
+    },
+    {
+      "method": "MissingBindingFailsAndFactoryRejectsAmbiguousBindingKeys",
+      "result": "Passed"
+    },
+    {
+      "method": "NoneBindingIsExplicitAndHasNoEncounterPayloadOrSpawnIdentities",
+      "result": "Passed"
+    },
+    {
+      "method": "NoVinculoCalendarRequiresZeroScheduleAndZeroSpawnOrdinals",
+      "result": "Passed"
+    },
+    {
+      "method": "PlanCopiesSelectedVariantCollectionsAndDescriptorClosure",
+      "result": "Passed"
+    },
+    {
+      "method": "RejectsNullUnknownDuplicateAndOverLimitPactContexts",
+      "result": "Passed"
+    },
+    {
+      "method": "RejectsUnsupportedResolverIdAndRevision",
+      "result": "Passed"
+    },
+    {
+      "method": "ResolutionContextIsCopiedSortedOrdinallyAndIndependentOfCulture",
+      "result": "Passed"
+    },
+    {
+      "method": "ResolvesExactEncounterBindingAndCanonicalizesSpawnOrderWithoutChangingWaveOrder",
+      "result": "Passed"
+    },
+    {
+      "method": "RouteGenerationAndNodeMustBeExactAndSupported",
+      "result": "Passed"
+    },
+    {
+      "method": "VínculoRequiresMissingResolutionAuthorityInsteadOfInferringAnOrdinal",
+      "result": "Passed"
+    },
+    {
+      "method": "ZeroOrMultipleApplicableVariantsFailClosed",
+      "result": "Passed"
+    }
+  ],
+  "newF09B": [
+    {
+      "method": "ProjectionKeepsEncounterRosterCollectionsDeeplyReadOnly",
+      "result": "Failed"
+    },
+    {
+      "method": "StrictJsonExactRevisionResolutionProjectsCompleteOrderedRosterInPreparing",
+      "result": "Failed"
+    },
+    {
+      "method": "StrictJsonNoneBindingProjectsNullRosterAndCannotRepresentClear",
+      "result": "Failed"
+    }
+  ],
+  "failures": [
+    {
+      "method": "ProjectionKeepsEncounterRosterCollectionsDeeplyReadOnly",
+      "message": "System.ArgumentException : Item catalog is missing material definition ShadowWood.\nParameter name: definitions",
+      "stack": "  at Luckbound.Core.Inventory.ItemCatalog..ctor (System.Collections.Generic.IEnumerable`1[T] definitions, System.Collections.Generic.IEnumerable`1[T] startingLoadouts) [0x00149] in /github/workspace/Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs:35 \n  at Luckbound.Tests.PlayMode.ExpeditionEncounterPlanProjectionTests.CreateSampleRun (System.UInt32 seed) [0x00131] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs:285 \n  at Luckbound.Tests.PlayMode.ExpeditionEncounterPlanProjectionTests.ProjectionKeepsEncounterRosterCollectionsDeeplyReadOnly () [0x00032] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs:105 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <58bf92a20e6e4d31b49e9a360143af32>:0 "
+    },
+    {
+      "method": "StrictJsonExactRevisionResolutionProjectsCompleteOrderedRosterInPreparing",
+      "message": "System.ArgumentException : Item catalog is missing material definition ShadowWood.\nParameter name: definitions",
+      "stack": "  at Luckbound.Core.Inventory.ItemCatalog..ctor (System.Collections.Generic.IEnumerable`1[T] definitions, System.Collections.Generic.IEnumerable`1[T] startingLoadouts) [0x00149] in /github/workspace/Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs:35 \n  at Luckbound.Tests.PlayMode.ExpeditionEncounterPlanProjectionTests.CreateSampleRun (System.UInt32 seed) [0x00131] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs:285 \n  at Luckbound.Tests.PlayMode.ExpeditionEncounterPlanProjectionTests.StrictJsonExactRevisionResolutionProjectsCompleteOrderedRosterInPreparing () [0x00215] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs:70 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <58bf92a20e6e4d31b49e9a360143af32>:0 "
+    },
+    {
+      "method": "StrictJsonNoneBindingProjectsNullRosterAndCannotRepresentClear",
+      "message": "System.ArgumentException : Item catalog is missing material definition ShadowWood.\nParameter name: definitions",
+      "stack": "  at Luckbound.Core.Inventory.ItemCatalog..ctor (System.Collections.Generic.IEnumerable`1[T] definitions, System.Collections.Generic.IEnumerable`1[T] startingLoadouts) [0x00149] in /github/workspace/Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs:35 \n  at Luckbound.Tests.PlayMode.ExpeditionEncounterPlanProjectionTests.CreateSampleRun (System.UInt32 seed) [0x00131] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs:285 \n  at Luckbound.Tests.PlayMode.ExpeditionEncounterPlanProjectionTests.StrictJsonNoneBindingProjectsNullRosterAndCannotRepresentClear () [0x00080] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs:130 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <58bf92a20e6e4d31b49e9a360143af32>:0 "
+    }
+  ],
+  "gate": {
+    "unityFailure": true,
+    "v6Skipped": true,
+    "sentinelSuccess": false,
+    "rawLogSha256": "d2649f3c2633aea06312b8a0fe21286e75d535498c98d5c0b2656b6f26677f5b",
+    "rawLogPublished": false
+  },
+  "nativeData": {
+    "count": 97,
+    "identicalToGateDci3": 97,
+    "gateAccepted": false
+  },
+  "windows": "skipped",
+  "webgl": "skipped",
+  "release": "skipped",
+  "deploy": "skipped"
+}

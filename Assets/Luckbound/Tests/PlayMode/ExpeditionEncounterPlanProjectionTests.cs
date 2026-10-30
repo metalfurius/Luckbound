@@ -282,8 +282,13 @@ namespace Luckbound.Tests.PlayMode
                 connections,
                 nodeIds);
             ExpeditionRoutePlan route = ExpeditionSampleRouteGenerator.Generate(seed, definition);
-            var inventory = new ExpeditionInventory(
-                new ItemCatalog(Array.Empty<ItemDefinition>()), "class.bellator");
+            var materials = Enum.GetValues(typeof(MaterialKind)).Cast<MaterialKind>()
+                .Select((kind, index) => new ItemDefinition(
+                    "material.fixture_" + index.ToString(CultureInfo.InvariantCulture),
+                    "item.fixture.name", "item.fixture.description", ItemKind.Material, 99,
+                    materialKind: kind))
+                .ToArray();
+            var inventory = new ExpeditionInventory(new ItemCatalog(materials), "class.bellator");
             return new ExpeditionRunConfiguration(
                 new RunId(Guid.ParseExact("0123456789abcdef0123456789abcdef", "N")),
                 "class.bellator",
