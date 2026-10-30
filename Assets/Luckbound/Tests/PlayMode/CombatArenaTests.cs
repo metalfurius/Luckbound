@@ -253,12 +253,17 @@ namespace Luckbound.Tests.PlayMode
                 int jumpCountAfterGestureTick = -1;
                 long jumpTickBeforeGesture = -1;
                 long jumpTickAfterGesture = -1;
+                bool? lastPumpSpace = null;
+                string lastPumpSpacePhase = "NotSampled";
+                int lastPumpSpaceFrame = -1;
                 Rigidbody2D jumpBody = player.GetComponent<Rigidbody2D>();
                 System.Action<string> recordJumpBoundary = phase => evidence.RecordEvent(
                     "C08 jump boundary=" + phase + "; frame=" + Time.frameCount +
                     "; fixedTime=" + Time.fixedTime.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
                     "; updateMode=" + InputSystem.settings.updateMode + "; tick=" + player.SimulationTick +
-                    "; successfulJumps=" + player.SuccessfulJumpCount + "; space=" + _keyboard.spaceKey.isPressed +
+                    "; successfulJumps=" + player.SuccessfulJumpCount +
+                    "; spaceLastPump=" + (lastPumpSpace.HasValue ? lastPumpSpace.Value.ToString() : "NotSampled") +
+                    "; spaceSamplePhase=" + lastPumpSpacePhase + "; spaceSampleFrame=" + lastPumpSpaceFrame +
                     "; grounded=" + player.IsGrounded +
                     "; jumpBuffer=" + player.JumpBufferRemaining.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
                     "; timeScale=" + Time.timeScale.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
@@ -279,6 +284,9 @@ namespace Luckbound.Tests.PlayMode
                     recordJumpBoundary("before-enqueue");
                     SetKey(Key.Space, true);
                     InputSystem.Update();
+                    lastPumpSpace = _keyboard.spaceKey.isPressed;
+                    lastPumpSpacePhase = "after-down-pump";
+                    lastPumpSpaceFrame = Time.frameCount;
                     recordJumpBoundary("after-down-pump");
                     evidence.RecordInput(simulatedTicks, "Jump", "Space: one real jump to verify the landing cue");
                     yield return new WaitForFixedUpdate();
@@ -289,6 +297,9 @@ namespace Luckbound.Tests.PlayMode
                         jumpCountAfterGestureTick > jumpCountBeforeGesture;
                     SetKey(Key.Space, false);
                     InputSystem.Update();
+                    lastPumpSpace = _keyboard.spaceKey.isPressed;
+                    lastPumpSpacePhase = "after-release-pump";
+                    lastPumpSpaceFrame = Time.frameCount;
                     recordJumpBoundary("after-release-pump");
                 }
                 while (simulatedTicks < 12000 && arena.Result == CombatArenaResult.Ongoing && !player.IsDead)

@@ -1,0 +1,10 @@
+{
+  "assembly": "Luckbound.PlayMode.Tests",
+  "sourceCount": 68,
+  "candidateSha256": "371960fce539b43490ecdc2ce35268f5d2c5d8008e25e36053799e2ec9ce88ae",
+  "exitCode": 0,
+  "logSha256": "d8593111f392cb66917273913afcdf2bbe5c127d2e923e813df26ef5e64f8ce4",
+  "baselineWarnings": 8,
+  "unityExecuted": false,
+  "nunitExecuted": false
+}
