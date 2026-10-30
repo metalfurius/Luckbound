@@ -11,3 +11,7 @@ Prerrequisito d223 satisfecho por CI41110287288/ad8ce968 Accepted técnico1042/1
 No hay evidencia Native aún deeste paquete compuesto. Pin durable App/Save7/F09/F10 yG04 completos siguen abiertos. Sin ventanas, audio, foco, ratón, players o publicación.
 
 Los manifiestos de worker describen la entrega de staging en su fecha y pueden mantener flags pending anteriores al cierre. La autoridad final está en las actas3ff837cc/dfb128cc, INTEGRATION.json yOFFLINE-COMPILE.json del coordinador, con todos los hashes actuales cotejados.
+
+Respaldo ejecutado:f46d39002ab560b76b6d0a9183b471c12d080566, árbolaa6312087d7851bdfcc7399152d7b541ed8101b1, padread8ce968.55rutas previstas (6modificadas/49nuevas),5.658hojas intactas,0deltas ajenos o eliminaciones; leasefast-forward verificado. CI41115847754 iniciada para1052casos+97datos; aún sin resultados.
+
+Resultado posterior CI4:failure1037/1052,15fallos soloV6characterization; diezPinPassed. Captura4intentos/34datosde97,32/34byteiguales ysolodosenvolventespretty/compact diferentes; rolP0/S0false. GateV6skipped/sentinelfallido, builds/release/deployskipped. Evidencia exacta en ../../ci-integration-20261030/f09-pin-v6-ci4-failed-evidence/. Corrección2flagsenvelopespendienteCIpropia, sinrebase.

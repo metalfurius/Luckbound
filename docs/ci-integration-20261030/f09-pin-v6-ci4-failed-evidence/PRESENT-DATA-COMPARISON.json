@@ -1,0 +1,316 @@
+{
+  "referenceRun": 41095991782,
+  "currentRun": 41115847754,
+  "expected": 97,
+  "present": 34,
+  "byteIdentical": 32,
+  "jsonSemanticEqualityDoesNotAcceptBytes": true,
+  "rows": [
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-comparison.json",
+      "bytes": 251,
+      "sha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37",
+      "referenceBytes": 251,
+      "referenceSha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.json",
+      "bytes": 3819,
+      "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "referenceBytes": 3819,
+      "referenceSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.sha256.txt",
+      "bytes": 64,
+      "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "referenceBytes": 64,
+      "referenceSha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": null
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.json",
+      "bytes": 3819,
+      "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "referenceBytes": 3819,
+      "referenceSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+      "bytes": 64,
+      "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "referenceBytes": 64,
+      "referenceSha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": null
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/decode.json",
+      "bytes": 281,
+      "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "referenceBytes": 281,
+      "referenceSha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/inspector.json",
+      "bytes": 503,
+      "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "referenceBytes": 503,
+      "referenceSha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/semantic-validation.json",
+      "bytes": 284,
+      "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "referenceBytes": 284,
+      "referenceSha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-comparison.json",
+      "bytes": 265,
+      "sha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b",
+      "referenceBytes": 265,
+      "referenceSha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.json",
+      "bytes": 3821,
+      "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "referenceBytes": 3821,
+      "referenceSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.sha256.txt",
+      "bytes": 64,
+      "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "referenceBytes": 64,
+      "referenceSha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": null
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.json",
+      "bytes": 3821,
+      "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "referenceBytes": 3821,
+      "referenceSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+      "bytes": 64,
+      "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "referenceBytes": 64,
+      "referenceSha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": null
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/decode.json",
+      "bytes": 281,
+      "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "referenceBytes": 281,
+      "referenceSha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/inspector.json",
+      "bytes": 503,
+      "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "referenceBytes": 503,
+      "referenceSha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/semantic-validation.json",
+      "bytes": 284,
+      "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "referenceBytes": 284,
+      "referenceSha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/checksum-preimage.utf8",
+      "bytes": 1442,
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "referenceBytes": 1442,
+      "referenceSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/checksum.sha256.txt",
+      "bytes": 64,
+      "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "referenceBytes": 64,
+      "referenceSha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": null
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/decode.json",
+      "bytes": 208,
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "referenceBytes": 208,
+      "referenceSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/envelope.json",
+      "bytes": 1506,
+      "sha256": "0987143b5edd5882fd01c7a4606cdf23ee431037f63a92c0035429f82a36284c",
+      "referenceBytes": 2227,
+      "referenceSha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+      "byteIdentical": false,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/input.json",
+      "bytes": 1442,
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "referenceBytes": 1442,
+      "referenceSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/inspector-preimage.utf8",
+      "bytes": 1442,
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "referenceBytes": 1442,
+      "referenceSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/inspector.json",
+      "bytes": 620,
+      "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "referenceBytes": 620,
+      "referenceSha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/legacy-checksum-preimage.utf8",
+      "bytes": 1442,
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "referenceBytes": 1442,
+      "referenceSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/semantic-validation.json",
+      "bytes": 201,
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "referenceBytes": 201,
+      "referenceSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/checksum-preimage.utf8",
+      "bytes": 285,
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "referenceBytes": 285,
+      "referenceSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/checksum.sha256.txt",
+      "bytes": 64,
+      "sha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+      "referenceBytes": 64,
+      "referenceSha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": null
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/decode.json",
+      "bytes": 209,
+      "sha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6",
+      "referenceBytes": 209,
+      "referenceSha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/envelope.json",
+      "bytes": 349,
+      "sha256": "8c29f8e63d91fe814461d92dd7b63ecebb8179fcf760c9f3cfbb937c2da564d0",
+      "referenceBytes": 447,
+      "referenceSha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139",
+      "byteIdentical": false,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/input.json",
+      "bytes": 285,
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "referenceBytes": 285,
+      "referenceSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/inspector-preimage.utf8",
+      "bytes": 285,
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "referenceBytes": 285,
+      "referenceSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/inspector.json",
+      "bytes": 621,
+      "sha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90",
+      "referenceBytes": 621,
+      "referenceSha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/legacy-checksum-preimage.utf8",
+      "bytes": 285,
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "referenceBytes": 285,
+      "referenceSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/semantic-validation.json",
+      "bytes": 202,
+      "sha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb",
+      "referenceBytes": 202,
+      "referenceSha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb",
+      "byteIdentical": true,
+      "jsonSemanticallyEqual": true
+    }
+  ]
+}

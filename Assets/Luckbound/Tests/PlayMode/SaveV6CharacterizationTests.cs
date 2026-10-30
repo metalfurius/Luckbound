@@ -1619,7 +1619,7 @@ namespace Luckbound.Tests.PlayMode
                     hasActiveExpedition = frozen6.hasActiveExpedition,
                     activeExpedition = frozen6.activeExpedition
                 };
-                string envelopeJson = JsonUtility.ToJson(envelope, false);
+                string envelopeJson = JsonUtility.ToJson(envelope, true);
                 return new FrozenV6ProfileEmission
                 {
                     InputJson = inputJson,
@@ -1649,7 +1649,7 @@ namespace Luckbound.Tests.PlayMode
                     checksum = checksum,
                     settings = frozen6.settings
                 };
-                string envelopeJson = JsonUtility.ToJson(envelope, false);
+                string envelopeJson = JsonUtility.ToJson(envelope, true);
                 return new FrozenV6SettingsEmission
                 {
                     InputJson = inputJson,

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "state": "IntegratedStaticAcceptedNotRuntimeVerified",
+  "parent": "f46d39002ab560b76b6d0a9183b471c12d080566",
+  "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+  "beforeSha256": "bb4b8a6a3c1986b1788c4522b36ce9df6e795e770a3e21c6654da9802509822a",
+  "afterSha256": "42b30c89f7ed2cc10ca9ddd3414ec4015db773cac5e6b9e79df1db3efa7731b9",
+  "reviewSha256": "e9fccceb5b8d48e461dc4351d7047ac38c2fed3a580a743de8a683057d212294",
+  "totalSources": 398,
+  "unchangedOtherSources": 397,
+  "unchangedSaveFiles": 492,
+  "expectedTests": 1052,
+  "expectedEditMode": 607,
+  "expectedPlayMode": 445,
+  "expectedCaptureCases": 11,
+  "expectedCaptureFiles": 97,
+  "expectedCaptureSources": 14,
+  "unityExecutedLocally": false,
+  "v7ImplementationHold": true
+}

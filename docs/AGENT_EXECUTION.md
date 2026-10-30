@@ -1,8 +1,8 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 2.65 · 30 de octubre de 2026.
+**Versión:** 2.66 · 30 de octubre de 2026.
 
-**Snapshot activo y gates visuales:** Unity6000.6.7f1; CI3ad8ce968/41110287288 success1042/1042+gates+builds, Solb3185ca3 Accepted. Siguiente corte integrado pin3ff837cc+emisorbb4/dfb128cc:398C#,391antiguos y492fixtures intactos,331inputs compuestos exit0; [evidencia](ci-integration-20261029/f09-pin-v6-emission-ci4-evidence/REPORT.md). CIpropia prevista1052+97datosbyteidénticos/14fuentes, Native nuevo pendiente. Sinrebase/Save7/pinApp/autoridad física; G04/F09/F10 completos siguen abiertos. SinUI/Unitylocal/publicación.
+**Snapshot activo y gates visuales:** CI3ad8/1042gates/buildsAccepted. CI4f46/41115847754failure1037/1052:10PinPassed,15V6pretty/compactfallos, captura34/97; evidenciapreservada. Correctivo42b30c89Accepted e9fccceb e integrado(2flagsúnicos),Play75compila,397fuentes/492fixtures intactos. PróximaCI1052+97byteigual/14/77+gates,Nativependiente. V7 [299f](ci-integration-20261030/SOL-F09-NEXT-DURABLE-PIN-CONTRACT.md) implementaciónHOLDhastaesegate, sinbumpoperativo/Bootstrap/Ready. G04/F09/F10globales ypinApp/físico abiertos. Sin UI/Unitylocal/publicación.
 
 **Checkpoint del 28 de octubre:** las novedades y límites vigentes están en [PROGRESS.md, Estado actual](PROGRESS.md#estado-actual-28-de-octubre-de-2026). La aprobación estática inicial de `loot_pickup` fue corregida por Sol en su alcance de producto: wiring App retirado, evento/tests solo preparación hasta el commit durable F09; mapa conservado en 21/36. F02 r2 y V5 r2 son preparación/inventario aceptados en ámbitos limitados y mantienen sus gates. La prioridad es convertir esos requisitos en evidencia integrada del recorrido F10 y contener nueva documentación sin efecto sobre ese camino.
 
