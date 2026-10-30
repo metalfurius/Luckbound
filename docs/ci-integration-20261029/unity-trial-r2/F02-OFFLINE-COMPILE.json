@@ -1,0 +1,13 @@
+{
+  "assembly": "Luckbound.Editor.Tests",
+  "sourceCount": 4,
+  "candidateSourceSha256": "8e720c085616282bbe48a4c3b6f1b0c79a0f62abcc5353e7901f24ac1a5fb031",
+  "beforeSourceSha256": "3b2b6b00c2e59af3f4bcceeb38aeceb210b9fa2199247a53c885aa117363cdb5",
+  "exitCode": 0,
+  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceGuardCount": 375,
+  "sourceGuardUnchanged": true,
+  "dependencies": "Exact r4-graph-offline-r4 references",
+  "unityExecuted": false,
+  "nunitExecuted": false
+}

@@ -249,6 +249,23 @@ namespace Luckbound.Tests.PlayMode
                 bool jumpStartedForLandingTest = false;
                 bool sawAirborneAfterLandingTestJump = false;
                 bool landingAudioRouted = false;
+                int jumpCountBeforeGesture = -1;
+                int jumpCountAfterGestureTick = -1;
+                long jumpTickBeforeGesture = -1;
+                long jumpTickAfterGesture = -1;
+                Rigidbody2D jumpBody = player.GetComponent<Rigidbody2D>();
+                System.Action<string> recordJumpBoundary = phase => evidence.RecordEvent(
+                    "C08 jump boundary=" + phase + "; frame=" + Time.frameCount +
+                    "; fixedTime=" + Time.fixedTime.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
+                    "; updateMode=" + InputSystem.settings.updateMode + "; tick=" + player.SimulationTick +
+                    "; successfulJumps=" + player.SuccessfulJumpCount + "; space=" + _keyboard.spaceKey.isPressed +
+                    "; grounded=" + player.IsGrounded +
+                    "; jumpBuffer=" + player.JumpBufferRemaining.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
+                    "; timeScale=" + Time.timeScale.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
+                    "; dead=" + player.IsDead + "; stunned=" + player.IsStunned + "; dodging=" + player.IsDodging +
+                    "; y=" + player.transform.position.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
+                    "; velocityY=" + (jumpBody == null ? "<missing>" :
+                        jumpBody.linearVelocity.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture)));
                 int pendingAudioEffectsBeforeFirstPlayerGesture = app.AudioRouter.PendingEffectRequestCount;
                 while (!player.IsGrounded && groundedWaitTicks < 60)
                 {
@@ -257,11 +274,22 @@ namespace Luckbound.Tests.PlayMode
                 }
                 if (player.IsGrounded)
                 {
+                    jumpCountBeforeGesture = player.SuccessfulJumpCount;
+                    jumpTickBeforeGesture = player.SimulationTick;
+                    recordJumpBoundary("before-enqueue");
                     SetKey(Key.Space, true);
+                    InputSystem.Update();
+                    recordJumpBoundary("after-down-pump");
                     evidence.RecordInput(simulatedTicks, "Jump", "Space: one real jump to verify the landing cue");
                     yield return new WaitForFixedUpdate();
+                    jumpTickAfterGesture = player.SimulationTick;
+                    jumpCountAfterGestureTick = player.SuccessfulJumpCount;
+                    recordJumpBoundary("after-fixed");
+                    jumpStartedForLandingTest = jumpTickAfterGesture > jumpTickBeforeGesture &&
+                        jumpCountAfterGestureTick > jumpCountBeforeGesture;
                     SetKey(Key.Space, false);
-                    jumpStartedForLandingTest = player.SuccessfulJumpCount > 0;
+                    InputSystem.Update();
+                    recordJumpBoundary("after-release-pump");
                 }
                 while (simulatedTicks < 12000 && arena.Result == CombatArenaResult.Ongoing && !player.IsDead)
                 {
@@ -391,7 +419,9 @@ namespace Luckbound.Tests.PlayMode
                     "pendingAtSpawn=" + pendingAudioEffectsBeforeFirstPlayerGesture +
                         "; jumpStarted=" + jumpStartedForLandingTest + "; airborne=" + sawAirborneAfterLandingTestJump +
                     "; routed=" + landingAudioRouted + "; listenerPaused=" + AudioListener.pause +
-                    "; clipAvailable=" + (landingClip != null));
+                    "; clipAvailable=" + (landingClip != null) + "; jumpCountBefore=" + jumpCountBeforeGesture +
+                    "; jumpCountAfter=" + jumpCountAfterGestureTick + "; jumpTickBefore=" + jumpTickBeforeGesture +
+                    "; jumpTickAfter=" + jumpTickAfterGesture);
                 evidence.RecordAssertion("Both Slimes die through combat before the next wave",
                     bothSlimesDied && arena.CurrentWave == 2,
                     "two Slimes dead and wave 2 reached",
