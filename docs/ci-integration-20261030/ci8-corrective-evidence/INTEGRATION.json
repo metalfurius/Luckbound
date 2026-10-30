@@ -1,0 +1,65 @@
+{
+  "baseCommit": "bd1c2fb12625db168fe976854e3f4b4c350e8342",
+  "review": "docs/ci-integration-20261030/SOL-CI8-CORRECTIVE-COMBINED-STATIC-R2.md",
+  "reviewSha256": "e727286b04edeba12115c02ba1ff8c215ce712e28b11b8028131f5ced032d315",
+  "sourcesBefore": 411,
+  "sourcesAfter": 411,
+  "modifiedExisting": 5,
+  "newSources": 0,
+  "unchangedExisting": 406,
+  "metas": 868,
+  "uniqueGuids": 868,
+  "metaChanges": 0,
+  "historicalFixtureFiles": 492,
+  "historicalChanges": 0,
+  "compiledInputsBound": 134,
+  "expectedNotObserved": {
+    "editMode": 654,
+    "playMode": 510,
+    "total": 1164
+  },
+  "sourceChanges": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+      "beforeSha256": "2ab115dec747be4de9b79bba68303a73318a1f1889f749b2135598cb6359bd56",
+      "sha256": "e7f5267330dba1422cb5bbf141e21d5c0884fbab239892154de1b9347749d7fe",
+      "source": "Logs/CI8Corrective-20261030-r1/combined-r1/overrides/Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+      "frozen": "Logs/CI8Corrective-20261030-r1/combined-r2/overrides/Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+      "bytes": 22537
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+      "beforeSha256": "c02c0c9a933d01bca1c5ae43d8416e6d2f675f8d78bd683b04f6fc846b195953",
+      "sha256": "550fe63c2a9835d86dc3511f1b20ffac197cad8ec3582f80d6b7bd7cd1fa7de7",
+      "source": "Logs/CI8Corrective-20261030-r1/combined-r1/overrides/Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+      "frozen": "Logs/CI8Corrective-20261030-r1/combined-r2/overrides/Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+      "bytes": 49316
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+      "beforeSha256": "5082f2cd19c38365f42967d285b1e3e04430922ad33d6e3ec30eabe7d37ac9f7",
+      "sha256": "ed92256efc014f2f42ecccfcdc6dccdb7c0fea4b1e875309379676dde1e96ab7",
+      "source": "Logs/E04PanelCapability-20261030-r2/after/Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+      "frozen": "Logs/CI8Corrective-20261030-r1/combined-r2/overrides/Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+      "bytes": 25631
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+      "beforeSha256": "e01d8a7d33a8c2b4afb322c6c2e8b771000d475faabfa0b058944531992a62eb",
+      "sha256": "774cdefc8c2122695f9cb4611ce6361d2f4a7becf88369c5855a4e7ca3d95dd7",
+      "source": "Logs/E04PanelCapability-20261030-r2/after/Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+      "frozen": "Logs/CI8Corrective-20261030-r1/combined-r2/overrides/Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+      "bytes": 58471
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "beforeSha256": "749a142755d449b943ab1b7cddf83ffe85e7c0b9bce0d5f3cae9e8787f7d6e60",
+      "sha256": "6956bbe752b93b85a0c8ce94e79c1f29b584ab78b839f67fa36792a26e0c29c0",
+      "source": "Logs/CI8Corrective-20261030-r1/combined-r1/overrides/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "frozen": "Logs/CI8Corrective-20261030-r1/combined-r2/overrides/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "bytes": 61500
+    }
+  ],
+  "unityLocal": false,
+  "playersExecuted": false
+}

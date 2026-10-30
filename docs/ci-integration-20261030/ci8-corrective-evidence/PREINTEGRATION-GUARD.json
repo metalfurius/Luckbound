@@ -1,0 +1,13 @@
+{
+  "ci7Run": 41136113982,
+  "assetsSources": 411,
+  "historicalFixtureFiles": 492,
+  "changedSinceCI7": [],
+  "stagedExistingChanges": 5,
+  "expectedOnly": {
+    "editMode": 654,
+    "playMode": 510,
+    "total": 1164
+  },
+  "nativeAcceptance": false
+}

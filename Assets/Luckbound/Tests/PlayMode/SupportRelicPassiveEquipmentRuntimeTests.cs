@@ -195,6 +195,10 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(session.Motor.LastConsumableUseOutcome.Status, Is.EqualTo(PlayerConsumableUseStatus.Cancelled));
             Assert.That(session.Motor.HealthPotionCharges, Is.EqualTo(1),
                 "A real dodge input interrupts the potion without consuming its stack.");
+            for (int frame = 0; frame < WaitFrameLimit && session.Motor.IsDodging; frame++)
+                yield return new WaitForFixedUpdate();
+            Assert.That(session.Motor.IsDodging, Is.False,
+                "The real dodge must finish before the skill and tonic inputs begin.");
 
             int tonicIndex = FindBackpackIndex(session.App.ActiveRun.Inventory, tonic.InstanceId);
             InventoryOperationOutcome quickSlot = session.App.ActiveRun.Inventory.SetQuickConsumable(
@@ -203,17 +207,61 @@ namespace Luckbound.Tests.PlayMode
             session.Motor.RefreshConsumableChargesFromInventory();
             int healthBeforeTonic = session.Motor.CurrentHealth;
             session.Motor.SkillUses.SetCurrentEnergy(20);
+
+            SkillDefinition energyRecoveryAnchorSkill = session.Skills.Get(BellatorSkillLoadout.CircularCutId);
+            int circularCutsBeforeAnchor = session.Motor.BellatorCircularCutActivationCount;
+            session.Actor.Input.Press(PlayerAction.Skill2);
+            SkillUseOutcome energyRecoveryAnchor = default;
+            long energyRecoveryAnchorTick = -1;
+            bool energyRecoveryAnchorActivated = false;
+            for (int frame = 0; frame < WaitFrameLimit && !energyRecoveryAnchorActivated; frame++)
+            {
+                yield return new WaitForFixedUpdate();
+                BellatorCombatResult result = session.Motor.LastBellatorCombatResult;
+                if (result.SkillOutcome.Status != SkillUseStatus.Activated) continue;
+                energyRecoveryAnchor = result.SkillOutcome;
+                energyRecoveryAnchorTick = session.Motor.SimulationTick;
+                energyRecoveryAnchorActivated = true;
+            }
+            session.Actor.Input.Release(PlayerAction.Skill2);
+
+            Assert.That(energyRecoveryAnchorActivated, Is.True,
+                "A real Circular Cut input must activate before measuring tonic energy.");
+            Assert.That(energyRecoveryAnchor.SkillId, Is.EqualTo(energyRecoveryAnchorSkill.Id));
+            Assert.That(energyRecoveryAnchor.EnergySpent, Is.GreaterThan(0));
+            Assert.That(session.Motor.BellatorCircularCutActivationCount, Is.EqualTo(circularCutsBeforeAnchor + 1));
+            Assert.That(session.Motor.IsPreparingBellatorSkill, Is.False);
+            Assert.That(session.Motor.IsCharging, Is.False);
+
+            int energyBeforeTonic = session.Motor.CurrentEnergy;
+            Assert.That(energyBeforeTonic + EnergyTonicUseState.EnergyAmount,
+                Is.LessThanOrEqualTo(session.Motor.MaximumEnergy),
+                "The exact tonic gain must not be clamped at maximum energy.");
             session.Actor.Input.Press(PlayerAction.Consumable);
             yield return new WaitForFixedUpdate();
+            long tonicPreparationStartedTick = session.Motor.SimulationTick;
+            Assert.That(session.Motor.LastConsumableUseOutcome.Status,
+                Is.EqualTo(PlayerConsumableUseStatus.Preparing));
             session.Actor.Input.Release(PlayerAction.Consumable);
+            long tonicConsumedAtTick = -1;
             for (int frame = 0; frame < EnergyTonicUseState.PreparationDurationTicks + 5 &&
                 session.Motor.LastConsumableUseOutcome.Status != PlayerConsumableUseStatus.Consumed; frame++)
+            {
                 yield return new WaitForFixedUpdate();
+                if (session.Motor.LastConsumableUseOutcome.Status == PlayerConsumableUseStatus.Consumed)
+                    tonicConsumedAtTick = session.Motor.SimulationTick;
+            }
 
             Assert.That(session.Motor.LastConsumableUseOutcome.Status, Is.EqualTo(PlayerConsumableUseStatus.Consumed));
             Assert.That(session.Motor.LastConsumableUseOutcome.ItemId, Is.EqualTo(PlayerMotor2D.EnergyTonicItemId));
             Assert.That(session.Motor.LastConsumableUseOutcome.EnergyRestored, Is.EqualTo(25));
-            Assert.That(session.Motor.CurrentEnergy, Is.EqualTo(45));
+            Assert.That(tonicConsumedAtTick - tonicPreparationStartedTick,
+                Is.EqualTo(EnergyTonicUseState.PreparationDurationTicks));
+            Assert.That(tonicConsumedAtTick - energyRecoveryAnchorTick, Is.LessThan(60),
+                "The tonic completes before the real skill's 60-tick Bellator recovery delay expires.");
+            Assert.That(session.Motor.CurrentEnergy,
+                Is.EqualTo(energyBeforeTonic + EnergyTonicUseState.EnergyAmount),
+                "The Motor's normal recovery remains enabled; the measured tick is before its skill-reset delay.");
             Assert.That(session.Motor.CurrentHealth, Is.EqualTo(healthBeforeTonic),
                 "The Vial bonus does not alter the energy tonic or restore health.");
             Assert.That(session.Motor.EnergyTonicCharges, Is.Zero);
@@ -420,6 +468,12 @@ namespace Luckbound.Tests.PlayMode
             yield return StartBoundRun(store, run, value => _session = value);
             RuntimeSession session = _session;
             float speedBefore = session.Motor.EffectiveMaximumHorizontalSpeed;
+            int healthBefore = session.Motor.CurrentHealth;
+            int energyBefore = session.Motor.CurrentEnergy;
+            int healthPotionChargesBefore = session.Motor.HealthPotionCharges;
+            int energyTonicChargesBefore = session.Motor.EnergyTonicCharges;
+            string inventorySnapshotBefore = JsonUtility.ToJson(run.Inventory.CreateSnapshot());
+            string collectorSnapshotBefore = JsonUtility.ToJson(session.Collector.Inventory.CreateSnapshot());
             int writesBefore = store.ProfileWriteAttempts;
             int backpackIndex = FindBackpackIndex(session.App.ActiveRun.Inventory, cord.InstanceId);
             RoomInstanceId room = session.App.ActiveRoomInstanceId;
@@ -433,11 +487,37 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(failed.Persisted, Is.False);
             Assert.That(failed.Pending, Is.True);
             Assert.That(failed.Outcome.Succeeded, Is.True);
+            Assert.That(session.App.HasPendingEconomyMutation, Is.True);
+            Assert.That(session.App.PendingEconomyOperationKey, Is.EqualTo(operationKey));
+            Assert.That(session.Pause.IsPaused, Is.False,
+                "The pending simulation pause comes from the session lease, not manual pause input.");
+            Assert.That(session.Pause.IsSimulationPaused, Is.True,
+                "The pending live-actor publication retains its simulation pause lease until retry.");
+            Assert.That(Time.timeScale, Is.EqualTo(0f));
             Assert.That(session.App.ActiveExpedition.inventorySnapshotJson,
-                Is.Not.EqualTo(JsonUtility.ToJson(run.Inventory.CreateSnapshot())),
+                Is.Not.EqualTo(inventorySnapshotBefore),
                 "The save is durable even while its live actor publication remains pending.");
-            Assert.That(session.App.ActiveRun.Inventory.RelicOne, Is.Null);
+            Assert.That(session.App.ActiveRun.Inventory.RelicOne.ItemId, Is.EqualTo(SupportRelicIds.RouteCord));
+            Assert.That(session.App.ActiveRun.Inventory.RelicOne.InstanceId, Is.EqualTo(cord.InstanceId));
+            string durableCandidateSnapshot = JsonUtility.ToJson(session.App.ActiveRun.Inventory.CreateSnapshot());
+            Assert.That(session.App.ActiveExpedition.inventorySnapshotJson, Is.EqualTo(durableCandidateSnapshot),
+                "The durable checkpoint must match the exact candidate now exposed as ActiveRun.");
+            ProfileSaveEnvelope durableProfile = JsonUtility.FromJson<ProfileSaveEnvelope>(store.ProfilePrimaryJson);
+            Assert.That(durableProfile, Is.Not.Null);
+            Assert.That(durableProfile.activeExpedition.inventorySnapshotJson,
+                Is.EqualTo(durableCandidateSnapshot), "The successful write must contain that exact durable candidate.");
+            Assert.That(store.LastSuccessfulProfileAttempt, Is.Not.Null);
+            Assert.That(store.LastSuccessfulProfileAttempt.Json, Is.EqualTo(store.ProfilePrimaryJson));
+            Assert.That(session.Collector.Inventory, Is.SameAs(run.Inventory));
+            Assert.That(session.Collector.Inventory, Is.Not.SameAs(session.App.ActiveRun.Inventory));
+            Assert.That(session.Collector.Inventory.RelicOne, Is.Null);
+            Assert.That(JsonUtility.ToJson(session.Collector.Inventory.CreateSnapshot()),
+                Is.EqualTo(collectorSnapshotBefore), "The live collector's old inventory must remain byte-stable.");
             Assert.That(session.Motor.EffectiveMaximumHorizontalSpeed, Is.EqualTo(speedBefore));
+            Assert.That(session.Motor.CurrentHealth, Is.EqualTo(healthBefore));
+            Assert.That(session.Motor.CurrentEnergy, Is.EqualTo(energyBefore));
+            Assert.That(session.Motor.HealthPotionCharges, Is.EqualTo(healthPotionChargesBefore));
+            Assert.That(session.Motor.EnergyTonicCharges, Is.EqualTo(energyTonicChargesBefore));
             Assert.That(session.PublicationAttempts, Is.EqualTo(1));
             Assert.That(session.PreparationCalls, Is.EqualTo(1));
             Assert.That(store.ProfileWriteAttempts, Is.EqualTo(writesBefore + 1));
@@ -448,9 +528,23 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(retry.Persisted, Is.True, retry.Message);
             Assert.That(retry.Pending, Is.False);
             Assert.That(session.App.ActiveRun.Inventory.RelicOne.ItemId, Is.EqualTo(SupportRelicIds.RouteCord));
+            Assert.That(session.App.ActiveRun.Inventory.RelicOne.InstanceId, Is.EqualTo(cord.InstanceId));
+            Assert.That(session.App.ActiveExpedition.inventorySnapshotJson, Is.EqualTo(durableCandidateSnapshot));
+            Assert.That(JsonUtility.ToJson(session.App.ActiveRun.Inventory.CreateSnapshot()),
+                Is.EqualTo(durableCandidateSnapshot));
             Assert.That(session.Motor.EffectiveMaximumHorizontalSpeed, Is.GreaterThan(speedBefore));
+            Assert.That(session.Collector.Inventory, Is.SameAs(session.App.ActiveRun.Inventory));
+            Assert.That(session.Motor.CurrentHealth, Is.EqualTo(healthBefore));
+            Assert.That(session.Motor.CurrentEnergy, Is.EqualTo(energyBefore));
+            Assert.That(session.Motor.HealthPotionCharges, Is.EqualTo(healthPotionChargesBefore));
+            Assert.That(session.Motor.EnergyTonicCharges, Is.EqualTo(energyTonicChargesBefore));
             Assert.That(session.PublicationAttempts, Is.EqualTo(2));
             Assert.That(session.PreparationCalls, Is.EqualTo(1));
+            Assert.That(session.App.HasPendingEconomyMutation, Is.False);
+            Assert.That(session.App.PendingEconomyOperationKey, Is.Empty);
+            Assert.That(session.Pause.IsPaused, Is.False);
+            Assert.That(session.Pause.IsSimulationPaused, Is.False);
+            Assert.That(Time.timeScale, Is.EqualTo(1f));
             Assert.That(store.ProfileWriteAttempts, Is.EqualTo(writesBefore + 1),
                 "Retrying an already saved actor publication must not write the profile again.");
         }

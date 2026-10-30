@@ -1,0 +1,703 @@
+{
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "referenceEditor": "6000.6.6f1",
+  "targetCiEditor": "6000.6.7f1",
+  "guardedLiveSources": 411,
+  "stageRoots": [],
+  "testOverrides": [
+    "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+    "Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs"
+  ],
+  "referenceDirectory": "Logs/G04RemainingConsumers-20261030-r1/composed-r1/offline-r1",
+  "results": [
+    {
+      "assembly": "Luckbound.App",
+      "sourceCount": 56,
+      "exitCode": 0,
+      "responseSha256": "2a066af9762d22a0f92931605fdd17669389a9baed4738db938f18b103f301c9",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inputs": [
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs",
+          "sha256": "0166a16ae32800e35c19568279db6e5dac3c8f5bb5891ba5af57b5464a2fab43"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs",
+          "sha256": "d74ef2755605bcfb93a4f91f9519ae369cbd317001b2a4897eeed2c32b9eaa3f"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionAmbience.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionAmbience.cs",
+          "sha256": "0c23428260b6b157366cab4042ac571b651d71bad2e852098e5a2635bac5e015"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionProgression.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionProgression.cs",
+          "sha256": "7e9b05340161ebb0dc2c5f0adbd0e6d0266e53d1ac6c80b1139da1eccea6274c"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.Fortune.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.Fortune.cs",
+          "sha256": "975613289cbe4e4437fa2480e8f049a9387c6945c8ebffaa9df556614b8945e6"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneBrew.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneBrew.cs",
+          "sha256": "a55bdc426cc0881d4e5971aaeda3ca0da028bda60365eaf45cbe19abf278b294"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneReward.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneReward.cs",
+          "sha256": "44902870763bc7ab2a782ac6c46777efdc00026cc7e5e80e7956680cc76031a0"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.RelicEquipment.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.RelicEquipment.cs",
+          "sha256": "c9fdb0c4d60d1e1980d07804f14afb3933cb6b72c104375adbbc30a0b2d62452"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+          "sha256": "e30ea33766d121395838d3f6df5bd5ef6794520460ad2d243499ffe3a103c31a"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+          "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+          "sha256": "2ab115dec747be4de9b79bba68303a73318a1f1889f749b2135598cb6359bd56"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/Compatibility/HistoricalSaveMapper.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/Compatibility/HistoricalSaveMapper.cs",
+          "sha256": "e7f20d8c4b24169d3ca786389cc0fb499b6ad6a5b13895403127ebe440cd2feb"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalDtos.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalDtos.cs",
+          "sha256": "82664c0ebbbd19f5d78bcc9dc6ce6f8d4757ffe3fe1e88c30a5f6a8253268ffd"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalReader.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalReader.cs",
+          "sha256": "8febb42df246a4db51942c5a7a83f91ef2f33229bc7f975c453aeb09c5e86241"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+          "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+          "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalReader.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalReader.cs",
+          "sha256": "20a3eee88030baf4f31c372bfeb5f8858213fa1524d973f746ccdb53824cd14e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV7JsonCodec.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/Compatibility/SaveV7JsonCodec.cs",
+          "sha256": "c27b787a4d168c439ce2a1332c952b9459701e2321d3d74843ee4d1f39706646"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ContractProgressionCommitResult.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ContractProgressionCommitResult.cs",
+          "sha256": "7f87ae388f4ab8d990d2830671eac21379a4f2c0fbae60c06311580d7cd50488"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/CraftingCommitResult.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/CraftingCommitResult.cs",
+          "sha256": "eb00afd82bfada7a316a4ea2ef078fa6ee15cec59d8aa655c4365bbf9f4a55cd"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/CustodianArenaComposition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/CustodianArenaComposition.cs",
+          "sha256": "0d8410eb541ea3c11a40925d6ddb4cd3abb6c737de9a760e585f50965497e847"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionBellatorRunBinder.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionBellatorRunBinder.cs",
+          "sha256": "f328089a8a045c2449b072b5c247dc7ca9e9285cf32aad750d2540033094d0d4"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterPlanProjection.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionEncounterPlanProjection.cs",
+          "sha256": "72f0395e78cb62f22b64beffc7155112fd09d6a1abdb803598fc077b765cd8f1"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterResolver.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionEncounterResolver.cs",
+          "sha256": "fb5016d6dac1189913e5043f143ecc5fefc3340d97651db7042d87fc9be89724"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterRosterState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionEncounterRosterState.cs",
+          "sha256": "17f918bd59eb320116aff4ec86d731d3cc9d0446e82a4b3f25402370a84becf7"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterSessionSnapshotSource.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionEncounterSessionSnapshotSource.cs",
+          "sha256": "e81415f536d157c1d0d9b0aafbadda44c721f2a1b211602b4f2f8f0cd9c36598"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionGameplayComposition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionGameplayComposition.cs",
+          "sha256": "a4a667ca18db67170e8531e6a06e00576895d464cdc53875bb27a7dfc9d41604"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionMutationCommitResult.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionMutationCommitResult.cs",
+          "sha256": "f94e63a9edeeb79cfc323e16587bc22ccc84c4732a5564208af1ad80327f3dc1"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionPauseController.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionPauseController.cs",
+          "sha256": "e56c4a2a8906e1255820485c3acc98a22d983b1c195cc2219fa266fc2780af21"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+          "sha256": "165e6d7a404380afe2b2dcbc2e2c761a4c4f8a778dbd7f0ea022529d9fd65a41"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomAmbienceRouter.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionRoomAmbienceRouter.cs",
+          "sha256": "bec9d74e30f0b5b02ac273117801dbc0dbfd1de3ebd268ddcd3f89fe68369a0b"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomPrefabRegistry.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionRoomPrefabRegistry.cs",
+          "sha256": "aa6dbbb4c2aa5462df1297a0579e781d5887b2838e8c36404fbb9dff8aedaebf"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomTransitionController.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionRoomTransitionController.cs",
+          "sha256": "7aaeb5d805f804a3b10500337711dc4f9eee478881ecc6eed3f7dc2ae13a645a"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionRunConfigurationFactory.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionRunConfigurationFactory.cs",
+          "sha256": "1bff5c8f8cae4efab392a389595fc7802229de330be0d84046e2098bdc974678"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionRunSessionPresenter.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionRunSessionPresenter.cs",
+          "sha256": "a46f82f1482c7ddb078c11b8c31182ca84cb4987955d5f478274c3bd9e0db1bd"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+          "sha256": "a6463bb915e113c23ee27902c3beb0b1cb1208456d06bb276848192732f0c822"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ExpeditionSessionReadinessRegistration.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ExpeditionSessionReadinessRegistration.cs",
+          "sha256": "53ee3fccd29182a40d776b9cafbf6d7c221fe70a16e00ddc79e13afc761c434a"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/FileSaveStore.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/FileSaveStore.cs",
+          "sha256": "14c210882e6d43e0a5cffb7b66d26db6af66db5d387402bbd1fbf7edb8c73dc9"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/E04PanelCapability-20261030-r1/after/Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+          "sha256": "f03d0168ec20769d542b3d1fc24e9e40b0b37fd5202f65dcdce2d5d09de03940"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+          "sha256": "938aef74df556eb7c887d19b531c1b04435063031808ae545965adc9250a8fad"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
+          "sha256": "d4479c7bcd61d065a6d7da8564a30e03e80d7eb14c32650aab69704ed56e8fa7"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/MenuNavigationFocusAudioRelay.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/MenuNavigationFocusAudioRelay.cs",
+          "sha256": "922904e472b5d8b37b900967316380b24a8778048c81a0942caa451d105b5fd5"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/MovementDemoComposition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/MovementDemoComposition.cs",
+          "sha256": "0550220d45875f60fa0f7d03dc200a8badd4c35c84d1d7c1295e3d03567f24b5"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/MovementDemoGoalTrigger.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/MovementDemoGoalTrigger.cs",
+          "sha256": "f9c3269b4aaf461b989f79763ade0e271fabbe70a5566064d8520158e3405786"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/PauseAudioSettingsPanel.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/PauseAudioSettingsPanel.cs",
+          "sha256": "cb4f3f03ec615c7f6aac8bbe9dff32e70ac8352ecd2a3268e4a8941ec165072e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/ProgressionPurchaseCommitResult.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/ProgressionPurchaseCommitResult.cs",
+          "sha256": "d24217a7411f9e280d019b70a06a6704c9ae245fbef2f9220380e6c3437feef8"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/RestStopEntryCommitData.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/RestStopEntryCommitData.cs",
+          "sha256": "b0ac0d467725eac71b6dbcb398b14195ec8d337bd705105f98bcdc49ba5322e8"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs",
+          "sha256": "227a1fbcc7f6c090d198ed848d0f5241a49334115291016b29005ff25dec75dc"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/RoomEncounterActorBinding.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/RoomEncounterActorBinding.cs",
+          "sha256": "ff00651d2500ada62ba90fb73da06c21b9e37cdcc94b6c975a81e831435233a7"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/RoomEncounterActorLifetimeRelay2D.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/RoomEncounterActorLifetimeRelay2D.cs",
+          "sha256": "5b4ec7ff49b2949a4cfaf7cb72441e79177baab2aea5d14eb29d3e01c5ecd424"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/RoomEncounterDriver2D.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/RoomEncounterDriver2D.cs",
+          "sha256": "3b452d830581259f164941939aaf2fd5b280fe12defa9468fc3d75512dba5467"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/RoomEncounterRuntime.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/RoomEncounterRuntime.cs",
+          "sha256": "79886c0cf9cc418bd9849557393129d6f65a412ee9910c5615e705647a72414e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/SaveRepository.V7Preproduction.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/SaveRepository.V7Preproduction.cs",
+          "sha256": "3e3cbc71522fc87903133bb35f23585b565670c564ba1909a2e9178df30df9d4"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/SaveRepository.cs",
+          "sha256": "f3a6b0b6d062289c2fcdb3ddab60d650a243b3e8b42534ea967b7250423cf931"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/SaveV7CandidateMapper.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/SaveV7CandidateMapper.cs",
+          "sha256": "effac45ef41f25f4b223d2c06993d1f07024d27280eb2740f3f7be79a7f15365"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/App/WebGlFileSystemSyncer.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/App/WebGlFileSystemSyncer.cs",
+          "sha256": "dd35a211df07907082a254b6c67baef3de32dd7d02e27c6d72ef822503f0779f"
+        }
+      ]
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 78,
+      "exitCode": 0,
+      "responseSha256": "2656760ab7dda0ff703ee15765676b7d77a3e8850f2a3944f3fe1c7f9b28a4b6",
+      "logSha256": "6b551c0ac1d5f48b6b569e6ef613917bb00ef9782869f08763457baccf95c28d",
+      "inputs": [
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ApplicationAudioInputLifecycleTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ApplicationAudioInputLifecycleTests.cs",
+          "sha256": "a1e0e2a593cd4762c9c8dd6d5088b23c375d73a83f24bde971100f536c6fa9e9"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ApplicationAudioRouterTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ApplicationAudioRouterTests.cs",
+          "sha256": "1a5b8805bb323262f0c9bfc1214b678095943916de83793e9b5833f5bd19598e"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ApplicationContractProgressionTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ApplicationContractProgressionTests.cs",
+          "sha256": "8c6c1c6c250d438b9bbe4ea39db85bb448def3abb5fcc87e2bf38520115c07a1"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneBrewTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ApplicationFortuneBrewTests.cs",
+          "sha256": "b29d94f7f62adca84ce98a4c59d3e2098ea9efe2b5a9e1f3165a44118d90e8d6"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneRewardTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ApplicationFortuneRewardTests.cs",
+          "sha256": "17039fa62d5373b8efb8b110dc3cb4d360994c8295d34568f96b635c9984345a"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/BellatorAbilitiesTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/BellatorAbilitiesTests.cs",
+          "sha256": "7550ff66de90d3dc723ae4f92071f173c945186133f0741aa44e83b3faf2d866"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/BellatorChargeTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/BellatorChargeTests.cs",
+          "sha256": "f944fcbfff39a36c29e64a1370a4e158c91a87c1d6d1129a4bb0d07e3e13a6a4"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/BellatorWeaponRuntimeAcceptanceTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/BellatorWeaponRuntimeAcceptanceTests.cs",
+          "sha256": "d7fd5ebc51d9a0a5dee0a41fa3fb65950bc357e776666562587fa15f022275fc"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+          "sha256": "c02c0c9a933d01bca1c5ae43d8416e6d2f675f8d78bd683b04f6fc846b195953"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/CombatEffectRoutingTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/CombatEffectRoutingTests.cs",
+          "sha256": "388eb5b2e6ec61228313d08becfbc9aab7757ea00d88d073a5a18d4dcca52396"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/CraftingSessionTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/CraftingSessionTests.cs",
+          "sha256": "ad83d7e2c3f3bfe0bec62302657c113738e894695ce2358b7b6a26b15fe2d01b"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/CustodianBossTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/CustodianBossTests.cs",
+          "sha256": "57639f498b89f1c0decbde484ffffe0e951c7a010314cd96409cffb9551dfb2f"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/E04LegacyFortuneMigrationAcceptanceTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/E04LegacyFortuneMigrationAcceptanceTests.cs",
+          "sha256": "a677322fa504c504c52f9013b4211659745f2b181329840de071e5804dc9cbd7"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/Economy/MerchantApplicationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/Economy/MerchantApplicationTests.cs",
+          "sha256": "6fc20ca36d5e0e2f4bcd776a6b6b856cd6712b4405c74797200ff3af66097b58"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopApplicationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/Economy/RestStopApplicationTests.cs",
+          "sha256": "f6e8528e8d75a39b0b7247db42167dea54e72aa2ea9214517571a2740529fb61"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+          "sha256": "6923dccd004940ced4fa28623e7ec84fe1b8f878501a2f7ba224e1d451049144"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/EncounterPlanPinProjectionTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/EncounterPlanPinProjectionTests.cs",
+          "sha256": "d959ba2448c45498a67f9533d586510447ee67c83823edbf38c5b92183ab388a"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionBellatorRunBinderTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionBellatorRunBinderTests.cs",
+          "sha256": "8ee357ad9f943dc620d5d6e2cf0c0e9294daa66538d18c18e2b1fef79f788030"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs",
+          "sha256": "e3add91ecfaff68c53c88aba3da06413e4a3844da0e0abd4982e85be91f40955"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterRosterStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterRosterStateTests.cs",
+          "sha256": "174d5214ab399ac8389f8e61459c8e563232b5ad2847a67b258a9533262bddf5"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs",
+          "sha256": "706b9704f76cdb08558bc0325e8ab6bfe9029a4e063bdfb13d5500e3f4683cf1"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAdvanceDurabilityTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAdvanceDurabilityTests.cs",
+          "sha256": "8dd7e7b161fdac197b383f52ae9508f06ec15fb91a2bc2cfd45875c340efb74e"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAmbienceRouterTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAmbienceRouterTests.cs",
+          "sha256": "87aa2f54343480f572557e11ce81705143b0135d1835ca84c244676dc8f73b81"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRouteGenerationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionRouteGenerationTests.cs",
+          "sha256": "32911e90773b288f5634ed1ba252eba8bbf7e3e05ca2385410e087b227ceb278"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSampleRunTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionSampleRunTests.cs",
+          "sha256": "f37c576391a737ab6337f6afafbdd2963a851de1425c883c926058af43a00338"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSessionReadinessContractTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionSessionReadinessContractTests.cs",
+          "sha256": "8f9f967462345818ea0b35f3830d49a88a66d755b391d80f16ec90bf3e450d77"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSettlementFlowTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionSettlementFlowTests.cs",
+          "sha256": "3b04b63618b043c0811a470dd4d4d76016e0a42f60a7f4a8927ad77aecf9fe7f"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSimulationPauseLeaseTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ExpeditionSimulationPauseLeaseTests.cs",
+          "sha256": "789257017a00e853f1388d43b96269bb8c169b363d4578a8509c76e731fdf4b0"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/E04PanelCapability-20261030-r1/after/Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+          "sha256": "148495f09404399f2bd744a9890cd60d096eeaaad8db9f363d0545c26d4c8774"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationProfileIntegrationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/HubPreparationProfileIntegrationTests.cs",
+          "sha256": "463f50e194546ffb5c4a2720f5ffd87de05c0019cde3e8ed0179ce3b6a829abd"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+          "sha256": "53772af61eac98a1e5f97127f82775a96ae9cbf6c12a650fd934e8bb3ad77a73"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/HuesoguardiaTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/HuesoguardiaTests.cs",
+          "sha256": "03d2d7ce5e796b5e0b8acd40fda6ce35912b63f69cf5c14870c9eb5a5a39ff8c"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/I06LootPickupCueTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/I06LootPickupCueTests.cs",
+          "sha256": "4dc71b954a3d7e4662bb5c1ef11b5aa17b077e01a8d2d59b3a1bd5388a043733"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/I06MenuFocusAudioRoutingTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/I06MenuFocusAudioRoutingTests.cs",
+          "sha256": "60b4f9a7d79e00783d5f31fb0de6eed9bdeb262d00a51361f4b2cb782221964f"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/I06UiAudioRoutingTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/I06UiAudioRoutingTests.cs",
+          "sha256": "37a8dee5c35d9830fd8a5cdd489e5ff31aa9504048f5b026691e3e13d5c5dcd5"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ItemCatalogAndPickupTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ItemCatalogAndPickupTests.cs",
+          "sha256": "9702aa48c1ec484cf913b9bdf84dae8d1dc366ccb000ecf79d60e80dcef8155b"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/JumpControlTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/JumpControlTests.cs",
+          "sha256": "91ab324b8b3cd1c02b15d35293d763beaba1b628f56b5f8eb21d67b7fa47b0a8"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/LegacyProfileV5TestFixture.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/LegacyProfileV5TestFixture.cs",
+          "sha256": "4b38681b9c0d6a2c2732f4e437d240139921c5fdbcdf5c4cb9ac7d771106dcb6"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/LuckboundInputTestFixture.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/LuckboundInputTestFixture.cs",
+          "sha256": "39855193cac9e394185b8bf1a545a5bc00a3914a87c3fd10b1e5f4467529e699"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/Magus/MagusGameplayAdapterTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/Magus/MagusGameplayAdapterTests.cs",
+          "sha256": "ae27238c6bc7d4e9452bdfdeeb23694d130bde5bc213df26c6b5f4b11f3b1338"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/Magus/MagusPlayerMotorTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/Magus/MagusPlayerMotorTests.cs",
+          "sha256": "a29a1c05d9c2d549ad7c5b233159cec3e8c0762e7c8cd19eb3c131a4f7a8699b"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/MagusWeaponRuntimeAcceptanceTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/MagusWeaponRuntimeAcceptanceTests.cs",
+          "sha256": "4c4171ac287c7002b23b57bdaa2937e3a2dcd6455908171a7578111fb6f8d799"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/MeleeAttackMotorTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/MeleeAttackMotorTests.cs",
+          "sha256": "3001af4b9f280c9f2c824db5c8c531220e08562a9dbab9110c2ec1265db340c6"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs",
+          "sha256": "a84d560b8eba8edae6f04bd4357f95c0ec2b6d944e47260cc2906859556c0ccb"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PauseAudioSettingsTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PauseAudioSettingsTests.cs",
+          "sha256": "651212124322626ef7879909d0c0201458abf4b99aed4501c7912ea5fadf14ba"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PermanentUpgradeFlowTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PermanentUpgradeFlowTests.cs",
+          "sha256": "ca31964efa6b1e58200f26a0ff0236b9ed9ee3a49ef990aa4a85e04486c2e08c"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PlayerConsumableRuntimeTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PlayerConsumableRuntimeTests.cs",
+          "sha256": "b636d9a465e5094c25097823638f1e5bbb2952a30beae9b8a9ba8f2cc1d6787d"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PlayerDamageTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PlayerDamageTests.cs",
+          "sha256": "b885b0067afabe7b95d0b56238abc0e2be7e50c7b29d93dd99cb296fc7a10c1b"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PlayerDodgeTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PlayerDodgeTests.cs",
+          "sha256": "80c5e6c57a59067dcd024d6046ddddcb12b189ead057d72cc6760a866dab20f4"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PlayerHudConsumableTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PlayerHudConsumableTests.cs",
+          "sha256": "21182eb9b2236d3b2090dc9b97bcf52f342dbf2ac758d6c8d33bbc937eb9ff63"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PlayerInputSourceTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PlayerInputSourceTests.cs",
+          "sha256": "20421d6d5c05b205caf3ec74d2e22db8e2c1670fc060139f92e6837f6742b577"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
+          "sha256": "316667641c7c2cdcaea23158d46566628a561470df1d6fd181e3a3be51d2aff1"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/PlayerPresentationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/PlayerPresentationTests.cs",
+          "sha256": "3ab2e21afdcab546c78b84be91a0de4decbbdf174ad56c4f80bd78cc432af679"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ProjectilePoolTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ProjectilePoolTests.cs",
+          "sha256": "a99181c408b045ddfd46618695ff61ed1f6ca43c7ca3ee36302e7ffa9374d323"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/RoomEncounterRuntimeLifecycleTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/RoomEncounterRuntimeLifecycleTests.cs",
+          "sha256": "633fa01a12928150065d1e48db8f0223804763cfbec2a1ef334f62a2540d7acc"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/RoomEncounterRuntimePhysicalTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/RoomEncounterRuntimePhysicalTests.cs",
+          "sha256": "eec7b1e3f6fa148995c2cead6b32084ce14632db1493b9363d607c56176baa92"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/RoomTemplateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/RoomTemplateTests.cs",
+          "sha256": "99f1d9913266551f248f7853355af1ac90a26ce6515f7a991a8b82c2e2b6c30f"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/RoomTransitionLifecycleTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/RoomTransitionLifecycleTests.cs",
+          "sha256": "a2a962301b19ebe81c4984e1e6a608cf043ee546ed184b2cecfc276ad2681200"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/RuntimeAmbienceDirectorTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/RuntimeAmbienceDirectorTests.cs",
+          "sha256": "5056818c9d72501c429905ceed8148265e4b8fdcba1e93aad614870be3aafca5"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/RuntimeAudioDirectorTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/RuntimeAudioDirectorTests.cs",
+          "sha256": "b9d85c9347cac3b6d4b648c840008ad2db02e98764fc30ba151f792bafbcc7e0"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SaveHistoricalReaderIsolationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SaveHistoricalReaderIsolationTests.cs",
+          "sha256": "b0f5ddf4eb865fe8b5087355434475510bc40186b46b4a85b64fe6b2d800ad0d"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+          "sha256": "a8d037b1512f10bd45341cb9ed9a338a86ed6d491b6a064546018885cb168ff9"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs",
+          "sha256": "ea3b516ff2141f2abf4dd75e98b51f49f5e61b8e151f116d4d3ec93b7023beb8"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
+          "sha256": "cef96d70e7bc3bbbc49461fb06fab9072a70096dd33683c1e1f915fac149dbfc"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SaveV5FrozenReaderTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SaveV5FrozenReaderTests.cs",
+          "sha256": "bcf741f3e635682f1796d0eb1936f77fcf22857ba6a463bb3673fbdd59957040"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+          "sha256": "42b30c89f7ed2cc10ca9ddd3414ec4015db773cac5e6b9e79df1db3efa7731b9"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SaveV7AtomicRepositoryTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SaveV7AtomicRepositoryTests.cs",
+          "sha256": "1f4eaf430a9246a6835a585e4553316a18a361ff62f2af9bb38d11c14f8ecb5a"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs",
+          "sha256": "2928ab641e85e7940555e1b17738705af1381befd679b3befc7ab1d245d5c88f"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/ScenarioEvidenceRecorder.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/ScenarioEvidenceRecorder.cs",
+          "sha256": "931b8169fd9cc25d4e6f134c2c4851e8923f869dc61221807ad8d38820219ca6"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SkillCatalogContentTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SkillCatalogContentTests.cs",
+          "sha256": "90fecab2184523119edb3604ecd39813b5abdbfd014968c636ef8aa5c6d94865"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SlimeEncounterDefeatedTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SlimeEncounterDefeatedTests.cs",
+          "sha256": "554d2cb6e654b213dd8e6c5b38cbbd678715172489d64c306732f173c11e963c"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SlimeTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SlimeTests.cs",
+          "sha256": "8e509d5be7aff6ed82f98f2ad3a317c6bffa25a62ef51357de06f573076f8a59"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs",
+          "sha256": "612a7d107bc421729773d8573f61e7d48ecb7ecf732513e1d80a571c5b1a22be"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+          "sha256": "6b931ee940c626a2e9ee9c18add62496b04ce0de93a1529994947c1d4dcda8dc"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+          "sha256": "749a142755d449b943ab1b7cddf83ffe85e7c0b9bce0d5f3cae9e8787f7d6e60"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/Venator/VenatorGameplayTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/Venator/VenatorGameplayTests.cs",
+          "sha256": "03d6e6b834e3a94ac9688854c5563903a658685765d8316d7e3cb79b0412eb60"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/Venator/VenatorTestImpactActor2D.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/Venator/VenatorTestImpactActor2D.cs",
+          "sha256": "df0fa62da8063febca0d65dc673f2bfa723a38d4090c22f01e238b975ced7e77"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/PlayMode/VenatorWeaponRuntimeAcceptanceTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/PlayMode/VenatorWeaponRuntimeAcceptanceTests.cs",
+          "sha256": "f9f10a38bb4dafc9591d987156126ca8d60e450a019f6bb3ae6e726debd026d0"
+        }
+      ]
+    }
+  ]
+}

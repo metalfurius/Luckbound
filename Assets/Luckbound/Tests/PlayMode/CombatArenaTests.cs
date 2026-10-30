@@ -55,6 +55,11 @@ namespace Luckbound.Tests.PlayMode
             if (!_restoreSaveStoreFactory) yield break;
             try
             {
+                if (SceneManager.GetActiveScene().name == "CombatArena")
+                {
+                    SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+                    yield return null;
+                }
                 if (ApplicationBootstrapper.Instance != null)
                     Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
                 yield return null;
@@ -534,6 +539,178 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(exitCode, Is.Zero, "C08 real keyboard combat scenario failed. Evidence: " + evidence.ReportPath);
                 Assert.That(demoLeftExpeditionContractProgressUnchanged, Is.True);
                 Assert.That(demoDidNotPersistExpeditionContractProgress, Is.True);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator EarlyAcceptedJumpRoutesLandingBeforeAnyGroundedAudioBaseline()
+        {
+            yield return VerifyLandingOrdering(earlyJump: true);
+        }
+
+        [UnityTest]
+        public IEnumerator ObservedSpawnContactStaysSilentAndLaterJumpRoutesLanding()
+        {
+            yield return VerifyLandingOrdering(earlyJump: false);
+        }
+
+        private IEnumerator VerifyLandingOrdering(bool earlyJump)
+        {
+            _previousAudioListenerPaused = AudioListener.pause;
+            _restoreAudioListenerPause = true;
+            AudioListener.pause = true;
+            float previousCaptureDelta = Time.captureDeltaTime;
+            try
+            {
+                // Two real physics steps per rendered frame expose the early-input
+                // boundary without calling Update/FixedUpdate or changing actor state.
+                Assert.That(Time.fixedDeltaTime, Is.EqualTo(1f / 60f).Within(0.000001f));
+                Assert.That(Time.timeScale, Is.EqualTo(1f));
+                Time.captureDeltaTime = 1f / 30f;
+                using (var evidence = new ScenarioEvidenceRecorder("C08",
+                    earlyJump ? "C08_EarlyJumpLanding" : "C08_ObservedSpawnLanding", 17320508))
+                {
+                    _contractSaveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundC08Landing", Guid.NewGuid().ToString("N"));
+                    var saveStore = new FileSaveStore(_contractSaveDirectory, null);
+                    _previousSaveStoreFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+                    ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => saveStore;
+                    _restoreSaveStoreFactory = true;
+                    if (ApplicationBootstrapper.Instance != null)
+                        Object.Destroy(ApplicationBootstrapper.Instance.gameObject);
+                    yield return null;
+                    SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                    _keyboard = InputSystem.AddDevice<Keyboard>();
+                    InputSystem.AddDevice<Mouse>();
+                    InputSystem.Update();
+                    _pressedKeys.Clear();
+                    _leftHeld = false;
+                    _rightHeld = false;
+                    for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
+                        !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
+                        yield return null;
+                    ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+                    Assert.That(app, Is.Not.Null);
+                    Assert.That(app.SaveDataReady, Is.True);
+                    Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
+                    AudioClip landingClip = Resources.Load<AudioClip>("Luckbound/Audio/Effects/landing");
+                    RuntimeAudioDirector director = app.GetComponent<RuntimeAudioDirector>();
+                    Assert.That(landingClip, Is.Not.Null);
+                    Assert.That(director, Is.Not.Null);
+                    bool observedGroundBaseline = false;
+                    bool observedEarlyJump = false;
+                    bool observedAirborneJump = false;
+                    bool routedLandingClip = false;
+                    int landingCalls = 0;
+                    int traceRecords = 0;
+                    string lastState = null;
+                    _previousAudioTrace = CombatArenaComposition.EditorAudioTraceForTests;
+                    _restoreAudioTrace = true;
+                    CombatArenaComposition.EditorAudioTraceForTests = snapshot =>
+                    {
+                        if (snapshot.Phase == "audio-before" && !snapshot.Baseline &&
+                            snapshot.Jumps > snapshot.ReportedJumps)
+                            observedEarlyJump = true;
+                        if (snapshot.Phase == "ground-decision-after" && snapshot.Grounded &&
+                            snapshot.Baseline && snapshot.Jumps == 0)
+                            observedGroundBaseline = true;
+                        if (snapshot.Jumps > 0 && !snapshot.Grounded) observedAirborneJump = true;
+                        if (snapshot.Phase == "ground-decision-after" && snapshot.LandingCall)
+                        {
+                            landingCalls++;
+                            routedLandingClip |= director.GetComponentsInChildren<AudioSource>(true)
+                                .Any(source => source.clip == landingClip);
+                        }
+                        string state = snapshot.Phase + "/" + snapshot.Tick + "/" + snapshot.Grounded +
+                            "/" + snapshot.Baseline + "/" + snapshot.Jumps + "/" + snapshot.LandingCall;
+                        if (snapshot.Phase == "ground-decision-after" && state != lastState && traceRecords < 180)
+                        {
+                            evidence.RecordEvent("C08 ordered landing: " + snapshot.Details);
+                            traceRecords++;
+                            lastState = state;
+                        }
+                    };
+
+                    Button arenaButton = GameObject.Find("StartCombatArenaButton")?.GetComponent<Button>();
+                    Assert.That(arenaButton, Is.Not.Null);
+                    Assert.That(arenaButton.interactable, Is.True);
+                    arenaButton.onClick.Invoke();
+                    CombatArenaComposition arena = null;
+                    for (int frame = 0; frame < 180 && (arena == null || arena.PlayerMotor == null); frame++)
+                    {
+                        arena = Object.FindAnyObjectByType<CombatArenaComposition>();
+                        if (arena == null || arena.PlayerMotor == null)
+                        {
+                            if (earlyJump) yield return new WaitForFixedUpdate();
+                            else yield return null;
+                        }
+                    }
+                    Assert.That(arena, Is.Not.Null);
+                    PlayerMotor2D player = arena.PlayerMotor;
+                    Assert.That(player, Is.Not.Null);
+                    int waitTicks = 0;
+                    while ((!player.IsGrounded || (!earlyJump && !observedGroundBaseline)) && waitTicks < 60)
+                    {
+                        if (earlyJump) yield return new WaitForFixedUpdate();
+                        else yield return null;
+                        waitTicks++;
+                    }
+                    Assert.That(player.IsGrounded, Is.True);
+                    Assert.That(observedGroundBaseline, Is.EqualTo(!earlyJump),
+                        "The requested real input order must be observed; another order cannot pass this regression.");
+                    Assert.That(landingCalls, Is.Zero, "Spawn contact must not request a landing cue.");
+                    Assert.That(app.AudioRouter.PendingEffectRequestCount, Is.Zero);
+                    long beforeTick = player.SimulationTick;
+                    int beforeJumps = player.SuccessfulJumpCount;
+                    evidence.RecordEvent("C08 input ordering: early=" + earlyJump + "; tick=" + beforeTick +
+                        "; frame=" + Time.frameCount + "; observedSpawnBaseline=" + observedGroundBaseline);
+                    SetKey(Key.Space, true);
+                    InputSystem.Update();
+                    Assert.That(_keyboard.spaceKey.isPressed, Is.True);
+                    evidence.RecordEvent("C08 ordered input down: frame=" + Time.frameCount +
+                        "; tick=" + player.SimulationTick + "; jumps=" + player.SuccessfulJumpCount +
+                        "; grounded=" + player.IsGrounded + "; space=" + _keyboard.spaceKey.isPressed);
+                    yield return new WaitForFixedUpdate();
+                    Assert.That(player.SimulationTick, Is.GreaterThan(beforeTick));
+                    Assert.That(player.SuccessfulJumpCount, Is.EqualTo(beforeJumps + 1));
+                    evidence.RecordEvent("C08 ordered input after Fixed: frame=" + Time.frameCount +
+                        "; tick=" + player.SimulationTick + "; jumps=" + player.SuccessfulJumpCount +
+                        "; grounded=" + player.IsGrounded);
+                    SetKey(Key.Space, false);
+                    InputSystem.Update();
+                    Assert.That(_keyboard.spaceKey.isPressed, Is.False);
+                    evidence.RecordEvent("C08 ordered input release: frame=" + Time.frameCount +
+                        "; tick=" + player.SimulationTick + "; space=" + _keyboard.spaceKey.isPressed);
+                    for (int frame = 0; frame < 120 && landingCalls == 0 &&
+                        player.SimulationTick - beforeTick <= 180; frame++)
+                        yield return null;
+
+                    evidence.RecordAssertion("The requested early or observed-spawn order occurred",
+                        earlyJump ? observedEarlyJump && !observedGroundBaseline : observedGroundBaseline && !observedEarlyJump,
+                        "requested order=" + earlyJump, "early=" + observedEarlyJump + "; baselineBeforeJump=" + observedGroundBaseline);
+                    evidence.RecordAssertion("A real accepted jump leaves the ground and returns",
+                        observedAirborneJump && player.IsGrounded && player.SuccessfulJumpCount == beforeJumps + 1,
+                        "one jump, airborne, grounded", "airborne=" + observedAirborneJump + "; grounded=" + player.IsGrounded);
+                    evidence.RecordAssertion("The physical return routes the landing clip exactly once",
+                        landingCalls == 1 && routedLandingClip && AudioListener.pause,
+                        "one request and the real landing clip while output is paused",
+                        "calls=" + landingCalls + "; clip=" + routedLandingClip + "; paused=" + AudioListener.pause);
+                    int exitCode = evidence.Complete();
+                    Assert.That(exitCode, Is.Zero, "Ordered landing evidence: " + evidence.ReportPath);
+                }
+            }
+            finally
+            {
+                Time.captureDeltaTime = previousCaptureDelta;
+                if (_restoreAudioTrace)
+                {
+                    CombatArenaComposition.EditorAudioTraceForTests = _previousAudioTrace;
+                    _restoreAudioTrace = false;
+                }
+                if (_keyboard != null)
+                {
+                    SetKey(Key.Space, false);
+                    InputSystem.Update();
+                }
             }
         }
 

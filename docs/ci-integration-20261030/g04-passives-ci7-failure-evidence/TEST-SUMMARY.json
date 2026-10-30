@@ -1,0 +1,94 @@
+{
+  "run": 41136113982,
+  "summaries": [
+    {
+      "id": "2",
+      "testcasecount": "654",
+      "result": "Passed",
+      "total": "654",
+      "passed": "654",
+      "failed": "0",
+      "inconclusive": "0",
+      "skipped": "0",
+      "asserts": "0",
+      "engine-version": "3.5.0.0",
+      "clr-version": "4.0.30319.42000",
+      "start-time": "2026-10-30 22:14:22Z",
+      "end-time": "2026-10-30 22:16:18Z",
+      "duration": "115.7898997"
+    },
+    {
+      "id": "2",
+      "testcasecount": "504",
+      "result": "Failed(Child)",
+      "total": "504",
+      "passed": "501",
+      "failed": "3",
+      "inconclusive": "0",
+      "skipped": "0",
+      "asserts": "0",
+      "engine-version": "3.5.0.0",
+      "clr-version": "4.0.30319.42000",
+      "start-time": "2026-10-30 22:11:14Z",
+      "end-time": "2026-10-30 22:13:59Z",
+      "duration": "164.9528774"
+    }
+  ],
+  "groups": [
+    {
+      "class": "SupportRelicSkillUseTests",
+      "count": 7,
+      "passed": 7
+    },
+    {
+      "class": "SupportRelicHealingUseTests",
+      "count": 8,
+      "passed": 8
+    },
+    {
+      "class": "SupportRelicActorRulesTests",
+      "count": 6,
+      "passed": 6
+    },
+    {
+      "class": "SupportRelicPassiveEquipmentRuntimeTests",
+      "count": 7,
+      "passed": 5
+    },
+    {
+      "class": "SaveV7StateTests",
+      "count": 26,
+      "passed": 26
+    },
+    {
+      "class": "SaveV7CodecTests",
+      "count": 15,
+      "passed": 15
+    },
+    {
+      "class": "SaveV7AtomicRepositoryTests",
+      "count": 37,
+      "passed": 37
+    }
+  ],
+  "failures": [
+    {
+      "fullname": "Luckbound.Tests.PlayMode.CombatArenaTests.PlayerCanWinTheGeneratedArenaWithKeyboardCombatAndWithoutForcedEnemyRemoval",
+      "result": "Failed",
+      "message": "  C08 real keyboard combat scenario failed. Evidence: /github/workspace/Logs/Scenarios/C08/20261030T221131580Z_C08_RealKeyboardTwoWaveCombat_04a089d6/scenario-report.json\n  Expected: 0\n  But was:  1\n",
+      "stack": "at Luckbound.Tests.PlayMode.CombatArenaTests+<PlayerCanWinTheGeneratedArenaWithKeyboardCombatAndWithoutForcedEnemyRemoval>d__16.MoveNext () [0x01c5b] in /github/workspace/Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs:534\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@ba1d06c8c02f/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n"
+    },
+    {
+      "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.FailedActorPublicationRetriesWithoutASecondWrite",
+      "result": "Failed",
+      "message": "  Expected: null\n  But was:  <Luckbound.Core.Inventory.InventoryItemStack>\n",
+      "stack": "at Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests+<FailedActorPublicationRetriesWithoutASecondWrite>d__17.MoveNext () [0x00240] in /github/workspace/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs:439\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@ba1d06c8c02f/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n"
+    },
+    {
+      "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.VialChangesHealthPotionOnlyAndPreservesFullInterruptAndTonicRules",
+      "result": "Failed",
+      "message": "  Expected: 45\n  But was:  46\n",
+      "stack": "at Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests+<VialChangesHealthPotionOnlyAndPreservesFullInterruptAndTonicRules>d__13.MoveNext () [0x006d0] in /github/workspace/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs:216\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@ba1d06c8c02f/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n"
+    }
+  ]
+}

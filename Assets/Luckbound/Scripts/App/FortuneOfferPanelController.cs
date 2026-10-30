@@ -40,7 +40,7 @@ namespace Luckbound.App
         public FortuneRerollAvailability RerollAvailability { get; private set; } =
             FortuneRerollAvailability.UnknownOffer;
         public TransactionId LastRerollTransactionId { get; private set; }
-        public bool HasPendingRerollRetry => _pendingRerollRetry;
+        public bool HasPendingRerollRetry => TryRestorePendingRerollTransaction(out _);
         public bool IsBusy => _busy;
         public string RepeatAvailabilityText => _repeatAvailabilityText == null
             ? string.Empty
@@ -107,7 +107,6 @@ namespace Luckbound.App
             _statusText.text = string.Empty;
             BindButtonHandlers();
             Refresh();
-            RestorePendingChoiceRetry();
         }
 
         /// <summary>Reloads the current committed offer and its Core-provided reroll state.</summary>
@@ -115,9 +114,17 @@ namespace Luckbound.App
         {
             if (!_initialized) return;
 
-            CurrentOffer = _application.GetFortuneOffer(_offerId);
-            RerollAvailability = _application.GetFortuneRerollAvailability(_offerId);
+            CurrentOffer = _application == null ? null : _application.GetFortuneOffer(_offerId);
+            RerollAvailability = _application == null
+                ? FortuneRerollAvailability.UnknownOffer
+                : _application.GetFortuneRerollAvailability(_offerId);
             _repeatAvailabilityText.text = RerollAvailability.ToString();
+            ReconcilePendingRetryState();
+
+            bool canStartFreshAction = CanStartFreshAction();
+            bool hasOwnedPending = _pendingRerollRetry || _pendingClaimRetry ||
+                !string.IsNullOrEmpty(_pendingChoiceOptionId);
+            bool canRetryOwnedPending = hasOwnedPending && CanRetryOwnedPending();
 
             bool hasThreeOptions = CurrentOffer != null && CurrentOffer.OptionIds.Count == 3;
             bool claimed = CurrentOffer != null && CurrentOffer.IsClaimed;
@@ -128,43 +135,57 @@ namespace Luckbound.App
                 _optionLabels[index].text = optionId;
                 bool retryingThisChoice = !string.IsNullOrEmpty(_pendingChoiceOptionId) &&
                     string.Equals(_pendingChoiceOptionId, optionId, StringComparison.Ordinal);
-                bool selectionStillOpen = string.IsNullOrEmpty(selectedOptionId) || retryingThisChoice;
+                bool freshChoice = canStartFreshAction && string.IsNullOrEmpty(selectedOptionId) &&
+                    string.IsNullOrEmpty(_pendingChoiceOptionId) && !_pendingClaimRetry && !_pendingRerollRetry;
                 _optionButtons[index].interactable = !_busy && hasThreeOptions && !claimed &&
-                    !_pendingClaimRetry && !_pendingRerollRetry && selectionStillOpen &&
-                    (string.IsNullOrEmpty(_pendingChoiceOptionId) || retryingThisChoice);
+                    ((retryingThisChoice && canRetryOwnedPending) || freshChoice);
             }
 
-            _repeatButton.interactable = !_busy && !_pendingClaimRetry &&
-                string.IsNullOrEmpty(_pendingChoiceOptionId) && !claimed &&
-                (_pendingRerollRetry || RerollAvailability == FortuneRerollAvailability.Available);
+            bool canRetryThisReroll = _pendingRerollRetry && canRetryOwnedPending;
+            bool freshReroll = canStartFreshAction && CurrentOffer != null && !claimed &&
+                string.IsNullOrEmpty(selectedOptionId) && string.IsNullOrEmpty(_pendingChoiceOptionId) &&
+                !_pendingClaimRetry && !_pendingRerollRetry &&
+                RerollAvailability == FortuneRerollAvailability.Available;
+            _repeatButton.interactable = !_busy && (canRetryThisReroll || freshReroll);
             bool hasCommittedChoice = CurrentOffer != null && !string.IsNullOrEmpty(selectedOptionId);
-            _claimButton.interactable = !_busy && !_pendingRerollRetry &&
-                string.IsNullOrEmpty(_pendingChoiceOptionId) &&
-                (_pendingClaimRetry || (hasCommittedChoice && !claimed));
+            bool canRetryThisClaim = _pendingClaimRetry && canRetryOwnedPending;
+            bool freshClaim = canStartFreshAction && hasCommittedChoice && !claimed &&
+                string.IsNullOrEmpty(_pendingChoiceOptionId) && !_pendingRerollRetry && !_pendingClaimRetry;
+            _claimButton.interactable = !_busy && (canRetryThisClaim || freshClaim);
+
+            SetCapabilityDiagnosticIfBlocked(canStartFreshAction, canRetryOwnedPending);
         }
 
         /// <summary>Repeats the supplied offer, retaining the transaction ID until its save succeeds.</summary>
         public async Task<ExpeditionMutationCommitResult<FortuneRerollResult>> RepeatOfferAsync()
         {
             if (!_initialized || _busy || _application == null) return null;
-            if (!_pendingRerollRetry && TryRestorePendingRerollTransaction(out TransactionId pendingTransactionId))
+            Refresh();
+            bool retryingOwnPending = TryRestorePendingRerollTransaction(out TransactionId pendingTransactionId);
+            if (retryingOwnPending)
             {
+                if (!CanRetryOwnedPending())
+                {
+                    SetCapabilityDiagnosticIfBlocked(false, false);
+                    return null;
+                }
                 _pendingRerollTransactionId = pendingTransactionId;
                 LastRerollTransactionId = pendingTransactionId;
-                _pendingRerollRetry = true;
             }
-            if (_application.HasPendingFortuneMutation &&
-                !PendingOperationMatches("offer.repeat", _offerId, _pendingRerollTransactionId.ToString()))
+            else if (!CanStartFreshAction())
+            {
+                SetCapabilityDiagnosticIfBlocked(false, false);
                 return null;
-            Refresh();
-            if (!_pendingRerollRetry && RerollAvailability != FortuneRerollAvailability.Available) return null;
-            if (_pendingClaimRetry || !string.IsNullOrEmpty(_pendingChoiceOptionId) ||
-                CurrentOffer == null || CurrentOffer.IsClaimed || !string.IsNullOrEmpty(CurrentOffer.SelectedOptionId))
+            }
+
+            if (_application.HasPendingFortuneMutation && !retryingOwnPending) return null;
+            if (_pendingClaimRetry || !string.IsNullOrEmpty(_pendingChoiceOptionId)) return null;
+            if (!retryingOwnPending && (RerollAvailability != FortuneRerollAvailability.Available ||
+                CurrentOffer == null || CurrentOffer.IsClaimed || !string.IsNullOrEmpty(CurrentOffer.SelectedOptionId)))
                 return null;
 
-            if (!_pendingRerollRetry)
+            if (!retryingOwnPending)
                 _pendingRerollTransactionId = TransactionId.New();
-            _pendingRerollRetry = true;
             LastRerollTransactionId = _pendingRerollTransactionId;
             _busy = true;
             Refresh();
@@ -174,7 +195,6 @@ namespace Luckbound.App
                     await _application.RepeatFortuneOfferAsync(_offerId, _pendingRerollTransactionId);
                 if (result != null)
                 {
-                    _pendingRerollRetry = !result.Persisted;
                     if (result.Persisted) _pendingRerollTransactionId = default;
                     _statusText.text = result.Message;
                 }
@@ -195,21 +215,33 @@ namespace Luckbound.App
         /// <summary>Persists one of the three displayed choices before enabling its claim.</summary>
         public async Task<ExpeditionMutationCommitResult<FortuneChoiceResult>> ChooseOptionAsync(int optionIndex)
         {
-            if (!_initialized || _busy || _application == null || CurrentOffer == null ||
-                CurrentOffer.OptionIds.Count != 3 || optionIndex < 0 || optionIndex >= 3 ||
+            if (!_initialized || _busy || _application == null) return null;
+            Refresh();
+            if (CurrentOffer == null || CurrentOffer.OptionIds.Count != 3 || optionIndex < 0 || optionIndex >= 3 ||
                 _pendingRerollRetry || _pendingClaimRetry || CurrentOffer.IsClaimed)
                 return null;
 
             string optionId = CurrentOffer.OptionIds[optionIndex];
+            bool retryingOwnPending = IsOwnPendingChoice(optionId);
+            if (retryingOwnPending)
+            {
+                if (!CanRetryOwnedPending())
+                {
+                    SetCapabilityDiagnosticIfBlocked(false, false);
+                    return null;
+                }
+            }
+            else if (!CanStartFreshAction())
+            {
+                SetCapabilityDiagnosticIfBlocked(false, false);
+                return null;
+            }
+
+            if (_application.HasPendingFortuneMutation && !retryingOwnPending) return null;
             if (!string.IsNullOrEmpty(_pendingChoiceOptionId) &&
                 !string.Equals(_pendingChoiceOptionId, optionId, StringComparison.Ordinal)) return null;
-            if (string.IsNullOrEmpty(_pendingChoiceOptionId) && !string.IsNullOrEmpty(CurrentOffer.SelectedOptionId))
-                return null;
-            if (_application.HasPendingFortuneMutation &&
-                !PendingOperationMatches("offer.choose", _offerId, optionId))
-                return null;
+            if (string.IsNullOrEmpty(CurrentOffer.SelectedOptionId) == false && !retryingOwnPending) return null;
 
-            _pendingChoiceOptionId = optionId;
             _busy = true;
             Refresh();
             try
@@ -218,7 +250,6 @@ namespace Luckbound.App
                     await _application.ChooseFortuneOptionAsync(_offerId, optionId);
                 if (result != null)
                 {
-                    if (result.Persisted) _pendingChoiceOptionId = string.Empty;
                     _statusText.text = result.Message;
                 }
                 return result;
@@ -238,19 +269,29 @@ namespace Luckbound.App
         /// <summary>Claims the selected item through the bootstrapper's atomic, idempotent reward API.</summary>
         public async Task<ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome>> ClaimRewardAsync()
         {
-            if (!_initialized || _busy || _application == null || _pendingRerollRetry ||
-                !string.IsNullOrEmpty(_pendingChoiceOptionId))
-                return null;
+            if (!_initialized || _busy || _application == null) return null;
             Refresh();
-            if (!_pendingClaimRetry && (CurrentOffer == null || CurrentOffer.IsClaimed ||
-                string.IsNullOrEmpty(CurrentOffer.SelectedOptionId)))
+            bool retryingOwnPending = IsOwnPendingClaim();
+            if (retryingOwnPending)
+            {
+                if (!CanRetryOwnedPending())
+                {
+                    SetCapabilityDiagnosticIfBlocked(false, false);
+                    return null;
+                }
+            }
+            else if (!CanStartFreshAction())
+            {
+                SetCapabilityDiagnosticIfBlocked(false, false);
                 return null;
-            if (_application.HasPendingFortuneMutation &&
-                !PendingOperationMatches("offer.claim.reward", _offerId))
-                return null;
+            }
+
+            if (_application.HasPendingFortuneMutation && !retryingOwnPending) return null;
+            if (_pendingRerollRetry || !string.IsNullOrEmpty(_pendingChoiceOptionId)) return null;
+            if (!retryingOwnPending && (CurrentOffer == null || CurrentOffer.IsClaimed ||
+                string.IsNullOrEmpty(CurrentOffer.SelectedOptionId))) return null;
 
             _busy = true;
-            _pendingClaimRetry = true;
             Refresh();
             try
             {
@@ -258,7 +299,6 @@ namespace Luckbound.App
                     await _application.ClaimFortuneOfferRewardAsync(_offerId);
                 if (result != null)
                 {
-                    _pendingClaimRetry = !result.Persisted;
                     _statusText.text = result.Message;
                 }
                 return result;
@@ -324,40 +364,146 @@ namespace Luckbound.App
         private bool TryRestorePendingRerollTransaction(out TransactionId transactionId)
         {
             transactionId = default;
-            if (!_application.HasPendingFortuneMutation) return false;
+            if (_application == null || !_application.HasPendingFortuneMutation) return false;
             if (!TryParseOperationKey(_application.PendingFortuneOperationKey, out string[] fields) ||
                 fields.Length != 3 || !string.Equals(fields[0], "offer.repeat", StringComparison.Ordinal) ||
                 !string.Equals(fields[1], _offerId, StringComparison.Ordinal) ||
-                !TransactionId.TryParse(fields[2], out transactionId))
+                !TransactionId.TryParse(fields[2], out transactionId) || !transactionId.IsValid)
                 return false;
 
             return true;
         }
 
-        private void RestorePendingChoiceRetry()
+        private bool TryGetOwnPendingChoice(out string optionId)
         {
-            if (!_application.HasPendingFortuneMutation || CurrentOffer == null || CurrentOffer.IsClaimed ||
-                !string.IsNullOrEmpty(CurrentOffer.SelectedOptionId) ||
+            optionId = string.Empty;
+            if (_application == null || !_application.HasPendingFortuneMutation ||
                 !TryParseOperationKey(_application.PendingFortuneOperationKey, out string[] fields) ||
                 fields.Length != 3 || !string.Equals(fields[0], "offer.choose", StringComparison.Ordinal) ||
-                !string.Equals(fields[1], _offerId, StringComparison.Ordinal))
+                !string.Equals(fields[1], _offerId, StringComparison.Ordinal)) return false;
+            if (CurrentOffer == null || CurrentOffer.IsClaimed) return false;
+
+            bool optionBelongsToOffer = false;
+            foreach (string candidateOptionId in CurrentOffer.OptionIds)
             {
+                if (!string.Equals(candidateOptionId, fields[2], StringComparison.Ordinal)) continue;
+                optionBelongsToOffer = true;
+                break;
+            }
+            if (!optionBelongsToOffer || (!string.IsNullOrEmpty(CurrentOffer.SelectedOptionId) &&
+                !string.Equals(CurrentOffer.SelectedOptionId, fields[2], StringComparison.Ordinal))) return false;
+
+            optionId = fields[2];
+            return true;
+        }
+
+        private bool IsOwnPendingChoice(string optionId)
+        {
+            return !string.IsNullOrEmpty(optionId) && PendingOperationMatches("offer.choose", _offerId, optionId);
+        }
+
+        private bool IsOwnPendingClaim()
+        {
+            return PendingOperationMatches("offer.claim.reward", _offerId);
+        }
+
+        private void ReconcilePendingRetryState()
+        {
+            _pendingChoiceOptionId = string.Empty;
+            bool hasPendingChoice = TryGetOwnPendingChoice(out string pendingChoiceOptionId);
+            if (hasPendingChoice)
+            {
+                _pendingChoiceOptionId = pendingChoiceOptionId;
+                _statusText.text = "GUARDADO PENDIENTE · vuelve a elegir la misma opción para reintentar.";
+            }
+
+            _pendingRerollRetry = TryRestorePendingRerollTransaction(out TransactionId pendingTransactionId);
+            if (_pendingRerollRetry)
+            {
+                _pendingRerollTransactionId = pendingTransactionId;
+                LastRerollTransactionId = pendingTransactionId;
+                if (string.IsNullOrEmpty(_statusText.text))
+                    _statusText.text = "GUARDADO PENDIENTE · vuelve a repetir la misma oferta para reintentar.";
+            }
+            else if (!_busy)
+            {
+                _pendingRerollTransactionId = default;
+            }
+
+            _pendingClaimRetry = IsOwnPendingClaim();
+            if (_pendingClaimRetry && string.IsNullOrEmpty(_statusText.text))
+                _statusText.text = "GUARDADO PENDIENTE · vuelve a reclamar la misma recompensa para reintentar.";
+            if (_application != null && _application.HasPendingFortuneMutation &&
+                !_pendingRerollRetry && !_pendingClaimRetry && !hasPendingChoice &&
+                string.IsNullOrEmpty(_statusText.text))
+                _statusText.text = "Hay otra acción pendiente. Reinténtala antes de continuar.";
+        }
+
+        private bool CanStartFreshAction()
+        {
+            return _application != null && _application.CanWriteProfile && _application.CanContinueExpedition &&
+                _application.ActiveRun != null && !_application.HasPendingFortuneMutation && !HasOtherPendingWrite();
+        }
+
+        private bool CanRetryOwnedPending()
+        {
+            return _application != null && _application.CanWriteProfile && HasOwnPendingOperationForPanel() &&
+                !HasOtherPendingWrite(ignoreOwnedFortuneExpeditionWrite: true);
+        }
+
+        private bool HasOwnPendingOperationForPanel()
+        {
+            return TryRestorePendingRerollTransaction(out _) ||
+                TryGetOwnPendingChoice(out _) || IsOwnPendingClaim();
+        }
+
+        private bool HasOtherPendingWrite(bool ignoreOwnedFortuneExpeditionWrite = false)
+        {
+            return _application != null && (_application.HasPendingSettlement ||
+                _application.HasPendingPermanentUpgradePurchase || _application.HasPendingContractProgression ||
+                _application.HasPendingCraftingWrite || _application.HasPendingEconomyMutation ||
+                (_application.HasPendingExpeditionWrite && !ignoreOwnedFortuneExpeditionWrite));
+        }
+
+        private void SetCapabilityDiagnosticIfBlocked(bool canStartFreshAction, bool canRetryOwnedPending)
+        {
+            if (_statusText == null || canStartFreshAction || canRetryOwnedPending) return;
+            if (_application == null)
+            {
+                _statusText.text = "El panel no está disponible.";
                 return;
             }
 
-            foreach (string optionId in CurrentOffer.OptionIds)
+            if (!_application.CanWriteProfile)
             {
-                if (!string.Equals(optionId, fields[2], StringComparison.Ordinal)) continue;
-                _pendingChoiceOptionId = optionId;
-                _statusText.text = "GUARDADO PENDIENTE · vuelve a elegir la misma opción para reintentar.";
-                Refresh();
+                if (!string.IsNullOrWhiteSpace(_application.ProfileLoadMessage))
+                    _statusText.text = _application.ProfileLoadMessage;
+                else if (!string.IsNullOrWhiteSpace(_application.ActiveExpeditionLoadError))
+                    _statusText.text = "La expedición guardada se conserva en modo de solo lectura.";
+                else
+                    _statusText.text = "El perfil se conserva en modo de solo lectura.";
                 return;
             }
+
+            if (HasOtherPendingWrite())
+            {
+                _statusText.text = "Completa el guardado pendiente antes de continuar.";
+                return;
+            }
+
+            if (_application.HasPendingFortuneMutation)
+            {
+                _statusText.text = "Hay otra acción pendiente. Reinténtala antes de continuar.";
+                return;
+            }
+
+            if (!_application.CanContinueExpedition || _application.ActiveRun == null)
+                _statusText.text = "La expedición no está disponible para continuar.";
         }
 
         private bool PendingOperationMatches(string operation, params string[] arguments)
         {
-            if (!_application.HasPendingFortuneMutation ||
+            if (_application == null || !_application.HasPendingFortuneMutation ||
                 !TryParseOperationKey(_application.PendingFortuneOperationKey, out string[] fields) ||
                 fields.Length != arguments.Length + 1 || !string.Equals(fields[0], operation, StringComparison.Ordinal))
                 return false;

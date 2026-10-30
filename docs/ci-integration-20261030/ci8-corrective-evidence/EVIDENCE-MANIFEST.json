@@ -1,0 +1,111 @@
+{
+  "baseCommit": "bd1c2fb12625db168fe976854e3f4b4c350e8342",
+  "reviewSha256": "e727286b04edeba12115c02ba1ff8c215ce712e28b11b8028131f5ced032d315",
+  "files": [
+    {
+      "path": "C08-R3-COMPILE-RESULTS.json",
+      "bytes": 44393,
+      "sha256": "42af1d4129e8763fa88e935882dc390f2911daeb8d63cfb56255d69ceab598c3"
+    },
+    {
+      "path": "C08-R3-MANIFEST.json",
+      "bytes": 708,
+      "sha256": "ce876f14bac8fc94298356bd230bcc6765fe3b38665baa94e5395b5936077997"
+    },
+    {
+      "path": "C08-R3-REPORT.md",
+      "bytes": 702,
+      "sha256": "85bc87b1566a2fb7777b226698687cfb855cb2cd5abbcd864466b8178d480444"
+    },
+    {
+      "path": "COMPOSED-COMPILE-RESULTS.json",
+      "bytes": 44798,
+      "sha256": "b2ceb1962f8b75918847c206fa3af3a2094e1eef6103b2b7a2ff1c3685fb49ef"
+    },
+    {
+      "path": "COMPOSED-FREEZE.json",
+      "bytes": 2870,
+      "sha256": "d8c3ccafa3c933f80b803600546fbd28c49602c5f4d41ab35baaf14016da251f"
+    },
+    {
+      "path": "COMPOSED-INPUT-BINDING.json",
+      "bytes": 32454,
+      "sha256": "69085f810ec76403dcb93d3e692469bba63c4e83fe216ed6f4d9b08c07235f6d"
+    },
+    {
+      "path": "COMPOSED-REPORT.md",
+      "bytes": 973,
+      "sha256": "2c19f576e562910b55e93cee1293c25ccf5b3ad709dfa561eecdebb0067c764b"
+    },
+    {
+      "path": "E04-R1-COMPILE-RESULTS.json",
+      "bytes": 44410,
+      "sha256": "d46dd5f716fb6a2c1549a7c6124d3488a3d7d44084b346766b701bdf739261ea"
+    },
+    {
+      "path": "E04-R1-MANIFEST.json",
+      "bytes": 3517,
+      "sha256": "043ef16062d9c4789f0f0b2d2ff5fe3ceaf1f778f2c78c2b482a7247ee72cdf3"
+    },
+    {
+      "path": "E04-R1-REPORT.md",
+      "bytes": 3455,
+      "sha256": "6362bf0d6ec978b6d0f0d37036f1ca8305a6e67771703fe8abf3962bdfdf019e"
+    },
+    {
+      "path": "E04-R2-DELTA.diff",
+      "bytes": 12933,
+      "sha256": "72dc57c89f8f41de1a94674a4afe2b5b67abdb3a2682c548137220fe08104cd1"
+    },
+    {
+      "path": "E04-R2-MANIFEST.json",
+      "bytes": 4966,
+      "sha256": "dfd44f72c42c208d218d5ffaf8fbdd4a491b710b5194e641df8f31240d909652"
+    },
+    {
+      "path": "E04-R2-REPORT.md",
+      "bytes": 2387,
+      "sha256": "647dc8c9d4eea0ee0bef763b192be9cb0a410681567de0aebb49cae7e9e25a2c"
+    },
+    {
+      "path": "G04-R3-MANIFEST.json",
+      "bytes": 7589,
+      "sha256": "eb679a25dbe372a17ab4911a1f782c9b9281ce3c9d25aab9a8aced96bd01ce79"
+    },
+    {
+      "path": "G04-R3-REPORT.md",
+      "bytes": 1906,
+      "sha256": "7a49092970699bfc1357ce924eecfd63cdfb4e79b4621029ac417b1c312b2522"
+    },
+    {
+      "path": "INTEGRATED-INPUT-BINDING.json",
+      "bytes": 45049,
+      "sha256": "b11183453759f4296ba5fb813d3d2a7e0c91b971ee0d1b92c9de318f60e72372"
+    },
+    {
+      "path": "INTEGRATION.json",
+      "bytes": 3424,
+      "sha256": "3386c1ced84bd426f2a71baa7c5f5052604423c3d24a36e74b3a48af51d1145d"
+    },
+    {
+      "path": "PREINTEGRATION-GUARD.json",
+      "bytes": 254,
+      "sha256": "c7792cc002990525b4f23767bb94e09ceae6eb31a0e215474302354ebbbc46d0"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2074,
+      "sha256": "eb8d8ea5e88adb644d77893c52f29bdeb2ef60dd3f323435eb4cd8f1fd6adb74"
+    },
+    {
+      "path": "review-baselines/FortuneOfferPanelController.cs.R1.txt",
+      "bytes": 25383,
+      "sha256": "f03d0168ec20769d542b3d1fc24e9e40b0b37fd5202f65dcdce2d5d09de03940"
+    },
+    {
+      "path": "review-baselines/FortuneOfferPanelControllerTests.cs.R1.txt",
+      "bytes": 49083,
+      "sha256": "148495f09404399f2bd744a9890cd60d096eeaaad8db9f363d0545c26d4c8774"
+    }
+  ]
+}

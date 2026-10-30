@@ -1,0 +1,79 @@
+{
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-E04-PANEL-CAPABILITY-NEXT-CONTRACT.md",
+    "sha256": "a960802c37d1bed5eed672cdad73a3f70841bd33fc9ce1b4373d46d97844f49f",
+    "expectedSha256": "a960802c37d1bed5eed672cdad73a3f70841bd33fc9ce1b4373d46d97844f49f"
+  },
+  "candidateStatus": "staged for root integration; Unity acceptance pending",
+  "productState": {
+    "D09": "NeedsOwnerReview",
+    "E04": "InProgress",
+    "parentTasksUnlocked": false
+  },
+  "files": [
+    {
+      "logicalPath": "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+      "beforePath": "Logs/E04PanelCapability-20261030-r1/before/Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+      "afterPath": "Logs/E04PanelCapability-20261030-r1/after/Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+      "beforeSha256": "5082f2cd19c38365f42967d285b1e3e04430922ad33d6e3ec30eabe7d37ac9f7",
+      "afterSha256": "f03d0168ec20769d542b3d1fc24e9e40b0b37fd5202f65dcdce2d5d09de03940",
+      "liveAssetSha256": "5082f2cd19c38365f42967d285b1e3e04430922ad33d6e3ec30eabe7d37ac9f7",
+      "liveAssetUnmodified": true
+    },
+    {
+      "logicalPath": "Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+      "beforePath": "Logs/E04PanelCapability-20261030-r1/before/Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+      "afterPath": "Logs/E04PanelCapability-20261030-r1/after/Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+      "beforeSha256": "e01d8a7d33a8c2b4afb322c6c2e8b771000d475faabfa0b058944531992a62eb",
+      "afterSha256": "148495f09404399f2bd744a9890cd60d096eeaaad8db9f363d0545c26d4c8774",
+      "liveAssetSha256": "e01d8a7d33a8c2b4afb322c6c2e8b771000d475faabfa0b058944531992a62eb",
+      "liveAssetUnmodified": true
+    }
+  ],
+  "afterSourceFiles": [
+    "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+    "Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs"
+  ],
+  "testCounts": {
+    "preserved": 3,
+    "added": 4,
+    "totalDeclared": 7
+  },
+  "reviewDiff": {
+    "path": "Logs/E04PanelCapability-20261030-r1/candidate.diff",
+    "sha256": "b678e4ba5ba5237c5a16fa62c1ff9ab9fb72c1b5a7d505a7dbcc2e40e2a8b496"
+  },
+  "compile": {
+    "tool": "Logs/CI8Corrective-20261030-r1/compile_candidates.py",
+    "output": "Logs/E04PanelCapability-20261030-r1/compile-r4",
+    "referenceDirectory": "Logs/G04RemainingConsumers-20261030-r1/composed-r1/offline-r1",
+    "referenceEditor": "6000.6.6f1",
+    "targetCiEditor": "6000.6.7f1",
+    "guardedLiveSources": 411,
+    "unityExecuted": false,
+    "nunitExecuted": false,
+    "assemblies": [
+      {
+        "assembly": "Luckbound.App",
+        "sourceCount": 56,
+        "exitCode": 0,
+        "responseSha256": "2a066af9762d22a0f92931605fdd17669389a9baed4738db938f18b103f301c9",
+        "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "assembly": "Luckbound.PlayMode.Tests",
+        "sourceCount": 78,
+        "exitCode": 0,
+        "responseSha256": "2656760ab7dda0ff703ee15765676b7d77a3e8850f2a3944f3fe1c7f9b28a4b6",
+        "logSha256": "6b551c0ac1d5f48b6b569e6ef613917bb00ef9782869f08763457baccf95c28d"
+      }
+    ]
+  },
+  "verification": {
+    "contractHashMatched": true,
+    "baselineHashesMatchedContract": true,
+    "liveAssetsRemainByteIdenticalToBaseline": true,
+    "onlyAssignedAfterCsPresent": true,
+    "UnityPlayModeAcceptance": "pending; not executed by this worker"
+  }
+}

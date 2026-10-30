@@ -1,0 +1,96 @@
+{
+  "run": {
+    "id": 41136113982,
+    "head_sha": "bd1c2fb12625db168fe976854e3f4b4c350e8342",
+    "check_suite_id": 111513540146,
+    "status": "completed",
+    "conclusion": "failure",
+    "html_url": "https://github.com/metalfurius/Luckbound/actions/runs/41136113982"
+  },
+  "jobs": [
+    {
+      "id": 124338870705,
+      "name": "EditMode and PlayMode tests",
+      "status": "completed",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout source",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache Unity Library",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run Unity tests",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Verify explicit V6 capture",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Require successful tests and explicit V6 capture",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Upload test results",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache Unity Library",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Checkout source",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 124341986058,
+      "name": "Build WebGL",
+      "status": "completed",
+      "conclusion": "skipped",
+      "steps": []
+    },
+    {
+      "id": 124341986781,
+      "name": "Build Windows x64",
+      "status": "completed",
+      "conclusion": "skipped",
+      "steps": []
+    },
+    {
+      "id": 124341987409,
+      "name": "Create version release",
+      "status": "completed",
+      "conclusion": "skipped",
+      "steps": []
+    },
+    {
+      "id": 124341988349,
+      "name": "Publish versioned WebGL on gh-pages",
+      "status": "completed",
+      "conclusion": "skipped",
+      "steps": []
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13016938125,
+      "name": "test-results-bd1c2fb12625db168fe976854e3f4b4c350e8342",
+      "size_in_bytes": 9461722,
+      "digest": "sha256:aea5874b7ad269daf8434c9df6d73ea842b43b3c98510b068766e126fb82fe04"
+    }
+  ]
+}

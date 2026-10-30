@@ -1,0 +1,222 @@
+--- a/R1/Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs
++++ b/R2/Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs
+@@ -377,19 +377,24 @@
+         private bool TryGetOwnPendingChoice(out string optionId)
+         {
+             optionId = string.Empty;
+-            if (_application == null || !_application.HasPendingFortuneMutation || CurrentOffer == null ||
+-                CurrentOffer.IsClaimed || !string.IsNullOrEmpty(CurrentOffer.SelectedOptionId) ||
++            if (_application == null || !_application.HasPendingFortuneMutation ||
+                 !TryParseOperationKey(_application.PendingFortuneOperationKey, out string[] fields) ||
+                 fields.Length != 3 || !string.Equals(fields[0], "offer.choose", StringComparison.Ordinal) ||
+                 !string.Equals(fields[1], _offerId, StringComparison.Ordinal)) return false;
+-
++            if (CurrentOffer == null || CurrentOffer.IsClaimed) return false;
++
++            bool optionBelongsToOffer = false;
+             foreach (string candidateOptionId in CurrentOffer.OptionIds)
+             {
+                 if (!string.Equals(candidateOptionId, fields[2], StringComparison.Ordinal)) continue;
+-                optionId = candidateOptionId;
+-                return true;
+-            }
+-            return false;
++                optionBelongsToOffer = true;
++                break;
++            }
++            if (!optionBelongsToOffer || (!string.IsNullOrEmpty(CurrentOffer.SelectedOptionId) &&
++                !string.Equals(CurrentOffer.SelectedOptionId, fields[2], StringComparison.Ordinal))) return false;
++
++            optionId = fields[2];
++            return true;
+         }
+ 
+         private bool IsOwnPendingChoice(string optionId)
+--- a/R1/Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs
++++ b/R2/Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs
+@@ -387,6 +387,9 @@
+             ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => store;
+             PanelFixture choicePanel = null;
+             PanelFixture rerollPanel = null;
++            PanelFixture publicationPanel = null;
++            IDisposable pauseProviderBinding = null;
++            IDisposable publicationBinding = null;
+             try
+             {
+                 ApplicationBootstrapper app = null;
+@@ -510,11 +513,141 @@
+                 Assert.That(app.GetFortuneOffer("offer.panel.own-claim").IsClaimed, Is.True);
+                 Assert.That(GetBackpackItemQuantity(app, chosenItemId), Is.EqualTo(rewardQuantityBefore + 1));
+                 Assert.That(store.ProfileWriteAttempts, Is.EqualTo(writesBeforeClaimRetry + 1));
++
++                ExpeditionMutationCommitResult<FortuneOfferResult> publicationOffer = null;
++                yield return Complete(app.CreateFortuneOfferAsync("offer.panel.own-publication",
++                    "context.panel.own-publication", ClaimableOptions), value => publicationOffer = value);
++                Assert.That(publicationOffer.Persisted, Is.True, publicationOffer.Message);
++                publicationPanel = CreatePanel(app, "offer.panel.own-publication");
++                int publicationOptionIndex = 1;
++                string publicationOptionId = publicationPanel.Controller.CurrentOffer.OptionIds[publicationOptionIndex];
++                object publisherOwner = new object();
++                int pauseLeasesAcquired = 0;
++                int pauseLeasesReleased = 0;
++                int captureCalls = 0;
++                int preparationCalls = 0;
++                int publicationAttempts = 0;
++                int successfulPublications = 0;
++                bool failFirstPublication = true;
++                string publishedOptionId = string.Empty;
++                pauseProviderBinding = app.BindExpeditionSimulationPauseLeaseProvider(publisherOwner, () =>
++                {
++                    pauseLeasesAcquired++;
++                    return new CallbackDisposable(() => pauseLeasesReleased++);
++                });
++                publicationBinding = app.BindExpeditionSessionMutationPublication(publisherOwner,
++                    (candidateRun, candidateSave) =>
++                    {
++                        captureCalls++;
++                        Assert.That(candidateRun, Is.Not.Null);
++                        Assert.That(candidateSave, Is.Not.Null);
++                        Assert.That(candidateRun.RunId, Is.EqualTo(app.ActiveRun.RunId));
++                    },
++                    (candidateRun, candidateSave) =>
++                    {
++                        preparationCalls++;
++                        Assert.That(candidateRun, Is.Not.Null);
++                        Assert.That(candidateSave, Is.Not.Null);
++                        FortuneOffer candidateOffer = FortuneOfferBook.Restore(
++                            candidateSave.fortuneOfferBookSnapshot).GetOffer("offer.panel.own-publication");
++                        Assert.That(candidateOffer.SelectedOptionId, Is.EqualTo(publicationOptionId));
++                        string preparedOptionId = candidateOffer.SelectedOptionId;
++                        return () =>
++                        {
++                            publicationAttempts++;
++                            if (failFirstPublication)
++                            {
++                                failFirstPublication = false;
++                                throw new InvalidOperationException("simulated session publication fault");
++                            }
++                            publishedOptionId = preparedOptionId;
++                            successfulPublications++;
++                        };
++                    });
++
++                int writesBeforePublication = store.ProfileWriteAttempts;
++                ExpeditionMutationCommitResult<FortuneChoiceResult> failedPublication = null;
++                yield return Complete(publicationPanel.Controller.ChooseOptionAsync(publicationOptionIndex),
++                    value => failedPublication = value);
++                Assert.That(failedPublication.Persisted, Is.False);
++                Assert.That(failedPublication.Pending, Is.True, failedPublication.Message);
++                Assert.That(app.CanContinueExpedition, Is.False);
++                Assert.That(app.HasPendingExpeditionWrite, Is.True);
++                Assert.That(app.HasPendingFortuneMutation, Is.True);
++                string publicationKey = app.PendingFortuneOperationKey;
++                StringAssert.Contains(publicationOptionId, publicationKey);
++                Assert.That(app.PendingProfileExport, Is.Null,
++                    "The save already reached durable storage; only its session publication is pending.");
++                Assert.That(app.GetFortuneOffer("offer.panel.own-publication").SelectedOptionId,
++                    Is.EqualTo(publicationOptionId));
++                string durableExpeditionJson = JsonUtility.ToJson(app.ActiveExpedition, false);
++                string durableProfileJson = store.ProfilePrimary;
++                string durableBackupJson = store.ProfileBackup;
++                Assert.That(store.ProfileWriteAttempts, Is.EqualTo(writesBeforePublication + 1));
++                Assert.That(pauseLeasesAcquired, Is.EqualTo(1));
++                Assert.That(pauseLeasesReleased, Is.Zero);
++                Assert.That(captureCalls, Is.EqualTo(1));
++                Assert.That(preparationCalls, Is.EqualTo(1));
++                Assert.That(publicationAttempts, Is.EqualTo(1));
++                Assert.That(successfulPublications, Is.Zero);
++
++                publicationPanel.Destroy();
++                publicationPanel = CreatePanel(app, "offer.panel.own-publication");
++                Assert.That(app.PendingFortuneOperationKey, Is.EqualTo(publicationKey));
++                Assert.That(publicationPanel.Controller.CurrentOffer.SelectedOptionId,
++                    Is.EqualTo(publicationOptionId));
++                Assert.That(publicationPanel.OptionButtons[publicationOptionIndex].interactable, Is.True);
++                Assert.That(publicationPanel.OptionButtons.Where((button, index) => index != publicationOptionIndex &&
++                    button.interactable), Is.Empty);
++                Assert.That(publicationPanel.RepeatButton.interactable, Is.False);
++                Assert.That(publicationPanel.ClaimButton.interactable, Is.False);
++
++                int otherPublicationOptionIndex = (publicationOptionIndex + 1) % 3;
++                ExpeditionMutationCommitResult<FortuneChoiceResult> wrongPublicationRetry = null;
++                yield return Complete(publicationPanel.Controller.ChooseOptionAsync(otherPublicationOptionIndex),
++                    value => wrongPublicationRetry = value);
++                Assert.That(wrongPublicationRetry, Is.Null);
++                Assert.That(app.PendingFortuneOperationKey, Is.EqualTo(publicationKey));
++                Assert.That(store.ProfileWriteAttempts, Is.EqualTo(writesBeforePublication + 1));
++                Assert.That(publicationAttempts, Is.EqualTo(1));
++
++                int writesBeforePublicationRetry = store.ProfileWriteAttempts;
++                ExpeditionMutationCommitResult<FortuneChoiceResult> publishedChoice = null;
++                yield return Complete(publicationPanel.Controller.ChooseOptionAsync(publicationOptionIndex),
++                    value => publishedChoice = value);
++                Assert.That(publishedChoice.Persisted, Is.True, publishedChoice.Message);
++                Assert.That(publishedChoice.Pending, Is.False);
++                Assert.That(publishedChoice.Outcome.Succeeded, Is.True);
++                Assert.That(app.HasPendingFortuneMutation, Is.False);
++                Assert.That(app.HasPendingExpeditionWrite, Is.False);
++                Assert.That(app.PendingFortuneOperationKey, Is.Empty);
++                Assert.That(app.PendingProfileExport, Is.Null);
++                Assert.That(app.CanContinueExpedition, Is.True);
++                Assert.That(store.ProfileWriteAttempts, Is.EqualTo(writesBeforePublicationRetry),
++                    "Retrying a durable choice republishes the session without a second save write.");
++                Assert.That(store.ProfilePrimary, Is.EqualTo(durableProfileJson));
++                Assert.That(store.ProfileBackup, Is.EqualTo(durableBackupJson));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(durableExpeditionJson));
++                Assert.That(publicationAttempts, Is.EqualTo(2));
++                Assert.That(successfulPublications, Is.EqualTo(1));
++                Assert.That(publishedOptionId, Is.EqualTo(publicationOptionId));
++                Assert.That(captureCalls, Is.EqualTo(1));
++                Assert.That(preparationCalls, Is.EqualTo(1));
++                Assert.That(pauseLeasesAcquired, Is.EqualTo(1));
++                Assert.That(pauseLeasesReleased, Is.EqualTo(1));
++
++                publicationBinding.Dispose();
++                publicationBinding = null;
++                pauseProviderBinding.Dispose();
++                pauseProviderBinding = null;
+             }
+             finally
+             {
++                publicationBinding?.Dispose();
++                pauseProviderBinding?.Dispose();
+                 if (choicePanel != null) choicePanel.Destroy();
+                 if (rerollPanel != null) rerollPanel.Destroy();
++                if (publicationPanel != null) publicationPanel.Destroy();
+                 DestroyApplication();
+                 ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+             }
+@@ -559,7 +692,8 @@
+                 ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> rejected = null;
+                 yield return Complete(panel.Controller.ClaimRewardAsync(), value => rejected = value);
+ 
+-                Assert.That(rejected.Persisted, Is.False);
++                Assert.That(rejected.Persisted, Is.True,
++                    "The definitive incompatible-class result is represented by the committed unchanged state; no save write was needed.");
+                 Assert.That(rejected.Pending, Is.False);
+                 Assert.That(rejected.Outcome.Succeeded, Is.False);
+                 Assert.That(rejected.Outcome.InventoryOperation.Status,
+@@ -741,6 +875,23 @@
+             }
+         }
+ 
++        private sealed class CallbackDisposable : IDisposable
++        {
++            private Action _onDispose;
++
++            public CallbackDisposable(Action onDispose)
++            {
++                _onDispose = onDispose;
++            }
++
++            public void Dispose()
++            {
++                Action callback = _onDispose;
++                _onDispose = null;
++                callback?.Invoke();
++            }
++        }
++
+         private sealed class MemorySaveStore : ISaveStore
+         {
+             private string _profilePrimary;

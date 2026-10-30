@@ -1,0 +1,20 @@
+{
+  "ci7Run": 41136113982,
+  "r2Preserved": "../c08-r2",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+      "beforeSha256": "2ab115dec747be4de9b79bba68303a73318a1f1889f749b2135598cb6359bd56",
+      "afterSha256": "e7f5267330dba1422cb5bbf141e21d5c0884fbab239892154de1b9347749d7fe",
+      "beforeBytes": 22296,
+      "afterBytes": 22537
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+      "beforeSha256": "c02c0c9a933d01bca1c5ae43d8416e6d2f675f8d78bd683b04f6fc846b195953",
+      "afterSha256": "550fe63c2a9835d86dc3511f1b20ffac197cad8ec3582f80d6b7bd7cd1fa7de7",
+      "beforeBytes": 38207,
+      "afterBytes": 49316
+    }
+  ]
+}

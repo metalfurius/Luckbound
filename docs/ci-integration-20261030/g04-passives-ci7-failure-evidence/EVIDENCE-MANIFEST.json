@@ -1,0 +1,46 @@
+{
+  "run": 41136113982,
+  "commit": "bd1c2fb12625db168fe976854e3f4b4c350e8342",
+  "files": [
+    {
+      "path": "C08-scenario-report.json",
+      "bytes": 33643,
+      "sha256": "d63a37bebb66e1007e799c60276f4b32fc9945b17ed3d8579698d5fcec45b972"
+    },
+    {
+      "path": "C08-scenario.log",
+      "bytes": 31343,
+      "sha256": "5f2d9df2ac146c1d935b1b4a56def998bbfd1e56fc9e7c6762221e4141bc7ef1"
+    },
+    {
+      "path": "C08-source-manifest.sha256",
+      "bytes": 715410,
+      "sha256": "6e2ff56f8d4bf8874a80cca23aaf7d8b5eaeb0152a9bb7af3d2b07cb7ab370fb"
+    },
+    {
+      "path": "CI-RESULT.json",
+      "bytes": 2317,
+      "sha256": "d65e992934c1feb0bce03e661f95f9539e1b19d5ef12ca2253fca26ed1492898"
+    },
+    {
+      "path": "editmode-results.xml",
+      "bytes": 568826,
+      "sha256": "e14e3ba779a30120b0b6ce4e13db51c380acd82253875f73106afcdf373e6a9c"
+    },
+    {
+      "path": "playmode-results.xml",
+      "bytes": 1235046,
+      "sha256": "3491f04a124c8e7852443304939b67cfa785a3b337a336a2713ed6e22610b351"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 737,
+      "sha256": "b955861d9a5c6d1e54e1019e9f16b7eb3fa7ea3c697e00a3784bbb4513138214"
+    },
+    {
+      "path": "TEST-SUMMARY.json",
+      "bytes": 4029,
+      "sha256": "1f2e99e10b25a5f5672a64124a3e98ec215e25ac88a9b0a554623c230f49eb66"
+    }
+  ]
+}

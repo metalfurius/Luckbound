@@ -1,0 +1,178 @@
+{
+  "manifest_version": 1,
+  "package": "G04 actor CI7 fixture corrections R3",
+  "date": "2026-10-30",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-CI7-G04-C08-CORRECTIVE-CONTRACT.md",
+    "sha256": "7fab2d3dd49aabf18fbd3ede92ad11f841e80896b03ee23d7d36e3214f54741b"
+  },
+  "input_r2": {
+    "candidate_root": "Logs/G04RemainingConsumers-20261030-r1/actor-r2/candidate",
+    "manifest_sha256": "f54d8261c44d98129b8c81e70dbf2902b06ae5eeecc9241dc47d60e6d0d1d48b",
+    "report_sha256": "e71c7ceb1ddf9306f8ecaf99e99f29f9897ef505e584c18c23073602e41760a2",
+    "files": [
+      {
+        "path": "r2/Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+        "bytes": 2165,
+        "sha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9"
+      },
+      {
+        "path": "r2/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicActorRulesTests.cs",
+        "bytes": 3893,
+        "sha256": "0f4f6aa4de93594da5dffe14379ec1039ad6aeb632f9c9562f62c46329e9d2c4"
+      },
+      {
+        "path": "r2/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+        "bytes": 54301,
+        "sha256": "749a142755d449b943ab1b7cddf83ffe85e7c0b9bce0d5f3cae9e8787f7d6e60"
+      }
+    ]
+  },
+  "ci7_failed_attempt": {
+    "kind": "diagnostic only; not an acceptance result",
+    "archive": {
+      "path": "Logs/CI-41136113982-root/tests-attempt1/DOWNLOAD.json",
+      "bytes": 61487,
+      "sha256": "8e67569c31fc1e8dca19744c2c5aef0f485b9f482b918e86f38a0921dbfb15aa",
+      "run": 41136113982,
+      "artifact": "13016938125",
+      "artifact_label": "test-results-bd1c2fb12625db168fe976854e3f4b4c350e8342",
+      "artifact_bytes": 9461722,
+      "artifact_sha256": "aea5874b7ad269daf8434c9df6d73ea842b43b3c98510b068766e126fb82fe04",
+      "commit": "bd1c2fb12625db168fe976854e3f4b4c350e8342",
+      "tree": "8c794b3dcd6278d64966d952a4422c6f2363ca8e"
+    },
+    "results": [
+      {
+        "path": "Logs/CI-41136113982-root/tests-attempt1/extracted/test-results/editmode-results.xml",
+        "bytes": 568826,
+        "sha256": "e14e3ba779a30120b0b6ce4e13db51c380acd82253875f73106afcdf373e6a9c",
+        "total": 654,
+        "passed": 654,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      {
+        "path": "Logs/CI-41136113982-root/tests-attempt1/extracted/test-results/playmode-results.xml",
+        "bytes": 1235046,
+        "sha256": "3491f04a124c8e7852443304939b67cfa785a3b337a336a2713ed6e22610b351",
+        "total": 504,
+        "passed": 501,
+        "failed": 3,
+        "skipped": 0,
+        "inconclusive": 0
+      }
+    ],
+    "playmode_log": {
+      "path": "Logs/CI-41136113982-root/tests-attempt1/extracted/test-results/playmode.log",
+      "bytes": 1452615,
+      "sha256": "6b88057cf6733e96baeeff1b5b21aaf6349547a49d94e02b95bc8719c642b985"
+    },
+    "g04_actor_cases": {
+      "total": 7,
+      "passed": 5,
+      "failed": [
+        {
+          "test": "FailedActorPublicationRetriesWithoutASecondWrite",
+          "observed": "Expected null; ActiveRun.Inventory.RelicOne was an InventoryItemStack because the durable candidate is installed before live publication."
+        },
+        {
+          "test": "VialChangesHealthPotionOnlyAndPreservesFullInterruptAndTonicRules",
+          "observed": "Expected 45; observed 46 because legitimate Motor energy regeneration occurred during/at the tonic tick."
+        }
+      ]
+    },
+    "g04_core_cases": {
+      "passed": 6,
+      "total": 6,
+      "source": "Root correction: Luna C Core tests 6/6; 21/21 is combined Luna A 7 + Luna B 8 + Luna C 6."
+    },
+    "other_playmode_failure": {
+      "test": "CombatArenaTests.PlayerCanWinTheGeneratedArenaWithKeyboardCombatAndWithoutForcedEnemyRemoval",
+      "owner": "Root; untouched by R3"
+    },
+    "combined_actor_core_cases": {
+      "passed": 21,
+      "total": 21,
+      "composition": "Luna A 7 + Luna B 8 + Luna C 6"
+    }
+  },
+  "before_files": [
+    {
+      "path": "before/Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+      "bytes": 2165,
+      "sha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9"
+    },
+    {
+      "path": "before/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicActorRulesTests.cs",
+      "bytes": 3893,
+      "sha256": "0f4f6aa4de93594da5dffe14379ec1039ad6aeb632f9c9562f62c46329e9d2c4"
+    },
+    {
+      "path": "before/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "bytes": 54301,
+      "sha256": "749a142755d449b943ab1b7cddf83ffe85e7c0b9bce0d5f3cae9e8787f7d6e60"
+    }
+  ],
+  "after_files": [
+    {
+      "path": "after/Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+      "bytes": 2165,
+      "sha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicActorRulesTests.cs",
+      "bytes": 3893,
+      "sha256": "0f4f6aa4de93594da5dffe14379ec1039ad6aeb632f9c9562f62c46329e9d2c4"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "bytes": 61500,
+      "sha256": "6956bbe752b93b85a0c8ce94e79c1f29b584ab78b839f67fa36792a26e0c29c0"
+    }
+  ],
+  "unchanged_r1_files": [
+    {
+      "path": "r1/Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+      "bytes": 2165,
+      "sha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9"
+    },
+    {
+      "path": "r1/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicActorRulesTests.cs",
+      "bytes": 3893,
+      "sha256": "0f4f6aa4de93594da5dffe14379ec1039ad6aeb632f9c9562f62c46329e9d2c4"
+    },
+    {
+      "path": "r1/Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "bytes": 54183,
+      "sha256": "0ef945b99df200bfff72c1c6ad9995c5cf52f50d2f7dc1fb12db066e71d8349d"
+    }
+  ],
+  "delta": {
+    "only_after_source_changed": "Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+    "modified_methods": [
+      "VialChangesHealthPotionOnlyAndPreservesFullInterruptAndTonicRules",
+      "FailedActorPublicationRetriesWithoutASecondWrite"
+    ],
+    "other_playmode_tests_preserved": 5,
+    "rules_and_core_tests_equal_r1_r2_r3": true,
+    "actor_r1_r2_unmodified": true,
+    "changes": [
+      "Vial case waits for IsDodging=false after real dodge; uses Skill2 Circular Cut through PlayerInputBuffer, observes Activated, EnergySpent, and SimulationTick, captures post-cost energy, consumes in the existing 21-tick preparation, asserts consumption under the skill 60-tick recovery delay, no clamp, and exact baseline+25.",
+      "Publication case asserts durable ActiveRun and serialized save candidate, preserves exact old Collector reference/snapshot/slot, old Motor speed/resources, pending key/session pause lease and counters; retry publishes candidate, releases lease, and adds zero profile writes."
+    ],
+    "diff_hunks": 2
+  },
+  "verification": {
+    "r2_copied_to_before_byte_identically": true,
+    "rules_and_core_tests_r3_equal_r2": true,
+    "other_five_playmode_test_bodies_unchanged": true,
+    "local_compile": "not run; Root compile requested before review",
+    "local_unity_or_nunit": "not run",
+    "sol_review_r3": "pending",
+    "assets_or_project_settings_changed": false,
+    "git_writes": "none",
+    "third_c08_failure": "not modified; Root-owned"
+  }
+}

@@ -299,6 +299,10 @@ namespace Luckbound.App
                 _audioRouter?.PlayEffect(ApplicationAudioRouter.JumpEffectId);
             }
 
+            // A real accepted jump also establishes a ground reference when the
+            // first physics steps run before Update observes the spawn contact.
+            if (newSuccessfulJumps > 0) _hasGroundedAudioBaseline = true;
+
             int newDodgeActivations = ConsumeCounterDelta(
                 ref _reportedDodgeActivations,
                 _playerMotor.DodgeActivationCount);

@@ -26,3 +26,7 @@ docs/ci-integration-20261030/v6-pretty-ci5-runtime-evidence/** -text
 docs/ci-integration-20261030/v7-preproduction-ci6-evidence/** -text
 docs/ci-integration-20261030/v7-preproduction-ci6-runtime-evidence/** -text
 docs/ci-integration-20261030/g04-passives-ci7-evidence/** -text
+
+docs/ci-integration-20261030/g04-passives-ci7-failure-evidence/** -text
+
+docs/ci-integration-20261030/ci8-corrective-evidence/** -text

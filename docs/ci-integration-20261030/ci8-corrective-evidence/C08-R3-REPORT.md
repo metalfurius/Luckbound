@@ -1,0 +1,3 @@
+# C08 R3 — orden temprano observable
+
+R1 y R2 quedan congelados. R3 cierra el único P2 de R2: el guard acotado arena/Motor espera Fixed para early y frame para reference, sin cruzar voluntariamente Update con yield null en el orden temprano. Mantiene bound180 y la aserción estricta de orden, sin fallback/skip/repetir hasta pasar. Añade solo diagnóstico real de sample Space down/release y frames/ticks/counts/ground alrededor del Fixed; assertions Space true/false. Producer e7f52673 exacto y cuerpo completo del escenario original byte exacto. Las cuatro correcciones R2 de cleanup se conservan. La ejecución Native aún debe demostrar ambos órdenes reales; la compilación no los acredita.
