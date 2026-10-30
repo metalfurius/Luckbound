@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "state": "IntegratedNotRuntimeVerified",
+  "technicalReviewSha256": "1d7e1b29c9443683bfe96d8535afc3892a5dbcaa0cccf3340e1cea78a2b36f90",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+      "sha256": "36e88f8a93740f15832d80a5cad87da26884e3c820a36aa16457deca5fc52402"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+      "sha256": "e30ea33766d121395838d3f6df5bd5ef6794520460ad2d243499ffe3a103c31a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.RelicEquipment.cs",
+      "sha256": "c9fdb0c4d60d1e1980d07804f14afb3933cb6b72c104375adbbc30a0b2d62452"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+      "sha256": "713e7a7b94f9abee53f1e18dbb412fb9d606267fc81bdc73e461e7de7e113538"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.RelicEquipment.cs.meta",
+      "sha256": "035c171103a3daec8fb1d99e2e5c099bd88f3512174f02eea66241ebfe1e8adc"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs.meta",
+      "sha256": "ad50eb6491bd207a203e9b51efc3ab02299723948c8a1283fa590b489a936ddf"
+    }
+  ],
+  "guardedBeforeSources": 383,
+  "afterSources": 385,
+  "unchangedOtherSources": 381,
+  "unchangedFrozenSaveFiles": 492,
+  "expectedUnityTests": 1025,
+  "newUnityTests": 7,
+  "localUnityExecuted": false,
+  "releaseOrDeploy": false
+}

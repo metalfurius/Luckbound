@@ -7,6 +7,7 @@ using Luckbound.Core.Expeditions;
 using Luckbound.Core.Identifiers;
 using Luckbound.Core.Input;
 using Luckbound.Core.Inventory;
+using Luckbound.Core.Relics;
 using Luckbound.Core.Saves;
 using Luckbound.Gameplay.Combat;
 using Luckbound.Gameplay.Inventory;
@@ -180,8 +181,25 @@ namespace Luckbound.App
                 candidateSave.currentEnergy < 0 || candidateSave.currentEnergy > playerMotor.MaximumEnergy)
                 throw new InvalidOperationException("The live actor has no valid armor projection or resource snapshot.");
 
-            ArmorResolution nextArmorResolution = ArmorReplacementResolver.Resolve(currentArmor, nextArmor,
-                armorStack.UpgradeLevel, candidateSave.currentHealth, candidateSave.currentEnergy, armorStack.Rarity);
+            SupportRelicModifiers nextSupport = ResolveEquippedSupportModifiers(committedRun.Inventory);
+            ArmorResolution nextArmorResolution;
+            if (committedRun.HasKnownStartingLoadout)
+            {
+                nextArmorResolution = ArmorStatsResolver.Resolve(nextArmor, armorStack.UpgradeLevel,
+                    checked(committedRun.StartingHealth + nextSupport.MaximumHealthBonus),
+                    checked(committedRun.StartingEnergy + nextSupport.MaximumEnergyBonus),
+                    candidateSave.currentHealth, candidateSave.currentEnergy, armorStack.Rarity);
+            }
+            else
+            {
+                SupportRelicModifiers currentSupport = ResolveEquippedSupportModifiers(itemCollector.Inventory);
+                if (nextSupport.MaximumHealthBonus != currentSupport.MaximumHealthBonus ||
+                    nextSupport.MaximumEnergyBonus != currentSupport.MaximumEnergyBonus)
+                    throw new InvalidOperationException(
+                        "Unknown starting resources cannot reconstruct a changed relic maximum bonus.");
+                nextArmorResolution = ArmorReplacementResolver.Resolve(currentArmor, nextArmor,
+                    armorStack.UpgradeLevel, candidateSave.currentHealth, candidateSave.currentEnergy, armorStack.Rarity);
+            }
             WeaponProfile nextWeapon = PlayerMotor2D.ResolveEquippedWeaponProfile(committedRun, weaponCatalog);
             _ = WeaponBasicAttackProfile.Create(nextWeapon, committedRun.Inventory.Weapon.Rarity,
                 committedRun.Inventory.Weapon.UpgradeLevel);
@@ -354,9 +372,15 @@ namespace Luckbound.App
                     nameof(run));
             }
 
-            int baseMaximumHealth = checkpoint == null ? run.StartingHealth : checkpoint.maximumHealth;
-            int baseMaximumEnergy = checkpoint == null ? run.StartingEnergy :
-                checked(checkpoint.maximumEnergy - profile.MaximumEnergyBonus);
+            if (checkpoint == null && !run.HasKnownStartingLoadout)
+                throw new ArgumentException("Unknown starting resources require their saved checkpoint.", nameof(checkpoint));
+            SupportRelicModifiers support = checkpoint == null
+                ? ResolveEquippedSupportModifiers(run.Inventory) : default;
+            int baseMaximumHealth = checkpoint == null
+                ? checked(run.StartingHealth + support.MaximumHealthBonus) : checkpoint.maximumHealth;
+            int baseMaximumEnergy = checkpoint == null
+                ? checked(run.StartingEnergy + support.MaximumEnergyBonus)
+                : checked(checkpoint.maximumEnergy - profile.MaximumEnergyBonus);
             if (baseMaximumEnergy <= 0)
                 throw new ArgumentException("Saved maximum energy must contain the equipped armor bonus.", nameof(checkpoint));
             return ArmorStatsResolver.Resolve(
@@ -367,6 +391,14 @@ namespace Luckbound.App
                 checkpoint == null ? run.StartingHealth : checkpoint.currentHealth,
                 checkpoint == null ? run.StartingEnergy : checkpoint.currentEnergy,
                 equippedArmor.Rarity);
+        }
+
+        private static SupportRelicModifiers ResolveEquippedSupportModifiers(ExpeditionInventory inventory)
+        {
+            if (inventory == null) throw new ArgumentNullException(nameof(inventory));
+            string first = SupportRelicIds.IsSupported(inventory.RelicOne?.ItemId) ? inventory.RelicOne.ItemId : null;
+            string second = SupportRelicIds.IsSupported(inventory.RelicTwo?.ItemId) ? inventory.RelicTwo.ItemId : null;
+            return SupportRelicResolver.Resolve(first, second);
         }
 
         private static ArmorCatalog LoadArmorCatalog(ItemCatalog itemCatalog)

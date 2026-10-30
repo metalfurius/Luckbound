@@ -1,0 +1,903 @@
+{
+  "schemaVersion": 1,
+  "runId": 41095991782,
+  "commit": "93c6ea46c6472d734e1d93fea801861ab2a5902b",
+  "baselineRun": 41087980878,
+  "isolatedPreviousRun": 41092941448,
+  "compared": 97,
+  "strictIdenticalToBaseline": 95,
+  "diagnosticDeltas": [
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "decode.json",
+      "field": "result",
+      "before": "Returned",
+      "after": "Returned; envelope is null"
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "decode.json",
+      "field": "result",
+      "before": "Returned",
+      "after": "Returned; envelope is null"
+    }
+  ],
+  "strictIdenticalToCi2": 97,
+  "criterionSha256": "a5d8fd292007dd5eda2c2a222300384ca5c0bc42d6d3a6f75e798403f2ad67b7",
+  "fixturesRewritten": false,
+  "files": [
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "input.json",
+      "bytes": 1442,
+      "baselineSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "currentSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "envelope.json",
+      "bytes": 2227,
+      "baselineSha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+      "currentSha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "checksum-preimage.utf8",
+      "bytes": 1442,
+      "baselineSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "currentSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "currentSha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 1442,
+      "baselineSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "currentSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "inspector-preimage.utf8",
+      "bytes": 1442,
+      "baselineSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "currentSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "semantic-validation.json",
+      "bytes": 201,
+      "baselineSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "currentSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "decode.json",
+      "bytes": 208,
+      "baselineSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "currentSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P0-profile-no-active",
+      "path": "inspector.json",
+      "bytes": 620,
+      "baselineSha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "currentSha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "input.json",
+      "bytes": 13170,
+      "baselineSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "currentSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "envelope.json",
+      "bytes": 15920,
+      "baselineSha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3",
+      "currentSha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "checksum-preimage.utf8",
+      "bytes": 13170,
+      "baselineSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "currentSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589",
+      "currentSha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 13170,
+      "baselineSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "currentSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "inspector-preimage.utf8",
+      "bytes": 13170,
+      "baselineSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "currentSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "semantic-validation.json",
+      "bytes": 201,
+      "baselineSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "currentSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "decode.json",
+      "bytes": 208,
+      "baselineSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "currentSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-nontrivial",
+      "path": "inspector.json",
+      "bytes": 620,
+      "baselineSha256": "19f1ab85733ee44cd4a5277e565ec6414281d138980f0b44461cea1207ce3816",
+      "currentSha256": "19f1ab85733ee44cd4a5277e565ec6414281d138980f0b44461cea1207ce3816",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "input.json",
+      "bytes": 13170,
+      "baselineSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "currentSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "envelope.json",
+      "bytes": 15920,
+      "baselineSha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d",
+      "currentSha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "checksum-preimage.utf8",
+      "bytes": 13170,
+      "baselineSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "currentSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9",
+      "currentSha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 13170,
+      "baselineSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "currentSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "inspector-preimage.utf8",
+      "bytes": 13170,
+      "baselineSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "currentSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "semantic-validation.json",
+      "bytes": 201,
+      "baselineSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "currentSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "decode.json",
+      "bytes": 208,
+      "baselineSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "currentSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P1-active-known-zero",
+      "path": "inspector.json",
+      "bytes": 620,
+      "baselineSha256": "1882651f928bc9825a4e66d15c522b136d6f44f69cfce0904ac07f139e71e322",
+      "currentSha256": "1882651f928bc9825a4e66d15c522b136d6f44f69cfce0904ac07f139e71e322",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "input.json",
+      "bytes": 10461,
+      "baselineSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "currentSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "envelope.json",
+      "bytes": 11338,
+      "baselineSha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "currentSha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "checksum-preimage.utf8",
+      "bytes": 10461,
+      "baselineSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "currentSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "currentSha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 10461,
+      "baselineSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "currentSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "inspector-preimage.utf8",
+      "bytes": 10461,
+      "baselineSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "currentSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "semantic-validation.json",
+      "bytes": 201,
+      "baselineSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "currentSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "decode.json",
+      "bytes": 208,
+      "baselineSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "currentSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-inline-empty",
+      "path": "inspector.json",
+      "bytes": 620,
+      "baselineSha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+      "currentSha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "input.json",
+      "bytes": 10461,
+      "baselineSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "currentSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "envelope.json",
+      "bytes": 11338,
+      "baselineSha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "currentSha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "checksum-preimage.utf8",
+      "bytes": 10461,
+      "baselineSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "currentSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "currentSha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 10461,
+      "baselineSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "currentSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "inspector-preimage.utf8",
+      "bytes": 10461,
+      "baselineSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "currentSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "semantic-validation.json",
+      "bytes": 201,
+      "baselineSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "currentSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "decode.json",
+      "bytes": 208,
+      "baselineSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "currentSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P2-active-unknown-null",
+      "path": "inspector.json",
+      "bytes": 620,
+      "baselineSha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+      "currentSha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "input.json",
+      "bytes": 9345,
+      "baselineSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "currentSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "envelope.json",
+      "bytes": 12973,
+      "baselineSha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c",
+      "currentSha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "checksum-preimage.utf8",
+      "bytes": 9345,
+      "baselineSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "currentSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3",
+      "currentSha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 9345,
+      "baselineSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "currentSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "inspector-preimage.utf8",
+      "bytes": 9345,
+      "baselineSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "currentSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "semantic-validation.json",
+      "bytes": 201,
+      "baselineSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "currentSha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "decode.json",
+      "bytes": 208,
+      "baselineSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "currentSha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P3-receipts-full",
+      "path": "inspector.json",
+      "bytes": 620,
+      "baselineSha256": "6ee492d12b3dc1e1f601f71f57a784ee6939d8d0859ba6bd94c1c046d3b0d8b6",
+      "currentSha256": "6ee492d12b3dc1e1f601f71f57a784ee6939d8d0859ba6bd94c1c046d3b0d8b6",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "input.json",
+      "bytes": 10665,
+      "baselineSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "currentSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "envelope.json",
+      "bytes": 12060,
+      "baselineSha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f",
+      "currentSha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "checksum-preimage.utf8",
+      "bytes": 10665,
+      "baselineSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "currentSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae",
+      "currentSha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 10665,
+      "baselineSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "currentSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "inspector-preimage.utf8",
+      "bytes": 10665,
+      "baselineSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "currentSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "semantic-validation.json",
+      "bytes": 1259,
+      "baselineSha256": "2b84445773f61ddab7c778aa6ab073c21dab4f18eaebc6303a2e5b6fa9b2d552",
+      "currentSha256": "2b84445773f61ddab7c778aa6ab073c21dab4f18eaebc6303a2e5b6fa9b2d552",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "decode.json",
+      "bytes": 231,
+      "baselineSha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef",
+      "currentSha256": "1cb10347d13b11e2a36789b7c6afa2a7451cee3376fe3cecfbf731e55bf1ba74",
+      "byteIdenticalToBaseline": false,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P4-null-empty-boundary",
+      "path": "inspector.json",
+      "bytes": 620,
+      "baselineSha256": "ba84c0cc50843d5390dde0ee23b27c62eafc21da833a9ee50823394a22fddc08",
+      "currentSha256": "ba84c0cc50843d5390dde0ee23b27c62eafc21da833a9ee50823394a22fddc08",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "input.json",
+      "bytes": 13171,
+      "baselineSha256": "c93c3d01328b590b06ebbc5eef06ae7190b1f22835e2391b731cb2b48bc83b0e",
+      "currentSha256": "c93c3d01328b590b06ebbc5eef06ae7190b1f22835e2391b731cb2b48bc83b0e",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "envelope.json",
+      "bytes": 15921,
+      "baselineSha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536",
+      "currentSha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "checksum-preimage.utf8",
+      "bytes": 1442,
+      "baselineSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "currentSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "currentSha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 1442,
+      "baselineSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "currentSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "inspector-preimage.utf8",
+      "bytes": 1442,
+      "baselineSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "currentSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "semantic-validation.json",
+      "bytes": 283,
+      "baselineSha256": "f67cb61a394181bb2191bc08214bdb016bbc53b6ea01bca574784e77972eb85f",
+      "currentSha256": "f67cb61a394181bb2191bc08214bdb016bbc53b6ea01bca574784e77972eb85f",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "decode.json",
+      "bytes": 231,
+      "baselineSha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef",
+      "currentSha256": "1cb10347d13b11e2a36789b7c6afa2a7451cee3376fe3cecfbf731e55bf1ba74",
+      "byteIdenticalToBaseline": false,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-P5-flag-payload-conflict",
+      "path": "inspector.json",
+      "bytes": 620,
+      "baselineSha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "currentSha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "input.json",
+      "bytes": 285,
+      "baselineSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "currentSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "envelope.json",
+      "bytes": 447,
+      "baselineSha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139",
+      "currentSha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "checksum-preimage.utf8",
+      "bytes": 285,
+      "baselineSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "currentSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "checksum.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+      "currentSha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "legacy-checksum-preimage.utf8",
+      "bytes": 285,
+      "baselineSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "currentSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "inspector-preimage.utf8",
+      "bytes": 285,
+      "baselineSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "currentSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "semantic-validation.json",
+      "bytes": 202,
+      "baselineSha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb",
+      "currentSha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "decode.json",
+      "bytes": 209,
+      "baselineSha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6",
+      "currentSha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-S0-settings",
+      "path": "inspector.json",
+      "bytes": 621,
+      "baselineSha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90",
+      "currentSha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-empty-slots",
+      "path": "checkpoint-current.json",
+      "bytes": 3819,
+      "baselineSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "currentSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-empty-slots",
+      "path": "checkpoint-legacy.json",
+      "bytes": 3819,
+      "baselineSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "currentSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-empty-slots",
+      "path": "checkpoint-current.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "currentSha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-empty-slots",
+      "path": "checkpoint-legacy.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "currentSha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-empty-slots",
+      "path": "checkpoint-comparison.json",
+      "bytes": 251,
+      "baselineSha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37",
+      "currentSha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-empty-slots",
+      "path": "semantic-validation.json",
+      "bytes": 284,
+      "baselineSha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "currentSha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-empty-slots",
+      "path": "decode.json",
+      "bytes": 281,
+      "baselineSha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "currentSha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-empty-slots",
+      "path": "inspector.json",
+      "bytes": 503,
+      "baselineSha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "currentSha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-null-slots",
+      "path": "checkpoint-current.json",
+      "bytes": 3821,
+      "baselineSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "currentSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-null-slots",
+      "path": "checkpoint-legacy.json",
+      "bytes": 3821,
+      "baselineSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "currentSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-null-slots",
+      "path": "checkpoint-current.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "currentSha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-null-slots",
+      "path": "checkpoint-legacy.sha256.txt",
+      "bytes": 64,
+      "baselineSha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "currentSha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-null-slots",
+      "path": "checkpoint-comparison.json",
+      "bytes": 265,
+      "baselineSha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b",
+      "currentSha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-null-slots",
+      "path": "semantic-validation.json",
+      "bytes": 284,
+      "baselineSha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "currentSha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-null-slots",
+      "path": "decode.json",
+      "bytes": 281,
+      "baselineSha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "currentSha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    },
+    {
+      "caseId": "V6-checkpoint-null-slots",
+      "path": "inspector.json",
+      "bytes": 503,
+      "baselineSha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "currentSha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "byteIdenticalToBaseline": true,
+      "byteIdenticalToCi2": true
+    }
+  ]
+}

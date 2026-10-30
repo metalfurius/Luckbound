@@ -12,3 +12,5 @@ Assets/Luckbound/Tests/Fixtures/Saves/V5/capture/** -text
 Assets/Luckbound/Tests/Fixtures/Saves/V5/reader-authority.json -text
 docs/ci-integration-20261029/gate-d-v5-baseline-evidence/** -text
 docs/ci-integration-20261029/gate-d-integrated-ci2-evidence/** -text
+docs/ci-integration-20261029/gate-d-integrated-ci3-evidence/** -text
+docs/ci-integration-20261029/g04-support-ci-r1-evidence/** -text

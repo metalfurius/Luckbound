@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "kind": "Gate D corrective CI evidence audit",
+  "auditDate": "2026-10-30",
+  "scope": {
+    "runId": 41095991782,
+    "suiteId": 111402779085,
+    "commit": "93c6ea46c6472d734e1d93fea801861ab2a5902b",
+    "tree": "bac7a2762dc7cb68246ddf190241f8e9addaa1b2",
+    "editor": "6000.6.7f1"
+  },
+  "artifactIntegrity": {
+    "artifactId": 12996812383,
+    "bytes": 9336104,
+    "sha256": "68ccb9a111373c2def3a50ef98ac917e61ed95b8d007fa330a1642b3ab1bc9ed",
+    "zipEntryCount": 241,
+    "crcErrors": 0,
+    "extractedFilesByteIdentical": 241,
+    "missingExtractedFiles": 0,
+    "differentExtractedFiles": 0
+  },
+  "testResults": {
+    "editMode": {
+      "sha256": "76fac2e4f011b80a3a547f4f7ea50612034b35a3af6aaf06dcb190f7b9faf8e7",
+      "bytes": 511061,
+      "total": 585,
+      "passed": 585,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "result": "Passed",
+      "parsedCaseCount": 585,
+      "caseStates": {
+        "Passed": 585
+      }
+    },
+    "playMode": {
+      "sha256": "bc0a673de077d6d6e61cd6f6b641261aa187d79c29140ba56ad0bc7a1906eb79",
+      "bytes": 1002253,
+      "total": 433,
+      "passed": 433,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "result": "Passed",
+      "parsedCaseCount": 433,
+      "caseStates": {
+        "Passed": 433
+      }
+    },
+    "total": 1018,
+    "passed": 1018,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0,
+    "newPlayModeTests": {
+      "SaveV5FrozenReaderTests": {
+        "passed": 29,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "SaveHistoricalReaderIsolationTests": {
+        "passed": 31,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "CapturedNullEmptyAndFalseMarkerCasesKeepTheirDistinctRoles": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      }
+    }
+  },
+  "nativeV6Capture": {
+    "manifest": "selected/v6-manifest.json",
+    "expectedCases": 11,
+    "attempts": 11,
+    "dataComplete": true,
+    "roleRequirementsPassed": true,
+    "sessionDocumentStable": true,
+    "sourceFilesBefore": 14,
+    "sourceFilesAfter": 14,
+    "sourcesStable": true,
+    "sourceBindingAllBoundToCommit": true,
+    "sourceBindingStableBeforeAfter": true,
+    "sourceBindingFileCount": 14,
+    "workflowCaptureStepConclusion": "success"
+  },
+  "v6DataComparison": {
+    "compared": 97,
+    "identicalToBaseline": 95,
+    "differentFromBaseline": 2,
+    "identicalToCorrectedCi2": 97,
+    "fixturesRewritten": false,
+    "onlyBaselineDifferences": [
+      "V6-P4-null-empty-boundary/decode.json",
+      "V6-P5-flag-payload-conflict/decode.json"
+    ],
+    "differenceIsExactAcceptedLiteralTransform": true,
+    "onlyChangedJsonField": "result",
+    "criterionAcceptedBySol": true
+  },
+  "observability": {
+    "canonicalSource": "test-results/playmode.log (one canonical source)",
+    "filteredRowCount": 77,
+    "phaseCounts": {
+      "codec": 24,
+      "file-store": 1,
+      "fallback": 2,
+      "repository": 48,
+      "settings-independent": 2
+    },
+    "unique": true,
+    "failedMarkers": 0,
+    "wrapperIdentityAndHashesMatch": true,
+    "rowsMatchVerifiedCi2": true,
+    "wrapperSha256": "541a00ad2e952d6941bddeaf6fc2d5fbd5f57ae70b64ad3970825a42f669e656",
+    "parsedCanonicalLogRows": {
+      "standardPhaseRows": 76,
+      "standardRowsMatchFilteredVerifier": true,
+      "fileStoreCompactRow": {
+        "phase": "file-store",
+        "profile": "Corrupted",
+        "settings": "RecoveredBackup",
+        "files": 4
+      }
+    },
+    "outcomes": {
+      "codec": {
+        "Valid": 18,
+        "Corrupted": 6
+      },
+      "repository": {
+        "LoadedPrimary": 18,
+        "RecoveredBackup": 18,
+        "Corrupted": 12
+      },
+      "fallback": {
+        "RecoveredBackup": 2
+      },
+      "settingsIndependent": {
+        "LoadedPrimary": 2
+      }
+    }
+  },
+  "ciApiStatus": {
+    "status": "completed/success",
+    "reportedBy": "coordinator update, GitHub API status snapshot at 2026-10-30T17:27:00Z",
+    "windowsJob": {
+      "id": 124205878177,
+      "conclusion": "success",
+      "artifactStatus": "Windows ZIP verified by coordinator (210 files, MZ)"
+    },
+    "webglJob": {
+      "id": 124205878299,
+      "conclusion": "success",
+      "artifactStatus": "download/verification remained with coordinator at audit handoff"
+    },
+    "globalRunGreen": true
+  },
+  "solReview": {
+    "status": "Accepted",
+    "reviewer": "GPT-6.1 Sol",
+    "documentPath": "docs/ci-integration-20261029/SOL-GATE-D-CORRECTIVE-RUNTIME.md",
+    "documentSha256": "0ca98a1db4f05079855243217bdf961267799cac815e58b40d5411012c28e180",
+    "scope": "Gate D technical compatibility and V5/V6 reader isolation for this exact commit; builds/experience remain separately reviewed"
+  },
+  "auditorConclusion": "Evidence audit complete. Findings support the exact run and the accepted comparison criterion; Sol owns the formal Gate D decision cited above. No Gate D decision is inferred by this auditor."
+}

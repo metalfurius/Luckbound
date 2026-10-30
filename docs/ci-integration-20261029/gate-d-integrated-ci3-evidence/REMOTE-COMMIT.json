@@ -1,0 +1,20 @@
+{
+  "commit": "93c6ea46c6472d734e1d93fea801861ab2a5902b",
+  "parent": "3ada68c782c2cc9e7a6f0c6b2c9b4ca1d0aa7322",
+  "tree": "bac7a2762dc7cb68246ddf190241f8e9addaa1b2",
+  "branch": "codex/luckbound-integration-unity-20261030",
+  "proof": {
+    "parentTree": "6a56113b1810a6eb31a061c008c78cbf627dda3d",
+    "tree": "bac7a2762dc7cb68246ddf190241f8e9addaa1b2",
+    "entries": 6043,
+    "blobs": 5570,
+    "planned": 15,
+    "added": 10,
+    "changed": 5,
+    "unchanged": 5555,
+    "errors": []
+  },
+  "testFileSha256": "53cb04469f12e32d03b5aa6477e96664dea401afd257445db6a4ae6f757b347b",
+  "reviewSha256": "273db803604e82b7a22e9dc0eeb835955bdde6321fc9cc691bf25a7782f6015c",
+  "productionSourcesChanged": 0
+}

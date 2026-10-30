@@ -1,0 +1,28 @@
+{
+  "runId": 41095991782,
+  "commit": "93c6ea46c6472d734e1d93fea801861ab2a5902b",
+  "jobId": 124201762964,
+  "jobConclusion": "success",
+  "steps": [
+    {
+      "name": "Run Unity tests",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Verify explicit V6 capture",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Require successful tests and explicit V6 capture",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Upload test results",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}

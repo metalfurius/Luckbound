@@ -1157,7 +1157,8 @@ namespace Luckbound.App
             Func<ExpeditionRunConfiguration, ExpeditionInventory, ExpeditionSaveData, T> mutation,
             ContractProgressEvent? progressEvent = null,
             string progressEventId = null,
-            Func<T, bool> shouldRecordProgress = null)
+            Func<T, bool> shouldRecordProgress = null,
+            bool requiresSessionPublication = false)
         {
             if (!CanWriteProfile)
                 return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
@@ -1168,6 +1169,14 @@ namespace Luckbound.App
             {
                 if (!CanWriteProfile)
                     return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
+                if (requiresSessionPublication &&
+                    (_expeditionSessionStateCapture == null || _expeditionSessionMutationPreparer == null ||
+                     _expeditionSimulationPauseLeaseProvider == null ||
+                     _expeditionSessionMutationPublicationOwner == null ||
+                     !ReferenceEquals(_expeditionSessionMutationPublicationOwner, _expeditionSimulationPauseLeaseProviderOwner)))
+                    return new ExpeditionMutationCommitResult<T>(default, false, false,
+                        "No hay una sesión de expedición activa para equipar la reliquia.");
 
                 if (_pendingEconomyMutation != null)
                 {

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "runId": 41095991782,
+  "commit": "93c6ea46c6472d734e1d93fea801861ab2a5902b",
+  "artifactId": 12998230078,
+  "zipBytes": 16156135,
+  "zipSha256": "ab1d16d85357183cf5ab3b99cc6033af8352c4341f64777957839c03f0fa79c6",
+  "fileCount": 17,
+  "entry": {
+    "path": "WebGL/index.html",
+    "sha256": "f87cfd069ff96d448d7d3c07c8144608704ade1474c6c36ac57178a228af6075",
+    "bytes": 6378
+  },
+  "wasm": {
+    "path": "WebGL/Build/WebGL.wasm.br",
+    "sha256": "5b22ade236c1482ada5b457c170e035c5d34358a6e82f6a433d3ef501580790b",
+    "bytes": 8376974
+  },
+  "browserOpened": false,
+  "playerExecuted": false
+}

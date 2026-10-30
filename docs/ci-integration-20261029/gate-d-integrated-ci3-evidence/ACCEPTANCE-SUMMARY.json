@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "gate": "Gate D historical V5/V6 compatibility and transitive isolation",
+  "status": "Accepted",
+  "commit": "93c6ea46c6472d734e1d93fea801861ab2a5902b",
+  "tree": "bac7a2762dc7cb68246ddf190241f8e9addaa1b2",
+  "runId": 41095991782,
+  "review": "docs/ci-integration-20261029/SOL-GATE-D-CORRECTIVE-RUNTIME.md",
+  "reviewSha256": "0ca98a1db4f05079855243217bdf961267799cac815e58b40d5411012c28e180",
+  "tests": {
+    "editMode": 585,
+    "playMode": 433,
+    "total": 1018,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0,
+    "rows": 77
+  },
+  "realV6Gate": "success",
+  "realV6Sentinel": "success",
+  "dataComparison": {
+    "strictByteIdentical": 95,
+    "diagnosticOnlyDeltas": 2,
+    "compared": 97,
+    "identicalToPreviousIsolatedRun": 97,
+    "criterionSha256": "a5d8fd292007dd5eda2c2a222300384ca5c0bc42d6d3a6f75e798403f2ad67b7"
+  },
+  "sourcesBoundToCommit": 14,
+  "windows": "success; artifact verified; player not executed",
+  "webgl": "success; artifact verified; browser not opened",
+  "wholeCi": "success",
+  "f09Accepted": false,
+  "f10Accepted": false,
+  "newSaveFormatApproved": false,
+  "release": "skipped",
+  "deploy": "skipped"
+}

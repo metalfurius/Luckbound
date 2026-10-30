@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "runId": 41095991782,
+  "commit": "93c6ea46c6472d734e1d93fea801861ab2a5902b",
+  "artifactId": 12997095956,
+  "zipBytes": 50524588,
+  "zipSha256": "f3e35f8002fc6e0e6c5098cf71a6bd4e27497993ee2967059d8c2788677fc73d",
+  "fileCount": 210,
+  "exe": {
+    "path": "Luckbound.exe",
+    "sha256": "9806abde4a406ed68647e9505852c49f6aa72a372f4f084e2aa2821affea57a2",
+    "bytes": 667136
+  },
+  "magic": "MZ",
+  "playerExecuted": false
+}
