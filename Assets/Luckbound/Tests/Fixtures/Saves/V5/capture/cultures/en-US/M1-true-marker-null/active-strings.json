@@ -1,0 +1,15 @@
+{
+    "caseId": "M1-true-marker-null",
+    "hasActiveExpedition": true,
+    "activePayloadPresent": true,
+    "routeSnapshotJson": "",
+    "inventorySnapshotJson": "",
+    "roomEntryCheckpointJson": "",
+    "completedRoomResults": [],
+    "provenance": {
+        "routeSnapshotJson": "none; source candidate has no active expedition payload",
+        "inventorySnapshotJson": "none; source candidate has no active expedition payload",
+        "roomEntryCheckpointJson": "none; source candidate has no active expedition payload",
+        "completedRoomResults": "none; source candidate has no active expedition payload"
+    }
+}

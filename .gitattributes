@@ -5,3 +5,8 @@ docs/art/records/*.json -text
 # Preserve the exact byte provenance of frozen F03 source inputs.
 docs/agent_staging/f03-bellator-idle-review-20261024/* -text
 docs/art/F01_master_reference.md -text
+
+# Preserve emitted capture/proof bytes and the separate R5 authority record.
+docs/ci-integration-20261029/v5-r5-frozen-evidence/** -text
+Assets/Luckbound/Tests/Fixtures/Saves/V5/capture/** -text
+Assets/Luckbound/Tests/Fixtures/Saves/V5/reader-authority.json -text

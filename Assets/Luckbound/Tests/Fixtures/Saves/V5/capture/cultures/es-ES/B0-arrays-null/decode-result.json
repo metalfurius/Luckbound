@@ -1,0 +1,10 @@
+{
+    "caseId": "B0-arrays-null",
+    "culture": "es-ES",
+    "status": "valid",
+    "statusEnum": "Valid",
+    "statusNormalized": "valid",
+    "accepted": true,
+    "decodedEnvelopePresent": true,
+    "message": ""
+}

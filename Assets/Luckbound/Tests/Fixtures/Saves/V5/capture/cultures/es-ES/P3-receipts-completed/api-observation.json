@@ -1,0 +1,20 @@
+{
+    "caseId": "P3-receipts-completed",
+    "culture": "es-ES",
+    "apiKind": "profile",
+    "apiSavedAtUtc": "2026-10-30T15:12:13.3936200Z",
+    "apiGeneration": 1,
+    "apiSequence": 1,
+    "apiChecksum": "3a4692088f8cee9f0b142e0bcf2ced5b2f738b77f9d57e4641a391aa22721fd0",
+    "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+    "fixedGeneration": 1,
+    "fixedSequence": 11,
+    "onlyHeaderFieldsDiffer": true,
+    "differingHeaderFields": [
+        "savedAtUtc",
+        "sequence"
+    ],
+    "payloadsEqual": true,
+    "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }",
+    "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }"
+}

@@ -1,0 +1,20 @@
+{
+    "caseId": "S0-settings",
+    "culture": "es-ES",
+    "apiKind": "settings",
+    "apiSavedAtUtc": "2026-10-30T15:12:13.4497780Z",
+    "apiGeneration": 1,
+    "apiSequence": 1,
+    "apiChecksum": "c613f94aec35c23d3ff1fa56bc5872b6b973ab37102cf10d33b4f02c86f6f857",
+    "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+    "fixedGeneration": 1,
+    "fixedSequence": 11,
+    "onlyHeaderFieldsDiffer": true,
+    "differingHeaderFields": [
+        "savedAtUtc",
+        "sequence"
+    ],
+    "payloadsEqual": true,
+    "apiFrozenUpgradeWireRepresentation": "not-applicable",
+    "fixedFrozenUpgradeWireRepresentation": "not-applicable"
+}

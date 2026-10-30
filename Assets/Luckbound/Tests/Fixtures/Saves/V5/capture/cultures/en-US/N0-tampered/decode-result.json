@@ -1,0 +1,10 @@
+{
+    "caseId": "N0-tampered",
+    "culture": "en-US",
+    "status": "corrupted",
+    "statusEnum": "Corrupted",
+    "statusNormalized": "corrupted",
+    "accepted": false,
+    "decodedEnvelopePresent": true,
+    "message": ""
+}

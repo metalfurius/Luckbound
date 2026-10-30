@@ -1,0 +1,2158 @@
+{
+    "schemaVersion": 1,
+    "captureKind": "reconstructed-synthetic-from-versioned-v5-source",
+    "historicalSource": {
+        "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+        "tree": "658f45412efb0b6f554d6c458400116838369a97",
+        "schemaVersion": 1,
+        "contentVersion": 5,
+        "fullTreeProof": {
+            "path": ".github/v5-source-capture/ORIGINAL-TREE-PROOF.json",
+            "bytes": 1310517,
+            "sha256": "394cae064afb63346056b7f6ffa02f2a9143c1bee6ad2a3f91dc713c80a0cc1e",
+            "trackedBlobCount": 4195,
+            "sumOriginalBlobBytes": 159244821
+        }
+    },
+    "execution": {
+        "commit": "f59eb34b6f069b78fe8d7a575b5f92c44c5dce44",
+        "editor": {
+            "version": "6000.6.6f1",
+            "revision": "d20c9ac777da",
+            "projectVersionPath": "ProjectSettings/ProjectVersion.txt",
+            "projectVersionBytes": 83,
+            "projectVersionSha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661"
+        },
+        "packageManifest": {
+            "path": "Packages/manifest.json",
+            "bytes": 2165,
+            "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595"
+        },
+        "packageLock": {
+            "path": "Packages/packages-lock.json",
+            "bytes": 14044,
+            "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
+        }
+    },
+    "fixedInputHeader": {
+        "schemaVersion": 1,
+        "contentVersion": 5,
+        "generation": 1,
+        "sequence": 11,
+        "savedAtUtc": "2000-01-01T00:00:00Z",
+        "seed": 17320508
+    },
+    "fixedIds": {
+        "profileGuidN": "10000000000000000000000000000001",
+        "activeRunGuidN": "10000000000000000000000000000002",
+        "settlementGuidN": "10000000000000000000000000000003",
+        "progressionPurchaseGuidN": "10000000000000000000000000000004",
+        "inventoryTransactionGuidN": "10000000000000000000000000000005",
+        "fortuneOfferGuidN": "10000000000000000000000000000006",
+        "fortuneHistoryGuidN": "10000000000000000000000000000007",
+        "fortuneRerollGuidN": "10000000000000000000000000000008",
+        "fortuneBrewGuidN": "10000000000000000000000000000009"
+    },
+    "cultures": [
+        {
+            "name": "en-US",
+            "caseCount": 12,
+            "invocationCount": 12
+        },
+        {
+            "name": "es-ES",
+            "caseCount": 12,
+            "invocationCount": 12
+        }
+    ],
+    "expectedTotalCases": 12,
+    "expectedTotalInvocations": 24,
+    "requiredOriginalSources": [
+        {
+            "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+            "bytes": 65551,
+            "sha256": "a3cbae2a1bad70f58f60c4802258367a72f155753817b91f82e6535b27c2d8cc"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+            "bytes": 34415,
+            "sha256": "0cbedf7cf7f03c91c74aa3d4312090c19bb0d80e6f2847887d5d6c14a6be96ca"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+            "bytes": 17775,
+            "sha256": "e8c6bf1eec595c3f7c7ba5881583980312ca8fdecb5b8a0a849315aa11a3ab9b"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+            "bytes": 786,
+            "sha256": "35293ee134ed543c83914eae2109c350f0dd86bc66719de207f87c48e39cc437"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+            "bytes": 2163,
+            "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBook.cs",
+            "bytes": 34419,
+            "sha256": "5ab56b86a7ec320b59cfa13bcb3855b011d26a555a7ce063c9305de6f68a7073"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+            "bytes": 2538,
+            "sha256": "7712b104e5e3e66611c6ee06b160f9a07fe9732342de772bac1b2a2f3c155b59"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
+            "bytes": 89150,
+            "sha256": "b0f84e2de86ccfee2937588210cbea49b607f9a122b5fee349826decb892d702"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryItemStack.cs",
+            "bytes": 1522,
+            "sha256": "dbccdbbbf71596081f487b2e5b2f5e089fa5b43978b5ec2398b4409cba298ead"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Identifiers/TransactionId.cs",
+            "bytes": 1937,
+            "sha256": "b7815a3e93b559af8afc0c579fb0f5769c8791850520e3becbec51592c9d550b"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+            "bytes": 646,
+            "sha256": "64cd1b8904009884c823d6e737b5a934c67e7873d8887b9c785d0ce6134f1014"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+            "bytes": 647,
+            "sha256": "d84dafaecc9746fcbea873573c34aaa3567e098b4e951dce72e81fe8d52f04c8"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+            "bytes": 864,
+            "sha256": "f75fa31fe27c5ebdae3933c6da5a72ed440e835acb8f281cb2753fd1b91d1192"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeRules.cs",
+            "bytes": 5251,
+            "sha256": "4db6f0ef04d2c30872bda9dc4edac7e71ec5d64080fc1e19c490b6d2669cbf7f"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+            "bytes": 41958,
+            "sha256": "193fdd08f1b734be69d2614f2eed6b32d0c05a36eda4d7d8be5e06759a168c26"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+            "bytes": 9461,
+            "sha256": "40c10aeadc9e4e065b3c075d19e810689179bf7bd9d79300a8fbd7c346bcb593"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+            "bytes": 484,
+            "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+            "bytes": 337,
+            "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a"
+        },
+        {
+            "path": "Packages/manifest.json",
+            "bytes": 2165,
+            "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595"
+        },
+        {
+            "path": "Packages/packages-lock.json",
+            "bytes": 14044,
+            "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
+        },
+        {
+            "path": "ProjectSettings/ProjectVersion.txt",
+            "bytes": 83,
+            "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661"
+        }
+    ],
+    "runtimeAdditions": [
+        {
+            "path": "Assets/Luckbound/Tests/EditMode/V5SourceCapture/V5SourceCaptureInputs.cs",
+            "bytes": 23885,
+            "sha256": "1698e03bd8c00fb7721f2f845c12e0cc5e5da2323ce5e8e462962c440d1881b6"
+        },
+        {
+            "path": "Assets/Luckbound/Tests/EditMode/V5SourceCapture/V5SourceCaptureInputs.cs.meta",
+            "bytes": 243,
+            "sha256": "c86151c6d2c64a2f09873f7239b652251ec17b2082fc4edbecdbbd7b2d5110b0"
+        },
+        {
+            "path": "Assets/Luckbound/Tests/EditMode/V5SourceCapture/V5SourceCaptureTests.cs",
+            "bytes": 129119,
+            "sha256": "a990c165daf3b23e3843a75ce5c859f33edfe06df4b879d8165521f0ab581199"
+        },
+        {
+            "path": "Assets/Luckbound/Tests/EditMode/V5SourceCapture/V5SourceCaptureTests.cs.meta",
+            "bytes": 243,
+            "sha256": "01b3ae082552cb1a3429b9cb9359b12db039512bb3f44c742930da3faffac19e"
+        },
+        {
+            "path": "Assets/Luckbound/Tests/EditMode/V5SourceCapture/Luckbound.V5SourceCapture.Tests.asmdef",
+            "bytes": 484,
+            "sha256": "48e17fc6a294f7ab0f4af44b4637c04b947b92430ccd9f0b31ade554a9ff62e3"
+        },
+        {
+            "path": "Assets/Luckbound/Tests/EditMode/V5SourceCapture/Luckbound.V5SourceCapture.Tests.asmdef.meta",
+            "bytes": 166,
+            "sha256": "3d0042af5291f59bbd9b3f2c3b45759df18b24a094e83ae9a595fe11eb5d7d27"
+        },
+        {
+            "path": "Assets/Luckbound/Tests/EditMode/V5SourceCapture.meta",
+            "bytes": 172,
+            "sha256": "10ed57fb803031748a6ea285d4a7cfd78a1f231b173f7a63403fbf69b439172e"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/V5SourceCaptureFriend.cs",
+            "bytes": 130,
+            "sha256": "61fd7adf1d704d38e6343d37ea7a133914c0efa18e5d269835821a054ba5fb2b"
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/V5SourceCaptureFriend.cs.meta",
+            "bytes": 243,
+            "sha256": "b2437d25f88b3ccafcbd124e32e225fce49a8a95526b660cfbc19ba1b9a35d92"
+        },
+        {
+            "path": ".github/workflows/v5-source-capture.yml",
+            "bytes": 31436,
+            "sha256": "7a9d29bc80572ef4156359134e60d1f62643f8370b40c1003858f7c7937eeddc"
+        }
+    ],
+    "cases": [
+        {
+            "caseId": "P0-no-active",
+            "culture": "en-US",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P0-no-active",
+                "culture": "en-US",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:12.9100470Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "2772cbec5bee95f7135e52aac49af15ee70bfade1b6fc972831a90a3ba61c5a2",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/P0-no-active/recipe.json",
+                    "bytes": 1426,
+                    "sha256": "f7b86c67ad8adf3c887dcac5f825d302340dd77198b7092b7a6fe8d700a886a1",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P0-no-active/envelope.json",
+                    "bytes": 2014,
+                    "sha256": "4733963a007e5d578f385c3952165681a06b93b5b14c5e710f33c74931b73612",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P0-no-active/write-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P0-no-active/read-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P0-no-active/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "440898733a67a628862c423cc5f06aa059219bc445ef3c69d515fe03e57e6079",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/P0-no-active/decode-result.json",
+                    "bytes": 216,
+                    "sha256": "0ecf8b7a15951e69f018753528b07ab05742514ea0b5ae9fe573abd8c4cbee26",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P0-no-active/api-envelope.json",
+                    "bytes": 2021,
+                    "sha256": "fa0e3389e111f730d2da395ca671dc544a4a306a738a3983ab96380867590871",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P0-no-active/api-observation.json",
+                    "bytes": 884,
+                    "sha256": "91329e8ae7223dc2838c49d6f709649a09aa2bb7f757e9509f3437ba09eb983e",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P0-no-active/active-strings.json",
+                    "bytes": 620,
+                    "sha256": "5844ffbe258b0bfc836be64d52740b4c11a8cfbdba3a1e6200bdc446d74e5f0e",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P0-no-active",
+            "culture": "es-ES",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P0-no-active",
+                "culture": "es-ES",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:12.9197450Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "20b1c63666975f73cebfcb27b6f870162605ef3364b6b589c1dbbc8e081883f7",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/P0-no-active/recipe.json",
+                    "bytes": 1426,
+                    "sha256": "f7b86c67ad8adf3c887dcac5f825d302340dd77198b7092b7a6fe8d700a886a1",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P0-no-active/envelope.json",
+                    "bytes": 2014,
+                    "sha256": "4733963a007e5d578f385c3952165681a06b93b5b14c5e710f33c74931b73612",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P0-no-active/write-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P0-no-active/read-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P0-no-active/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "440898733a67a628862c423cc5f06aa059219bc445ef3c69d515fe03e57e6079",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/P0-no-active/decode-result.json",
+                    "bytes": 216,
+                    "sha256": "02f362a3a802411594009480709a17872e53352e7c9d8b0a7f5a743b9815771a",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P0-no-active/api-envelope.json",
+                    "bytes": 2021,
+                    "sha256": "bfe5bed8cecfe52cbebe84905073278126cfb29ec7d65592e7d2c267c140d0c1",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P0-no-active/api-observation.json",
+                    "bytes": 884,
+                    "sha256": "ff4b36815d7bd02e632ae0ec46608a01f819aff0a1f30281ab6ce982417e863f",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P0-no-active/active-strings.json",
+                    "bytes": 620,
+                    "sha256": "5844ffbe258b0bfc836be64d52740b4c11a8cfbdba3a1e6200bdc446d74e5f0e",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P1-known-zero",
+            "culture": "en-US",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P1-known-zero",
+                "culture": "en-US",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.0384890Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "833cbc7c95eeaf584addb7e2ac3e6f55e28af56680bc11b74f709545c0b0d540",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/P1-known-zero/recipe.json",
+                    "bytes": 1425,
+                    "sha256": "c9dba684945217977264983252bb5be12b76a103813f6183df3ed4eda4fceb38",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-zero/envelope.json",
+                    "bytes": 19182,
+                    "sha256": "53921a78164a02f4c61ed8538246bebb4cd3fe373d879a00b9fa6f64da25ab11",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-zero/write-preimage.utf8",
+                    "bytes": 18315,
+                    "sha256": "4c451e24b7d7f380ca864062b2872e06a160e8326a6b8d1b529d66eaa3ddceae",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-zero/read-preimage.utf8",
+                    "bytes": 18315,
+                    "sha256": "4c451e24b7d7f380ca864062b2872e06a160e8326a6b8d1b529d66eaa3ddceae",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-zero/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "f8fcef187c2437c189be931b24df2e551b1678f67c9d0e5ebfd50f93602dd9a6",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-zero/decode-result.json",
+                    "bytes": 217,
+                    "sha256": "da0a3e1ef7e663bfb10662e846169df264b35ce3ab3c405f66e2961ac8be49ef",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-zero/api-envelope.json",
+                    "bytes": 19189,
+                    "sha256": "09272a76b81c1e9ad09e268bdf69fc988caab6e343e7bcd7fca71724b3a043c0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-zero/api-observation.json",
+                    "bytes": 885,
+                    "sha256": "d4a8662233a62efab4332ed4e78479ced0ed6e01eec9b2634d3377d3afc80443",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-zero/active-strings.json",
+                    "bytes": 17551,
+                    "sha256": "731ff442e688f834f203bd63a8b13b6697b8137073ecf1dba90d4406a76110f4",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P1-known-zero",
+            "culture": "es-ES",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P1-known-zero",
+                "culture": "es-ES",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.0662430Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "69cef0467e43fdef2e7e939c6613d30b38a130ff19c5e8e747cf5d58a0385ca1",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/P1-known-zero/recipe.json",
+                    "bytes": 1425,
+                    "sha256": "c9dba684945217977264983252bb5be12b76a103813f6183df3ed4eda4fceb38",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-zero/envelope.json",
+                    "bytes": 19182,
+                    "sha256": "53921a78164a02f4c61ed8538246bebb4cd3fe373d879a00b9fa6f64da25ab11",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-zero/write-preimage.utf8",
+                    "bytes": 18315,
+                    "sha256": "4c451e24b7d7f380ca864062b2872e06a160e8326a6b8d1b529d66eaa3ddceae",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-zero/read-preimage.utf8",
+                    "bytes": 18315,
+                    "sha256": "4c451e24b7d7f380ca864062b2872e06a160e8326a6b8d1b529d66eaa3ddceae",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-zero/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "f8fcef187c2437c189be931b24df2e551b1678f67c9d0e5ebfd50f93602dd9a6",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-zero/decode-result.json",
+                    "bytes": 217,
+                    "sha256": "27570338071e7b01818afffa62a2e0f4e9fa72d3e70b21211d8f5c102575d39d",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-zero/api-envelope.json",
+                    "bytes": 19189,
+                    "sha256": "68ec2097ac725deca6990d90e02b06c07648807f86b25933fa45462adae80a42",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-zero/api-observation.json",
+                    "bytes": 885,
+                    "sha256": "27a56cae9733881d4875009760809103fce477d8fe5a92ef6f50e13b26fbd964",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-zero/active-strings.json",
+                    "bytes": 17551,
+                    "sha256": "731ff442e688f834f203bd63a8b13b6697b8137073ecf1dba90d4406a76110f4",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P1-known-nontrivial",
+            "culture": "en-US",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P1-known-nontrivial",
+                "culture": "en-US",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:12.9307660Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "a4955d8148c62c203112b646e209f186072016f2df174d6c2f66777db11202a8",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/recipe.json",
+                    "bytes": 1431,
+                    "sha256": "dbd03fcd20f3d64e7b3439265047cdd3da8af7f1af1e366c3534447a94eb62f7",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/envelope.json",
+                    "bytes": 19301,
+                    "sha256": "fa7ce4131d41b4d973b046921e9029d8e1d640aac4b9fc6e57b43ff30bcf1fdb",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/write-preimage.utf8",
+                    "bytes": 18390,
+                    "sha256": "53364fdefb229ca4d36aa62cf2116c47af2e6f94aa6e149f220f505b1271eb04",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/read-preimage.utf8",
+                    "bytes": 18390,
+                    "sha256": "53364fdefb229ca4d36aa62cf2116c47af2e6f94aa6e149f220f505b1271eb04",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "fa3a6431b2bd7ced80915afac3c606b4d7d22172d7d9b275164bd4846a60112a",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/decode-result.json",
+                    "bytes": 223,
+                    "sha256": "eea02e23d56931afe3911108379056ab4e06e6d7ce8ef1a7fc2f5831e29bcddb",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/api-envelope.json",
+                    "bytes": 19308,
+                    "sha256": "0841d48148be9ab772230ea4af321f113b5cf505b01e3ce9a32438511219144d",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/api-observation.json",
+                    "bytes": 891,
+                    "sha256": "0d4c1a4a4485d8c7cd08e8f2d9d64a6ebdbafbd31fa03ce006c1391cbe3d1d12",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P1-known-nontrivial/active-strings.json",
+                    "bytes": 17596,
+                    "sha256": "f0492c82fbb73ae8f04bf75b8cf9c63b254c3c73f041cae3fbe2011db3961593",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P1-known-nontrivial",
+            "culture": "es-ES",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P1-known-nontrivial",
+                "culture": "es-ES",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:12.9597510Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "0b22d940af15c90110e016929223dda68e2a142efc2d23eafd07f3b31ca5bc6c",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/recipe.json",
+                    "bytes": 1431,
+                    "sha256": "dbd03fcd20f3d64e7b3439265047cdd3da8af7f1af1e366c3534447a94eb62f7",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/envelope.json",
+                    "bytes": 19301,
+                    "sha256": "fa7ce4131d41b4d973b046921e9029d8e1d640aac4b9fc6e57b43ff30bcf1fdb",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/write-preimage.utf8",
+                    "bytes": 18390,
+                    "sha256": "53364fdefb229ca4d36aa62cf2116c47af2e6f94aa6e149f220f505b1271eb04",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/read-preimage.utf8",
+                    "bytes": 18390,
+                    "sha256": "53364fdefb229ca4d36aa62cf2116c47af2e6f94aa6e149f220f505b1271eb04",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "fa3a6431b2bd7ced80915afac3c606b4d7d22172d7d9b275164bd4846a60112a",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/decode-result.json",
+                    "bytes": 223,
+                    "sha256": "dbd251e52482b4c587dac775bbbc62bcc5f8874b6077493b07ef7f4fcf80e17b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/api-envelope.json",
+                    "bytes": 19308,
+                    "sha256": "88f0e7ac7b0964f61f398d259bcd07fb5ea3ee922cd105d1f32949b50140521a",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/api-observation.json",
+                    "bytes": 891,
+                    "sha256": "3f615607104e93d060060575019b282003041a5ab0adc161efc3316f7c8c9e5b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P1-known-nontrivial/active-strings.json",
+                    "bytes": 17596,
+                    "sha256": "f0492c82fbb73ae8f04bf75b8cf9c63b254c3c73f041cae3fbe2011db3961593",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P2-unknown-null",
+            "culture": "en-US",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P2-unknown-null",
+                "culture": "en-US",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.2514930Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "b66c85bc2d97a636375f3821df637567d1f675b87fe18c605f7e074eb5c1bc1e",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/P2-unknown-null/recipe.json",
+                    "bytes": 1534,
+                    "sha256": "d36ebb91da3209d924b38d1e16a2eaddcb6f0279c872844669d560e4f66574b9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-null/envelope.json",
+                    "bytes": 19183,
+                    "sha256": "249bd5150c0e4fea0610644b18bf684b096ee1ba0a3f7db8e1ac86df41a3a2a3",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-null/write-preimage.utf8",
+                    "bytes": 18316,
+                    "sha256": "1e893a0e77491453bc87d411c38c537f2fda1b92dcdb10b526507aa8cebffdde",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-null/read-preimage.utf8",
+                    "bytes": 18316,
+                    "sha256": "1e893a0e77491453bc87d411c38c537f2fda1b92dcdb10b526507aa8cebffdde",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-null/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "942effd83e49e116a8c3574472d67112c35423836c71af197de2da73b563a009",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-null/decode-result.json",
+                    "bytes": 219,
+                    "sha256": "b29870abbdfb587d6d2e2a6f5549c6670c10cef0d7693c8c5d98a7ee09926796",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-null/api-envelope.json",
+                    "bytes": 19190,
+                    "sha256": "068143d40cb966195ac158e204f171cf9fcca6cf19698f9f0e3a07af983be387",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-null/api-observation.json",
+                    "bytes": 887,
+                    "sha256": "ab6668ef6795f26a31f35b7b17cae36fb997379433a92986c7385f85828bb029",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-null/active-strings.json",
+                    "bytes": 17553,
+                    "sha256": "f1dc4e15114a231cad73d04fa06c4a9cd9ed6658829474e8f54511856a256af8",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P2-unknown-null",
+            "culture": "es-ES",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P2-unknown-null",
+                "culture": "es-ES",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.2925390Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "2fd4336c0c60f68b38d482d8449549497ab3609187bfcdda702cc436dd165743",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/recipe.json",
+                    "bytes": 1534,
+                    "sha256": "d36ebb91da3209d924b38d1e16a2eaddcb6f0279c872844669d560e4f66574b9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/envelope.json",
+                    "bytes": 19183,
+                    "sha256": "249bd5150c0e4fea0610644b18bf684b096ee1ba0a3f7db8e1ac86df41a3a2a3",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/write-preimage.utf8",
+                    "bytes": 18316,
+                    "sha256": "1e893a0e77491453bc87d411c38c537f2fda1b92dcdb10b526507aa8cebffdde",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/read-preimage.utf8",
+                    "bytes": 18316,
+                    "sha256": "1e893a0e77491453bc87d411c38c537f2fda1b92dcdb10b526507aa8cebffdde",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "942effd83e49e116a8c3574472d67112c35423836c71af197de2da73b563a009",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/decode-result.json",
+                    "bytes": 219,
+                    "sha256": "027bd3aed45d2238bb1f8f887f9343c459fb9bd1d629a44acef1e5348690ce16",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/api-envelope.json",
+                    "bytes": 19190,
+                    "sha256": "1763824112e9ecdeb414fd3f0f30aa65dae9a4c23bc2464c94325410f7d73bc1",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/api-observation.json",
+                    "bytes": 887,
+                    "sha256": "acbb286371c9c541ee0c11cc38bfe815a2d16f1265030405c5b012740c0e1c43",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-null/active-strings.json",
+                    "bytes": 17553,
+                    "sha256": "f1dc4e15114a231cad73d04fa06c4a9cd9ed6658829474e8f54511856a256af8",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P2-unknown-inline",
+            "culture": "en-US",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P2-unknown-inline",
+                "culture": "en-US",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.1464800Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "4af9587f23f931688c31283ef17e20837d6da51f63564144985a33be5d4e3f14",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/recipe.json",
+                    "bytes": 1543,
+                    "sha256": "23cf2abbe6b246577e381581083704d0de7c9dcd55796a580184a55b9c6e8a28",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/envelope.json",
+                    "bytes": 19183,
+                    "sha256": "249bd5150c0e4fea0610644b18bf684b096ee1ba0a3f7db8e1ac86df41a3a2a3",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/write-preimage.utf8",
+                    "bytes": 18316,
+                    "sha256": "1e893a0e77491453bc87d411c38c537f2fda1b92dcdb10b526507aa8cebffdde",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/read-preimage.utf8",
+                    "bytes": 18316,
+                    "sha256": "1e893a0e77491453bc87d411c38c537f2fda1b92dcdb10b526507aa8cebffdde",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "942effd83e49e116a8c3574472d67112c35423836c71af197de2da73b563a009",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/decode-result.json",
+                    "bytes": 221,
+                    "sha256": "93aa47ee0260dc6dc42c82dcfc415aff155bd12c80b7fdb64745413d54cbca14",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/api-envelope.json",
+                    "bytes": 19190,
+                    "sha256": "f25f32c2f9b8baf48d8f8e15ab3f3b56f5f1ea98b9fd3d2e1e4daa9391b9a86e",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/api-observation.json",
+                    "bytes": 889,
+                    "sha256": "e57881c84fdcb58584e731d00f1a5cdbfbaa95a598da6436122a081ae8d1383e",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P2-unknown-inline/active-strings.json",
+                    "bytes": 17555,
+                    "sha256": "cde2d1b0fc5ab40bbe8a743190febdbba57b4e8630063cdb3f574d29016d2449",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P2-unknown-inline",
+            "culture": "es-ES",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P2-unknown-inline",
+                "culture": "es-ES",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.1920650Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "deabe849699f0fe7850b6e3b49306403e275238f6e8696022f92917a2c549e66",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 0,\n            \"energyUpgradeLevel\": 0,\n            \"additionalPotionUpgradeLevel\": 0\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/recipe.json",
+                    "bytes": 1543,
+                    "sha256": "23cf2abbe6b246577e381581083704d0de7c9dcd55796a580184a55b9c6e8a28",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/envelope.json",
+                    "bytes": 19183,
+                    "sha256": "249bd5150c0e4fea0610644b18bf684b096ee1ba0a3f7db8e1ac86df41a3a2a3",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/write-preimage.utf8",
+                    "bytes": 18316,
+                    "sha256": "1e893a0e77491453bc87d411c38c537f2fda1b92dcdb10b526507aa8cebffdde",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/read-preimage.utf8",
+                    "bytes": 18316,
+                    "sha256": "1e893a0e77491453bc87d411c38c537f2fda1b92dcdb10b526507aa8cebffdde",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "942effd83e49e116a8c3574472d67112c35423836c71af197de2da73b563a009",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/decode-result.json",
+                    "bytes": 221,
+                    "sha256": "0da4a2e734c49beaef5a869bade8212c4882a849ca5a4c8e329106a92a49b65b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/api-envelope.json",
+                    "bytes": 19190,
+                    "sha256": "4e7bd2f1ba8f194dcbbedfcddc42004644a2d6bdda8208d1a4c28fa199dccfa5",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/api-observation.json",
+                    "bytes": 889,
+                    "sha256": "e51aa82bbaa1aa8fb30c13f1fa70a2b5a48c79b1e9d8645f9ca6a5a573ccb880",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P2-unknown-inline/active-strings.json",
+                    "bytes": 17555,
+                    "sha256": "cde2d1b0fc5ab40bbe8a743190febdbba57b4e8630063cdb3f574d29016d2449",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P3-receipts-completed",
+            "culture": "en-US",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P3-receipts-completed",
+                "culture": "en-US",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.3527500Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "7aecb6d00d61dee58535bc23de7ef3faacdeee78129ebacbdbd8a26ce94f1b3b",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/recipe.json",
+                    "bytes": 1433,
+                    "sha256": "eb8b711d2b29fab1850b3b368fc255ee5fa90c036e0f1ec537e0730211bd2827",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/envelope.json",
+                    "bytes": 17842,
+                    "sha256": "2e2e1725243508cb4cd6aab871d47c1493df486a5ed182043f4296c3e721dcc5",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/write-preimage.utf8",
+                    "bytes": 13730,
+                    "sha256": "092f590da51286e0817bd9e84554436245eed1bdd632b89bb966a69f78bd4233",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/read-preimage.utf8",
+                    "bytes": 13730,
+                    "sha256": "092f590da51286e0817bd9e84554436245eed1bdd632b89bb966a69f78bd4233",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "3c38e58accc8c39ab2b9b3f0645e98fe3c9dd7c54440de5a7053f16a969e9b7a",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/decode-result.json",
+                    "bytes": 225,
+                    "sha256": "16d6bf1325296c730e5301fc4b6d7c8d71b6628f07acce25f839f8aadd01c3aa",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/api-envelope.json",
+                    "bytes": 17849,
+                    "sha256": "88ec5bfda70352fb29126f063b008ee90d1d86f91fc1360b48645c2f9f778610",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/api-observation.json",
+                    "bytes": 893,
+                    "sha256": "bd9be99a3f1f894fd5874f779461a154822cc3c8974d7431d62c74a35592fb1e",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/P3-receipts-completed/active-strings.json",
+                    "bytes": 10859,
+                    "sha256": "141497a2177527b1f271715251ae45bc89a360d8a8d7b6542318c69a799f26ba",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "P3-receipts-completed",
+            "culture": "es-ES",
+            "role": "positive-api-and-codec",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "P3-receipts-completed",
+                "culture": "es-ES",
+                "apiKind": "profile",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.3936200Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "3a4692088f8cee9f0b142e0bcf2ced5b2f738b77f9d57e4641a391aa22721fd0",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }",
+                "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/recipe.json",
+                    "bytes": 1433,
+                    "sha256": "eb8b711d2b29fab1850b3b368fc255ee5fa90c036e0f1ec537e0730211bd2827",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/envelope.json",
+                    "bytes": 17842,
+                    "sha256": "2e2e1725243508cb4cd6aab871d47c1493df486a5ed182043f4296c3e721dcc5",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/write-preimage.utf8",
+                    "bytes": 13730,
+                    "sha256": "092f590da51286e0817bd9e84554436245eed1bdd632b89bb966a69f78bd4233",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/read-preimage.utf8",
+                    "bytes": 13730,
+                    "sha256": "092f590da51286e0817bd9e84554436245eed1bdd632b89bb966a69f78bd4233",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "3c38e58accc8c39ab2b9b3f0645e98fe3c9dd7c54440de5a7053f16a969e9b7a",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/decode-result.json",
+                    "bytes": 225,
+                    "sha256": "cec11e63322c87296250a2f4c17015faf8295276c6550d0c577c4b050fb0ec03",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/api-envelope.json",
+                    "bytes": 17849,
+                    "sha256": "a29a0c50f612aaf856e3ae79484b3cff2ac86bda186f0e8022276c07f1d63de9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/api-observation.json",
+                    "bytes": 893,
+                    "sha256": "32f6a7e5b051997f790f032d4efc3c911cb8c4062985a34280273f4d772f3ce3",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/P3-receipts-completed/active-strings.json",
+                    "bytes": 10859,
+                    "sha256": "141497a2177527b1f271715251ae45bc89a360d8a8d7b6542318c69a799f26ba",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "B0-arrays-null",
+            "culture": "en-US",
+            "role": "boundary-observation",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/B0-arrays-null/recipe.json",
+                    "bytes": 1487,
+                    "sha256": "40b01bba780210952dfe36b418076dbf0408cf8195be6710366803f3a6049968",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B0-arrays-null/envelope.json",
+                    "bytes": 2014,
+                    "sha256": "4733963a007e5d578f385c3952165681a06b93b5b14c5e710f33c74931b73612",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B0-arrays-null/write-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B0-arrays-null/read-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B0-arrays-null/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "440898733a67a628862c423cc5f06aa059219bc445ef3c69d515fe03e57e6079",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/B0-arrays-null/decode-result.json",
+                    "bytes": 218,
+                    "sha256": "9863aec90e95fbb9c7c02d0efabaf32121ff25fe4afc4acf50ef290edac5e525",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B0-arrays-null/active-strings.json",
+                    "bytes": 622,
+                    "sha256": "9732035c1083748a10227e5dec3328c64267fbeb4ab2a575fa46ceb94914396b",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "B0-arrays-null",
+            "culture": "es-ES",
+            "role": "boundary-observation",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/B0-arrays-null/recipe.json",
+                    "bytes": 1487,
+                    "sha256": "40b01bba780210952dfe36b418076dbf0408cf8195be6710366803f3a6049968",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B0-arrays-null/envelope.json",
+                    "bytes": 2014,
+                    "sha256": "4733963a007e5d578f385c3952165681a06b93b5b14c5e710f33c74931b73612",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B0-arrays-null/write-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B0-arrays-null/read-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B0-arrays-null/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "440898733a67a628862c423cc5f06aa059219bc445ef3c69d515fe03e57e6079",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/B0-arrays-null/decode-result.json",
+                    "bytes": 218,
+                    "sha256": "c28a569b2921d62eea8c828c6720f3ec80bbb7ae098c32f3a582bb6293a72b4e",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B0-arrays-null/active-strings.json",
+                    "bytes": 622,
+                    "sha256": "9732035c1083748a10227e5dec3328c64267fbeb4ab2a575fa46ceb94914396b",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "B1-arrays-empty",
+            "culture": "en-US",
+            "role": "boundary-observation",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/B1-arrays-empty/recipe.json",
+                    "bytes": 1490,
+                    "sha256": "251250c40a1fd0cfd7990dde0d63ecc50b884cdf09998cdbf95ead8a4393cf4b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B1-arrays-empty/envelope.json",
+                    "bytes": 2014,
+                    "sha256": "4733963a007e5d578f385c3952165681a06b93b5b14c5e710f33c74931b73612",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B1-arrays-empty/write-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B1-arrays-empty/read-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B1-arrays-empty/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "440898733a67a628862c423cc5f06aa059219bc445ef3c69d515fe03e57e6079",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/B1-arrays-empty/decode-result.json",
+                    "bytes": 219,
+                    "sha256": "bdad1b27dd2ffce2131e47d4ba090b0ecd96c763ff517fe77497465bef85fd90",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/B1-arrays-empty/active-strings.json",
+                    "bytes": 623,
+                    "sha256": "9c96e4d418c3ec0b569a8f26f7cc2b58309060eaecaf1cf2795efd75cc03dc76",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "B1-arrays-empty",
+            "culture": "es-ES",
+            "role": "boundary-observation",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/B1-arrays-empty/recipe.json",
+                    "bytes": 1490,
+                    "sha256": "251250c40a1fd0cfd7990dde0d63ecc50b884cdf09998cdbf95ead8a4393cf4b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B1-arrays-empty/envelope.json",
+                    "bytes": 2014,
+                    "sha256": "4733963a007e5d578f385c3952165681a06b93b5b14c5e710f33c74931b73612",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B1-arrays-empty/write-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B1-arrays-empty/read-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B1-arrays-empty/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "440898733a67a628862c423cc5f06aa059219bc445ef3c69d515fe03e57e6079",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/B1-arrays-empty/decode-result.json",
+                    "bytes": 219,
+                    "sha256": "33a079399a763f83ac412e6ceead5392a5accb5919f260e4cb3b589c813696ea",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/B1-arrays-empty/active-strings.json",
+                    "bytes": 623,
+                    "sha256": "9c96e4d418c3ec0b569a8f26f7cc2b58309060eaecaf1cf2795efd75cc03dc76",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "M0-false-marker-payload",
+            "culture": "en-US",
+            "role": "synthetic-marker-negative",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "corrupted",
+                "accepted": false
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/M0-false-marker-payload/recipe.json",
+                    "bytes": 1443,
+                    "sha256": "261f4a92caa6fd365ff11d28661e204ea6037d66aed1bea3225ad60af9e1542c",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M0-false-marker-payload/envelope.json",
+                    "bytes": 19017,
+                    "sha256": "291bc3f2e331077e72516159049ed564fe9e4f39ab7584e103e0183f2a0383ba",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M0-false-marker-payload/write-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M0-false-marker-payload/read-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M0-false-marker-payload/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "440898733a67a628862c423cc5f06aa059219bc445ef3c69d515fe03e57e6079",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/M0-false-marker-payload/decode-result.json",
+                    "bytes": 240,
+                    "sha256": "7532744a59f7398159a193d921c38d875c4c5b39787145a2a7630342b723b24b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M0-false-marker-payload/active-strings.json",
+                    "bytes": 17562,
+                    "sha256": "d830a7547c253ac523b11e72d681c3ad6599df22a7298f7b69319744bb8670a6",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "M0-false-marker-payload",
+            "culture": "es-ES",
+            "role": "synthetic-marker-negative",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "corrupted",
+                "accepted": false
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/M0-false-marker-payload/recipe.json",
+                    "bytes": 1443,
+                    "sha256": "261f4a92caa6fd365ff11d28661e204ea6037d66aed1bea3225ad60af9e1542c",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M0-false-marker-payload/envelope.json",
+                    "bytes": 19017,
+                    "sha256": "291bc3f2e331077e72516159049ed564fe9e4f39ab7584e103e0183f2a0383ba",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M0-false-marker-payload/write-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M0-false-marker-payload/read-preimage.utf8",
+                    "bytes": 1309,
+                    "sha256": "713c576de7b33929789cf162c9e75b9fbb34deb10f4f81e74afd959e357485e0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M0-false-marker-payload/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "440898733a67a628862c423cc5f06aa059219bc445ef3c69d515fe03e57e6079",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/M0-false-marker-payload/decode-result.json",
+                    "bytes": 240,
+                    "sha256": "9389d1de90b1f0ab004b51c97b962108ee8953018479a8d9deb0fe5eb43d7e98",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M0-false-marker-payload/active-strings.json",
+                    "bytes": 17562,
+                    "sha256": "d830a7547c253ac523b11e72d681c3ad6599df22a7298f7b69319744bb8670a6",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "M1-true-marker-null",
+            "culture": "en-US",
+            "role": "synthetic-marker-negative",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "corrupted",
+                "accepted": false
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/M1-true-marker-null/recipe.json",
+                    "bytes": 1439,
+                    "sha256": "9dae9945bda25852e67030875a5e02c31cd8b494327faacc842242cabcc49a65",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M1-true-marker-null/envelope.json",
+                    "bytes": 2013,
+                    "sha256": "b18f9e6bc2256e3a0347cf027dbfcda1c51caba94e4351bfc3f5050868b4619a",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M1-true-marker-null/write-preimage.utf8",
+                    "bytes": 1308,
+                    "sha256": "6c8ad25d75f1a3cd66e0bacd30bd7dd483ca3e9e94d0f278b6e125bbb7c4bdc9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M1-true-marker-null/read-preimage.utf8",
+                    "bytes": 1308,
+                    "sha256": "6c8ad25d75f1a3cd66e0bacd30bd7dd483ca3e9e94d0f278b6e125bbb7c4bdc9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M1-true-marker-null/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "fd654e78774f122a9b7f9ad142a10952e852f1d36cd88d26f44c8a7868a0aee8",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/M1-true-marker-null/decode-result.json",
+                    "bytes": 236,
+                    "sha256": "2a732a492b0519cf5b0f86029908fd3d2665d9aff7a0466d4ad1355ca1b79ba7",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/M1-true-marker-null/active-strings.json",
+                    "bytes": 626,
+                    "sha256": "d34f3254df69110b471d093a6d1cbffd0f5a9309696d00fd85d2066d74e01701",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "M1-true-marker-null",
+            "culture": "es-ES",
+            "role": "synthetic-marker-negative",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "corrupted",
+                "accepted": false
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/M1-true-marker-null/recipe.json",
+                    "bytes": 1439,
+                    "sha256": "9dae9945bda25852e67030875a5e02c31cd8b494327faacc842242cabcc49a65",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M1-true-marker-null/envelope.json",
+                    "bytes": 2013,
+                    "sha256": "b18f9e6bc2256e3a0347cf027dbfcda1c51caba94e4351bfc3f5050868b4619a",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M1-true-marker-null/write-preimage.utf8",
+                    "bytes": 1308,
+                    "sha256": "6c8ad25d75f1a3cd66e0bacd30bd7dd483ca3e9e94d0f278b6e125bbb7c4bdc9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M1-true-marker-null/read-preimage.utf8",
+                    "bytes": 1308,
+                    "sha256": "6c8ad25d75f1a3cd66e0bacd30bd7dd483ca3e9e94d0f278b6e125bbb7c4bdc9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M1-true-marker-null/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "fd654e78774f122a9b7f9ad142a10952e852f1d36cd88d26f44c8a7868a0aee8",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/M1-true-marker-null/decode-result.json",
+                    "bytes": 236,
+                    "sha256": "72b49f3c050b5a72657208a382a0d744cfd694ad10946f9b9be8c8396311fbbf",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/M1-true-marker-null/active-strings.json",
+                    "bytes": 626,
+                    "sha256": "d34f3254df69110b471d093a6d1cbffd0f5a9309696d00fd85d2066d74e01701",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "S0-settings",
+            "culture": "en-US",
+            "role": "positive-settings-api-and-codec",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "S0-settings",
+                "culture": "en-US",
+                "apiKind": "settings",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.4445340Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "9be69b1af030f150824b3d08f53b86ef27efbf39d87e9f150d0943fb6a4872b5",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "not-applicable",
+                "fixedFrozenUpgradeWireRepresentation": "not-applicable"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/S0-settings/recipe.json",
+                    "bytes": 1434,
+                    "sha256": "89f722556fb79536087a0121a275e615dd24732f3993e7305aefc52e484121a8",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/S0-settings/envelope.json",
+                    "bytes": 448,
+                    "sha256": "3aa1df35b8c18548fe1dffa2a75e41f8c91336f866c01e0040dade0b375ff1e9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/S0-settings/write-preimage.utf8",
+                    "bytes": 286,
+                    "sha256": "ce62c727c46a606b7381924e68446f03a5598cd4d65ae06153735d7d7148eae4",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/S0-settings/read-preimage.utf8",
+                    "bytes": 286,
+                    "sha256": "ce62c727c46a606b7381924e68446f03a5598cd4d65ae06153735d7d7148eae4",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/S0-settings/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "78db1e853dcb68637c9837230a22a1050ab7fbce40324bd895951848278b46d4",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/S0-settings/decode-result.json",
+                    "bytes": 215,
+                    "sha256": "b1a42a373e1718b2e6d3ca8cbc416afa2b2796dff3751898f4a71b955b40de5b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/S0-settings/api-envelope.json",
+                    "bytes": 455,
+                    "sha256": "8d04ae7c9282eb90011ff2d99ab6dc1d96151b8376b912eaf8578979dfeac7e8",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/S0-settings/api-observation.json",
+                    "bytes": 630,
+                    "sha256": "de723c2d9a0de691579d803c629f54ce05425f763dba1ed70027ba348ebd39c0",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "S0-settings",
+            "culture": "es-ES",
+            "role": "positive-settings-api-and-codec",
+            "hasActiveExpedition": false,
+            "activePayloadPresent": false,
+            "decode": {
+                "status": "valid",
+                "accepted": true
+            },
+            "apiObservation": {
+                "caseId": "S0-settings",
+                "culture": "es-ES",
+                "apiKind": "settings",
+                "apiSavedAtUtc": "2026-10-30T15:12:13.4497780Z",
+                "apiGeneration": 1,
+                "apiSequence": 1,
+                "apiChecksum": "c613f94aec35c23d3ff1fa56bc5872b6b973ab37102cf10d33b4f02c86f6f857",
+                "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+                "fixedGeneration": 1,
+                "fixedSequence": 11,
+                "onlyHeaderFieldsDiffer": true,
+                "differingHeaderFields": [
+                    "savedAtUtc",
+                    "sequence"
+                ],
+                "payloadsEqual": true,
+                "apiFrozenUpgradeWireRepresentation": "not-applicable",
+                "fixedFrozenUpgradeWireRepresentation": "not-applicable"
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/S0-settings/recipe.json",
+                    "bytes": 1434,
+                    "sha256": "89f722556fb79536087a0121a275e615dd24732f3993e7305aefc52e484121a8",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/S0-settings/envelope.json",
+                    "bytes": 448,
+                    "sha256": "3aa1df35b8c18548fe1dffa2a75e41f8c91336f866c01e0040dade0b375ff1e9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/S0-settings/write-preimage.utf8",
+                    "bytes": 286,
+                    "sha256": "ce62c727c46a606b7381924e68446f03a5598cd4d65ae06153735d7d7148eae4",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/S0-settings/read-preimage.utf8",
+                    "bytes": 286,
+                    "sha256": "ce62c727c46a606b7381924e68446f03a5598cd4d65ae06153735d7d7148eae4",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/S0-settings/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "78db1e853dcb68637c9837230a22a1050ab7fbce40324bd895951848278b46d4",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/S0-settings/decode-result.json",
+                    "bytes": 215,
+                    "sha256": "29dc452088c281d8019af6691d5eab36791fd45f55e75c7a25b30782c085d150",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/S0-settings/api-envelope.json",
+                    "bytes": 455,
+                    "sha256": "3446cf7e034089cde6e74a99b4e03a51c3cf5ce52b8058a83781fc0256e63c1a",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/S0-settings/api-observation.json",
+                    "bytes": 630,
+                    "sha256": "196fb9f768453007196ea4e199c82386c8996e3eed1a94872e788502f76e7d19",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "N0-tampered",
+            "culture": "en-US",
+            "role": "checksum-negative",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "corrupted",
+                "accepted": false
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/en-US/N0-tampered/recipe.json",
+                    "bytes": 1460,
+                    "sha256": "b6c64aeba9497c44e2632afb779543f06cd122291cfc565f7315bc4ea8c15779",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/N0-tampered/envelope.json",
+                    "bytes": 17842,
+                    "sha256": "1d1f902561136fd45c8c901e39e0fe60efc4ec437776d7f93bf08a841eea8ee9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/N0-tampered/write-preimage.utf8",
+                    "bytes": 13730,
+                    "sha256": "e937d6dfb1e40dfe951a9579c0db60bf2ac5590858c3dfaafc638acbd4fce84b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/N0-tampered/read-preimage.utf8",
+                    "bytes": 13730,
+                    "sha256": "e937d6dfb1e40dfe951a9579c0db60bf2ac5590858c3dfaafc638acbd4fce84b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/N0-tampered/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "3c38e58accc8c39ab2b9b3f0645e98fe3c9dd7c54440de5a7053f16a969e9b7a",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/en-US/N0-tampered/decode-result.json",
+                    "bytes": 228,
+                    "sha256": "1331d2695265549f8fd527232bfc9b482169511ca3920f8bf7ffdd6fd30230d0",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/en-US/N0-tampered/active-strings.json",
+                    "bytes": 10849,
+                    "sha256": "6bd774b3a0718fa354ec9a269c49cbcb8e9841d451e133bcd3b3fbcb14e96d3f",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        },
+        {
+            "caseId": "N0-tampered",
+            "culture": "es-ES",
+            "role": "checksum-negative",
+            "hasActiveExpedition": true,
+            "activePayloadPresent": true,
+            "decode": {
+                "status": "corrupted",
+                "accepted": false
+            },
+            "apiObservation": {
+                "caseId": "",
+                "culture": "",
+                "apiKind": "",
+                "apiSavedAtUtc": "",
+                "apiGeneration": 0,
+                "apiSequence": 0,
+                "apiChecksum": "",
+                "fixedSavedAtUtc": "",
+                "fixedGeneration": 0,
+                "fixedSequence": 0,
+                "onlyHeaderFieldsDiffer": false,
+                "differingHeaderFields": [],
+                "payloadsEqual": false,
+                "apiFrozenUpgradeWireRepresentation": "",
+                "fixedFrozenUpgradeWireRepresentation": ""
+            },
+            "outputs": [
+                {
+                    "path": "cultures/es-ES/N0-tampered/recipe.json",
+                    "bytes": 1460,
+                    "sha256": "b6c64aeba9497c44e2632afb779543f06cd122291cfc565f7315bc4ea8c15779",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/N0-tampered/envelope.json",
+                    "bytes": 17842,
+                    "sha256": "1d1f902561136fd45c8c901e39e0fe60efc4ec437776d7f93bf08a841eea8ee9",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/N0-tampered/write-preimage.utf8",
+                    "bytes": 13730,
+                    "sha256": "e937d6dfb1e40dfe951a9579c0db60bf2ac5590858c3dfaafc638acbd4fce84b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/N0-tampered/read-preimage.utf8",
+                    "bytes": 13730,
+                    "sha256": "e937d6dfb1e40dfe951a9579c0db60bf2ac5590858c3dfaafc638acbd4fce84b",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/N0-tampered/checksum.txt",
+                    "bytes": 64,
+                    "sha256": "3c38e58accc8c39ab2b9b3f0645e98fe3c9dd7c54440de5a7053f16a969e9b7a",
+                    "encoding": "ascii-lower-hex-no-newline"
+                },
+                {
+                    "path": "cultures/es-ES/N0-tampered/decode-result.json",
+                    "bytes": 228,
+                    "sha256": "1d453650907323c036cc5e3abac568a19f05537d74c92685c8092695aef8edcd",
+                    "encoding": "utf-8-no-bom"
+                },
+                {
+                    "path": "cultures/es-ES/N0-tampered/active-strings.json",
+                    "bytes": 10849,
+                    "sha256": "6bd774b3a0718fa354ec9a269c49cbcb8e9841d451e133bcd3b3fbcb14e96d3f",
+                    "encoding": "utf-8-no-bom"
+                }
+            ]
+        }
+    ],
+    "capturedAtUtc": "2026-10-30T15:12:17.4792770Z"
+}

@@ -1,0 +1,10 @@
+{
+    "caseId": "P2-unknown-inline",
+    "culture": "en-US",
+    "status": "valid",
+    "statusEnum": "Valid",
+    "statusNormalized": "valid",
+    "accepted": true,
+    "decodedEnvelopePresent": true,
+    "message": ""
+}

@@ -1,0 +1,10 @@
+{
+    "caseId": "M1-true-marker-null",
+    "culture": "es-ES",
+    "status": "corrupted",
+    "statusEnum": "Corrupted",
+    "statusNormalized": "corrupted",
+    "accepted": false,
+    "decodedEnvelopePresent": true,
+    "message": ""
+}

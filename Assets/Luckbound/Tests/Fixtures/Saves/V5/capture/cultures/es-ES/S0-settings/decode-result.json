@@ -1,0 +1,10 @@
+{
+    "caseId": "S0-settings",
+    "culture": "es-ES",
+    "status": "valid",
+    "statusEnum": "Valid",
+    "statusNormalized": "valid",
+    "accepted": true,
+    "decodedEnvelopePresent": true,
+    "message": ""
+}

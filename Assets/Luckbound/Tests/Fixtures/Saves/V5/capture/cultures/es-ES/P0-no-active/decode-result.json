@@ -1,0 +1,10 @@
+{
+    "caseId": "P0-no-active",
+    "culture": "es-ES",
+    "status": "valid",
+    "statusEnum": "Valid",
+    "statusNormalized": "valid",
+    "accepted": true,
+    "decodedEnvelopePresent": true,
+    "message": ""
+}

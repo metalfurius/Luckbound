@@ -1,0 +1,38 @@
+{
+    "schemaVersion": 1,
+    "caseId": "P1-known-nontrivial",
+    "role": "positive-api-and-codec",
+    "seed": 17320508,
+    "fixedInputHeader": {
+        "schemaVersion": 1,
+        "contentVersion": 5,
+        "generation": 1,
+        "sequence": 11,
+        "savedAtUtc": "2000-01-01T00:00:00Z",
+        "seed": 17320508
+    },
+    "fixedIds": {
+        "profileGuidN": "10000000000000000000000000000001",
+        "activeRunGuidN": "10000000000000000000000000000002",
+        "settlementGuidN": "10000000000000000000000000000003",
+        "progressionPurchaseGuidN": "10000000000000000000000000000004",
+        "inventoryTransactionGuidN": "10000000000000000000000000000005",
+        "fortuneOfferGuidN": "10000000000000000000000000000006",
+        "fortuneHistoryGuidN": "10000000000000000000000000000007",
+        "fortuneRerollGuidN": "10000000000000000000000000000008",
+        "fortuneBrewGuidN": "10000000000000000000000000000009"
+    },
+    "expected": {
+        "decode": "valid",
+        "hasActiveExpedition": true,
+        "activePayloadPresent": true,
+        "derivedFrom": "",
+        "tamperField": "",
+        "tamperFrom": 0,
+        "tamperTo": 0,
+        "inputFrozenUpgradeRepresentation": "not-applicable",
+        "writerCloneMemorySnapshot": "not-applicable",
+        "fixedEnvelopeWireFrozenUpgradeRepresentation": "not-applicable",
+        "boundaryArraysInputRepresentation": "not-applicable"
+    }
+}

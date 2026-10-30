@@ -1,0 +1,20 @@
+{
+    "caseId": "P1-known-nontrivial",
+    "culture": "en-US",
+    "apiKind": "profile",
+    "apiSavedAtUtc": "2026-10-30T15:12:12.9307660Z",
+    "apiGeneration": 1,
+    "apiSequence": 1,
+    "apiChecksum": "a4955d8148c62c203112b646e209f186072016f2df174d6c2f66777db11202a8",
+    "fixedSavedAtUtc": "2000-01-01T00:00:00Z",
+    "fixedGeneration": 1,
+    "fixedSequence": 11,
+    "onlyHeaderFieldsDiffer": true,
+    "differingHeaderFields": [
+        "savedAtUtc",
+        "sequence"
+    ],
+    "payloadsEqual": true,
+    "apiFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }",
+    "fixedFrozenUpgradeWireRepresentation": "{\n            \"healthUpgradeLevel\": 2,\n            \"energyUpgradeLevel\": 2,\n            \"additionalPotionUpgradeLevel\": 1\n        }"
+}
