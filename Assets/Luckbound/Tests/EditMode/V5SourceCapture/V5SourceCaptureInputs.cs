@@ -119,7 +119,7 @@ namespace Luckbound.Tests.V5SourceCapture
             bool unknownMarker = caseId == "P2-unknown-null" || caseId == "P2-unknown-inline";
             bool nontrivial = caseId == "P1-known-nontrivial" || completed;
 
-            if (!completed && !unknownMarker && caseId != "P1-known-zero")
+            if (!completed && !unknownMarker && caseId != "P1-known-zero" && caseId != "P1-known-nontrivial")
                 throw new ArgumentOutOfRangeException(nameof(caseId), caseId, "Case does not use an active expedition input.");
 
             ValidateHistoricalSkills();

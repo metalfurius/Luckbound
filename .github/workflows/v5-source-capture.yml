@@ -25,6 +25,7 @@ jobs:
         uses: actions/checkout@v7.0.1
 
       - name: Verify entire historical tree before capture
+        id: source_before
         shell: bash
         run: |
           python3 - <<'PY'
@@ -53,6 +54,7 @@ jobs:
           tracked = set(subprocess.check_output(['git', 'ls-files', '-z']).decode().rstrip('\0').split('\0'))
           assert tracked == set(originals) | allowed, sorted(tracked ^ (set(originals) | allowed))
           observed = {}
+          detailed_inventory = []
           for relative in sorted(tracked):
               path = root / relative
               assert path.is_file() and not path.is_symlink(), relative
@@ -64,8 +66,10 @@ jobs:
                   blob = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
                   assert blob == row['gitBlobSha'], relative
               observed[relative] = digest
+              detailed_inventory.append({'path': relative, 'type': 'file', 'bytes': len(raw), 'sha256': digest, 'gitBlobSha': hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest(), 'historicalGitBlobSha': originals[relative]['gitBlobSha'] if relative in originals else None})
           pathlib.Path('Logs').mkdir(exist_ok=True)
           pathlib.Path('Logs/V5-source-before.json').write_text(json.dumps(observed, indent=2) + '\n')
+          pathlib.Path('Logs/V5-source-before-inventory.json').write_text(json.dumps(detailed_inventory, indent=2) + '\n')
           print(f'Verified {len(originals)} exact historical blobs and {len(allowed)} additive files.')
           PY
 
@@ -111,23 +115,137 @@ jobs:
           checkName: Historical V5 source capture
 
       - name: Verify entire source tree remains unchanged
+        id: source_after
         if: ${{ !cancelled() }}
         shell: bash
         run: |
           python3 - <<'PY'
-          import hashlib, json, pathlib, subprocess
-          original = json.loads(pathlib.Path('Logs/V5-source-before.json').read_text())
+          import difflib, hashlib, json, os, pathlib, stat, subprocess
+          
+          root = pathlib.Path.cwd()
+          before_file = pathlib.Path('Logs/V5-source-before.json')
+          before_inventory = pathlib.Path('Logs/V5-source-before-inventory.json')
+          original = json.loads(before_file.read_text())
           tracked = set(subprocess.check_output(['git', 'ls-files', '-z']).decode().rstrip('\0').split('\0'))
-          assert tracked == set(original)
-          for relative, digest in original.items():
-              path = pathlib.Path(relative)
-              assert path.is_file() and not path.is_symlink(), relative
-              assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, relative
-          pathlib.Path('Logs/V5-source-after.json').write_text(json.dumps(original, indent=2) + '\n')
-          print(f'All {len(original)} tracked files remain byte-identical after Unity.')
+          identity = {name: os.environ.get(name) for name in ('GITHUB_SHA', 'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT')}
+          identity_slug = '-'.join(identity.get(name) or 'offline' for name in identity)
+          evidence = pathlib.Path('Logs/V5SourceIntegrity') / identity_slug
+          observed, changes, source_paths, scan_errors = {}, [], set(), []
+          
+          def reparse(info):
+              return stat.S_ISLNK(info.st_mode) or bool(getattr(info, 'st_file_attributes', 0) & 0x400)
+          
+          def inspect(relative):
+              path = root / relative
+              for ancestor in reversed(path.parents):
+                  if ancestor == root or root not in ancestor.parents:
+                      continue
+                  info = ancestor.lstat()
+                  if reparse(info):
+                      return {'status': 'typeChanged', 'type': 'linked-ancestor', 'linkPath': ancestor.relative_to(root).as_posix(), 'linkTarget': os.readlink(ancestor)}, None
+              try:
+                  info = path.lstat()
+              except FileNotFoundError:
+                  return {'status': 'missing', 'type': 'absent'}, None
+              if reparse(info):
+                  return {'status': 'typeChanged', 'type': 'link', 'linkTarget': os.readlink(path)}, None
+              if not stat.S_ISREG(info.st_mode):
+                  return {'status': 'typeChanged', 'type': 'directory' if stat.S_ISDIR(info.st_mode) else 'other'}, None
+              raw = path.read_bytes()
+              digest = hashlib.sha256(raw).hexdigest()
+              return {'status': 'unchanged' if digest == original.get(relative) else 'changed', 'type': 'file', 'bytes': len(raw), 'sha256': digest}, raw
+          
+          for source_root in ('Assets', 'Packages', 'ProjectSettings'):
+              top = root / source_root
+              try:
+                  top_info = top.lstat()
+                  if reparse(top_info) or not stat.S_ISDIR(top_info.st_mode):
+                      source_paths.add(source_root)
+                      continue
+              except OSError as error:
+                  source_paths.add(source_root)
+                  scan_errors.append({'path': source_root, 'error': str(error)})
+                  continue
+              def scan_error(error):
+                  scan_errors.append({'path': os.path.relpath(error.filename, root).replace('\\', '/'), 'error': str(error)})
+              for directory, directories, files in os.walk(root / source_root, followlinks=False, onerror=scan_error):
+                  for name in files + directories[:]:
+                      path = pathlib.Path(directory) / name
+                      try:
+                          info = path.lstat()
+                          if reparse(info) or not stat.S_ISDIR(info.st_mode):
+                              source_paths.add(path.relative_to(root).as_posix())
+                          if reparse(info) and name in directories:
+                              directories.remove(name)
+                      except OSError as error:
+                          scan_errors.append({'path': path.relative_to(root).as_posix(), 'error': str(error)})
+          
+          for relative in sorted(set(original) | tracked | source_paths):
+              raw = None
+              try:
+                  record, raw = inspect(relative)
+              except OSError as error:
+                  record = {'status': 'unreadable', 'type': 'unknown', 'error': str(error)}
+              record.update({'path': relative, 'beforeSha256': original.get(relative), 'trackedAfter': relative in tracked})
+              if relative not in original:
+                  record['status'] = 'added' if record['type'] == 'file' else record['status']
+              elif relative not in tracked:
+                  record['status'] = 'no-longer-tracked'
+              observed[relative] = dict(record)
+              if record['status'] == 'unchanged':
+                  continue
+              before = None
+              if relative in original:
+                  try:
+                      before = subprocess.check_output(['git', 'show', 'HEAD:' + relative])
+                      record['beforeEvidenceMatchesPreflight'] = hashlib.sha256(before).hexdigest() == original[relative]
+                      before_path = evidence / 'before' / relative
+                      before_path.parent.mkdir(parents=True, exist_ok=True)
+                      before_path.write_bytes(before)
+                      record['beforeBytes'] = len(before)
+                      record['beforeEvidence'] = before_path.as_posix()
+                  except (OSError, subprocess.CalledProcessError) as error:
+                      record['beforeEvidenceError'] = str(error)
+              if raw is not None:
+                  try:
+                      after_path = evidence / 'after' / relative
+                      after_path.parent.mkdir(parents=True, exist_ok=True)
+                      after_path.write_bytes(raw)
+                      record['afterEvidence'] = after_path.as_posix()
+                  except OSError as error:
+                      record['afterEvidenceError'] = str(error)
+              if before is not None and raw is not None:
+                  record['firstDifferenceByte'] = next((index for index, pair in enumerate(zip(before, raw)) if pair[0] != pair[1]), min(len(before), len(raw)))
+                  try:
+                      before_text, after_text = before.decode('utf-8'), raw.decode('utf-8')
+                  except UnicodeDecodeError:
+                      record['diffKind'] = 'binary; exact before and after preserved'
+                  else:
+                      try:
+                          diff_path = evidence / 'diff' / (relative + '.diff')
+                          diff_path.parent.mkdir(parents=True, exist_ok=True)
+                          diff = ''.join(difflib.unified_diff(before_text.splitlines(keepends=True), after_text.splitlines(keepends=True), fromfile='before/' + relative, tofile='after/' + relative))
+                          diff_path.write_text(diff, encoding='utf-8')
+                          record['diffKind'], record['diffEvidence'] = 'utf-8 unified diff', diff_path.as_posix()
+                      except OSError as error:
+                          record['diffEvidenceError'] = str(error)
+              changes.append(record)
+          
+          after_file = pathlib.Path('Logs/V5-source-after.json')
+          after_file.write_text(json.dumps(observed, indent=2) + '\n')
+          errors = scan_errors + [change for change in changes if change['status'] == 'unreadable' or any(key.endswith('Error') for key in change) or change.get('beforeEvidenceMatchesPreflight') is False]
+          complete = not errors and before_inventory.is_file()
+          integrity = complete and not changes and tracked == set(original)
+          summary = {'schemaVersion': 2, 'identity': identity, 'trackedBefore': len(original), 'trackedAfter': len(tracked), 'observedPaths': len(observed), 'changedOrInvalid': len(changes), 'beforeSnapshotSha256': hashlib.sha256(before_file.read_bytes()).hexdigest(), 'beforeInventorySha256': hashlib.sha256(before_inventory.read_bytes()).hexdigest() if before_inventory.is_file() else None, 'afterInventorySha256': hashlib.sha256(after_file.read_bytes()).hexdigest(), 'missingTracked': sorted(set(original) - tracked), 'newTracked': sorted(tracked - set(original)), 'untrackedSourcePaths': sorted(source_paths - tracked), 'scanErrors': scan_errors, 'changes': changes, 'evidenceComplete': complete, 'sourceIntegrity': integrity, 'allTrackedBytesUnchanged': integrity}
+          pathlib.Path('Logs/V5-source-differences.json').write_text(json.dumps(summary, indent=2) + '\n')
+          print(json.dumps(summary, indent=2))
+          if not integrity:
+              raise SystemExit('Historical source proof FAILED after preserving all observations; diagnostic output is not an accepted capture.')
+          print(f'All {len(original)} tracked files remain byte-identical after Unity; no unauthorized source additions.')
           PY
 
       - name: Verify original serializer capture artifact
+        id: verify_capture
         if: ${{ !cancelled() && steps.capture.outcome == 'success' }}
         shell: bash
         run: |
@@ -140,6 +258,20 @@ jobs:
             > Logs/V5CaptureVerification.json
           cat Logs/V5CaptureVerification.json
 
+      - name: Require tests, source proofs and capture verification
+        if: ${{ !cancelled() }}
+        shell: bash
+        env:
+          SOURCE_BEFORE: ${{ steps.source_before.outcome }}
+          CAPTURE: ${{ steps.capture.outcome }}
+          SOURCE_AFTER: ${{ steps.source_after.outcome }}
+          VERIFIER: ${{ steps.verify_capture.outcome }}
+        run: |
+          test "$SOURCE_BEFORE" = success
+          test "$CAPTURE" = success
+          test "$SOURCE_AFTER" = success
+          test "$VERIFIER" = success
+
       - name: Preserve XML, logs, capture and source proofs
         if: always()
         uses: actions/upload-artifact@v7.0.2
@@ -151,5 +283,8 @@ jobs:
             Logs/V5-source-before.json
             Logs/V5-source-after.json
             Logs/V5CaptureVerification.json
+            Logs/V5-source-before-inventory.json
+            Logs/V5-source-differences.json
+            Logs/V5SourceIntegrity
           if-no-files-found: error
           retention-days: 30
