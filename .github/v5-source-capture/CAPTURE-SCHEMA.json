@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "artifactFormat": "luckbound-v5-source-capture",
+  "documentRole": "coordination-contract-for-the-runtime-harness-and-offline-verifier",
+  "captureKind": "reconstructed-synthetic-from-versioned-v5-source",
+  "authority": {
+    "reviewContract": "docs/ci-integration-20261029/SOL-V5-SOURCE-CAPTURE-CONTRACT.md",
+    "reviewContractSha256": "69c1213a7cfc3b08663c3237f30fafdc4392e3d62c040162a854283f74d0873f",
+    "reviewContractReadBeforeAddendum": true,
+    "reviewContractAddendum": {
+      "path": "current-session addendum delivered by root",
+      "sha256": "603310159854c9fb752f7753852295cab87ff7fd5f477480ca515959b6b2fc01",
+      "verifierPath": "Tools/Automation/verify_v5_source_capture.py"
+    },
+    "historicalCommit": "a2590e141c46729e6efa7d01ea33647768b58711",
+    "historicalTree": "658f45412efb0b6f554d6c458400116838369a97",
+    "historicalContentVersion": 5,
+    "historicalSchemaVersion": 1,
+    "historicalEditor": "6000.6.6f1",
+    "historicalEditorRevision": "d20c9ac777da",
+    "fullTreeProof": {
+      "path": ".github/v5-source-capture/ORIGINAL-TREE-PROOF.json",
+      "localEvidencePath": "Logs/V5HistoricalProject-20261030-r2/ORIGINAL-TREE-PROOF.json",
+      "sha256": "394cae064afb63346056b7f6ffa02f2a9143c1bee6ad2a3f91dc713c80a0cc1e",
+      "trackedBlobCount": 4195,
+      "sumOriginalBlobBytes": 159244821,
+      "scope": "complete exact historical tree; workflow verifies all original blobs"
+    },
+    "historicalProjectRoot": "Logs/V5HistoricalProject-20261030-r2/project/"
+  },
+  "fixedInputHeader": {
+    "schemaVersion": 1,
+    "contentVersion": 5,
+    "generation": 1,
+    "sequence": 11,
+    "savedAtUtc": "2000-01-01T00:00:00Z",
+    "seed": 17320508
+  },
+  "fixedIds": {
+    "profileGuidN": "10000000000000000000000000000001",
+    "activeRunGuidN": "10000000000000000000000000000002",
+    "settlementGuidN": "10000000000000000000000000000003",
+    "progressionPurchaseGuidN": "10000000000000000000000000000004",
+    "inventoryTransactionGuidN": "10000000000000000000000000000005",
+    "fortuneOfferGuidN": "10000000000000000000000000000006",
+    "fortuneHistoryGuidN": "10000000000000000000000000000007",
+    "fortuneRerollGuidN": "10000000000000000000000000000008",
+    "fortuneBrewGuidN": "10000000000000000000000000000009"
+  },
+  "cultures": [
+    {
+      "name": "en-US",
+      "caseCount": 12,
+      "invocationCount": 12
+    },
+    {
+      "name": "es-ES",
+      "caseCount": 12,
+      "invocationCount": 12
+    }
+  ],
+  "expectedTotalCases": 12,
+  "expectedTotalInvocations": 24,
+  "cases": [
+    { "id": "P0-no-active", "role": "positive-api-and-codec", "active": false, "expectedDecode": "valid", "mustBeCultureInvariant": true },
+    { "id": "P1-known-zero", "role": "positive-api-and-codec", "active": true, "expectedDecode": "valid", "mustBeCultureInvariant": true },
+    { "id": "P1-known-nontrivial", "role": "positive-api-and-codec", "active": true, "expectedDecode": "valid", "mustBeCultureInvariant": true },
+    { "id": "P2-unknown-null", "role": "positive-api-and-codec", "active": true, "expectedDecode": "valid", "mustBeCultureInvariant": true },
+    { "id": "P2-unknown-inline", "role": "positive-api-and-codec", "active": true, "expectedDecode": "valid", "mustBeCultureInvariant": true },
+    { "id": "P3-receipts-completed", "role": "positive-api-and-codec", "active": true, "expectedDecode": "valid", "mustBeCultureInvariant": true, "expectedRenown": 33 },
+    { "id": "B0-arrays-null", "role": "boundary-observation", "active": false, "expectedDecode": "record-observed-result", "mustBeCultureInvariant": true },
+    { "id": "B1-arrays-empty", "role": "boundary-observation", "active": false, "expectedDecode": "record-observed-result", "mustBeCultureInvariant": true },
+    { "id": "M0-false-marker-payload", "role": "synthetic-marker-negative", "active": false, "expectedDecode": "rejected", "mustBeCultureInvariant": true },
+    { "id": "M1-true-marker-null", "role": "synthetic-marker-negative", "active": true, "expectedDecode": "rejected", "mustBeCultureInvariant": true },
+    { "id": "S0-settings", "role": "positive-settings-api-and-codec", "active": false, "expectedDecode": "valid", "mustBeCultureInvariant": true },
+    { "id": "N0-tampered", "role": "checksum-negative", "active": true, "expectedDecode": "corrupted", "mustBeCultureInvariant": true, "derivedFrom": "P3-receipts-completed", "tamper": { "field": "availableRenown", "from": 33, "to": 34, "preserveOriginalChecksum": true } }
+  ],
+  "requiredOriginalSources": [
+    "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+    "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+    "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+    "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+    "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+    "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBook.cs",
+    "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+    "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
+    "Assets/Luckbound/Scripts/Core/Inventory/InventoryItemStack.cs",
+    "Assets/Luckbound/Scripts/Core/Identifiers/TransactionId.cs",
+    "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+    "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+    "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+    "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeRules.cs",
+    "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+    "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+    "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+    "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+    "Packages/manifest.json",
+    "Packages/packages-lock.json",
+    "ProjectSettings/ProjectVersion.txt"
+  ],
+  "sourceInventoryPolicy": {
+    "originalFiles": "fixture-index records SHA-256 and byte length for requiredOriginalSources; workflow independently verifies all 4195 historical blobs against fullTreeProof",
+    "runtimeAdditions": "fixture-index records SHA-256 and byte length for each committed harness/friend/workflow addition",
+    "candidateCoordinationFiles": "CAPTURE-SCHEMA.json, REPORT.md, CHANGES.md, diff.patch and hash manifests are candidate evidence, not game/runtime sources",
+    "requiredOriginalSourceSetRationale": "21-file minimum serialization plus directly exercised recipe-operation set; the capture runs in the complete 4195-blob historical project because this set alone is not a compilable project",
+    "executionCommit": "fixture-index.execution.commit is read from LUCKBOUND_V5_EXECUTION_COMMIT, falling back to GITHUB_SHA; capture fails if neither is a full 40-hex commit",
+    "editorIdentity": "fixture-index records Application.unityVersion and ProjectSettings/ProjectVersion.txt including the actual revision; expected Editor is 6000.6.6f1 (d20c9ac777da)",
+    "sourceProofVerification": "workflow verifies original tree proof before running tests; harness records its proof identity and required-source hashes"
+  },
+  "captureInvocation": {
+    "argument": "-luckboundV5CaptureDir",
+    "argumentValue": "project-relative or absolute path resolved and validated under Logs/Scenarios/V5Source/; target must be new or empty",
+    "noArgumentBehavior": "all 24 cases still execute and assert; no fixture/index files are written",
+    "existingOutputBehavior": "fail before capture if target directory exists and is non-empty",
+    "nunitDiscovery": "12 public parameterized EditMode methods, each with en-US and es-ES TestCase arguments, yielding 24 discoverable invocations; no Ignore or runtime skip"
+  },
+  "outputLayout": {
+    "fixtureIndex": "fixture-index.json",
+    "caseDirectory": "cultures/{culture}/{caseId}/",
+    "requiredPerInvocationFiles": [
+      "recipe.json",
+      "envelope.json",
+      "write-preimage.utf8",
+      "read-preimage.utf8",
+      "checksum.txt",
+      "decode-result.json"
+    ],
+    "positiveOnlyFiles": [
+      "api-envelope.json",
+      "api-observation.json"
+    ],
+    "activeStringFile": "active-strings.json",
+    "indexOutputRecord": {
+      "path": "relative slash-separated path from capture root",
+      "bytes": "exact byte length on disk",
+      "sha256": "lowercase SHA-256 over exact file bytes",
+      "encoding": "UTF-8 without BOM for JSON/preimages; checksum.txt is 64 ASCII lower-hex bytes without newline"
+    },
+    "envelopeMeaning": "envelope.json is the exact fixed-header SaveJsonCodec.Encode output (or the explicitly encoded synthetic negative); it is distinct from positive api-envelope.json, which preserves SaveRepository's raw dated JSON byte-for-byte",
+    "preimageMeaning": "write-preimage.utf8 is the independently projected fixed-header preimage used to cotejar the checksum emitted by historical SaveJsonCodec.Encode; read-preimage.utf8 is projected from JsonUtility.FromJson of the emitted envelope before any Decode or normalization",
+    "apiMeaning": "api-envelope.json is raw SaveProfileAsync/SaveSettingsAsync output with real observed savedAtUtc; api-observation.json records that timestamp and asserts only declared header fields differ from the fixed-header candidate",
+    "activeStringsMeaning": "exact route, inventory, checkpoint, and result JSON strings exported with their source field/type and producer provenance; values remain strings in the outer V5 envelope"
+  },
+  "fixtureIndexRequiredFields": [
+    "schemaVersion",
+    "captureKind",
+    "historicalSource.commit",
+    "historicalSource.tree",
+    "historicalSource.fullTreeProof.path",
+    "historicalSource.fullTreeProof.sha256",
+    "execution.commit",
+    "execution.editor.version",
+    "execution.editor.revision",
+    "execution.packageManifest.sha256",
+    "execution.packageLock.sha256",
+    "requiredOriginalSources[] (path, bytes, sha256)",
+    "runtimeAdditions[] (path, bytes, sha256)",
+    "fixedInputHeader",
+    "cultures[]",
+    "cases[] (caseId, culture, role, expected/observed decode, outputs[] path/bytes/sha256)",
+    "capturedAtUtc (observed metadata; not a deterministic golden)"
+  ],
+  "verificationRules": [
+    "exactly the 12 case IDs and 2 cultures; exactly 24 invocations and output groups",
+    "reject missing/extra/duplicate case IDs, cultures, files or output records",
+    "resolve every output path beneath the capture root; reject traversal and symlink escape",
+    "recompute SHA-256 and byte lengths from captured bytes; reject UTF-8 BOM and malformed lower-hex checksum",
+    "recompute SHA-256 on captured write-preimage bytes and compare with positive stored checksum; verify N0 changed bytes and retained P3 checksum",
+    "compare complete fixed-header envelope, write-preimage, read-preimage, checksum and recipe bytes across en-US/es-ES for culture-invariant cases",
+    "do not compare observed API savedAtUtc or capture time as fixed constants",
+    "inspect parsed JSON only for schema/role assertions; never regenerate preimage or canonicalize captured bytes",
+    "verify raw API and fixed-header outputs separately; verify active strings preserve exact source values",
+    "verify P3 required purchase, counter, settlement, Fortune and inventory receipt arrays are non-empty, and availableRenown is 33",
+    "B0/B1 are boundary observations, M0/M1 are marker negatives, and N0 is a checksum negative; do not conflate their roles",
+    "verify Unity XML reports all 24 invocations Passed, zero skips/ignored cases, and no tolerated exception/log failure",
+    "no captures or fixture writes when the explicit capture argument is absent"
+  ]
+}

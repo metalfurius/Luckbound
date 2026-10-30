@@ -1,0 +1,15 @@
+{
+  "name": "Luckbound.V5SourceCapture.Tests",
+  "rootNamespace": "Luckbound.Tests.V5SourceCapture",
+  "references": ["Luckbound.App", "Luckbound.Content", "Luckbound.Core"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "noEngineReferences": false
+}

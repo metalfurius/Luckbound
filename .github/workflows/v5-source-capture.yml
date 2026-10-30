@@ -1,0 +1,155 @@
+name: Historical V5 source capture
+
+on:
+  push:
+    branches:
+      - codex/v5-source-capture-20261030
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    name: Capture original V5 serializer without gameplay
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      checks: write
+    env:
+      CAPTURE_DIR: Logs/Scenarios/V5Source/${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+      LUCKBOUND_V5_EXECUTION_COMMIT: ${{ github.sha }}
+    steps:
+      - name: Checkout historical tree and additive harness
+        uses: actions/checkout@v7.0.1
+
+      - name: Verify entire historical tree before capture
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, pathlib, subprocess
+          root = pathlib.Path.cwd()
+          proof = json.loads(pathlib.Path('.github/v5-source-capture/ORIGINAL-TREE-PROOF.json').read_text())
+          assert proof['historicalCommit'] == 'a2590e141c46729e6efa7d01ea33647768b58711'
+          assert proof['historicalTree'] == '658f45412efb0b6f554d6c458400116838369a97'
+          originals = {row['path']: row for row in proof['files']}
+          assert len(originals) == 4195
+          allowed = {
+            '.github/workflows/v5-source-capture.yml',
+            '.github/v5-source-capture/CAPTURE-SCHEMA.json',
+            '.github/v5-source-capture/ORIGINAL-TREE-PROOF.json',
+            'Assets/Luckbound/Scripts/App/V5SourceCaptureFriend.cs',
+            'Assets/Luckbound/Scripts/App/V5SourceCaptureFriend.cs.meta',
+            'Assets/Luckbound/Tests/EditMode/V5SourceCapture.meta',
+            'Assets/Luckbound/Tests/EditMode/V5SourceCapture/V5SourceCaptureInputs.cs',
+            'Assets/Luckbound/Tests/EditMode/V5SourceCapture/V5SourceCaptureInputs.cs.meta',
+            'Assets/Luckbound/Tests/EditMode/V5SourceCapture/V5SourceCaptureTests.cs',
+            'Assets/Luckbound/Tests/EditMode/V5SourceCapture/V5SourceCaptureTests.cs.meta',
+            'Assets/Luckbound/Tests/EditMode/V5SourceCapture/Luckbound.V5SourceCapture.Tests.asmdef',
+            'Assets/Luckbound/Tests/EditMode/V5SourceCapture/Luckbound.V5SourceCapture.Tests.asmdef.meta',
+            'Tools/Automation/verify_v5_source_capture.py',
+          }
+          tracked = set(subprocess.check_output(['git', 'ls-files', '-z']).decode().rstrip('\0').split('\0'))
+          assert tracked == set(originals) | allowed, sorted(tracked ^ (set(originals) | allowed))
+          observed = {}
+          for relative in sorted(tracked):
+              path = root / relative
+              assert path.is_file() and not path.is_symlink(), relative
+              raw = path.read_bytes()
+              digest = hashlib.sha256(raw).hexdigest()
+              if relative in originals:
+                  row = originals[relative]
+                  assert digest == row['sha256'] and len(raw) == row['bytes'], relative
+                  blob = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+                  assert blob == row['gitBlobSha'], relative
+              observed[relative] = digest
+          pathlib.Path('Logs').mkdir(exist_ok=True)
+          pathlib.Path('Logs/V5-source-before.json').write_text(json.dumps(observed, indent=2) + '\n')
+          print(f'Verified {len(originals)} exact historical blobs and {len(allowed)} additive files.')
+          PY
+
+      - name: Verify physical symlink rejection on Linux
+        shell: bash
+        run: |
+          python3 -B - <<'PY'
+          import importlib.util, os, pathlib, sys, tempfile
+          spec = importlib.util.spec_from_file_location('v5_capture_link_probe', 'Tools/Automation/verify_v5_source_capture.py')
+          verifier = importlib.util.module_from_spec(spec)
+          sys.modules[spec.name] = verifier
+          spec.loader.exec_module(verifier)
+          with tempfile.TemporaryDirectory(prefix='luckbound-v5-link-check-', dir=os.environ['RUNNER_TEMP']) as directory:
+              root = pathlib.Path(directory)
+              regular = root / 'regular.json'
+              regular.write_bytes(b'{"synthetic":"path-validation-only"}')
+              assert verifier.safe_file(root, 'regular.json') == regular
+              (root / 'linked.json').symlink_to(regular.name)
+              try:
+                  verifier.safe_file(root, 'linked.json')
+              except verifier.CaptureError as error:
+                  assert 'Symlink/reparse point' in str(error), str(error)
+              else:
+                  raise AssertionError('Verifier accepted a physical symlink')
+          print('Physical symlink rejection passed; synthetic path probe, no save capture or golden.')
+          PY
+
+      - name: Run only historical serializer capture tests
+        id: capture
+        uses: game-ci/unity-test-runner@v4.4.0
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          GAME_CI_COVERAGE_ENABLED: 'false'
+        with:
+          cliVersion: v0.1.72
+          customImage: unityci/editor:ubuntu-6000.6.6f1-base-3.2.2
+          testMode: editmode
+          customParameters: '-testFilter Luckbound.Tests.V5SourceCapture.V5SourceCaptureTests -luckboundV5CaptureDir ${{ env.CAPTURE_DIR }} -nographics'
+          artifactsPath: test-results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: Historical V5 source capture
+
+      - name: Verify entire source tree remains unchanged
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, pathlib, subprocess
+          original = json.loads(pathlib.Path('Logs/V5-source-before.json').read_text())
+          tracked = set(subprocess.check_output(['git', 'ls-files', '-z']).decode().rstrip('\0').split('\0'))
+          assert tracked == set(original)
+          for relative, digest in original.items():
+              path = pathlib.Path(relative)
+              assert path.is_file() and not path.is_symlink(), relative
+              assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, relative
+          pathlib.Path('Logs/V5-source-after.json').write_text(json.dumps(original, indent=2) + '\n')
+          print(f'All {len(original)} tracked files remain byte-identical after Unity.')
+          PY
+
+      - name: Verify original serializer capture artifact
+        if: ${{ !cancelled() && steps.capture.outcome == 'success' }}
+        shell: bash
+        run: |
+          python3 Tools/Automation/verify_v5_source_capture.py \
+            --capture-dir "$CAPTURE_DIR" \
+            --xml test-results/editmode-results.xml \
+            --commit "$GITHUB_SHA" \
+            --project-root "$GITHUB_WORKSPACE" \
+            --schema .github/v5-source-capture/CAPTURE-SCHEMA.json \
+            > Logs/V5CaptureVerification.json
+          cat Logs/V5CaptureVerification.json
+
+      - name: Preserve XML, logs, capture and source proofs
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: v5-source-capture-${{ github.sha }}
+          path: |
+            test-results
+            Logs/Scenarios
+            Logs/V5-source-before.json
+            Logs/V5-source-after.json
+            Logs/V5CaptureVerification.json
+          if-no-files-found: error
+          retention-days: 30
