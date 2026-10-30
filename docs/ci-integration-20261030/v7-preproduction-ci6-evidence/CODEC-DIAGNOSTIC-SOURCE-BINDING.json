@@ -1,0 +1,42 @@
+{
+  "kind": "supplemental pure .NET calls with real NUnit assertions",
+  "framework": ".NET 9.0.17",
+  "unityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "sourceSha256": "668f4d7b82988c9b70167170af814e07c2fcbfb0731fedc97d7450b5e5cf2a55",
+  "runnerSha256": "9d421c4ee12490a3d54a09d8b870cc61c5f9112e7c30c479106a88eb34dfe472",
+  "responseSha256": "d8f5de40775e94cdb3c9ac3f0af0b523e4d4ba9088f2c65bc4d3d97f7e8a8c2d",
+  "resultsSha256": "8c10bf4cca98d27db8fef368445bb403fa4fc106fd6706438e8fc4d235760b01",
+  "assemblies": [
+    {
+      "path": "offline-r1/Luckbound.Core.dll",
+      "sha256": "405b639b62d79a56a9479c8ced11b8e6dc294e0666528ab119261e74ebd4aba2",
+      "bytes": 451072
+    },
+    {
+      "path": "offline-r1/Luckbound.Content.dll",
+      "sha256": "51ebac9ff98fcafc81b873eeb1b83efa71031536ca2930dd0c6cdcfa3d44decf",
+      "bytes": 96256
+    },
+    {
+      "path": "offline-r1/Luckbound.App.dll",
+      "sha256": "a08aaaccbc720a020cfb42266eec669e3807f1a246748f0c353c8bc72d54c12a",
+      "bytes": 630272
+    },
+    {
+      "path": "offline-r1/Luckbound.Core.Tests.dll",
+      "sha256": "99496f19e815742d7fc7a4a22df2a2ac62f9d155ac3b61e871173d815e186945",
+      "bytes": 244224
+    },
+    {
+      "path": "offline-r1/Luckbound.PlayMode.Tests.dll",
+      "sha256": "8421bc9de42ceee0bf4a1aa2142e875419a47873ae2b0273dc322fef76256f06",
+      "bytes": 1516544
+    },
+    {
+      "path": "Library/PackageCache/com.unity.ext.nunit@0198eae3b53e/net472/unity-custom/nunit.framework.dll",
+      "sha256": "a607364879b5f5c337b979e9de23654459df45ba1a7324d54aa9df93540dc7a2",
+      "bytes": 328704
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "status": "prepared under Logs only",
+  "existingUniqueGuids": 854,
+  "added": 9,
+  "totalUniqueGuids": 863,
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Documents.cs.meta",
+      "guid": "d099c5d1c1439a1efce457d6809506e6",
+      "sha256": "9c37afa13984e29b23d5362ff89205ab54ab95c4df09da8c3ab2480d3279d256",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Validation.cs.meta",
+      "guid": "358d66fbdc46c513d6bcbf90d52b7b84",
+      "sha256": "7a7a06a935e8caa037809d420fde366a24889260c28a83e1612afa70e2283122",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/SaveV7StateTests.cs.meta",
+      "guid": "fdcb32b38c0eb2c1cbb60dd2b4e373c0",
+      "sha256": "17790c3689d19487d75162001f5a891fa2041764dbe99a9fe4807bc90692fcfe",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV7JsonCodec.cs.meta",
+      "guid": "26f6b5c72d4e18124003f143b0e09c2c",
+      "sha256": "d3b354e865b16734fb07c998c470621d4ea86de6b84d1da9cf708af5850101d1",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs.meta",
+      "guid": "192c8727a7e7582f7ee10ce360a0f570",
+      "sha256": "78645c837567f5dcc4bd89cc76ca39823a2f770e57ea71bc4e53113adfc629b4",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.V7Preproduction.cs.meta",
+      "guid": "db61fd62a0f374ab7cd3781ec55cd3db",
+      "sha256": "feb30ebeb75ae5d82a77f7821cc01f74ac08f34da0f6a3b882929d5232580a7e",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveV7CandidateMapper.cs.meta",
+      "guid": "64ad4c116e68d33bc2f8426fb11c5026",
+      "sha256": "db49705878b9ffd829ddb204b8336caeababd66387750ef0c5e728dc891e6539",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV7AtomicRepositoryTests.cs.meta",
+      "guid": "98d25401ecd5acf40b26c8cc68f1d612",
+      "sha256": "db43b3d1acf9f5897a6274342f0a3e5563ea5d131ebb241d248c711e8768f2b0",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7.meta",
+      "guid": "cb76cf411c477f5609eeda131895fb0d",
+      "sha256": "dfbc30f22efe002ec0f0c6eca7dfed92139ed5b6f36d1efc48e22f2866a29fc5",
+      "bytes": 169
+    }
+  ]
+}

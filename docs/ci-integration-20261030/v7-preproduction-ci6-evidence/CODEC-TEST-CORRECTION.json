@@ -1,0 +1,18 @@
+{
+  "status": "Root integration test correction; not compiled/executed yet",
+  "codecUnchanged": "c27b787a4d168c439ce2a1332c952b9459701e2321d3d74843ee4d1f39706646",
+  "before": {
+    "sha256": "d8c98193de5ca55c01f94d003e603106aa939ba0a061635cc407926e76d9d55b",
+    "bytes": 34013
+  },
+  "after": {
+    "sha256": "2928ab641e85e7940555e1b17738705af1381befd679b3befc7ab1d245d5c88f",
+    "bytes": 34681
+  },
+  "path": "Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs",
+  "reasons": [
+    "14/15 supplemental .NET diagnostic: escaped nested JSON assertion",
+    "A R2 requires domain-valid Fortune state; preserve nontrivial sixteen-DTO fixture coverage"
+  ],
+  "frozenV6Changed": false
+}

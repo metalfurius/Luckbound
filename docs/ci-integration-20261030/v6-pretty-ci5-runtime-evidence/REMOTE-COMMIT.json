@@ -1,0 +1,15 @@
+{
+  "sha": "6926505b744aabd4543723a6c0fffb640c2836fa",
+  "tree": "fb32fd6a7dfd7ed213f7d4ec56d48021cde48489",
+  "parent": "f46d39002ab560b76b6d0a9183b471c12d080566",
+  "branch": "codex/luckbound-integration-unity-20261030",
+  "plannedFiles": 19,
+  "modifiedFiles": 6,
+  "newFiles": 13,
+  "gameSourceChanges": 1,
+  "treeEntries": 6218,
+  "preservedLeaves": 5707,
+  "unplannedChanges": 0,
+  "deletions": 0,
+  "force": false
+}

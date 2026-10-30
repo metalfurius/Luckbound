@@ -1,6 +1,6 @@
 # F09 — transacción V7 explícita de preproducción
 
-**Dictamen: Conditional; dirección Accepted, implementación en hold hasta aceptación real de CI correctiva del mismo corte pin/emisor:1052/1052 y V6/sentinel reales,97 datos idénticos/77 observaciones.** CI41115847754 falló1037/1052; no se exige convertir ese run en verde. No falta otro productor histórico antes. El alcance autorizado tras ese gate será V7 explícito de almacenamiento; **NO** cambiar `SaveFormat.ContentVersion=6`, DTO vivos, dispatch operativo, Bootstrap, Continue o readiness. El positivo será durable en store temporal, no pin App productivo.
+**Dictamen: Conditional; dirección Accepted, implementación en hold hasta CI correctiva pin/emisor:1052/1052 y V6/sentinel reales,97 datos idénticos/77 observaciones.** CI41115847754 falló1037/1052. Sin captura histórica adicional previa. Alcance posterior: V7 explícito de almacenamiento; **NO** cambiar `SaveFormat.ContentVersion=6`, DTO vivos, dispatch operativo, Bootstrap, Continue o readiness. Store temporal, sin pin App productivo.
 
 Bases: canon3c49 §§2–5/9; pin3ff837cc; emisor dfb128cc; Repo `ed1da03c47f50d591debe917ffd12bcabeb7b11f7cb7b28f258d2eb4c8c1f7f6`; SaveDocuments raw `8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574`; emisor bb4b8a6a. El registry permite restauración lógica exacta; faltan manifest/dependencias físicas productivos, retención/provider F02 y escena jugador/salas/proyectil. No se sustituyen por bool/delegate, C08 o RAM.
 
@@ -8,7 +8,7 @@ Bases: canon3c49 §§2–5/9; pin3ff837cc; emisor dfb128cc; Repo `ed1da03c47f50d
 
 Archivos nuevos `Scripts/Core/Saves/V7/SaveV7Documents.cs`, `SaveV7Validation.cs`; `Tests/EditMode/Saves/SaveV7StateTests.cs`. Root posee metas.
 
-Copiar fielmente campos/defaults/orden de los **16 cierres históricos V6** a tipos propios sufijo V7, sin herencia/referencias serializadas a DTO vivos/históricos. Tipos principales `ProfileSaveEnvelopeV7`, `ProfileSaveDataV7`, `ExpeditionSaveDataV7`, `ExpeditionRoomCheckpointSaveDataV7`, `SettingsSaveEnvelopeV7`. Headers1/7; conservar ruta/inventario/resultJson opacos y todos los recibos/IDs/arrays.
+Copiar campos/defaults/orden de los **16 cierres históricos V6** con sufijo V7, sin herencia/reuso serializado. Principales: `ProfileSaveEnvelopeV7`, `ProfileSaveDataV7`, `ExpeditionSaveDataV7`, `ExpeditionRoomCheckpointSaveDataV7`, `SettingsSaveEnvelopeV7`. Headers1/7; conservar ruta/inventario/resultJson opacos y recibos/IDs/arrays.
 
 Añadir al final de Expedition `encounterPlanPin:EncounterPlanPinSaveDataV7`, representación tipada 1:1 del modelo pin1: root/bindings/entry, contexto común incluso None, calendario0. Checkpoint añade `encounterEntry:EncounterPlanEntryReferenceSaveDataV7(nodeId,resolvedPlanSha256)`; continúa dentro de `roomEntryCheckpointJson`, con codec7 explícito. Nada oculto en strings ajenos. Clone profundo; no normalizar antes del checksum. Validación exige ruta/seed/generación/RunId/ForNode/cursor coherentes, slots únicos y referencia exacta; conserva bindings completados. Expedición activa7 sin pin/checkpoint exigible es inválida; None nunca acredita clear. Completed current conserva la regla existente de checkpoint vacío.
 
@@ -22,7 +22,7 @@ Serializer/lector cerrados sobre campos tipados: UTF8 estricto, orden declarativ
 
 ## Root — commit real, un solo dueño compartido
 
-Root posee `SaveRepository.cs`, nueva parcial `SaveRepository.V7Preproduction.cs`, `SaveV7CandidateMapper.cs`, `Tests/PlayMode/SaveV7AtomicRepositoryTests.cs`, integración/metas. La lógica versionada será reutilizable; únicamente su **entrada Editor-only interna** habilita este ensayo con ISaveStore temporal. Sin callsite Bootstrap ni publicación/actores.
+Root posee `SaveRepository.cs`, nueva parcial `SaveRepository.V7Preproduction.cs`, `SaveV7CandidateMapper.cs`, `Tests/PlayMode/SaveV7AtomicRepositoryTests.cs`, integración/metas. Lógica reutilizable; **entrada Editor-only interna**, ISaveStore temporal. Sin Bootstrap ni publicación/actores.
 
 API fijada:
 
@@ -47,3 +47,27 @@ En protocolo7, **cualquier activo1–6** sin pin queda ReadOnlyLegacyEncounterPi
 Native: positivos inicial y A→B→nueva instancia→backup/load7→Restore exacta antigua con revisión nueva instalada→proyección Encounter/None; FileSaveStore temporal. Probar write/finalización fallidos, retry byteigual, concurrencia pending6↔7, caché6 bloqueada, slots/entry/contexto alterados, revisión ausente, legados1–6 activos/inactivos y Settings independientes. Registrar filas/hashes; cero publish/payout. Suite completa más V6 real11/97/14 y77 observaciones **idénticos**, sin rebase; builds propios y crash/recovery Windows/WebGL siguen aceptación independiente.
 
 Bump operativo requiere otro dictamen: autoridad/retención física completa, todos los mutadores/leases/checkpoints App conectados al mismo candidato7 y revisión explícita de observaciones SUT tras cambiar versión. Frozen6 nunca cambia; comparaciones live6 dejarán de describir Live7, pero no se omiten pruebas ni se fabrica out/metadata. Este contrato no autoriza esa adaptación, abandono/liquidación, migración activa sin evidencia, nuevas claims, F09 global/F10, plataforma o publicación. Sin fuentes modificadas, Unity/UI/red ejecutados aquí.
+
+## Addendum — interfaces y frontera Core/App
+
+**Accepted**, mantiene HOLD. SHA anterior299f8339087389707303a4a25f20d54b6e63b9c53d3fdb2913315c9941f23958. Namespace `Luckbound.Core.Saves.V7`; tests A en `Tests/EditMode/Expeditions/SaveV7StateTests.cs` (**Core.Tests**), reemplaza Saves; sin nuevos asmdefs/IVT.
+
+```text
+public enum SaveV7ErrorCode {
+ None=0,InvalidData=1,Corrupted=2,Incompatible=3,PlanMismatch=4,
+ CatalogRevisionUnavailable=5,LegacyEncounterPinMissing=6,
+ ProtocolConflict=7,WritePending=8,MissingResolutionAuthority=9 }
+public readonly struct SaveV7Error(Code,Path,Message)
+public sealed class SaveV7ValidationException:Exception { Error }
+public static class SaveV7Validation {
+ bool TryValidateProfile(ProfileSaveEnvelopeV7 value,out SaveV7Error error);
+ bool TryValidateSettings(SettingsSaveEnvelopeV7 value,out SaveV7Error error);
+ bool TryValidateCheckpoint(ExpeditionRoomCheckpointSaveDataV7 value,out SaveV7Error error);
+ bool TryValidateCheckpointBinding(ProfileSaveEnvelopeV7 value,
+   ExpeditionRoomCheckpointSaveDataV7 parsedCheckpoint,out SaveV7Error error); }
+public static class SaveV7Clone { T Clone(T value); }
+```
+
+Todas las funciones anteriores son public/static; Clone representa **sobrecargas tipadas por cada DTO7**, no genérico/reflexión/serializer. null→null; copia transitiva sin alias/defaults nuevos. Error tiene constructor público `(SaveV7ErrorCode code,string path,string message)`, getters inmutables, strings nunca null; éxito None, fallo noNone. Mode reutiliza `EncounterCatalogBindingMode` existente. B añade `TryAuthenticateProfile(ProfileSaveEnvelopeV7,out SaveV7Error)`: verifica checksum sin reemplazarlo; Root lo usa antes de Restore de un DTO potencialmente mutable.
+
+Core valida estructura/recursos, ruta canónica pura/seed/generación/cursor, pin/ForNode/entry y coherencia del checkpoint **tipado**. No parsea JSON ni referencia Engine. B parsea estrictamente el checkpoint7 desde el string **del mismo sobre**, autentica antes de mapear y llama ambas validaciones Profile/CheckpointBinding; no acepta checkpoint externo ni bool aprobado. Si es exigible, vacío/null/fallo rechaza; nunca lo genera durante Decode. Inventory sigue opaco allí; Root ejecuta decoder de schema reconocido y Restore/validación reales del dominio, preservando string original. Prepare crea checkpoint real después de fijar pin; Decode/Restore no lo inventan. A no añade parser Core; Root conserva shared/Repo y HOLD Native.

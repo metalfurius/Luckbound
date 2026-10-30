@@ -1,0 +1,59 @@
+{
+  "status": "final candidate composition A3+Baccepted+Rootcorrections+LegacyMatrix; no live integration or Unity",
+  "sources": [
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Documents.cs",
+      "source": "Logs/SaveV7Documents-20261030-r3/candidate/Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Documents.cs",
+      "sha256": "1f9c0191e7777c18156380060d6ee9c9b0720481269c7630b637aaafb9834c13",
+      "bytes": 25602
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Validation.cs",
+      "source": "Logs/SaveV7Documents-20261030-r3/candidate/Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Validation.cs",
+      "sha256": "eedf312e7cd21c3675c63774cbc6b9bbe8fca826186c21d1cfa879d6097b7cc2",
+      "bytes": 45915
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/SaveV7StateTests.cs",
+      "source": "Logs/SaveV7Documents-20261030-r3/candidate/Assets/Luckbound/Tests/EditMode/Expeditions/SaveV7StateTests.cs",
+      "sha256": "da239d950a4f00da6e7fc7e1355d7a141c2b9a6d5e2d87e83d3e4bbb50030599",
+      "bytes": 44380
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV7JsonCodec.cs",
+      "source": "Logs/SaveV7Combined-20261030-r3/candidate/Assets/Luckbound/Scripts/App/Compatibility/SaveV7JsonCodec.cs",
+      "sha256": "c27b787a4d168c439ce2a1332c952b9459701e2321d3d74843ee4d1f39706646",
+      "bytes": 78323
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs",
+      "source": "Logs/SaveV7Combined-20261030-r3/candidate/Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs",
+      "sha256": "2928ab641e85e7940555e1b17738705af1381befd679b3befc7ab1d245d5c88f",
+      "bytes": 34681
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.V7Preproduction.cs",
+      "source": "Logs/SaveV7Combined-20261030-r3/candidate/Assets/Luckbound/Scripts/App/SaveRepository.V7Preproduction.cs",
+      "sha256": "3e3cbc71522fc87903133bb35f23585b565670c564ba1909a2e9178df30df9d4",
+      "bytes": 14087
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveV7CandidateMapper.cs",
+      "source": "Logs/SaveV7Combined-20261030-r3/candidate/Assets/Luckbound/Scripts/App/SaveV7CandidateMapper.cs",
+      "sha256": "effac45ef41f25f4b223d2c06993d1f07024d27280eb2740f3f7be79a7f15365",
+      "bytes": 43778
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV7AtomicRepositoryTests.cs",
+      "source": "Logs/SaveV7Repository-20261030-r1/candidate/Assets/Luckbound/Tests/PlayMode/SaveV7AtomicRepositoryTests.cs",
+      "sha256": "1f4eaf430a9246a6835a585e4553316a18a361ff62f2af9bb38d11c14f8ecb5a",
+      "bytes": 79667
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "source": "Logs/SaveV7Combined-20261030-r3/override/SaveRepository.cs",
+      "sha256": "f3a6b0b6d062289c2fcdb3ddab60d650a243b3e8b42534ea967b7250423cf931",
+      "bytes": 76802
+    }
+  ]
+}

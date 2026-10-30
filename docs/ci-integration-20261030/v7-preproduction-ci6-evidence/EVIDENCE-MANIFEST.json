@@ -1,0 +1,130 @@
+{
+  "status": "pre-CI snapshot; Native pending",
+  "files": [
+    {
+      "path": "CODEC-DIAGNOSTIC-RESULTS.json",
+      "bytes": 2487,
+      "sha256": "8c10bf4cca98d27db8fef368445bb403fa4fc106fd6706438e8fc4d235760b01"
+    },
+    {
+      "path": "CODEC-DIAGNOSTIC-RUNNER.cs.txt",
+      "bytes": 3836,
+      "sha256": "668f4d7b82988c9b70167170af814e07c2fcbfb0731fedc97d7450b5e5cf2a55"
+    },
+    {
+      "path": "CODEC-DIAGNOSTIC-SOURCE-BINDING.json",
+      "bytes": 1607,
+      "sha256": "f4f29f9e9775f24ab67f78a04f89040939926997e5a7d4624c17801decc2170a"
+    },
+    {
+      "path": "CODEC-TEST-CORRECTION.json",
+      "bytes": 688,
+      "sha256": "0c1f67cfe3f1814754611107fdd89e47f6137fd0774a380d520bfb26bd4f4413"
+    },
+    {
+      "path": "COMPILE-RESULTS.json",
+      "bytes": 112135,
+      "sha256": "6d6c94ce8943f45c944f7c59fa61b423d834ab2f9c73e6e2aa9cd72fabcf3882"
+    },
+    {
+      "path": "CORE-DIAGNOSTIC-RESULTS.json",
+      "bytes": 5422,
+      "sha256": "0c242b6b626d22f8e35ed616594dd48ec368b015ce4470b509b2c805d447f1cb"
+    },
+    {
+      "path": "CORE-DIAGNOSTIC-RUNNER.cs.txt",
+      "bytes": 4943,
+      "sha256": "45e51fb0505b82aee7e4d173a529ce4008fa7e506b686e45de3caa82aa9cf169"
+    },
+    {
+      "path": "CORE-DIAGNOSTIC-SOURCE-BINDING.json",
+      "bytes": 1607,
+      "sha256": "02c9416abbce02d7811612048d85f89163b5c38fee9030dbc60e921f3883f228"
+    },
+    {
+      "path": "DIAGNOSTIC-SUMMARY.json",
+      "bytes": 2205,
+      "sha256": "6a2b1c6aa91030dd195054e2d702067bb6f3995ba527ad43f53d50218ca13003"
+    },
+    {
+      "path": "failures/CODEC-R1-COMPILE.log",
+      "bytes": 185,
+      "sha256": "909d1d92058d7a90a815c09e157c0b04515d1361154ca95fc79fd32673bf59a6"
+    },
+    {
+      "path": "failures/CODEC-R1-DIAGNOSTIC.json",
+      "bytes": 11738,
+      "sha256": "527bee884825753dadb07ea1aa9f88e1b90f848e7491a2de7ce62826e7905fc9"
+    },
+    {
+      "path": "failures/LEGACY-MATRIX-R1-COMPILE.log",
+      "bytes": 3094,
+      "sha256": "37b1a2075d20ccdb425aab5873ed231a5468e1472701454db71f99e6400e535f"
+    },
+    {
+      "path": "FROZEN-SOURCES.json",
+      "bytes": 2920,
+      "sha256": "8c80f7e158f3ee45cc1a6a6698faa038359215ac31d0ca2ae61b025e72d0601f"
+    },
+    {
+      "path": "INTEGRATED-INPUT-CHECK.json",
+      "bytes": 80241,
+      "sha256": "49b4a38ed7ec5eea9eba0cd50881eff7c1e66c7c3086bd2e1964a13886a9703f"
+    },
+    {
+      "path": "INTEGRATION.json",
+      "bytes": 3986,
+      "sha256": "ad8d9fa10fa01e37bd4fcc2132b56d6eaeb072610884abbaeb2f4e5ef4a49de3"
+    },
+    {
+      "path": "LEGACY-MATRIX-CORRECTION.json",
+      "bytes": 545,
+      "sha256": "cf70d09883243a1157ff45e90f17f0575806623acbf10049427bc2d5fc7cc955"
+    },
+    {
+      "path": "LEGACY-MATRIX-INTEGRATION.json",
+      "bytes": 407,
+      "sha256": "a2e8dae499a6bde1a208c87564366b7f3a4452487450526a5268196ac3c33950"
+    },
+    {
+      "path": "METAS.json",
+      "bytes": 2337,
+      "sha256": "b9490b0e0b5d04b46b8141d707343a9c3401f16203ad2e6f4407b2294cfcbbce"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2625,
+      "sha256": "e31e63d8642f9a9d84918cf4b8ea468cde3d8ff002ea87affefece5c83d70226"
+    },
+    {
+      "path": "WORKER-A3-MANIFEST.json",
+      "bytes": 3491,
+      "sha256": "3801077c2d3f2b261f9e1ecd4b2cab87fb418de2ad398297797925f0b33a819a"
+    },
+    {
+      "path": "WORKER-A3-REPORT.md",
+      "bytes": 2068,
+      "sha256": "86a4acc3e2f1fcd55d241f860501d23693f5d237c44593f65511774e1e28eeb4"
+    },
+    {
+      "path": "WORKER-B-MANIFEST.json",
+      "bytes": 3073,
+      "sha256": "86e28eb1efe8f01456d3d9361c7ccfa51e057d6f920892a9ca0a1ba58d315253"
+    },
+    {
+      "path": "WORKER-B-REPORT.md",
+      "bytes": 1628,
+      "sha256": "2fb322559687fdb390da04a03045d17b027487fcd5b39b5562af6397546b3839"
+    },
+    {
+      "path": "WORKER-LEGACY-MANIFEST.json",
+      "bytes": 476,
+      "sha256": "49ad92553e65152d9886929314b5ad644b185e9a49a17d627018b67e1a6e8a16"
+    },
+    {
+      "path": "WORKER-LEGACY-REPORT.md",
+      "bytes": 2421,
+      "sha256": "1466394ca8cfa12ad1e0aff68e2a00891e60c87a12e2514fc724e593385e12e4"
+    }
+  ]
+}

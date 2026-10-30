@@ -1,0 +1,29 @@
+{
+  "testJob": 124278974795,
+  "testJobConclusion": "success",
+  "unityOutcome": "success",
+  "v6GateOutcome": "success",
+  "sentinelConclusion": "success",
+  "evidence": {
+    "unitySuccess": true,
+    "v6Success": true,
+    "sentinelCommand": true,
+    "verifierCommand": true,
+    "rawLogSha256": "fa7f6febc61cf1c5e53f35436e9034c77da6c04e3808f5003003ddc36aa9df8a",
+    "rawLogPublished": false
+  },
+  "verifier": {
+    "commit": "6926505b744aabd4543723a6c0fffb640c2836fa",
+    "sessionId": "34357485918a45b9a6d7e6cf77b44ef4",
+    "expectedUnityVersion": "6000.6.7f1",
+    "observedUnityVersion": "6000.6.7f1",
+    "projectVersionDeclared": "6000.6.7f1",
+    "projectPinUnityVersion": "6000.6.7f1",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "9e779a6d5407d30787dae425bd9f834bc5ef1ebdff6c11e48fbbd7685b5ee72d",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  }
+}

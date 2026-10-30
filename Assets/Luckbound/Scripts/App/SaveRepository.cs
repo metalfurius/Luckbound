@@ -76,7 +76,7 @@ namespace Luckbound.App
     }
 
     /// <summary>Checksummed JSON envelopes, primary/backup recovery, sequences and retryable writes.</summary>
-    public sealed class SaveRepository
+    public sealed partial class SaveRepository
     {
         private readonly ISaveStore _store;
         private readonly SemaphoreSlim _gate = new SemaphoreSlim(1, 1);
@@ -112,7 +112,13 @@ namespace Luckbound.App
         public async Task<SaveLoadResult<ProfileSaveEnvelope>> LoadProfileAsync()
         {
             await _gate.WaitAsync();
-            try { return await LoadProfileUnderLockAsync(); }
+            try
+            {
+#if UNITY_EDITOR
+                if (_v7ProfileProtocolLatched) return ProfileProtocolConflictV6();
+#endif
+                return await LoadProfileUnderLockAsync();
+            }
             finally { _gate.Release(); }
         }
 
@@ -130,6 +136,9 @@ namespace Luckbound.App
             await _gate.WaitAsync();
             try
             {
+#if UNITY_EDITOR
+                if (_v7ProfileProtocolLatched) return Failed("ProtocolConflict: the repository is latched to explicit V7 preproduction.");
+#endif
                 if (_profileAccess != SaveDataAccess.ReadWrite)
                     return Failed("Profile writes are blocked because the loaded profile is read-only or unavailable.");
                 if (_profileBlocked) return Failed("Profile writes are blocked because the saved profile is incompatible or unrecoverable.");
@@ -185,6 +194,14 @@ namespace Luckbound.App
             await _gate.WaitAsync();
             try
             {
+#if UNITY_EDITOR
+                if (document == SaveDocument.Profile && _v7ProfileProtocolLatched)
+                {
+                    if (_pendingProfile == null || _pendingProfile.Protocol != 7)
+                        return Failed("ProtocolConflict: no compatible V7 profile write is pending.");
+                    return await CommitPendingUnderLockAsync(_pendingProfile);
+                }
+#endif
                 if (document == SaveDocument.Profile && _profileAccess != SaveDataAccess.ReadWrite)
                     return Failed("Profile writes are blocked because the loaded profile is read-only or unavailable.");
                 PendingWrite pending = document == SaveDocument.Profile ? _pendingProfile : _pendingSettings;
@@ -202,6 +219,9 @@ namespace Luckbound.App
 
         private async Task<SaveLoadResult<ProfileSaveEnvelope>> LoadProfileUnderLockAsync()
         {
+#if UNITY_EDITOR
+            if (_v7ProfileProtocolLatched) return ProfileProtocolConflictV6();
+#endif
             if (_pendingProfile != null)
                 throw new InvalidOperationException("A profile cannot be reloaded while a profile write is pending.");
 
@@ -351,6 +371,15 @@ namespace Luckbound.App
 
         private async Task<SaveWriteResult> CommitPendingUnderLockAsync(PendingWrite pending)
         {
+#if UNITY_EDITOR
+            if (pending.Document == SaveDocument.Profile)
+            {
+                if (pending.Protocol == 7)
+                    return await CommitPendingV7UnderLockAsync(pending);
+                if (_v7ProfileProtocolLatched)
+                    return Failed("ProtocolConflict: V6 profile writes cannot replace an explicit V7 profile.");
+            }
+#endif
             if (pending.Document == SaveDocument.Profile && _profileAccess != SaveDataAccess.ReadWrite)
                 return Failed("Profile writes are blocked because the loaded profile is read-only or unavailable.");
 
@@ -428,17 +457,23 @@ namespace Luckbound.App
 
         private sealed class PendingWrite
         {
-            public PendingWrite(SaveDocument document, string json, string lastKnownGoodPrimaryJson, object envelope)
+            public PendingWrite(SaveDocument document, string json, string lastKnownGoodPrimaryJson, object envelope, int protocol = 6)
             {
+                if (protocol != 6 && protocol != 7)
+                    throw new ArgumentOutOfRangeException(nameof(protocol));
+                if (document != SaveDocument.Profile && protocol != 6)
+                    throw new ArgumentException("Only Profile supports the explicit V7 preproduction protocol.", nameof(protocol));
                 Document = document;
                 Json = json;
                 LastKnownGoodPrimaryJson = lastKnownGoodPrimaryJson;
                 Envelope = envelope;
+                Protocol = protocol;
             }
             public SaveDocument Document { get; }
             public string Json { get; }
             public string LastKnownGoodPrimaryJson { get; }
             public object Envelope { get; }
+            public int Protocol { get; }
         }
     }
 

@@ -1,0 +1,82 @@
+{
+  "format": "SaveV7DocumentsR3ManifestV1",
+  "scope": "preproduction-v7-only",
+  "candidateFiles": [
+    {
+      "path": "Logs/SaveV7Documents-20261030-r3/candidate/Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Documents.cs",
+      "sizeBytes": 25602,
+      "sha256": "1f9c0191e7777c18156380060d6ee9c9b0720481269c7630b637aaafb9834c13"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r3/candidate/Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Validation.cs",
+      "sizeBytes": 45915,
+      "sha256": "eedf312e7cd21c3675c63774cbc6b9bbe8fca826186c21d1cfa879d6097b7cc2"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r3/candidate/Assets/Luckbound/Tests/EditMode/Expeditions/SaveV7StateTests.cs",
+      "sizeBytes": 44380,
+      "sha256": "da239d950a4f00da6e7fc7e1355d7a141c2b9a6d5e2d87e83d3e4bbb50030599"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r3/REPORT.md",
+      "sizeBytes": 2068,
+      "sha256": "86a4acc3e2f1fcd55d241f860501d23693f5d237c44593f65511774e1e28eeb4"
+    }
+  ],
+  "preservedR1R2Files": [
+    {
+      "path": "Logs/SaveV7Documents-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Documents.cs",
+      "sizeBytes": 25602,
+      "sha256": "1f9c0191e7777c18156380060d6ee9c9b0720481269c7630b637aaafb9834c13"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Validation.cs",
+      "sizeBytes": 39576,
+      "sha256": "df1c4c33563013fb013620291c721d8870df971d05ef359106cbc0e5f4bd0f66"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r1/candidate/Assets/Luckbound/Tests/EditMode/Expeditions/SaveV7StateTests.cs",
+      "sizeBytes": 26224,
+      "sha256": "0a7598444c5efcd3509635172c17ccedbaf2c9a5cfa6024220bad33fff76f05d"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r1/REPORT.md",
+      "sizeBytes": 2330,
+      "sha256": "2de72ae307a4e9ebeac8e61006501a17023dfa218183506c9497905bf05fe94b"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r1/MANIFEST.json",
+      "sizeBytes": 1717,
+      "sha256": "314c3467b5e189f4ad277833026fc47c1d7639d560c904a5506a3e8df542403d"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r2/candidate/Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Documents.cs",
+      "sizeBytes": 25602,
+      "sha256": "1f9c0191e7777c18156380060d6ee9c9b0720481269c7630b637aaafb9834c13"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r2/candidate/Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Validation.cs",
+      "sizeBytes": 45891,
+      "sha256": "43815480f95065598a85085945b536208459739e254aa38dde94c56e382594fb"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r2/candidate/Assets/Luckbound/Tests/EditMode/Expeditions/SaveV7StateTests.cs",
+      "sizeBytes": 42404,
+      "sha256": "adeadab1387073ff8105470cb8ebaaf1c5504d2d760a4222e960dffa658a5a9c"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r2/REPORT.md",
+      "sizeBytes": 2845,
+      "sha256": "a9afe553b8eddd1b324e50a8e451dc80c574dbcf8b4d925c2a7013ac6ef08d6e"
+    },
+    {
+      "path": "Logs/SaveV7Documents-20261030-r2/MANIFEST.json",
+      "sizeBytes": 1820,
+      "sha256": "88db078c33d6eeb21af606f6161d7955691e4da36401a3def6b743876339c23d"
+    }
+  ],
+  "reviewInput": {
+    "path": "docs/ci-integration-20261030/SOL-V7-DOCUMENTS-STATIC-R2.md",
+    "sha256": "8ba443a00e4a9ae9d65478f72f2f357a2b280a35ad4307197a1d656a9c97e719"
+  }
+}

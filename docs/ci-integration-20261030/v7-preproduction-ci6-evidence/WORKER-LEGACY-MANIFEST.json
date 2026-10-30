@@ -1,0 +1,17 @@
+{
+  "package": "SaveV7LegacyMatrix-20261030-r1",
+  "generatedAtUtc": "2026-10-30",
+  "scope": "isolated test fragment and report only",
+  "files": [
+    {
+      "path": "LEGACY-TEST-FRAGMENT.cs.txt",
+      "bytes": 41049,
+      "sha256": "013e107c5e2a88bd20299c8dd5a51c77b98628f6ec5d401aa90e102652ba3a78"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2421,
+      "sha256": "1466394ca8cfa12ad1e0aff68e2a00891e60c87a12e2514fc724e593385e12e4"
+    }
+  ]
+}

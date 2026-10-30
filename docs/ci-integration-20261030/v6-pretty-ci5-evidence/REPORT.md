@@ -7,3 +7,5 @@ Sol Accepted estático e9fccceb5b8d48e461dc4351d7047ac38c2fed3a580a743de8a683057
 CI4failure1037/1052 se conserva en ../f09-pin-v6-ci4-failed-evidence/:15fallosV6,10PinPassed,4/11intentos y34/97datos presentes,32byteiguales/dos envolventesformato diferente. Dos casosJSON semánticamenteigual no aceptan97ni pruebanlos7perfilesocultosporfailfast.
 
 La nuevaCIdebe ejecutar1052/1052(607Edit+445Play),11casos97datos byteidénticos alGateD CI41095991782,14fuentesestables y77observaciones, gateV6/sentinel reales ybuildspropias. No normalizar/refreeze/goldens actualizados o assertsrelajadas. V7 contrato299f tiene implementaciónHOLDhastaelgate; noSave7operativo, Bootstrap/Ready, pinApp/físico niF09/F10completos. Sin UI/players/publicación.
+
+Respaldo:6926505b744aabd4543723a6c0fffb640c2836fa / árbolfb32fd6a7dfd7ed213f7d4ec56d48021cde48489, padref46d3900.19rutas previstas(6modificadas/13nuevas),5.707hojas intactas,0deltas ajenos/eliminaciones,leasefast-forward verificado. CI41118540007 iniciada;1052+97/gates/builds aún pendientes.

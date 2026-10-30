@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "run": 41118540007,
+  "suite": 111465835578,
+  "commit": "6926505b744aabd4543723a6c0fffb640c2836fa",
+  "tree": "fb32fd6a7dfd7ed213f7d4ec56d48021cde48489",
+  "artifact": 13006154949,
+  "artifactSha256": "e1bc7277b09365eb5b0a732e14428bc84ae2ce9090a07639a982809563e0e247",
+  "extractedFiles": 241,
+  "editMode": {
+    "passed": 607,
+    "total": 607
+  },
+  "playMode": {
+    "passed": 445,
+    "total": 445
+  },
+  "total": 1052,
+  "passed": 1052,
+  "failed": 0,
+  "skipped": 0,
+  "inconclusive": 0,
+  "pinCases": {
+    "core": [
+      {
+        "method": "AppendPreservesBindingsAcceptsExactReplayAndRejectsReplacementOrForeignEntry",
+        "result": "Passed"
+      },
+      {
+        "method": "BondContextRemainsMissingResolutionAuthorityWithoutCalendarData",
+        "result": "Passed"
+      },
+      {
+        "method": "CaptureEncodeDecodePreservesEncounterContextAndCanonicalBytesWithoutAliasing",
+        "result": "Passed"
+      },
+      {
+        "method": "CaptureRejectsAPlanFromAnotherRunSeedOrRoute",
+        "result": "Passed"
+      },
+      {
+        "method": "CodecRejectsMalformedDomainTruncationTrailingBytesAndUnsupportedSchema",
+        "result": "Passed"
+      },
+      {
+        "method": "NoneBindingRetainsItsCanonicalPlanDigestWithoutEncounterPayload",
+        "result": "Passed"
+      }
+    ],
+    "content": [
+      {
+        "method": "DecodeAndRestoreUsesExactOldRevisionWhenNewerRevisionIsAlsoInstalled",
+        "classname": "Luckbound.Tests.Content.Route.EncounterPlanPinRestoreV1Tests",
+        "result": "Passed"
+      },
+      {
+        "method": "RestoreRejectsForeignEntryChangedContextChangedPlanHashAndChangedRoute",
+        "classname": "Luckbound.Tests.Content.Route.EncounterPlanPinRestoreV1Tests",
+        "result": "Passed"
+      }
+    ],
+    "app": [
+      {
+        "method": "CaptureEncodeDecodeExactRestoreFeedsExistingEncounterProjection",
+        "result": "Passed"
+      },
+      {
+        "method": "NonePinRestoresToNullRosterAndDoesNotCreateClearState",
+        "result": "Passed"
+      }
+    ]
+  },
+  "capture": {
+    "cases": 11,
+    "attempts": 11,
+    "files": 97,
+    "sources": 14,
+    "complete": true,
+    "rolesPassed": true,
+    "sourcesStable": true,
+    "dataIdenticalToGateDCi3": 97,
+    "observationsIdentical": 77
+  },
+  "testsJob": "success",
+  "v6Gate": "success",
+  "sentinel": "success",
+  "overallCi": "success",
+  "windows": "success",
+  "webgl": "success",
+  "releaseObserved": "skipped",
+  "deployObserved": "skipped",
+  "localUnity": false,
+  "appPinDurable": false,
+  "v7Implemented": false,
+  "fullGameAccepted": false,
+  "windowsArtifactVerified": true,
+  "webglArtifactVerified": true,
+  "solTechnicalAcceptance": "SOL-PIN-V6-CI5-RUNTIME.md",
+  "v7PreproductionHoldReleased": true
+}

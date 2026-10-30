@@ -1,0 +1,17 @@
+{
+  "run": 41118540007,
+  "commit": "6926505b744aabd4543723a6c0fffb640c2836fa",
+  "job": 124282841436,
+  "jobConclusion": "success",
+  "artifact": 13008357719,
+  "artifactBytes": 16132426,
+  "artifactSha256": "70036278e8aad7440b3b5ddda7c4ec936b114b80bd9b1bd2058a12c6e553e413",
+  "files": 17,
+  "index": "WebGL/index.html",
+  "indexSha256": "5e6da798e78ba8f281a1f9fcc07c0874d53407dbd8f7c830bfe36775cee7efb4",
+  "wasmDecompressedBytes": 41468406,
+  "wasmHeader": "0061736d01000000",
+  "wasmDecompressedSha256": "87af64d46755e3ad7decea5b38a4f108180b3c861af7715b53d654ff583f43c2",
+  "executed": false,
+  "uiOpened": false
+}

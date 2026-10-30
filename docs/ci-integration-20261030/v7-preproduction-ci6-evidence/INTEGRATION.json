@@ -1,0 +1,110 @@
+{
+  "status": "integrated exact Accepted static R5; Native pending",
+  "sourcesBefore": 398,
+  "sourcesAfter": 406,
+  "existingSourcesUnchanged": 397,
+  "existingSourceChanges": [
+    "Assets/Luckbound/Scripts/App/SaveRepository.cs"
+  ],
+  "newSources": 8,
+  "addedMetas": 9,
+  "uniqueAssetGuids": 863,
+  "duplicates": 0,
+  "saveFixtureFilesUnchanged": 492,
+  "operationalSaveVersion": 6,
+  "v7Operational": false,
+  "bootstrapReadyChanged": false,
+  "unityExecuted": false,
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Documents.cs",
+      "sha256": "1f9c0191e7777c18156380060d6ee9c9b0720481269c7630b637aaafb9834c13",
+      "bytes": 25602
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Validation.cs",
+      "sha256": "eedf312e7cd21c3675c63774cbc6b9bbe8fca826186c21d1cfa879d6097b7cc2",
+      "bytes": 45915
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/SaveV7StateTests.cs",
+      "sha256": "da239d950a4f00da6e7fc7e1355d7a141c2b9a6d5e2d87e83d3e4bbb50030599",
+      "bytes": 44380
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV7JsonCodec.cs",
+      "sha256": "c27b787a4d168c439ce2a1332c952b9459701e2321d3d74843ee4d1f39706646",
+      "bytes": 78323
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs",
+      "sha256": "2928ab641e85e7940555e1b17738705af1381befd679b3befc7ab1d245d5c88f",
+      "bytes": 34681
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.V7Preproduction.cs",
+      "sha256": "3e3cbc71522fc87903133bb35f23585b565670c564ba1909a2e9178df30df9d4",
+      "bytes": 14087
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveV7CandidateMapper.cs",
+      "sha256": "effac45ef41f25f4b223d2c06993d1f07024d27280eb2740f3f7be79a7f15365",
+      "bytes": 43778
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV7AtomicRepositoryTests.cs",
+      "sha256": "1f4eaf430a9246a6835a585e4553316a18a361ff62f2af9bb38d11c14f8ecb5a",
+      "bytes": 79667
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "sha256": "f3a6b0b6d062289c2fcdb3ddab60d650a243b3e8b42534ea967b7250423cf931",
+      "bytes": 76802
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Documents.cs.meta",
+      "sha256": "9c37afa13984e29b23d5362ff89205ab54ab95c4df09da8c3ab2480d3279d256",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7/SaveV7Validation.cs.meta",
+      "sha256": "7a7a06a935e8caa037809d420fde366a24889260c28a83e1612afa70e2283122",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/SaveV7StateTests.cs.meta",
+      "sha256": "17790c3689d19487d75162001f5a891fa2041764dbe99a9fe4807bc90692fcfe",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV7JsonCodec.cs.meta",
+      "sha256": "d3b354e865b16734fb07c998c470621d4ea86de6b84d1da9cf708af5850101d1",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs.meta",
+      "sha256": "78645c837567f5dcc4bd89cc76ca39823a2f770e57ea71bc4e53113adfc629b4",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.V7Preproduction.cs.meta",
+      "sha256": "feb30ebeb75ae5d82a77f7821cc01f74ac08f34da0f6a3b882929d5232580a7e",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveV7CandidateMapper.cs.meta",
+      "sha256": "db49705878b9ffd829ddb204b8336caeababd66387750ef0c5e728dc891e6539",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV7AtomicRepositoryTests.cs.meta",
+      "sha256": "db43b3d1acf9f5897a6274342f0a3e5563ea5d131ebb241d248c711e8768f2b0",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/V7.meta",
+      "sha256": "dfbc30f22efe002ec0f0c6eca7dfed92139ed5b6f36d1efc48e22f2866a29fc5",
+      "bytes": 169
+    }
+  ]
+}

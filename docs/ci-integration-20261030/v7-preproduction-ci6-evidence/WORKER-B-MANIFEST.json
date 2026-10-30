@@ -1,0 +1,48 @@
+{
+  "manifestVersion": 1,
+  "scope": "F09 V7 preproduction codec and tests (B)",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-F09-NEXT-DURABLE-PIN-CONTRACT.md",
+    "sha256": "0125520f0d4154b742ec9f3cc28145af0f8bb7dc86dab705652e7c441e485caa"
+  },
+  "wireDecision": {
+    "path": "docs/ci-integration-20261030/SOL-PIN-V6-CI5-RUNTIME.md",
+    "sha256": "7c1d43818dec1ff4cb21b00ebf33245855d37706f765bfbe0fa22a01602cccdf"
+  },
+  "candidateFiles": [
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/App/Compatibility/SaveV7JsonCodec.cs",
+      "bytes": 78323,
+      "sha256": "c27b787a4d168c439ce2a1332c952b9459701e2321d3d74843ee4d1f39706646"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/PlayMode/SaveV7CodecTests.cs",
+      "bytes": 34013,
+      "sha256": "d8c98193de5ca55c01f94d003e603106aa939ba0a061635cc407926e76d9d55b"
+    }
+  ],
+  "compile": {
+    "command": "python Logs/SaveV7Repository-20261030-r1/compile_candidates.py --output Logs/SaveV7JsonCodec-20261030-r1/offline-r1 --stage Logs/SaveV7Documents-20261030-r1 --stage Logs/SaveV7JsonCodec-20261030-r1",
+    "resultsPath": "offline-r1/RESULTS.json",
+    "resultsBytes": 111032,
+    "resultsSha256": "14d244dcf77d7e29e4533927637ba4e5ad5918c6d4a7b4d7a0f3e66d18d49069",
+    "unityExecuted": false,
+    "nunitExecuted": false,
+    "assemblies": [
+      { "name": "Luckbound.Core", "sourceCount": 145, "exitCode": 0, "responseSha256": "7b4a3922e0a476c1a23f12c3ca65e25f284ec88138c43d5f3c089c35952a6cd8", "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+      { "name": "Luckbound.Content", "sourceCount": 19, "exitCode": 0, "responseSha256": "47267bbc8fe63eabb73eae424494da7d1c23b87604dd54308c113cc1fccaaeab", "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+      { "name": "Luckbound.Core.Tests", "sourceCount": 39, "exitCode": 0, "responseSha256": "3ca13acf382de4580c48f376d0474be33403246aebc864c3ad1402e45d6c02a6", "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+      { "name": "Luckbound.Content.Route.Tests", "sourceCount": 3, "exitCode": 0, "responseSha256": "c692e682820d68ae364688272a5ad90bafa8ac920783d44add5cd598719e8644", "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+      { "name": "Luckbound.App", "sourceCount": 54, "exitCode": 0, "responseSha256": "66712c310ddbf44c0628abd30bd86b3bf7f2bd9246a365e6cdec0be05fbea6c2", "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+      { "name": "Luckbound.PlayMode.Tests", "sourceCount": 76, "exitCode": 0, "responseSha256": "7e723b2c2c03494f0594147d55056c976447d9edeea5e03d007d041676e400a8", "logSha256": "6b551c0ac1d5f48b6b569e6ef613917bb00ef9782869f08763457baccf95c28d" }
+    ],
+    "warnings": {
+      "count": 8,
+      "code": "CS0618",
+      "path": "offline-r1/Luckbound.PlayMode.Tests.log",
+      "bytes": 2704,
+      "sha256": "6b551c0ac1d5f48b6b569e6ef613917bb00ef9782869f08763457baccf95c28d",
+      "newCodecOrTestFileWarnings": 0
+    }
+  }
+}

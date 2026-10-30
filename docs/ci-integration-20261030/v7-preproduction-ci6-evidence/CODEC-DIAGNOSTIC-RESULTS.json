@@ -1,0 +1,88 @@
+{
+  "kind": "Supplemental pure .NET method invocation with NUnit assertions",
+  "unityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "framework": ".NET 9.0.17",
+  "testsAssemblySha256": "8421bc9de42ceee0bf4a1aa2142e875419a47873ae2b0273dc322fef76256f06",
+  "coreAssemblySha256": "405b639b62d79a56a9479c8ced11b8e6dc294e0666528ab119261e74ebd4aba2",
+  "total": 15,
+  "passed": 15,
+  "failed": 0,
+  "results": [
+    {
+      "method": "CheckpointCodec_IsTypedAndStrictWithoutAnIndependentChecksum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ChecksumTamperingAndSemanticMutationAreRejectedWithoutRepair",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "EmbeddedCheckpointMustMatchThePinFromTheSameProfile",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "NullArrayIsNotNormalizedToEmptyByEncode",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileAuthenticationRejectsMutationWithoutReplacingChecksum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileEncode_EmitsExplicitEncounterPayloadOnlyForEncounterMode",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileEncode_EscapesDeterministicallyAndPreservesOpaqueUnicode",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileEncode_RejectsUnpairedSurrogateWithoutMutatingInput",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileRoundTrip_DoesNotCreateCheckpointForCompletedOrInactiveRuns",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileRoundTrip_PreservesSixteenClosedDtosAndTypedPin",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "SettingsEncode_RequiresAnEmptyOrWellFormedInputChecksum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "SettingsVector_IsInvariantAcrossCulturesAndRoundTrips",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "SettingsVector_UsesIndependentBytesAndSha256",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "StrictReaderRejectsInvalidUtf8SurrogatesUnknownDuplicateMissingAndTrailingData",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "StrictReaderRejectsModeNumbersCasingAndNonePayloadKeys",
+      "passed": true,
+      "error": null
+    }
+  ]
+}

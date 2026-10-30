@@ -1,0 +1,9 @@
+{
+  "issue": "CS1061: ReadFrozenV5ActiveSource already returns ExpeditionSaveData; remove erroneous .activeExpedition access",
+  "file": "Assets/Luckbound/Tests/PlayMode/SaveV7AtomicRepositoryTests.cs",
+  "beforeAtomicSha256": "1f558b8ae6ebeb256c7a1d2367e3a9efe53951e78fac9ba297836f69e65a9e7a",
+  "afterAtomicSha256": "1f4eaf430a9246a6835a585e4553316a18a361ff62f2af9bb38d11c14f8ecb5a",
+  "fragmentOriginalSha256": "013e107c5e2a88bd20299c8dd5a51c77b98628f6ec5d401aa90e102652ba3a78",
+  "codeOutsideTestsChanged": false,
+  "unityExecuted": false
+}

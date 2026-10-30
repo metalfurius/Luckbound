@@ -1,0 +1,8 @@
+{
+  "fragmentSha256": "013e107c5e2a88bd20299c8dd5a51c77b98628f6ec5d401aa90e102652ba3a78",
+  "beforeAtomicSha256": "ef1c7c81398edc9cf25d196e6244927c279e782dce777a69f581a42e1a744a98",
+  "afterAtomicSha256": "1f558b8ae6ebeb256c7a1d2367e3a9efe53951e78fac9ba297836f69e65a9e7a",
+  "afterBytes": 79684,
+  "method": "insert unchanged fragment inside Root fixture; no live Assets writes",
+  "unityExecuted": false
+}

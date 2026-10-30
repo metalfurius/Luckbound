@@ -1,0 +1,15 @@
+{
+  "id": 41118540007,
+  "suite": 111465835578,
+  "headSha": "6926505b744aabd4543723a6c0fffb640c2836fa",
+  "tree": "fb32fd6a7dfd7ed213f7d4ec56d48021cde48489",
+  "status": "in_progress",
+  "conclusion": null,
+  "expectedTests": 1052,
+  "expectedEditMode": 607,
+  "expectedPlayMode": 445,
+  "expectedV6Cases": 11,
+  "expectedV6Data": 97,
+  "expectedV6Sources": 14,
+  "url": "https://github.com/metalfurius/Luckbound/actions/runs/41118540007"
+}

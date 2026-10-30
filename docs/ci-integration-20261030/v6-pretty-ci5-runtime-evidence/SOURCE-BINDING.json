@@ -1,0 +1,148 @@
+{
+  "commit": "6926505b744aabd4543723a6c0fffb640c2836fa",
+  "tree": "fb32fd6a7dfd7ed213f7d4ec56d48021cde48489",
+  "count": 14,
+  "allVerified": true,
+  "rows": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+      "bytes": 7266,
+      "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+      "error": "",
+      "gitBlobSha": "44cee851931dc470bbff3bf3f6da308aa2c274c9",
+      "comparison": "raw",
+      "localRawSha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+      "bytes": 16578,
+      "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+      "error": "",
+      "gitBlobSha": "6551c633a2de7e4c15998169618379938077af8c",
+      "comparison": "raw",
+      "localRawSha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "bytes": 37224,
+      "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+      "error": "",
+      "gitBlobSha": "d62c870fcd0ed5861cce0296c57592fb8d0221b6",
+      "comparison": "CRLF-to-LF in memory",
+      "localRawSha256": "8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "bytes": 2163,
+      "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+      "error": "",
+      "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+      "comparison": "CRLF-to-LF in memory",
+      "localRawSha256": "5664d1d555c438d408267d144f77f6d134cdf71cc1e272b6eed732223caee6af",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "bytes": 75160,
+      "sha256": "ed1da03c47f50d591debe917ffd12bcabeb7b11f7cb7b28f258d2eb4c8c1f7f6",
+      "error": "",
+      "gitBlobSha": "c87a892b4ff274a09832a235e486300dd4290534",
+      "comparison": "raw",
+      "localRawSha256": "ed1da03c47f50d591debe917ffd12bcabeb7b11f7cb7b28f258d2eb4c8c1f7f6",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+      "bytes": 99,
+      "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+      "error": "",
+      "gitBlobSha": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d",
+      "comparison": "raw",
+      "localRawSha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "bytes": 221068,
+      "sha256": "42b30c89f7ed2cc10ca9ddd3414ec4015db773cac5e6b9e79df1db3efa7731b9",
+      "error": "",
+      "gitBlobSha": "be15eb24a77952400060f345b684e9735b0f0851",
+      "comparison": "raw",
+      "localRawSha256": "42b30c89f7ed2cc10ca9ddd3414ec4015db773cac5e6b9e79df1db3efa7731b9",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+      "bytes": 40662,
+      "sha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+      "error": "",
+      "gitBlobSha": "afca9976e04c128293afdce4b09102a1497f9b18",
+      "comparison": "raw",
+      "localRawSha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "bytes": 484,
+      "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+      "error": "",
+      "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4",
+      "comparison": "raw",
+      "localRawSha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "bytes": 337,
+      "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+      "error": "",
+      "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+      "comparison": "raw",
+      "localRawSha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+      "verified": true
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+      "bytes": 647,
+      "sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+      "error": "",
+      "gitBlobSha": "97904300d05845e188c731d5a2e0964855d9ef01",
+      "comparison": "raw",
+      "localRawSha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+      "verified": true
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "bytes": 83,
+      "sha256": "2a88e6864b6f54588287bed3bc6e9260e65bd49498910cca4478770ca8a5d674",
+      "error": "",
+      "gitBlobSha": "c0d11a3b00e7dae3a4f521d7a75ff93388e01966",
+      "comparison": "raw",
+      "localRawSha256": "2a88e6864b6f54588287bed3bc6e9260e65bd49498910cca4478770ca8a5d674",
+      "verified": true
+    },
+    {
+      "path": "Packages/manifest.json",
+      "bytes": 2165,
+      "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+      "error": "",
+      "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1",
+      "comparison": "CRLF-to-LF in memory",
+      "localRawSha256": "fabd6552f12e60cf99e21dd9a6a91af3aa31187912ec9c57b096a1f35d9f7762",
+      "verified": true
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "bytes": 14044,
+      "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+      "error": "",
+      "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+      "comparison": "raw",
+      "localRawSha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+      "verified": true
+    }
+  ]
+}

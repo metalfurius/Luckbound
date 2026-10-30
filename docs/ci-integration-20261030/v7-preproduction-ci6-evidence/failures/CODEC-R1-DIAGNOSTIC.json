@@ -1,0 +1,88 @@
+{
+  "kind": "Supplemental pure .NET method invocation with NUnit assertions",
+  "unityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "framework": ".NET 9.0.17",
+  "testsAssemblySha256": "d3d89791d77eacc52c4bc9e82eccfb23e4dd5ee992133541963c9e468c79a7ac",
+  "coreAssemblySha256": "0393d1d15bbd44bef9396245b0bf8224ef4e33adf7bb5942954dc44c83dcb7b9",
+  "total": 15,
+  "passed": 14,
+  "failed": 1,
+  "results": [
+    {
+      "method": "CheckpointCodec_IsTypedAndStrictWithoutAnIndependentChecksum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ChecksumTamperingAndSemanticMutationAreRejectedWithoutRepair",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "EmbeddedCheckpointMustMatchThePinFromTheSameProfile",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "NullArrayIsNotNormalizedToEmptyByEncode",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileAuthenticationRejectsMutationWithoutReplacingChecksum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileEncode_EmitsExplicitEncounterPayloadOnlyForEncounterMode",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileEncode_EscapesDeterministicallyAndPreservesOpaqueUnicode",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileEncode_RejectsUnpairedSurrogateWithoutMutatingInput",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileRoundTrip_DoesNotCreateCheckpointForCompletedOrInactiveRuns",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ProfileRoundTrip_PreservesSixteenClosedDtosAndTypedPin",
+      "passed": false,
+      "error": "NUnit.Framework.AssertionException:   Expected: String containing \u0022\u0022encounterEntry\u0022:{\u0022nodeId\u0022:\u0022\r\n  But was:  \u0022{\u0022schemaVersion\u0022:1,\u0022contentVersion\u0022:7,\u0022generation\u0022:1,\u0022sequence\u0022:42,\u0022savedAtUtc\u0022:\u00222026-10-30T12:34:56.0000000Z\u0022,\u0022checksum\u0022:\u00228cc78e6bbcf26e1ccb48dd5173c4f2508d41cf62d883cb81c8a11ddacb94dc94\u0022,\u0022profile\u0022:{\u0022availableRenown\u0022:27,\u0022healthUpgradeLevel\u0022:1,\u0022energyUpgradeLevel\u0022:0,\u0022additionalPotionUpgradeLevel\u0022:0,\u0022unlockedRaceIds\u0022:[\u0022race.orcini\u0022,\u0022race.human\u0022],\u0022unlockedStartingKitIds\u0022:[\u0022kit.bellator\u0022],\u0022acceptedContractIds\u0022:[\u0022contract.fixture\u0022],\u0022claimedContractIds\u0022:[],\u0022readStoryFragmentIds\u0022:[\u0022story.fixture\u0022],\u0022contractCounters\u0022:[{\u0022contractId\u0022:\u0022contract.fixture\u0022,\u0022progress\u0022:4}],\u0022processedSettlementRunIds\u0022:[],\u0022processedContractProgressEvents\u0022:[{\u0022eventId\u0022:\u0022event.fixture:1\u0022,\u0022progressEvent\u0022:1}],\u0022progressionPurchaseTransactions\u0022:[{\u0022transactionId\u0022:\u0022aaaaaaaaaaaa4aaa8aaaaaaaaaaaaaaa\u0022,\u0022kind\u0022:0,\u0022cost\u0022:15}]},\u0022hasActiveExpedition\u0022:true,\u0022activeExpedition\u0022:{\u0022runId\u0022:\u00220123456789abcdef0123456789abcdef\u0022,\u0022seed\u0022:826366246,\u0022generationVersion\u0022:2,\u0022contentVersion\u0022:7,\u0022classId\u0022:\u0022class.bellator\u0022,\u0022raceId\u0022:\u0022race.human\u0022,\u0022selectedSkillIds\u0022:[\u0022skill.fixture.one\u0022,\u0022skill.fixture.two\u0022],\u0022startingEquipmentInstanceIds\u0022:[\u002211111111111141118111111111111111\u0022,\u002222222222222242228222222222222222\u0022],\u0022routeSnapshotJson\u0022:\u0022route-v2|seed=31415926\\nN|sample.tutorial|patio|Tutorial|room.sample.tutorial|1|0\\nN|sample.patio.combat|patio|Combat|room.patio.c1|1|1\\nN|sample.patio.exploration|patio|Exploration|room.patio.e1|1|2\\nN|sample.patio.guardian|patio|Guardian|room.patio.guardian|1|3\\nN|sample.safe_extraction|patio|SafeExtraction|room.sample.extraction|1|4\\nE|sample.tutorial|port.exit.east|sample.patio.combat|port.entry.west|0\\nE|sample.patio.combat|port.exit.east|sample.patio.exploration|port.entry.west|0\\nE|sample.patio.exploration|port.exit.east|sample.patio.guardian|port.entry.west|0\\nE|sample.patio.guardian|port.exit.east|sample.safe_extraction|port.entry.west|0\\nM|sample.tutorial,sample.patio.combat,sample.patio.exploration,sample.patio.guardian,sample.safe_extraction\u0022,\u0022currentNodeId\u0022:\u0022sample.patio.combat\u0022,\u0022visitedNodeIds\u0022:[\u0022sample.tutorial\u0022,\u0022sample.patio.combat\u0022],\u0022completedRoomIds\u0022:[\u0022sample.tutorial\u0022],\u0022completedRoomResults\u0022:[{\u0022roomNodeId\u0022:\u0022sample.tutorial\u0022,\u0022resultId\u0022:\u0022result.tutorial.fixture\u0022,\u0022resultJson\u0022:\u0022{}\u0022}],\u0022roomEntryCheckpointJson\u0022:\u0022{\\\u0022roomNodeId\\\u0022:\\\u0022sample.patio.combat\\\u0022,\\\u0022inventorySnapshotJson\\\u0022:\\\u0022{\\\\\\\u0022items\\\\\\\u0022:[]}\\\u0022,\\\u0022maximumHealth\\\u0022:100,\\\u0022currentHealth\\\u0022:88,\\\u0022maximumEnergy\\\u0022:50,\\\u0022currentEnergy\\\u0022:45,\\\u0022healthPotionCharges\\\u0022:1,\\\u0022accumulatedRenown\\\u0022:3,\\\u0022fortuneOfferBookSnapshot\\\u0022:{\\\u0022snapshotVersion\\\u0022:1,\\\u0022generationVersion\\\u0022:2,\\\u0022seed\\\u0022:826366246,\\\u0022raceId\\\u0022:\\\u0022race.human\\\u0022,\\\u0022charges\\\u0022:1,\\\u0022offers\\\u0022:[{\\\u0022offerId\\\u0022:\\\u0022offer.fixture\\\u0022,\\\u0022contextId\\\u0022:\\\u0022context.fixture\\\u0022,\\\u0022eligibleOptionIds\\\u0022:[\\\u0022option.one\\\u0022,\\\u0022option.two\\\u0022],\\\u0022history\\\u0022:[{\\\u0022optionIds\\\u0022:[\\\u0022option.one\\\u0022]}],\\\u0022selectedOptionId\\\u0022:\\\u0022option.one\\\u0022,\\\u0022claimed\\\u0022:false}],\\\u0022processedGuardianIds\\\u0022:[],\\\u0022rerollReceipts\\\u0022:[{\\\u0022transactionId\\\u0022:\\\u0022bbbbbbbbbbbb4bbb8bbbbbbbbbbbbbbb\\\u0022,\\\u0022offerId\\\u0022:\\\u0022offer.fixture\\\u0022,\\\u0022status\\\u0022:0,\\\u0022contextId\\\u0022:\\\u0022context.fixture\\\u0022,\\\u0022optionIds\\\u0022:[\\\u0022option.one\\\u0022],\\\u0022selectedOptionId\\\u0022:\\\u0022option.one\\\u0022,\\\u0022rerollCount\\\u0022:1,\\\u0022claimed\\\u0022:false,\\\u0022remainingCharges\\\u0022:1,\\\u0022hasOffer\\\u0022:true}],\\\u0022fortuneBrewReceipts\\\u0022:[{\\\u0022transactionId\\\u0022:\\\u0022cccccccccccc4ccc8ccccccccccccccc\\\u0022,\\\u0022itemInstanceId\\\u0022:\\\u0022item.brew.fixture\\\u0022,\\\u0022status\\\u0022:0,\\\u0022currentCharges\\\u0022:1}]},\\\u0022pactIds\\\u0022:[\\\u0022pact.avarice\\\u0022],\\\u0022collectedItemIds\\\u0022:[\\\u0022item.fixture\\\u0022],\\\u0022claimedRewardIds\\\u0022:[],\\\u0022encounterEntry\\\u0022:{\\\u0022nodeId\\\u0022:\\\u0022sample.patio.combat\\\u0022,\\\u0022resolvedPlanSha256\\\u0022:\\\u0022bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\\\u0022}}\u0022,\u0022inventorySnapshotJson\u0022:\u0022{\\\u0022items\\\u0022:[]}\u0022,\u0022maximumHealth\u0022:100,\u0022currentHealth\u0022:88,\u0022maximumEnergy\u0022:50,\u0022currentEnergy\u0022:45,\u0022healthPotionCharges\u0022:1,\u0022frozenPermanentUpgrades\u0022:{\u0022healthUpgradeLevel\u0022:0,\u0022energyUpgradeLevel\u0022:1,\u0022additionalPotionUpgradeLevel\u0022:0},\u0022hasFrozenPermanentUpgrades\u0022:true,\u0022accumulatedRenown\u0022:3,\u0022pactIds\u0022:[\u0022pact.avarice\u0022],\u0022fortuneOfferBookSnapshot\u0022:{\u0022snapshotVersion\u0022:1,\u0022generationVersion\u0022:2,\u0022seed\u0022:826366246,\u0022raceId\u0022:\u0022race.human\u0022,\u0022charges\u0022:1,\u0022offers\u0022:[{\u0022offerId\u0022:\u0022offer.fixture\u0022,\u0022contextId\u0022:\u0022context.fixture\u0022,\u0022eligibleOptionIds\u0022:[\u0022option.one\u0022,\u0022option.two\u0022],\u0022history\u0022:[{\u0022optionIds\u0022:[\u0022option.one\u0022]}],\u0022selectedOptionId\u0022:\u0022option.one\u0022,\u0022claimed\u0022:false}],\u0022processedGuardianIds\u0022:[],\u0022rerollReceipts\u0022:[{\u0022transactionId\u0022:\u0022bbbbbbbbbbbb4bbb8bbbbbbbbbbbbbbb\u0022,\u0022offerId\u0022:\u0022offer.fixture\u0022,\u0022status\u0022:0,\u0022contextId\u0022:\u0022context.fixture\u0022,\u0022optionIds\u0022:[\u0022option.one\u0022],\u0022selectedOptionId\u0022:\u0022option.one\u0022,\u0022rerollCount\u0022:1,\u0022claimed\u0022:false,\u0022remainingCharges\u0022:1,\u0022hasOffer\u0022:true}],\u0022fortuneBrewReceipts\u0022:[{\u0022transactionId\u0022:\u0022cccccccccccc4ccc8ccccccccccccccc\u0022,\u0022itemInstanceId\u0022:\u0022item.brew.fixture\u0022,\u0022status\u0022:0,\u0022currentCharges\u0022:1}]},\u0022collectedItemIds\u0022:[\u0022item.fixture\u0022],\u0022claimedRewardIds\u0022:[],\u0022encounterPlanPin\u0022:{\u0022schemaVersion\u0022:1,\u0022runId\u0022:\u00220123456789abcdef0123456789abcdef\u0022,\u0022catalogId\u0022:\u0022catalog.fixture\u0022,\u0022catalogRevision\u0022:1,\u0022catalogSha256\u0022:\u0022cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\u0022,\u0022routeSha256\u0022:\u0022d09111d38e9702797b88870d1c2400efa384dd1293066a09c251058da53c6aa8\u0022,\u0022identityCodec\u0022:\u0022encounter-spawn.v1\u0022,\u0022bindings\u0022:[{\u0022nodeId\u0022:\u0022sample.patio.combat\u0022,\u0022generationVersion\u0022:2,\u0022templateId\u0022:\u0022room.patio.c1\u0022,\u0022roomInstanceId\u0022:\u00228c010e2d6c97d4799a7368a5eddd57af\u0022,\u0022mode\u0022:\u0022none\u0022,\u0022contextPactIds\u0022:[\u0022pact.avarice\u0022],\u0022calendarOrdinal\u0022:0,\u0022resolvedPlanSha256\u0022:\u0022bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\u0022},{\u0022nodeId\u0022:\u0022sample.tutorial\u0022,\u0022generationVersion\u0022:2,\u0022templateId\u0022:\u0022room.sample.tutorial\u0022,\u0022roomInstanceId\u0022:\u00224fa75c5f03d890d9dc5a0692ac06cfc2\u0022,\u0022mode\u0022:\u0022none\u0022,\u0022contextPactIds\u0022:[\u0022pact.avarice\u0022],\u0022calendarOrdinal\u0022:0,\u0022resolvedPlanSha256\u0022:\u0022aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\u0022}],\u0022entry\u0022:{\u0022nodeId\u0022:\u0022sample.patio.combat\u0022,\u0022resolvedPlanSha256\u0022:\u0022bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\u0022}}}}\u0022\r\n\r\n   at NUnit.Framework.Assert.That[TActual](TActual actual, IResolveConstraint expression, String message, Object[] args)\r\n   at NUnit.Framework.Assert.That[TActual](TActual actual, IResolveConstraint expression)\r\n   at Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileRoundTrip_PreservesSixteenClosedDtosAndTypedPin() in C:\\Users\\Fran\\Documents\\GitHub\\Luckbound\\Logs\\SaveV7Combined-20261030-r2\\candidate\\Assets\\Luckbound\\Tests\\PlayMode\\SaveV7CodecTests.cs:line 94\r\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\r\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)"
+    },
+    {
+      "method": "SettingsEncode_RequiresAnEmptyOrWellFormedInputChecksum",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "SettingsVector_IsInvariantAcrossCulturesAndRoundTrips",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "SettingsVector_UsesIndependentBytesAndSha256",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "StrictReaderRejectsInvalidUtf8SurrogatesUnknownDuplicateMissingAndTrailingData",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "StrictReaderRejectsModeNumbersCasingAndNonePayloadKeys",
+      "passed": true,
+      "error": null
+    }
+  ]
+}

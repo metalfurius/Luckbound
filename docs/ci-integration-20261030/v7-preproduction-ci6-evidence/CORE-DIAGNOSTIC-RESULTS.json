@@ -1,0 +1,197 @@
+{
+  "kind": "Supplemental pure .NET method invocation with NUnit assertions",
+  "unityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "framework": ".NET 9.0.17",
+  "testsAssemblySha256": "99496f19e815742d7fc7a4a22df2a2ac62f9d155ac3b61e871173d815e186945",
+  "coreAssemblySha256": "405b639b62d79a56a9479c8ced11b8e6dc294e0666528ab119261e74ebd4aba2",
+  "total": 26,
+  "passed": 26,
+  "failed": 0,
+  "results": [
+    {
+      "method": "ActiveV7RequiresTypedPinAndUnfinishedCheckpointMarker",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CheckpointBindingAllowsEmptyCheckpointForInactiveOrCompletedCurrentState",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CheckpointBindingComparesPactsAsAnOrdinalSetAndAllowsZeroEnergy",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference",
+      "arguments": [
+        "seed"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference",
+      "arguments": [
+        "generation"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference",
+      "arguments": [
+        "race"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference",
+      "arguments": [
+        "pacts"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CheckpointRejectsNegativeOrOverMaximumEnergyAndActiveRunStillRequiresPositiveMaximum",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CheckpointRequiresExactCurrentNodeAndPinnedPlanReference",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreAcceptsNontrivialProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "future-version"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "charges"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "status"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "duplicate-offer"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "duplicate-transaction"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "invalid-selection"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "invalid-history"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "invalid-brew-id"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "unknown-status"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos",
+      "arguments": [
+        "unknown-options"
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "NullPinAndCheckpointArraysAreRejectedAndErrorsHaveNonNullText",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "PinEntryMustNameTheCurrentRouteCursor",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "RouteMutationCannotPassThePinnedCanonicalRouteDigest",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "SettingsV7UsesFrozenFieldsAndDefaultsWithoutChangingLiveSaveFormat",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "TypedCloneDeepCopiesNestedDtosAndPreservesValuesOrderAndNulls",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "TypedClonePreservesNullArraysWithoutFillingDefaults",
+      "arguments": [],
+      "passed": true,
+      "error": null
+    }
+  ]
+}

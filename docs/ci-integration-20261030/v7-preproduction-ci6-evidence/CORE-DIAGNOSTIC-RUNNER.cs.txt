@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Security.Cryptography;
+using System.Text.Json;
+
+internal static class CoreV7MethodDiagnostic
+{
+    private static int Main(string[] args)
+    {
+        // Supplemental pure .NET calls with real NUnit assertions. Not a NUnit/Unity runner.
+        string directory = Path.GetFullPath(args[0]);
+        AssemblyLoadContext.Default.Resolving += (_, name) => name.Name != null && name.Name.StartsWith("Luckbound.", StringComparison.Ordinal)
+            ? AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(directory, name.Name + ".dll")) : null;
+        AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(args[1]));
+        string testsPath = Path.Combine(directory, "Luckbound.Core.Tests.dll");
+        Assembly tests = AssemblyLoadContext.Default.LoadFromAssemblyPath(testsPath);
+        Type fixtureType = tests.GetType("Luckbound.Tests.Core.Expeditions.SaveV7StateTests", true)!;
+        MethodInfo[] methods = fixtureType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .Where(m => m.CustomAttributes.Any(a => a.AttributeType.FullName == "NUnit.Framework.TestAttribute" ||
+                a.AttributeType.FullName == "NUnit.Framework.TestCaseAttribute"))
+            .OrderBy(m => m.Name, StringComparer.Ordinal).ToArray();
+        if (methods.Length != 14 || fixtureType.GetMethods().Any(m => m.CustomAttributes.Any(a =>
+            a.AttributeType.FullName is "NUnit.Framework.SetUpAttribute" or "NUnit.Framework.TearDownAttribute" or
+                "NUnit.Framework.OneTimeSetUpAttribute" or "NUnit.Framework.OneTimeTearDownAttribute")))
+            throw new InvalidOperationException("The exact pure fourteen-method fixture without lifecycle is required.");
+        var cases = new List<(MethodInfo method, object[] arguments)>();
+        foreach (MethodInfo method in methods)
+        {
+            if (method.ReturnType != typeof(void)) throw new InvalidOperationException("Only synchronous void methods are supported.");
+            var attributes = method.CustomAttributes.Where(a => a.AttributeType.FullName == "NUnit.Framework.TestCaseAttribute").ToArray();
+            if (attributes.Length == 0)
+            {
+                if (method.GetParameters().Length != 0) throw new InvalidOperationException("Expected a parameterless method.");
+                cases.Add((method, Array.Empty<object>()));
+            }
+            else foreach (CustomAttributeData attribute in attributes)
+            {
+                if (method.GetParameters().Length != 1 || method.GetParameters()[0].ParameterType != typeof(string) ||
+                    attribute.ConstructorArguments.Count != 1 || attribute.ConstructorArguments[0].ArgumentType != typeof(string) ||
+                    attribute.NamedArguments.Count != 0)
+                    throw new InvalidOperationException("Only the exact single-string, unnamed cases are supported.");
+                cases.Add((method, new[] { attribute.ConstructorArguments[0].Value! }));
+            }
+        }
+        if (cases.Count != 26) throw new InvalidOperationException("The exact twenty-six pure cases are required.");
+        var results = new List<object>();
+        int failed = 0;
+        foreach (var row in cases)
+        {
+            try
+            {
+                row.method.Invoke(Activator.CreateInstance(fixtureType), row.arguments);
+                results.Add(new { method = row.method.Name, arguments = row.arguments, passed = true, error = (string?)null });
+            }
+            catch (TargetInvocationException exception)
+            {
+                failed++;
+                results.Add(new { method = row.method.Name, arguments = row.arguments, passed = false,
+                    error = exception.InnerException?.ToString() ?? exception.ToString() });
+            }
+        }
+        var report = new
+        {
+            kind = "Supplemental pure .NET method invocation with NUnit assertions",
+            unityExecuted = false, nunitRunnerExecuted = false,
+            framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
+            testsAssemblySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(testsPath))).ToLowerInvariant(),
+            coreAssemblySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(directory, "Luckbound.Core.dll")))).ToLowerInvariant(),
+            total = cases.Count, passed = cases.Count - failed, failed, results
+        };
+        File.WriteAllText(Path.GetFullPath(args[2]), JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        Console.WriteLine(JsonSerializer.Serialize(new { total = cases.Count, passed = cases.Count - failed, failed }));
+        return failed == 0 ? 0 : 1;
+    }
+}
