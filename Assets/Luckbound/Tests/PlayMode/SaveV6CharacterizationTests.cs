@@ -391,11 +391,16 @@ namespace Luckbound.Tests.PlayMode
                 ProfileSaveEnvelope live = BuildProfileEnvelope(profileCase);
                 LegacyProfileSaveEnvelopeV6 legacy = AdaptProfileEnvelopeToLegacyV6(live);
                 byte[] liveProjection = BuildCurrentProfileProjectionBytes(live);
-                byte[] legacyProjection = SaveV6ChecksumInspector.GetProfileChecksumPreimage(legacy);
+                FrozenV6ProfileEmission frozen = FrozenV6Emission.EmitProfile(
+                    FrozenV6Recipe.BuildProfile(profileCase));
+                byte[] observedHistoricalProjection = SaveV6ChecksumInspector.GetProfileChecksumPreimage(legacy);
 
-                CollectionAssert.AreEqual(liveProjection, legacyProjection,
-                    "Live-vs-Legacy DTO byte equivalence only; no historical bytes are asserted. Case: " + profileCase);
-                CaptureProfileAfterAssertions(profileCase, liveProjection, legacyProjection);
+                AssertFrozenProfileEmissionIsRepeatableAndNonMutating(profileCase, frozen);
+                CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, liveProjection,
+                    "The frozen-v6 emission is the expected checksum preimage; the live projection is an observation. Case: " + profileCase);
+                CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, observedHistoricalProjection,
+                    "The live-to-historical adapter is an observed compatibility check, not the expected producer. Case: " + profileCase);
+                CaptureProfileAfterAssertions(profileCase, frozen, liveProjection, observedHistoricalProjection);
             }
         }
 
@@ -407,15 +412,18 @@ namespace Luckbound.Tests.PlayMode
             ExpeditionRoomCheckpointSaveData live = BuildRoomEntryCheckpoint(expedition, includeNullSlots);
             LegacyExpeditionRoomCheckpointSaveDataV6 legacy = AdaptCheckpointToLegacyV6(live);
             byte[] liveBytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(live, false));
-            byte[] legacyBytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(legacy, false));
+            byte[] legacyBytes = FrozenV6Emission.EmitCheckpoint(FrozenV6Recipe.BuildCheckpoint(includeNullSlots));
 
             CollectionAssert.AreEqual(liveBytes, legacyBytes,
-                "Checkpoint DTO serializer equivalence only; the checkpoint is a separate JSON string in the parent save.");
+                "The frozen-v6 checkpoint bytes are expected; the live DTO bytes remain an observed compatibility check.");
+            CollectionAssert.AreEqual(legacyBytes, FrozenV6Emission.EmitCheckpoint(legacy),
+                "The live-to-historical adapter is an observed compatibility check, not the expected producer.");
             if (!includeNullSlots)
             {
                 Assert.That(expedition.roomEntryCheckpointJson,
                     Is.EqualTo(JsonUtility.ToJson(BuildRoomEntryCheckpoint(expedition, false), false)));
             }
+            AssertFrozenCheckpointEmissionIsNonMutating(includeNullSlots);
             CaptureCheckpointAfterAssertions(includeNullSlots, liveBytes, legacyBytes);
         }
 
@@ -424,16 +432,29 @@ namespace Luckbound.Tests.PlayMode
         {
             ProfileSaveEnvelope noPayload = BuildProfileEnvelope(ProfileCase.P0NoActive);
             ProfileSaveEnvelope payloadWithFalseMarker = BuildProfileEnvelope(ProfileCase.P5FalseMarkerWithPayload);
+            LegacyProfileSaveEnvelopeV6 frozenFalseMarkerRecipe =
+                FrozenV6Recipe.BuildProfile(ProfileCase.P5FalseMarkerWithPayload);
+            FrozenV6ProfileEmission frozenNoPayload = FrozenV6Emission.EmitProfile(
+                FrozenV6Recipe.BuildProfile(ProfileCase.P0NoActive));
+            FrozenV6ProfileEmission frozenFalseMarker = FrozenV6Emission.EmitProfile(
+                frozenFalseMarkerRecipe);
 
-            CollectionAssert.AreEqual(BuildCurrentProfileProjectionBytes(noPayload),
+            CollectionAssert.AreEqual(frozenNoPayload.ChecksumPreimageUtf8, frozenFalseMarker.ChecksumPreimageUtf8,
+                "P5 keeps its payload in the frozen envelope while the historical checksum projection excludes it.");
+            CollectionAssert.AreEqual(frozenNoPayload.EnvelopeBytes, FrozenV6Emission.EmitProfile(
+                FrozenV6Recipe.BuildProfile(ProfileCase.P0NoActive)).EnvelopeBytes);
+            Assert.That(ByteArraysEqual(frozenNoPayload.EnvelopeBytes, frozenFalseMarker.EnvelopeBytes), Is.False,
+                "The frozen full envelopes remain different when P5 carries an unchecked payload.");
+            CollectionAssert.AreEqual(frozenNoPayload.ChecksumPreimageUtf8,
+                BuildCurrentProfileProjectionBytes(noPayload));
+            CollectionAssert.AreEqual(frozenFalseMarker.ChecksumPreimageUtf8,
                 BuildCurrentProfileProjectionBytes(payloadWithFalseMarker));
-            CollectionAssert.AreEqual(
-                SaveV6ChecksumInspector.GetProfileChecksumPreimage(AdaptProfileEnvelopeToLegacyV6(noPayload)),
-                SaveV6ChecksumInspector.GetProfileChecksumPreimage(
-                    AdaptProfileEnvelopeToLegacyV6(payloadWithFalseMarker)));
 
             Assert.That(payloadWithFalseMarker.hasActiveExpedition, Is.False);
             Assert.That(payloadWithFalseMarker.activeExpedition, Is.Not.Null);
+            Assert.That(frozenFalseMarkerRecipe.hasActiveExpedition, Is.False);
+            Assert.That(frozenFalseMarkerRecipe.activeExpedition, Is.Not.Null,
+                "P5 retains its complete frozen payload even though its false marker excludes the payload from the checksum.");
             Assert.That(SaveDataValidation.Validate(payloadWithFalseMarker).Any(error =>
                     error.Contains("Active expedition marker must match the saved expedition payload.")),
                 Is.True,
@@ -446,11 +467,17 @@ namespace Luckbound.Tests.PlayMode
             SettingsSaveEnvelope live = BuildSettingsEnvelope();
             LegacySettingsSaveEnvelopeV6 legacy = AdaptSettingsEnvelopeToLegacyV6(live);
             byte[] liveProjection = BuildCurrentSettingsProjectionBytes(live);
-            byte[] legacyProjection = SaveV6ChecksumInspector.GetSettingsChecksumPreimage(legacy);
+            FrozenV6SettingsEmission frozen = FrozenV6Emission.EmitSettings(FrozenV6Recipe.BuildSettings());
+            byte[] observedHistoricalProjection = SaveV6ChecksumInspector.GetSettingsChecksumPreimage(legacy);
 
-            CollectionAssert.AreEqual(liveProjection, legacyProjection,
-                "Live-vs-Legacy DTO byte equivalence only; no historical bytes are asserted.");
-            CaptureSettingsAfterAssertions(liveProjection, legacyProjection);
+            AssertFrozenSettingsEmissionIsRepeatableAndNonMutating(frozen);
+            Assert.That(FrozenV6Recipe.BuildSettings().schemaVersion, Is.EqualTo(1));
+            Assert.That(FrozenV6Recipe.BuildSettings().contentVersion, Is.EqualTo(6));
+            CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, liveProjection,
+                "The frozen-v6 emission is expected; live projection equality is observed compatibility.");
+            CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, observedHistoricalProjection,
+                "The live-to-historical adapter remains an observation rather than the expected producer.");
+            CaptureSettingsAfterAssertions(frozen, liveProjection, observedHistoricalProjection);
         }
 
         [Test]
@@ -463,17 +490,23 @@ namespace Luckbound.Tests.PlayMode
             string checkpointJson = expedition.roomEntryCheckpointJson;
             string resultJson = expedition.completedRoomResults[0].resultJson;
 
+            FrozenV6ProfileEmission frozen = FrozenV6Emission.EmitProfile(
+                FrozenV6Recipe.BuildProfile(ProfileCase.P3ReceiptsFull));
+            LegacyExpeditionSaveDataV6 frozenExpedition = FrozenV6Recipe.BuildProfile(ProfileCase.P3ReceiptsFull)
+                .activeExpedition;
             byte[] currentProjection = BuildCurrentProfileProjectionBytes(live);
-            byte[] legacyProjection = SaveV6ChecksumInspector.GetProfileChecksumPreimage(
-                AdaptProfileEnvelopeToLegacyV6(live));
 
-            CollectionAssert.AreEqual(currentProjection, legacyProjection,
-                "The full serialized byte arrays are compared; this remains current-code equivalence only.");
+            CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, currentProjection,
+                "The frozen historical bytes are expected; current projection is an observation.");
             Assert.That(expedition.routeSnapshotJson, Is.EqualTo(routeJson));
             Assert.That(expedition.inventorySnapshotJson, Is.EqualTo(inventoryJson));
             Assert.That(expedition.roomEntryCheckpointJson, Is.EqualTo(checkpointJson));
             Assert.That(expedition.completedRoomResults[0].resultJson, Is.EqualTo(resultJson));
             Assert.That(resultJson, Is.EqualTo("{\"outcome\":\"cleared\",\"renown\":12,\"lootId\":\"reward.d09.test\"}"));
+            Assert.That(frozenExpedition.routeSnapshotJson, Is.EqualTo(routeJson));
+            Assert.That(frozenExpedition.inventorySnapshotJson, Is.EqualTo(inventoryJson));
+            Assert.That(frozenExpedition.roomEntryCheckpointJson, Is.EqualTo(checkpointJson));
+            Assert.That(frozenExpedition.completedRoomResults[0].resultJson, Is.EqualTo(resultJson));
         }
 
         [TestCase("V6-P0-profile-no-active", "P0NoActive", true, "Valid")]
@@ -509,19 +542,25 @@ namespace Luckbound.Tests.PlayMode
             CollectionAssert.AreEqual(capturedPreimage, capturedInspection.GetPreimageUtf8(),
                 "The inspector must reproduce the frozen Unity JsonUtility bytes exactly.");
 
+            FrozenV6ProfileEmission frozen = FrozenV6Emission.EmitProfile(FrozenV6Recipe.BuildProfile(profileCase));
+            CollectionAssert.AreEqual(capturedEnvelopeBytes, frozen.EnvelopeBytes,
+                "The fixture is compared with emission from the independent frozen-v6 recipe.");
+            CollectionAssert.AreEqual(capturedPreimage, frozen.ChecksumPreimageUtf8);
+            Assert.That(frozen.Checksum, Is.EqualTo(capturedChecksum));
+
             ProfileSaveEnvelope live = BuildProfileEnvelope(profileCase);
             byte[] liveProjection = BuildCurrentProfileProjectionBytes(live);
             byte[] legacyProjection = SaveV6ChecksumInspector.GetProfileChecksumPreimage(
                 AdaptProfileEnvelopeToLegacyV6(live));
-            CollectionAssert.AreEqual(capturedPreimage, liveProjection,
-                "Frozen bytes must match the current profile projection for the fixed builder.");
-            CollectionAssert.AreEqual(capturedPreimage, legacyProjection,
-                "Frozen bytes must match the independent frozen-v6 DTO projection.");
+            CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, liveProjection,
+                "Live current-code projection is an observation against frozen expected bytes.");
+            CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, legacyProjection,
+                "The live-to-historical adapter is an observed compatibility projection.");
 
             string encodedEnvelope = SaveJsonCodec.Encode(live);
             byte[] encodedEnvelopeBytes = V6CaptureUtf8NoBom.GetBytes(encodedEnvelope);
-            CollectionAssert.AreEqual(capturedEnvelopeBytes, encodedEnvelopeBytes,
-                "The real encoder must reproduce the exact captured envelope bytes.");
+            CollectionAssert.AreEqual(frozen.EnvelopeBytes, encodedEnvelopeBytes,
+                "The real encoder is an observed SUT result compared with frozen emitted bytes.");
             SaveV6ChecksumInspection encodedInspection = SaveV6ChecksumInspector.InspectProfile(encodedEnvelope);
             Assert.That(encodedInspection.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
             Assert.That(encodedInspection.StoredChecksum, Is.EqualTo(capturedChecksum));
@@ -565,14 +604,20 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(inspection.ComputedChecksum, Is.EqualTo(capturedChecksum));
             CollectionAssert.AreEqual(capturedPreimage, inspection.GetPreimageUtf8());
 
+            FrozenV6SettingsEmission frozen = FrozenV6Emission.EmitSettings(FrozenV6Recipe.BuildSettings());
+            CollectionAssert.AreEqual(capturedEnvelopeBytes, frozen.EnvelopeBytes,
+                "The fixture is compared with emission from the independent frozen-v6 settings recipe.");
+            CollectionAssert.AreEqual(capturedPreimage, frozen.ChecksumPreimageUtf8);
+            Assert.That(frozen.Checksum, Is.EqualTo(capturedChecksum));
+
             SettingsSaveEnvelope live = BuildSettingsEnvelope();
-            CollectionAssert.AreEqual(capturedPreimage, BuildCurrentSettingsProjectionBytes(live));
-            CollectionAssert.AreEqual(capturedPreimage, SaveV6ChecksumInspector.GetSettingsChecksumPreimage(
+            CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, BuildCurrentSettingsProjectionBytes(live));
+            CollectionAssert.AreEqual(frozen.ChecksumPreimageUtf8, SaveV6ChecksumInspector.GetSettingsChecksumPreimage(
                 AdaptSettingsEnvelopeToLegacyV6(live)));
 
             string encodedEnvelope = SaveJsonCodec.Encode(live);
-            CollectionAssert.AreEqual(capturedEnvelopeBytes, V6CaptureUtf8NoBom.GetBytes(encodedEnvelope),
-                "The real settings encoder must reproduce the exact captured envelope bytes.");
+            CollectionAssert.AreEqual(frozen.EnvelopeBytes, V6CaptureUtf8NoBom.GetBytes(encodedEnvelope),
+                "The real settings encoder remains an observed SUT result.");
             SaveV6ChecksumInspection encodedInspection = SaveV6ChecksumInspector.InspectSettings(encodedEnvelope);
             Assert.That(encodedInspection.Status, Is.EqualTo(SaveV6ChecksumStatus.ChecksumValid));
             Assert.That(encodedInspection.StoredChecksum, Is.EqualTo(capturedChecksum));
@@ -596,12 +641,14 @@ namespace Luckbound.Tests.PlayMode
             ExpeditionRoomCheckpointSaveData live = BuildRoomEntryCheckpoint(expedition, includeNullSlots);
             LegacyExpeditionRoomCheckpointSaveDataV6 legacy = AdaptCheckpointToLegacyV6(live);
             byte[] liveBytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(live, false));
-            byte[] legacyBytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(legacy, false));
+            byte[] legacyBytes = FrozenV6Emission.EmitCheckpoint(FrozenV6Recipe.BuildCheckpoint(includeNullSlots));
 
             CollectionAssert.AreEqual(capturedCheckpoint, liveBytes,
-                "The checkpoint's captured live JSON remains separate from parent-save checksum data.");
+                "The captured checkpoint is compared with the live DTO observation; it is not an expected producer.");
             CollectionAssert.AreEqual(capturedCheckpoint, legacyBytes,
-                "The captured checkpoint bytes must match the frozen-v6 checkpoint DTO.");
+                "The captured checkpoint bytes must match the frozen-v6 checkpoint recipe.");
+            CollectionAssert.AreEqual(legacyBytes, FrozenV6Emission.EmitCheckpoint(legacy),
+                "The live-to-historical adapter remains an observed compatibility check.");
         }
 
         [Test]
@@ -653,8 +700,17 @@ namespace Luckbound.Tests.PlayMode
                 ReadFixtureBytes(profilePrefix + "envelope.json"));
             string settingsJson = new UTF8Encoding(false, true).GetString(
                 ReadFixtureBytes(settingsPrefix + "envelope.json"));
-            byte[] expectedProfilePreimage = ReadFixtureBytes(profilePrefix + "checksum-preimage.utf8");
-            byte[] expectedSettingsPreimage = ReadFixtureBytes(settingsPrefix + "checksum-preimage.utf8");
+            FrozenV6ProfileEmission frozenProfile = FrozenV6Emission.EmitProfile(
+                FrozenV6Recipe.BuildProfile(ProfileCase.P3ReceiptsFull));
+            FrozenV6SettingsEmission frozenSettings = FrozenV6Emission.EmitSettings(FrozenV6Recipe.BuildSettings());
+            byte[] expectedProfilePreimage = frozenProfile.ChecksumPreimageUtf8;
+            byte[] expectedSettingsPreimage = frozenSettings.ChecksumPreimageUtf8;
+            CollectionAssert.AreEqual(ReadFixtureBytes(profilePrefix + "checksum-preimage.utf8"),
+                expectedProfilePreimage);
+            CollectionAssert.AreEqual(ReadFixtureBytes(settingsPrefix + "checksum-preimage.utf8"),
+                expectedSettingsPreimage);
+            CollectionAssert.AreEqual(V6CaptureUtf8NoBom.GetBytes(profileJson), frozenProfile.EnvelopeBytes);
+            CollectionAssert.AreEqual(V6CaptureUtf8NoBom.GetBytes(settingsJson), frozenSettings.EnvelopeBytes);
             CultureInfo originalCulture = CultureInfo.CurrentCulture;
 
             try
@@ -704,52 +760,62 @@ namespace Luckbound.Tests.PlayMode
             const string fixturePrefix = "V6-P3-receipts-full.Frozen.";
             string capturedEnvelope = new UTF8Encoding(false, true).GetString(
                 ReadFixtureBytes(fixturePrefix + "envelope.json"));
+            LegacyProfileSaveEnvelopeV6 frozen = FrozenV6Recipe.BuildProfile(ProfileCase.P3ReceiptsFull);
+            FrozenV6ProfileEmission frozenEmission = FrozenV6Emission.EmitProfile(frozen);
+            CollectionAssert.AreEqual(V6CaptureUtf8NoBom.GetBytes(capturedEnvelope), frozenEmission.EnvelopeBytes);
             ProfileSaveEnvelope captured;
             object decodeStatus = SaveJsonCodec.Decode(capturedEnvelope, out captured);
             Assert.That(decodeStatus.ToString(), Is.EqualTo("Valid"));
 
-            ProfileSaveEnvelope expected = BuildProfileEnvelope(ProfileCase.P3ReceiptsFull);
             Assert.That(captured.activeExpedition, Is.Not.Null);
-            CollectionAssert.AreEqual(expected.profile.unlockedRaceIds, captured.profile.unlockedRaceIds);
-            CollectionAssert.AreEqual(expected.profile.unlockedStartingKitIds, captured.profile.unlockedStartingKitIds);
-            CollectionAssert.AreEqual(expected.profile.processedSettlementRunIds, captured.profile.processedSettlementRunIds);
+            CollectionAssert.AreEqual(frozen.profile.unlockedRaceIds, captured.profile.unlockedRaceIds);
+            CollectionAssert.AreEqual(frozen.profile.unlockedStartingKitIds, captured.profile.unlockedStartingKitIds);
+            CollectionAssert.AreEqual(frozen.profile.processedSettlementRunIds, captured.profile.processedSettlementRunIds);
             CollectionAssert.AreEqual(
-                expected.profile.processedContractProgressEvents.Select(receipt =>
+                frozen.profile.processedContractProgressEvents.Select(receipt =>
                     receipt.eventId + ":" + receipt.progressEvent),
                 captured.profile.processedContractProgressEvents.Select(receipt =>
                     receipt.eventId + ":" + receipt.progressEvent));
             CollectionAssert.AreEqual(
-                expected.profile.progressionPurchaseTransactions.Select(transaction =>
+                frozen.profile.progressionPurchaseTransactions.Select(transaction =>
                     transaction.transactionId + ":" + transaction.kind + ":" + transaction.cost),
                 captured.profile.progressionPurchaseTransactions.Select(transaction =>
                     transaction.transactionId + ":" + transaction.kind + ":" + transaction.cost));
-            CollectionAssert.AreEqual(expected.activeExpedition.selectedSkillIds,
+            CollectionAssert.AreEqual(frozen.activeExpedition.selectedSkillIds,
                 captured.activeExpedition.selectedSkillIds);
-            CollectionAssert.AreEqual(expected.activeExpedition.startingEquipmentInstanceIds,
+            CollectionAssert.AreEqual(frozen.activeExpedition.startingEquipmentInstanceIds,
                 captured.activeExpedition.startingEquipmentInstanceIds);
-            CollectionAssert.AreEqual(expected.activeExpedition.visitedNodeIds,
+            CollectionAssert.AreEqual(frozen.activeExpedition.visitedNodeIds,
                 captured.activeExpedition.visitedNodeIds);
-            CollectionAssert.AreEqual(expected.activeExpedition.completedRoomIds,
+            CollectionAssert.AreEqual(frozen.activeExpedition.completedRoomIds,
                 captured.activeExpedition.completedRoomIds);
-            CollectionAssert.AreEqual(expected.activeExpedition.pactIds, captured.activeExpedition.pactIds);
-            CollectionAssert.AreEqual(expected.activeExpedition.collectedItemIds,
+            CollectionAssert.AreEqual(frozen.activeExpedition.pactIds, captured.activeExpedition.pactIds);
+            CollectionAssert.AreEqual(frozen.activeExpedition.collectedItemIds,
                 captured.activeExpedition.collectedItemIds);
-            CollectionAssert.AreEqual(expected.activeExpedition.claimedRewardIds,
+            CollectionAssert.AreEqual(frozen.activeExpedition.claimedRewardIds,
                 captured.activeExpedition.claimedRewardIds);
 
             Assert.That(captured.activeExpedition.routeSnapshotJson,
-                Is.EqualTo(expected.activeExpedition.routeSnapshotJson));
+                Is.EqualTo(frozen.activeExpedition.routeSnapshotJson));
             Assert.That(captured.activeExpedition.inventorySnapshotJson,
-                Is.EqualTo(expected.activeExpedition.inventorySnapshotJson));
+                Is.EqualTo(frozen.activeExpedition.inventorySnapshotJson));
             Assert.That(captured.activeExpedition.roomEntryCheckpointJson,
-                Is.EqualTo(expected.activeExpedition.roomEntryCheckpointJson));
+                Is.EqualTo(frozen.activeExpedition.roomEntryCheckpointJson));
             Assert.That(captured.activeExpedition.completedRoomResults[0].resultJson,
-                Is.EqualTo(expected.activeExpedition.completedRoomResults[0].resultJson));
+                Is.EqualTo(frozen.activeExpedition.completedRoomResults[0].resultJson));
         }
 
         [Test]
         public void CapturedNullEmptyAndFalseMarkerCasesKeepTheirDistinctRolesDespiteSharedBytes()
         {
+            FrozenV6ProfileEmission frozenUnknownNull = FrozenV6Emission.EmitProfile(
+                FrozenV6Recipe.BuildProfile(ProfileCase.P2UnknownNullFrozen));
+            FrozenV6ProfileEmission frozenUnknownInlineEmpty = FrozenV6Emission.EmitProfile(
+                FrozenV6Recipe.BuildProfile(ProfileCase.P2UnknownEmptyInlineFrozen));
+            FrozenV6ProfileEmission frozenNoActive = FrozenV6Emission.EmitProfile(
+                FrozenV6Recipe.BuildProfile(ProfileCase.P0NoActive));
+            FrozenV6ProfileEmission frozenFalseMarker = FrozenV6Emission.EmitProfile(
+                FrozenV6Recipe.BuildProfile(ProfileCase.P5FalseMarkerWithPayload));
             byte[] unknownNullEnvelope = ReadFixtureBytes(
                 "V6-P2-active-unknown-null.Frozen.envelope.json");
             byte[] unknownInlineEmptyEnvelope = ReadFixtureBytes(
@@ -770,6 +836,14 @@ namespace Luckbound.Tests.PlayMode
                 "The false marker excludes its payload from this checksum projection.");
             Assert.That(ByteArraysEqual(noActiveEnvelope, falseMarkerEnvelope), Is.False,
                 "The captured full envelope remains different even when projected checksum bytes coincide.");
+            CollectionAssert.AreEqual(frozenUnknownNull.EnvelopeBytes, unknownNullEnvelope);
+            CollectionAssert.AreEqual(frozenUnknownInlineEmpty.EnvelopeBytes, unknownInlineEmptyEnvelope);
+            CollectionAssert.AreEqual(frozenUnknownNull.ChecksumPreimageUtf8, unknownNullPreimage);
+            CollectionAssert.AreEqual(frozenUnknownInlineEmpty.ChecksumPreimageUtf8, unknownInlineEmptyPreimage);
+            CollectionAssert.AreEqual(frozenNoActive.EnvelopeBytes, noActiveEnvelope);
+            CollectionAssert.AreEqual(frozenFalseMarker.EnvelopeBytes, falseMarkerEnvelope);
+            CollectionAssert.AreEqual(frozenNoActive.ChecksumPreimageUtf8, noActivePreimage);
+            CollectionAssert.AreEqual(frozenFalseMarker.ChecksumPreimageUtf8, falseMarkerPreimage);
 
             string noActiveJson = new UTF8Encoding(false, true).GetString(noActiveEnvelope);
             string falseMarkerJson = new UTF8Encoding(false, true).GetString(falseMarkerEnvelope);
@@ -801,6 +875,11 @@ namespace Luckbound.Tests.PlayMode
         {
             byte[] profileBytes = ReadFixtureBytes("V6-P1-active-known-nontrivial.Frozen.envelope.json");
             byte[] settingsBytes = ReadFixtureBytes("V6-S0-settings.Frozen.envelope.json");
+            CollectionAssert.AreEqual(FrozenV6Emission.EmitProfile(
+                    FrozenV6Recipe.BuildProfile(ProfileCase.P1KnownFrozenNonTrivial)).EnvelopeBytes,
+                profileBytes);
+            CollectionAssert.AreEqual(FrozenV6Emission.EmitSettings(FrozenV6Recipe.BuildSettings()).EnvelopeBytes,
+                settingsBytes);
             string directory = Path.Combine(Path.GetTempPath(), "Luckbound.SaveV6Frozen." + Guid.NewGuid().ToString("N"));
             var store = new FileSaveStore(directory, null);
 
@@ -845,6 +924,747 @@ namespace Luckbound.Tests.PlayMode
             P3ReceiptsFull,
             P4NullEmptyBoundary,
             P5FalseMarkerWithPayload
+        }
+
+        private static class FrozenV6Recipe
+        {
+            private const uint HistoricalExpeditionSeed = 17320508u;
+            private const string HistoricalSavedAtUtc = "2000-01-01T00:00:00Z";
+
+            private static class FrozenV6RouteRecipe
+            {
+                internal const int GenerationVersion = 1;
+                internal const string CurrentNodeId = "patio.combat.01";
+                // Frozen once from the reviewed Core inputs; do not regenerate this expected string at runtime.
+                private const string CanonicalFormLiteral =
+                "route-v1|seed=01084A3C\n" +
+                "N|patio.combat.01|patio|Combat|room.patio.c2|1|0\n" +
+                "N|patio.exploration|patio|Exploration|room.patio.e1|1|1\n" +
+                "N|patio.combat.02|patio|Combat|room.patio.c3|1|2\n" +
+                "N|patio.special|patio|Narrative|room.patio.n|1|3\n" +
+                "N|patio.combat.03|patio|Combat|room.patio.c5|1|4\n" +
+                "N|patio.guardian|patio|Guardian|room.patio.guardian|1|5\n" +
+                "N|patio.optional.combat|patio|OptionalCombat|room.patio.c4|0|-1\n" +
+                "N|hub.rest.01||Rest|room.hub.rest|1|6\n" +
+                "N|archivo.combat.01|archivo|Combat|room.archivo.c5|1|7\n" +
+                "N|archivo.exploration|archivo|Exploration|room.archivo.e1|1|8\n" +
+                "N|archivo.combat.02|archivo|Combat|room.archivo.c1|1|9\n" +
+                "N|archivo.special|archivo|Treasure|room.archivo.t|1|10\n" +
+                "N|archivo.combat.03|archivo|Combat|room.archivo.c2|1|11\n" +
+                "N|archivo.guardian|archivo|Guardian|room.archivo.guardian|1|12\n" +
+                "N|archivo.optional.combat|archivo|OptionalCombat|room.archivo.c4|0|-1\n" +
+                "N|hub.rest.02||Rest|room.hub.rest|1|13\n" +
+                "N|forjas.combat.01|forjas|Combat|room.forjas.c3|1|14\n" +
+                "N|forjas.exploration|forjas|Exploration|room.forjas.e2|1|15\n" +
+                "N|forjas.combat.02|forjas|Combat|room.forjas.c2|1|16\n" +
+                "N|forjas.special|forjas|Pact|room.forjas.p|1|17\n" +
+                "N|forjas.combat.03|forjas|Combat|room.forjas.c1|1|18\n" +
+                "N|forjas.guardian|forjas|Guardian|room.forjas.guardian|1|19\n" +
+                "N|forjas.optional.combat|forjas|OptionalCombat|room.forjas.c4|0|-1\n" +
+                "N|final.boss||FinalBoss|room.final.arena|1|20\n" +
+                "E|patio.combat.01|port.exit.east|patio.exploration|port.entry.west|0\n" +
+                "E|patio.exploration|port.exit.east|patio.combat.02|port.entry.west|0\n" +
+                "E|patio.combat.02|port.exit.east|patio.special|port.entry.west|0\n" +
+                "E|patio.special|port.exit.east|patio.combat.03|port.entry.west|0\n" +
+                "E|patio.combat.03|port.exit.east|patio.guardian|port.entry.west|0\n" +
+                "E|patio.guardian|port.exit.east|hub.rest.01|port.entry.west|0\n" +
+                "E|hub.rest.01|port.exit.east|archivo.combat.01|port.entry.west|0\n" +
+                "E|archivo.combat.01|port.exit.east|archivo.exploration|port.entry.west|0\n" +
+                "E|archivo.exploration|port.exit.east|archivo.combat.02|port.entry.west|0\n" +
+                "E|archivo.combat.02|port.exit.east|archivo.special|port.entry.west|0\n" +
+                "E|archivo.special|port.exit.east|archivo.combat.03|port.entry.west|0\n" +
+                "E|archivo.combat.03|port.exit.east|archivo.guardian|port.entry.west|0\n" +
+                "E|archivo.guardian|port.exit.east|hub.rest.02|port.entry.west|0\n" +
+                "E|hub.rest.02|port.exit.east|forjas.combat.01|port.entry.west|0\n" +
+                "E|forjas.combat.01|port.exit.east|forjas.exploration|port.entry.west|0\n" +
+                "E|forjas.exploration|port.exit.east|forjas.combat.02|port.entry.west|0\n" +
+                "E|forjas.combat.02|port.exit.east|forjas.special|port.entry.west|0\n" +
+                "E|forjas.special|port.exit.east|forjas.combat.03|port.entry.west|0\n" +
+                "E|forjas.combat.03|port.exit.east|forjas.guardian|port.entry.west|0\n" +
+                "E|forjas.guardian|port.exit.east|final.boss|port.entry.west|0\n" +
+                "E|patio.combat.02|port.exit.east|patio.optional.combat|port.entry.west|1\n" +
+                "E|patio.optional.combat|port.exit.east|patio.special|port.entry.west|1\n" +
+                "E|archivo.combat.02|port.exit.east|archivo.optional.combat|port.entry.west|1\n" +
+                "E|archivo.optional.combat|port.exit.east|archivo.special|port.entry.west|1\n" +
+                "E|forjas.combat.02|port.exit.east|forjas.optional.combat|port.entry.west|1\n" +
+                "E|forjas.optional.combat|port.exit.east|forjas.special|port.entry.west|1\n" +
+                "M|patio.combat.01,patio.exploration,patio.combat.02,patio.special,patio.combat.03,patio.guardian,hub.rest.01,archivo.combat.01,archivo.exploration,archivo.combat.02,archivo.special,archivo.combat.03,archivo.guardian,hub.rest.02,forjas.combat.01,forjas.exploration,forjas.combat.02,forjas.special,forjas.combat.03,forjas.guardian,final.boss";
+
+                internal static string CanonicalForm => CanonicalFormLiteral;
+            }
+
+            private static class FrozenV6InventoryRecipe
+            {
+                // Frozen shape/defaults from Core Inventory; hashes and copied declaration order are in the stage report.
+                private const int SnapshotSchemaVersion = 4;
+                private const int BackpackCapacity = 12;
+                private static readonly int[] MaterialKindOrdinals = { 0, 1, 2, 3, 4, 5 };
+
+                internal static string BuildJson(string weaponInstanceId, string armorInstanceId)
+                {
+                    var materials = new FrozenV6MaterialCountSnapshot[MaterialKindOrdinals.Length];
+                    var remainders = new FrozenV6WorldMaterialRemainderSnapshot[MaterialKindOrdinals.Length];
+                    for (int index = 0; index < MaterialKindOrdinals.Length; index++)
+                    {
+                        materials[index] = new FrozenV6MaterialCountSnapshot
+                        {
+                            kind = MaterialKindOrdinals[index],
+                            count = 0
+                        };
+                        remainders[index] = new FrozenV6WorldMaterialRemainderSnapshot
+                        {
+                            kind = MaterialKindOrdinals[index],
+                            remainder = 0
+                        };
+                    }
+
+                    var snapshot = new FrozenV6InventorySnapshot
+                    {
+                        snapshotVersion = SnapshotSchemaVersion,
+                        classId = "class.magus",
+                        gold = 0,
+                        weapon = new FrozenV6InventoryStackSnapshot
+                        {
+                            instanceId = weaponInstanceId,
+                            itemId = "weapon.magus.ember_staff",
+                            rarity = 0,
+                            upgradeLevel = 0,
+                            quantity = 1
+                        },
+                        armor = new FrozenV6InventoryStackSnapshot
+                        {
+                            instanceId = armorInstanceId,
+                            itemId = "armor.magus.traveler_robe",
+                            rarity = 0,
+                            upgradeLevel = 0,
+                            quantity = 1
+                        },
+                        relicOne = null,
+                        relicTwo = null,
+                        backpackSlots = new FrozenV6InventoryStackSnapshot[BackpackCapacity],
+                        quickConsumableInstanceId = string.Empty,
+                        materials = materials,
+                        worldMaterialRemainders = remainders,
+                        merchantRunId = string.Empty,
+                        merchantStocks = Array.Empty<FrozenV6MerchantStockSnapshot>(),
+                        restStops = Array.Empty<FrozenV6RestStopUseSnapshot>(),
+                        transactions = Array.Empty<FrozenV6InventoryTransactionSnapshot>()
+                    };
+                    return JsonUtility.ToJson(snapshot, false);
+                }
+
+                [Serializable]
+                private sealed class FrozenV6InventorySnapshot
+                {
+                    public int snapshotVersion;
+                    public string classId;
+                    public int gold;
+                    public FrozenV6InventoryStackSnapshot weapon;
+                    public FrozenV6InventoryStackSnapshot armor;
+                    public FrozenV6InventoryStackSnapshot relicOne;
+                    public FrozenV6InventoryStackSnapshot relicTwo;
+                    public FrozenV6InventoryStackSnapshot[] backpackSlots = Array.Empty<FrozenV6InventoryStackSnapshot>();
+                    public string quickConsumableInstanceId;
+                    public FrozenV6MaterialCountSnapshot[] materials = Array.Empty<FrozenV6MaterialCountSnapshot>();
+                    public FrozenV6WorldMaterialRemainderSnapshot[] worldMaterialRemainders =
+                        Array.Empty<FrozenV6WorldMaterialRemainderSnapshot>();
+                    public string merchantRunId = string.Empty;
+                    public FrozenV6MerchantStockSnapshot[] merchantStocks = Array.Empty<FrozenV6MerchantStockSnapshot>();
+                    public FrozenV6RestStopUseSnapshot[] restStops = Array.Empty<FrozenV6RestStopUseSnapshot>();
+                    public FrozenV6InventoryTransactionSnapshot[] transactions =
+                        Array.Empty<FrozenV6InventoryTransactionSnapshot>();
+                }
+
+                [Serializable]
+                private sealed class FrozenV6InventoryStackSnapshot
+                {
+                    public string instanceId;
+                    public string itemId;
+                    public int rarity;
+                    public int upgradeLevel;
+                    public int quantity;
+                }
+
+                [Serializable]
+                private sealed class FrozenV6MaterialCountSnapshot
+                {
+                    public int kind;
+                    public int count;
+                }
+
+                [Serializable]
+                private sealed class FrozenV6WorldMaterialRemainderSnapshot
+                {
+                    public int kind;
+                    public int remainder;
+                }
+
+                [Serializable]
+                private sealed class FrozenV6MerchantStockSnapshot
+                {
+                    public string roomInstanceId;
+                    public FrozenV6MerchantOfferSnapshot[] offers = Array.Empty<FrozenV6MerchantOfferSnapshot>();
+                }
+
+                [Serializable]
+                private sealed class FrozenV6MerchantOfferSnapshot
+                {
+                    public string itemId;
+                    public int rarity;
+                    public int initialQuantity;
+                    public int remainingQuantity;
+                }
+
+                [Serializable]
+                private sealed class FrozenV6RestStopUseSnapshot
+                {
+                    public string roomInstanceId;
+                    public bool entered;
+                    public int entryHealthRestored;
+                    public bool taliaUsed;
+                    public int taliaHealthRestored;
+                    public int taliaHealthAfter;
+                }
+
+                [Serializable]
+                private sealed class FrozenV6InventoryTransactionSnapshot
+                {
+                    public string transactionId;
+                    public string signature;
+                    public int status;
+                    public string itemId;
+                    public FrozenV6InventoryStackSnapshot displacedItem;
+                    public int craftingStatus;
+                    public string craftingRecipeId;
+                    public FrozenV6InventoryStackSnapshot[] craftingResultStacks =
+                        Array.Empty<FrozenV6InventoryStackSnapshot>();
+                    public bool smithingRejectedNonUpgradeRecipe;
+                    public int economyStatus;
+                    public string economyItemInstanceId;
+                    public int economyQuantity;
+                    public int economyGoldDelta;
+                    public int economyResultingHealth;
+                    public int economyHealthRestored;
+                    public string economyRoomInstanceId;
+                }
+            }
+
+            private static class FrozenV6FortuneRecipe
+            {
+                // These Legacy* values are the recorded result of one Core-only derivation, not a live book execution.
+                internal static LegacyFortuneOfferBookSnapshotV6 BuildSparse()
+                {
+                    return new LegacyFortuneOfferBookSnapshotV6
+                    {
+                        snapshotVersion = 3,
+                        generationVersion = FrozenV6RouteRecipe.GenerationVersion,
+                        seed = HistoricalExpeditionSeed,
+                        raceId = "race.human",
+                        charges = 2,
+                        offers = Array.Empty<LegacyFortuneOfferSnapshotV6>(),
+                        processedGuardianIds = Array.Empty<string>(),
+                        rerollReceipts = Array.Empty<LegacyFortuneRerollReceiptSnapshotV6>(),
+                        fortuneBrewReceipts = Array.Empty<LegacyFortuneBrewReceiptSnapshotV6>()
+                    };
+                }
+
+                internal static LegacyFortuneOfferBookSnapshotV6 BuildWithReceipts()
+                {
+                    return new LegacyFortuneOfferBookSnapshotV6
+                    {
+                        snapshotVersion = 3,
+                        generationVersion = FrozenV6RouteRecipe.GenerationVersion,
+                        seed = HistoricalExpeditionSeed,
+                        raceId = "race.human",
+                        charges = 2,
+                        offers = new[]
+                        {
+                            new LegacyFortuneOfferSnapshotV6
+                            {
+                                offerId = "patio.guardian",
+                                contextId = "patio.guardian",
+                                eligibleOptionIds = new[]
+                                {
+                                    "consumable.antidote",
+                                    "consumable.bomb",
+                                    "consumable.energy_tonic",
+                                    "consumable.fortune_brew",
+                                    "consumable.health_potion",
+                                    "consumable.torch"
+                                },
+                                history = new[]
+                                {
+                                    new LegacyFortuneOfferHistorySnapshotV6
+                                    {
+                                        optionIds = new[]
+                                        {
+                                            "consumable.bomb",
+                                            "consumable.health_potion",
+                                            "consumable.fortune_brew"
+                                        }
+                                    },
+                                    new LegacyFortuneOfferHistorySnapshotV6
+                                    {
+                                        optionIds = new[]
+                                        {
+                                            "consumable.antidote",
+                                            "consumable.health_potion",
+                                            "consumable.energy_tonic"
+                                        }
+                                    },
+                                    new LegacyFortuneOfferHistorySnapshotV6
+                                    {
+                                        optionIds = new[]
+                                        {
+                                            "consumable.antidote",
+                                            "consumable.torch",
+                                            "consumable.fortune_brew"
+                                        }
+                                    }
+                                },
+                                selectedOptionId = "consumable.antidote",
+                                claimed = true
+                            }
+                        },
+                        processedGuardianIds = new[] { "patio.guardian" },
+                        rerollReceipts = new[]
+                        {
+                            new LegacyFortuneRerollReceiptSnapshotV6
+                            {
+                                transactionId = "00000015000000000000000000000001",
+                                offerId = "patio.guardian",
+                                status = 0,
+                                contextId = "patio.guardian",
+                                optionIds = new[]
+                                {
+                                    "consumable.antidote",
+                                    "consumable.health_potion",
+                                    "consumable.energy_tonic"
+                                },
+                                selectedOptionId = string.Empty,
+                                rerollCount = 1,
+                                claimed = false,
+                                remainingCharges = 2,
+                                hasOffer = true
+                            },
+                            new LegacyFortuneRerollReceiptSnapshotV6
+                            {
+                                transactionId = "00000016000000000000000000000001",
+                                offerId = "patio.guardian",
+                                status = 0,
+                                contextId = "patio.guardian",
+                                optionIds = new[]
+                                {
+                                    "consumable.antidote",
+                                    "consumable.torch",
+                                    "consumable.fortune_brew"
+                                },
+                                selectedOptionId = string.Empty,
+                                rerollCount = 2,
+                                claimed = false,
+                                remainingCharges = 1,
+                                hasOffer = true
+                            }
+                        },
+                        fortuneBrewReceipts = new[]
+                        {
+                            new LegacyFortuneBrewReceiptSnapshotV6
+                            {
+                                transactionId = "00000018000000000000000000000001",
+                                itemInstanceId = "00000017000000000000000000000001",
+                                status = 0,
+                                currentCharges = 2
+                            }
+                        }
+                    };
+                }
+            }
+
+            internal static LegacyProfileSaveEnvelopeV6 BuildProfile(ProfileCase profileCase)
+            {
+                bool includeReceipts = profileCase == ProfileCase.P3ReceiptsFull;
+                bool hasPayload = profileCase != ProfileCase.P0NoActive;
+                LegacyExpeditionSaveDataV6 expedition = hasPayload
+                    ? BuildHistoricalActiveExpedition(profileCase)
+                    : null;
+                var envelope = new LegacyProfileSaveEnvelopeV6
+                {
+                    schemaVersion = 1,
+                    contentVersion = 6,
+                    generation = 1,
+                    sequence = 11,
+                    savedAtUtc = HistoricalSavedAtUtc,
+                    checksum = string.Empty,
+                    profile = BuildHistoricalProfileData(includeReceipts),
+                    hasActiveExpedition = profileCase != ProfileCase.P0NoActive &&
+                        profileCase != ProfileCase.P5FalseMarkerWithPayload,
+                    activeExpedition = expedition
+                };
+
+                if (profileCase == ProfileCase.P4NullEmptyBoundary)
+                    AddHistoricalNullEmptyBoundaries(envelope);
+                return envelope;
+            }
+
+            internal static LegacySettingsSaveEnvelopeV6 BuildSettings()
+            {
+                return new LegacySettingsSaveEnvelopeV6
+                {
+                    schemaVersion = 1,
+                    contentVersion = 6,
+                    generation = 1,
+                    sequence = 11,
+                    savedAtUtc = HistoricalSavedAtUtc,
+                    checksum = string.Empty,
+                    settings = new LegacyGameSettingsSaveDataV6
+                    {
+                        languageId = "en",
+                        masterVolume = 0.8f,
+                        musicVolume = 0.4f,
+                        effectsVolume = 0.7f,
+                        ambienceVolume = 0.3f
+                    }
+                };
+            }
+
+            internal static LegacyExpeditionRoomCheckpointSaveDataV6 BuildCheckpoint(bool includeNullSlots)
+            {
+                LegacyExpeditionSaveDataV6 expedition = BuildHistoricalActiveExpedition(
+                    ProfileCase.P1KnownFrozenNonTrivial);
+                return BuildHistoricalCheckpoint(expedition, includeNullSlots);
+            }
+
+            private static string HistoricalGuidN(int seed)
+            {
+                var bytes = new byte[16];
+                bytes[0] = (byte)seed;
+                bytes[15] = 1;
+                return new Guid(bytes).ToString("N");
+            }
+
+            private static LegacyProfileSaveDataV6 BuildHistoricalProfileData(bool includeReceipts)
+            {
+                var profile = new LegacyProfileSaveDataV6
+                {
+                    unlockedRaceIds = new[] { "race.human" },
+                    unlockedStartingKitIds = new[]
+                    {
+                        "weapon.bellator.rusted_sword",
+                        "weapon.venator.short_bow",
+                        "weapon.magus.ember_staff"
+                    },
+                    acceptedContractIds = Array.Empty<string>(),
+                    claimedContractIds = Array.Empty<string>(),
+                    readStoryFragmentIds = Array.Empty<string>(),
+                    contractCounters = Array.Empty<LegacyContractCounterSaveDataV6>(),
+                    processedSettlementRunIds = Array.Empty<string>(),
+                    processedContractProgressEvents = Array.Empty<LegacyContractProgressEventReceiptSaveDataV6>(),
+                    progressionPurchaseTransactions = Array.Empty<LegacyPermanentUpgradePurchaseSaveDataV6>()
+                };
+
+                if (!includeReceipts) return profile;
+
+                profile.availableRenown = 33;
+                profile.healthUpgradeLevel = 2;
+                profile.energyUpgradeLevel = 2;
+                profile.additionalPotionUpgradeLevel = 1;
+                profile.unlockedRaceIds = new[] { "race.human", "race.dvergar" };
+                profile.unlockedStartingKitIds = new[]
+                {
+                    "weapon.bellator.rusted_sword",
+                    "weapon.venator.short_bow",
+                    "weapon.magus.ember_staff",
+                    "armor.bellator.guild_cuirass"
+                };
+                profile.acceptedContractIds = new[] { "CT04" };
+                profile.claimedContractIds = new[] { "CT04" };
+                profile.contractCounters = new[]
+                {
+                    new LegacyContractCounterSaveDataV6 { contractId = "CT04", progress = 3 }
+                };
+                profile.processedSettlementRunIds = new[] { "000000000000000000000000000000d8" };
+                profile.processedContractProgressEvents = new[]
+                {
+                    new LegacyContractProgressEventReceiptSaveDataV6
+                        { eventId = "test/craft/0", progressEvent = 4 },
+                    new LegacyContractProgressEventReceiptSaveDataV6
+                        { eventId = "test/craft/1", progressEvent = 4 },
+                    new LegacyContractProgressEventReceiptSaveDataV6
+                        { eventId = "test/craft/2", progressEvent = 4 }
+                };
+                // Frozen historical ordinal ItemCrafted=4; copied from ContractDefinition.cs SHA-256 fd9f743c2a0cee11ed6fa244c10687c3e2751722ef3c050a7fff67eb57623195.
+                // Frozen historical int ordinals (health=0, energy=1, potion=2); provenance is recorded in the stage report.
+                profile.progressionPurchaseTransactions = new[]
+                {
+                    new LegacyPermanentUpgradePurchaseSaveDataV6
+                    {
+                        transactionId = HistoricalGuidN(1),
+                        kind = 0,
+                        cost = 60
+                    },
+                    new LegacyPermanentUpgradePurchaseSaveDataV6
+                    {
+                        transactionId = HistoricalGuidN(2),
+                        kind = 0,
+                        cost = 120
+                    },
+                    new LegacyPermanentUpgradePurchaseSaveDataV6
+                    {
+                        transactionId = HistoricalGuidN(3),
+                        kind = 1,
+                        cost = 60
+                    },
+                    new LegacyPermanentUpgradePurchaseSaveDataV6
+                    {
+                        transactionId = HistoricalGuidN(4),
+                        kind = 1,
+                        cost = 120
+                    },
+                    new LegacyPermanentUpgradePurchaseSaveDataV6
+                    {
+                        transactionId = HistoricalGuidN(5),
+                        kind = 2,
+                        cost = 150
+                    }
+                };
+                return profile;
+            }
+
+            private static LegacyExpeditionSaveDataV6 BuildHistoricalActiveExpedition(ProfileCase profileCase)
+            {
+                string runId = HistoricalGuidN(41);
+                string weaponInstanceId = HistoricalGuidN(42);
+                string armorInstanceId = HistoricalGuidN(43);
+                LegacyFortuneOfferBookSnapshotV6 fortuneBook = profileCase == ProfileCase.P2UnknownNullFrozen ||
+                    profileCase == ProfileCase.P2UnknownEmptyInlineFrozen || profileCase == ProfileCase.P4NullEmptyBoundary
+                    ? FrozenV6FortuneRecipe.BuildSparse()
+                    : FrozenV6FortuneRecipe.BuildWithReceipts();
+                string inventoryJson = FrozenV6InventoryRecipe.BuildJson(weaponInstanceId, armorInstanceId);
+                bool isKnownZero = profileCase == ProfileCase.P1KnownFrozenZero;
+                bool isKnownNonTrivial = profileCase == ProfileCase.P1KnownFrozenNonTrivial ||
+                    profileCase == ProfileCase.P3ReceiptsFull || profileCase == ProfileCase.P5FalseMarkerWithPayload;
+                bool hasFrozen = isKnownZero || isKnownNonTrivial;
+                var expedition = new LegacyExpeditionSaveDataV6
+                {
+                    runId = runId,
+                        seed = HistoricalExpeditionSeed,
+                    generationVersion = FrozenV6RouteRecipe.GenerationVersion,
+                    contentVersion = 6,
+                    classId = "class.magus",
+                    raceId = "race.human",
+                    selectedSkillIds = new[] { "skill.magus.fireball", "skill.magus.frost_nova" },
+                    startingEquipmentInstanceIds = new[] { weaponInstanceId, armorInstanceId },
+                    routeSnapshotJson = FrozenV6RouteRecipe.CanonicalForm,
+                    currentNodeId = FrozenV6RouteRecipe.CurrentNodeId,
+                    visitedNodeIds = new[] { FrozenV6RouteRecipe.CurrentNodeId },
+                    completedRoomIds = Array.Empty<string>(),
+                    completedRoomResults = Array.Empty<LegacyExpeditionRoomCompletionSaveDataV6>(),
+                    inventorySnapshotJson = inventoryJson,
+                    maximumHealth = 110,
+                    currentHealth = 64,
+                    maximumEnergy = 50,
+                    currentEnergy = 37,
+                    healthPotionCharges = 2,
+                    frozenPermanentUpgrades = hasFrozen
+                        ? new LegacyExpeditionPermanentUpgradeSnapshotSaveDataV6
+                        {
+                            healthUpgradeLevel = isKnownNonTrivial ? 2 : 0,
+                            energyUpgradeLevel = isKnownNonTrivial ? 2 : 0,
+                            additionalPotionUpgradeLevel = isKnownNonTrivial ? 1 : 0
+                        }
+                        : null,
+                    hasFrozenPermanentUpgrades = hasFrozen,
+                    accumulatedRenown = 0,
+                    pactIds = Array.Empty<string>(),
+                    fortuneOfferBookSnapshot = fortuneBook,
+                    collectedItemIds = Array.Empty<string>(),
+                    claimedRewardIds = Array.Empty<string>()
+                };
+
+                expedition.roomEntryCheckpointJson = JsonUtility.ToJson(
+                    BuildHistoricalCheckpoint(expedition, false), false);
+                if (profileCase == ProfileCase.P3ReceiptsFull)
+                {
+                    const string resultJson = "{\"outcome\":\"cleared\",\"renown\":12,\"lootId\":\"reward.d09.test\"}";
+                    expedition.completedRoomIds = new[] { expedition.currentNodeId };
+                    expedition.completedRoomResults = new[]
+                    {
+                        new LegacyExpeditionRoomCompletionSaveDataV6
+                        {
+                            roomNodeId = expedition.currentNodeId,
+                            resultId = "result." + expedition.currentNodeId,
+                            resultJson = resultJson
+                        }
+                    };
+                    expedition.roomEntryCheckpointJson = string.Empty;
+                }
+
+                if (profileCase == ProfileCase.P2UnknownEmptyInlineFrozen)
+                    expedition.frozenPermanentUpgrades = new LegacyExpeditionPermanentUpgradeSnapshotSaveDataV6();
+                return expedition;
+            }
+
+            private static LegacyExpeditionRoomCheckpointSaveDataV6 BuildHistoricalCheckpoint(
+                LegacyExpeditionSaveDataV6 expedition, bool includeNullSlots)
+            {
+                return new LegacyExpeditionRoomCheckpointSaveDataV6
+                {
+                    roomNodeId = expedition.currentNodeId,
+                    inventorySnapshotJson = expedition.inventorySnapshotJson,
+                    maximumHealth = expedition.maximumHealth,
+                    currentHealth = expedition.currentHealth,
+                    maximumEnergy = expedition.maximumEnergy,
+                    currentEnergy = expedition.currentEnergy,
+                    healthPotionCharges = expedition.healthPotionCharges,
+                    accumulatedRenown = expedition.accumulatedRenown,
+                    fortuneOfferBookSnapshot = expedition.fortuneOfferBookSnapshot,
+                    pactIds = includeNullSlots ? new string[] { null } : Array.Empty<string>(),
+                    collectedItemIds = Array.Empty<string>(),
+                    claimedRewardIds = includeNullSlots ? null : Array.Empty<string>()
+                };
+            }
+
+            private static void AddHistoricalNullEmptyBoundaries(LegacyProfileSaveEnvelopeV6 envelope)
+            {
+                envelope.profile.unlockedRaceIds = null;
+                envelope.profile.unlockedStartingKitIds = Array.Empty<string>();
+                envelope.profile.acceptedContractIds = new[] { "CT04" };
+                envelope.profile.claimedContractIds = Array.Empty<string>();
+                envelope.profile.readStoryFragmentIds = null;
+                envelope.profile.contractCounters = new LegacyContractCounterSaveDataV6[]
+                {
+                    null,
+                    new LegacyContractCounterSaveDataV6 { contractId = "CT04", progress = 3 }
+                };
+                envelope.profile.processedSettlementRunIds = Array.Empty<string>();
+                envelope.profile.processedContractProgressEvents = null;
+                envelope.profile.progressionPurchaseTransactions = new LegacyPermanentUpgradePurchaseSaveDataV6[]
+                {
+                    null
+                };
+
+                LegacyExpeditionSaveDataV6 expedition = envelope.activeExpedition;
+                expedition.selectedSkillIds = null;
+                expedition.startingEquipmentInstanceIds = Array.Empty<string>();
+                expedition.visitedNodeIds = null;
+                expedition.completedRoomIds = Array.Empty<string>();
+                expedition.completedRoomResults = new LegacyExpeditionRoomCompletionSaveDataV6[]
+                {
+                    null,
+                    new LegacyExpeditionRoomCompletionSaveDataV6
+                    {
+                        roomNodeId = expedition.currentNodeId,
+                        resultId = "result." + expedition.currentNodeId,
+                        resultJson = "{\"value\":\"input-only\"}"
+                    }
+                };
+                expedition.pactIds = Array.Empty<string>();
+                expedition.collectedItemIds = null;
+                expedition.claimedRewardIds = Array.Empty<string>();
+                expedition.frozenPermanentUpgrades = new LegacyExpeditionPermanentUpgradeSnapshotSaveDataV6();
+                expedition.hasFrozenPermanentUpgrades = false;
+                expedition.fortuneOfferBookSnapshot = new LegacyFortuneOfferBookSnapshotV6
+                {
+                    snapshotVersion = 3,
+                    generationVersion = expedition.generationVersion,
+                    seed = expedition.seed,
+                    raceId = expedition.raceId,
+                    charges = 0,
+                    offers = null,
+                    processedGuardianIds = Array.Empty<string>(),
+                    rerollReceipts = new LegacyFortuneRerollReceiptSnapshotV6[] { null },
+                    fortuneBrewReceipts = null
+                };
+            }
+        }
+
+        private sealed class FrozenV6ProfileEmission
+        {
+            internal string InputJson;
+            internal string EnvelopeJson;
+            internal byte[] EnvelopeBytes;
+            internal byte[] ChecksumPreimageUtf8;
+            internal string Checksum;
+        }
+
+        private sealed class FrozenV6SettingsEmission
+        {
+            internal string InputJson;
+            internal string EnvelopeJson;
+            internal byte[] EnvelopeBytes;
+            internal byte[] ChecksumPreimageUtf8;
+            internal string Checksum;
+        }
+
+        private static class FrozenV6Emission
+        {
+            internal static FrozenV6ProfileEmission EmitProfile(LegacyProfileSaveEnvelopeV6 frozen6)
+            {
+                if (frozen6 == null) throw new ArgumentNullException(nameof(frozen6));
+                if (frozen6.schemaVersion != 1 || frozen6.contentVersion != 6)
+                    throw new ArgumentException("Frozen profile emission requires literal schema 1/content 6.", nameof(frozen6));
+
+                string inputJson = JsonUtility.ToJson(frozen6, false);
+                byte[] preimage = SaveV6ChecksumInspector.GetProfileChecksumPreimage(frozen6);
+                string checksum = ComputeSha256(preimage);
+                var envelope = new LegacyProfileSaveEnvelopeV6
+                {
+                    schemaVersion = frozen6.schemaVersion,
+                    contentVersion = frozen6.contentVersion,
+                    generation = frozen6.generation,
+                    sequence = frozen6.sequence,
+                    savedAtUtc = frozen6.savedAtUtc,
+                    checksum = checksum,
+                    profile = frozen6.profile,
+                    hasActiveExpedition = frozen6.hasActiveExpedition,
+                    activeExpedition = frozen6.activeExpedition
+                };
+                string envelopeJson = JsonUtility.ToJson(envelope, false);
+                return new FrozenV6ProfileEmission
+                {
+                    InputJson = inputJson,
+                    EnvelopeJson = envelopeJson,
+                    EnvelopeBytes = V6CaptureUtf8NoBom.GetBytes(envelopeJson),
+                    ChecksumPreimageUtf8 = preimage,
+                    Checksum = checksum
+                };
+            }
+
+            internal static FrozenV6SettingsEmission EmitSettings(LegacySettingsSaveEnvelopeV6 frozen6)
+            {
+                if (frozen6 == null) throw new ArgumentNullException(nameof(frozen6));
+                if (frozen6.schemaVersion != 1 || frozen6.contentVersion != 6)
+                    throw new ArgumentException("Frozen settings emission requires literal schema 1/content 6.", nameof(frozen6));
+
+                string inputJson = JsonUtility.ToJson(frozen6, false);
+                byte[] preimage = SaveV6ChecksumInspector.GetSettingsChecksumPreimage(frozen6);
+                string checksum = ComputeSha256(preimage);
+                var envelope = new LegacySettingsSaveEnvelopeV6
+                {
+                    schemaVersion = frozen6.schemaVersion,
+                    contentVersion = frozen6.contentVersion,
+                    generation = frozen6.generation,
+                    sequence = frozen6.sequence,
+                    savedAtUtc = frozen6.savedAtUtc,
+                    checksum = checksum,
+                    settings = frozen6.settings
+                };
+                string envelopeJson = JsonUtility.ToJson(envelope, false);
+                return new FrozenV6SettingsEmission
+                {
+                    InputJson = inputJson,
+                    EnvelopeJson = envelopeJson,
+                    EnvelopeBytes = V6CaptureUtf8NoBom.GetBytes(envelopeJson),
+                    ChecksumPreimageUtf8 = preimage,
+                    Checksum = checksum
+                };
+            }
+
+            internal static byte[] EmitCheckpoint(LegacyExpeditionRoomCheckpointSaveDataV6 frozen6)
+            {
+                if (frozen6 == null) throw new ArgumentNullException(nameof(frozen6));
+                return V6CaptureUtf8NoBom.GetBytes(JsonUtility.ToJson(frozen6, false));
+            }
         }
 
         private static ProfileSaveEnvelope BuildProfileEnvelope(ProfileCase profileCase)
@@ -1857,10 +2677,98 @@ namespace Luckbound.Tests.PlayMode
             lock (V6CaptureGate) return _v6CaptureSession;
         }
 
+        private static void AssertFrozenProfileEmissionIsRepeatableAndNonMutating(
+            ProfileCase profileCase, FrozenV6ProfileEmission assertedEmission)
+        {
+            LegacyProfileSaveEnvelopeV6 frozen = FrozenV6Recipe.BuildProfile(profileCase);
+            Assert.That(frozen.schemaVersion, Is.EqualTo(1), "The frozen profile header is a literal historical schema.");
+            Assert.That(frozen.contentVersion, Is.EqualTo(6), "The frozen profile header is a literal historical content version.");
+            Assert.That(frozen.checksum, Is.EqualTo(string.Empty));
+            string before = JsonUtility.ToJson(frozen, false);
+            FrozenV6ProfileEmission first = FrozenV6Emission.EmitProfile(frozen);
+            FrozenV6ProfileEmission second = FrozenV6Emission.EmitProfile(frozen);
+            string after = JsonUtility.ToJson(frozen, false);
+            LegacyProfileSaveEnvelopeV6 emittedEnvelope = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV6>(first.EnvelopeJson);
+
+            Assert.That(after, Is.EqualTo(before), "Emission must not mutate the frozen DTO tree.");
+            Assert.That(frozen.checksum, Is.EqualTo(string.Empty));
+            Assert.That(emittedEnvelope.schemaVersion, Is.EqualTo(1));
+            Assert.That(emittedEnvelope.contentVersion, Is.EqualTo(6));
+            Assert.That(emittedEnvelope.checksum, Is.EqualTo(first.Checksum));
+            Assert.That(first.Checksum, Is.EqualTo(ComputeSha256(first.ChecksumPreimageUtf8)));
+            Assert.That(first.InputJson, Is.EqualTo(second.InputJson));
+            Assert.That(first.EnvelopeJson, Is.EqualTo(second.EnvelopeJson));
+            Assert.That(first.Checksum, Is.EqualTo(second.Checksum));
+            Assert.That(first.EnvelopeBytes, Is.Not.SameAs(second.EnvelopeBytes));
+            Assert.That(first.ChecksumPreimageUtf8, Is.Not.SameAs(second.ChecksumPreimageUtf8));
+            CollectionAssert.AreEqual(first.EnvelopeBytes, second.EnvelopeBytes);
+            CollectionAssert.AreEqual(first.ChecksumPreimageUtf8, second.ChecksumPreimageUtf8);
+            Assert.That(first.InputJson, Is.EqualTo(assertedEmission.InputJson));
+            Assert.That(first.EnvelopeJson, Is.EqualTo(assertedEmission.EnvelopeJson));
+            Assert.That(first.Checksum, Is.EqualTo(assertedEmission.Checksum));
+            CollectionAssert.AreEqual(first.ChecksumPreimageUtf8, assertedEmission.ChecksumPreimageUtf8);
+        }
+
+        private static void AssertFrozenSettingsEmissionIsRepeatableAndNonMutating(
+            FrozenV6SettingsEmission assertedEmission)
+        {
+            LegacySettingsSaveEnvelopeV6 frozen = FrozenV6Recipe.BuildSettings();
+            Assert.That(frozen.schemaVersion, Is.EqualTo(1), "The frozen settings header is a literal historical schema.");
+            Assert.That(frozen.contentVersion, Is.EqualTo(6), "The frozen settings header is a literal historical content version.");
+            Assert.That(frozen.checksum, Is.EqualTo(string.Empty));
+            string before = JsonUtility.ToJson(frozen, false);
+            FrozenV6SettingsEmission first = FrozenV6Emission.EmitSettings(frozen);
+            FrozenV6SettingsEmission second = FrozenV6Emission.EmitSettings(frozen);
+            string after = JsonUtility.ToJson(frozen, false);
+            LegacySettingsSaveEnvelopeV6 emittedEnvelope = JsonUtility.FromJson<LegacySettingsSaveEnvelopeV6>(first.EnvelopeJson);
+
+            Assert.That(after, Is.EqualTo(before), "Emission must not mutate the frozen DTO tree.");
+            Assert.That(frozen.checksum, Is.EqualTo(string.Empty));
+            Assert.That(emittedEnvelope.schemaVersion, Is.EqualTo(1));
+            Assert.That(emittedEnvelope.contentVersion, Is.EqualTo(6));
+            Assert.That(emittedEnvelope.checksum, Is.EqualTo(first.Checksum));
+            Assert.That(first.Checksum, Is.EqualTo(ComputeSha256(first.ChecksumPreimageUtf8)));
+            Assert.That(first.InputJson, Is.EqualTo(second.InputJson));
+            Assert.That(first.EnvelopeJson, Is.EqualTo(second.EnvelopeJson));
+            Assert.That(first.Checksum, Is.EqualTo(second.Checksum));
+            Assert.That(first.EnvelopeBytes, Is.Not.SameAs(second.EnvelopeBytes));
+            Assert.That(first.ChecksumPreimageUtf8, Is.Not.SameAs(second.ChecksumPreimageUtf8));
+            CollectionAssert.AreEqual(first.EnvelopeBytes, second.EnvelopeBytes);
+            CollectionAssert.AreEqual(first.ChecksumPreimageUtf8, second.ChecksumPreimageUtf8);
+            Assert.That(first.InputJson, Is.EqualTo(assertedEmission.InputJson));
+            Assert.That(first.EnvelopeJson, Is.EqualTo(assertedEmission.EnvelopeJson));
+            Assert.That(first.Checksum, Is.EqualTo(assertedEmission.Checksum));
+            CollectionAssert.AreEqual(first.ChecksumPreimageUtf8, assertedEmission.ChecksumPreimageUtf8);
+        }
+
+        private static void AssertFrozenCheckpointEmissionIsNonMutating(bool includeNullSlots)
+        {
+            LegacyExpeditionRoomCheckpointSaveDataV6 frozen = FrozenV6Recipe.BuildCheckpoint(includeNullSlots);
+            string before = JsonUtility.ToJson(frozen, false);
+            byte[] first = FrozenV6Emission.EmitCheckpoint(frozen);
+            byte[] second = FrozenV6Emission.EmitCheckpoint(frozen);
+
+            Assert.That(JsonUtility.ToJson(frozen, false), Is.EqualTo(before));
+            Assert.That(first, Is.Not.SameAs(second));
+            CollectionAssert.AreEqual(first, second);
+            if (includeNullSlots)
+            {
+                Assert.That(frozen.pactIds, Has.Length.EqualTo(1));
+                Assert.That(frozen.pactIds[0], Is.Null);
+                Assert.That(frozen.claimedRewardIds, Is.Null);
+            }
+            else
+            {
+                Assert.That(frozen.pactIds, Is.Empty);
+                Assert.That(frozen.claimedRewardIds, Is.Empty);
+            }
+        }
+
         private static void CaptureProfileAfterAssertions(
             ProfileCase profileCase,
+            FrozenV6ProfileEmission assertedFrozenEmission,
             byte[] assertedLiveProjection,
-            byte[] assertedLegacyProjection)
+            byte[] assertedObservedHistoricalProjection)
         {
             V6CaptureSessionState session = GetActiveV6CaptureSession();
             if (session == null) return;
@@ -1877,32 +2785,47 @@ namespace Luckbound.Tests.PlayMode
             {
                 ProfileSaveEnvelope fresh = BuildProfileEnvelope(profileCase);
                 LegacyProfileSaveEnvelopeV6 freshLegacy = AdaptProfileEnvelopeToLegacyV6(fresh);
+                FrozenV6ProfileEmission frozen = FrozenV6Emission.EmitProfile(
+                    FrozenV6Recipe.BuildProfile(profileCase));
                 byte[] liveProjection = BuildCurrentProfileProjectionBytes(fresh);
-                byte[] legacyProjection = SaveV6ChecksumInspector.GetProfileChecksumPreimage(freshLegacy);
-                bool matchesAssertedProjection = ByteArraysEqual(assertedLiveProjection, liveProjection) &&
-                    ByteArraysEqual(assertedLegacyProjection, legacyProjection);
-                bool liveMatchesLegacy = ByteArraysEqual(liveProjection, legacyProjection);
-                string inputJson = JsonUtility.ToJson(fresh, false);
-                string envelopeJson = SaveJsonCodec.Encode(fresh);
+                byte[] observedHistoricalProjection = SaveV6ChecksumInspector.GetProfileChecksumPreimage(freshLegacy);
+                bool frozenMatchesAssertion = assertedFrozenEmission != null &&
+                    string.Equals(assertedFrozenEmission.InputJson, frozen.InputJson, StringComparison.Ordinal) &&
+                    string.Equals(assertedFrozenEmission.EnvelopeJson, frozen.EnvelopeJson, StringComparison.Ordinal) &&
+                    ByteArraysEqual(assertedFrozenEmission.ChecksumPreimageUtf8, frozen.ChecksumPreimageUtf8) &&
+                    string.Equals(assertedFrozenEmission.Checksum, frozen.Checksum, StringComparison.Ordinal);
+                bool liveMatchesFrozen = ByteArraysEqual(assertedLiveProjection, liveProjection) &&
+                    ByteArraysEqual(frozen.ChecksumPreimageUtf8, liveProjection) &&
+                    ByteArraysEqual(assertedObservedHistoricalProjection, observedHistoricalProjection) &&
+                    ByteArraysEqual(frozen.ChecksumPreimageUtf8, observedHistoricalProjection);
+                string liveInputJson = JsonUtility.ToJson(fresh, false);
+                string liveEnvelopeJson = SaveJsonCodec.Encode(fresh);
                 string encodedChecksum = fresh.checksum;
+                string expectedChecksum = frozen.Checksum;
                 string liveChecksum = ComputeSha256(liveProjection);
+                bool inputMatchesFrozen = string.Equals(liveInputJson, frozen.InputJson, StringComparison.Ordinal);
+                bool envelopeMatchesFrozen = ByteArraysEqual(V6CaptureUtf8NoBom.GetBytes(liveEnvelopeJson),
+                    frozen.EnvelopeBytes);
                 V6CaptureValidationObservation validation = ObserveProfileValidation(fresh);
-                V6CaptureDecodeObservation decode = ObserveProfileDecode(envelopeJson);
+                V6CaptureDecodeObservation decode = ObserveProfileDecode(liveEnvelopeJson);
                 V6CaptureInspectorObservation inspector = ObserveProfileInspection(
-                    envelopeJson, encodedChecksum, liveProjection);
+                    liveEnvelopeJson, encodedChecksum, liveProjection);
 
                 bool semanticAcceptance = EvaluateProfileCaptureRole(profileCase, validation, decode,
-                    inspector, liveChecksum, encodedChecksum, matchesAssertedProjection, liveMatchesLegacy);
+                    inspector, liveChecksum, encodedChecksum,
+                    frozenMatchesAssertion && inputMatchesFrozen && envelopeMatchesFrozen,
+                    liveMatchesFrozen);
                 string failureMessage = semanticAcceptance ? string.Empty : BuildProfileRoleFailure(
                     profileCase, validation, decode, inspector, liveChecksum, encodedChecksum,
-                    matchesAssertedProjection, liveMatchesLegacy);
+                    frozenMatchesAssertion && inputMatchesFrozen && envelopeMatchesFrozen,
+                    liveMatchesFrozen);
                 var files = new List<V6CaptureFileRecord>();
                 string attemptPath = ResolveAttemptPath(session, attempt.attemptDirectory);
-                AddV6CaptureFile(session, attemptPath, files, "input.json", V6CaptureUtf8NoBom.GetBytes(inputJson));
-                AddV6CaptureFile(session, attemptPath, files, "envelope.json", V6CaptureUtf8NoBom.GetBytes(envelopeJson));
-                AddV6CaptureFile(session, attemptPath, files, "checksum-preimage.utf8", liveProjection);
-                AddV6CaptureFile(session, attemptPath, files, "checksum.sha256.txt", V6CaptureUtf8NoBom.GetBytes(liveChecksum));
-                AddV6CaptureFile(session, attemptPath, files, "legacy-checksum-preimage.utf8", legacyProjection);
+                AddV6CaptureFile(session, attemptPath, files, "input.json", V6CaptureUtf8NoBom.GetBytes(frozen.InputJson));
+                AddV6CaptureFile(session, attemptPath, files, "envelope.json", frozen.EnvelopeBytes);
+                AddV6CaptureFile(session, attemptPath, files, "checksum-preimage.utf8", frozen.ChecksumPreimageUtf8);
+                AddV6CaptureFile(session, attemptPath, files, "checksum.sha256.txt", V6CaptureUtf8NoBom.GetBytes(expectedChecksum));
+                AddV6CaptureFile(session, attemptPath, files, "legacy-checksum-preimage.utf8", frozen.ChecksumPreimageUtf8);
                 if (inspector.preimageUtf8 != null)
                     AddV6CaptureFile(session, attemptPath, files, "inspector-preimage.utf8", inspector.preimageUtf8);
                 AddV6CaptureFile(session, attemptPath, files, "semantic-validation.json",
@@ -1919,8 +2842,10 @@ namespace Luckbound.Tests.PlayMode
                     "decode.json", "inspector.json"
                 };
                 var descriptor = CreateAttemptDescriptor(session, attempt, role, roleExpectation,
-                    files, validation, decode, inspector, matchesAssertedProjection, liveMatchesLegacy,
-                    liveProjection.LongLength, legacyProjection.LongLength);
+                    files, validation, decode, inspector,
+                    frozenMatchesAssertion && inputMatchesFrozen && envelopeMatchesFrozen,
+                    liveMatchesFrozen, frozen.ChecksumPreimageUtf8.LongLength,
+                    observedHistoricalProjection.LongLength);
                 PublishV6CaptureAttempt(session, attempt, attemptPath, descriptor, requiredFiles,
                     semanticAcceptance, failureMessage);
             }
@@ -1984,7 +2909,10 @@ namespace Luckbound.Tests.PlayMode
             }
         }
 
-        private static void CaptureSettingsAfterAssertions(byte[] assertedLiveProjection, byte[] assertedLegacyProjection)
+        private static void CaptureSettingsAfterAssertions(
+            FrozenV6SettingsEmission assertedFrozenEmission,
+            byte[] assertedLiveProjection,
+            byte[] assertedObservedHistoricalProjection)
         {
             V6CaptureSessionState session = GetActiveV6CaptureSession();
             if (session == null) return;
@@ -2000,33 +2928,44 @@ namespace Luckbound.Tests.PlayMode
             {
                 SettingsSaveEnvelope fresh = BuildSettingsEnvelope();
                 LegacySettingsSaveEnvelopeV6 freshLegacy = AdaptSettingsEnvelopeToLegacyV6(fresh);
+                FrozenV6SettingsEmission frozen = FrozenV6Emission.EmitSettings(FrozenV6Recipe.BuildSettings());
                 byte[] liveProjection = BuildCurrentSettingsProjectionBytes(fresh);
-                byte[] legacyProjection = SaveV6ChecksumInspector.GetSettingsChecksumPreimage(freshLegacy);
-                bool matchesAssertedProjection = ByteArraysEqual(assertedLiveProjection, liveProjection) &&
-                    ByteArraysEqual(assertedLegacyProjection, legacyProjection);
-                bool liveMatchesLegacy = ByteArraysEqual(liveProjection, legacyProjection);
-                string inputJson = JsonUtility.ToJson(fresh, false);
-                string envelopeJson = SaveJsonCodec.Encode(fresh);
+                byte[] observedHistoricalProjection = SaveV6ChecksumInspector.GetSettingsChecksumPreimage(freshLegacy);
+                bool frozenMatchesAssertion = assertedFrozenEmission != null &&
+                    string.Equals(assertedFrozenEmission.InputJson, frozen.InputJson, StringComparison.Ordinal) &&
+                    string.Equals(assertedFrozenEmission.EnvelopeJson, frozen.EnvelopeJson, StringComparison.Ordinal) &&
+                    ByteArraysEqual(assertedFrozenEmission.ChecksumPreimageUtf8, frozen.ChecksumPreimageUtf8) &&
+                    string.Equals(assertedFrozenEmission.Checksum, frozen.Checksum, StringComparison.Ordinal);
+                bool liveMatchesFrozen = ByteArraysEqual(assertedLiveProjection, liveProjection) &&
+                    ByteArraysEqual(frozen.ChecksumPreimageUtf8, liveProjection) &&
+                    ByteArraysEqual(assertedObservedHistoricalProjection, observedHistoricalProjection) &&
+                    ByteArraysEqual(frozen.ChecksumPreimageUtf8, observedHistoricalProjection);
+                string liveInputJson = JsonUtility.ToJson(fresh, false);
+                string liveEnvelopeJson = SaveJsonCodec.Encode(fresh);
                 string encodedChecksum = fresh.checksum;
                 string liveChecksum = ComputeSha256(liveProjection);
+                bool inputMatchesFrozen = string.Equals(liveInputJson, frozen.InputJson, StringComparison.Ordinal);
+                bool envelopeMatchesFrozen = ByteArraysEqual(V6CaptureUtf8NoBom.GetBytes(liveEnvelopeJson),
+                    frozen.EnvelopeBytes);
                 V6CaptureValidationObservation validation = ObserveSettingsValidation(fresh);
-                V6CaptureDecodeObservation decode = ObserveSettingsDecode(envelopeJson);
+                V6CaptureDecodeObservation decode = ObserveSettingsDecode(liveEnvelopeJson);
                 V6CaptureInspectorObservation inspector = ObserveSettingsInspection(
-                    envelopeJson, encodedChecksum, liveProjection);
+                    liveEnvelopeJson, encodedChecksum, liveProjection);
 
                 bool semanticAcceptance = validation.executed && validation.accepted && decode.executed &&
                     decode.valid && InspectionConfirmsEncodedProjection(inspector, liveChecksum, encodedChecksum) &&
-                    matchesAssertedProjection && liveMatchesLegacy;
+                    frozenMatchesAssertion && inputMatchesFrozen && envelopeMatchesFrozen && liveMatchesFrozen;
                 string failureMessage = semanticAcceptance ? string.Empty : BuildSettingsRoleFailure(
                     validation, decode, inspector, liveChecksum, encodedChecksum,
-                    matchesAssertedProjection, liveMatchesLegacy);
+                    frozenMatchesAssertion && inputMatchesFrozen && envelopeMatchesFrozen,
+                    liveMatchesFrozen);
                 var files = new List<V6CaptureFileRecord>();
                 string attemptPath = ResolveAttemptPath(session, attempt.attemptDirectory);
-                AddV6CaptureFile(session, attemptPath, files, "input.json", V6CaptureUtf8NoBom.GetBytes(inputJson));
-                AddV6CaptureFile(session, attemptPath, files, "envelope.json", V6CaptureUtf8NoBom.GetBytes(envelopeJson));
-                AddV6CaptureFile(session, attemptPath, files, "checksum-preimage.utf8", liveProjection);
-                AddV6CaptureFile(session, attemptPath, files, "checksum.sha256.txt", V6CaptureUtf8NoBom.GetBytes(liveChecksum));
-                AddV6CaptureFile(session, attemptPath, files, "legacy-checksum-preimage.utf8", legacyProjection);
+                AddV6CaptureFile(session, attemptPath, files, "input.json", V6CaptureUtf8NoBom.GetBytes(frozen.InputJson));
+                AddV6CaptureFile(session, attemptPath, files, "envelope.json", frozen.EnvelopeBytes);
+                AddV6CaptureFile(session, attemptPath, files, "checksum-preimage.utf8", frozen.ChecksumPreimageUtf8);
+                AddV6CaptureFile(session, attemptPath, files, "checksum.sha256.txt", V6CaptureUtf8NoBom.GetBytes(frozen.Checksum));
+                AddV6CaptureFile(session, attemptPath, files, "legacy-checksum-preimage.utf8", frozen.ChecksumPreimageUtf8);
                 if (inspector.preimageUtf8 != null)
                     AddV6CaptureFile(session, attemptPath, files, "inspector-preimage.utf8", inspector.preimageUtf8);
                 AddV6CaptureFile(session, attemptPath, files, "semantic-validation.json",
@@ -2043,8 +2982,10 @@ namespace Luckbound.Tests.PlayMode
                     "decode.json", "inspector.json"
                 };
                 var descriptor = CreateAttemptDescriptor(session, attempt, role, roleExpectation,
-                    files, validation, decode, inspector, matchesAssertedProjection, liveMatchesLegacy,
-                    liveProjection.LongLength, legacyProjection.LongLength);
+                    files, validation, decode, inspector,
+                    frozenMatchesAssertion && inputMatchesFrozen && envelopeMatchesFrozen,
+                    liveMatchesFrozen, frozen.ChecksumPreimageUtf8.LongLength,
+                    observedHistoricalProjection.LongLength);
                 PublishV6CaptureAttempt(session, attempt, attemptPath, descriptor, requiredFiles,
                     semanticAcceptance, failureMessage);
             }

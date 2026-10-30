@@ -1,0 +1,43 @@
+{
+  "kind": "Supplemental pure .NET method invocation with NUnit assertions",
+  "unityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "framework": ".NET 9.0.17",
+  "testsAssemblySha256": "11c3537bea04901e51746b5157b6af5d5916bd50e542a4e0eea4ae04c5e2e4cb",
+  "coreAssemblySha256": "65ed05c66174ad849e646e99a08170f8e9f88126eaa248408ef8896ac840e465",
+  "total": 6,
+  "passed": 6,
+  "failed": 0,
+  "results": [
+    {
+      "method": "AppendPreservesBindingsAcceptsExactReplayAndRejectsReplacementOrForeignEntry",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "BondContextRemainsMissingResolutionAuthorityWithoutCalendarData",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CaptureEncodeDecodePreservesEncounterContextAndCanonicalBytesWithoutAliasing",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CaptureRejectsAPlanFromAnotherRunSeedOrRoute",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "CodecRejectsMalformedDomainTruncationTrailingBytesAndUnsupportedSchema",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "NoneBindingRetainsItsCanonicalPlanDigestWithoutEncounterPayload",
+      "passed": true,
+      "error": null
+    }
+  ]
+}

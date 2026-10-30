@@ -18,3 +18,5 @@ docs/ci-integration-20261029/g04-support-ci1-failed-evidence/** -text
 docs/ci-integration-20261029/f09-logical-plan-ci2-evidence/** -text
 docs/ci-integration-20261029/f09-logical-plan-ci2-failed-evidence/** -text
 docs/ci-integration-20261029/f09-projection-ci3-evidence/** -text
+docs/ci-integration-20261029/f09-projection-ci3-runtime-evidence/** -text
+docs/ci-integration-20261029/f09-pin-v6-emission-ci4-evidence/** -text

@@ -1,0 +1,15 @@
+{
+  "kind": "Supplemental method invocation, not Unity/NUnit runner",
+  "testSourceSha256": "6d3c260e8c3b45201e034159a4880a356671786a997d16536b42739f1b513bd2",
+  "compilerReport": "CORE-COMPILE-FOR-DIAGNOSTIC.json",
+  "compilerReportSha256": "9e6f80073e7639d5abfdf3c82ed3353056d0435bf7811fe0eece30cd55065fd9",
+  "harnessSourceSha256": "c701e2fa0fd8fd5c16bbeefdab445680a01a92cb67f80358502eefde03697b2f",
+  "coreAssemblySha256": "65ed05c66174ad849e646e99a08170f8e9f88126eaa248408ef8896ac840e465",
+  "testsAssemblySha256": "11c3537bea04901e51746b5157b6af5d5916bd50e542a4e0eea4ae04c5e2e4cb",
+  "total": 6,
+  "passed": 6,
+  "unityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "harnessSource": "CorePinMethodDiagnostic.cs",
+  "results": "PURE-PIN-DIAGNOSTIC.json"
+}

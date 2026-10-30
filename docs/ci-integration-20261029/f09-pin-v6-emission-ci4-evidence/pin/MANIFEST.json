@@ -1,0 +1,189 @@
+{
+  "format": "Luckbound.AgentStagingManifest.v1",
+  "task": "F09.PIN-DOMAIN.EXACT-RESTORE",
+  "staging": "Logs/EncounterPinDomain-20261030-r1",
+  "scope": "Source-only domain pin and exact logical restore; no Save7 or production wiring",
+  "hashAlgorithm": "SHA-256",
+  "hashPolicy": "Hashes cover the current file bytes. This manifest does not self-hash.",
+  "execution": {
+    "unityExecuted": false,
+    "nunitExecuted": false,
+    "nativeExecuted": false,
+    "save7Implemented": false
+  },
+  "inputs": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "620c2e46cd80cc75c79d3b905cffd5b5b64b176200cbd991de6a680558e845c3"
+    },
+    {
+      "path": "docs/ci-integration-20261029/SOL-F09-AFTER-LOGICAL-PLAN-NEXT-CONTRACT.md",
+      "sha256": "d223eede839522dd4320103f3f34120fbba582936199bc98a95ad8d89cd35434"
+    },
+    {
+      "path": "docs/agent_staging/sol-f09-encounter-catalog-pin-design-20261026/REPORT.md",
+      "sha256": "3c49d050448957b7a4e79a03be0463552f5d4ca64a3ddfa798759d2295a1c4cc"
+    },
+    {
+      "path": "docs/agent_staging/sol-f09-catalog-core-content-api-contract-20261026/REPORT.md",
+      "sha256": "1aace7c5a3b6dcb8dbde913a180383cce06d7eb6e71b30c0d4f230edc8512040"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolutionErrorV1.cs",
+      "sha256": "b17211dbe2cb3b33579d11709fe07e13df63b48d7c9313fb41ba66c8e63ad880"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogError.cs",
+      "sha256": "b8c651c20d289f9f538fdee06d6fd688e236b32819215f59806e3ec24aa6d144"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogModels.cs",
+      "sha256": "8a55339d4c8c69bd3ce4c031c0c9ee91bf8753a1fcdcd30513cad935438bed2d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogFactoryV1.cs",
+      "sha256": "d19a1c1af936edfe2d01bf82a56740e477c202610586cca04542396c5dd8b767"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogCanonicalV1.cs",
+      "sha256": "fe69ac0be152fd45d861923bc6f25c417fe3d734eb4ebb2619322af9296ca6f5"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogTokensV1.cs",
+      "sha256": "a4c18991f94a8b414c0784e8e2c6293ad827617ef9649cc330130d8d280f3c51"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/EncounterCatalogRegistryV1.cs",
+      "sha256": "b16f917ab26dd4615acecbd94bd16c6d07b0bad15122a755de31cd47ee8d3b23"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanV1.cs",
+      "sha256": "5bd123f2c9e045d07014d8550ce029d418cb1b05508c0afd60a2b3d33eb1a14f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanCanonicalV1.cs",
+      "sha256": "47d7ecc92dc417ec675f59f1acbbe9914e72362bd844814c54e63cacf49d5a10"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolverV1.cs",
+      "sha256": "878a54abe3f9150ed07f666a0bc39c0852cdfe585b105dd866cf853be161098e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRoomIdentity.cs",
+      "sha256": "bacee0d0741353ea08bef201fb15d66887d642b27b2e5fb9ff61f042b2d74c33"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+      "sha256": "1feb3f6f1b1284ed22cff5cbcb6be54f1b87697201e588c7dd0137f796539ddc"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+      "sha256": "f81a7c0b9c012a0152003ecfe4b9c06fdd43bce72c0b727e7f46ef3a24f226da"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/RunId.cs",
+      "sha256": "5b7ced374f9c43ba1900285013ad56e058a449389a5ace5d4a52b5d7c6b80f72"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/RoomInstanceId.cs",
+      "sha256": "6f6f38241cdcb519f9205a7eac7c123ea84a5d58ac78539c2e5664baec440904"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterPlanProjection.cs",
+      "sha256": "72f0395e78cb62f22b64beffc7155112fd09d6a1abdb803598fc077b765cd8f1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
+      "sha256": "115ea8789104b8dae7adeef61fb3b8334399edcc36cf735b34b0081e03165f70"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs",
+      "sha256": "7fd457ef32d618b92455b4d6279e0c5abfcf93160e52eb6e675452904e8428fd"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemDefinition.cs",
+      "sha256": "468ca1cc8d98dc62e18581a929d1b08f99131fea10454d5b0cd5aa6da69be790"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
+      "sha256": "f6df7b19c86c9ba961491bd881865621ee98396e39bbadfc52519ee32b36402e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
+      "sha256": "d6c61f839e6553a3a7122b5d50ec51934bc010b551cb9d869384c37e1a05ec63"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanResolutionV1Tests.cs",
+      "sha256": "de8ea3e36ec507b9eb365b71550d29cb4a6a9303913403788171c22d148c0e52"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Content/Expeditions/EncounterCatalogContentTests.cs",
+      "sha256": "bec5673b827ed57531d9f7803618f24d46c21a75f87b3df104d91e7212d4eb0f"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs",
+      "sha256": "e3add91ecfaff68c53c88aba3da06413e4a3844da0e0abd4982e85be91f40955"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanPinV1.cs",
+      "sha256": "9384dc1637e837ea5fcddae4683dad0e671d4db85f2d6c0d2376764b369689a8",
+      "bytes": 27420
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanPinCanonicalV1.cs",
+      "sha256": "67400b82a4c7454502acd1d5d1d23a0adc3a0cc8c11492e6defa79121c450f61",
+      "bytes": 17289
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/Content/EncounterPlanPinRestorerV1.cs",
+      "sha256": "ab0a2ffaf07397be5e5a171cbba46a389bfbd3dbbe7e6e61c55e8992deadf766",
+      "bytes": 11310
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanPinV1Tests.cs",
+      "sha256": "6d3c260e8c3b45201e034159a4880a356671786a997d16536b42739f1b513bd2",
+      "bytes": 18621
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/EditMode/Content/Expeditions/EncounterPlanPinRestoreV1Tests.cs",
+      "sha256": "b05ddffc9b0fd9efe2a83d74d93f6dde1efff417504a8416acacfff1f7f07154",
+      "bytes": 14718
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/PlayMode/EncounterPlanPinProjectionTests.cs",
+      "sha256": "d959ba2448c45498a67f9533d586510447ee67c83823edbf38c5b92183ab388a",
+      "bytes": 12255
+    }
+  ],
+  "report": {
+    "path": "REPORT.md",
+    "sha256": "b6107ba67392627a3533d30a024a3d3e1c2ae8a75f10a06e20e3d02db244f360",
+    "bytes": 2386
+  },
+  "compileEvidence": [
+    {
+      "path": "Logs/EncounterPinIntegration-20261030-r1/combined-r1/RESULTS.json",
+      "sha256": "c0b0c91c7f67e7a2dc4cd81c0e52e945c59b42d57e67cf102282228909a695de",
+      "results": [
+        { "assembly": "Luckbound.Core", "sourceCount": 143, "exitCode": 0, "responseSha256": "7c703cd45767d34ed49e9227de62694414d59328d9696f2509beb7fb39947ae2" },
+        { "assembly": "Luckbound.Content", "sourceCount": 19, "exitCode": 0, "responseSha256": "e283dec54b7e6dffd8ba8896c7c227a6ac0b992469e8611e308cbde5e38351a1" },
+        { "assembly": "Luckbound.Core.Tests", "sourceCount": 38, "exitCode": 0, "responseSha256": "6e5383ac8ca31b535783a0693a52e8ae1c0d2fa074d007dec1922791170a4483" },
+        { "assembly": "Luckbound.Content.Route.Tests", "sourceCount": 3, "exitCode": 0, "responseSha256": "ebfb0a6b61463e811573e661efc48258efa64db0c5cfa39aee67ab1a53cd1c03" },
+        { "assembly": "Luckbound.App", "sourceCount": 53, "exitCode": 0, "responseSha256": "e2a2039f214934642e14d68dc70bb2600f2de3961eceb9f4103a04585ce6862d" },
+        { "assembly": "Luckbound.PlayMode.Tests", "sourceCount": 75, "exitCode": 0, "responseSha256": "1353b935a3bb8372a2fa876c791667eb522eae869af1b115d241c57a76cd7818" }
+      ],
+      "note": "Combined source compile at frozen-r1; five of the six candidate files are byte-identical in frozen-r2. Final Core.Tests source is separately compiled below. Unity and NUnit were not executed."
+    },
+    {
+      "path": "Logs/EncounterPinIntegration-20261030-r1/final-core-tests-r2/RESULTS.json",
+      "sha256": "9e6f80073e7639d5abfdf3c82ed3353056d0435bf7811fe0eece30cd55065fd9",
+      "results": [
+        { "assembly": "Luckbound.Core", "sourceCount": 143, "exitCode": 0, "responseSha256": "999178131ed579168a4d7bd536cbfaf649c99cd38b2efabfe545c5894459e70b" },
+        { "assembly": "Luckbound.Core.Tests", "sourceCount": 38, "exitCode": 0, "responseSha256": "9f6a59d1d48412d869f22eee28ceb6c0dff0007d202477032921e63b02e9f7d0" }
+      ],
+      "note": "Final Core test revision at frozen-r2; the delivered six files were compared byte-for-byte with frozen-r2. Unity and NUnit were not executed."
+    }
+  ]
+}

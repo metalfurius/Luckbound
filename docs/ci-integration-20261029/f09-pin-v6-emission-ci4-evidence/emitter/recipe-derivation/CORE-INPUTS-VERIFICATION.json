@@ -1,0 +1,858 @@
+{
+  "assembly": "Luckbound.Core",
+  "sourceCount": 141,
+  "resultExitCode": 0,
+  "responseSha256": "7e2744b008d16c3e3daf03f07e0aee67844ff22652913a77d201458b4da139e3",
+  "resultsSha256": "9c9caf01a3033056b5d9f24abf1dcdc553a35bcb1650784cca7f804178b45d3d",
+  "inputsMatched": true,
+  "verifiedInputCount": 141,
+  "mismatches": [],
+  "inputs": [
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorCatalog.cs",
+      "expectedSha256": "af6288a08abf0da7fcd0866bf37c85fdf3846d562e0b1398143d83adf1b0bd02",
+      "actualSha256": "af6288a08abf0da7fcd0866bf37c85fdf3846d562e0b1398143d83adf1b0bd02",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorProfile.cs",
+      "expectedSha256": "34fb2afe061b00fba3c3455db99fcd8ef98e9a5e019feb0437b0dc787f0e8428",
+      "actualSha256": "34fb2afe061b00fba3c3455db99fcd8ef98e9a5e019feb0437b0dc787f0e8428",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorReplacementResolver.cs",
+      "expectedSha256": "d5acef9cbb5c25f6f8753125109e34577f8199ad2b9a91ba7e1a0f1878112109",
+      "actualSha256": "d5acef9cbb5c25f6f8753125109e34577f8199ad2b9a91ba7e1a0f1878112109",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorResolution.cs",
+      "expectedSha256": "8c7cc14584eedcce93f8dd433973edb83ed80fa490874995db161a6b7ea23639",
+      "actualSha256": "8c7cc14584eedcce93f8dd433973edb83ed80fa490874995db161a6b7ea23639",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorStatsResolver.cs",
+      "expectedSha256": "6a3408ca7e705e48e9898946a1793a5f1a026b3850f20e52ed540f1f7f23bcb1",
+      "actualSha256": "6a3408ca7e705e48e9898946a1793a5f1a026b3850f20e52ed540f1f7f23bcb1",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/ActorDamageState.cs",
+      "expectedSha256": "c3c1ad9c890441a6e86caff6ad63451b7d21e5b70751ef82298b2801566df8b6",
+      "actualSha256": "c3c1ad9c890441a6e86caff6ad63451b7d21e5b70751ef82298b2801566df8b6",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Bellator/BellatorCombatState.cs",
+      "expectedSha256": "1404f4ab35d4f0462a91c2a8db2f4cfc44ea0dd7641ddca46810788fb6494e86",
+      "actualSha256": "1404f4ab35d4f0462a91c2a8db2f4cfc44ea0dd7641ddca46810788fb6494e86",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Bellator/BellatorSkillLoadout.cs",
+      "expectedSha256": "3ef1003b7e67db2844dd107c8b14a864689f34271242cd7272b0b85f50d20f70",
+      "actualSha256": "3ef1003b7e67db2844dd107c8b14a864689f34271242cd7272b0b85f50d20f70",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/CombatStats.cs",
+      "expectedSha256": "98f70a42ff644090d06cf9edac69ad831f97fe6fcec367ddeb56755d4e1db214",
+      "actualSha256": "98f70a42ff644090d06cf9edac69ad831f97fe6fcec367ddeb56755d4e1db214",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/CustodianBossDefinition.cs",
+      "expectedSha256": "ea55e1326711027aa7857e277bb4728bcec016989c4b98319752acc52e591402",
+      "actualSha256": "ea55e1326711027aa7857e277bb4728bcec016989c4b98319752acc52e591402",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/DamageCalculationRequest.cs",
+      "expectedSha256": "8dba6bd3b0cd307d9eaeab25125088e42fd5ed192a1e2d7e068626b808756ca0",
+      "actualSha256": "8dba6bd3b0cd307d9eaeab25125088e42fd5ed192a1e2d7e068626b808756ca0",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/DamageResolution.cs",
+      "expectedSha256": "953c8af6ff39797cff7c3612680c31e42a7860f61b86a4f7b9d5126492a958e4",
+      "actualSha256": "953c8af6ff39797cff7c3612680c31e42a7860f61b86a4f7b9d5126492a958e4",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/DamageResolver.cs",
+      "expectedSha256": "b8fe839c3342faff222c62a3617e60ff0b44b5ce8f321259347477334ebff4fb",
+      "actualSha256": "b8fe839c3342faff222c62a3617e60ff0b44b5ce8f321259347477334ebff4fb",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/DirectImpactOutcome.cs",
+      "expectedSha256": "9b967c64a5a84c99674e00820709c9778ab680fee210e5a2157f7817e40f20f1",
+      "actualSha256": "9b967c64a5a84c99674e00820709c9778ab680fee210e5a2157f7817e40f20f1",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseOutcome.cs",
+      "expectedSha256": "8a4785fedbab4f1a1713f349bafb1a31e8abcaefc045f40183f49feb8f8a96dc",
+      "actualSha256": "8a4785fedbab4f1a1713f349bafb1a31e8abcaefc045f40183f49feb8f8a96dc",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseState.cs",
+      "expectedSha256": "6a44ca74f31534cc09f39c4453d4459aa1d0ad516cf431a1c0c161961e308149",
+      "actualSha256": "6a44ca74f31534cc09f39c4453d4459aa1d0ad516cf431a1c0c161961e308149",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseStatus.cs",
+      "expectedSha256": "176c0e00b7d1ba41368fa9384a6cb00adc7ef209b1cfc66015838091add00826",
+      "actualSha256": "176c0e00b7d1ba41368fa9384a6cb00adc7ef209b1cfc66015838091add00826",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseOutcome.cs",
+      "expectedSha256": "400d73eea5067273248a3c5cc24d692fe9d16b32e011238b2277b81d07c1944e",
+      "actualSha256": "400d73eea5067273248a3c5cc24d692fe9d16b32e011238b2277b81d07c1944e",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+      "expectedSha256": "7f9aa774f64eac318f7c4605ca9159ba27bbf40b5bbda60f06576ff5338c2a4e",
+      "actualSha256": "7f9aa774f64eac318f7c4605ca9159ba27bbf40b5bbda60f06576ff5338c2a4e",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseStatus.cs",
+      "expectedSha256": "6df21b75318c65e629f78a77a8d2f25eb13a6701ab9b52346e43aa8f0e8f6a05",
+      "actualSha256": "6df21b75318c65e629f78a77a8d2f25eb13a6701ab9b52346e43aa8f0e8f6a05",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackProfile.cs",
+      "expectedSha256": "445f9f084b7c160699fa4d9362c53219cc3c7f5bac3870edff1cf0533f6f076d",
+      "actualSha256": "445f9f084b7c160699fa4d9362c53219cc3c7f5bac3870edff1cf0533f6f076d",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackSnapshot.cs",
+      "expectedSha256": "7316ae7a5da70fff23bcb04f4058fa5450f64b9e92714cd7daecadb58945e7ec",
+      "actualSha256": "7316ae7a5da70fff23bcb04f4058fa5450f64b9e92714cd7daecadb58945e7ec",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackState.cs",
+      "expectedSha256": "210f342b01da437634f902b8adb14a542391256a3a1b1fddba823e40bc12ffca",
+      "actualSha256": "210f342b01da437634f902b8adb14a542391256a3a1b1fddba823e40bc12ffca",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusCombatResult.cs",
+      "expectedSha256": "d86b3ec3360346fd978cdcdf94cfe61f4bd9f11b1cc6954ee59ca19d36eac57d",
+      "actualSha256": "d86b3ec3360346fd978cdcdf94cfe61f4bd9f11b1cc6954ee59ca19d36eac57d",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusCombatState.cs",
+      "expectedSha256": "4c8e5bbb893f87016a35093ae3807105b7af1df16ffe0cc775cfb7953a2fb9c6",
+      "actualSha256": "4c8e5bbb893f87016a35093ae3807105b7af1df16ffe0cc775cfb7953a2fb9c6",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusSkillActivation.cs",
+      "expectedSha256": "f4a5eb26a0289626ec6905eb4889be829fa2370c0f4d9769f87928a71dd495b7",
+      "actualSha256": "f4a5eb26a0289626ec6905eb4889be829fa2370c0f4d9769f87928a71dd495b7",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusSkillLoadout.cs",
+      "expectedSha256": "684f64133231b5987dd752a96d5e67db53d8d88fd55a08fbb09372f5f5533640",
+      "actualSha256": "684f64133231b5987dd752a96d5e67db53d8d88fd55a08fbb09372f5f5533640",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusStatusSnapshot.cs",
+      "expectedSha256": "caa897a66863bdc0ea9da17edee9bb448bfab14f1475345260d5dd01c22df01f",
+      "actualSha256": "caa897a66863bdc0ea9da17edee9bb448bfab14f1475345260d5dd01c22df01f",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusStatusState.cs",
+      "expectedSha256": "11edcfc20d9f0882d1c224cac516f014551d0be0cb40dc9638d9727af44080e9",
+      "actualSha256": "11edcfc20d9f0882d1c224cac516f014551d0be0cb40dc9638d9727af44080e9",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackProfile.cs",
+      "expectedSha256": "7bc4698950e1370162b46201c349c5622b7e197d7fa8f95a4fafc333dd057211",
+      "actualSha256": "7bc4698950e1370162b46201c349c5622b7e197d7fa8f95a4fafc333dd057211",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackSnapshot.cs",
+      "expectedSha256": "ceb6ae5fe338e4cb3862cca3f9d1da0878b71ae6d2e82f0bf5b2fbc6bb4c8fb5",
+      "actualSha256": "ceb6ae5fe338e4cb3862cca3f9d1da0878b71ae6d2e82f0bf5b2fbc6bb4c8fb5",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackState.cs",
+      "expectedSha256": "1a29e37000fce8922067fde58f27a07855f4120c8ab8d5c62887783c5c8a426d",
+      "actualSha256": "1a29e37000fce8922067fde58f27a07855f4120c8ab8d5c62887783c5c8a426d",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeComboSequence.cs",
+      "expectedSha256": "dfa58d153f241cac07d3bd7ad155ef0bbb5bda445fd6fcb1ce45edbab8e34bd8",
+      "actualSha256": "dfa58d153f241cac07d3bd7ad155ef0bbb5bda445fd6fcb1ce45edbab8e34bd8",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeHitWindow.cs",
+      "expectedSha256": "259da8f14e1159089034a240e23425d0ed5c369d8075e333602788bc6e2f197b",
+      "actualSha256": "259da8f14e1159089034a240e23425d0ed5c369d8075e333602788bc6e2f197b",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/ProjectileDefinition.cs",
+      "expectedSha256": "08c7602ff8c75c53cbf0a860aeeeeedb8e72ba46c35c01e65f36511b0be66ab4",
+      "actualSha256": "08c7602ff8c75c53cbf0a860aeeeeedb8e72ba46c35c01e65f36511b0be66ab4",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/ProjectileImpact.cs",
+      "expectedSha256": "df052072d40d99d8512cae1e457f489eeac413449145d00f22aca6a57acd6ccc",
+      "actualSha256": "df052072d40d99d8512cae1e457f489eeac413449145d00f22aca6a57acd6ccc",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillCatalog.cs",
+      "expectedSha256": "6565364aad33be2bdcf0c6dd0764952133136d6eb635cc34233cb3dfe876aefd",
+      "actualSha256": "6565364aad33be2bdcf0c6dd0764952133136d6eb635cc34233cb3dfe876aefd",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillDefinition.cs",
+      "expectedSha256": "812a205aeee34d1b7faab2df9019241393f684cec88f3ac5e788e1aaa14820ee",
+      "actualSha256": "812a205aeee34d1b7faab2df9019241393f684cec88f3ac5e788e1aaa14820ee",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillUseOutcome.cs",
+      "expectedSha256": "5d397470d3ef4a74e480bffe46b2c406c740e9fefeae95f0eb168bd5e97d843d",
+      "actualSha256": "5d397470d3ef4a74e480bffe46b2c406c740e9fefeae95f0eb168bd5e97d843d",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+      "expectedSha256": "b3d57413331b973f1e4d46024ba5f11fbdc2da7b6084aa0ccf0ef72381651fb5",
+      "actualSha256": "b3d57413331b973f1e4d46024ba5f11fbdc2da7b6084aa0ccf0ef72381651fb5",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackProfile.cs",
+      "expectedSha256": "a1a39e4e660ee06251cbf60748c0abb17f9fb9d1cddb9e638abda4caeb611408",
+      "actualSha256": "a1a39e4e660ee06251cbf60748c0abb17f9fb9d1cddb9e638abda4caeb611408",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackSnapshot.cs",
+      "expectedSha256": "3823ad985af0a27d8329391dafb206c36dba7b8ff9594c9686a99a1970a2ac05",
+      "actualSha256": "3823ad985af0a27d8329391dafb206c36dba7b8ff9594c9686a99a1970a2ac05",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackState.cs",
+      "expectedSha256": "065278a96e7847b06b4cd038856892e1b98fdcb9989d9c2bec19c7e2aea5da1d",
+      "actualSha256": "065278a96e7847b06b4cd038856892e1b98fdcb9989d9c2bec19c7e2aea5da1d",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatResult.cs",
+      "expectedSha256": "f1a222f9d329bedc851f9bf982ebe63d230a4343ac1bf912d727de6a3fe66dd1",
+      "actualSha256": "f1a222f9d329bedc851f9bf982ebe63d230a4343ac1bf912d727de6a3fe66dd1",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatState.cs",
+      "expectedSha256": "d549d10f38d2b4725546084426b6aa75035fd0a63855d17711537991f5ac06e4",
+      "actualSha256": "d549d10f38d2b4725546084426b6aa75035fd0a63855d17711537991f5ac06e4",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorSkillActivation.cs",
+      "expectedSha256": "730af215ccb1ca23f996e73dffb8d301774f646714a73a4c06a3a0be5d049da9",
+      "actualSha256": "730af215ccb1ca23f996e73dffb8d301774f646714a73a4c06a3a0be5d049da9",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorSkillLoadout.cs",
+      "expectedSha256": "5adecf49ecadb9b664e3aea35ffc710d11b8ae4fbe26d77b50c6a1a69bed2368",
+      "actualSha256": "5adecf49ecadb9b664e3aea35ffc710d11b8ae4fbe26d77b50c6a1a69bed2368",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponCatalog.cs",
+      "expectedSha256": "0f6749cbfa11601f7bb692a37541d6c4d433f2762d0b32e2f2d5f53319770549",
+      "actualSha256": "0f6749cbfa11601f7bb692a37541d6c4d433f2762d0b32e2f2d5f53319770549",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponProfile.cs",
+      "expectedSha256": "d6700cd0669a2b69ff18e8dd00cd18b42f1ad79979b37e19d01eb6ecfebfff3b",
+      "actualSha256": "d6700cd0669a2b69ff18e8dd00cd18b42f1ad79979b37e19d01eb6ecfebfff3b",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponTrait.cs",
+      "expectedSha256": "18ec7445c6c8b771d41ce8f844d43f32a8c4d7240e318ecae316a9e43d085e62",
+      "actualSha256": "18ec7445c6c8b771d41ce8f844d43f32a8c4d7240e318ecae316a9e43d085e62",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Consumables/AntidoteEffect.cs",
+      "expectedSha256": "87fae6a72f9835b08880e09576d32342063b92ab6ec2292d50bba120f21a4b7f",
+      "actualSha256": "87fae6a72f9835b08880e09576d32342063b92ab6ec2292d50bba120f21a4b7f",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Consumables/BombEffect.cs",
+      "expectedSha256": "c75a67ba220d465871893573b6ebef24fbf92a86498cb67bb16d19c0f8d6f665",
+      "actualSha256": "c75a67ba220d465871893573b6ebef24fbf92a86498cb67bb16d19c0f8d6f665",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Consumables/FortuneBrewEffect.cs",
+      "expectedSha256": "e9cfef5d04b46bdb9102111f0421cc3cc38d2dfa982b085c805973559059075d",
+      "actualSha256": "e9cfef5d04b46bdb9102111f0421cc3cc38d2dfa982b085c805973559059075d",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Consumables/TorchEffect.cs",
+      "expectedSha256": "77997018b50559bb2e6d3f4a4d98869e12b1210289e823f70684e8391fa57e36",
+      "actualSha256": "77997018b50559bb2e6d3f4a4d98869e12b1210289e823f70684e8391fa57e36",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/CoreAssemblyMarker.cs",
+      "expectedSha256": "f595ae51aa701617b13bb363cbeb9ab3e9f9995af629cb09e05a89be4d91e52c",
+      "actualSha256": "f595ae51aa701617b13bb363cbeb9ab3e9f9995af629cb09e05a89be4d91e52c",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingOperationStatus.cs",
+      "expectedSha256": "89aaa515702c712f98e42b049b6a87961cde2aae929a2ca35e65b52b551fc42a",
+      "actualSha256": "89aaa515702c712f98e42b049b6a87961cde2aae929a2ca35e65b52b551fc42a",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingOutcome.cs",
+      "expectedSha256": "3897131f0c312ec19443ea5177cb69d9603d57382e0f25b9cea9e87e2ede66df",
+      "actualSha256": "3897131f0c312ec19443ea5177cb69d9603d57382e0f25b9cea9e87e2ede66df",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingResultKind.cs",
+      "expectedSha256": "515018ad1f034950c40731193d7e2a5001aecbf579c304de6bd30a2768bd18b5",
+      "actualSha256": "515018ad1f034950c40731193d7e2a5001aecbf579c304de6bd30a2768bd18b5",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeCatalog.cs",
+      "expectedSha256": "cb5470425015e3c579d1b3c66636d87e1e9d2ab4482166750029cfb35a00960b",
+      "actualSha256": "cb5470425015e3c579d1b3c66636d87e1e9d2ab4482166750029cfb35a00960b",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeDefinition.cs",
+      "expectedSha256": "d977ba5309f46bd36fdac960ec4f129bf2bd97c06de198d5350301bbb59770ea",
+      "actualSha256": "d977ba5309f46bd36fdac960ec4f129bf2bd97c06de198d5350301bbb59770ea",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeMaterialCost.cs",
+      "expectedSha256": "a2676ce8e19b4f553dde276f3f42c1dbb0ca2a123c7d3c98d3077ca6e1006f46",
+      "actualSha256": "a2676ce8e19b4f553dde276f3f42c1dbb0ca2a123c7d3c98d3077ca6e1006f46",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/EconomyOperationStatus.cs",
+      "expectedSha256": "ccc6e2983b589d8867f3de14df527dade001cb1c2112af29bf6ac66b1ad64fed",
+      "actualSha256": "ccc6e2983b589d8867f3de14df527dade001cb1c2112af29bf6ac66b1ad64fed",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/EconomyTransactionOutcome.cs",
+      "expectedSha256": "9befda16d620d044c8b70779ef13a16eeb9267950d28341023f1ff6cdb6a7ce0",
+      "actualSha256": "9befda16d620d044c8b70779ef13a16eeb9267950d28341023f1ff6cdb6a7ce0",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+      "expectedSha256": "4d2c43353685e2af5db360eb117518cf919c5aaf785ae414b61fad2a161f8428",
+      "actualSha256": "4d2c43353685e2af5db360eb117518cf919c5aaf785ae414b61fad2a161f8428",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantPricing.cs",
+      "expectedSha256": "ff719951718b612a66578e72e2f1a12e733beca2759cca4f6447a2f294f8a332",
+      "actualSha256": "ff719951718b612a66578e72e2f1a12e733beca2759cca4f6447a2f294f8a332",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantService.cs",
+      "expectedSha256": "23121543d7496a9b11db76de2078c433dbc4a85767840582a43295eb25bf9c75",
+      "actualSha256": "23121543d7496a9b11db76de2078c433dbc4a85767840582a43295eb25bf9c75",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+      "expectedSha256": "d032f82bb36a88254bfdb96f2a3ddab96622577b78e7fb8226b3c02b2554d69e",
+      "actualSha256": "d032f82bb36a88254bfdb96f2a3ddab96622577b78e7fb8226b3c02b2554d69e",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopOutcome.cs",
+      "expectedSha256": "cbdc05f476048de50a404361ac5d66d38ea8b6bd149cc18840750a6d788417e1",
+      "actualSha256": "cbdc05f476048de50a404361ac5d66d38ea8b6bd149cc18840750a6d788417e1",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopService.cs",
+      "expectedSha256": "c53d3a9697c54693524bb8eb132e70569db77b25b207c01a03b2fb976e90b058",
+      "actualSha256": "c53d3a9697c54693524bb8eb132e70569db77b25b207c01a03b2fb976e90b058",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+      "expectedSha256": "8c9a02e49fea9458c16af1917f38bf204e74d9d8aafd796971ed7c7af8b9b281",
+      "actualSha256": "8c9a02e49fea9458c16af1917f38bf204e74d9d8aafd796971ed7c7af8b9b281",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/SmithingOutcome.cs",
+      "expectedSha256": "b60e1f348e14a769ffecf2916a3b6bdf2d7ac2c01f4d2355334c32fca234cab1",
+      "actualSha256": "b60e1f348e14a769ffecf2916a3b6bdf2d7ac2c01f4d2355334c32fca234cab1",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/SmithingService.cs",
+      "expectedSha256": "fe5d5ac503e68a8558623e01678c1bcf62a528fbde9e1131213086845579a102",
+      "actualSha256": "fe5d5ac503e68a8558623e01678c1bcf62a528fbde9e1131213086845579a102",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogCanonicalV1.cs",
+      "expectedSha256": "fe69ac0be152fd45d861923bc6f25c417fe3d734eb4ebb2619322af9296ca6f5",
+      "actualSha256": "fe69ac0be152fd45d861923bc6f25c417fe3d734eb4ebb2619322af9296ca6f5",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogError.cs",
+      "expectedSha256": "b8c651c20d289f9f538fdee06d6fd688e236b32819215f59806e3ec24aa6d144",
+      "actualSha256": "b8c651c20d289f9f538fdee06d6fd688e236b32819215f59806e3ec24aa6d144",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogFactoryV1.cs",
+      "expectedSha256": "d19a1c1af936edfe2d01bf82a56740e477c202610586cca04542396c5dd8b767",
+      "actualSha256": "d19a1c1af936edfe2d01bf82a56740e477c202610586cca04542396c5dd8b767",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogModels.cs",
+      "expectedSha256": "8a55339d4c8c69bd3ce4c031c0c9ee91bf8753a1fcdcd30513cad935438bed2d",
+      "actualSha256": "8a55339d4c8c69bd3ce4c031c0c9ee91bf8753a1fcdcd30513cad935438bed2d",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogTokensV1.cs",
+      "expectedSha256": "a4c18991f94a8b414c0784e8e2c6293ad827617ef9649cc330130d8d280f3c51",
+      "actualSha256": "a4c18991f94a8b414c0784e8e2c6293ad827617ef9649cc330130d8d280f3c51",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolutionErrorV1.cs",
+      "expectedSha256": "b17211dbe2cb3b33579d11709fe07e13df63b48d7c9313fb41ba66c8e63ad880",
+      "actualSha256": "b17211dbe2cb3b33579d11709fe07e13df63b48d7c9313fb41ba66c8e63ad880",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolverV1.cs",
+      "expectedSha256": "878a54abe3f9150ed07f666a0bc39c0852cdfe585b105dd866cf853be161098e",
+      "actualSha256": "878a54abe3f9150ed07f666a0bc39c0852cdfe585b105dd866cf853be161098e",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterSpawnIdentityV1.cs",
+      "expectedSha256": "74311d35bf605573b819af8c21c46ac31b03a3e6f7645c78541479d7ce308990",
+      "actualSha256": "74311d35bf605573b819af8c21c46ac31b03a3e6f7645c78541479d7ce308990",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionEncounterRewardPolicy.cs",
+      "expectedSha256": "08ec563b3de5c900328401777477073f6b43873b2d030c88d03a0fe0c22e7b12",
+      "actualSha256": "08ec563b3de5c900328401777477073f6b43873b2d030c88d03a0fe0c22e7b12",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRoomIdentity.cs",
+      "expectedSha256": "bacee0d0741353ea08bef201fb15d66887d642b27b2e5fb9ff61f042b2d74c33",
+      "actualSha256": "bacee0d0741353ea08bef201fb15d66887d642b27b2e5fb9ff61f042b2d74c33",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+      "expectedSha256": "1feb3f6f1b1284ed22cff5cbcb6be54f1b87697201e588c7dd0137f796539ddc",
+      "actualSha256": "1feb3f6f1b1284ed22cff5cbcb6be54f1b87697201e588c7dd0137f796539ddc",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
+      "expectedSha256": "5add5065ce33766c40712413effaf5f59d7c655c1bbf405936a3fb6497a74712",
+      "actualSha256": "5add5065ce33766c40712413effaf5f59d7c655c1bbf405936a3fb6497a74712",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+      "expectedSha256": "f81a7c0b9c012a0152003ecfe4b9c06fdd43bce72c0b727e7f46ef3a24f226da",
+      "actualSha256": "f81a7c0b9c012a0152003ecfe4b9c06fdd43bce72c0b727e7f46ef3a24f226da",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+      "expectedSha256": "40c10aeadc9e4e065b3c075d19e810689179bf7bd9d79300a8fbd7c346bcb593",
+      "actualSha256": "40c10aeadc9e4e065b3c075d19e810689179bf7bd9d79300a8fbd7c346bcb593",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/PlayableRaceRules.cs",
+      "expectedSha256": "a28b42917e5083dc8e536ae194613595f09b75037543b3680f9869a8fb8ea0f3",
+      "actualSha256": "a28b42917e5083dc8e536ae194613595f09b75037543b3680f9869a8fb8ea0f3",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanCanonicalV1.cs",
+      "expectedSha256": "47d7ecc92dc417ec675f59f1acbbe9914e72362bd844814c54e63cacf49d5a10",
+      "actualSha256": "47d7ecc92dc417ec675f59f1acbbe9914e72362bd844814c54e63cacf49d5a10",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanV1.cs",
+      "expectedSha256": "5bd123f2c9e045d07014d8550ce029d418cb1b05508c0afd60a2b3d33eb1a14f",
+      "actualSha256": "5bd123f2c9e045d07014d8550ce029d418cb1b05508c0afd60a2b3d33eb1a14f",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOffer.cs",
+      "expectedSha256": "e6b4e57bd338c5d8c8ca2edc521bf429c1366d21f33db82be29173aefd03f4a2",
+      "actualSha256": "e6b4e57bd338c5d8c8ca2edc521bf429c1366d21f33db82be29173aefd03f4a2",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBook.cs",
+      "expectedSha256": "da8bdf1725aed84471b52083375d2cfc7628af51d25fa15bf867e920466ab6f8",
+      "actualSha256": "da8bdf1725aed84471b52083375d2cfc7628af51d25fa15bf867e920466ab6f8",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "expectedSha256": "5664d1d555c438d408267d144f77f6d134cdf71cc1e272b6eed732223caee6af",
+      "actualSha256": "5664d1d555c438d408267d144f77f6d134cdf71cc1e272b6eed732223caee6af",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneRelicResolver.cs",
+      "expectedSha256": "83880f0b78835c26014811e9e8a5bf4d8430ce14b80002fcd3e3d9a43ee4caf6",
+      "actualSha256": "83880f0b78835c26014811e9e8a5bf4d8430ce14b80002fcd3e3d9a43ee4caf6",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/ActorId.cs",
+      "expectedSha256": "9107be9804d6e2546dac2cb4d6182dde3e5c839c77de2014cb426946c38cf61e",
+      "actualSha256": "9107be9804d6e2546dac2cb4d6182dde3e5c839c77de2014cb426946c38cf61e",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/EntityId.cs",
+      "expectedSha256": "2d917f0b12c600ce604ad1e827a95bebaeb84abe8a88ee78485225075005cd61",
+      "actualSha256": "2d917f0b12c600ce604ad1e827a95bebaeb84abe8a88ee78485225075005cd61",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/HitId.cs",
+      "expectedSha256": "4cd13139bf77205cb38e6ecadfa426b081898b8cb2212a188c8c0ac0c3bdb427",
+      "actualSha256": "4cd13139bf77205cb38e6ecadfa426b081898b8cb2212a188c8c0ac0c3bdb427",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/IdParsing.cs",
+      "expectedSha256": "4057e919c196a7f402396932ec0706d10011e2c578bfa6171804603f1b8fad79",
+      "actualSha256": "4057e919c196a7f402396932ec0706d10011e2c578bfa6171804603f1b8fad79",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/ItemInstanceId.cs",
+      "expectedSha256": "09adbada747bce91e3a421884bcd6c24fbbd406f219ecd11e75fac8a0315e51c",
+      "actualSha256": "09adbada747bce91e3a421884bcd6c24fbbd406f219ecd11e75fac8a0315e51c",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/RoomInstanceId.cs",
+      "expectedSha256": "6f6f38241cdcb519f9205a7eac7c123ea84a5d58ac78539c2e5664baec440904",
+      "actualSha256": "6f6f38241cdcb519f9205a7eac7c123ea84a5d58ac78539c2e5664baec440904",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/RunId.cs",
+      "expectedSha256": "5b7ced374f9c43ba1900285013ad56e058a449389a5ace5d4a52b5d7c6b80f72",
+      "actualSha256": "5b7ced374f9c43ba1900285013ad56e058a449389a5ace5d4a52b5d7c6b80f72",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/SessionId.cs",
+      "expectedSha256": "8a178e53bcf5496de4d00e5566c38d523bc952a582ae426a0c861a196b464aa2",
+      "actualSha256": "8a178e53bcf5496de4d00e5566c38d523bc952a582ae426a0c861a196b464aa2",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/TransactionId.cs",
+      "expectedSha256": "b7815a3e93b559af8afc0c579fb0f5769c8791850520e3becbec51592c9d550b",
+      "actualSha256": "b7815a3e93b559af8afc0c579fb0f5769c8791850520e3becbec51592c9d550b",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Input/IPlayerInputSource.cs",
+      "expectedSha256": "8a1731381f797b22b89984f2a74a1f076b4e992177c92ca5bd57c56ca3cb36ff",
+      "actualSha256": "8a1731381f797b22b89984f2a74a1f076b4e992177c92ca5bd57c56ca3cb36ff",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
+      "expectedSha256": "5e970f5a046aff2beb6ed28f1acf71ba2e4a1e5149c0201db13c3d2e958d6993",
+      "actualSha256": "5e970f5a046aff2beb6ed28f1acf71ba2e4a1e5149c0201db13c3d2e958d6993",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
+      "expectedSha256": "bcd02bf74457d74e0f005f13c96f1203bbdc4330c797874d887ece29bed499e5",
+      "actualSha256": "bcd02bf74457d74e0f005f13c96f1203bbdc4330c797874d887ece29bed499e5",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
+      "expectedSha256": "a0c309ba3aaf13f3238b065c929b4d6447e8893fd51aced7fea9e8b57b75e748",
+      "actualSha256": "a0c309ba3aaf13f3238b065c929b4d6447e8893fd51aced7fea9e8b57b75e748",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/EquipmentSlot.cs",
+      "expectedSha256": "3828cccb4e1621d7827311e9a3ed1607756e197b565ce87b6213769f54df5208",
+      "actualSha256": "3828cccb4e1621d7827311e9a3ed1607756e197b565ce87b6213769f54df5208",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
+      "expectedSha256": "115ea8789104b8dae7adeef61fb3b8334399edcc36cf735b34b0081e03165f70",
+      "actualSha256": "115ea8789104b8dae7adeef61fb3b8334399edcc36cf735b34b0081e03165f70",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+      "expectedSha256": "6c9183729f93a35c127e461e2e5f8b491374e6fc7e7a0fab1fdba161f7f7816b",
+      "actualSha256": "6c9183729f93a35c127e461e2e5f8b491374e6fc7e7a0fab1fdba161f7f7816b",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryItemStack.cs",
+      "expectedSha256": "dbccdbbbf71596081f487b2e5b2f5e089fa5b43978b5ec2398b4409cba298ead",
+      "actualSha256": "dbccdbbbf71596081f487b2e5b2f5e089fa5b43978b5ec2398b4409cba298ead",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationOutcome.cs",
+      "expectedSha256": "7283c645efe8f5def404f163a037fa0245d42b3a2455f2f03df52c8ef1e3bc92",
+      "actualSha256": "7283c645efe8f5def404f163a037fa0245d42b3a2455f2f03df52c8ef1e3bc92",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationStatus.cs",
+      "expectedSha256": "025cd965dbeb21da93eda7c3dbfa156bd98c39b5ed92f89e4fe682051d6d2d5b",
+      "actualSha256": "025cd965dbeb21da93eda7c3dbfa156bd98c39b5ed92f89e4fe682051d6d2d5b",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs",
+      "expectedSha256": "7fd457ef32d618b92455b4d6279e0c5abfcf93160e52eb6e675452904e8428fd",
+      "actualSha256": "7fd457ef32d618b92455b4d6279e0c5abfcf93160e52eb6e675452904e8428fd",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemDefinition.cs",
+      "expectedSha256": "468ca1cc8d98dc62e18581a929d1b08f99131fea10454d5b0cd5aa6da69be790",
+      "actualSha256": "468ca1cc8d98dc62e18581a929d1b08f99131fea10454d5b0cd5aa6da69be790",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
+      "expectedSha256": "f6df7b19c86c9ba961491bd881865621ee98396e39bbadfc52519ee32b36402e",
+      "actualSha256": "f6df7b19c86c9ba961491bd881865621ee98396e39bbadfc52519ee32b36402e",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemRarity.cs",
+      "expectedSha256": "632e85fc973f3aa355c5ac6443bc62ffdbb07920dfd87fd27fced04663ddbab2",
+      "actualSha256": "632e85fc973f3aa355c5ac6443bc62ffdbb07920dfd87fd27fced04663ddbab2",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
+      "expectedSha256": "d6c61f839e6553a3a7122b5d50ec51934bc010b551cb9d869384c37e1a05ec63",
+      "actualSha256": "d6c61f839e6553a3a7122b5d50ec51934bc010b551cb9d869384c37e1a05ec63",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/StartingLoadout.cs",
+      "expectedSha256": "e8b750374aaf15aad341adc67a03d1fed98c629e4a349e92295a8a9f9adffcc0",
+      "actualSha256": "e8b750374aaf15aad341adc67a03d1fed98c629e4a349e92295a8a9f9adffcc0",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactIds.cs",
+      "expectedSha256": "3dc20c58b80dd109dcbb2bf3fddcec71ed6dfbdb8fb7f52c8754e383fa23bd8c",
+      "actualSha256": "3dc20c58b80dd109dcbb2bf3fddcec71ed6dfbdb8fb7f52c8754e383fa23bd8c",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactModifierTotals.cs",
+      "expectedSha256": "b1a0e25818a7b6cd709503bac8754f9cce0e1401123e74d1f49f605a4d389b19",
+      "actualSha256": "b1a0e25818a7b6cd709503bac8754f9cce0e1401123e74d1f49f605a4d389b19",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactPreview.cs",
+      "expectedSha256": "cd24fbfcfafe86ce2e8b020a3ee53e48559da1033621fa0254f24186f696d8df",
+      "actualSha256": "cd24fbfcfafe86ce2e8b020a3ee53e48559da1033621fa0254f24186f696d8df",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactSnapshot.cs",
+      "expectedSha256": "d99bc19a56394868f6ce4d411b47f7d5cb3e7b699b8c7a7aad71c11f8f28c56a",
+      "actualSha256": "d99bc19a56394868f6ce4d411b47f7d5cb3e7b699b8c7a7aad71c11f8f28c56a",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactState.cs",
+      "expectedSha256": "9ef945add86b80d32974adb3ce65e11a1def34375ced936776998a4582d9345b",
+      "actualSha256": "9ef945add86b80d32974adb3ce65e11a1def34375ced936776998a4582d9345b",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Presentation/PlayerHudState.cs",
+      "expectedSha256": "d75aa06a2292f8d227c1215171eeb0560548aeb5e7d42bf914a23bf68cadcdf7",
+      "actualSha256": "d75aa06a2292f8d227c1215171eeb0560548aeb5e7d42bf914a23bf68cadcdf7",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Presentation/PlayerVisualState.cs",
+      "expectedSha256": "fb6fff59e51b67967ec2aa3a59798dca402477072c2b664ef08e63cc813acf7c",
+      "actualSha256": "fb6fff59e51b67967ec2aa3a59798dca402477072c2b664ef08e63cc813acf7c",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractCatalog.cs",
+      "expectedSha256": "d6cc2dfb41a515a527a7e0cbba8167605bde006248440061b5a0b13d53ce0c1e",
+      "actualSha256": "d6cc2dfb41a515a527a7e0cbba8167605bde006248440061b5a0b13d53ce0c1e",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractDefinition.cs",
+      "expectedSha256": "fd9f743c2a0cee11ed6fa244c10687c3e2751722ef3c050a7fff67eb57623195",
+      "actualSha256": "fd9f743c2a0cee11ed6fa244c10687c3e2751722ef3c050a7fff67eb57623195",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionRules.cs",
+      "expectedSha256": "18271e670d340189eb5d150c363a8455b031aee36c2585e3dda3a063dfa84073",
+      "actualSha256": "18271e670d340189eb5d150c363a8455b031aee36c2585e3dda3a063dfa84073",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionSnapshot.cs",
+      "expectedSha256": "17253e4ebbbdc4ad8fcd7864666929cf6bfcbac6f4c26daa3b2c10fc6443e5ab",
+      "actualSha256": "17253e4ebbbdc4ad8fcd7864666929cf6bfcbac6f4c26daa3b2c10fc6443e5ab",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeKind.cs",
+      "expectedSha256": "bf2a394e8b4c95047f8276ec1d54490fb4cb38dd201f0dc055a43f896a90793a",
+      "actualSha256": "bf2a394e8b4c95047f8276ec1d54490fb4cb38dd201f0dc055a43f896a90793a",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradePurchaseRecord.cs",
+      "expectedSha256": "28a09f2998b1f86c1659af302bdfb9c0f982b5ab5867416012891d7ef741d284",
+      "actualSha256": "28a09f2998b1f86c1659af302bdfb9c0f982b5ab5867416012891d7ef741d284",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradePurchaseResult.cs",
+      "expectedSha256": "aa764c49d392d7313c7a2c4d71f1b451cdbbdf934f8b073ac5c20b8e30a1930d",
+      "actualSha256": "aa764c49d392d7313c7a2c4d71f1b451cdbbdf934f8b073ac5c20b8e30a1930d",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeRules.cs",
+      "expectedSha256": "4db6f0ef04d2c30872bda9dc4edac7e71ec5d64080fc1e19c490b6d2669cbf7f",
+      "actualSha256": "4db6f0ef04d2c30872bda9dc4edac7e71ec5d64080fc1e19c490b6d2669cbf7f",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeSnapshot.cs",
+      "expectedSha256": "d593a3bc63b535436fb86676445c1b05e5ff68c3805314ec8ceaa1389f57eb7e",
+      "actualSha256": "d593a3bc63b535436fb86676445c1b05e5ff68c3805314ec8ceaa1389f57eb7e",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Randomness/Xorshift32.cs",
+      "expectedSha256": "2037370edf826afb0eeb7decba78aea2b05fc8e276d9026bbd98ceb3f1de9c04",
+      "actualSha256": "2037370edf826afb0eeb7decba78aea2b05fc8e276d9026bbd98ceb3f1de9c04",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Relics/CombatRelicResolver.cs",
+      "expectedSha256": "1075e3c0ed4b5b0d4c14b489419e029a9d46d9157576364262cff4f93147b462",
+      "actualSha256": "1075e3c0ed4b5b0d4c14b489419e029a9d46d9157576364262cff4f93147b462",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Relics/SupportRelicResolver.cs",
+      "expectedSha256": "d1da19d4afdcf64ca157496b00696aaa718cb18049f75173894886db7b3bfe02",
+      "actualSha256": "d1da19d4afdcf64ca157496b00696aaa718cb18049f75173894886db7b3bfe02",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+      "expectedSha256": "35293ee134ed543c83914eae2109c350f0dd86bc66719de207f87c48e39cc437",
+      "actualSha256": "35293ee134ed543c83914eae2109c350f0dd86bc66719de207f87c48e39cc437",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "expectedSha256": "8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574",
+      "actualSha256": "8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Sessions/GameSession.cs",
+      "expectedSha256": "6b3d74ab6b3011b09aa5d68bfd8583f660e31e2677e38e9dab7fd505b7cdfedb",
+      "actualSha256": "6b3d74ab6b3011b09aa5d68bfd8583f660e31e2677e38e9dab7fd505b7cdfedb",
+      "matches": true
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Sessions/IActorState.cs",
+      "expectedSha256": "0e0e2790fe295b46a5501295341bc50d5d9568813818bb01bf93f6c862820051",
+      "actualSha256": "0e0e2790fe295b46a5501295341bc50d5d9568813818bb01bf93f6c862820051",
+      "matches": true
+    }
+  ]
+}

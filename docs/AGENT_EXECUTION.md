@@ -1,8 +1,8 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 2.64 · 30 de octubre de 2026.
+**Versión:** 2.65 · 30 de octubre de 2026.
 
-**Snapshot activo y gates visuales:** Unity6000.6.7f1; Gate D Accepted93c6ea46/1018 y builds verificadas, no repetir B/C/D. CI2 de6e3b471a falló1039/1042: G04 siete y A14 Passed; B3 falló al crear catálogo vacío. Correctivo test B e3add91e [Accepted estático](ci-integration-20261029/SOL-F09-CI2-PROJECTION-FIX.md) e integrado; PlayMode74 compila y391 fuentes antiguas/492 fixtures permanecen intactos. CI3 prevista1042 con gates reales, runtime conjunto pendiente. Dos Luna preparan pin dominio y emisor V6 bajo [contrato d223](ci-integration-20261029/SOL-F09-AFTER-LOGICAL-PLAN-NEXT-CONTRACT.md), solo staging hasta CI verde. G04/F09/F10 completos, Save7, pin durable App y activación física siguen abiertos. Sin UI/Unity local/publicación.
+**Snapshot activo y gates visuales:** Unity6000.6.7f1; CI3ad8ce968/41110287288 success1042/1042+gates+builds, Solb3185ca3 Accepted. Siguiente corte integrado pin3ff837cc+emisorbb4/dfb128cc:398C#,391antiguos y492fixtures intactos,331inputs compuestos exit0; [evidencia](ci-integration-20261029/f09-pin-v6-emission-ci4-evidence/REPORT.md). CIpropia prevista1052+97datosbyteidénticos/14fuentes, Native nuevo pendiente. Sinrebase/Save7/pinApp/autoridad física; G04/F09/F10 completos siguen abiertos. SinUI/Unitylocal/publicación.
 
 **Checkpoint del 28 de octubre:** las novedades y límites vigentes están en [PROGRESS.md, Estado actual](PROGRESS.md#estado-actual-28-de-octubre-de-2026). La aprobación estática inicial de `loot_pickup` fue corregida por Sol en su alcance de producto: wiring App retirado, evento/tests solo preparación hasta el commit durable F09; mapa conservado en 21/36. F02 r2 y V5 r2 son preparación/inventario aceptados en ámbitos limitados y mantienen sus gates. La prioridad es convertir esos requisitos en evidencia integrada del recorrido F10 y contener nueva documentación sin efecto sobre ese camino.
 

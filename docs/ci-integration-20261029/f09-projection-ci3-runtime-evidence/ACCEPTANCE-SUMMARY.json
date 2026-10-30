@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "run": 41110287288,
+  "suite": 111442888722,
+  "commit": "ad8ce96855a4529f2245eb439cb8d1c90662d578",
+  "tree": "25968e7dca4a27b7079728f873c163cb2020af70",
+  "artifact": 13003906835,
+  "artifactSha256": "3453b22932adf009dce17c0cd0cd6d5b9671744caf4a6839edf57d0ecfd7ab44",
+  "artifactFiles": 241,
+  "editMode": {
+    "passed": 599,
+    "total": 599
+  },
+  "playMode": {
+    "passed": 443,
+    "total": 443
+  },
+  "total": 1042,
+  "passed": 1042,
+  "failed": 0,
+  "skipped": 0,
+  "inconclusive": 0,
+  "modules": {
+    "g04": [
+      {
+        "method": "ApplicationRelicSwapsReplayAndMerchantSealNeverNeedAnUnequipOperation",
+        "result": "Passed"
+      },
+      {
+        "method": "ArmorAndRelicCommitsPreserveActorSkillTimelineAndUnfilledResources",
+        "result": "Passed"
+      },
+      {
+        "method": "CheckpointRoomRebindAndUnknownLegacyMaximumGuardUseTheExactPersistedState",
+        "result": "Passed"
+      },
+      {
+        "method": "DuplicateWrongItemSlotKeyConflictAndV6ReadonlyRejectWithoutFalseSuccess",
+        "result": "Passed"
+      },
+      {
+        "method": "DurableSaveWithFailedPublicationRetriesWithoutAnotherWriteAndPreservesManualPause",
+        "result": "Passed"
+      },
+      {
+        "method": "FailedWriteKeepsOldActorAndRetriesTheExactCandidateAndLease",
+        "result": "Passed"
+      },
+      {
+        "method": "NewBindingsApplyKnownBonusesInBothOrdersAndIgnoreCombatRelicsAcrossAllClasses",
+        "result": "Passed"
+      }
+    ],
+    "f09Core": [
+      {
+        "method": "ChangingPlanSemanticsChangesPlanDigestButKeepsPrimarySpawnKey",
+        "result": "Passed"
+      },
+      {
+        "method": "IndependentEncounterCanonicalByteAndSha256VectorIncludesUtf8AndDescriptorClosure",
+        "result": "Passed"
+      },
+      {
+        "method": "IndependentNoneCanonicalByteAndSha256Vector",
+        "result": "Passed"
+      },
+      {
+        "method": "MissingBindingFailsAndFactoryRejectsAmbiguousBindingKeys",
+        "result": "Passed"
+      },
+      {
+        "method": "NoneBindingIsExplicitAndHasNoEncounterPayloadOrSpawnIdentities",
+        "result": "Passed"
+      },
+      {
+        "method": "NoVinculoCalendarRequiresZeroScheduleAndZeroSpawnOrdinals",
+        "result": "Passed"
+      },
+      {
+        "method": "PlanCopiesSelectedVariantCollectionsAndDescriptorClosure",
+        "result": "Passed"
+      },
+      {
+        "method": "RejectsNullUnknownDuplicateAndOverLimitPactContexts",
+        "result": "Passed"
+      },
+      {
+        "method": "RejectsUnsupportedResolverIdAndRevision",
+        "result": "Passed"
+      },
+      {
+        "method": "ResolutionContextIsCopiedSortedOrdinallyAndIndependentOfCulture",
+        "result": "Passed"
+      },
+      {
+        "method": "ResolvesExactEncounterBindingAndCanonicalizesSpawnOrderWithoutChangingWaveOrder",
+        "result": "Passed"
+      },
+      {
+        "method": "RouteGenerationAndNodeMustBeExactAndSupported",
+        "result": "Passed"
+      },
+      {
+        "method": "VínculoRequiresMissingResolutionAuthorityInsteadOfInferringAnOrdinal",
+        "result": "Passed"
+      },
+      {
+        "method": "ZeroOrMultipleApplicableVariantsFailClosed",
+        "result": "Passed"
+      }
+    ],
+    "f09Projection": [
+      {
+        "method": "ProjectionKeepsEncounterRosterCollectionsDeeplyReadOnly",
+        "result": "Passed"
+      },
+      {
+        "method": "StrictJsonExactRevisionResolutionProjectsCompleteOrderedRosterInPreparing",
+        "result": "Passed"
+      },
+      {
+        "method": "StrictJsonNoneBindingProjectsNullRosterAndCannotRepresentClear",
+        "result": "Passed"
+      }
+    ]
+  },
+  "capture": {
+    "cases": 11,
+    "attempts": 11,
+    "dataFiles": 97,
+    "sources": 14,
+    "sourceBindingsVerified": 14,
+    "identicalDataToGateDci3": 97,
+    "observationsVerified": 77
+  },
+  "gatesVerified": true,
+  "overallCi": "success",
+  "windows": "success",
+  "webgl": "success",
+  "releaseObserved": "skipped",
+  "deployObserved": "skipped",
+  "gameOrEditorOpenedLocally": false,
+  "fullG04F09F10Accepted": false,
+  "windowsArtifactVerified": true,
+  "webglArtifactVerified": true,
+  "formalTechnicalReview": "Accepted",
+  "formalReviewSha256": "b3185ca3982763f42add8217efb45eb327af9611114bc89fdef8fffe34ccb4a0"
+}

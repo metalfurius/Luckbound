@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "state": "IntegratedStaticAcceptedNotRuntimeVerified",
+  "parent": "ad8ce96855a4529f2245eb439cb8d1c90662d578",
+  "newPinSources": [
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanPinV1.cs",
+      "sha256": "9384dc1637e837ea5fcddae4683dad0e671d4db85f2d6c0d2376764b369689a8",
+      "bytes": 27420
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanPinCanonicalV1.cs",
+      "sha256": "67400b82a4c7454502acd1d5d1d23a0adc3a0cc8c11492e6defa79121c450f61",
+      "bytes": 17289
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/EncounterPlanPinRestorerV1.cs",
+      "sha256": "ab0a2ffaf07397be5e5a171cbba46a389bfbd3dbbe7e6e61c55e8992deadf766",
+      "bytes": 11310
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanPinV1Tests.cs",
+      "sha256": "6d3c260e8c3b45201e034159a4880a356671786a997d16536b42739f1b513bd2",
+      "bytes": 18621
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Content/Expeditions/EncounterPlanPinRestoreV1Tests.cs",
+      "sha256": "b05ddffc9b0fd9efe2a83d74d93f6dde1efff417504a8416acacfff1f7f07154",
+      "bytes": 14718
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/EncounterPlanPinProjectionTests.cs",
+      "sha256": "d959ba2448c45498a67f9533d586510447ee67c83823edbf38c5b92183ab388a",
+      "bytes": 12255
+    }
+  ],
+  "newMetas": [
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanPinV1.cs.meta",
+      "guid": "cec7559cff6cbb6dc9b41b5761207732",
+      "sha256": "2663321349ff39062fd724f068db9c7a15def5a32b9b9c50c38a68c4e9cfab5e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanPinCanonicalV1.cs.meta",
+      "guid": "881389b77a89e4a0e115b861f26b6497",
+      "sha256": "92b5e9d7023df8a1762a380abc1cf79f9a7c2f25bd87655cba2e7ef2013a7172"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/EncounterPlanPinRestorerV1.cs.meta",
+      "guid": "1ced6f206f41533e3e5405806158f4d4",
+      "sha256": "b3dfb533196ce82523d33b9fc76676388e4b2d231516138db6a23603f936e3c6"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanPinV1Tests.cs.meta",
+      "guid": "175cef83c306da217368e24e82bb6881",
+      "sha256": "c28d8c2fc9b1e632d69856bb3656eeb68741ed38a2dfcb490786625a0ad6b12c"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Content/Expeditions/EncounterPlanPinRestoreV1Tests.cs.meta",
+      "guid": "224d2ac63f5bf6b6c32b6fdeb3dae762",
+      "sha256": "ba1ef75837e66738e69cebdf2ba15914eef3369b271da49b17ca010088b2fd92"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/EncounterPlanPinProjectionTests.cs.meta",
+      "guid": "a8710a75870aee7e0c09dfc197298af9",
+      "sha256": "93c0ecb9f6dfd0e402e4bcebf5547c51a0282a5aa6ae12016dae3deba7126184"
+    }
+  ],
+  "modifiedSource": {
+    "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+    "beforeSha256": "53cb04469f12e32d03b5aa6477e96664dea401afd257445db6a4ae6f757b347b",
+    "afterSha256": "bb4b8a6a3c1986b1788c4522b36ce9df6e795e770a3e21c6654da9802509822a"
+  },
+  "beforeSourceCount": 392,
+  "afterSourceCount": 398,
+  "oldSourcesUnchanged": 391,
+  "frozenSaveFilesUnchanged": 492,
+  "uniqueAssetGuids": 854,
+  "expectedTests": 1052,
+  "expectedEditMode": 607,
+  "expectedPlayMode": 445,
+  "expectedCaptureCases": 11,
+  "expectedCaptureDataFiles": 97,
+  "expectedCaptureSources": 14,
+  "pinReviewSha256": "3ff837cc0f92dbf4658ae380d5a36cc4ee99c20471477be9818e61650386cb2f",
+  "emitterReviewSha256": "dfb128ccc09babbd12691e905af41b280d3d68aa42a6097c0ecf4275aaaaf8d0",
+  "prerequisiteNativeRun": 41110287288,
+  "localUnityExecuted": false,
+  "save7Implemented": false,
+  "appPinDurable": false,
+  "physicalAuthority": false
+}
