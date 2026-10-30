@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "inputSet": "F03-BELLATOR-IDLE-20261030",
+  "inputs": {
+    "sourceGenerated": {
+      "path": "docs/agent_staging/f03-bellator-idle-review-20261024/source_generated.png",
+      "sha256": "1641ca09dc66efdd85d26bd4d8f8bbe172095e142a5b8289897491ad7f7963cd",
+      "width": 2033,
+      "height": 773
+    },
+    "referencePrototypeV2": {
+      "path": "docs/agent_staging/f03-bellator-idle-review-20261024/BellatorIdle_Prototype_v2.png",
+      "sha256": "10b4b6c9455083cc3c0a3a51d56ce67855c6aae010f68ba0819baa98716f537e",
+      "width": 128,
+      "height": 48
+    },
+    "legacyNormalizerV2": {
+      "path": "docs/agent_staging/f03-bellator-idle-review-20261024/normalize-bellator-idle-v2.ps1",
+      "sha256": "594ecd7bc5a6436c68cf9639941e356d965ba301395ee8bd268e26d4cda9f2b0"
+    },
+    "originRecordV1": {
+      "path": "docs/agent_staging/f03-bellator-idle-review-20261024/RESOURCE_RECORD.v1.json",
+      "sha256": "d1fc775d9a425bf1b6847462a46052b13451cbbbcb5159d68d74a76013b584cd"
+    },
+    "literalPrompt": {
+      "path": "docs/agent_staging/f03-bellator-idle-review-20261024/GENERATION_PROMPT.txt",
+      "sha256": "a09260a896a3bc85aeed5ce2f123227a3b0d2677962977787886387a3b0b558d"
+    },
+    "promptReferenceDocument": {
+      "path": "docs/art/F01_master_reference.md",
+      "sha256": "33b03e7a1a4762f8177257341d4088cde4582a97c32192bc4d43d0ba24e3ed61"
+    }
+  },
+  "outputs": {
+    "png": "BellatorIdle_Prototype_v2.png",
+    "record": "ART-F03-BELLATOR-IDLE-001.v2.json",
+    "buildResults": "BUILD-RESULTS.json"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "recordId": "ART-F03-BELLATOR-IDLE-001",
+  "recordVersion": 1,
+  "creationMethod": "generated",
+  "generator": "Codex built-in image_gen.imagegen",
+  "resourceId": "ART-F03-BELLATOR-IDLE-001",
+  "sourcePath": "docs/agent_staging/f03-bellator-idle-review-20261024/BellatorIdle_Prototype_v2.png",
+  "sha256": "10b4b6c9455083cc3c0a3a51d56ce67855c6aae010f68ba0819baa98716f537e",
+  "width": 128,
+  "height": 48,
+  "frameCount": 4,
+  "frameSize": "32x48",
+  "state": "Prototype",
+  "promptReference": "docs/art/F01_master_reference.md",
+  "promptReferenceSha256": "33b03e7a1a4762f8177257341d4088cde4582a97c32192bc4d43d0ba24e3ed61",
+  "referenceImagesUsed": [],
+  "rawGeneratedSource": {
+    "height": 773,
+    "path": "docs/agent_staging/f03-bellator-idle-review-20261024/source_generated.png",
+    "width": 2033,
+    "sha256": "1641ca09dc66efdd85d26bd4d8f8bbe172095e142a5b8289897491ad7f7963cd"
+  },
+  "literalPrompt": "Use case: game asset concept for a sprite-animation review.\nAsset type: one original 4-frame idle animation strip for the Luckbound Bellator player, an isolated art-source candidate for F03, not yet imported into Unity.\nScene/backdrop: genuinely transparent background; no floor, shadow, scenery, border, labels, text, or grid lines.\nSubject: exactly one human dark-fantasy adventurer repeated consistently in four adjacent frames, full body visible in every frame, facing three-quarter toward the viewer. Use a compact readable silhouette: dark steel and bone-toned armor, simple dark hair, small muted red cloth accent and one restrained amber detail; no weapon, particles, or detached objects.\nMotion: four sequential idle frames with extremely subtle breathing and cloth movement only; same proportions, gear, colors, and feet position in every cell. Frame 1 is neutral, frame 2 chest rises slightly, frame 3 reaches the breath peak, frame 4 returns toward neutral. Keep all pose changes small and suitable for looping.\nStyle/medium: crisp hand-clustered 2D pixel art matching the accepted Luckbound F01 direction: restrained dark-fantasy palette, square hard-edged pixel clusters, one-pixel dark outline only where useful, simple shadow clusters, upper-left lighting. No antialiasing, blur, gradients, painterly texture, 3D rendering, or pseudo-pixel noise. At final sprite scale each cell must read as a 32×48 pixel character.\nComposition/framing: a horizontal strip of exactly four equal 32×48 cells, total 128×48 logical pixels, no gutters between cells, aligned to a strict pixel grid. The complete feet and head fit inside each cell with a little transparent margin. Center the figure in each cell and keep the feet baseline identical. No panel dividers. Output should be straightforward to crop into four cells and downsample with nearest-neighbor.\nColor palette: use only these 32 opaque colors for visible pixels: #10111B #1B1D2B #2A2E40 #3F465C #59647A #8290A5 #BDC6CC #E8E3CD #172C28 #24463A #38654A #59935C #94BC74 #32251F #50382B #765137 #A7794D #54232A #83333A #BC5148 #E98664 #2D2445 #493363 #74528F #AA7DC2 #5E3F22 #9A6026 #D68F32 #F0C15A #294C69 #4C86A0 #8FC1C1. Transparency is not a color.\nConstraints: original Luckbound character; exactly four frames and no other subject. Keep animation nearly still, with no weapon swing, walk, attack, jump, dodge, damage, or death pose. No text, logos, watermark, or extra content. Preserve the approved style without reproducing any existing game's art.",
+  "processing": {
+    "tool": "Windows PowerShell / System.Drawing",
+    "version": "Windows PowerShell 5.1; System.Drawing",
+    "procedure": "docs/agent_staging/f03-bellator-idle-review-20261024/normalize-bellator-idle-v2.ps1",
+    "parameters": "Split the 2033x773 transparent generation into four equal horizontal cells; locate the opaque subject per cell, horizontally center the subject while keeping its original baseline, crop a 508/509x762 logical cell, nearest-neighbor sample to a 32x48 output cell, set alpha below 128 to 0 and all other alpha to 255, quantize to the approved 32-color Luckbound palette excluding Slime/Patio greens and relic violets for this Bellator-only resource. Output is 128x48 RGBA PNG; preview is an 8x nearest-neighbor enlargement and is not a runtime asset."
+  }
+}

@@ -1,0 +1,128 @@
+name: Bellator Idle source reproduction
+
+on:
+  push:
+    branches:
+      - codex/f03-source-bellator-20261030
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    name: Reproduce source artwork without importing Unity assets
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SOURCE_OUTPUT: Logs/ArtSource/${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout exact source inputs
+        uses: actions/checkout@v7.0.1
+
+      - name: Snapshot all tracked bytes and game source paths
+        id: before
+        shell: bash
+        run: |
+          python3 -B - <<'PY'
+          import hashlib, json, pathlib, subprocess
+          tracked = subprocess.check_output(['git', 'ls-files', '-z']).decode().rstrip('\0').split('\0')
+          snapshot = {}
+          for relative in tracked:
+              path = pathlib.Path(relative)
+              assert path.is_file() and not path.is_symlink(), relative
+              raw = path.read_bytes()
+              snapshot[relative] = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+          source_paths = sorted(path.as_posix() for source in ('Assets', 'Packages', 'ProjectSettings') for path in pathlib.Path(source).rglob('*') if path.is_file() or path.is_symlink())
+          pathlib.Path('Logs').mkdir(exist_ok=True)
+          pathlib.Path('Logs/F03-source-before.json').write_text(json.dumps({'tracked': snapshot, 'gameSourcePaths': source_paths}, indent=2) + '\n')
+          print(f'Snapshotted {len(snapshot)} tracked files; no Unity process is launched.')
+          PY
+
+      - name: Verify source producer and rejection cases
+        id: tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 --version
+          python3 -B -m unittest discover -s Tools/Art/tests -p test_f03_bellator_idle_source.py -v 2>&1 | tee Logs/F03-source-tests.log
+
+      - name: Reproduce the four source frames twice
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/Art/build_f03_bellator_idle_source.py --project-root . --inputs Tools/Art/f03_bellator_idle_inputs.json --output-dir "${SOURCE_OUTPUT}-a" | tee Logs/F03-source-build-a.log
+          python3 -B Tools/Art/build_f03_bellator_idle_source.py --project-root . --inputs Tools/Art/f03_bellator_idle_inputs.json --output-dir "${SOURCE_OUTPUT}-b" | tee Logs/F03-source-build-b.log
+          python3 -B - <<'PY'
+          import hashlib, json, os, pathlib
+          base = os.environ['SOURCE_OUTPUT']
+          first, second = pathlib.Path(base + '-a'), pathlib.Path(base + '-b')
+          payloads = ('BellatorIdle_Prototype_v2.png', 'ART-F03-BELLATOR-IDLE-001.v2.json')
+          expected = set(payloads) | {'BUILD-RESULTS.json'}
+          assert {p.name for p in first.iterdir()} == expected
+          assert {p.name for p in second.iterdir()} == expected
+          results = []
+          for name in payloads:
+              a, b = first / name, second / name
+              assert not a.is_symlink() and not b.is_symlink(), name
+              data_a, data_b = a.read_bytes(), b.read_bytes()
+              assert data_a == data_b, f'Non-deterministic source payload: {name}'
+              results.append({'path': name, 'bytes': len(data_a), 'sha256': hashlib.sha256(data_a).hexdigest(), 'bothRunsByteIdentical': True})
+          for output in (first, second):
+              assert isinstance(json.loads((output / 'BUILD-RESULTS.json').read_text()), dict)
+          pathlib.Path('Logs/F03-source-reproducibility.json').write_text(json.dumps({'outputs': results, 'metadataCompared': False, 'scope': 'Source reproduction only; Prototype, not imported or artistically accepted'}, indent=2) + '\n')
+          print(json.dumps(results, indent=2))
+          PY
+
+      - name: Verify all tracked bytes and game source paths remain unchanged
+        id: after
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          python3 -B - <<'PY'
+          import hashlib, json, pathlib, subprocess
+          before = json.loads(pathlib.Path('Logs/F03-source-before.json').read_text())
+          tracked = set(subprocess.check_output(['git', 'ls-files', '-z']).decode().rstrip('\0').split('\0'))
+          after, differences = {}, []
+          for relative in sorted(set(before['tracked']) | tracked):
+              path = pathlib.Path(relative)
+              if path.is_symlink() or not path.is_file():
+                  after[relative] = {'status': 'missing-or-invalid'}
+              else:
+                  raw = path.read_bytes()
+                  after[relative] = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+              if after[relative] != before['tracked'].get(relative):
+                  differences.append(relative)
+          source_paths = sorted(path.as_posix() for source in ('Assets', 'Packages', 'ProjectSettings') for path in pathlib.Path(source).rglob('*') if path.is_file() or path.is_symlink())
+          result = {'tracked': after, 'gameSourcePaths': source_paths, 'changedTrackedPaths': differences, 'trackedInventoryIdentical': tracked == set(before['tracked']), 'gameSourcePathsIdentical': source_paths == before['gameSourcePaths']}
+          pathlib.Path('Logs/F03-source-after.json').write_text(json.dumps(result, indent=2) + '\n')
+          assert not differences and result['trackedInventoryIdentical'] and result['gameSourcePathsIdentical'], 'Source-only execution modified or added game inputs'
+          print(f'All {len(after)} tracked files and game source paths remain identical.')
+          PY
+
+      - name: Require successful tests, both outputs and source preservation
+        if: ${{ !cancelled() }}
+        shell: bash
+        env:
+          BEFORE: ${{ steps.before.outcome }}
+          TESTS: ${{ steps.tests.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          AFTER: ${{ steps.after.outcome }}
+        run: |
+          test "$BEFORE" = success
+          test "$TESTS" = success
+          test "$BUILD" = success
+          test "$AFTER" = success
+
+      - name: Preserve source bundles and technical evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: f03-bellator-idle-source-${{ github.sha }}
+          path: |
+            Logs/ArtSource
+            Logs/F03-source-*.json
+            Logs/F03-source-*.log
+          if-no-files-found: error
+          retention-days: 30

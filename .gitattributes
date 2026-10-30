@@ -1,3 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 docs/art/records/*.json -text
+
+# Preserve the exact byte provenance of frozen F03 source inputs.
+docs/agent_staging/f03-bellator-idle-review-20261024/* -text
+docs/art/F01_master_reference.md -text
