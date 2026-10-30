@@ -1,0 +1,2158 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "runId": 40923742946,
+    "suiteId": 110933946560,
+    "testJobId": 123623597199,
+    "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+    "runConclusion": "failure",
+    "testJobConclusion": "failure",
+    "buildJobs": "skipped",
+    "releaseJob": "skipped",
+    "deployJob": "skipped",
+    "workflowV6Verifier": "skipped_after_test_failure",
+    "artifactId": 12919847407,
+    "artifactName": "test-results-345fb5a7b1cf023505deae566a8c4bd462573aeb",
+    "artifactUrl": "https://nightly.link/metalfurius/Luckbound/suites/110933946560/artifacts/12919847407",
+    "archiveBytes": 9096053,
+    "archiveSha256": "4df700f27a0cd80fa1654c3d70aa5c041715853c7e8e9cca86f8765a5c4df267",
+    "downloadHelper": "Logs/VisualCorrection-20261028/download_artifact.py",
+    "downloadHelperResult": "digest_verified_and_safely_extracted",
+    "extractedFileCount": 241,
+    "downloadManifestSha256": "cacd3e236b299d0b4f045e0c7c792845e9b3b941965252e08351542bcedc9827"
+  },
+  "tests": {
+    "suites": [
+      {
+        "mode": "editmode",
+        "summary": {
+          "result": "Failed(Child)",
+          "total": "585",
+          "passed": "582",
+          "failed": "3",
+          "skipped": "0",
+          "inconclusive": "0",
+          "start-time": "2026-10-29 17:49:13Z",
+          "end-time": "2026-10-29 17:51:24Z",
+          "duration": "130.9932662",
+          "caseNodes": 585,
+          "caseNodeCounts": {
+            "Passed": 582,
+            "Failed": 3
+          },
+          "sha256": "e058926594ae6033339cb64da1b01239a8be3164faa6f4091f189bd0bd04b3ba",
+          "bytes": 516271
+        },
+        "failures": [
+          {
+            "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DeclaredPngAddedOutsideOwnershipMarker_IsRejectedWithoutChangingAssets",
+            "result": "Failed",
+            "message": "  Expected: String containing \"without recorded family ownership\"\n  But was:  \"F02 families are immutable: changed manifest or payload requires a new versioned familyId and outputFolder; the published family was left untouched.\"\n",
+            "stackTrace": "at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual, System.String message, System.Object[] args) [0x00008] in <8b63e8ac0a4746599ed207982825ae6c>:0\nat NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0\nat Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.AssertRejectedWithoutAssetsMutation (System.Action action, System.String expectedMessage) [0x0003d] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:1765\nat Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.DeclaredPngAddedOutsideOwnershipMarker_IsRejectedWithoutChangingAssets () [0x0008c] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:1498\n",
+            "output": ""
+          },
+          {
+            "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithCorruptLastFrameKeyTime_IsRejectedWithoutRepair",
+            "result": "Failed",
+            "message": "  Expected: String containing \"frame reference differs from its manifest\"\n  But was:  \"Existing F02 clip duration differs from its manifest: BellatorAttack [failedInvariant=AnimationClipSettings.startTime/stopTime; current={expectedDurationSeconds=0.25; durationBoundary=0.25; clip.length=0.250416666; frameRate=12; frameCount=3; objectReferenceKeyCount=3; startTime=0; stopTime=0.250416666; firstKeyTime=0; lastFrameKeyTime=0.167083338; keyTimes=[0@0,1@0.0833333358,2@0.167083338]}; preCreateAsset=<not-created-in-this-call>].\"\n",
+            "stackTrace": "at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual, System.String message, System.Object[] args) [0x00008] in <8b63e8ac0a4746599ed207982825ae6c>:0\nat NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0\nat Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.AssertRejectedWithoutAssetsMutation (System.Action action, System.String expectedMessage) [0x0003d] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:1765\nat Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.AssertExistingMultiClipTimeCorruptionRejectedWithoutRepair (System.Action`1[T] corruptClip, System.Action`1[T] assertCorruptionPersisted, System.String expectedMessage) [0x000e0] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:585\nat Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ExistingClipWithCorruptLastFrameKeyTime_IsRejectedWithoutRepair () [0x00011] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:480\n",
+            "output": ""
+          },
+          {
+            "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_NullResourceIdInheritsFamilyDefaultWithUniqueEffectiveIds",
+            "result": "Failed",
+            "message": "System.IO.InvalidDataException : F02 family manifest JSON is invalid: code=DuplicateMember; path=$.images[0].resourceId.",
+            "stackTrace": "  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ReadAndValidateManifest (System.String manifestPath) [0x0080b] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:370 \n  at Luckbound.Editor.F02SpriteFamilyManifestImporter.ImportFamily (System.String manifestPath) [0x00000] in /github/workspace/Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs:168 \n  at Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.ImageTraceability_NullResourceIdInheritsFamilyDefaultWithUniqueEffectiveIds () [0x0005b] in /github/workspace/Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs:678 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <fe1d7a670f4f4d078f963f4439913bcb>:0 ",
+            "output": ""
+          }
+        ]
+      },
+      {
+        "mode": "playmode",
+        "summary": {
+          "result": "Passed",
+          "total": "352",
+          "passed": "352",
+          "failed": "0",
+          "skipped": "0",
+          "inconclusive": "0",
+          "start-time": "2026-10-29 17:45:58Z",
+          "end-time": "2026-10-29 17:48:41Z",
+          "duration": "163.8266532",
+          "caseNodes": 352,
+          "caseNodeCounts": {
+            "Passed": 352
+          },
+          "sha256": "b7c968e36f2fd51993bc3a8200831ac2c26760fe4976a09728b5f7d8ec0b1c97",
+          "bytes": 863693
+        },
+        "failures": []
+      }
+    ],
+    "aggregate": {
+      "total": 937,
+      "passed": 934,
+      "failed": 3,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "saveRegressionClasses": [
+      {
+        "class": "Luckbound.Tests.PlayMode.E04LegacyFortuneMigrationAcceptanceTests",
+        "total": 3,
+        "results": {
+          "Passed": 3
+        },
+        "cases": [
+          "Luckbound.Tests.PlayMode.E04LegacyFortuneMigrationAcceptanceTests.AuthenticLegacyExpeditionMigratesFortuneBookAndCanBePersistedAsCurrentFormat(1)",
+          "Luckbound.Tests.PlayMode.E04LegacyFortuneMigrationAcceptanceTests.AuthenticLegacyExpeditionMigratesFortuneBookAndCanBePersistedAsCurrentFormat(2)",
+          "Luckbound.Tests.PlayMode.E04LegacyFortuneMigrationAcceptanceTests.LegacyPendingOfferSummaryCannotMigrateAndRepositoryPreservesOriginalBytes"
+        ]
+      },
+      {
+        "class": "Luckbound.Tests.PlayMode.SaveRepositoryTests",
+        "total": 24,
+        "results": {
+          "Passed": 24
+        },
+        "legacyCases": [
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionFiveProfileMigratesWithoutInventingContractEventReceipts",
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionFiveSettingsMigrateAndPreserveTheirValues",
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionFourEnvelopeMigratesWithItsExactHistoricalShapeAndKeepsUnknownRunState(False)",
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionFourEnvelopeMigratesWithItsExactHistoricalShapeAndKeepsUnknownRunState(True)",
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionFourSettingsKeepTheirSavedAmbienceValue",
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionOneProfileMigratesRenownAndUpgradesWithoutInventingPurchaseReceipts",
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionOneSettingsMigrateWithoutChangingPlayerChoices",
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionThreeProfileMigratesWithoutChangingItsPayload",
+          "Luckbound.Tests.PlayMode.SaveRepositoryTests.ContentVersionThreeSettingsMigrateWithThePlannedAmbienceDefault"
+        ]
+      },
+      {
+        "class": "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests",
+        "total": 34,
+        "results": {
+          "Passed": 34
+        }
+      }
+    ]
+  },
+  "f02Observations": {
+    "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+    "unityVersion": "6000.6.6f1",
+    "count": 34,
+    "clipObservationCount": 8,
+    "animatorObservationCount": 26,
+    "animatorActualEqualsExpectedCount": 26,
+    "values": [
+      {
+        "kind": "F02_CLIP_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "phase": "reloaded-clip",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "length": "0.25",
+        "framesPerSecond": "12",
+        "startTime": "0",
+        "stopTime": "0.25",
+        "loopTime": true,
+        "keyTimes": [
+          "0",
+          "0.0833333358",
+          "0.166666672"
+        ],
+        "spriteNames": [
+          "BellatorIdle_A",
+          "BellatorAttack_A",
+          "BellatorIdle_B"
+        ]
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0",
+        "normalizedTime": "0",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_A",
+        "expectedSprite": "BellatorIdle_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.0416666679",
+        "normalizedTime": "0.166666672",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_A",
+        "expectedSprite": "BellatorIdle_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.125",
+        "normalizedTime": "0.5",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorAttack_A",
+        "expectedSprite": "BellatorAttack_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.208333343",
+        "normalizedTime": "0.8333334",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.0625",
+        "normalizedTime": "0.25",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_A",
+        "expectedSprite": "BellatorIdle_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.0833333358",
+        "normalizedTime": "0.333333343",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorAttack_A",
+        "expectedSprite": "BellatorAttack_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.104166672",
+        "normalizedTime": "0.4166667",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorAttack_A",
+        "expectedSprite": "BellatorAttack_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.145833343",
+        "normalizedTime": "0.5833334",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorAttack_A",
+        "expectedSprite": "BellatorAttack_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.166666672",
+        "normalizedTime": "0.6666667",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.1875",
+        "normalizedTime": "0.75",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.229166672",
+        "normalizedTime": "0.9166667",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.25",
+        "normalizedTime": "1",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_A",
+        "expectedSprite": "BellatorIdle_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+        "elapsedSeconds": "0.270833343",
+        "normalizedTime": "1.08333337",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_A",
+        "expectedSprite": "BellatorIdle_A"
+      },
+      {
+        "kind": "F02_CLIP_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "phase": "reloaded-clip",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "length": "0.25",
+        "framesPerSecond": "12",
+        "startTime": "0",
+        "stopTime": "0.25",
+        "loopTime": false,
+        "keyTimes": [
+          "0",
+          "0.0833333358",
+          "0.166666672"
+        ],
+        "spriteNames": [
+          "BellatorIdle_A",
+          "BellatorAttack_A",
+          "BellatorIdle_B"
+        ]
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0",
+        "normalizedTime": "0",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_A",
+        "expectedSprite": "BellatorIdle_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.0416666679",
+        "normalizedTime": "0.166666672",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_A",
+        "expectedSprite": "BellatorIdle_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.125",
+        "normalizedTime": "0.5",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorAttack_A",
+        "expectedSprite": "BellatorAttack_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.208333343",
+        "normalizedTime": "0.8333334",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.0625",
+        "normalizedTime": "0.25",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_A",
+        "expectedSprite": "BellatorIdle_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.0833333358",
+        "normalizedTime": "0.333333343",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorAttack_A",
+        "expectedSprite": "BellatorAttack_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.104166672",
+        "normalizedTime": "0.4166667",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorAttack_A",
+        "expectedSprite": "BellatorAttack_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.145833343",
+        "normalizedTime": "0.5833334",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorAttack_A",
+        "expectedSprite": "BellatorAttack_A"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.166666672",
+        "normalizedTime": "0.6666667",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.1875",
+        "normalizedTime": "0.75",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.229166672",
+        "normalizedTime": "0.9166667",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.25",
+        "normalizedTime": "1",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_ANIMATOR_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiFrameAnimatorEvaluation_SamplesFrameIntervalsAndLoopBoundary",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+        "elapsedSeconds": "0.270833343",
+        "normalizedTime": "1.08333337",
+        "stateLength": "0.25",
+        "actualSprite": "BellatorIdle_B",
+        "expectedSprite": "BellatorIdle_B"
+      },
+      {
+        "kind": "F02_CLIP_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun",
+        "phase": "reloaded-clip",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-90791026ebae4e42ae22dc5bb9045fee/BellatorIdle.anim",
+        "length": "0.25",
+        "framesPerSecond": "12",
+        "startTime": "0",
+        "stopTime": "0.25",
+        "loopTime": true,
+        "keyTimes": [
+          "0",
+          "0.0833333358",
+          "0.166666672"
+        ],
+        "spriteNames": [
+          "BellatorIdle_A",
+          "BellatorIdle_B",
+          "BellatorIdle_A"
+        ]
+      },
+      {
+        "kind": "F02_CLIP_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun",
+        "phase": "reloaded-clip",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-90791026ebae4e42ae22dc5bb9045fee/BellatorAttack.anim",
+        "length": "0.25",
+        "framesPerSecond": "12",
+        "startTime": "0",
+        "stopTime": "0.25",
+        "loopTime": false,
+        "keyTimes": [
+          "0",
+          "0.0833333358",
+          "0.166666672"
+        ],
+        "spriteNames": [
+          "BellatorAttack_B",
+          "BellatorAttack_A",
+          "BellatorAttack_B"
+        ]
+      },
+      {
+        "kind": "F02_CLIP_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun",
+        "phase": "reloaded-clip",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-90791026ebae4e42ae22dc5bb9045fee/BellatorIdle.anim",
+        "length": "0.25",
+        "framesPerSecond": "12",
+        "startTime": "0",
+        "stopTime": "0.25",
+        "loopTime": true,
+        "keyTimes": [
+          "0",
+          "0.0833333358",
+          "0.166666672"
+        ],
+        "spriteNames": [
+          "BellatorIdle_A",
+          "BellatorIdle_B",
+          "BellatorIdle_A"
+        ]
+      },
+      {
+        "kind": "F02_CLIP_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.MultiImageFamily_CrossImageClipsSlicesAtlasAndFilesAreStableAcrossSecondRun",
+        "phase": "reloaded-clip",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-90791026ebae4e42ae22dc5bb9045fee/BellatorAttack.anim",
+        "length": "0.25",
+        "framesPerSecond": "12",
+        "startTime": "0",
+        "stopTime": "0.25",
+        "loopTime": false,
+        "keyTimes": [
+          "0",
+          "0.0833333358",
+          "0.166666672"
+        ],
+        "spriteNames": [
+          "BellatorAttack_B",
+          "BellatorAttack_A",
+          "BellatorAttack_B"
+        ]
+      },
+      {
+        "kind": "F02_CLIP_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.SeparatePngFamily_SecondRunPreservesSpriteClipAtlasAndFiles",
+        "phase": "single-reload",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineFixture/TechnicalHold.anim",
+        "length": "0.0833333358",
+        "framesPerSecond": "12",
+        "startTime": "0",
+        "stopTime": "0.0833333358",
+        "loopTime": false,
+        "keyTimes": [
+          "0"
+        ],
+        "spriteNames": [
+          "BellatorTechnicalFixture_0"
+        ]
+      },
+      {
+        "kind": "F02_CLIP_OBSERVATION",
+        "test": "Luckbound.Tests.Editor.F02SpriteFamilyManifestImporterTests.SeparatePngFamily_SecondRunPreservesSpriteClipAtlasAndFiles",
+        "phase": "single-reload",
+        "unityVersion": "6000.6.6f1",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineFixture/TechnicalHold.anim",
+        "length": "0.0833333358",
+        "framesPerSecond": "12",
+        "startTime": "0",
+        "stopTime": "0.0833333358",
+        "loopTime": false,
+        "keyTimes": [
+          "0"
+        ],
+        "spriteNames": [
+          "BellatorTechnicalFixture_0"
+        ]
+      }
+    ]
+  },
+  "nativeV6Capture": {
+    "sessionId": "798248bceb24417fa11843943816b440",
+    "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+    "unityVersion": "6000.6.6f1",
+    "projectVersionDeclared": "6000.6.6f1",
+    "activationArgumentObserved": true,
+    "activationArgument": "-luckboundV6CaptureDir",
+    "startedAtUtc": "2026-10-29T17:48:21.1257880Z",
+    "jsonUtilityAssembly": "UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "jsonUtilityModule": "UnityEngine.JSONSerializeModule.dll",
+    "jsonUtilityMvid": "1f4144d6-4409-465d-9a7a-99a08455999d",
+    "cultureName": "",
+    "cultureNumberDecimalSeparator": ".",
+    "expectedCaseIds": [
+      "V6-P0-profile-no-active",
+      "V6-P1-active-known-zero",
+      "V6-P1-active-known-nontrivial",
+      "V6-P2-active-unknown-null",
+      "V6-P2-active-unknown-inline-empty",
+      "V6-P3-receipts-full",
+      "V6-P4-null-empty-boundary",
+      "V6-P5-flag-payload-conflict",
+      "V6-S0-settings",
+      "V6-checkpoint-empty-slots",
+      "V6-checkpoint-null-slots"
+    ],
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "a8a5f23a6dcd8fd0832bbe395bba07c54885f928bd7c00fc1716d51c6109e0a6",
+    "sessionFileSha256": "a7d0e000b2b64f3e54b00d4284dbe4d4eb3803ac14e049cc899f339c30f839f9",
+    "manifestDeclaredSessionSha256": "a7d0e000b2b64f3e54b00d4284dbe4d4eb3803ac14e049cc899f339c30f839f9",
+    "manifestFlags": {
+      "sourcesStable": true,
+      "sessionDocumentStable": true,
+      "dataComplete": true,
+      "roleRequirementsPassed": true
+    },
+    "cases": [
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-P0-profile-no-active/attempt-0001",
+        "descriptorSha256": "ec467b087613911e1b996b813a0e22dc117bec0af016b393bd1c634bc6adc690",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/input.json",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+          },
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/envelope.json",
+            "bytes": 2227,
+            "sha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405"
+          },
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/checksum-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+          },
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab"
+          },
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+          },
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/inspector-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+          },
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+          },
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+          },
+          {
+            "path": "cases/V6-P0-profile-no-active/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+          "preimageSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+          "preimageBytes": 1442,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-P1-active-known-nontrivial/attempt-0001",
+        "descriptorSha256": "f53623d42c3d98b8335b5bdc01e20785b528e45c298a413e6a179797dafd5d95",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/input.json",
+            "bytes": 13170,
+            "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385"
+          },
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/envelope.json",
+            "bytes": 15920,
+            "sha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3"
+          },
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/checksum-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385"
+          },
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589"
+          },
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385"
+          },
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/inspector-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385"
+          },
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+          },
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+          },
+          {
+            "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "19f1ab85733ee44cd4a5277e565ec6414281d138980f0b44461cea1207ce3816"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+          "preimageSha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+          "preimageBytes": 13170,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-P1-active-known-zero/attempt-0001",
+        "descriptorSha256": "d9075c492708704db09fec6aa76100fe67ac393310e0f8e12484361850ad40a4",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/input.json",
+            "bytes": 13170,
+            "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076"
+          },
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/envelope.json",
+            "bytes": 15920,
+            "sha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d"
+          },
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/checksum-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076"
+          },
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9"
+          },
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076"
+          },
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/inspector-preimage.utf8",
+            "bytes": 13170,
+            "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076"
+          },
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+          },
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+          },
+          {
+            "path": "cases/V6-P1-active-known-zero/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "1882651f928bc9825a4e66d15c522b136d6f44f69cfce0904ac07f139e71e322"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+          "preimageSha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+          "preimageBytes": 13170,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-P2-active-unknown-inline-empty/attempt-0001",
+        "descriptorSha256": "cb1c97053d0cd89759261bbaa8ea3f0fb1ccefaca67623111e3c63fc7afa24fa",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/input.json",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/envelope.json",
+            "bytes": 11338,
+            "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+          "preimageSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+          "preimageBytes": 10461,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-P2-active-unknown-null/attempt-0001",
+        "descriptorSha256": "33353b138a320b3a7c3db4b898fc55866de6484b938c3f08476deefbbcbce176",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/input.json",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/envelope.json",
+            "bytes": 11338,
+            "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/checksum-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/inspector-preimage.utf8",
+            "bytes": 10461,
+            "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+          },
+          {
+            "path": "cases/V6-P2-active-unknown-null/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+          "preimageSha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+          "preimageBytes": 10461,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-P3-receipts-full/attempt-0001",
+        "descriptorSha256": "1c8a292198236ae24bc688bae7ce1b94ec7d76641cd4a4a95f9ad9ad5bf51a4c",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/input.json",
+            "bytes": 9345,
+            "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc"
+          },
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/envelope.json",
+            "bytes": 12973,
+            "sha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c"
+          },
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/checksum-preimage.utf8",
+            "bytes": 9345,
+            "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc"
+          },
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3"
+          },
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 9345,
+            "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc"
+          },
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/inspector-preimage.utf8",
+            "bytes": 9345,
+            "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc"
+          },
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/semantic-validation.json",
+            "bytes": 201,
+            "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+          },
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/decode.json",
+            "bytes": 208,
+            "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+          },
+          {
+            "path": "cases/V6-P3-receipts-full/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "6ee492d12b3dc1e1f601f71f57a784ee6939d8d0859ba6bd94c1c046d3b0d8b6"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+          "preimageSha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+          "preimageBytes": 9345,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-P4-null-empty-boundary/attempt-0001",
+        "descriptorSha256": "49cb07096207147c14a13758483ce09e5c614c9aa294be810d84e4a1e5e3cda8",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/input.json",
+            "bytes": 10665,
+            "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098"
+          },
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/envelope.json",
+            "bytes": 12060,
+            "sha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f"
+          },
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/checksum-preimage.utf8",
+            "bytes": 10665,
+            "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098"
+          },
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae"
+          },
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 10665,
+            "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098"
+          },
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/inspector-preimage.utf8",
+            "bytes": 10665,
+            "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098"
+          },
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/semantic-validation.json",
+            "bytes": 1259,
+            "sha256": "2b84445773f61ddab7c778aa6ab073c21dab4f18eaebc6303a2e5b6fa9b2d552"
+          },
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/decode.json",
+            "bytes": 213,
+            "sha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef"
+          },
+          {
+            "path": "cases/V6-P4-null-empty-boundary/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "ba84c0cc50843d5390dde0ee23b27c62eafc21da833a9ee50823394a22fddc08"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+          "preimageSha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+          "preimageBytes": 10665,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-P5-flag-payload-conflict/attempt-0001",
+        "descriptorSha256": "ca9bfbc3585f583987497029a59cadb880f2b2ca134a21ec48f76904b84c3214",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/input.json",
+            "bytes": 13171,
+            "sha256": "c93c3d01328b590b06ebbc5eef06ae7190b1f22835e2391b731cb2b48bc83b0e"
+          },
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/envelope.json",
+            "bytes": 15921,
+            "sha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536"
+          },
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/checksum-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+          },
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab"
+          },
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+          },
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/inspector-preimage.utf8",
+            "bytes": 1442,
+            "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+          },
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/semantic-validation.json",
+            "bytes": 283,
+            "sha256": "f67cb61a394181bb2191bc08214bdb016bbc53b6ea01bca574784e77972eb85f"
+          },
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/decode.json",
+            "bytes": 213,
+            "sha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef"
+          },
+          {
+            "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/inspector.json",
+            "bytes": 620,
+            "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+          "preimageSha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+          "preimageBytes": 1442,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-S0-settings/attempt-0001",
+        "descriptorSha256": "5f3c487ec7c991e4c2f0515b8ad67ed525cc33295cb50c38c41b1a91203574f8",
+        "outputFileCount": 9,
+        "outputFiles": [
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/input.json",
+            "bytes": 285,
+            "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16"
+          },
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/envelope.json",
+            "bytes": 447,
+            "sha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139"
+          },
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/checksum-preimage.utf8",
+            "bytes": 285,
+            "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16"
+          },
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/checksum.sha256.txt",
+            "bytes": 64,
+            "sha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb"
+          },
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/legacy-checksum-preimage.utf8",
+            "bytes": 285,
+            "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16"
+          },
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/inspector-preimage.utf8",
+            "bytes": 285,
+            "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16"
+          },
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/semantic-validation.json",
+            "bytes": 202,
+            "sha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb"
+          },
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/decode.json",
+            "bytes": 209,
+            "sha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6"
+          },
+          {
+            "path": "cases/V6-S0-settings/attempt-0001/inspector.json",
+            "bytes": 621,
+            "sha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90"
+          }
+        ],
+        "nativeChecksums": {
+          "declaredChecksum": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+          "preimageSha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+          "preimageBytes": 285,
+          "checksumMatchesPreimage": true,
+          "envelopeChecksumMatches": true
+        }
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-checkpoint-empty-slots/attempt-0001",
+        "descriptorSha256": "afc1be3af5f3283e0e833ff6a1473cc3efe782d0dd7632f717a7cc71b9d815fe",
+        "outputFileCount": 8,
+        "outputFiles": [
+          {
+            "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.json",
+            "bytes": 3819,
+            "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410"
+          },
+          {
+            "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.json",
+            "bytes": 3819,
+            "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410"
+          },
+          {
+            "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.sha256.txt",
+            "bytes": 64,
+            "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280"
+          },
+          {
+            "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+            "bytes": 64,
+            "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280"
+          },
+          {
+            "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-comparison.json",
+            "bytes": 251,
+            "sha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37"
+          },
+          {
+            "path": "cases/V6-checkpoint-empty-slots/attempt-0001/semantic-validation.json",
+            "bytes": 284,
+            "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c"
+          },
+          {
+            "path": "cases/V6-checkpoint-empty-slots/attempt-0001/decode.json",
+            "bytes": 281,
+            "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9"
+          },
+          {
+            "path": "cases/V6-checkpoint-empty-slots/attempt-0001/inspector.json",
+            "bytes": 503,
+            "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896"
+          }
+        ],
+        "nativeChecksums": {
+          "currentSha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+          "legacySha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+          "currentBytes": 3819,
+          "legacyBytes": 3819,
+          "currentLegacyByteEquivalent": true
+        }
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "complete": true,
+        "semanticAcceptance": true,
+        "attemptDirectory": "cases/V6-checkpoint-null-slots/attempt-0001",
+        "descriptorSha256": "ff2b169a8d970be812e87ce93240bcad74661d761b653023ff22a36d50837f9f",
+        "outputFileCount": 8,
+        "outputFiles": [
+          {
+            "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.json",
+            "bytes": 3821,
+            "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb"
+          },
+          {
+            "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.json",
+            "bytes": 3821,
+            "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb"
+          },
+          {
+            "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.sha256.txt",
+            "bytes": 64,
+            "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d"
+          },
+          {
+            "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+            "bytes": 64,
+            "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d"
+          },
+          {
+            "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-comparison.json",
+            "bytes": 265,
+            "sha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b"
+          },
+          {
+            "path": "cases/V6-checkpoint-null-slots/attempt-0001/semantic-validation.json",
+            "bytes": 284,
+            "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c"
+          },
+          {
+            "path": "cases/V6-checkpoint-null-slots/attempt-0001/decode.json",
+            "bytes": 281,
+            "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9"
+          },
+          {
+            "path": "cases/V6-checkpoint-null-slots/attempt-0001/inspector.json",
+            "bytes": 503,
+            "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896"
+          }
+        ],
+        "nativeChecksums": {
+          "currentSha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+          "legacySha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+          "currentBytes": 3821,
+          "legacyBytes": 3821,
+          "currentLegacyByteEquivalent": true
+        }
+      }
+    ],
+    "nativeOutputHashes": [
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/input.json",
+        "bytes": 1442,
+        "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+      },
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/envelope.json",
+        "bytes": 2227,
+        "sha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405"
+      },
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/checksum-preimage.utf8",
+        "bytes": 1442,
+        "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+      },
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab"
+      },
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 1442,
+        "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+      },
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/inspector-preimage.utf8",
+        "bytes": 1442,
+        "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+      },
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/semantic-validation.json",
+        "bytes": 201,
+        "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+      },
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/decode.json",
+        "bytes": 208,
+        "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+      },
+      {
+        "caseId": "V6-P0-profile-no-active",
+        "path": "cases/V6-P0-profile-no-active/attempt-0001/inspector.json",
+        "bytes": 620,
+        "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/input.json",
+        "bytes": 13170,
+        "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/envelope.json",
+        "bytes": 15920,
+        "sha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/checksum-preimage.utf8",
+        "bytes": 13170,
+        "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 13170,
+        "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/inspector-preimage.utf8",
+        "bytes": 13170,
+        "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/semantic-validation.json",
+        "bytes": 201,
+        "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/decode.json",
+        "bytes": 208,
+        "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+      },
+      {
+        "caseId": "V6-P1-active-known-nontrivial",
+        "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/inspector.json",
+        "bytes": 620,
+        "sha256": "19f1ab85733ee44cd4a5277e565ec6414281d138980f0b44461cea1207ce3816"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/input.json",
+        "bytes": 13170,
+        "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/envelope.json",
+        "bytes": 15920,
+        "sha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/checksum-preimage.utf8",
+        "bytes": 13170,
+        "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 13170,
+        "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/inspector-preimage.utf8",
+        "bytes": 13170,
+        "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/semantic-validation.json",
+        "bytes": 201,
+        "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/decode.json",
+        "bytes": 208,
+        "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+      },
+      {
+        "caseId": "V6-P1-active-known-zero",
+        "path": "cases/V6-P1-active-known-zero/attempt-0001/inspector.json",
+        "bytes": 620,
+        "sha256": "1882651f928bc9825a4e66d15c522b136d6f44f69cfce0904ac07f139e71e322"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/input.json",
+        "bytes": 10461,
+        "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/envelope.json",
+        "bytes": 11338,
+        "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum-preimage.utf8",
+        "bytes": 10461,
+        "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 10461,
+        "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector-preimage.utf8",
+        "bytes": 10461,
+        "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/semantic-validation.json",
+        "bytes": 201,
+        "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/decode.json",
+        "bytes": 208,
+        "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-inline-empty",
+        "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector.json",
+        "bytes": 620,
+        "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/input.json",
+        "bytes": 10461,
+        "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/envelope.json",
+        "bytes": 11338,
+        "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/checksum-preimage.utf8",
+        "bytes": 10461,
+        "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 10461,
+        "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/inspector-preimage.utf8",
+        "bytes": 10461,
+        "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/semantic-validation.json",
+        "bytes": 201,
+        "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/decode.json",
+        "bytes": 208,
+        "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+      },
+      {
+        "caseId": "V6-P2-active-unknown-null",
+        "path": "cases/V6-P2-active-unknown-null/attempt-0001/inspector.json",
+        "bytes": 620,
+        "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/input.json",
+        "bytes": 9345,
+        "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/envelope.json",
+        "bytes": 12973,
+        "sha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/checksum-preimage.utf8",
+        "bytes": 9345,
+        "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 9345,
+        "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/inspector-preimage.utf8",
+        "bytes": 9345,
+        "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/semantic-validation.json",
+        "bytes": 201,
+        "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/decode.json",
+        "bytes": 208,
+        "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580"
+      },
+      {
+        "caseId": "V6-P3-receipts-full",
+        "path": "cases/V6-P3-receipts-full/attempt-0001/inspector.json",
+        "bytes": 620,
+        "sha256": "6ee492d12b3dc1e1f601f71f57a784ee6939d8d0859ba6bd94c1c046d3b0d8b6"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/input.json",
+        "bytes": 10665,
+        "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/envelope.json",
+        "bytes": 12060,
+        "sha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/checksum-preimage.utf8",
+        "bytes": 10665,
+        "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 10665,
+        "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/inspector-preimage.utf8",
+        "bytes": 10665,
+        "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/semantic-validation.json",
+        "bytes": 1259,
+        "sha256": "2b84445773f61ddab7c778aa6ab073c21dab4f18eaebc6303a2e5b6fa9b2d552"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/decode.json",
+        "bytes": 213,
+        "sha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef"
+      },
+      {
+        "caseId": "V6-P4-null-empty-boundary",
+        "path": "cases/V6-P4-null-empty-boundary/attempt-0001/inspector.json",
+        "bytes": 620,
+        "sha256": "ba84c0cc50843d5390dde0ee23b27c62eafc21da833a9ee50823394a22fddc08"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/input.json",
+        "bytes": 13171,
+        "sha256": "c93c3d01328b590b06ebbc5eef06ae7190b1f22835e2391b731cb2b48bc83b0e"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/envelope.json",
+        "bytes": 15921,
+        "sha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/checksum-preimage.utf8",
+        "bytes": 1442,
+        "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 1442,
+        "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/inspector-preimage.utf8",
+        "bytes": 1442,
+        "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/semantic-validation.json",
+        "bytes": 283,
+        "sha256": "f67cb61a394181bb2191bc08214bdb016bbc53b6ea01bca574784e77972eb85f"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/decode.json",
+        "bytes": 213,
+        "sha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef"
+      },
+      {
+        "caseId": "V6-P5-flag-payload-conflict",
+        "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/inspector.json",
+        "bytes": 620,
+        "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/input.json",
+        "bytes": 285,
+        "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/envelope.json",
+        "bytes": 447,
+        "sha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/checksum-preimage.utf8",
+        "bytes": 285,
+        "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/checksum.sha256.txt",
+        "bytes": 64,
+        "sha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/legacy-checksum-preimage.utf8",
+        "bytes": 285,
+        "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/inspector-preimage.utf8",
+        "bytes": 285,
+        "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/semantic-validation.json",
+        "bytes": 202,
+        "sha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/decode.json",
+        "bytes": 209,
+        "sha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6"
+      },
+      {
+        "caseId": "V6-S0-settings",
+        "path": "cases/V6-S0-settings/attempt-0001/inspector.json",
+        "bytes": 621,
+        "sha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90"
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.json",
+        "bytes": 3819,
+        "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410"
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.json",
+        "bytes": 3819,
+        "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410"
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.sha256.txt",
+        "bytes": 64,
+        "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280"
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+        "bytes": 64,
+        "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280"
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-comparison.json",
+        "bytes": 251,
+        "sha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37"
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/semantic-validation.json",
+        "bytes": 284,
+        "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c"
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/decode.json",
+        "bytes": 281,
+        "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9"
+      },
+      {
+        "caseId": "V6-checkpoint-empty-slots",
+        "path": "cases/V6-checkpoint-empty-slots/attempt-0001/inspector.json",
+        "bytes": 503,
+        "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896"
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.json",
+        "bytes": 3821,
+        "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb"
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.json",
+        "bytes": 3821,
+        "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb"
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.sha256.txt",
+        "bytes": 64,
+        "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d"
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+        "bytes": 64,
+        "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d"
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-comparison.json",
+        "bytes": 265,
+        "sha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b"
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/semantic-validation.json",
+        "bytes": 284,
+        "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c"
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/decode.json",
+        "bytes": 281,
+        "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9"
+      },
+      {
+        "caseId": "V6-checkpoint-null-slots",
+        "path": "cases/V6-checkpoint-null-slots/attempt-0001/inspector.json",
+        "bytes": 503,
+        "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896"
+      }
+    ],
+    "sources": [
+      {
+        "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+        "bytes": 7266,
+        "capturedSha256Before": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+        "capturedSha256After": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+        "localBytes": 7266,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "44cee851931dc470bbff3bf3f6da308aa2c274c9",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+        "bytes": 16578,
+        "capturedSha256Before": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+        "capturedSha256After": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+        "localBytes": 16578,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "6551c633a2de7e4c15998169618379938077af8c",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "bytes": 37224,
+        "capturedSha256Before": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+        "capturedSha256After": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574",
+        "localBytes": 37923,
+        "matchesCurrentLocalRaw": false,
+        "remoteGitBlobSha1": "d62c870fcd0ed5861cce0296c57592fb8d0221b6",
+        "rootVerifiedNormalization": "CRLF-to-LF"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "bytes": 2163,
+        "capturedSha256Before": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+        "capturedSha256After": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "5664d1d555c438d408267d144f77f6d134cdf71cc1e272b6eed732223caee6af",
+        "localBytes": 2225,
+        "matchesCurrentLocalRaw": false,
+        "remoteGitBlobSha1": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+        "rootVerifiedNormalization": "CRLF-to-LF"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+        "bytes": 71590,
+        "capturedSha256Before": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+        "capturedSha256After": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "9f5283e58129bff637ccc9b43e62e9ee38100461c7b538b6a1bd510f361d1a3a",
+        "localBytes": 73049,
+        "matchesCurrentLocalRaw": false,
+        "remoteGitBlobSha1": "12ee0d6a179bcb5b5da8432fd406f2bd15995933",
+        "rootVerifiedNormalization": "CRLF-to-LF"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+        "bytes": 99,
+        "capturedSha256Before": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+        "capturedSha256After": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+        "localBytes": 99,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+        "bytes": 163348,
+        "capturedSha256Before": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+        "capturedSha256After": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+        "localBytes": 163348,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "0cbc490fd521398cb4b10954e2ccc447d28f2ebf",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+        "bytes": 40662,
+        "capturedSha256Before": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+        "capturedSha256After": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+        "localBytes": 40662,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "afca9976e04c128293afdce4b09102a1497f9b18",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+        "bytes": 484,
+        "capturedSha256Before": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+        "capturedSha256After": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+        "localBytes": 484,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "e2651ceea22370bc71db6eec997af038463ea2c4",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+        "bytes": 337,
+        "capturedSha256Before": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+        "capturedSha256After": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+        "localBytes": 337,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+        "bytes": 647,
+        "capturedSha256Before": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+        "capturedSha256After": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+        "localBytes": 647,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "97904300d05845e188c731d5a2e0964855d9ef01",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "ProjectSettings/ProjectVersion.txt",
+        "bytes": 83,
+        "capturedSha256Before": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+        "capturedSha256After": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+        "localBytes": 83,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "99bacd03c32572309212173ef6a8e7dab6cd92e6",
+        "rootVerifiedNormalization": "raw"
+      },
+      {
+        "path": "Packages/manifest.json",
+        "bytes": 2165,
+        "capturedSha256Before": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+        "capturedSha256After": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "fabd6552f12e60cf99e21dd9a6a91af3aa31187912ec9c57b096a1f35d9f7762",
+        "localBytes": 2216,
+        "matchesCurrentLocalRaw": false,
+        "remoteGitBlobSha1": "0df120389f01f83f360d65d0870db74aead1b4d1",
+        "rootVerifiedNormalization": "CRLF-to-LF"
+      },
+      {
+        "path": "Packages/packages-lock.json",
+        "bytes": 14044,
+        "capturedSha256Before": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+        "capturedSha256After": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+        "captureBeforeAfterMatch": true,
+        "localSha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+        "localBytes": 14044,
+        "matchesCurrentLocalRaw": true,
+        "remoteGitBlobSha1": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+        "rootVerifiedNormalization": "raw"
+      }
+    ],
+    "currentLocalSourceMatchCount": 10,
+    "currentLocalSourceMismatchCount": 4,
+    "rootExactSourceProof": {
+      "path": "Logs/FullIntegrationFix-20261030-r5/ROOT-EXACT-SOURCE-PROOF.json",
+      "sha256": "6324036292da7430f734d764292e84002f3f03f4b24924aa942ecd79f94dba12",
+      "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+      "tree": "cace0318c586715f660e47fd949a509fb3856adf",
+      "sourceCount": 14
+    },
+    "rootRemoteSourceBlobs": {
+      "path": "Logs/FullIntegrationFix-20261030-r5/ROOT-REMOTE-SOURCE-BLOBS.json",
+      "sha256": "eb6493aebb3753351d8143a2918fad7f1595d010eb2712c1475b01735d14d9e4",
+      "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+      "tree": "cace0318c586715f660e47fd949a509fb3856adf",
+      "sourceCount": 14
+    },
+    "rootOfflineVerifier": {
+      "path": "Logs/FullIntegrationFix-20261030-r5/ROOT-OFFLINE-CAPTURE-GATE.json",
+      "sha256": "8bdb433403270dd5638e35f3465e089bccba321eca0df726b9e96866b3e25de6",
+      "exitCode": 0,
+      "sourceIdentity": "14 sources matched both immutable remote Git blob SHA1 and captured SHA256/length",
+      "ciVerifierStatus": "Skipped after test failure; this invocation is independent offline verification",
+      "result": {
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "sessionId": "798248bceb24417fa11843943816b440",
+        "caseCount": 11,
+        "attemptCount": 11,
+        "outputFileCount": 97,
+        "sourceCount": 14,
+        "manifestSha256": "a8a5f23a6dcd8fd0832bbe395bba07c54885f928bd7c00fc1716d51c6109e0a6",
+        "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+      }
+    }
+  },
+  "scopesAndLimits": {
+    "ciWorkflowVerifierExecuted": false,
+    "ciWorkflowVerifierStatus": "skipped_after_test_job_failure",
+    "rootOfflineVerifierExecutedSeparately": true,
+    "rootOfflineVerifierScope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML",
+    "rootOfflineVerifierExitCode": 0,
+    "notClaimed": [
+      "CI verifier gate executed",
+      "CI build, release or deployment passed",
+      "full F10 acceptance",
+      "visual/audio/perceptual acceptance",
+      "frozen independent golden acceptance or Gate B closure solely from these captures"
+    ],
+    "workflowStatusesProvidedForThisAudit": {
+      "tests": "terminal failure",
+      "build": "skipped",
+      "release": "skipped",
+      "deploy": "skipped"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+    "method": "SaveJsonCodec.Decode(string, out ProfileSaveEnvelope)",
+    "executed": true,
+    "result": "Returned",
+    "status": "Valid",
+    "valid": true,
+    "errorType": "",
+    "errorMessage": ""
+}

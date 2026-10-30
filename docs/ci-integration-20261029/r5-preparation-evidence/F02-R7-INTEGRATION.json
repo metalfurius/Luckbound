@@ -1,0 +1,9 @@
+{
+  "target": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+  "beforeSha256": "3b2b6b00c2e59af3f4bcceeb38aeceb210b9fa2199247a53c885aa117363cdb5",
+  "afterSha256": "8e720c085616282bbe48a4c3b6f1b0c79a0f62abcc5353e7901f24ac1a5fb031",
+  "reviewSha256": "0edef112f2a225941bd9cda1a8b09eebfe7a3a5eb1156ecf11304c25e757ffbf",
+  "integrated": true,
+  "unityExecuted": false,
+  "partialCopyResume": "Source integrated before a mismatched SHA256SUMS filename was detected; completed using actual SHA256SUMS.txt without a second source write"
+}

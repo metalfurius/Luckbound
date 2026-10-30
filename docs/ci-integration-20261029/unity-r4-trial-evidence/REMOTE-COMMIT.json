@@ -1,0 +1,9 @@
+{
+  "branch": "codex/luckbound-unity-20261029",
+  "sha": "3c7330d79952b73d1f1141a675e29bde92d9bfec",
+  "parent": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+  "tree": "a5ed6b0aff4b02b0d2bfcd7e6000b8b80a1116df",
+  "verifiedFiles": 2,
+  "wholeTreeEntries": 5055,
+  "scope": "isolated Unity patch trial; local and integration pin remain 6000.6.6f1"
+}

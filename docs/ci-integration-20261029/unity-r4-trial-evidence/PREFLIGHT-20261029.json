@@ -1,0 +1,36 @@
+{
+  "observedAtUtc": "2026-10-29T17:47:01.805163+00:00",
+  "releaseApiUrl": "https://services.api.unity.com/unity/editor/release/v1/releases?limit=25&offset=0",
+  "releaseApiSha256": "76646b92b305e6fece809b54912b81241a1986a0868680ccb935edb906815ab3",
+  "resultCount": 25,
+  "latestStableAmongReturned": {
+    "version": "6000.6.7f1",
+    "shortRevision": "b22767f04f04",
+    "releaseDate": "2026-10-21T09:54:08.135Z",
+    "stream": "SUPPORTED"
+  },
+  "registryMetadata": [
+    {
+      "profile": "base",
+      "tag": "ubuntu-6000.6.7f1-base-3.2.2",
+      "httpStatus": 200,
+      "digest": "sha256:6da56cace1a56d0961c987497a833fdc64c945cab263564a27fe700d26561e10",
+      "sameAsDatedDigest": true
+    },
+    {
+      "profile": "windows-mono",
+      "tag": "ubuntu-6000.6.7f1-windows-mono-3.2.2",
+      "httpStatus": 200,
+      "digest": "sha256:3ce2d6381a68b5cc425b45e33ed70cfd860107c1452afd51760dc03106df2c54",
+      "sameAsDatedDigest": true
+    },
+    {
+      "profile": "webgl",
+      "tag": "ubuntu-6000.6.7f1-webgl-3.2.2",
+      "httpStatus": 200,
+      "digest": "sha256:333a3a2523b7744bcb6babe1f663e5737dcac65445a47172e11f64a28a4d26c9",
+      "sameAsDatedDigest": true
+    }
+  ],
+  "scope": "Read-only release JSON and manifest HEAD metadata; no image download/install/adoption"
+}

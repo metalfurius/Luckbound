@@ -1,0 +1,27 @@
+{
+  "observedAtUtc": "2026-10-30T09:28:02.935136+00:00",
+  "args": [
+    "python",
+    "-B",
+    "Tools/Automation/verify_v6_capture.py",
+    "--capture-dir",
+    "C:\\Users\\Fran\\Documents\\GitHub\\Luckbound\\Logs\\CI-40923742946-review\\download-retry\\extracted\\Logs\\Scenarios\\V6Capture-345fb5a7b1cf023505deae566a8c4bd462573aeb-40923742946-1",
+    "--commit",
+    "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+    "--project-root",
+    "Logs\\FullIntegrationFix-20261030-r5\\v6-exact-project-root"
+  ],
+  "exitCode": 0,
+  "sourceIdentity": "14 sources matched both immutable remote Git blob SHA1 and captured SHA256/length",
+  "ciVerifierStatus": "Skipped after test failure; this invocation is independent offline verification",
+  "result": {
+    "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+    "sessionId": "798248bceb24417fa11843943816b440",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "a8a5f23a6dcd8fd0832bbe395bba07c54885f928bd7c00fc1716d51c6109e0a6",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  }
+}

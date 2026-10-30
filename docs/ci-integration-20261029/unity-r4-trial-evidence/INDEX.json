@@ -1,0 +1,30 @@
+{
+  "scope": "Exact isolated 6.7 trial, failed global CI; no adoption",
+  "files": [
+    {
+      "path": "AUDIT.json",
+      "bytes": 24978,
+      "sha256": "cb169466510b2d3b084e36d99185616d1a8ba7e29ba68cc023e0e85f15264794"
+    },
+    {
+      "path": "PACKET.json",
+      "bytes": 1038,
+      "sha256": "059abb43602436cbd60c1b9b1c0e73865ac8de1a3c93be2d4abaa491fd170cd8"
+    },
+    {
+      "path": "REMOTE-COMMIT.json",
+      "bytes": 348,
+      "sha256": "435a29670ec8c0cfd207b06425632336dc12debeff3c317ecaded2555918687b"
+    },
+    {
+      "path": "REMOTE-CI-START.json",
+      "bytes": 262,
+      "sha256": "c0c6cd7cc00d35af1e956e4ac63fcdb2860e39b09934eb8bd79f4223b65aa370"
+    },
+    {
+      "path": "PREFLIGHT-20261029.json",
+      "bytes": 1325,
+      "sha256": "1c232d6cb45398db83ebcbfedc16f771e3977700e16830e88c6ef01495b644dd"
+    }
+  ]
+}

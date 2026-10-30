@@ -1,0 +1,7 @@
+{
+  "baselineCommit": "0baf2d9236b79940f2e45ab6d39df84e688b56fd",
+  "currentCommit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+  "dataFilesCompared": 97,
+  "differences": [],
+  "scope": "case data exact bytes only; provenance descriptors/manifest/session deliberately differ"
+}

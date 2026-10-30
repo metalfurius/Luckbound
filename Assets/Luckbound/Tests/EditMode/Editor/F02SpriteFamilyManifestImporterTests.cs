@@ -491,7 +491,7 @@ namespace Luckbound.Tests.Editor
                 ObjectReferenceKeyframe[] keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
                 AssertPersistedTimeIsOutsidePreviousApproximation(keys[keys.Length - 1].time,
                     corruptedLastFrameTime, 2f / clip.frameRate);
-            }, "frame reference differs from its manifest");
+            }, "duration differs from its manifest");
         }
 
         private static void AssertExistingClipRejectedWithoutAssetsMutation(
@@ -668,7 +668,7 @@ namespace Luckbound.Tests.Editor
             string manifestPath = null;
             try
             {
-                string json = InsertImageJsonStringProperty(
+                string json = ReplaceFirstImageJsonStringProperty(
                     File.ReadAllText(ProjectFullPath(ManifestPath)), "resourceId", "f02-existing-image-override");
                 string image = BuildImageJson(tempSource, "BellatorTechnicalFixtureNullResourceId.png",
                     "BellatorTechnicalFixtureNullResourceId_0", 32);
@@ -1478,32 +1478,36 @@ namespace Luckbound.Tests.Editor
         }
 
         [Test]
-        public void DeclaredPngAddedOutsideOwnershipMarker_IsRejectedWithoutChangingAssets()
+        public void UnownedOutputFolderMissingMarkerWithDeclaredPng_IsRejectedWithoutChangingAssets()
         {
-            AssertOutputFolderAbsent();
-            string tempSource = CopySourceToTemp();
+            const string unmarkedOutputFolder = OutputFolder + "UnmarkedIntruderFixture";
+            AssertOutputFolderAbsent(unmarkedOutputFolder);
             string manifestPath = null;
-            string destination = ProjectFullPath(OutputFolder + "/Intruder.png");
+            string destination = ProjectFullPath(unmarkedOutputFolder + "/Intruder.png");
             try
             {
-                F02SpriteFamilyManifestImporter.ImportFamily(ManifestPath);
-                File.Copy(ProjectFullPath(ForeignSourcePath), destination);
-                AssetDatabase.ImportAsset(OutputFolder + "/Intruder.png", ImportAssetOptions.ForceSynchronousImport);
-
                 string json = File.ReadAllText(ProjectFullPath(ManifestPath));
-                string image = BuildImageJson(tempSource, "Intruder.png", "Intruder_0", 32);
-                manifestPath = WriteTemporaryManifest(InsertIntoJsonArray(json, "images", image));
+                json = ReplaceJsonStringProperty(json, "familyId", "f02-unmarked-intruder-fixture");
+                json = ReplaceJsonStringProperty(json, "outputFolder", unmarkedOutputFolder);
+                json = ReplaceFirstImageJsonStringProperty(json, "assetFileName", "Intruder.png");
+                manifestPath = WriteTemporaryManifest(json);
+
+                Assert.That(AssetDatabase.CreateFolder("Assets/Luckbound/Tests/EditMode",
+                    Path.GetFileName(unmarkedOutputFolder)), Is.Not.Empty);
+                File.Copy(ProjectFullPath(ForeignSourcePath), destination);
+                AssetDatabase.ImportAsset(unmarkedOutputFolder + "/Intruder.png", ImportAssetOptions.ForceSynchronousImport);
                 string beforeHash = HashFile(destination);
+                string beforeManifestHash = HashFile(ProjectFullPath(manifestPath));
 
                 AssertRejectedWithoutAssetsMutation(() =>
-                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), "without recorded family ownership");
+                    F02SpriteFamilyManifestImporter.ImportFamily(manifestPath), "no ownership marker");
                 Assert.That(HashFile(destination), Is.EqualTo(beforeHash));
+                Assert.That(HashFile(ProjectFullPath(manifestPath)), Is.EqualTo(beforeManifestHash));
             }
             finally
             {
                 if (manifestPath != null) DeleteProjectFile(manifestPath);
-                DeleteProjectFile(tempSource);
-                CleanupOutputFolder();
+                CleanupOutputFolder(unmarkedOutputFolder);
             }
         }
 
@@ -2022,6 +2026,34 @@ namespace Luckbound.Tests.Editor
             string property = "\n      \"" + propertyName + "\": \"" + EscapeJsonString(value) + "\",";
             return json.Insert(imageStart + 1, property);
         }
+
+        private static string ReplaceFirstImageJsonStringProperty(string json, string propertyName, string value)
+        {
+            int imagesStart = json.IndexOf("\"images\"", StringComparison.Ordinal);
+            int imageStart = imagesStart < 0 ? -1 : json.IndexOf('{', imagesStart);
+            string key = "\"" + propertyName + "\"";
+            int keyIndex = imageStart < 0 ? -1 : json.IndexOf(key, imageStart, StringComparison.Ordinal);
+            int colonIndex = keyIndex < 0 ? -1 : json.IndexOf(':', keyIndex + key.Length);
+            int valueStart = colonIndex + 1;
+            while (valueStart > 0 && valueStart < json.Length && char.IsWhiteSpace(json[valueStart])) valueStart++;
+            if (valueStart <= 0 || valueStart >= json.Length || json[valueStart] != '"')
+                throw new InvalidOperationException("The first image JSON property must already have a string value: " + propertyName);
+
+            int valueEnd = valueStart + 1;
+            bool escaped = false;
+            for (; valueEnd < json.Length; valueEnd++)
+            {
+                char current = json[valueEnd];
+                if (escaped) escaped = false;
+                else if (current == '\\') escaped = true;
+                else if (current == '"') break;
+            }
+            if (valueEnd >= json.Length)
+                throw new InvalidOperationException("The first image JSON string is not terminated: " + propertyName);
+
+            return json.Substring(0, valueStart + 1) + EscapeJsonString(value) + json.Substring(valueEnd);
+        }
+
         private static string InsertJsonStringProperty(string json, string propertyName, string value)
         {
             int objectStart = json.IndexOf('{');

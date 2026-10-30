@@ -1,0 +1,65 @@
+{
+  "scope": "F02 EditMode test-fixture correction candidate after CI run 40923742946",
+  "target": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+  "beforeSha256": "3b2b6b00c2e59af3f4bcceeb38aeceb210b9fa2199247a53c885aa117363cdb5",
+  "afterSha256": "8e720c085616282bbe48a4c3b6f1b0c79a0f62abcc5353e7901f24ac1a5fb031",
+  "unchangedImporter": {
+    "path": "Assets/Luckbound/Editor/F02SpriteFamilyManifestImporter.cs",
+    "sha256": "e20d54eb2714e3895ca568f1089f878f1189f985a9c39c2150c27606912360d6"
+  },
+  "ciEvidence": {
+    "runId": 40923742946,
+    "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+    "editMode": {
+      "total": 585,
+      "passed": 582,
+      "failed": 3,
+      "skipped": 0,
+      "xmlSha256": "e058926594ae6033339cb64da1b01239a8be3164faa6f4091f189bd0bd04b3ba"
+    },
+    "playMode": {
+      "total": 352,
+      "passed": 352,
+      "failed": 0,
+      "skipped": 0,
+      "xmlSha256": "b7c968e36f2fd51993bc3a8200831ac2c26760fe4976a09728b5f7d8ec0b1c97"
+    },
+    "editModeLogSha256": "dc29b5c7d04be84fc62a88d1c63dcacfddb1f6ee7df40f44f82bf3fb83dc6e8c"
+  },
+  "fixes": [
+    {
+      "test": "UnownedOutputFolderMissingMarkerWithDeclaredPng_IsRejectedWithoutChangingAssets",
+      "change": "Create a new unowned output folder and a temporary manifest that declares Intruder.png before the import attempt. Keep that manifest fixed during the attempt; hash-check the existing foreign PNG and manifest, preserve the Assets-wide no-mutation snapshot, and expect the missing-marker guard.",
+      "ownershipCoverage": "First-publication missing-marker path on an unchanged manifest; no published family is altered and the foreign file is not adopted."
+    },
+    {
+      "test": "ExistingClipWithCorruptLastFrameKeyTime_IsRejectedWithoutRepair",
+      "change": "Expect the existing duration guard, which precedes key-time validation and is triggered by the persisted key corruption extending stopTime and clip.length. Preserve the exact persisted corruption and comparison to 2/FPS."
+    },
+    {
+      "test": "ImageTraceability_NullResourceIdInheritsFamilyDefaultWithUniqueEffectiveIds",
+      "change": "Replace the resourceId already present in the first image object instead of inserting a duplicate key. Keep the second image explicit JSON null and its unique effective ID outcome."
+    }
+  ],
+  "publishedManifestMutationCoverage": [
+    "PublishedFamily_RejectsChangedPngAndUpdatedHashWithoutAssetsMutation",
+    "PublishedFamily_RejectsChangedAtlasSettingsWithoutAssetsMutation"
+  ],
+  "preservation": {
+    "testAttributesBefore": 87,
+    "testAttributesAfter": 87,
+    "preExistingAssertionsRemovedOrWeakened": 0,
+    "additionalAssertions": [
+      "AssetDatabase.CreateFolder succeeds before seeding the unowned fixture",
+      "Temporary manifest bytes remain unchanged across the rejected import"
+    ],
+    "strictDuplicateMemberNegativeRetained": true,
+    "productCodeChanged": false,
+    "otherProductionFilesChanged": false
+  },
+  "execution": {
+    "unityExecutedForCandidate": false,
+    "testsRunForCandidate": false,
+    "candidateRuntimeStatus": "pending CI"
+  }
+}

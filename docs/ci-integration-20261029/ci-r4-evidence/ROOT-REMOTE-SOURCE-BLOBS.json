@@ -1,0 +1,76 @@
+{
+  "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+  "tree": "cace0318c586715f660e47fd949a509fb3856adf",
+  "sources": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+      "gitBlobSha": "44cee851931dc470bbff3bf3f6da308aa2c274c9",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+      "gitBlobSha": "6551c633a2de7e4c15998169618379938077af8c",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "gitBlobSha": "d62c870fcd0ed5861cce0296c57592fb8d0221b6",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "gitBlobSha": "12ee0d6a179bcb5b5da8432fd406f2bd15995933",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+      "gitBlobSha": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "gitBlobSha": "0cbc490fd521398cb4b10954e2ccc447d28f2ebf",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+      "gitBlobSha": "afca9976e04c128293afdce4b09102a1497f9b18",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+      "mode": "100644"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+      "gitBlobSha": "97904300d05845e188c731d5a2e0964855d9ef01",
+      "mode": "100644"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "gitBlobSha": "99bacd03c32572309212173ef6a8e7dab6cd92e6",
+      "mode": "100644"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1",
+      "mode": "100644"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+      "mode": "100644"
+    }
+  ]
+}
