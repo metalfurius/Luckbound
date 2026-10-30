@@ -1,0 +1,46 @@
+{
+  "runId": 41087980878,
+  "headSha": "6035f726baaae70c9f481eed1c6201066a0e4b4e",
+  "observedAtUtc": "2026-10-30T16:22:36Z",
+  "job": {
+    "id": 124174084340,
+    "name": "EditMode and PlayMode tests",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "steps": [
+    {
+      "name": "Run Unity tests",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-30T16:14:14Z",
+      "completedAt": "2026-10-30T16:21:19Z"
+    },
+    {
+      "name": "Verify explicit V6 capture",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-30T16:21:19Z",
+      "completedAt": "2026-10-30T16:21:19Z"
+    },
+    {
+      "name": "Require successful tests and explicit V6 capture",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-30T16:21:19Z",
+      "completedAt": "2026-10-30T16:21:19Z"
+    },
+    {
+      "name": "Upload test results",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-30T16:21:19Z",
+      "completedAt": "2026-10-30T16:21:21Z"
+    }
+  ],
+  "runStateAtObservation": {
+    "status": "in_progress",
+    "conclusion": null
+  },
+  "scope": "Actual GitHub job and step metadata; not a local verifier replay."
+}

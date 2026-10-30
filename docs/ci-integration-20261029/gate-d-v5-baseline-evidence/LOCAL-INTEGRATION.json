@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "reviewPath": "docs/ci-integration-20261029/SOL-GATE-D-V5-READER-TESTS-STATIC-R1.md",
+  "reviewSha256": "f313e47b5b00286b77d75be485fff4c503a5506329714ab09fe083ee81fa3159",
+  "testSha256": "a886b9cc0fac8ef5a93c7ec5f362138246be4abfc5a0356fd38c416e633b72cf",
+  "metaSha256": "254edbfba1213792d58f6e06b972d0daa703e39b9922408e66b80b0d151e59a2",
+  "preexistingSourcesPreserved": 377,
+  "newSourceCount": 1,
+  "fixtureFilesPreserved": 423,
+  "workflowUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false
+}

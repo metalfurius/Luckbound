@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Luckbound.App.Compatibility;
 using Luckbound.Core.Expeditions;
 using Luckbound.Core.Fortune;
 using Luckbound.Core.Saves;
@@ -497,13 +498,13 @@ namespace Luckbound.App
                 }
                 else if (header.contentVersion == 5)
                 {
-                    LegacyProfileSaveEnvelopeV5 legacy = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV5>(json);
-                    if (legacy == null || !NormalizeLegacyProfileEnvelope(legacy) ||
-                        !string.Equals(legacy.checksum, ComputeLegacyProfileChecksum(legacy), StringComparison.Ordinal))
-                        return DecodeStatus.Corrupted;
-                    envelope = MigrateLegacyCurrentProfile(legacy);
+                    Luckbound.App.Compatibility.LegacyProfileSaveEnvelopeV5 verified;
+                    DecodeStatus status = SaveV5HistoricalReader.ReadProfile(json, out verified);
+                    if (status != DecodeStatus.Valid) return status;
+                    envelope = HistoricalSaveMapper.ToLive(verified);
+                    envelope.checksum = ComputeChecksum(envelope);
                 }
-                else if (header.contentVersion < SaveFormat.ContentVersion)
+                else if (header.contentVersion < 5)
                 {
                     LegacyProfileSaveEnvelopeV4 legacy = JsonUtility.FromJson<LegacyProfileSaveEnvelopeV4>(json);
                     bool validLegacyChecksum = legacy != null && NormalizeLegacyProfileEnvelope(legacy) &&
@@ -529,16 +530,18 @@ namespace Luckbound.App
                 }
                 else
                 {
-                    envelope = JsonUtility.FromJson<ProfileSaveEnvelope>(json);
-                    if (envelope == null || !string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal))
-                        return DecodeStatus.Corrupted;
+                    LegacyProfileSaveEnvelopeV6 verified;
+                    DecodeStatus status = SaveV6HistoricalReader.ReadProfile(json, out verified);
+                    if (status != DecodeStatus.Valid) return status;
+                    envelope = HistoricalSaveMapper.ToLive(verified);
                 }
             }
             catch
             {
                 return DecodeStatus.Corrupted;
             }
-            if (!ValidateProfileEnvelope(envelope)) return DecodeStatus.Corrupted;
+            // V5/V6 have already passed complete versioned validation before mapping.
+            if (header.contentVersion < 5 && !ValidateProfileEnvelope(envelope)) return DecodeStatus.Corrupted;
             sourceContentVersion = header.contentVersion;
             return DecodeStatus.Valid;
         }
@@ -610,19 +613,20 @@ namespace Luckbound.App
             }
             else if (header.contentVersion == 5)
             {
-                try { envelope = JsonUtility.FromJson<SettingsSaveEnvelope>(json); }
-                catch { return DecodeStatus.Corrupted; }
-                if (envelope == null || !string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal))
-                    return DecodeStatus.Corrupted;
-                envelope.contentVersion = SaveFormat.ContentVersion;
+                LegacySettingsSaveEnvelopeV5 verified;
+                DecodeStatus status = SaveV5HistoricalReader.ReadSettings(json, out verified);
+                if (status != DecodeStatus.Valid) return status;
+                envelope = HistoricalSaveMapper.ToLive(verified);
                 envelope.checksum = ComputeChecksum(envelope);
+                return DecodeStatus.Valid;
             }
             else
             {
-                try { envelope = JsonUtility.FromJson<SettingsSaveEnvelope>(json); }
-                catch { return DecodeStatus.Corrupted; }
-                if (envelope == null || !string.Equals(envelope.checksum, ComputeChecksum(envelope), StringComparison.Ordinal))
-                    return DecodeStatus.Corrupted;
+                LegacySettingsSaveEnvelopeV6 verified;
+                DecodeStatus status = SaveV6HistoricalReader.ReadSettings(json, out verified);
+                if (status != DecodeStatus.Valid) return status;
+                envelope = HistoricalSaveMapper.ToLive(verified);
+                return DecodeStatus.Valid;
             }
 
             return SaveDataValidation.Validate(envelope).Count == 0 ? DecodeStatus.Valid : DecodeStatus.Corrupted;

@@ -10,3 +10,4 @@ docs/art/F01_master_reference.md -text
 docs/ci-integration-20261029/v5-r5-frozen-evidence/** -text
 Assets/Luckbound/Tests/Fixtures/Saves/V5/capture/** -text
 Assets/Luckbound/Tests/Fixtures/Saves/V5/reader-authority.json -text
+docs/ci-integration-20261029/gate-d-v5-baseline-evidence/** -text

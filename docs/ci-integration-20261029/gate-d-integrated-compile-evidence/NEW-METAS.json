@@ -1,0 +1,27 @@
+[
+  {
+    "path": "Assets/Luckbound/Scripts/App/Compatibility/HistoricalSaveMapper.cs.meta",
+    "guid": "536d2eb17f8138289e369b41172336a4",
+    "sha256": "edec075560657c9eb22b9267390f469bf1397e8a2bccee625c74ceed586d97d9"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalDtos.cs.meta",
+    "guid": "bbf92ed92c5ae62f8544efb0c163993c",
+    "sha256": "026cbc1d13bf728a8775f231ead447544cdc354b272fa18089f5ad152b5b6f2d"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalReader.cs.meta",
+    "guid": "4eec085395f3d80565323193eb3c8a8c",
+    "sha256": "220b437546f035d2db810fa7e867c89ee609e4d8b4d0287ddf3c9789111a2d98"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalReader.cs.meta",
+    "guid": "03fb505d77bd9750c69f5df6c3bca8ee",
+    "sha256": "caefd9838d689ef2da5ce646d7cb26d47e21fb0400351af31e3117019015066a"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SaveHistoricalReaderIsolationTests.cs.meta",
+    "guid": "940f909c60edfea0a5b8178755e0b83d",
+    "sha256": "144525c0b66490214675432b3ad3001ebb22c7c10ec4f4363cbc44e9cf1985e5"
+  }
+]

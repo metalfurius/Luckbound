@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "run": {
+    "id": 41087980878,
+    "artifactId": 12991809587,
+    "artifactName": "test-results-6035f726baaae70c9f481eed1c6201066a0e4b4e",
+    "branch": "codex/luckbound-integration-unity-20261030",
+    "commit": "6035f726baaae70c9f481eed1c6201066a0e4b4e",
+    "tree": "a762894da54eed8942d87e3ec3462a982ae4c9a7"
+  },
+  "downloadedArtifact": {
+    "relativePath": "Logs/CI-41087980878-root/download-attempt1/artifact.zip",
+    "bytes": 9336347,
+    "sha256": "c004488e39159ca2b908fe92614d0872d8be3d86559edf941b537ca3e82ecde8",
+    "zipEntries": 241,
+    "crcValid": true,
+    "extractedFiles": 241,
+    "extractedPathSetMatches": true,
+    "everyExtractedFileMatchesArchiveBytes": true
+  },
+  "testSource": {
+    "path": "Assets/Luckbound/Tests/PlayMode/SaveV5FrozenReaderTests.cs",
+    "sha256": "a886b9cc0fac8ef5a93c7ec5f362138246be4abfc5a0356fd38c416e633b72cf",
+    "matchesAcceptedStaticSource": "a886b9cc0fac8ef5a93c7ec5f362138246be4abfc5a0356fd38c416e633b72cf"
+  },
+  "fixtureWrapper": {
+    "path": "Assets/Luckbound/Tests/Fixtures/Saves/V5/reader-fixtures.json",
+    "sha256": "541a00ad2e952d6941bddeaf6fc2d5fbd5f57ae70b64ad3970825a42f669e656",
+    "rows": 24
+  },
+  "resultXml": [
+    {
+      "path": "selected/editmode-results.xml",
+      "bytes": 511021,
+      "sha256": "eca977305849a0622c81c06d78b968d19920d4bcca508595f837281187f49051"
+    },
+    {
+      "path": "selected/playmode-results.xml",
+      "bytes": 1554110,
+      "sha256": "e52b80995d7b8bc8a058846787a7b1134dd63dbd551378d9d736d1f7bcd136b5"
+    }
+  ],
+  "nativeV6": {
+    "path": "Logs/Scenarios/V6Capture-6035f726baaae70c9f481eed1c6201066a0e4b4e-41087980878-1/manifest.json",
+    "sha256": "0b37fef3d228aab19d59f0f785589bd5d7579917ec903127267d4a91bfc55e7b",
+    "commit": "6035f726baaae70c9f481eed1c6201066a0e4b4e",
+    "unityVersion": "6000.6.7f1",
+    "cases": 11,
+    "attempts": 11,
+    "dataFiles": 97,
+    "sourceHashesBeforeAfterStable": true
+  },
+  "v6BaselineComparison": {
+    "baselineRunId": 41062370906,
+    "baselineCommit": "76bafecdaed9762aa6555c1cdf928e7dc2ef4670",
+    "summaryPath": "Logs/CI-41087980878-root/DATA-COMPARISON.json",
+    "summarySha256": "9f5bfa858b210624f6c26bfd9ec7db10ccc92f72b73b3772e2eb1ea6f04a304c",
+    "comparedDataFiles": 97,
+    "byteIdentical": 97,
+    "metadataExcluded": true
+  },
+  "sourceBinding": {
+    "path": "Logs/CI-41087980878-root/SOURCE-BINDING.json",
+    "sha256": "78fd073efdc7d4924e4baeb8cb100001acc27467d6203687cfa53c58f953a388",
+    "sourceCount": 14,
+    "allBoundToCommitBlobs": true
+  },
+  "jobsApi": {
+    "testJob": {
+      "id": 124174084340,
+      "status": "completed",
+      "conclusion": "success",
+      "successfulSteps": [
+        "Run Unity tests",
+        "Verify explicit V6 capture",
+        "Require successful tests and explicit V6 capture",
+        "Upload test results"
+      ]
+    },
+    "workflowRun": {
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "windowsBuildJob": {
+      "id": 124178063997,
+      "conclusion": "success"
+    },
+    "webglBuildJob": {
+      "id": 124178063837,
+      "conclusion": "success"
+    },
+    "releaseJob": {
+      "id": 124182564638,
+      "conclusion": "skipped"
+    },
+    "deployJob": {
+      "id": 124182565217,
+      "conclusion": "skipped"
+    },
+    "separateCheckJob": {
+      "id": 124177977512,
+      "conclusion": "neutral",
+      "classification": "non-primary check; not used as suite success"
+    },
+    "testJobReadAt": "2026-10-30 16:22 UTC",
+    "workflowRunAtTestJobRead": {
+      "status": "in_progress",
+      "conclusion": null
+    },
+    "laterRootUpdate": {
+      "workflowRun": {
+        "status": "completed",
+        "conclusion": "success"
+      },
+      "windowsBuildJob": {
+        "id": 124178063997,
+        "conclusion": "success"
+      },
+      "webglBuildJob": {
+        "id": 124178063837,
+        "conclusion": "success"
+      },
+      "releaseJob": {
+        "id": 124182564638,
+        "conclusion": "skipped"
+      },
+      "deployJob": {
+        "id": 124182565217,
+        "conclusion": "skipped"
+      }
+    }
+  },
+  "rowLogLimitation": {
+    "whitelistedTestContextRowsPreserved": 0,
+    "rootJobStdoutBytes": 5398567,
+    "rootJobStdoutSha256": "d580b21b0eff55bd43d3c17f096a4e90ee4a552e7a7db94478f4e54443d611bd",
+    "rawLogsCopied": false
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "editmode-results.xml",
+      "bytes": 511021,
+      "sha256": "eca977305849a0622c81c06d78b968d19920d4bcca508595f837281187f49051"
+    },
+    {
+      "path": "native-v6-manifest.json",
+      "bytes": 17874,
+      "sha256": "0b37fef3d228aab19d59f0f785589bd5d7579917ec903127267d4a91bfc55e7b"
+    },
+    {
+      "path": "playmode-results.xml",
+      "bytes": 1554110,
+      "sha256": "e52b80995d7b8bc8a058846787a7b1134dd63dbd551378d9d736d1f7bcd136b5"
+    },
+    {
+      "path": "row-observations.json",
+      "bytes": 12655,
+      "sha256": "f6fdf436136dd9659ac8fc12205e6b67c9f85e4ed3fc360729b34a9143895fc8"
+    },
+    {
+      "path": "source-binding-index.json",
+      "bytes": 5987,
+      "sha256": "78fd073efdc7d4924e4baeb8cb100001acc27467d6203687cfa53c58f953a388"
+    },
+    {
+      "path": "v6-data-hash-comparison.json",
+      "bytes": 22326,
+      "sha256": "9f5bfa858b210624f6c26bfd9ec7db10ccc92f72b73b3772e2eb1ea6f04a304c"
+    }
+  ],
+  "rowObservationBytes": 12655
+}

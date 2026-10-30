@@ -1,0 +1,50 @@
+[
+  {
+    "path": "editmode-results.xml",
+    "origin": "Logs/CI-41087980878-root/download-attempt1/extracted/test-results/editmode-results.xml",
+    "bytes": 511021,
+    "sha256": "eca977305849a0622c81c06d78b968d19920d4bcca508595f837281187f49051"
+  },
+  {
+    "path": "playmode-results.xml",
+    "origin": "Logs/CI-41087980878-root/download-attempt1/extracted/test-results/playmode-results.xml",
+    "bytes": 1554110,
+    "sha256": "e52b80995d7b8bc8a058846787a7b1134dd63dbd551378d9d736d1f7bcd136b5"
+  },
+  {
+    "path": "DATA-COMPARISON.json",
+    "origin": "Logs/CI-41087980878-root/DATA-COMPARISON.json",
+    "bytes": 22326,
+    "sha256": "9f5bfa858b210624f6c26bfd9ec7db10ccc92f72b73b3772e2eb1ea6f04a304c"
+  },
+  {
+    "path": "SOURCE-BINDING.json",
+    "origin": "Logs/CI-41087980878-root/SOURCE-BINDING.json",
+    "bytes": 5987,
+    "sha256": "78fd073efdc7d4924e4baeb8cb100001acc27467d6203687cfa53c58f953a388"
+  },
+  {
+    "path": "REAL-GATES.json",
+    "origin": "Logs/CI-41087980878-root/REAL-GATES.json",
+    "bytes": 1268,
+    "sha256": "872f8e749828487cbdf283a1d735e5d286ccefd513d9d639c0f3e107c0fb38fe"
+  },
+  {
+    "path": "REMOTE-COMMIT.json",
+    "origin": "Logs/GateDV5ReaderCi-20261030-r1/REMOTE-COMMIT.json",
+    "bytes": 671,
+    "sha256": "4fbc46c18722c94671d231d31406093d6469b17a85792e0792c37caaafb5fdf8"
+  },
+  {
+    "path": "LOCAL-INTEGRATION.json",
+    "origin": "Logs/GateDV5ReaderIntegration-20261030-r1/INTEGRATION.json",
+    "bytes": 541,
+    "sha256": "3465a52bce2397a7bafa83bba612515773bd7bed34f69b409b849365e50baab7"
+  },
+  {
+    "path": "v6-native-manifest.json",
+    "origin": "Logs/CI-41087980878-root/download-attempt1/extracted/Logs/Scenarios/V6Capture-6035f726baaae70c9f481eed1c6201066a0e4b4e-41087980878-1/manifest.json",
+    "bytes": 17874,
+    "sha256": "0b37fef3d228aab19d59f0f785589bd5d7579917ec903127267d4a91bfc55e7b"
+  }
+]

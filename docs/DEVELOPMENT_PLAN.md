@@ -1,6 +1,6 @@
 # Luckbound — Preproducción y plan completo de desarrollo
 
-**Versión del documento:** 3.51 — 26 de octubre de 2026.
+**Versión del documento:** 3.52 — 30 de octubre de 2026.
 
 **Actualización 3.36:** se registra el contrato F09.ENCOUNTERS consultado con GPT-6.1 Sol (`xhigh`). El dictamen `Conditional` y sus límites están en [el informe de arquitectura](agent_staging/sol-f09-encounters-architecture-20261025/REPORT.md), SHA-256 `92a7c0f69af6e4a9d6665c9ef6d56f557ef5bb67860475791720a982bf22ab9a`. Toda revisión humana o nueva decisión de diseño continúa delegada a Sol; su dictamen no reemplaza aceptación técnica.
 
@@ -163,7 +163,9 @@ Antes de cambiar el proyecto, A02 volverá a comprobar estas referencias. No sob
 
 ### 1.4. Tecnología y reinicio
 
-La base reproducible actual usa **Unity 6000.6.6f1**, fijada en el proyecto y validada con las suites y builds actuales. Fran solicitó actualizar a la última versión; Unity publicó **6000.6.7f1** el 21 de octubre de 2026. La auditoría estática no detectó una API usada por Luckbound que haya sido retirada, pero no compiló el proyecto ni verificó los tags `unityci/editor:ubuntu-6000.6.7f1-base-3.2.2`, `...-windows-mono-3.2.2` y `...-webgl-3.2.2`. Para conservar operativas las builds automáticas, completar esa verificación y ejecutar EditMode, PlayMode, Windows x64 y WebGL antes de mover conjuntamente `ProjectVersion.txt`, paquetes, claves de caché y metadatos del workflow. Hasta entonces, 6000.6.6f1 sigue siendo la versión de integración comprobada, no la última publicada. [Unity 6000.6.6f1](https://unity.com/releases/editor/whats-new/6000.6.6f1) · [Unity 6000.6.7f1](https://unity.com/releases/editor/whats-new/6000.6.7f1)
+La base de desarrollo comprobada usa **Unity 6000.6.7f1 (b22767f04f04)**. La [CI combinada 41062370906](https://github.com/metalfurius/Luckbound/actions/runs/41062370906), commit `76bafecdaed9762aa6555c1cdf928e7dc2ef4670`, pasó 585 pruebas EditMode y 373 PlayMode, el gate V6 obligatorio y builds Windows/WebGL. Los 97 datos de guardado son idénticos a la baseline 6000.6.6f1. [Sol aceptó la adopción técnica](ci-integration-20261029/SOL-UNITY-COMBINED-R1-RUNTIME.md) y Root aplicó los seis archivos revisados tras comprobar y conservar sus preimágenes. Paquetes, DTOs, fixtures y ContentVersion=6 mantienen su alcance comprobado.
+
+La referencia que selecciona 6000.6.7f1 en CI es `codex/luckbound-integration-unity-20261030`. R7, la reconstrucción V5 y las demás referencias conservan su configuración histórica; esta adopción no amplía Main ni la publicación. No se instaló ni ejecutó el Editor local, ni se abrieron los players. El smoke de plataformas y F09/F10 tienen aceptación independiente. La observación oficial del 30 de octubre se conserva en la preparación del ensayo; la versión fue publicada el 21 de octubre: [Unity 6000.6.7f1](https://unity.com/releases/editor/whats-new/6000.6.7f1).
 
 Configuración:
 
@@ -177,7 +179,7 @@ Configuración:
 - Serialización JSON mediante adaptador de `JsonUtility`.
 - Python en un entorno local del proyecto para síntesis y validación de audio.
 
-El manifiesto debe conservar el conjunto verificado con Unity 6000.6.6f1: URP `17.6.0`, Input System `1.20.0`, Cinemachine `6.6.0`, Unity Test Framework `1.8.0` y UGUI `2.6.0`, además de los módulos requeridos por Unity. `Packages/packages-lock.json` registra las resoluciones completas. La cámara Pixel Perfect se obtiene del propio URP 17.6; no añadir `com.unity.2d.pixel-perfect`, cuya versión probada no compila con ese URP. No añadir el paquete separado `com.unity.textmeshpro`: UGUI ya lo incluye. Si se actualiza el Editor, repetir la resolución de paquetes y las pruebas antes de cambiar esta lista.
+El manifiesto conserva el mismo conjunto resuelto y probado en el ensayo combinado 6000.6.7f1: URP `17.6.0`, Input System `1.20.0`, Cinemachine `6.6.0`, Unity Test Framework `1.8.0` y UGUI `2.6.0`, además de los módulos requeridos por Unity. `Packages/packages-lock.json` registra las resoluciones completas. La cámara Pixel Perfect se obtiene del propio URP 17.6; no añadir `com.unity.2d.pixel-perfect`, cuya versión probada no compila con ese URP. No añadir el paquete separado `com.unity.textmeshpro`: UGUI ya lo incluye. Si se actualiza el Editor, repetir la resolución de paquetes y las pruebas antes de cambiar esta lista.
 
 El perfil de build WebGL inicial está en `Assets/Settings/Build Profiles/WebGL.asset`; su lista de escenas sigue `EditorBuildSettings`. La primera build WebGL limpia tardó más de diez minutos al compilar IL2CPP y aplicar Brotli; el build local o el worker de CI deben permitir al menos veinte minutos para la primera compilación y conservar caché incremental cuando sea posible. El smoke test actual muestra avisos de URP por pases de postprocesado ausentes o descartados en WebGL; el menú no depende de esos efectos. No hacer depender el arte o la legibilidad de postprocesado sin verificar primero un build WebGL real.
 

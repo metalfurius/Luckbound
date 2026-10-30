@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "scope": "Historical V5/V6 reader isolation; no new save format or application continuation",
+  "reviews": [
+    {
+      "path": "docs/ci-integration-20261029/SOL-GATE-D-INTEGRATED-STATIC-R1.md",
+      "sha256": "2f6ded6a348c9d926f70062408619f1740df4cf972920f57d13e489e8ac67117"
+    },
+    {
+      "path": "docs/ci-integration-20261029/SOL-GATE-D-BASELINE-OBSERVABILITY.md",
+      "sha256": "d8692ef3ae0a7a690eb0b0c9469c2aed2554119361e433b518e3252413328312"
+    }
+  ],
+  "baselineCommit": "6035f726baaae70c9f481eed1c6201066a0e4b4e",
+  "baselineCi": 41087980878,
+  "preexistingSources": 378,
+  "newCSharpSources": 5,
+  "modifiedExistingCSharpSources": 2,
+  "unchangedExistingSources": 376,
+  "preservedFixtureFiles": 423,
+  "protectedSources": {
+    "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+    "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+    ".github/workflows/build.yml": "67f3f4235aeba072519b32121251f883592c471e9158366bd538e4764cd6f252",
+    "ProjectSettings/ProjectVersion.txt": "2a88e6864b6f54588287bed3bc6e9260e65bd49498910cca4478770ca8a5d674",
+    "Assets/Luckbound/Tests/Fixtures/Saves/V5/capture/fixture-index.json": "8f61d83adea8cbaa6c54aaefa15a0ad21b82e3e345ea94ea543ec032d79ac2d9"
+  },
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "beforeSha256": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+      "afterSha256": "ed1da03c47f50d591debe917ffd12bcabeb7b11f7cb7b28f258d2eb4c8c1f7f6",
+      "bytes": 75160
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/HistoricalSaveMapper.cs",
+      "beforeSha256": null,
+      "afterSha256": "e7f20d8c4b24169d3ca786389cc0fb499b6ad6a5b13895403127ebe440cd2feb",
+      "bytes": 21558
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalDtos.cs",
+      "beforeSha256": null,
+      "afterSha256": "82664c0ebbbd19f5d78bcc9dc6ce6f8d4757ffe3fe1e88c30a5f6a8253268ffd",
+      "bytes": 6929
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalReader.cs",
+      "beforeSha256": null,
+      "afterSha256": "8febb42df246a4db51942c5a7a83f91ef2f33229bc7f975c453aeb09c5e86241",
+      "bytes": 39198
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalReader.cs",
+      "beforeSha256": null,
+      "afterSha256": "20a3eee88030baf4f31c372bfeb5f8858213fa1524d973f746ccdb53824cd14e",
+      "bytes": 29173
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveHistoricalReaderIsolationTests.cs",
+      "beforeSha256": null,
+      "afterSha256": "b0f5ddf4eb865fe8b5087355434475510bc40186b46b4a85b64fe6b2d800ad0d",
+      "bytes": 55191
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV5FrozenReaderTests.cs",
+      "beforeSha256": "a886b9cc0fac8ef5a93c7ec5f362138246be4abfc5a0356fd38c416e633b72cf",
+      "afterSha256": "bcf741f3e635682f1796d0eb1936f77fcf22857ba6a463bb3673fbdd59957040",
+      "bytes": 61517
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/HistoricalSaveMapper.cs.meta",
+      "beforeSha256": null,
+      "afterSha256": "edec075560657c9eb22b9267390f469bf1397e8a2bccee625c74ceed586d97d9",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalDtos.cs.meta",
+      "beforeSha256": null,
+      "afterSha256": "026cbc1d13bf728a8775f231ead447544cdc354b272fa18089f5ad152b5b6f2d",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV5HistoricalReader.cs.meta",
+      "beforeSha256": null,
+      "afterSha256": "220b437546f035d2db810fa7e867c89ee609e4d8b4d0287ddf3c9789111a2d98",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalReader.cs.meta",
+      "beforeSha256": null,
+      "afterSha256": "caefd9838d689ef2da5ce646d7cb26d47e21fb0400351af31e3117019015066a",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveHistoricalReaderIsolationTests.cs.meta",
+      "beforeSha256": null,
+      "afterSha256": "144525c0b66490214675432b3ad3001ebb22c7c10ec4f4363cbc44e9cf1985e5",
+      "bytes": 240
+    }
+  ],
+  "unityExecutedLocally": false,
+  "nunitExecutedForNewReader": false
+}

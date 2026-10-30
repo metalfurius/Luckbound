@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "runId": 41087980878,
+  "commit": "6035f726baaae70c9f481eed1c6201066a0e4b4e",
+  "tree": "a762894da54eed8942d87e3ec3462a982ae4c9a7",
+  "conclusion": "success",
+  "tests": {
+    "editMode": 585,
+    "playMode": 402,
+    "total": 987,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0,
+    "newNunitCasesPassed": 29,
+    "codecCasesPassed": 24,
+    "repositoryMatrixMethodsPassed": 2,
+    "rowsPerMatrixMethod": 24,
+    "repositoryLoopCoverage": 48,
+    "serializedRowObservationsPreserved": false
+  },
+  "v6": {
+    "realCaptureGate": "success",
+    "realSentinel": "success",
+    "cases": 11,
+    "dataFiles": 97,
+    "dataByteIdenticalToRun41062370906": 97,
+    "sourcesBoundToCommit": 14,
+    "manifestSha256": "0b37fef3d228aab19d59f0f785589bd5d7579917ec903127267d4a91bfc55e7b"
+  },
+  "builds": {
+    "windows": "success",
+    "webgl": "success",
+    "playersExecuted": false
+  },
+  "release": "skipped",
+  "deploy": "skipped",
+  "newHistoricalReadersIncluded": false,
+  "gateDIntegratedAccepted": false
+}

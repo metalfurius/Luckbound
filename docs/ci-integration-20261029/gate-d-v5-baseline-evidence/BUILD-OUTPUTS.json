@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "runId": 41087980878,
+  "commit": "6035f726baaae70c9f481eed1c6201066a0e4b4e",
+  "windows": {
+    "artifactId": 12991924599,
+    "zipBytes": 50513440,
+    "zipSha256": "c5df380a6be1c4ba60712786b81b595e1c96fa4307ff1ac693baaee1d1a9d1cd",
+    "fileCount": 210,
+    "exe": {
+      "path": "Luckbound.exe",
+      "sha256": "9806abde4a406ed68647e9505852c49f6aa72a372f4f084e2aa2821affea57a2",
+      "bytes": 667136,
+      "magic": "MZ"
+    }
+  },
+  "webgl": {
+    "artifactId": 12993816537,
+    "zipBytes": 16103870,
+    "zipSha256": "3f00d80d4717bc9b36ddf9de19bb359d3f06f45b8c432363deb073dd6b4bf33d",
+    "fileCount": 17,
+    "html": {
+      "path": "WebGL/index.html",
+      "sha256": "781a366ec900f9c08919106febc80e19533ad9a4f6666320a7c56963cfad7006",
+      "bytes": 6378
+    },
+    "wasm": {
+      "path": "WebGL/Build/WebGL.wasm.br",
+      "sha256": "d441a7967c76aa81624a0da1d8d27defd51669d3bf490ced88aed62f5c9f4808",
+      "bytes": 8362433
+    }
+  },
+  "playersExecuted": false,
+  "browsersOpened": false,
+  "release": "skipped",
+  "deploy": "skipped"
+}

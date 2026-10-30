@@ -306,7 +306,7 @@ namespace Luckbound.Tests.PlayMode
                 "FileSaveStore settings read must finish within the frame limit.");
             SaveLoadResult<SettingsSaveEnvelope> settingsResult = settingsTask.GetAwaiter().GetResult();
 
-            TestContext.Progress.WriteLine("{\"phase\":\"file-store\",\"profile\":\"" + profileResult.Status +
+            UnityEngine.Debug.Log("{\"phase\":\"file-store\",\"profile\":\"" + profileResult.Status +
                 "\",\"settings\":\"" + settingsResult.Status + "\",\"files\":4}");
             Assert.That(profileResult.Status, Is.EqualTo(SaveLoadStatus.Corrupted));
             Assert.That(profileResult.Access, Is.EqualTo(SaveDataAccess.Unavailable));
@@ -907,7 +907,7 @@ namespace Luckbound.Tests.PlayMode
 
         private static void LogRow(string phase, FixtureRow row, string slot, string observed, string reached, string hash)
         {
-            TestContext.Progress.WriteLine("{\"phase\":\"" + phase + "\",\"caseId\":\"" + row.caseId +
+            UnityEngine.Debug.Log("{\"phase\":\"" + phase + "\",\"caseId\":\"" + row.caseId +
                 "\",\"culture\":\"" + row.culture + "\",\"document\":\"" + row.document + "\",\"slot\":\"" +
                 slot + "\",\"expectedDecode\":\"" + row.expectedDecode + "\",\"observed\":\"" + observed +
                 "\",\"reached\":\"" + reached + "\",\"envelopeSha256\":\"" + hash + "\"}");
