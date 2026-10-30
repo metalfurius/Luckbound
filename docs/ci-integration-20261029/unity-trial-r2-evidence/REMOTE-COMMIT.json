@@ -1,0 +1,11 @@
+{
+  "branch": "codex/luckbound-unity-20261029",
+  "sha": "7819bee3f064074010509edcdd82c6be95fe3055",
+  "tree": "72095a9707e5b9df599fa80005765f1c73c90c75",
+  "parent": "3c7330d79952b73d1f1141a675e29bde92d9bfec",
+  "wholeTreeEntries": 5063,
+  "files": 9,
+  "sourceDeltas": 2,
+  "configUnchanged": true,
+  "localIntegrationPin": "6000.6.6f1"
+}

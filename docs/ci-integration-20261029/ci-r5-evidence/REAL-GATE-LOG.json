@@ -1,0 +1,17 @@
+{
+  "job": 123998449854,
+  "url": "https://nightly.link/metalfurius/Luckbound/runs/123998449854.txt",
+  "bytes": 5964068,
+  "sha256": "2aefeaef707b72c4a3e44eb8508815b44c51c7722d6e3fe3687acb583a8ea70c",
+  "selectedGateLines": [
+    "2026-10-30T10:01:58.1347608Z   \"commit\": \"85ef222fd28573b2e3e994c13744b39ac5b93697\",",
+    "2026-10-30T10:01:58.1348623Z   \"sessionId\": \"e2abfc16192c44ab8a179b256b8bdf05\",",
+    "2026-10-30T10:01:58.1349512Z   \"caseCount\": 11,",
+    "2026-10-30T10:01:58.1350218Z   \"attemptCount\": 11,",
+    "2026-10-30T10:01:58.1351184Z   \"outputFileCount\": 97,",
+    "2026-10-30T10:01:58.1351928Z   \"sourceCount\": 14,",
+    "2026-10-30T10:01:58.1353022Z   \"manifestSha256\": \"ea49d4452a1a5df60cb8cc14551bffee8b9067d4428602c7e1f5b0f7819ef555\",",
+    "2026-10-30T10:01:58.1354562Z   \"scope\": \"Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML\"",
+    "2026-10-30T10:01:58.1355709Z }"
+  ]
+}

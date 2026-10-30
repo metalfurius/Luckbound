@@ -22,18 +22,27 @@ namespace Luckbound.App
         Incompatible = 4
     }
 
+    public enum SaveDataAccess
+    {
+        Unavailable = 0,
+        ReadWrite = 1,
+        ReadOnlyLegacyEncounterPinMissing = 2
+    }
+
     public sealed class SaveLoadResult<T>
     {
-        internal SaveLoadResult(SaveLoadStatus status, T data, string message)
+        internal SaveLoadResult(SaveLoadStatus status, T data, string message, SaveDataAccess access)
         {
             Status = status;
             Data = data;
             Message = message ?? string.Empty;
+            Access = access;
         }
 
         public SaveLoadStatus Status { get; }
         public T Data { get; }
         public string Message { get; }
+        public SaveDataAccess Access { get; }
         public bool HasUsableData => Data != null && Status != SaveLoadStatus.Incompatible;
     }
 
@@ -73,6 +82,7 @@ namespace Luckbound.App
         private ProfileSaveEnvelope _profile;
         private SettingsSaveEnvelope _settings;
         private string _profilePrimaryJson;
+        private string _loadedProfileJson;
         private string _settingsPrimaryJson;
         private bool _profilePrimaryValid;
         private bool _settingsPrimaryValid;
@@ -80,6 +90,7 @@ namespace Luckbound.App
         private bool _settingsLoaded;
         private bool _profileBlocked;
         private bool _settingsBlocked;
+        private SaveDataAccess _profileAccess = SaveDataAccess.Unavailable;
         private PendingWrite _pendingProfile;
         private PendingWrite _pendingSettings;
 
@@ -90,6 +101,8 @@ namespace Luckbound.App
 
         public ProfileSaveEnvelope CurrentProfile => _profile;
         public SettingsSaveEnvelope CurrentSettings => _settings;
+        public SaveDataAccess ProfileAccess => _profileAccess;
+        public string ExportLoadedProfileJson() => _loadedProfileJson;
         /// <summary>Returns a copy of the exact settings payload retained for retry, if any.</summary>
         public GameSettingsSaveData PendingSettingsForRetry => _pendingSettings == null
             ? null
@@ -116,6 +129,8 @@ namespace Luckbound.App
             await _gate.WaitAsync();
             try
             {
+                if (_profileAccess != SaveDataAccess.ReadWrite)
+                    return Failed("Profile writes are blocked because the loaded profile is read-only or unavailable.");
                 if (_profileBlocked) return Failed("Profile writes are blocked because the saved profile is incompatible or unrecoverable.");
                 if (_pendingProfile != null) return Failed("A profile write is pending. Retry it before starting another save.");
                 ProfileSaveData copy = profile.Clone();
@@ -169,6 +184,8 @@ namespace Luckbound.App
             await _gate.WaitAsync();
             try
             {
+                if (document == SaveDocument.Profile && _profileAccess != SaveDataAccess.ReadWrite)
+                    return Failed("Profile writes are blocked because the loaded profile is read-only or unavailable.");
                 PendingWrite pending = document == SaveDocument.Profile ? _pendingProfile : _pendingSettings;
                 if (pending == null) return Failed("There is no pending write for " + document + ".");
                 return await CommitPendingUnderLockAsync(pending);
@@ -184,60 +201,88 @@ namespace Luckbound.App
 
         private async Task<SaveLoadResult<ProfileSaveEnvelope>> LoadProfileUnderLockAsync()
         {
+            if (_pendingProfile != null)
+                throw new InvalidOperationException("A profile cannot be reloaded while a profile write is pending.");
+
             SaveStorageSnapshot storage = await _store.ReadAsync(SaveDocument.Profile);
-            DecodeStatus primaryStatus = SaveJsonCodec.Decode(storage.PrimaryJson, out ProfileSaveEnvelope primary);
+            DecodeStatus primaryStatus = SaveJsonCodec.Decode(storage.PrimaryJson, out ProfileSaveEnvelope primary,
+                out int primarySourceContentVersion);
             if (primaryStatus == DecodeStatus.Valid)
             {
                 _profile = primary;
                 _profilePrimaryJson = storage.PrimaryJson;
+                _loadedProfileJson = storage.PrimaryJson;
                 _profilePrimaryValid = true;
                 _profileBlocked = false;
+                _profileAccess = ResolveProfileAccess(primary, primarySourceContentVersion);
                 _profileLoaded = true;
-                return new SaveLoadResult<ProfileSaveEnvelope>(SaveLoadStatus.LoadedPrimary, primary, "Profile loaded.");
+                return new SaveLoadResult<ProfileSaveEnvelope>(SaveLoadStatus.LoadedPrimary, primary,
+                    "Profile loaded.", _profileAccess);
             }
             if (primaryStatus == DecodeStatus.Incompatible)
             {
+                _profile = null;
+                _profilePrimaryJson = null;
+                _loadedProfileJson = null;
+                _profilePrimaryValid = false;
                 _profileBlocked = true;
+                _profileAccess = SaveDataAccess.Unavailable;
                 _profileLoaded = true;
                 return new SaveLoadResult<ProfileSaveEnvelope>(SaveLoadStatus.Incompatible, null,
-                    "The profile was created by a newer or unsupported save format; it was preserved.");
+                    "The profile was created by a newer or unsupported save format; it was preserved.",
+                    SaveDataAccess.Unavailable);
             }
 
-            DecodeStatus backupStatus = SaveJsonCodec.Decode(storage.BackupJson, out ProfileSaveEnvelope backup);
+            DecodeStatus backupStatus = SaveJsonCodec.Decode(storage.BackupJson, out ProfileSaveEnvelope backup,
+                out int backupSourceContentVersion);
             if (backupStatus == DecodeStatus.Valid)
             {
                 _profile = backup;
                 _profilePrimaryJson = null;
+                _loadedProfileJson = storage.BackupJson;
                 _profilePrimaryValid = false;
                 _profileBlocked = false;
+                _profileAccess = ResolveProfileAccess(backup, backupSourceContentVersion);
                 _profileLoaded = true;
                 return new SaveLoadResult<ProfileSaveEnvelope>(SaveLoadStatus.RecoveredBackup, backup,
-                    "The primary profile was unusable; the valid backup was recovered.");
+                    "The primary profile was unusable; the valid backup was recovered.", _profileAccess);
             }
             if (backupStatus == DecodeStatus.Incompatible)
             {
+                _profile = null;
+                _profilePrimaryJson = null;
+                _loadedProfileJson = null;
+                _profilePrimaryValid = false;
                 _profileBlocked = true;
+                _profileAccess = SaveDataAccess.Unavailable;
                 _profileLoaded = true;
                 return new SaveLoadResult<ProfileSaveEnvelope>(SaveLoadStatus.Incompatible, null,
-                    "The profile backup uses a newer or unsupported save format; both files were preserved.");
+                    "The profile backup uses a newer or unsupported save format; both files were preserved.",
+                    SaveDataAccess.Unavailable);
             }
             if (primaryStatus == DecodeStatus.Missing && backupStatus == DecodeStatus.Missing)
             {
                 _profile = NewProfileEnvelope(ProfileSaveData.CreateNewProfile(), null, 0, 0);
                 _profilePrimaryJson = null;
+                _loadedProfileJson = null;
                 _profilePrimaryValid = false;
                 _profileBlocked = false;
+                _profileAccess = SaveDataAccess.ReadWrite;
                 _profileLoaded = true;
-                return new SaveLoadResult<ProfileSaveEnvelope>(SaveLoadStatus.Missing, _profile, "No profile exists; new profile defaults are ready.");
+                return new SaveLoadResult<ProfileSaveEnvelope>(SaveLoadStatus.Missing, _profile,
+                    "No profile exists; new profile defaults are ready.", SaveDataAccess.ReadWrite);
             }
 
             _profile = null;
             _profilePrimaryJson = null;
+            _loadedProfileJson = null;
             _profilePrimaryValid = false;
             _profileBlocked = true;
+            _profileAccess = SaveDataAccess.Unavailable;
             _profileLoaded = true;
             return new SaveLoadResult<ProfileSaveEnvelope>(SaveLoadStatus.Corrupted, null,
-                "The profile and backup are invalid; they were preserved and profile writes are blocked.");
+                "The profile and backup are invalid; they were preserved and profile writes are blocked.",
+                SaveDataAccess.Unavailable);
         }
 
         private async Task<SaveLoadResult<SettingsSaveEnvelope>> LoadSettingsUnderLockAsync()
@@ -251,14 +296,16 @@ namespace Luckbound.App
                 _settingsPrimaryValid = true;
                 _settingsBlocked = false;
                 _settingsLoaded = true;
-                return new SaveLoadResult<SettingsSaveEnvelope>(SaveLoadStatus.LoadedPrimary, primary, "Settings loaded.");
+                return new SaveLoadResult<SettingsSaveEnvelope>(SaveLoadStatus.LoadedPrimary, primary,
+                    "Settings loaded.", SaveDataAccess.ReadWrite);
             }
             if (primaryStatus == DecodeStatus.Incompatible)
             {
                 _settingsBlocked = true;
                 _settingsLoaded = true;
                 return new SaveLoadResult<SettingsSaveEnvelope>(SaveLoadStatus.Incompatible, null,
-                    "The settings use a newer or unsupported save format; they were preserved.");
+                    "The settings use a newer or unsupported save format; they were preserved.",
+                    SaveDataAccess.Unavailable);
             }
 
             DecodeStatus backupStatus = SaveJsonCodec.Decode(storage.BackupJson, out SettingsSaveEnvelope backup);
@@ -270,14 +317,15 @@ namespace Luckbound.App
                 _settingsBlocked = false;
                 _settingsLoaded = true;
                 return new SaveLoadResult<SettingsSaveEnvelope>(SaveLoadStatus.RecoveredBackup, backup,
-                    "The primary settings were unusable; the valid backup was recovered.");
+                    "The primary settings were unusable; the valid backup was recovered.", SaveDataAccess.ReadWrite);
             }
             if (backupStatus == DecodeStatus.Incompatible)
             {
                 _settingsBlocked = true;
                 _settingsLoaded = true;
                 return new SaveLoadResult<SettingsSaveEnvelope>(SaveLoadStatus.Incompatible, null,
-                    "The settings backup uses a newer or unsupported save format; both files were preserved.");
+                    "The settings backup uses a newer or unsupported save format; both files were preserved.",
+                    SaveDataAccess.Unavailable);
             }
             if (primaryStatus == DecodeStatus.Missing && backupStatus == DecodeStatus.Missing)
             {
@@ -286,7 +334,8 @@ namespace Luckbound.App
                 _settingsPrimaryValid = false;
                 _settingsBlocked = false;
                 _settingsLoaded = true;
-                return new SaveLoadResult<SettingsSaveEnvelope>(SaveLoadStatus.Missing, _settings, "No settings exist; defaults are ready.");
+                return new SaveLoadResult<SettingsSaveEnvelope>(SaveLoadStatus.Missing, _settings,
+                    "No settings exist; defaults are ready.", SaveDataAccess.ReadWrite);
             }
 
             _settings = NewSettingsEnvelope(new GameSettingsSaveData(), 0, 0);
@@ -295,11 +344,15 @@ namespace Luckbound.App
             _settingsBlocked = false;
             _settingsLoaded = true;
             return new SaveLoadResult<SettingsSaveEnvelope>(SaveLoadStatus.Corrupted, _settings,
-                "Settings and backup were invalid; defaults were restored and both files were preserved.");
+                "Settings and backup were invalid; defaults were restored and both files were preserved.",
+                SaveDataAccess.ReadWrite);
         }
 
         private async Task<SaveWriteResult> CommitPendingUnderLockAsync(PendingWrite pending)
         {
+            if (pending.Document == SaveDocument.Profile && _profileAccess != SaveDataAccess.ReadWrite)
+                return Failed("Profile writes are blocked because the loaded profile is read-only or unavailable.");
+
             try
             {
                 await _store.WriteAsync(pending.Document, pending.Json, pending.LastKnownGoodPrimaryJson);
@@ -364,6 +417,14 @@ namespace Luckbound.App
         private static long NextSequence(long current) => checked(current + 1);
         private static SaveWriteResult Failed(string message) => new SaveWriteResult(false, message);
 
+        private static SaveDataAccess ResolveProfileAccess(ProfileSaveEnvelope source, int sourceContentVersion)
+        {
+            return sourceContentVersion == 6 && source != null &&
+                source.hasActiveExpedition && source.activeExpedition != null
+                ? SaveDataAccess.ReadOnlyLegacyEncounterPinMissing
+                : SaveDataAccess.ReadWrite;
+        }
+
         private sealed class PendingWrite
         {
             public PendingWrite(SaveDocument document, string json, string lastKnownGoodPrimaryJson, object envelope)
@@ -398,7 +459,13 @@ namespace Luckbound.App
 
         public static DecodeStatus Decode(string json, out ProfileSaveEnvelope envelope)
         {
+            return Decode(json, out envelope, out _);
+        }
+
+        internal static DecodeStatus Decode(string json, out ProfileSaveEnvelope envelope, out int sourceContentVersion)
+        {
             envelope = null;
+            sourceContentVersion = 0;
             if (string.IsNullOrWhiteSpace(json)) return DecodeStatus.Missing;
             SaveVersionHeader header;
             try { header = JsonUtility.FromJson<SaveVersionHeader>(json); }
@@ -471,7 +538,9 @@ namespace Luckbound.App
             {
                 return DecodeStatus.Corrupted;
             }
-            return ValidateProfileEnvelope(envelope) ? DecodeStatus.Valid : DecodeStatus.Corrupted;
+            if (!ValidateProfileEnvelope(envelope)) return DecodeStatus.Corrupted;
+            sourceContentVersion = header.contentVersion;
+            return DecodeStatus.Valid;
         }
 
         public static DecodeStatus Decode(string json, out SettingsSaveEnvelope envelope)

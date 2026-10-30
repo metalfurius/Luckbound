@@ -1,0 +1,25 @@
+{
+    "method": "SaveDataValidation.Validate(ProfileSaveEnvelope)",
+    "executed": true,
+    "result": "Returned",
+    "accepted": false,
+    "errors": [
+        "unlocked race IDs cannot be null.",
+        "read story fragment IDs cannot be null.",
+        "Processed contract progress event receipts cannot be null.",
+        "Progression purchase transactions require a valid transaction ID.",
+        "Contract counters require a contract ID.",
+        "active expedition skill IDs cannot be null.",
+        "starting equipment instance IDs cannot be empty.",
+        "Active expedition requires the two starting equipment instance IDs.",
+        "visited route node IDs cannot be null.",
+        "Active expedition route history is invalid: Value cannot be null.\nParameter name: visitedNodeIds",
+        "Completed room results require a node, stable result ID and serialized result.",
+        "Completed room result has no matching completed room ID: patio.combat.01.",
+        "Every completed room must have exactly one saved result.",
+        "Active expedition Fortuna offer book snapshot is invalid: Fortune offer snapshot has invalid root state.",
+        "collected item IDs cannot be null."
+    ],
+    "errorType": "",
+    "errorMessage": ""
+}

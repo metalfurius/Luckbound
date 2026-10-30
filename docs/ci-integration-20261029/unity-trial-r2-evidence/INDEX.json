@@ -1,0 +1,32 @@
+[
+  {
+    "path": "AUDIT-ROOT.json",
+    "bytes": 2463,
+    "sha256": "282f3c3d8e2dd09cfe1361669a491f0fb89b114332e6978e80c1ff283668968a"
+  },
+  {
+    "path": "editmode-results.xml",
+    "bytes": 511064,
+    "sha256": "d05717d4369aa74e1253b5c03da85c94acbefad015da0f7eb04a554637ac6d3d"
+  },
+  {
+    "path": "playmode-results.xml",
+    "bytes": 881168,
+    "sha256": "9c52c68a20abf60a763872504ed99a8dc28fdd091f0c5d5b60ab8955ff3347e3"
+  },
+  {
+    "path": "C08-scenario.log",
+    "bytes": 1760,
+    "sha256": "429f6139ff04859814ad2cf5e83333dbd8512603013205ecbb5467bf6281f955"
+  },
+  {
+    "path": "MANIFEST.json",
+    "bytes": 2805,
+    "sha256": "f3ec570dc403034f812021401b201bb62ab4f9c20b5a98fbdb4b1d9fb91b1f85"
+  },
+  {
+    "path": "REMOTE-COMMIT.json",
+    "bytes": 341,
+    "sha256": "cdfaab24362127319cf3f4b474dfd0d408d838ef5e46804e53c2ddb8c8037b94"
+  }
+]

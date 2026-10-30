@@ -1,0 +1,10 @@
+{
+  "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+  "sessionId": "e2abfc16192c44ab8a179b256b8bdf05",
+  "caseCount": 11,
+  "attemptCount": 11,
+  "outputFileCount": 97,
+  "sourceCount": 14,
+  "manifestSha256": "ea49d4452a1a5df60cb8cc14551bffee8b9067d4428602c7e1f5b0f7819ef555",
+  "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+}

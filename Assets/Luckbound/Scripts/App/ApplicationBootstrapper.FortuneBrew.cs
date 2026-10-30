@@ -28,6 +28,9 @@ namespace Luckbound.App
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return BrewCommitFailure(ProfileWriteBlockReason);
+
                 if (_pendingFortuneMutation != null)
                 {
                     if (_pendingExpeditionCandidate == null && _pendingExpeditionSessionPublication == null)

@@ -1,0 +1,753 @@
+{
+  "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+  "ciGateOutput": {
+    "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+    "sessionId": "e2abfc16192c44ab8a179b256b8bdf05",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "ea49d4452a1a5df60cb8cc14551bffee8b9067d4428602c7e1f5b0f7819ef555",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  },
+  "capturedSourcesEqualR4": 14,
+  "nativeDataFilesEqualR4": 97,
+  "nativeDataIndex": [
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-comparison.json",
+      "sha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37",
+      "bytes": 251
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.json",
+      "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "bytes": 3819
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.sha256.txt",
+      "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.json",
+      "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "bytes": 3819
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+      "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/decode.json",
+      "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "bytes": 281
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/inspector.json",
+      "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "bytes": 503
+    },
+    {
+      "path": "cases/V6-checkpoint-empty-slots/attempt-0001/semantic-validation.json",
+      "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "bytes": 284
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-comparison.json",
+      "sha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b",
+      "bytes": 265
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.json",
+      "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "bytes": 3821
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.sha256.txt",
+      "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.json",
+      "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "bytes": 3821
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+      "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/decode.json",
+      "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "bytes": 281
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/inspector.json",
+      "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "bytes": 503
+    },
+    {
+      "path": "cases/V6-checkpoint-null-slots/attempt-0001/semantic-validation.json",
+      "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "bytes": 284
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/checksum.sha256.txt",
+      "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/envelope.json",
+      "sha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+      "bytes": 2227
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/input.json",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/inspector-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/inspector.json",
+      "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "bytes": 620
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "cases/V6-P0-profile-no-active/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/checksum-preimage.utf8",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "bytes": 13170
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/checksum.sha256.txt",
+      "sha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/envelope.json",
+      "sha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3",
+      "bytes": 15920
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/input.json",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "bytes": 13170
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/inspector-preimage.utf8",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "bytes": 13170
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/inspector.json",
+      "sha256": "19f1ab85733ee44cd4a5277e565ec6414281d138980f0b44461cea1207ce3816",
+      "bytes": 620
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "bytes": 13170
+    },
+    {
+      "path": "cases/V6-P1-active-known-nontrivial/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/checksum-preimage.utf8",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "bytes": 13170
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/checksum.sha256.txt",
+      "sha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/envelope.json",
+      "sha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d",
+      "bytes": 15920
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/input.json",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "bytes": 13170
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/inspector-preimage.utf8",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "bytes": 13170
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/inspector.json",
+      "sha256": "1882651f928bc9825a4e66d15c522b136d6f44f69cfce0904ac07f139e71e322",
+      "bytes": 620
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "bytes": 13170
+    },
+    {
+      "path": "cases/V6-P1-active-known-zero/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum.sha256.txt",
+      "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/envelope.json",
+      "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "bytes": 11338
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/input.json",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector.json",
+      "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+      "bytes": 620
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-inline-empty/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/checksum.sha256.txt",
+      "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/envelope.json",
+      "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "bytes": 11338
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/input.json",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/inspector-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/inspector.json",
+      "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+      "bytes": 620
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "cases/V6-P2-active-unknown-null/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/checksum-preimage.utf8",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "bytes": 9345
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/checksum.sha256.txt",
+      "sha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/envelope.json",
+      "sha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c",
+      "bytes": 12973
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/input.json",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "bytes": 9345
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/inspector-preimage.utf8",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "bytes": 9345
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/inspector.json",
+      "sha256": "6ee492d12b3dc1e1f601f71f57a784ee6939d8d0859ba6bd94c1c046d3b0d8b6",
+      "bytes": 620
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "bytes": 9345
+    },
+    {
+      "path": "cases/V6-P3-receipts-full/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/checksum-preimage.utf8",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "bytes": 10665
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/checksum.sha256.txt",
+      "sha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/decode.json",
+      "sha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef",
+      "bytes": 213
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/envelope.json",
+      "sha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f",
+      "bytes": 12060
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/input.json",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "bytes": 10665
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/inspector-preimage.utf8",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "bytes": 10665
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/inspector.json",
+      "sha256": "ba84c0cc50843d5390dde0ee23b27c62eafc21da833a9ee50823394a22fddc08",
+      "bytes": 620
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "bytes": 10665
+    },
+    {
+      "path": "cases/V6-P4-null-empty-boundary/attempt-0001/semantic-validation.json",
+      "sha256": "2b84445773f61ddab7c778aa6ab073c21dab4f18eaebc6303a2e5b6fa9b2d552",
+      "bytes": 1259
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/checksum.sha256.txt",
+      "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/decode.json",
+      "sha256": "f17a9f3f0a7a37f098b162e8c97198d070298308881debb55506e04558cdc3ef",
+      "bytes": 213
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/envelope.json",
+      "sha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536",
+      "bytes": 15921
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/input.json",
+      "sha256": "c93c3d01328b590b06ebbc5eef06ae7190b1f22835e2391b731cb2b48bc83b0e",
+      "bytes": 13171
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/inspector-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/inspector.json",
+      "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "bytes": 620
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "cases/V6-P5-flag-payload-conflict/attempt-0001/semantic-validation.json",
+      "sha256": "f67cb61a394181bb2191bc08214bdb016bbc53b6ea01bca574784e77972eb85f",
+      "bytes": 283
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/checksum-preimage.utf8",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "bytes": 285
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/checksum.sha256.txt",
+      "sha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+      "bytes": 64
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/decode.json",
+      "sha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6",
+      "bytes": 209
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/envelope.json",
+      "sha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139",
+      "bytes": 447
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/input.json",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "bytes": 285
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/inspector-preimage.utf8",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "bytes": 285
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/inspector.json",
+      "sha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90",
+      "bytes": 621
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "bytes": 285
+    },
+    {
+      "path": "cases/V6-S0-settings/attempt-0001/semantic-validation.json",
+      "sha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb",
+      "bytes": 202
+    }
+  ],
+  "builds": {
+    "windows": {
+      "receiptSha256": "59e1ea7ddbb273819ccc1d122a6cdbeafd06b21e0d8137699b7003e2b9eac376",
+      "artifactSha256": "042285038ef4e35d0080703e803cbc65903e696d2f6c34d7694eb6590c96552d",
+      "zipBytes": 50479207,
+      "files": 210,
+      "paths": [
+        "dstorage.dll",
+        "dstoragecore.dll",
+        "Luckbound.exe",
+        "UnityCrashHandler64.exe",
+        "UnityPlayer.dll",
+        "D3D12/D3D12Core.dll",
+        "Luckbound_Data/app.info",
+        "Luckbound_Data/boot.config",
+        "Luckbound_Data/globalgamemanagers",
+        "Luckbound_Data/globalgamemanagers.assets",
+        "Luckbound_Data/globalgamemanagers.assets.resS",
+        "Luckbound_Data/level0",
+        "Luckbound_Data/level1",
+        "Luckbound_Data/level2",
+        "Luckbound_Data/level3",
+        "Luckbound_Data/level4",
+        "Luckbound_Data/level5",
+        "Luckbound_Data/resources.assets",
+        "Luckbound_Data/resources.assets.resS",
+        "Luckbound_Data/resources.resource",
+        "Luckbound_Data/RuntimeInitializeOnLoads.json",
+        "Luckbound_Data/ScriptingAssemblies.json",
+        "Luckbound_Data/sharedassets0.assets",
+        "Luckbound_Data/sharedassets0.assets.resS",
+        "Luckbound_Data/sharedassets1.assets",
+        "Luckbound_Data/sharedassets2.assets",
+        "Luckbound_Data/sharedassets3.assets",
+        "Luckbound_Data/sharedassets3.assets.resS",
+        "Luckbound_Data/sharedassets4.assets",
+        "Luckbound_Data/sharedassets5.assets",
+        "MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll",
+        "MonoBleedingEdge/EmbedRuntime/MonoPosixHelper.dll",
+        "MonoBleedingEdge/etc/mono/browscap.ini",
+        "MonoBleedingEdge/etc/mono/config",
+        "MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx",
+        "MonoBleedingEdge/etc/mono/2.0/machine.config",
+        "MonoBleedingEdge/etc/mono/2.0/settings.map",
+        "MonoBleedingEdge/etc/mono/2.0/web.config",
+        "MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx",
+        "MonoBleedingEdge/etc/mono/4.0/machine.config",
+        "MonoBleedingEdge/etc/mono/4.0/settings.map",
+        "MonoBleedingEdge/etc/mono/4.0/web.config",
+        "MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx",
+        "MonoBleedingEdge/etc/mono/4.5/machine.config",
+        "MonoBleedingEdge/etc/mono/4.5/settings.map",
+        "MonoBleedingEdge/etc/mono/4.5/web.config",
+        "MonoBleedingEdge/etc/mono/mconfig/config.xml",
+        "MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser",
+        "MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser",
+        "MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser",
+        "Luckbound_Data/Managed/Luckbound.App.dll",
+        "Luckbound_Data/Managed/Luckbound.Content.dll",
+        "Luckbound_Data/Managed/Luckbound.Core.dll",
+        "Luckbound_Data/Managed/Luckbound.Gameplay.dll",
+        "Luckbound_Data/Managed/Luckbound.Presentation.dll",
+        "Luckbound_Data/Managed/Mono.Security.dll",
+        "Luckbound_Data/Managed/mscorlib.dll",
+        "Luckbound_Data/Managed/netstandard.dll",
+        "Luckbound_Data/Managed/System.Buffers.dll",
+        "Luckbound_Data/Managed/System.Collections.Immutable.dll",
+        "Luckbound_Data/Managed/System.ComponentModel.Composition.dll",
+        "Luckbound_Data/Managed/System.Configuration.dll",
+        "Luckbound_Data/Managed/System.Core.dll",
+        "Luckbound_Data/Managed/System.Data.DataSetExtensions.dll",
+        "Luckbound_Data/Managed/System.Data.dll",
+        "Luckbound_Data/Managed/System.dll",
+        "Luckbound_Data/Managed/System.Drawing.dll",
+        "Luckbound_Data/Managed/System.EnterpriseServices.dll",
+        "Luckbound_Data/Managed/System.IO.Compression.dll",
+        "Luckbound_Data/Managed/System.IO.Compression.FileSystem.dll",
+        "Luckbound_Data/Managed/System.Memory.dll",
+        "Luckbound_Data/Managed/System.Net.Http.dll",
+        "Luckbound_Data/Managed/System.Numerics.dll",
+        "Luckbound_Data/Managed/System.Reflection.Metadata.dll",
+        "Luckbound_Data/Managed/System.Runtime.CompilerServices.Unsafe.dll",
+        "Luckbound_Data/Managed/System.Runtime.Serialization.dll",
+        "Luckbound_Data/Managed/System.Security.dll",
+        "Luckbound_Data/Managed/System.ServiceModel.Internals.dll",
+        "Luckbound_Data/Managed/System.Transactions.dll",
+        "Luckbound_Data/Managed/System.Xml.dll",
+        "Luckbound_Data/Managed/System.Xml.Linq.dll",
+        "Luckbound_Data/Managed/Unity.2D.Animation.Profiler.dll",
+        "Luckbound_Data/Managed/Unity.2D.Animation.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.2D.Common.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.2D.IK.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.2D.Tilemap.Extras.dll",
+        "Luckbound_Data/Managed/Unity.Burst.dll",
+        "Luckbound_Data/Managed/Unity.Cinemachine.dll",
+        "Luckbound_Data/Managed/Unity.Collections.dll",
+        "Luckbound_Data/Managed/Unity.Collections.LowLevel.ILSupport.dll",
+        "Luckbound_Data/Managed/Unity.Collections.Tests.CoreCLR.InternalJobNestedPrivate.dll",
+        "Luckbound_Data/Managed/Unity.Collections.Tests.CoreCLR.PrivateJobNested.dll",
+        "Luckbound_Data/Managed/Unity.Collections.Tests.CoreCLR.ProtectedJobNested.dll",
+        "Luckbound_Data/Managed/Unity.Collections.Tests.CoreCLR.PublicJobPrivateGeneric.dll",
+        "Luckbound_Data/Managed/Unity.InputSystem.dll",
+        "Luckbound_Data/Managed/Unity.InputSystem.ForUI.dll",
+        "Luckbound_Data/Managed/Unity.InternalAPIEngineBridge.001.dll",
+        "Luckbound_Data/Managed/Unity.InternalAPIEngineBridge.004.dll",
+        "Luckbound_Data/Managed/Unity.InternalAPIEngineBridge.ObjectDispatcher.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.InternalAPIEngineBridge.RenderPipelines.Core.Runtime.Shared.dll",
+        "Luckbound_Data/Managed/Unity.Mathematics.dll",
+        "Luckbound_Data/Managed/Unity.PathTracing.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.Profiling.Core.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipeline.Universal.ShaderLibrary.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.Core.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.Core.Runtime.Shared.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.Core.ShaderLibrary.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.GPUDriven.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.Universal.2D.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.Universal.Config.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.Universal.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.RenderPipelines.Universal.Shaders.dll",
+        "Luckbound_Data/Managed/Unity.Scripting.dll",
+        "Luckbound_Data/Managed/Unity.Splines.dll",
+        "Luckbound_Data/Managed/Unity.SurfaceCache.Runtime.dll",
+        "Luckbound_Data/Managed/Unity.TextMeshPro.dll",
+        "Luckbound_Data/Managed/Unity.UnifiedRayTracing.Runtime.dll",
+        "Luckbound_Data/Managed/UnityEngine.AccessibilityModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.AdaptivePerformanceModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.AIModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.AMDModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.AndroidJNIModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.AnimationModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ARModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.AssetBundleModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.AudioModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.BurstModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ClothModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ClusterInputModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ClusterRendererModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ContentLoadModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.CoreModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.CrashReportingModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.DirectorModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.dll",
+        "Luckbound_Data/Managed/UnityEngine.DSPGraphModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.GameCenterModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.GIModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.GraphicsStateCollectionSerializerModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.GridModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.HierarchyCoreModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.HierarchyModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.HotReloadModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.IdentifiersModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ImageConversionModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.IMGUIModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.InputForUIModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.InputLegacyModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.InputModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.InsightsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.JSONSerializeModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.LocalizationModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ManagedKernelModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.MarshallingModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.MathematicsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.MultiplayerModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.NVIDIAModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ParticleSystemModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.PerformanceReportingModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.Physics2DModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.PhysicsBackendPhysXModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.PhysicsCore2DModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.PhysicsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.PropertiesModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.RenderAs2DModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ScreenCaptureModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ScriptingModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.ShaderVariantAnalyticsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.SpriteMaskModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.SpriteShapeModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.StreamingModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.SubstanceModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.SubsystemsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TerrainModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TerrainPhysicsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TetgenModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TextCoreFontEngineModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TextCoreTextEngineModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TextRenderingModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TilemapModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TimelineFoundationModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.TLSModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.U2DRuntimeModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UI.dll",
+        "Luckbound_Data/Managed/UnityEngine.UIElementsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UIModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UmbraModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityAnalyticsCommonModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityAnalyticsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityConnectModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityConsentModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityCurlModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityWebRequestAssetBundleModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityWebRequestAudioModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityWebRequestModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityWebRequestTextureModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.VectorGraphicsModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.VehiclesModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.VFXModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.VideoModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.VirtualTexturingModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.WindModule.dll",
+        "Luckbound_Data/Managed/UnityEngine.XRModule.dll",
+        "Luckbound_Data/Resources/unity default resources",
+        "Luckbound_Data/Resources/unity_builtin_extra",
+        "Luckbound_Data/Plugins/x86_64/lib_burst_generated.dll",
+        "Luckbound_BackUpThisFolder_ButDontShipItWithYourGame/x86_64/lib_burst_generated.txt"
+      ],
+      "peExecutables": [
+        "Luckbound.exe",
+        "UnityCrashHandler64.exe"
+      ]
+    },
+    "webgl": {
+      "receiptSha256": "5c0c0417062a9cfe8167a6fd95239d5edc23f4b828a347652b3ab2074a8f6793",
+      "artifactSha256": "7afbe7fbb7ee7be1ddb3e180425ce1f78e42c30619e456bdfb5400e0e71faa7d",
+      "zipBytes": 16100001,
+      "files": 17,
+      "paths": [
+        "WebGL/index.html",
+        "WebGL/Build/WebGL.data.br",
+        "WebGL/Build/WebGL.framework.js.br",
+        "WebGL/Build/WebGL.loader.js",
+        "WebGL/Build/WebGL.wasm.br",
+        "WebGL/TemplateData/favicon.ico",
+        "WebGL/TemplateData/fullscreen-button.png",
+        "WebGL/TemplateData/MemoryProfiler.png",
+        "WebGL/TemplateData/progress-bar-empty-dark.png",
+        "WebGL/TemplateData/progress-bar-empty-light.png",
+        "WebGL/TemplateData/progress-bar-full-dark.png",
+        "WebGL/TemplateData/progress-bar-full-light.png",
+        "WebGL/TemplateData/style.css",
+        "WebGL/TemplateData/unity-logo-dark.png",
+        "WebGL/TemplateData/unity-logo-light.png",
+        "WebGL/TemplateData/unity-logo-title-footer.png",
+        "WebGL/TemplateData/webmemd-icon.png"
+      ],
+      "htmlAndWasmPresent": true
+    }
+  },
+  "scope": "Exact XML audit stored separately; digest/extraction verification and format presence. Windows/WebGL players not executed locally; no publication."
+}

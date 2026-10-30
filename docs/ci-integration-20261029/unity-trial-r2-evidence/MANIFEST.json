@@ -1,0 +1,70 @@
+{
+  "parent": "3c7330d79952b73d1f1141a675e29bde92d9bfec",
+  "baseTree": "a5ed6b0aff4b02b0d2bfcd7e6000b8b80a1116df",
+  "branch": "codex/luckbound-unity-20261029",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+      "sha256": "bd234914315843497447be66e80c2b694883c224d39409386b116a4a9a32d2e0",
+      "gitBlobSha": "6b806cd55201c357adf7450bb050c752eac92dd1",
+      "bytes": 140096,
+      "normalization": "raw from frozen r5 LF packet"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+      "sha256": "fb39ab44c3fdd49dac2300b46883c2d3427d05a9a340502134f73e002a06daba",
+      "gitBlobSha": "b0823f0f7ceb550ff593f62db1d0f5edb47ef910",
+      "bytes": 32516,
+      "normalization": "CRLF-to-LF"
+    },
+    {
+      "path": "docs/ci-integration-20261029/SOL-F02-R7-FIXTURES.md",
+      "sha256": "0edef112f2a225941bd9cda1a8b09eebfe7a3a5eb1156ecf11304c25e757ffbf",
+      "gitBlobSha": "fdbcad6cd3e485372d789661bb493584a1d704c1",
+      "bytes": 6469,
+      "normalization": "raw"
+    },
+    {
+      "path": "docs/ci-integration-20261029/SOL-C08-INPUT-BOUNDARY.md",
+      "sha256": "00390c6d6b4162fea6f3edeabfbb841f7d8736dc6aa17123ad66cce2b26285fb",
+      "gitBlobSha": "b27ee557620419331542795d2488d84001c6a7b8",
+      "bytes": 11756,
+      "normalization": "raw"
+    },
+    {
+      "path": "docs/ci-integration-20261029/SOL-C08-INPUT-CANDIDATE-R1.md",
+      "sha256": "27bc9a22d81b1da91a879025bdb32a6cae7c4816893a6a96b6e59dc3663420cb",
+      "gitBlobSha": "3dec4d672fc1b6d88c3eebabe561c237f69ac061",
+      "bytes": 5335,
+      "normalization": "raw"
+    },
+    {
+      "path": "docs/ci-integration-20261029/SOL-V6-GATE-B-R4.md",
+      "sha256": "c4650f6702ab8c858fded6eb32744858d3f795f256e5a835518d9c54f9e6f51d",
+      "gitBlobSha": "b17eb1550b92271e48c0dd5c278506909e725ec0",
+      "bytes": 10249,
+      "normalization": "raw"
+    },
+    {
+      "path": "docs/ci-integration-20261029/unity-trial-r2/F02-OFFLINE-COMPILE.json",
+      "sha256": "c87375242320eba5d24eb98668b5f1d65d83f8561eea6057e50c28a348aed15e",
+      "gitBlobSha": "72a93e982684169c02d00c7a3d12acac437c3066",
+      "bytes": 532,
+      "normalization": "raw"
+    },
+    {
+      "path": "docs/ci-integration-20261029/unity-trial-r2/C08-OFFLINE-COMPILE.json",
+      "sha256": "4004732f7e0ef59b9016d3a1b90cd941a4ad4fef55cefd31ced13850355e293a",
+      "gitBlobSha": "798c2582ff301b02c93dbf9ac004eeafa7fc8a78",
+      "bytes": 316,
+      "normalization": "raw"
+    },
+    {
+      "path": "docs/ci-integration-20261029/unity-trial-r2/README.md",
+      "sha256": "012400225a5dd002176e652462672a6b65e978fe1b25f208a7ec2ec7d02a757a",
+      "gitBlobSha": "11df0b7842f7b01e5e8eae01e6cc4590e190b639",
+      "bytes": 1119,
+      "normalization": "raw"
+    }
+  ]
+}

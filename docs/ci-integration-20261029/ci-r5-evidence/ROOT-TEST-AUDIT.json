@@ -1,0 +1,502 @@
+{
+  "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+  "run": 41036480359,
+  "suites": {
+    "editmode": {
+      "counts": {
+        "id": "2",
+        "testcasecount": "585",
+        "result": "Passed",
+        "total": "585",
+        "passed": "585",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-30 09:59:15Z",
+        "end-time": "2026-10-30 10:01:20Z",
+        "duration": "124.1973302"
+      },
+      "caseNodes": 585,
+      "xmlSha256": "a354dcf4c42a50a6c4d34d835a5721fed3315552a74b22db00cb6a9325dfa7e8",
+      "nonPassed": []
+    },
+    "playmode": {
+      "counts": {
+        "id": "2",
+        "testcasecount": "352",
+        "result": "Passed",
+        "total": "352",
+        "passed": "352",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-30 09:56:01Z",
+        "end-time": "2026-10-30 09:58:44Z",
+        "duration": "163.5763637"
+      },
+      "caseNodes": 352,
+      "xmlSha256": "aff4d080724f97063a3021fc0f7094ff68d2bc631985574b79bbb36e730d0e93",
+      "nonPassed": []
+    }
+  },
+  "f02Observations": {
+    "editmode": {
+      "F02_CLIP_OBSERVATION": [
+        {
+          "phase": "reloaded-clip",
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "length": "0.25",
+          "framesPerSecond": "12",
+          "startTime": "0",
+          "stopTime": "0.25",
+          "loopTime": true,
+          "keyTimes": [
+            "0",
+            "0.0833333358",
+            "0.166666672"
+          ],
+          "spriteNames": [
+            "BellatorIdle_A",
+            "BellatorAttack_A",
+            "BellatorIdle_B"
+          ]
+        },
+        {
+          "phase": "reloaded-clip",
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "length": "0.25",
+          "framesPerSecond": "12",
+          "startTime": "0",
+          "stopTime": "0.25",
+          "loopTime": false,
+          "keyTimes": [
+            "0",
+            "0.0833333358",
+            "0.166666672"
+          ],
+          "spriteNames": [
+            "BellatorIdle_A",
+            "BellatorAttack_A",
+            "BellatorIdle_B"
+          ]
+        },
+        {
+          "phase": "reloaded-clip",
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-f9cc37ed05384132a765aabfe5dc6a53/BellatorIdle.anim",
+          "length": "0.25",
+          "framesPerSecond": "12",
+          "startTime": "0",
+          "stopTime": "0.25",
+          "loopTime": true,
+          "keyTimes": [
+            "0",
+            "0.0833333358",
+            "0.166666672"
+          ],
+          "spriteNames": [
+            "BellatorIdle_A",
+            "BellatorIdle_B",
+            "BellatorIdle_A"
+          ]
+        },
+        {
+          "phase": "reloaded-clip",
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-f9cc37ed05384132a765aabfe5dc6a53/BellatorAttack.anim",
+          "length": "0.25",
+          "framesPerSecond": "12",
+          "startTime": "0",
+          "stopTime": "0.25",
+          "loopTime": false,
+          "keyTimes": [
+            "0",
+            "0.0833333358",
+            "0.166666672"
+          ],
+          "spriteNames": [
+            "BellatorAttack_B",
+            "BellatorAttack_A",
+            "BellatorAttack_B"
+          ]
+        },
+        {
+          "phase": "reloaded-clip",
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-f9cc37ed05384132a765aabfe5dc6a53/BellatorIdle.anim",
+          "length": "0.25",
+          "framesPerSecond": "12",
+          "startTime": "0",
+          "stopTime": "0.25",
+          "loopTime": true,
+          "keyTimes": [
+            "0",
+            "0.0833333358",
+            "0.166666672"
+          ],
+          "spriteNames": [
+            "BellatorIdle_A",
+            "BellatorIdle_B",
+            "BellatorIdle_A"
+          ]
+        },
+        {
+          "phase": "reloaded-clip",
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-f9cc37ed05384132a765aabfe5dc6a53/BellatorAttack.anim",
+          "length": "0.25",
+          "framesPerSecond": "12",
+          "startTime": "0",
+          "stopTime": "0.25",
+          "loopTime": false,
+          "keyTimes": [
+            "0",
+            "0.0833333358",
+            "0.166666672"
+          ],
+          "spriteNames": [
+            "BellatorAttack_B",
+            "BellatorAttack_A",
+            "BellatorAttack_B"
+          ]
+        },
+        {
+          "phase": "single-reload",
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineFixture/TechnicalHold.anim",
+          "length": "0.0833333358",
+          "framesPerSecond": "12",
+          "startTime": "0",
+          "stopTime": "0.0833333358",
+          "loopTime": false,
+          "keyTimes": [
+            "0"
+          ],
+          "spriteNames": [
+            "BellatorTechnicalFixture_0"
+          ]
+        },
+        {
+          "phase": "single-reload",
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineFixture/TechnicalHold.anim",
+          "length": "0.0833333358",
+          "framesPerSecond": "12",
+          "startTime": "0",
+          "stopTime": "0.0833333358",
+          "loopTime": false,
+          "keyTimes": [
+            "0"
+          ],
+          "spriteNames": [
+            "BellatorTechnicalFixture_0"
+          ]
+        }
+      ],
+      "F02_ANIMATOR_OBSERVATION": [
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0",
+          "normalizedTime": "0",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_A",
+          "expectedSprite": "BellatorIdle_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.0416666679",
+          "normalizedTime": "0.166666672",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_A",
+          "expectedSprite": "BellatorIdle_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.125",
+          "normalizedTime": "0.5",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorAttack_A",
+          "expectedSprite": "BellatorAttack_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.208333343",
+          "normalizedTime": "0.8333334",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.0625",
+          "normalizedTime": "0.25",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_A",
+          "expectedSprite": "BellatorIdle_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.0833333358",
+          "normalizedTime": "0.333333343",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorAttack_A",
+          "expectedSprite": "BellatorAttack_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.104166672",
+          "normalizedTime": "0.4166667",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorAttack_A",
+          "expectedSprite": "BellatorAttack_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.145833343",
+          "normalizedTime": "0.5833334",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorAttack_A",
+          "expectedSprite": "BellatorAttack_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.166666672",
+          "normalizedTime": "0.6666667",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.1875",
+          "normalizedTime": "0.75",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.229166672",
+          "normalizedTime": "0.9166667",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.25",
+          "normalizedTime": "1",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_A",
+          "expectedSprite": "BellatorIdle_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorIdle.anim",
+          "elapsedSeconds": "0.270833343",
+          "normalizedTime": "1.08333337",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_A",
+          "expectedSprite": "BellatorIdle_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0",
+          "normalizedTime": "0",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_A",
+          "expectedSprite": "BellatorIdle_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.0416666679",
+          "normalizedTime": "0.166666672",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_A",
+          "expectedSprite": "BellatorIdle_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.125",
+          "normalizedTime": "0.5",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorAttack_A",
+          "expectedSprite": "BellatorAttack_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.208333343",
+          "normalizedTime": "0.8333334",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.0625",
+          "normalizedTime": "0.25",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_A",
+          "expectedSprite": "BellatorIdle_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.0833333358",
+          "normalizedTime": "0.333333343",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorAttack_A",
+          "expectedSprite": "BellatorAttack_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.104166672",
+          "normalizedTime": "0.4166667",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorAttack_A",
+          "expectedSprite": "BellatorAttack_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.145833343",
+          "normalizedTime": "0.5833334",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorAttack_A",
+          "expectedSprite": "BellatorAttack_A"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.166666672",
+          "normalizedTime": "0.6666667",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.1875",
+          "normalizedTime": "0.75",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.229166672",
+          "normalizedTime": "0.9166667",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.25",
+          "normalizedTime": "1",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        },
+        {
+          "unityVersion": "6000.6.6f1",
+          "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+          "clipPath": "Assets/Luckbound/Tests/EditMode/F02SpriteFamilyPipelineMultiFixture-animator-evaluation/BellatorAttack.anim",
+          "elapsedSeconds": "0.270833343",
+          "normalizedTime": "1.08333337",
+          "stateLength": "0.25",
+          "actualSprite": "BellatorIdle_B",
+          "expectedSprite": "BellatorIdle_B"
+        }
+      ]
+    },
+    "playmode": {}
+  },
+  "saveClasses": {
+    "SaveV6CharacterizationTests": {
+      "total": 34,
+      "passed": 34
+    },
+    "SaveRepositoryTests": {
+      "total": 24,
+      "passed": 24
+    },
+    "E04LegacyFortuneMigrationAcceptanceTests": {
+      "total": 3,
+      "passed": 3
+    }
+  },
+  "c08": {
+    "path": "Logs\\CI-41036480359-root\\tests\\extracted\\Logs\\Scenarios\\C08\\20261030T095620017Z_C08_RealKeyboardTwoWaveCombat_077d20b0\\scenario-report.json",
+    "passed": true,
+    "assertions": 10,
+    "passedAssertions": 10,
+    "events": [
+      "Wave 1 Slimes confirmed dead; wave 2 Huesoguardias spawned at tick 268.",
+      "ticks=776; result=Victory; playerHealth=60; meleeQueued=16; slimesDead=True; huesoguardiasDead=True; wave=2"
+    ],
+    "sha256": "420d10a8b7b005464260641f1719fc30df98d5ca617fc3905736bba98d6d5183"
+  }
+}

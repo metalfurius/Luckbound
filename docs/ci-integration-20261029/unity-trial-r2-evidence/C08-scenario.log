@@ -1,0 +1,9 @@
+[2026-10-30T10:11:32.7240550Z] [START] scenario=C08_RealKeyboardTwoWaveCombat task=C08 seed=17320508
+[2026-10-30T10:11:32.8323900Z] [INPUT] frame=0 action=MenuButton value=LUCHAR · ARENA 0.2
+[2026-10-30T10:11:32.9467970Z] [PASS] Arena opens from its menu button with two live Slimes: button=True; wave=1; slimes=2; alive=2
+[2026-10-30T10:11:32.9470040Z] [INPUT] frame=1 action=Keyboard value=A/D move, J attack, Left Shift dodge, F health potion
+[2026-10-30T10:11:32.9484410Z] [EVENT] C08 jump boundary=before-enqueue; frame=44923; fixedTime=15.7833338; updateMode=ProcessEventsInDynamicUpdate; tick=0; successfulJumps=0; space=False; grounded=True; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.49997735; velocityY=0
+[2026-10-30T10:11:32.9533820Z] [EVENT] C08 jump boundary=after-down-pump; frame=44923; fixedTime=15.7833338; updateMode=ProcessEventsInDynamicUpdate; tick=0; successfulJumps=0; space=True; grounded=True; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.49997735; velocityY=0
+[2026-10-30T10:11:32.9535220Z] [INPUT] frame=0 action=Jump value=Space: one real jump to verify the landing cue
+[2026-10-30T10:11:32.9640300Z] [EVENT] C08 jump boundary=after-fixed; frame=44925; fixedTime=15.8; updateMode=ProcessEventsInDynamicUpdate; tick=1; successfulJumps=1; space=False; grounded=False; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.25941682; velocityY=14.375
+[2026-10-30T10:11:32.9646090Z] [EVENT] C08 jump boundary=after-release-pump; frame=44925; fixedTime=15.8; updateMode=ProcessEventsInDynamicUpdate; tick=1; successfulJumps=1; space=False; grounded=False; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.25941682; velocityY=14.375

@@ -92,6 +92,8 @@ namespace Luckbound.App
 
         public bool IsRoomScopeActive(object scopeToken, RoomInstanceId roomId)
         {
+            if (!_application.CanWriteProfile) return false;
+
             if (!(scopeToken is RoomLifetimeScope capturedScope)) return false;
             return ReferenceEquals(_transitionController.ActiveScope, capturedScope) &&
                 capturedScope.isActiveAndEnabled && !capturedScope.IsDisposed &&
@@ -100,6 +102,15 @@ namespace Luckbound.App
 
         public bool TryAcquireSimulationPauseLease(out IDisposable lease, out string error)
         {
+            if (!_application.CanWriteProfile)
+            {
+                lease = null;
+                error = string.IsNullOrEmpty(_application.ProfileLoadMessage)
+                    ? "The profile is unavailable for encounter mutations."
+                    : _application.ProfileLoadMessage;
+                return false;
+            }
+
             return _application.TryAcquireExpeditionSimulationPauseLease(out lease, out error);
         }
 

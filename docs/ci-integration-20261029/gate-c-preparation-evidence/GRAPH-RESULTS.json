@@ -1,0 +1,175 @@
+{
+  "sourceCount": 377,
+  "assemblyCount": 16,
+  "assemblies": [
+    {
+      "assembly": "Luckbound.Core",
+      "sourceCount": 137,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Content",
+      "sourceCount": 18,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Core.Tests",
+      "sourceCount": 36,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.ArmorCatalog.Tests",
+      "sourceCount": 1,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Content.Route.Tests",
+      "sourceCount": 2,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Crafting.Tests",
+      "sourceCount": 2,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Gameplay",
+      "sourceCount": 36,
+      "exitCode": 0,
+      "logSha256": "602629f83e8c90babe65bac3cf04a2b78f899f7f97a29b59f4d69c36c578211e",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Localization.Tests",
+      "sourceCount": 1,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Presentation",
+      "sourceCount": 6,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.SkillCatalog.Tests",
+      "sourceCount": 1,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.WeaponCatalog.Tests",
+      "sourceCount": 1,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.App",
+      "sourceCount": 47,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": [
+        "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs",
+        "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionProgression.cs",
+        "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.Fortune.cs",
+        "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneBrew.cs",
+        "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneReward.cs",
+        "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+        "Assets/Luckbound/Scripts/App/ExpeditionEncounterResolver.cs",
+        "Assets/Luckbound/Scripts/App/SaveRepository.cs"
+      ]
+    },
+    {
+      "assembly": "Luckbound.App.Tests",
+      "sourceCount": 5,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.Editor",
+      "sourceCount": 10,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 70,
+      "exitCode": 0,
+      "logSha256": "d41d56dcf5fe16da34715ffe4fdc68314ab52884e6ef33eeb937124cc272c585",
+      "overrides": [
+        "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+        "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs"
+      ]
+    },
+    {
+      "assembly": "Luckbound.Editor.Tests",
+      "sourceCount": 4,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overrides": []
+    }
+  ],
+  "overrides": {
+    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs": {
+      "sha256": "5a812d97de481206f8148aea83af57c7303a42e089b6171700a12260b70adbf4",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1"
+    },
+    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs": {
+      "sha256": "d74ef2755605bcfb93a4f91f9519ae369cbd317001b2a4897eeed2c32b9eaa3f",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1"
+    },
+    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionProgression.cs": {
+      "sha256": "7e9b05340161ebb0dc2c5f0adbd0e6d0266e53d1ac6c80b1139da1eccea6274c",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1"
+    },
+    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.Fortune.cs": {
+      "sha256": "975613289cbe4e4437fa2480e8f049a9387c6945c8ebffaa9df556614b8945e6",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1"
+    },
+    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneBrew.cs": {
+      "sha256": "a55bdc426cc0881d4e5971aaeda3ca0da028bda60365eaf45cbe19abf278b294",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1"
+    },
+    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneReward.cs": {
+      "sha256": "44902870763bc7ab2a782ac6c46777efdc00026cc7e5e80e7956680cc76031a0",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1"
+    },
+    "Assets/Luckbound/Scripts/App/ExpeditionEncounterResolver.cs": {
+      "sha256": "fb5016d6dac1189913e5043f143ecc5fefc3340d97651db7042d87fc9be89724",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1"
+    },
+    "Assets/Luckbound/Scripts/App/SaveRepository.cs": {
+      "sha256": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+      "package": "LegacyReadOnlyRepositoryCandidate-20261030-r2"
+    },
+    "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs": {
+      "sha256": "3b560349705615129101287e7715dbca6c4d3aea507a1729c2e66099725f662e",
+      "package": "LegacyReadOnlyRepositoryCandidate-20261030-r2"
+    },
+    "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs": {
+      "sha256": "a8d037b1512f10bd45341cb9ed9a338a86ed6d491b6a064546018885cb168ff9",
+      "package": "LegacyReadOnlyApplicationTestsCandidate-20261030-r1"
+    }
+  },
+  "liveSourcesUnchanged": true,
+  "unityExecuted": false,
+  "nunitExecuted": false
+}

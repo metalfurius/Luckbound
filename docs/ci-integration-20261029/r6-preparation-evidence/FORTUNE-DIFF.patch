@@ -1,0 +1,466 @@
+--- a/Assets/Luckbound/Tests/PlayMode/ApplicationFortuneBrewTests.cs
++++ b/Assets/Luckbound/Tests/PlayMode/ApplicationFortuneBrewTests.cs
+@@ -19,7 +19,7 @@
+     public sealed class ApplicationFortuneBrewTests
+     {
+         [UnityTest]
+-        public IEnumerator SuccessConsumesOneFromAStackAndReplayAfterRestartDoesNotRepeat()
++        public IEnumerator SuccessConsumesOneFromAStackAndReplayAfterReloadIsBlocked()
+         {
+             var store = new MemorySaveStore();
+             Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+@@ -55,43 +55,87 @@
+                     "A remaining Fortune Brew is not a health potion charge.");
+                 Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(chargesBefore + 1));
+ 
++                string inventoryAfterCommitJson = app.ActiveExpedition.inventorySnapshotJson;
++                string profileAfterCommitJson = store.ProfilePrimary;
++                ExpeditionMutationCommitResult<FortuneBrewApplicationOutcome> replayedInReadWriteSession = null;
++                yield return Complete(app.ConsumeFortuneBrewAsync(brewInstanceId, transactionId),
++                    value => replayedInReadWriteSession = value);
++                Assert.That(replayedInReadWriteSession.Persisted, Is.True, replayedInReadWriteSession.Message);
++                Assert.That(replayedInReadWriteSession.Pending, Is.False);
++                Assert.That(replayedInReadWriteSession.Outcome.Status, Is.EqualTo(FortuneOperationStatus.AlreadyApplied));
++                Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
++                Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(chargesBefore + 1));
++                Assert.That(app.ActiveExpedition.inventorySnapshotJson, Is.EqualTo(inventoryAfterCommitJson));
++                Assert.That(store.ProfilePrimary, Is.EqualTo(profileAfterCommitJson),
++                    "The same-session replay must not write the already committed transaction again.");
++
+                 // Complete the room before restarting so D09's immutable entry checkpoint has
+-                // been retired and the committed candidate is the normal resume state.
++                // been retired and the committed candidate is the normal saved state.
+                 SaveWriteResult completedRoom = null;
+                 yield return Complete(app.CompleteCurrentRoomAsync("result.fortune-brew.committed",
+                     "{\"outcome\":\"cleared\",\"renown\":0}"), value => completedRoom = value);
+                 Assert.That(completedRoom.Succeeded, Is.True, completedRoom.Message);
+                 Assert.That(app.ActiveExpedition.roomEntryCheckpointJson, Is.Empty);
+                 string committedInventoryJson = app.ActiveExpedition.inventorySnapshotJson;
+-                string committedProfileJson = store.ProfilePrimary;
++                string committedExpeditionJson = JsonUtility.ToJson(app.ActiveExpedition, false);
++                SaveStorageSnapshot committedStorage = null;
++                yield return Complete(store.ReadAsync(SaveDocument.Profile), value => committedStorage = value);
++                string committedProfileJson = committedStorage.PrimaryJson;
++                Assert.That(committedProfileJson, Is.EqualTo(store.ProfilePrimary));
+ 
+                 DestroyApplication();
+                 yield return null;
+                 app = null;
+-                yield return StartApplication(value => app = value, "Expedition");
+-                Assert.That(app.ActiveRun.Inventory.QuickConsumable.InstanceId, Is.EqualTo(brewInstanceId));
+-                Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
++                yield return StartApplication(value => app = value, "Menu");
++                Assert.That(app.ProfileLoadStatus, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
++                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
++                Assert.That(app.CanWriteProfile, Is.False);
++                Assert.That(app.CanStartNewExpedition, Is.False);
++                Assert.That(app.CanContinueExpedition, Is.False);
++                Assert.That(app.HasActiveExpedition, Is.True);
++                Assert.That(app.ActiveRun, Is.Null);
++                Assert.That(app.ActiveExpeditionLoadError, Is.EqualTo("LegacyEncounterPinMissing"));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(committedExpeditionJson));
++                Assert.That(app.ActiveExpedition.inventorySnapshotJson, Is.EqualTo(committedInventoryJson));
+                 Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(chargesBefore + 1));
+-                Assert.That(app.ActiveExpedition.inventorySnapshotJson, Is.EqualTo(committedInventoryJson));
+-
++                Assert.That(app.ActiveExpedition.healthPotionCharges, Is.Zero);
++                Assert.That(app.ActiveExpedition.roomEntryCheckpointJson, Is.Empty);
++
++                var readOnlyRepository = new SaveRepository(store);
+                 SaveLoadResult<ProfileSaveEnvelope> loaded = null;
+-                yield return Complete(new SaveRepository(store).LoadProfileAsync(), value => loaded = value);
++                yield return Complete(readOnlyRepository.LoadProfileAsync(), value => loaded = value);
+                 Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
++                Assert.That(loaded.HasUsableData, Is.True);
++                Assert.That(loaded.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
++                Assert.That(readOnlyRepository.ExportLoadedProfileJson(), Is.EqualTo(committedProfileJson));
++                Assert.That(loaded.Data.activeExpedition.inventorySnapshotJson, Is.EqualTo(committedInventoryJson));
+                 Assert.That(loaded.Data.activeExpedition.fortuneOfferBookSnapshot.fortuneBrewReceipts.Length,
+-                    Is.EqualTo(1), "The clone and saved document retain the durable brew receipt.");
++                    Is.EqualTo(1), "The selected V6 document retains its durable brew receipt.");
+                 Assert.That(loaded.Data.activeExpedition.healthPotionCharges, Is.Zero,
+-                    "The durable potion counter must remain zero after a restart with a brew equipped.");
+-
++                    "The durable potion counter remains zero after a restart with a brew equipped.");
++
++                Assert.Throws<InvalidOperationException>(() => app.ContinueActiveExpedition());
++                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
++                string profileDataBeforeReplay = JsonUtility.ToJson(app.Profile, false);
++                store.FailNextProfileWrite = true;
+                 ExpeditionMutationCommitResult<FortuneBrewApplicationOutcome> replayed = null;
+                 yield return Complete(app.ConsumeFortuneBrewAsync(brewInstanceId, transactionId),
+                     value => replayed = value);
+-                Assert.That(replayed.Persisted, Is.True, replayed.Message);
+-                Assert.That(replayed.Outcome.Status, Is.EqualTo(FortuneOperationStatus.AlreadyApplied));
+-                Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
+-                Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(chargesBefore + 1));
+-                Assert.That(app.ActiveExpedition.inventorySnapshotJson, Is.EqualTo(committedInventoryJson));
+-                Assert.That(store.ProfilePrimary, Is.EqualTo(committedProfileJson),
+-                    "An already committed transaction replay performs no second write.");
++                Assert.That(replayed.Persisted, Is.False);
++                Assert.That(replayed.Pending, Is.False);
++                Assert.That(replayed.Outcome, Is.Null,
++                    "A protected profile rejects the replay before it can report AlreadyApplied.");
++                Assert.That(app.HasPendingExpeditionWrite, Is.False);
++                Assert.That(app.PendingProfileExport, Is.Null);
++                Assert.That(store.FailNextProfileWrite, Is.True,
++                    "A protected replay must not call the profile store.");
++                Assert.That(JsonUtility.ToJson(app.Profile, false), Is.EqualTo(profileDataBeforeReplay));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(committedExpeditionJson));
++                Assert.That(readOnlyRepository.ExportLoadedProfileJson(), Is.EqualTo(committedProfileJson));
++                SaveStorageSnapshot afterReplayStorage = null;
++                yield return Complete(store.ReadAsync(SaveDocument.Profile), value => afterReplayStorage = value);
++                Assert.That(afterReplayStorage.PrimaryJson, Is.EqualTo(committedStorage.PrimaryJson));
++                Assert.That(afterReplayStorage.BackupJson, Is.EqualTo(committedStorage.BackupJson));
+             }
+             finally
+             {
+@@ -303,7 +347,7 @@
+         }
+ 
+         [UnityTest]
+-        public IEnumerator InterruptedRoomResumeRestoresTheD09EntryBrewAndChargeSnapshot()
++        public IEnumerator InterruptedRoomReloadPreservesTheD09EntryBrewSnapshotWithoutResuming()
+         {
+             var store = new MemorySaveStore();
+             Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+@@ -318,23 +362,76 @@
+                 string entryInventory = app.ActiveExpedition.inventorySnapshotJson;
+                 string entryCheckpoint = app.ActiveExpedition.roomEntryCheckpointJson;
+                 int entryCharges = app.ActiveExpedition.fortuneOfferBookSnapshot.charges;
++                TransactionId transactionId = TransactionId.New();
+ 
+                 ExpeditionMutationCommitResult<FortuneBrewApplicationOutcome> used = null;
+-                yield return Complete(app.ConsumeFortuneBrewAsync(brewInstanceId, TransactionId.New()),
++                yield return Complete(app.ConsumeFortuneBrewAsync(brewInstanceId, transactionId),
+                     value => used = value);
+                 Assert.That(used.Persisted, Is.True, used.Message);
+                 Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(1));
+                 Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(entryCharges + 1));
+                 Assert.That(app.ActiveExpedition.roomEntryCheckpointJson, Is.EqualTo(entryCheckpoint));
++                string savedInventory = app.ActiveExpedition.inventorySnapshotJson;
++                string savedExpeditionJson = JsonUtility.ToJson(app.ActiveExpedition, false);
++                Assert.That(savedInventory, Is.Not.EqualTo(entryInventory),
++                    "The current brew use is saved while the separate D09 entry checkpoint remains intact.");
++                SaveStorageSnapshot committedStorage = null;
++                yield return Complete(store.ReadAsync(SaveDocument.Profile), value => committedStorage = value);
++                string committedProfileJson = committedStorage.PrimaryJson;
+ 
+                 DestroyApplication();
+                 yield return null;
+                 app = null;
+-                yield return StartApplication(value => app = value, "Expedition");
+-                Assert.That(app.ActiveRun.Inventory.QuickConsumable.InstanceId, Is.EqualTo(brewInstanceId));
+-                Assert.That(app.ActiveRun.Inventory.QuickConsumable.Quantity, Is.EqualTo(2));
+-                Assert.That(app.ActiveExpedition.inventorySnapshotJson, Is.EqualTo(entryInventory));
+-                Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(entryCharges));
++                yield return StartApplication(value => app = value, "Menu");
++                Assert.That(app.ProfileLoadStatus, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
++                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
++                Assert.That(app.CanWriteProfile, Is.False);
++                Assert.That(app.CanStartNewExpedition, Is.False);
++                Assert.That(app.CanContinueExpedition, Is.False);
++                Assert.That(app.HasActiveExpedition, Is.True);
++                Assert.That(app.ActiveRun, Is.Null);
++                Assert.That(app.ActiveExpeditionLoadError, Is.EqualTo("LegacyEncounterPinMissing"));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(savedExpeditionJson));
++                Assert.That(app.ActiveExpedition.inventorySnapshotJson, Is.EqualTo(savedInventory));
++                Assert.That(app.ActiveExpedition.roomEntryCheckpointJson, Is.EqualTo(entryCheckpoint));
++                Assert.That(app.ActiveExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(entryCharges + 1));
++                Assert.That(app.ActiveExpedition.healthPotionCharges, Is.Zero);
++
++                var readOnlyRepository = new SaveRepository(store);
++                SaveLoadResult<ProfileSaveEnvelope> loaded = null;
++                yield return Complete(readOnlyRepository.LoadProfileAsync(), value => loaded = value);
++                Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
++                Assert.That(loaded.HasUsableData, Is.True);
++                Assert.That(loaded.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
++                Assert.That(readOnlyRepository.ExportLoadedProfileJson(), Is.EqualTo(committedProfileJson));
++                Assert.That(loaded.Data.activeExpedition.inventorySnapshotJson, Is.EqualTo(savedInventory));
++                Assert.That(loaded.Data.activeExpedition.roomEntryCheckpointJson, Is.EqualTo(entryCheckpoint));
++                Assert.That(loaded.Data.activeExpedition.fortuneOfferBookSnapshot.charges, Is.EqualTo(entryCharges + 1));
++                Assert.That(loaded.Data.activeExpedition.fortuneOfferBookSnapshot.fortuneBrewReceipts.Length,
++                    Is.EqualTo(1), "The receipt remains part of the protected V6 source snapshot.");
++
++                Assert.Throws<InvalidOperationException>(() => app.ContinueActiveExpedition());
++                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
++                string profileDataBeforeReplay = JsonUtility.ToJson(app.Profile, false);
++                store.FailNextProfileWrite = true;
++                ExpeditionMutationCommitResult<FortuneBrewApplicationOutcome> replayed = null;
++                yield return Complete(app.ConsumeFortuneBrewAsync(brewInstanceId, transactionId),
++                    value => replayed = value);
++                Assert.That(replayed.Persisted, Is.False);
++                Assert.That(replayed.Pending, Is.False);
++                Assert.That(replayed.Outcome, Is.Null);
++                Assert.That(app.HasPendingExpeditionWrite, Is.False);
++                Assert.That(app.PendingProfileExport, Is.Null);
++                Assert.That(store.FailNextProfileWrite, Is.True,
++                    "A protected replay must not call the profile store.");
++                Assert.That(JsonUtility.ToJson(app.Profile, false), Is.EqualTo(profileDataBeforeReplay));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(savedExpeditionJson));
++                Assert.That(app.ActiveExpedition.roomEntryCheckpointJson, Is.EqualTo(entryCheckpoint));
++                Assert.That(readOnlyRepository.ExportLoadedProfileJson(), Is.EqualTo(committedProfileJson));
++                SaveStorageSnapshot afterReplayStorage = null;
++                yield return Complete(store.ReadAsync(SaveDocument.Profile), value => afterReplayStorage = value);
++                Assert.That(afterReplayStorage.PrimaryJson, Is.EqualTo(committedStorage.PrimaryJson));
++                Assert.That(afterReplayStorage.BackupJson, Is.EqualTo(committedStorage.BackupJson));
+             }
+             finally
+             {
+--- a/Assets/Luckbound/Tests/PlayMode/ApplicationFortuneRewardTests.cs
++++ b/Assets/Luckbound/Tests/PlayMode/ApplicationFortuneRewardTests.cs
+@@ -25,7 +25,7 @@
+         };
+ 
+         [UnityTest]
+-        public IEnumerator E04_RewardCommitRetryAndCheckpointRestartReplayNeverDuplicateTheItem()
++        public IEnumerator E04_RewardCommitRetryKeepsLegacySnapshotReadOnlyAfterReload()
+         {
+             var store = new MemorySaveStore();
+             Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+@@ -72,23 +72,48 @@
+                 Assert.That(app.GetFortuneOffer("offer.reward").IsClaimed, Is.True);
+                 Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"), Is.EqualTo(1));
+ 
+-                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> replayed = null;
+-                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reward"), value => replayed = value);
+-                Assert.That(replayed.Persisted, Is.True, replayed.Message);
+-                Assert.That(replayed.Outcome.Claim.Status, Is.EqualTo(FortuneOperationStatus.AlreadyApplied));
++                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> replayedInReadWriteSession = null;
++                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reward"),
++                    value => replayedInReadWriteSession = value);
++                Assert.That(replayedInReadWriteSession.Persisted, Is.True, replayedInReadWriteSession.Message);
++                Assert.That(replayedInReadWriteSession.Outcome.Claim.Status, Is.EqualTo(FortuneOperationStatus.AlreadyApplied));
+                 Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"), Is.EqualTo(1));
++
++                string committedExpeditionJson = JsonUtility.ToJson(app.ActiveExpedition, false);
++                SaveStorageSnapshot committedStorage = null;
++                yield return Complete(store.ReadAsync(SaveDocument.Profile), value => committedStorage = value);
++                string committedProfileJson = committedStorage.PrimaryJson;
+ 
+                 DestroyApplication();
+                 yield return null;
+-                yield return StartApplication(value => app = value, "Expedition");
+-                ProfileSaveEnvelope durableEnvelope = JsonUtility.FromJson<ProfileSaveEnvelope>(store.ProfilePrimary);
++                yield return StartApplication(value => app = value, "Menu");
++                Assert.That(app.ProfileLoadStatus, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
++                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
++                Assert.That(app.CanWriteProfile, Is.False);
++                Assert.That(app.CanStartNewExpedition, Is.False);
++                Assert.That(app.CanContinueExpedition, Is.False);
++                Assert.That(app.HasActiveExpedition, Is.True);
++                Assert.That(app.ActiveRun, Is.Null);
++                Assert.That(app.ActiveExpeditionLoadError, Is.EqualTo("LegacyEncounterPinMissing"));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(committedExpeditionJson));
++
++                var readOnlyRepository = new SaveRepository(store);
++                SaveLoadResult<ProfileSaveEnvelope> loaded = null;
++                yield return Complete(readOnlyRepository.LoadProfileAsync(), value => loaded = value);
++                Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
++                Assert.That(loaded.HasUsableData, Is.True);
++                Assert.That(loaded.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
++                Assert.That(readOnlyRepository.ExportLoadedProfileJson(), Is.EqualTo(committedProfileJson));
++                ProfileSaveEnvelope durableEnvelope = loaded.Data;
+                 Assert.That(durableEnvelope.hasActiveExpedition, Is.True);
+                 Assert.That(durableEnvelope.activeExpedition.inventorySnapshotJson, Does.Contain("relic.marked_coin"),
+-                    "The durable write must contain the reward item and claim together before D09 checkpoint recovery.");
+-                Assert.That(FortuneOfferBook.Restore(durableEnvelope.activeExpedition.fortuneOfferBookSnapshot)
+-                    .GetOffer("offer.reward").IsClaimed, Is.True);
++                    "The durable write contains the reward item and claim together with the D09 checkpoint.");
++                FortuneOfferBook durableBook = FortuneOfferBook.Restore(
++                    durableEnvelope.activeExpedition.fortuneOfferBookSnapshot);
++                Assert.That(durableBook.GetOffer("offer.reward").IsClaimed, Is.True);
++                Assert.That(durableBook.GetOffer("offer.reward").OptionIds, Is.EqualTo(originalOptions));
+                 Assert.That(durableEnvelope.activeExpedition.roomEntryCheckpointJson, Is.EqualTo(checkpointBeforeClaim),
+-                    "The atomic reward write must preserve the D09 room-entry checkpoint.");
++                    "The atomic reward write preserves the D09 room-entry checkpoint.");
+ 
+                 ExpeditionInventorySnapshot savedInventory = JsonUtility.FromJson<ExpeditionInventorySnapshot>(
+                     durableEnvelope.activeExpedition.inventorySnapshotJson);
+@@ -105,37 +130,34 @@
+                 InventoryOperationOutcome replayedReceipt = restoredInventory.TryCollectItem(replayedStack,
+                     TransactionId.Parse(rewardReceipt.transactionId));
+                 Assert.That(replayedReceipt.Succeeded, Is.True,
+-                    "The same persisted transaction receipt must replay successfully after loading the inventory snapshot.");
++                    "The same persisted transaction receipt replays successfully against the inventory snapshot.");
+                 Assert.That(restoredInventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"), Is.EqualTo(1));
+ 
+-                Assert.That(app.ActiveExpedition.inventorySnapshotJson, Does.Not.Contain("relic.marked_coin"),
+-                    "D09 restores the active state to its room-entry checkpoint after process restart.");
+-                Assert.That(app.GetFortuneOffer("offer.reward"), Is.Null);
+-                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"), Is.Zero);
+-
+-                app.ContinueActiveExpedition();
+-                for (int frame = 0; frame < 60 && SceneManager.GetActiveScene().name != "Expedition"; frame++)
+-                    yield return null;
+-                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Expedition"));
+-                Assert.That(app.GetFortuneOffer("offer.reward"), Is.Null,
+-                    "D09 restarts the interrupted combat room from its entry checkpoint.");
+-                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"), Is.Zero,
+-                    "The item and claim must roll back together with the interrupted room.");
+-
+-                ExpeditionMutationCommitResult<FortuneOfferResult> replayOffer = null;
+-                yield return Complete(app.CreateFortuneOfferAsync("offer.reward", "context.reward", RelicRewardOptions),
+-                    value => replayOffer = value);
+-                Assert.That(replayOffer.Outcome.Offer.OptionIds, Is.EqualTo(originalOptions));
+-                ExpeditionMutationCommitResult<FortuneChoiceResult> replayChoice = null;
+-                yield return Complete(app.ChooseFortuneOptionAsync("offer.reward", "relic.marked_coin"),
+-                    value => replayChoice = value);
+-                Assert.That(replayChoice.Outcome.Status, Is.EqualTo(FortuneOperationStatus.Succeeded));
+-                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> replayedAfterRestart = null;
+-                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reward"),
+-                    value => replayedAfterRestart = value);
+-                Assert.That(replayedAfterRestart.Persisted, Is.True, replayedAfterRestart.Message);
+-                Assert.That(replayedAfterRestart.Outcome.Succeeded, Is.True);
+-                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"), Is.EqualTo(1));
++                ExpeditionInventorySnapshot appSavedInventory = JsonUtility.FromJson<ExpeditionInventorySnapshot>(
++                    app.ActiveExpedition.inventorySnapshotJson);
++                Assert.That(appSavedInventory.backpackSlots.Count(item => item?.itemId == "relic.marked_coin"),
++                    Is.EqualTo(1));
++                Assert.Throws<InvalidOperationException>(() => app.ContinueActiveExpedition());
++                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
++                string profileDataBeforeBlockedClaim = JsonUtility.ToJson(app.Profile, false);
++                store.FailNextProfileWrite = true;
++                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> blockedClaim = null;
++                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reward"), value => blockedClaim = value);
++                Assert.That(blockedClaim.Persisted, Is.False);
++                Assert.That(blockedClaim.Pending, Is.False);
++                Assert.That(blockedClaim.Outcome, Is.Null,
++                    "The protected App does not report an already-applied claim as a successful payout.");
++                Assert.That(app.HasPendingExpeditionWrite, Is.False);
++                Assert.That(app.PendingProfileExport, Is.Null);
++                Assert.That(store.FailNextProfileWrite, Is.True,
++                    "A protected claim must not call the profile store.");
++                Assert.That(JsonUtility.ToJson(app.Profile, false), Is.EqualTo(profileDataBeforeBlockedClaim));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(committedExpeditionJson));
++                Assert.That(readOnlyRepository.ExportLoadedProfileJson(), Is.EqualTo(committedProfileJson));
++                SaveStorageSnapshot afterBlockedClaimStorage = null;
++                yield return Complete(store.ReadAsync(SaveDocument.Profile), value => afterBlockedClaimStorage = value);
++                Assert.That(afterBlockedClaimStorage.PrimaryJson, Is.EqualTo(committedStorage.PrimaryJson));
++                Assert.That(afterBlockedClaimStorage.BackupJson, Is.EqualTo(committedStorage.BackupJson));
+             }
+             finally
+             {
+@@ -145,7 +167,7 @@
+         }
+ 
+         [UnityTest]
+-        public IEnumerator E04_ClaimRewardReplayAfterReloadPreservesCompletedExpeditionState()
++        public IEnumerator E04_ClaimRewardReplayIsIdempotentBeforeReloadAndBlockedAfterReload()
+         {
+             var store = new MemorySaveStore();
+             Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+@@ -185,43 +207,89 @@
+                 Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"),
+                     Is.EqualTo(1));
+ 
+-                ExpeditionSaveData committedExpedition = app.ActiveExpedition;
+-                string committedExpeditionJson = JsonUtility.ToJson(committedExpedition);
++                string committedExpeditionJson = JsonUtility.ToJson(app.ActiveExpedition, false);
+                 string committedProfileJson = store.ProfilePrimary;
++                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> replayedBeforeReload = null;
++                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reload"),
++                    value => replayedBeforeReload = value);
++                Assert.That(replayedBeforeReload.Persisted, Is.True, replayedBeforeReload.Message);
++                Assert.That(replayedBeforeReload.Pending, Is.False);
++                Assert.That(replayedBeforeReload.Outcome.Succeeded, Is.True);
++                Assert.That(replayedBeforeReload.Outcome.Claim.Status, Is.EqualTo(FortuneOperationStatus.AlreadyApplied));
++                Assert.That(replayedBeforeReload.Outcome.Reward.ItemId, Is.EqualTo("relic.marked_coin"));
++                Assert.That(replayedBeforeReload.Outcome.InventoryOperation.Status,
++                    Is.EqualTo(InventoryOperationStatus.Succeeded));
++                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"),
++                    Is.EqualTo(1), "The same-session replay does not create a second item.");
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(committedExpeditionJson));
++                Assert.That(store.ProfilePrimary, Is.EqualTo(committedProfileJson),
++                    "The already-claimed result leaves the saved expedition unchanged.");
++
++                SaveStorageSnapshot committedStorage = null;
++                yield return Complete(store.ReadAsync(SaveDocument.Profile), value => committedStorage = value);
++                committedProfileJson = committedStorage.PrimaryJson;
+                 ApplicationBootstrapper previousApplication = app;
+ 
+                 DestroyApplication();
+                 yield return null;
+                 app = null;
+-                yield return StartApplication(value => app = value, "Expedition");
++                yield return StartApplication(value => app = value, "Menu");
+ 
+                 Assert.That(object.ReferenceEquals(app, previousApplication), Is.False,
+-                    "The replay must run through a reconstructed application and repository.");
+-                Assert.That(store.ProfilePrimary, Is.EqualTo(committedProfileJson),
+-                    "Reloading a completed room must not roll the durable expedition back through D09.");
+-                Assert.That(JsonUtility.ToJson(app.ActiveExpedition), Is.EqualTo(committedExpeditionJson),
+-                    "The claim and every other expedition field must survive the reload unchanged.");
++                    "The protected profile is loaded by a reconstructed application and repository.");
++                Assert.That(app.ProfileLoadStatus, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
++                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
++                Assert.That(app.CanWriteProfile, Is.False);
++                Assert.That(app.CanStartNewExpedition, Is.False);
++                Assert.That(app.CanContinueExpedition, Is.False);
++                Assert.That(app.HasActiveExpedition, Is.True);
++                Assert.That(app.ActiveRun, Is.Null);
++                Assert.That(app.ActiveExpeditionLoadError, Is.EqualTo("LegacyEncounterPinMissing"));
++                Assert.That(store.ProfilePrimary, Is.EqualTo(committedProfileJson));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(committedExpeditionJson));
+                 Assert.That(app.ActiveExpedition.currentNodeId, Is.EqualTo(completedNodeId));
+                 Assert.That(app.ActiveExpedition.completedRoomIds, Does.Contain(completedNodeId));
+                 Assert.That(app.ActiveExpedition.roomEntryCheckpointJson, Is.Empty);
+-                Assert.That(app.GetFortuneOffer("offer.reload").IsClaimed, Is.True);
+-                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"),
++
++                var readOnlyRepository = new SaveRepository(store);
++                SaveLoadResult<ProfileSaveEnvelope> loaded = null;
++                yield return Complete(readOnlyRepository.LoadProfileAsync(), value => loaded = value);
++                Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
++                Assert.That(loaded.HasUsableData, Is.True);
++                Assert.That(loaded.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
++                Assert.That(readOnlyRepository.ExportLoadedProfileJson(), Is.EqualTo(committedProfileJson));
++                FortuneOfferBook durableBook = FortuneOfferBook.Restore(
++                    loaded.Data.activeExpedition.fortuneOfferBookSnapshot);
++                Assert.That(durableBook.GetOffer("offer.reload").IsClaimed, Is.True);
++                Assert.That(durableBook.GetOffer("offer.reload").OptionIds, Is.EqualTo(created.Outcome.Offer.OptionIds));
++                Assert.That(loaded.Data.activeExpedition.inventorySnapshotJson,
++                    Is.EqualTo(app.ActiveExpedition.inventorySnapshotJson));
++                ExpeditionInventorySnapshot savedInventory = JsonUtility.FromJson<ExpeditionInventorySnapshot>(
++                    loaded.Data.activeExpedition.inventorySnapshotJson);
++                Assert.That(savedInventory.backpackSlots.Count(item => item?.itemId == "relic.marked_coin"),
+                     Is.EqualTo(1));
+ 
+-                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> replayed = null;
+-                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reload"), value => replayed = value);
+-                Assert.That(replayed.Persisted, Is.True, replayed.Message);
+-                Assert.That(replayed.Pending, Is.False);
+-                Assert.That(replayed.Outcome.Succeeded, Is.True);
+-                Assert.That(replayed.Outcome.Claim.Status, Is.EqualTo(FortuneOperationStatus.AlreadyApplied));
+-                Assert.That(replayed.Outcome.Reward.ItemId, Is.EqualTo("relic.marked_coin"));
+-                Assert.That(replayed.Outcome.InventoryOperation.Status, Is.EqualTo(InventoryOperationStatus.Succeeded));
+-                Assert.That(app.ActiveRun.Inventory.Backpack.Count(item => item?.ItemId == "relic.marked_coin"),
+-                    Is.EqualTo(1), "Replaying the persisted reward must not create a second item.");
+-                Assert.That(JsonUtility.ToJson(app.ActiveExpedition), Is.EqualTo(committedExpeditionJson),
+-                    "The already-claimed result must leave the persisted expedition state unchanged.");
+-                Assert.That(store.ProfilePrimary, Is.EqualTo(committedProfileJson),
+-                    "A replay already represented in the save must not write a changed expedition.");
++                Assert.Throws<InvalidOperationException>(() => app.ContinueActiveExpedition());
++                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
++                string profileDataBeforeBlockedClaim = JsonUtility.ToJson(app.Profile, false);
++                store.FailNextProfileWrite = true;
++                ExpeditionMutationCommitResult<FortuneRewardApplicationOutcome> blockedClaim = null;
++                yield return Complete(app.ClaimFortuneOfferRewardAsync("offer.reload"), value => blockedClaim = value);
++                Assert.That(blockedClaim.Persisted, Is.False);
++                Assert.That(blockedClaim.Pending, Is.False);
++                Assert.That(blockedClaim.Outcome, Is.Null,
++                    "The protected profile rejects the replay before it can report AlreadyApplied or pay again.");
++                Assert.That(app.HasPendingExpeditionWrite, Is.False);
++                Assert.That(app.PendingProfileExport, Is.Null);
++                Assert.That(store.FailNextProfileWrite, Is.True,
++                    "A protected claim must not call the profile store.");
++                Assert.That(JsonUtility.ToJson(app.Profile, false), Is.EqualTo(profileDataBeforeBlockedClaim));
++                Assert.That(JsonUtility.ToJson(app.ActiveExpedition, false), Is.EqualTo(committedExpeditionJson));
++                Assert.That(readOnlyRepository.ExportLoadedProfileJson(), Is.EqualTo(committedProfileJson));
++                SaveStorageSnapshot afterBlockedClaimStorage = null;
++                yield return Complete(store.ReadAsync(SaveDocument.Profile), value => afterBlockedClaimStorage = value);
++                Assert.That(afterBlockedClaimStorage.PrimaryJson, Is.EqualTo(committedStorage.PrimaryJson));
++                Assert.That(afterBlockedClaimStorage.BackupJson, Is.EqualTo(committedStorage.BackupJson));
+             }
+             finally
+             {

@@ -1,0 +1,3683 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Source-level historical V5 serialized field map versus frozen V6 DTOs. No Unity JsonUtility execution or checksum calculation.",
+  "sourceIdentity": {
+    "v5": {
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "tree": "658f45412efb0b6f554d6c458400116838369a97",
+      "contentVersion": 5,
+      "unityPin": "6000.6.6f1",
+      "sourceManifest": "Logs/LegacyV5Source-20261030/SOURCE-MANIFEST.json",
+      "sourceManifestSha256": "51052341801fa724cd236762c7b8c7a7c69ad0baf9fa8bd285d25f1fcae66478",
+      "manifestEntryCount": 226
+    },
+    "v6Reference": {
+      "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+      "contentVersion": 6,
+      "sourceProof": {
+        "path": "Logs/FullIntegrationFix-20261030-r5/ROOT-EXACT-SOURCE-PROOF.json",
+        "sha256": "6324036292da7430f734d764292e84002f3f03f4b24924aa942ecd79f94dba12",
+        "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+        "sourceEntryCount": 14
+      },
+      "dtoSha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+      "inspectorSha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+      "runtimeSaveDocumentsSha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4"
+    }
+  },
+  "verifiedSourceHashes": [
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "bytes": 65551,
+      "sha256": "a3cbae2a1bad70f58f60c4802258367a72f155753817b91f82e6535b27c2d8cc",
+      "gitBlobSha": "84c48271920a1aa453e2c33ad280a39881890934",
+      "readContent": true,
+      "role": "V5 writer, envelope construction, checksum projection, and read validation"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "bytes": 34415,
+      "sha256": "0cbedf7cf7f03c91c74aa3d4312090c19bb0d80e6f2847887d5d6c14a6be96ca",
+      "gitBlobSha": "f8630a252ec692df371a430756686db927e631cb",
+      "readContent": true,
+      "role": "V5 serialized DTO declarations and validation"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+      "bytes": 17775,
+      "sha256": "e8c6bf1eec595c3f7c7ba5881583980312ca8fdecb5b8a0a849315aa11a3ab9b",
+      "gitBlobSha": "c024a305a080a93fb6cfc961bff92a2d3c9bf290",
+      "readContent": true,
+      "role": "V5 active-expedition/checkpoint string producers and validation"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+      "bytes": 786,
+      "sha256": "35293ee134ed543c83914eae2109c350f0dd86bc66719de207f87c48e39cc437",
+      "gitBlobSha": "9677253e647ea4b7805fc9fef3421f0c57e3ab34",
+      "readContent": true,
+      "role": "public writer persistence boundary"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "bytes": 2163,
+      "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+      "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+      "readContent": true,
+      "role": "typed transitive Fortune snapshot fields"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+      "bytes": 2538,
+      "sha256": "7712b104e5e3e66611c6ee06b160f9a07fe9732342de772bac1b2a2f3c155b59",
+      "gitBlobSha": "946ba5e1ed03733563b13fda5e01a45ffdeafaae",
+      "readContent": true,
+      "role": "inventory schema serialized into an opaque JSON string"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+      "bytes": 646,
+      "sha256": "64cd1b8904009884c823d6e737b5a934c67e7873d8887b9c785d0ce6134f1014",
+      "gitBlobSha": "673af38af1caca550343905c56aa9c26a6f8441d",
+      "readContent": true,
+      "role": "typed inventory-string child"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+      "bytes": 647,
+      "sha256": "d84dafaecc9746fcbea873573c34aaa3567e098b4e951dce72e81fe8d52f04c8",
+      "gitBlobSha": "9ec486ad1ae4aab1fca86adaab8812fbe7d5a1b2",
+      "readContent": true,
+      "role": "typed inventory-string child"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+      "bytes": 864,
+      "sha256": "f75fa31fe27c5ebdae3933c6da5a72ed440e835acb8f281cb2753fd1b91d1192",
+      "gitBlobSha": "6358eaa063e856a8c3362b450624de1bdbb46214",
+      "readContent": true,
+      "role": "typed inventory-string child"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/App/FileSaveStore.cs",
+      "bytes": 5382,
+      "sha256": "14c210882e6d43e0a5cffb7b66d26db6af66db5d387402bbd1fbf7edb8c73dc9",
+      "gitBlobSha": "cf4fbe5a0595b5e7dc2f84236a66b05eec8f807f",
+      "readContent": false,
+      "role": "disk store is unnecessary when the harness injects an in-memory ISaveStore"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOffer.cs",
+      "bytes": 4200,
+      "sha256": "b59ea0f210ae913b634d13c392ae37c9f7253786af261377ded13fec8baf44ed",
+      "gitBlobSha": "c420209b4ef06569cead365cdfb871e1ed2566bd",
+      "readContent": false,
+      "role": "live domain offer is not a persisted snapshot DTO"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactSnapshot.cs",
+      "bytes": 1960,
+      "sha256": "26da18387e3a7c5632670240adad4903871e180241907fe72c3ddace02587ff9",
+      "gitBlobSha": "be37573f2600496104740181de036703b97bffa3",
+      "readContent": false,
+      "role": "saved expedition persists pactIds as string[]"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionSnapshot.cs",
+      "bytes": 10070,
+      "sha256": "047f9c4e611ae92e285b0d433dac501ba1a16285d8cfe512d0c0131132b20719",
+      "gitBlobSha": "3400355d8adea2604c78d3b1a50bc8f145d0166a",
+      "readContent": false,
+      "role": "no field in the V5 save DTO graph"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+      "bytes": 7853,
+      "sha256": "d6a174761d20db0f259fc4929993fe175e4eae92c069d7c3354a6982ccc95de7",
+      "gitBlobSha": "60cfc240264643c0ba4780c9d1c9dd3f8aa81b1b",
+      "readContent": false,
+      "role": "not a field in the V5 save DTO graph"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
+      "bytes": 3764,
+      "sha256": "5add5065ce33766c40712413effaf5f59d7c655c1bbf405936a3fb6497a74712",
+      "gitBlobSha": "22976d498ee44fbff4c4c8351324ff027c0a3cfe",
+      "readContent": false,
+      "role": "route validation helper, not a serialized DTO field"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRoomIdentity.cs",
+      "bytes": 1307,
+      "sha256": "bacee0d0741353ea08bef201fb15d66887d642b27b2e5fb9ff61f042b2d74c33",
+      "gitBlobSha": "77bab38eb87263b9272f5663a738aacc16cb932e",
+      "readContent": false,
+      "role": "not a field in the V5 save DTO graph"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+      "bytes": 9461,
+      "sha256": "40c10aeadc9e4e065b3c075d19e810689179bf7bd9d79300a8fbd7c346bcb593",
+      "gitBlobSha": "832074a1b578628add724cd9b54d2bcec51ab501",
+      "readContent": false,
+      "role": "profile stores processedSettlementRunIds as string[]"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "bytes": 83,
+      "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+      "gitBlobSha": "99bacd03c32572309212173ef6a8e7dab6cd92e6",
+      "readContent": false,
+      "role": "Unity editor pin in the V5 source snapshot"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Packages/manifest.json",
+      "bytes": 2165,
+      "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+      "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1",
+      "readContent": false,
+      "role": "Unity package manifest for the V5 source snapshot"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Packages/packages-lock.json",
+      "bytes": 14044,
+      "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+      "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+      "readContent": false,
+      "role": "Unity package lock for the V5 source snapshot"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "bytes": 484,
+      "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+      "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4",
+      "readContent": false,
+      "role": "SaveRepository assembly boundary"
+    },
+    {
+      "authority": "historical-v5-source-manifest",
+      "commit": "a2590e141c46729e6efa7d01ea33647768b58711",
+      "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "bytes": 337,
+      "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+      "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+      "readContent": false,
+      "role": "save DTO/Core snapshot assembly boundary"
+    },
+    {
+      "authority": "root-exact-source-proof",
+      "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+      "bytes": 7266,
+      "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+      "gitBlobSha": "44cee851931dc470bbff3bf3f6da308aa2c274c9",
+      "normalization": "raw",
+      "readContent": true,
+      "role": "frozen V6 envelope/profile/active-expedition/checkpoint/book DTO comparison"
+    },
+    {
+      "authority": "root-exact-source-proof",
+      "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+      "bytes": 16578,
+      "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+      "gitBlobSha": "6551c633a2de7e4c15998169618379938077af8c",
+      "normalization": "raw",
+      "readContent": true,
+      "role": "frozen V6 checksum projection and marker/payload rules"
+    },
+    {
+      "authority": "root-exact-source-proof",
+      "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "bytes": 37224,
+      "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+      "gitBlobSha": "d62c870fcd0ed5861cce0296c57592fb8d0221b6",
+      "normalization": "CRLF-to-LF",
+      "readContent": true,
+      "role": "current V6 runtime DTO comparison"
+    },
+    {
+      "authority": "root-exact-source-proof",
+      "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "bytes": 71590,
+      "sha256": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+      "gitBlobSha": "12ee0d6a179bcb5b5da8432fd406f2bd15995933",
+      "normalization": "CRLF-to-LF",
+      "readContent": false,
+      "role": "reference source hash only; not used to derive the historical V5 contract"
+    },
+    {
+      "authority": "root-exact-source-proof",
+      "commit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "bytes": 2163,
+      "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+      "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+      "normalization": "CRLF-to-LF",
+      "readContent": false,
+      "role": "same Core snapshot source hash verified in V5 manifest and V6 exact source proof"
+    }
+  ],
+  "sourceLevelChecks": {
+    "contentVersion5": true,
+    "schemaVersion1": true,
+    "markerDerivedFromPayloadNullness": true,
+    "activePayloadCanonicalizationGatedByMarker": true,
+    "compactChecksumProjection": true,
+    "prettyFinalEnvelope": true,
+    "checksumBlankedInProjection": true,
+    "utf8Sha256LowercaseHelper": true,
+    "checkpointSerializedSeparately": true,
+    "inventorySnapshotSerializedSeparately": true,
+    "routeSnapshotUsesCanonicalForm": true,
+    "v6InspectorEnforcesSchema1Content6": true
+  },
+  "v5Writer": {
+    "sourcePath": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+    "sourceSha256": "a3cbae2a1bad70f58f60c4802258367a72f155753817b91f82e6535b27c2d8cc",
+    "documentsSeparate": [
+      "ProfileSaveEnvelope",
+      "SettingsSaveEnvelope"
+    ],
+    "profileWriteFlow": [
+      "clone ProfileSaveData",
+      "NormalizeForSave sorts profile identifiers and history rows ordinally",
+      "validate profile and active expedition/checkpoint",
+      "clone active expedition",
+      "NewProfileEnvelope assigns schema=1/content=5/generation/sequence/savedAtUtc/checksum empty/profile/marker/payload",
+      "checksum projection blanks checksum and includes the active payload only when the marker is true",
+      "hash UTF-8 bytes of JsonUtility.ToJson(canonical,false) with SHA-256 and lower-case hex",
+      "write final envelope with JsonUtility.ToJson(envelope,true)"
+    ],
+    "settingsWriteFlow": [
+      "clone and validate GameSettingsSaveData",
+      "create separate SettingsSaveEnvelope with schema=1/content=5",
+      "checksum its own canonical envelope with checksum empty",
+      "write with JsonUtility.ToJson(envelope,true)"
+    ],
+    "profileNormalizeForSave": [
+      "unlockedRaceIds",
+      "unlockedStartingKitIds",
+      "acceptedContractIds",
+      "claimedContractIds",
+      "readStoryFragmentIds",
+      "processedSettlementRunIds",
+      "progressionPurchaseTransactions ordered by transactionId",
+      "contractCounters ordered by contractId"
+    ],
+    "activeExpeditionArraysSortedByNormalizeForSave": false,
+    "activeExpeditionCloneNormalization": "If hasFrozenPermanentUpgrades=false and all three levels are zero, ExpeditionSaveData.Clone sets frozenPermanentUpgrades null.",
+    "markerPayloadWrite": "hasActiveExpedition = (expedition != null); activeExpedition = expedition.",
+    "markerPayloadRead": "Checksum is compared first. Validation rejects marker=true with null payload; marker=false with active payload is rejected; marker=false with no payload normalizes it to null after checksum.",
+    "checksumProjectionFields": {
+      "profile": [
+        "schemaVersion",
+        "contentVersion",
+        "generation",
+        "sequence",
+        "savedAtUtc",
+        "checksum empty",
+        "profile",
+        "hasActiveExpedition",
+        "activeExpedition gated by marker"
+      ],
+      "settings": [
+        "schemaVersion",
+        "contentVersion",
+        "generation",
+        "sequence",
+        "savedAtUtc",
+        "checksum empty",
+        "settings"
+      ]
+    },
+    "note": "Algorithm and call sites are from exact source; no JSON preimage/checksum bytes were generated."
+  },
+  "fieldMaps": {
+    "v5ProfileAndSettingsTypedGraph": [
+      {
+        "type": "ProfileSaveEnvelope",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "schemaVersion",
+            "type": "int",
+            "declaration": "public int schemaVersion;"
+          },
+          {
+            "order": 2,
+            "name": "contentVersion",
+            "type": "int",
+            "declaration": "public int contentVersion;"
+          },
+          {
+            "order": 3,
+            "name": "generation",
+            "type": "int",
+            "declaration": "public int generation;"
+          },
+          {
+            "order": 4,
+            "name": "sequence",
+            "type": "long",
+            "declaration": "public long sequence;"
+          },
+          {
+            "order": 5,
+            "name": "savedAtUtc",
+            "type": "string",
+            "declaration": "public string savedAtUtc;"
+          },
+          {
+            "order": 6,
+            "name": "checksum",
+            "type": "string",
+            "declaration": "public string checksum;"
+          },
+          {
+            "order": 7,
+            "name": "profile",
+            "type": "ProfileSaveData",
+            "declaration": "public ProfileSaveData profile;"
+          },
+          {
+            "order": 8,
+            "name": "hasActiveExpedition",
+            "type": "bool",
+            "declaration": "public bool hasActiveExpedition;"
+          },
+          {
+            "order": 9,
+            "name": "activeExpedition",
+            "type": "ExpeditionSaveData",
+            "declaration": "public ExpeditionSaveData activeExpedition;"
+          }
+        ]
+      },
+      {
+        "type": "SettingsSaveEnvelope",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "schemaVersion",
+            "type": "int",
+            "declaration": "public int schemaVersion;"
+          },
+          {
+            "order": 2,
+            "name": "contentVersion",
+            "type": "int",
+            "declaration": "public int contentVersion;"
+          },
+          {
+            "order": 3,
+            "name": "generation",
+            "type": "int",
+            "declaration": "public int generation;"
+          },
+          {
+            "order": 4,
+            "name": "sequence",
+            "type": "long",
+            "declaration": "public long sequence;"
+          },
+          {
+            "order": 5,
+            "name": "savedAtUtc",
+            "type": "string",
+            "declaration": "public string savedAtUtc;"
+          },
+          {
+            "order": 6,
+            "name": "checksum",
+            "type": "string",
+            "declaration": "public string checksum;"
+          },
+          {
+            "order": 7,
+            "name": "settings",
+            "type": "GameSettingsSaveData",
+            "declaration": "public GameSettingsSaveData settings;"
+          }
+        ]
+      },
+      {
+        "type": "ProfileSaveData",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "availableRenown",
+            "type": "int",
+            "declaration": "public int availableRenown;"
+          },
+          {
+            "order": 2,
+            "name": "healthUpgradeLevel",
+            "type": "int",
+            "declaration": "public int healthUpgradeLevel;"
+          },
+          {
+            "order": 3,
+            "name": "energyUpgradeLevel",
+            "type": "int",
+            "declaration": "public int energyUpgradeLevel;"
+          },
+          {
+            "order": 4,
+            "name": "additionalPotionUpgradeLevel",
+            "type": "int",
+            "declaration": "public int additionalPotionUpgradeLevel;"
+          },
+          {
+            "order": 5,
+            "name": "unlockedRaceIds",
+            "type": "string[]",
+            "declaration": "public string[] unlockedRaceIds = Array.Empty<string>();"
+          },
+          {
+            "order": 6,
+            "name": "unlockedStartingKitIds",
+            "type": "string[]",
+            "declaration": "public string[] unlockedStartingKitIds = Array.Empty<string>();"
+          },
+          {
+            "order": 7,
+            "name": "acceptedContractIds",
+            "type": "string[]",
+            "declaration": "public string[] acceptedContractIds = Array.Empty<string>();"
+          },
+          {
+            "order": 8,
+            "name": "claimedContractIds",
+            "type": "string[]",
+            "declaration": "public string[] claimedContractIds = Array.Empty<string>();"
+          },
+          {
+            "order": 9,
+            "name": "readStoryFragmentIds",
+            "type": "string[]",
+            "declaration": "public string[] readStoryFragmentIds = Array.Empty<string>();"
+          },
+          {
+            "order": 10,
+            "name": "contractCounters",
+            "type": "ContractCounterSaveData[]",
+            "declaration": "public ContractCounterSaveData[] contractCounters = Array.Empty<ContractCounterSaveData>();"
+          },
+          {
+            "order": 11,
+            "name": "processedSettlementRunIds",
+            "type": "string[]",
+            "declaration": "public string[] processedSettlementRunIds = Array.Empty<string>();"
+          },
+          {
+            "order": 12,
+            "name": "progressionPurchaseTransactions",
+            "type": "PermanentUpgradePurchaseSaveData[]",
+            "declaration": "public PermanentUpgradePurchaseSaveData[] progressionPurchaseTransactions = Array.Empty<PermanentUpgradePurchaseSaveData>();"
+          }
+        ]
+      },
+      {
+        "type": "ContractCounterSaveData",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "contractId",
+            "type": "string",
+            "declaration": "public string contractId;"
+          },
+          {
+            "order": 2,
+            "name": "progress",
+            "type": "int",
+            "declaration": "public int progress;"
+          }
+        ]
+      },
+      {
+        "type": "PermanentUpgradePurchaseSaveData",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "transactionId",
+            "type": "string",
+            "declaration": "public string transactionId;"
+          },
+          {
+            "order": 2,
+            "name": "kind",
+            "type": "int",
+            "declaration": "public int kind;"
+          },
+          {
+            "order": 3,
+            "name": "cost",
+            "type": "int",
+            "declaration": "public int cost;"
+          }
+        ]
+      },
+      {
+        "type": "ExpeditionSaveData",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "runId",
+            "type": "string",
+            "declaration": "public string runId;"
+          },
+          {
+            "order": 2,
+            "name": "seed",
+            "type": "uint",
+            "declaration": "public uint seed;"
+          },
+          {
+            "order": 3,
+            "name": "generationVersion",
+            "type": "int",
+            "declaration": "public int generationVersion;"
+          },
+          {
+            "order": 4,
+            "name": "contentVersion",
+            "type": "int",
+            "declaration": "public int contentVersion;"
+          },
+          {
+            "order": 5,
+            "name": "classId",
+            "type": "string",
+            "declaration": "public string classId;"
+          },
+          {
+            "order": 6,
+            "name": "raceId",
+            "type": "string",
+            "declaration": "public string raceId;"
+          },
+          {
+            "order": 7,
+            "name": "selectedSkillIds",
+            "type": "string[]",
+            "declaration": "public string[] selectedSkillIds = Array.Empty<string>();"
+          },
+          {
+            "order": 8,
+            "name": "startingEquipmentInstanceIds",
+            "type": "string[]",
+            "declaration": "public string[] startingEquipmentInstanceIds = Array.Empty<string>();"
+          },
+          {
+            "order": 9,
+            "name": "routeSnapshotJson",
+            "type": "string",
+            "declaration": "public string routeSnapshotJson;"
+          },
+          {
+            "order": 10,
+            "name": "currentNodeId",
+            "type": "string",
+            "declaration": "public string currentNodeId;"
+          },
+          {
+            "order": 11,
+            "name": "visitedNodeIds",
+            "type": "string[]",
+            "declaration": "public string[] visitedNodeIds = Array.Empty<string>();"
+          },
+          {
+            "order": 12,
+            "name": "completedRoomIds",
+            "type": "string[]",
+            "declaration": "public string[] completedRoomIds = Array.Empty<string>();"
+          },
+          {
+            "order": 13,
+            "name": "completedRoomResults",
+            "type": "ExpeditionRoomCompletionSaveData[]",
+            "declaration": "public ExpeditionRoomCompletionSaveData[] completedRoomResults = Array.Empty<ExpeditionRoomCompletionSaveData>();"
+          },
+          {
+            "order": 14,
+            "name": "roomEntryCheckpointJson",
+            "type": "string",
+            "declaration": "public string roomEntryCheckpointJson;"
+          },
+          {
+            "order": 15,
+            "name": "inventorySnapshotJson",
+            "type": "string",
+            "declaration": "public string inventorySnapshotJson;"
+          },
+          {
+            "order": 16,
+            "name": "maximumHealth",
+            "type": "int",
+            "declaration": "public int maximumHealth = 100;"
+          },
+          {
+            "order": 17,
+            "name": "currentHealth",
+            "type": "int",
+            "declaration": "public int currentHealth = 100;"
+          },
+          {
+            "order": 18,
+            "name": "maximumEnergy",
+            "type": "int",
+            "declaration": "public int maximumEnergy = 50;"
+          },
+          {
+            "order": 19,
+            "name": "currentEnergy",
+            "type": "int",
+            "declaration": "public int currentEnergy = 50;"
+          },
+          {
+            "order": 20,
+            "name": "healthPotionCharges",
+            "type": "int",
+            "declaration": "public int healthPotionCharges = 2;"
+          },
+          {
+            "order": 21,
+            "name": "frozenPermanentUpgrades",
+            "type": "ExpeditionPermanentUpgradeSnapshotSaveData",
+            "declaration": "public ExpeditionPermanentUpgradeSnapshotSaveData frozenPermanentUpgrades;"
+          },
+          {
+            "order": 22,
+            "name": "hasFrozenPermanentUpgrades",
+            "type": "bool",
+            "declaration": "public bool hasFrozenPermanentUpgrades;"
+          },
+          {
+            "order": 23,
+            "name": "accumulatedRenown",
+            "type": "int",
+            "declaration": "public int accumulatedRenown;"
+          },
+          {
+            "order": 24,
+            "name": "pactIds",
+            "type": "string[]",
+            "declaration": "public string[] pactIds = Array.Empty<string>();"
+          },
+          {
+            "order": 25,
+            "name": "fortuneOfferBookSnapshot",
+            "type": "FortuneOfferBookSnapshot",
+            "declaration": "public FortuneOfferBookSnapshot fortuneOfferBookSnapshot;"
+          },
+          {
+            "order": 26,
+            "name": "collectedItemIds",
+            "type": "string[]",
+            "declaration": "public string[] collectedItemIds = Array.Empty<string>();"
+          },
+          {
+            "order": 27,
+            "name": "claimedRewardIds",
+            "type": "string[]",
+            "declaration": "public string[] claimedRewardIds = Array.Empty<string>();"
+          }
+        ]
+      },
+      {
+        "type": "ExpeditionPermanentUpgradeSnapshotSaveData",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "healthUpgradeLevel",
+            "type": "int",
+            "declaration": "public int healthUpgradeLevel;"
+          },
+          {
+            "order": 2,
+            "name": "energyUpgradeLevel",
+            "type": "int",
+            "declaration": "public int energyUpgradeLevel;"
+          },
+          {
+            "order": 3,
+            "name": "additionalPotionUpgradeLevel",
+            "type": "int",
+            "declaration": "public int additionalPotionUpgradeLevel;"
+          }
+        ]
+      },
+      {
+        "type": "ExpeditionRoomCheckpointSaveData",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "roomNodeId",
+            "type": "string",
+            "declaration": "public string roomNodeId;"
+          },
+          {
+            "order": 2,
+            "name": "inventorySnapshotJson",
+            "type": "string",
+            "declaration": "public string inventorySnapshotJson;"
+          },
+          {
+            "order": 3,
+            "name": "maximumHealth",
+            "type": "int",
+            "declaration": "public int maximumHealth;"
+          },
+          {
+            "order": 4,
+            "name": "currentHealth",
+            "type": "int",
+            "declaration": "public int currentHealth;"
+          },
+          {
+            "order": 5,
+            "name": "maximumEnergy",
+            "type": "int",
+            "declaration": "public int maximumEnergy;"
+          },
+          {
+            "order": 6,
+            "name": "currentEnergy",
+            "type": "int",
+            "declaration": "public int currentEnergy;"
+          },
+          {
+            "order": 7,
+            "name": "healthPotionCharges",
+            "type": "int",
+            "declaration": "public int healthPotionCharges;"
+          },
+          {
+            "order": 8,
+            "name": "accumulatedRenown",
+            "type": "int",
+            "declaration": "public int accumulatedRenown;"
+          },
+          {
+            "order": 9,
+            "name": "fortuneOfferBookSnapshot",
+            "type": "FortuneOfferBookSnapshot",
+            "declaration": "public FortuneOfferBookSnapshot fortuneOfferBookSnapshot;"
+          },
+          {
+            "order": 10,
+            "name": "pactIds",
+            "type": "string[]",
+            "declaration": "public string[] pactIds = Array.Empty<string>();"
+          },
+          {
+            "order": 11,
+            "name": "collectedItemIds",
+            "type": "string[]",
+            "declaration": "public string[] collectedItemIds = Array.Empty<string>();"
+          },
+          {
+            "order": 12,
+            "name": "claimedRewardIds",
+            "type": "string[]",
+            "declaration": "public string[] claimedRewardIds = Array.Empty<string>();"
+          }
+        ]
+      },
+      {
+        "type": "ExpeditionRoomCompletionSaveData",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "roomNodeId",
+            "type": "string",
+            "declaration": "public string roomNodeId;"
+          },
+          {
+            "order": 2,
+            "name": "resultId",
+            "type": "string",
+            "declaration": "public string resultId;"
+          },
+          {
+            "order": 3,
+            "name": "resultJson",
+            "type": "string",
+            "declaration": "public string resultJson;"
+          }
+        ]
+      },
+      {
+        "type": "GameSettingsSaveData",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "languageId",
+            "type": "string",
+            "declaration": "public string languageId = \"es\";"
+          },
+          {
+            "order": 2,
+            "name": "masterVolume",
+            "type": "float",
+            "declaration": "public float masterVolume = 1f;"
+          },
+          {
+            "order": 3,
+            "name": "musicVolume",
+            "type": "float",
+            "declaration": "public float musicVolume = 0.65f;"
+          },
+          {
+            "order": 4,
+            "name": "effectsVolume",
+            "type": "float",
+            "declaration": "public float effectsVolume = 0.8f;"
+          },
+          {
+            "order": 5,
+            "name": "ambienceVolume",
+            "type": "float",
+            "declaration": "public float ambienceVolume = 0.45f;"
+          }
+        ]
+      }
+    ],
+    "v5FortuneTypedChildren": [
+      {
+        "type": "FortuneOfferBookSnapshot",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "snapshotVersion",
+            "type": "int",
+            "declaration": "public int snapshotVersion;"
+          },
+          {
+            "order": 2,
+            "name": "generationVersion",
+            "type": "int",
+            "declaration": "public int generationVersion;"
+          },
+          {
+            "order": 3,
+            "name": "seed",
+            "type": "uint",
+            "declaration": "public uint seed;"
+          },
+          {
+            "order": 4,
+            "name": "raceId",
+            "type": "string",
+            "declaration": "public string raceId;"
+          },
+          {
+            "order": 5,
+            "name": "charges",
+            "type": "int",
+            "declaration": "public int charges;"
+          },
+          {
+            "order": 6,
+            "name": "offers",
+            "type": "FortuneOfferSnapshot[]",
+            "declaration": "public FortuneOfferSnapshot[] offers = Array.Empty<FortuneOfferSnapshot>();"
+          },
+          {
+            "order": 7,
+            "name": "processedGuardianIds",
+            "type": "string[]",
+            "declaration": "public string[] processedGuardianIds = Array.Empty<string>();"
+          },
+          {
+            "order": 8,
+            "name": "rerollReceipts",
+            "type": "FortuneRerollReceiptSnapshot[]",
+            "declaration": "public FortuneRerollReceiptSnapshot[] rerollReceipts = Array.Empty<FortuneRerollReceiptSnapshot>();"
+          },
+          {
+            "order": 9,
+            "name": "fortuneBrewReceipts",
+            "type": "FortuneBrewReceiptSnapshot[]",
+            "declaration": "public FortuneBrewReceiptSnapshot[] fortuneBrewReceipts = Array.Empty<FortuneBrewReceiptSnapshot>();"
+          }
+        ]
+      },
+      {
+        "type": "FortuneOfferSnapshot",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "offerId",
+            "type": "string",
+            "declaration": "public string offerId;"
+          },
+          {
+            "order": 2,
+            "name": "contextId",
+            "type": "string",
+            "declaration": "public string contextId;"
+          },
+          {
+            "order": 3,
+            "name": "eligibleOptionIds",
+            "type": "string[]",
+            "declaration": "public string[] eligibleOptionIds = Array.Empty<string>();"
+          },
+          {
+            "order": 4,
+            "name": "history",
+            "type": "FortuneOfferHistorySnapshot[]",
+            "declaration": "public FortuneOfferHistorySnapshot[] history = Array.Empty<FortuneOfferHistorySnapshot>();"
+          },
+          {
+            "order": 5,
+            "name": "selectedOptionId",
+            "type": "string",
+            "declaration": "public string selectedOptionId;"
+          },
+          {
+            "order": 6,
+            "name": "claimed",
+            "type": "bool",
+            "declaration": "public bool claimed;"
+          }
+        ]
+      },
+      {
+        "type": "FortuneOfferHistorySnapshot",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "optionIds",
+            "type": "string[]",
+            "declaration": "public string[] optionIds = Array.Empty<string>();"
+          }
+        ]
+      },
+      {
+        "type": "FortuneRerollReceiptSnapshot",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "transactionId",
+            "type": "string",
+            "declaration": "public string transactionId;"
+          },
+          {
+            "order": 2,
+            "name": "offerId",
+            "type": "string",
+            "declaration": "public string offerId;"
+          },
+          {
+            "order": 3,
+            "name": "status",
+            "type": "int",
+            "declaration": "public int status;"
+          },
+          {
+            "order": 4,
+            "name": "contextId",
+            "type": "string",
+            "declaration": "public string contextId;"
+          },
+          {
+            "order": 5,
+            "name": "optionIds",
+            "type": "string[]",
+            "declaration": "public string[] optionIds = Array.Empty<string>();"
+          },
+          {
+            "order": 6,
+            "name": "selectedOptionId",
+            "type": "string",
+            "declaration": "public string selectedOptionId;"
+          },
+          {
+            "order": 7,
+            "name": "rerollCount",
+            "type": "int",
+            "declaration": "public int rerollCount;"
+          },
+          {
+            "order": 8,
+            "name": "claimed",
+            "type": "bool",
+            "declaration": "public bool claimed;"
+          },
+          {
+            "order": 9,
+            "name": "remainingCharges",
+            "type": "int",
+            "declaration": "public int remainingCharges;"
+          },
+          {
+            "order": 10,
+            "name": "hasOffer",
+            "type": "bool",
+            "declaration": "public bool hasOffer;"
+          }
+        ]
+      },
+      {
+        "type": "FortuneBrewReceiptSnapshot",
+        "sourcePath": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "sourceAuthority": "historical-v5-manifest",
+        "serializableAttributePresent": true,
+        "fields": [
+          {
+            "order": 1,
+            "name": "transactionId",
+            "type": "string",
+            "declaration": "public string transactionId;"
+          },
+          {
+            "order": 2,
+            "name": "itemInstanceId",
+            "type": "string",
+            "declaration": "public string itemInstanceId;"
+          },
+          {
+            "order": 3,
+            "name": "status",
+            "type": "int",
+            "declaration": "public int status;"
+          },
+          {
+            "order": 4,
+            "name": "currentCharges",
+            "type": "int",
+            "declaration": "public int currentCharges;"
+          }
+        ]
+      }
+    ],
+    "v5OpaqueInventoryStringTypedPayload": {
+      "field": "inventorySnapshotJson string payload",
+      "rootType": "ExpeditionInventorySnapshot",
+      "models": [
+        {
+          "type": "ExpeditionInventorySnapshot",
+          "sourcePath": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+          "sourceAuthority": "historical-v5-manifest",
+          "serializableAttributePresent": true,
+          "fields": [
+            {
+              "order": 1,
+              "name": "snapshotVersion",
+              "type": "int",
+              "declaration": "public int snapshotVersion;"
+            },
+            {
+              "order": 2,
+              "name": "classId",
+              "type": "string",
+              "declaration": "public string classId;"
+            },
+            {
+              "order": 3,
+              "name": "gold",
+              "type": "int",
+              "declaration": "public int gold;"
+            },
+            {
+              "order": 4,
+              "name": "weapon",
+              "type": "InventoryStackSnapshot",
+              "declaration": "public InventoryStackSnapshot weapon;"
+            },
+            {
+              "order": 5,
+              "name": "armor",
+              "type": "InventoryStackSnapshot",
+              "declaration": "public InventoryStackSnapshot armor;"
+            },
+            {
+              "order": 6,
+              "name": "relicOne",
+              "type": "InventoryStackSnapshot",
+              "declaration": "public InventoryStackSnapshot relicOne;"
+            },
+            {
+              "order": 7,
+              "name": "relicTwo",
+              "type": "InventoryStackSnapshot",
+              "declaration": "public InventoryStackSnapshot relicTwo;"
+            },
+            {
+              "order": 8,
+              "name": "backpackSlots",
+              "type": "InventoryStackSnapshot[]",
+              "declaration": "public InventoryStackSnapshot[] backpackSlots = Array.Empty<InventoryStackSnapshot>();"
+            },
+            {
+              "order": 9,
+              "name": "quickConsumableInstanceId",
+              "type": "string",
+              "declaration": "public string quickConsumableInstanceId;"
+            },
+            {
+              "order": 10,
+              "name": "materials",
+              "type": "MaterialCountSnapshot[]",
+              "declaration": "public MaterialCountSnapshot[] materials = Array.Empty<MaterialCountSnapshot>();"
+            },
+            {
+              "order": 11,
+              "name": "worldMaterialRemainders",
+              "type": "WorldMaterialRemainderSnapshot[]",
+              "declaration": "public WorldMaterialRemainderSnapshot[] worldMaterialRemainders = Array.Empty<WorldMaterialRemainderSnapshot>();"
+            },
+            {
+              "order": 12,
+              "name": "merchantRunId",
+              "type": "string",
+              "declaration": "public string merchantRunId = string.Empty;"
+            },
+            {
+              "order": 13,
+              "name": "merchantStocks",
+              "type": "MerchantStockSnapshot[]",
+              "declaration": "public MerchantStockSnapshot[] merchantStocks = Array.Empty<MerchantStockSnapshot>();"
+            },
+            {
+              "order": 14,
+              "name": "restStops",
+              "type": "RestStopUseSnapshot[]",
+              "declaration": "public RestStopUseSnapshot[] restStops = Array.Empty<RestStopUseSnapshot>();"
+            },
+            {
+              "order": 15,
+              "name": "transactions",
+              "type": "InventoryTransactionSnapshot[]",
+              "declaration": "public InventoryTransactionSnapshot[] transactions = Array.Empty<InventoryTransactionSnapshot>();"
+            }
+          ]
+        },
+        {
+          "type": "InventoryStackSnapshot",
+          "sourcePath": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+          "sourceAuthority": "historical-v5-manifest",
+          "serializableAttributePresent": true,
+          "fields": [
+            {
+              "order": 1,
+              "name": "instanceId",
+              "type": "string",
+              "declaration": "public string instanceId;"
+            },
+            {
+              "order": 2,
+              "name": "itemId",
+              "type": "string",
+              "declaration": "public string itemId;"
+            },
+            {
+              "order": 3,
+              "name": "rarity",
+              "type": "int",
+              "declaration": "public int rarity;"
+            },
+            {
+              "order": 4,
+              "name": "upgradeLevel",
+              "type": "int",
+              "declaration": "public int upgradeLevel;"
+            },
+            {
+              "order": 5,
+              "name": "quantity",
+              "type": "int",
+              "declaration": "public int quantity;"
+            }
+          ]
+        },
+        {
+          "type": "MaterialCountSnapshot",
+          "sourcePath": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+          "sourceAuthority": "historical-v5-manifest",
+          "serializableAttributePresent": true,
+          "fields": [
+            {
+              "order": 1,
+              "name": "kind",
+              "type": "int",
+              "declaration": "public int kind;"
+            },
+            {
+              "order": 2,
+              "name": "count",
+              "type": "int",
+              "declaration": "public int count;"
+            }
+          ]
+        },
+        {
+          "type": "WorldMaterialRemainderSnapshot",
+          "sourcePath": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+          "sourceAuthority": "historical-v5-manifest",
+          "serializableAttributePresent": true,
+          "fields": [
+            {
+              "order": 1,
+              "name": "kind",
+              "type": "int",
+              "declaration": "public int kind;"
+            },
+            {
+              "order": 2,
+              "name": "remainder",
+              "type": "int",
+              "declaration": "public int remainder;"
+            }
+          ]
+        },
+        {
+          "type": "InventoryTransactionSnapshot",
+          "sourcePath": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+          "sourceAuthority": "historical-v5-manifest",
+          "serializableAttributePresent": true,
+          "fields": [
+            {
+              "order": 1,
+              "name": "transactionId",
+              "type": "string",
+              "declaration": "public string transactionId;"
+            },
+            {
+              "order": 2,
+              "name": "signature",
+              "type": "string",
+              "declaration": "public string signature;"
+            },
+            {
+              "order": 3,
+              "name": "status",
+              "type": "int",
+              "declaration": "public int status;"
+            },
+            {
+              "order": 4,
+              "name": "itemId",
+              "type": "string",
+              "declaration": "public string itemId;"
+            },
+            {
+              "order": 5,
+              "name": "displacedItem",
+              "type": "InventoryStackSnapshot",
+              "declaration": "public InventoryStackSnapshot displacedItem;"
+            },
+            {
+              "order": 6,
+              "name": "craftingStatus",
+              "type": "int",
+              "declaration": "public int craftingStatus;"
+            },
+            {
+              "order": 7,
+              "name": "craftingRecipeId",
+              "type": "string",
+              "declaration": "public string craftingRecipeId;"
+            },
+            {
+              "order": 8,
+              "name": "craftingResultStacks",
+              "type": "InventoryStackSnapshot[]",
+              "declaration": "public InventoryStackSnapshot[] craftingResultStacks = Array.Empty<InventoryStackSnapshot>();"
+            },
+            {
+              "order": 9,
+              "name": "smithingRejectedNonUpgradeRecipe",
+              "type": "bool",
+              "declaration": "public bool smithingRejectedNonUpgradeRecipe;"
+            },
+            {
+              "order": 10,
+              "name": "economyStatus",
+              "type": "int",
+              "declaration": "public int economyStatus;"
+            },
+            {
+              "order": 11,
+              "name": "economyItemInstanceId",
+              "type": "string",
+              "declaration": "public string economyItemInstanceId;"
+            },
+            {
+              "order": 12,
+              "name": "economyQuantity",
+              "type": "int",
+              "declaration": "public int economyQuantity;"
+            },
+            {
+              "order": 13,
+              "name": "economyGoldDelta",
+              "type": "int",
+              "declaration": "public int economyGoldDelta;"
+            },
+            {
+              "order": 14,
+              "name": "economyResultingHealth",
+              "type": "int",
+              "declaration": "public int economyResultingHealth;"
+            },
+            {
+              "order": 15,
+              "name": "economyHealthRestored",
+              "type": "int",
+              "declaration": "public int economyHealthRestored;"
+            },
+            {
+              "order": 16,
+              "name": "economyRoomInstanceId",
+              "type": "string",
+              "declaration": "public string economyRoomInstanceId;"
+            }
+          ]
+        },
+        {
+          "type": "MerchantStockSnapshot",
+          "sourcePath": "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+          "sourceAuthority": "historical-v5-manifest",
+          "serializableAttributePresent": true,
+          "fields": [
+            {
+              "order": 1,
+              "name": "roomInstanceId",
+              "type": "string",
+              "declaration": "public string roomInstanceId;"
+            },
+            {
+              "order": 2,
+              "name": "offers",
+              "type": "MerchantOfferSnapshot[]",
+              "declaration": "public MerchantOfferSnapshot[] offers = Array.Empty<MerchantOfferSnapshot>();"
+            }
+          ]
+        },
+        {
+          "type": "MerchantOfferSnapshot",
+          "sourcePath": "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+          "sourceAuthority": "historical-v5-manifest",
+          "serializableAttributePresent": true,
+          "fields": [
+            {
+              "order": 1,
+              "name": "itemId",
+              "type": "string",
+              "declaration": "public string itemId;"
+            },
+            {
+              "order": 2,
+              "name": "rarity",
+              "type": "int",
+              "declaration": "public int rarity;"
+            },
+            {
+              "order": 3,
+              "name": "initialQuantity",
+              "type": "int",
+              "declaration": "public int initialQuantity;"
+            },
+            {
+              "order": 4,
+              "name": "remainingQuantity",
+              "type": "int",
+              "declaration": "public int remainingQuantity;"
+            }
+          ]
+        },
+        {
+          "type": "RestStopUseSnapshot",
+          "sourcePath": "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+          "sourceAuthority": "historical-v5-manifest",
+          "serializableAttributePresent": true,
+          "fields": [
+            {
+              "order": 1,
+              "name": "roomInstanceId",
+              "type": "string",
+              "declaration": "public string roomInstanceId;"
+            },
+            {
+              "order": 2,
+              "name": "entered",
+              "type": "bool",
+              "declaration": "public bool entered;"
+            },
+            {
+              "order": 3,
+              "name": "entryHealthRestored",
+              "type": "int",
+              "declaration": "public int entryHealthRestored;"
+            },
+            {
+              "order": 4,
+              "name": "taliaUsed",
+              "type": "bool",
+              "declaration": "public bool taliaUsed;"
+            },
+            {
+              "order": 5,
+              "name": "taliaHealthRestored",
+              "type": "int",
+              "declaration": "public int taliaHealthRestored;"
+            },
+            {
+              "order": 6,
+              "name": "taliaHealthAfter",
+              "type": "int",
+              "declaration": "public int taliaHealthAfter;"
+            }
+          ]
+        }
+      ]
+    },
+    "opaqueJsonStringFields": [
+      {
+        "fieldPath": "ProfileSaveEnvelope.activeExpedition.routeSnapshotJson",
+        "fieldType": "string",
+        "producer": "ExpeditionSaveMapper.CreateNew assigns run.Route.CanonicalForm",
+        "separatePayload": "canonical route text; validation parses it as an ExpeditionRoutePlan",
+        "outerChecksum": "string value remains a string in the outer profile projection"
+      },
+      {
+        "fieldPath": "ProfileSaveEnvelope.activeExpedition.inventorySnapshotJson",
+        "fieldType": "string",
+        "producer": "ExpeditionSaveMapper.CreateNew assigns JsonUtility.ToJson(run.Inventory.CreateSnapshot())",
+        "separatePayloadRoot": "ExpeditionInventorySnapshot",
+        "separatePayloadTypedChildren": [
+          "InventoryStackSnapshot",
+          "MaterialCountSnapshot",
+          "WorldMaterialRemainderSnapshot",
+          "MerchantStockSnapshot",
+          "MerchantOfferSnapshot",
+          "RestStopUseSnapshot",
+          "InventoryTransactionSnapshot"
+        ],
+        "outerChecksum": "string value remains a string; the inventory graph is not a typed child of the profile envelope"
+      },
+      {
+        "fieldPath": "ProfileSaveEnvelope.activeExpedition.roomEntryCheckpointJson",
+        "fieldType": "string",
+        "producer": "SerializeCheckpoint(CreateCheckpoint(state)); SerializeCheckpoint calls JsonUtility.ToJson(checkpoint)",
+        "separatePayloadRoot": "ExpeditionRoomCheckpointSaveData",
+        "separatePayloadTypedChildren": [
+          "FortuneOfferBookSnapshot",
+          "FortuneOfferSnapshot",
+          "FortuneOfferHistorySnapshot",
+          "FortuneRerollReceiptSnapshot",
+          "FortuneBrewReceiptSnapshot"
+        ],
+        "nestedOpaqueString": "ExpeditionRoomCheckpointSaveData.inventorySnapshotJson",
+        "outerChecksum": "string value remains a string; writer parses/validates checkpoint before encode but does not replace the original string"
+      },
+      {
+        "fieldPath": "ProfileSaveEnvelope.activeExpedition.completedRoomResults[].resultJson",
+        "fieldType": "string",
+        "producer": "ExpeditionSaveMapper.CompleteRoom stores the input serialized room-result string",
+        "outerChecksum": "string value; SaveDocuments has no typed result DTO"
+      }
+    ],
+    "nonFieldBridgeProperty": {
+      "declaredOn": "ExpeditionSaveData",
+      "name": "fortunaCharges",
+      "declaration": "public int property over fortuneOfferBookSnapshot.charges",
+      "includedInPublicFieldMap": false,
+      "note": "Property, not a field; no Unity runtime serialization claim."
+    },
+    "explicitlyNotInV5DtoGraph": [
+      "PactSnapshot (pactIds is string[])",
+      "ContractProgressionSnapshot (V5 uses ContractCounterSaveData[]/string IDs)",
+      "ExpeditionSettlementLedger (V5 profile uses processedSettlementRunIds string[])",
+      "FortuneOffer (live domain type; saved graph uses Fortune*Snapshot types)"
+    ]
+  },
+  "v6Comparison": {
+    "frozenDtoSource": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+    "frozenChecksumSource": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+    "pairedFieldComparisons": [
+      {
+        "v5Type": "ProfileSaveEnvelope",
+        "v6FrozenType": "LegacyProfileSaveEnvelopeV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "schemaVersion",
+            "type": "int"
+          },
+          {
+            "name": "contentVersion",
+            "type": "int"
+          },
+          {
+            "name": "generation",
+            "type": "int"
+          },
+          {
+            "name": "sequence",
+            "type": "long"
+          },
+          {
+            "name": "savedAtUtc",
+            "type": "string"
+          },
+          {
+            "name": "checksum",
+            "type": "string"
+          },
+          {
+            "name": "profile",
+            "type": "ProfileSaveData"
+          },
+          {
+            "name": "hasActiveExpedition",
+            "type": "bool"
+          },
+          {
+            "name": "activeExpedition",
+            "type": "ExpeditionSaveData"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "schemaVersion",
+            "type": "int"
+          },
+          {
+            "name": "contentVersion",
+            "type": "int"
+          },
+          {
+            "name": "generation",
+            "type": "int"
+          },
+          {
+            "name": "sequence",
+            "type": "long"
+          },
+          {
+            "name": "savedAtUtc",
+            "type": "string"
+          },
+          {
+            "name": "checksum",
+            "type": "string"
+          },
+          {
+            "name": "profile",
+            "type": "ProfileSaveData"
+          },
+          {
+            "name": "hasActiveExpedition",
+            "type": "bool"
+          },
+          {
+            "name": "activeExpedition",
+            "type": "ExpeditionSaveData"
+          }
+        ]
+      },
+      {
+        "v5Type": "SettingsSaveEnvelope",
+        "v6FrozenType": "LegacySettingsSaveEnvelopeV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "schemaVersion",
+            "type": "int"
+          },
+          {
+            "name": "contentVersion",
+            "type": "int"
+          },
+          {
+            "name": "generation",
+            "type": "int"
+          },
+          {
+            "name": "sequence",
+            "type": "long"
+          },
+          {
+            "name": "savedAtUtc",
+            "type": "string"
+          },
+          {
+            "name": "checksum",
+            "type": "string"
+          },
+          {
+            "name": "settings",
+            "type": "GameSettingsSaveData"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "schemaVersion",
+            "type": "int"
+          },
+          {
+            "name": "contentVersion",
+            "type": "int"
+          },
+          {
+            "name": "generation",
+            "type": "int"
+          },
+          {
+            "name": "sequence",
+            "type": "long"
+          },
+          {
+            "name": "savedAtUtc",
+            "type": "string"
+          },
+          {
+            "name": "checksum",
+            "type": "string"
+          },
+          {
+            "name": "settings",
+            "type": "GameSettingsSaveData"
+          }
+        ]
+      },
+      {
+        "v5Type": "ProfileSaveData",
+        "v6FrozenType": "LegacyProfileSaveDataV6",
+        "fieldNameOrderEqual": false,
+        "normalizedFieldShapesEqual": false,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [
+          {
+            "name": "processedContractProgressEvents",
+            "type": "ContractProgressEventReceiptSaveData[]"
+          }
+        ],
+        "v5Fields": [
+          {
+            "name": "availableRenown",
+            "type": "int"
+          },
+          {
+            "name": "healthUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "energyUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "additionalPotionUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "unlockedRaceIds",
+            "type": "string[]"
+          },
+          {
+            "name": "unlockedStartingKitIds",
+            "type": "string[]"
+          },
+          {
+            "name": "acceptedContractIds",
+            "type": "string[]"
+          },
+          {
+            "name": "claimedContractIds",
+            "type": "string[]"
+          },
+          {
+            "name": "readStoryFragmentIds",
+            "type": "string[]"
+          },
+          {
+            "name": "contractCounters",
+            "type": "ContractCounterSaveData[]"
+          },
+          {
+            "name": "processedSettlementRunIds",
+            "type": "string[]"
+          },
+          {
+            "name": "progressionPurchaseTransactions",
+            "type": "PermanentUpgradePurchaseSaveData[]"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "availableRenown",
+            "type": "int"
+          },
+          {
+            "name": "healthUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "energyUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "additionalPotionUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "unlockedRaceIds",
+            "type": "string[]"
+          },
+          {
+            "name": "unlockedStartingKitIds",
+            "type": "string[]"
+          },
+          {
+            "name": "acceptedContractIds",
+            "type": "string[]"
+          },
+          {
+            "name": "claimedContractIds",
+            "type": "string[]"
+          },
+          {
+            "name": "readStoryFragmentIds",
+            "type": "string[]"
+          },
+          {
+            "name": "contractCounters",
+            "type": "ContractCounterSaveData[]"
+          },
+          {
+            "name": "processedSettlementRunIds",
+            "type": "string[]"
+          },
+          {
+            "name": "processedContractProgressEvents",
+            "type": "ContractProgressEventReceiptSaveData[]"
+          },
+          {
+            "name": "progressionPurchaseTransactions",
+            "type": "PermanentUpgradePurchaseSaveData[]"
+          }
+        ]
+      },
+      {
+        "v5Type": "ContractCounterSaveData",
+        "v6FrozenType": "LegacyContractCounterSaveDataV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "contractId",
+            "type": "string"
+          },
+          {
+            "name": "progress",
+            "type": "int"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "contractId",
+            "type": "string"
+          },
+          {
+            "name": "progress",
+            "type": "int"
+          }
+        ]
+      },
+      {
+        "v5Type": "PermanentUpgradePurchaseSaveData",
+        "v6FrozenType": "LegacyPermanentUpgradePurchaseSaveDataV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "kind",
+            "type": "int"
+          },
+          {
+            "name": "cost",
+            "type": "int"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "kind",
+            "type": "int"
+          },
+          {
+            "name": "cost",
+            "type": "int"
+          }
+        ]
+      },
+      {
+        "v5Type": "ExpeditionSaveData",
+        "v6FrozenType": "LegacyExpeditionSaveDataV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "runId",
+            "type": "string"
+          },
+          {
+            "name": "seed",
+            "type": "uint"
+          },
+          {
+            "name": "generationVersion",
+            "type": "int"
+          },
+          {
+            "name": "contentVersion",
+            "type": "int"
+          },
+          {
+            "name": "classId",
+            "type": "string"
+          },
+          {
+            "name": "raceId",
+            "type": "string"
+          },
+          {
+            "name": "selectedSkillIds",
+            "type": "string[]"
+          },
+          {
+            "name": "startingEquipmentInstanceIds",
+            "type": "string[]"
+          },
+          {
+            "name": "routeSnapshotJson",
+            "type": "string"
+          },
+          {
+            "name": "currentNodeId",
+            "type": "string"
+          },
+          {
+            "name": "visitedNodeIds",
+            "type": "string[]"
+          },
+          {
+            "name": "completedRoomIds",
+            "type": "string[]"
+          },
+          {
+            "name": "completedRoomResults",
+            "type": "ExpeditionRoomCompletionSaveData[]"
+          },
+          {
+            "name": "roomEntryCheckpointJson",
+            "type": "string"
+          },
+          {
+            "name": "inventorySnapshotJson",
+            "type": "string"
+          },
+          {
+            "name": "maximumHealth",
+            "type": "int"
+          },
+          {
+            "name": "currentHealth",
+            "type": "int"
+          },
+          {
+            "name": "maximumEnergy",
+            "type": "int"
+          },
+          {
+            "name": "currentEnergy",
+            "type": "int"
+          },
+          {
+            "name": "healthPotionCharges",
+            "type": "int"
+          },
+          {
+            "name": "frozenPermanentUpgrades",
+            "type": "ExpeditionPermanentUpgradeSnapshotSaveData"
+          },
+          {
+            "name": "hasFrozenPermanentUpgrades",
+            "type": "bool"
+          },
+          {
+            "name": "accumulatedRenown",
+            "type": "int"
+          },
+          {
+            "name": "pactIds",
+            "type": "string[]"
+          },
+          {
+            "name": "fortuneOfferBookSnapshot",
+            "type": "FortuneOfferBookSnapshot"
+          },
+          {
+            "name": "collectedItemIds",
+            "type": "string[]"
+          },
+          {
+            "name": "claimedRewardIds",
+            "type": "string[]"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "runId",
+            "type": "string"
+          },
+          {
+            "name": "seed",
+            "type": "uint"
+          },
+          {
+            "name": "generationVersion",
+            "type": "int"
+          },
+          {
+            "name": "contentVersion",
+            "type": "int"
+          },
+          {
+            "name": "classId",
+            "type": "string"
+          },
+          {
+            "name": "raceId",
+            "type": "string"
+          },
+          {
+            "name": "selectedSkillIds",
+            "type": "string[]"
+          },
+          {
+            "name": "startingEquipmentInstanceIds",
+            "type": "string[]"
+          },
+          {
+            "name": "routeSnapshotJson",
+            "type": "string"
+          },
+          {
+            "name": "currentNodeId",
+            "type": "string"
+          },
+          {
+            "name": "visitedNodeIds",
+            "type": "string[]"
+          },
+          {
+            "name": "completedRoomIds",
+            "type": "string[]"
+          },
+          {
+            "name": "completedRoomResults",
+            "type": "ExpeditionRoomCompletionSaveData[]"
+          },
+          {
+            "name": "roomEntryCheckpointJson",
+            "type": "string"
+          },
+          {
+            "name": "inventorySnapshotJson",
+            "type": "string"
+          },
+          {
+            "name": "maximumHealth",
+            "type": "int"
+          },
+          {
+            "name": "currentHealth",
+            "type": "int"
+          },
+          {
+            "name": "maximumEnergy",
+            "type": "int"
+          },
+          {
+            "name": "currentEnergy",
+            "type": "int"
+          },
+          {
+            "name": "healthPotionCharges",
+            "type": "int"
+          },
+          {
+            "name": "frozenPermanentUpgrades",
+            "type": "ExpeditionPermanentUpgradeSnapshotSaveData"
+          },
+          {
+            "name": "hasFrozenPermanentUpgrades",
+            "type": "bool"
+          },
+          {
+            "name": "accumulatedRenown",
+            "type": "int"
+          },
+          {
+            "name": "pactIds",
+            "type": "string[]"
+          },
+          {
+            "name": "fortuneOfferBookSnapshot",
+            "type": "FortuneOfferBookSnapshot"
+          },
+          {
+            "name": "collectedItemIds",
+            "type": "string[]"
+          },
+          {
+            "name": "claimedRewardIds",
+            "type": "string[]"
+          }
+        ]
+      },
+      {
+        "v5Type": "ExpeditionPermanentUpgradeSnapshotSaveData",
+        "v6FrozenType": "LegacyExpeditionPermanentUpgradeSnapshotSaveDataV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "healthUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "energyUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "additionalPotionUpgradeLevel",
+            "type": "int"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "healthUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "energyUpgradeLevel",
+            "type": "int"
+          },
+          {
+            "name": "additionalPotionUpgradeLevel",
+            "type": "int"
+          }
+        ]
+      },
+      {
+        "v5Type": "ExpeditionRoomCheckpointSaveData",
+        "v6FrozenType": "LegacyExpeditionRoomCheckpointSaveDataV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "roomNodeId",
+            "type": "string"
+          },
+          {
+            "name": "inventorySnapshotJson",
+            "type": "string"
+          },
+          {
+            "name": "maximumHealth",
+            "type": "int"
+          },
+          {
+            "name": "currentHealth",
+            "type": "int"
+          },
+          {
+            "name": "maximumEnergy",
+            "type": "int"
+          },
+          {
+            "name": "currentEnergy",
+            "type": "int"
+          },
+          {
+            "name": "healthPotionCharges",
+            "type": "int"
+          },
+          {
+            "name": "accumulatedRenown",
+            "type": "int"
+          },
+          {
+            "name": "fortuneOfferBookSnapshot",
+            "type": "FortuneOfferBookSnapshot"
+          },
+          {
+            "name": "pactIds",
+            "type": "string[]"
+          },
+          {
+            "name": "collectedItemIds",
+            "type": "string[]"
+          },
+          {
+            "name": "claimedRewardIds",
+            "type": "string[]"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "roomNodeId",
+            "type": "string"
+          },
+          {
+            "name": "inventorySnapshotJson",
+            "type": "string"
+          },
+          {
+            "name": "maximumHealth",
+            "type": "int"
+          },
+          {
+            "name": "currentHealth",
+            "type": "int"
+          },
+          {
+            "name": "maximumEnergy",
+            "type": "int"
+          },
+          {
+            "name": "currentEnergy",
+            "type": "int"
+          },
+          {
+            "name": "healthPotionCharges",
+            "type": "int"
+          },
+          {
+            "name": "accumulatedRenown",
+            "type": "int"
+          },
+          {
+            "name": "fortuneOfferBookSnapshot",
+            "type": "FortuneOfferBookSnapshot"
+          },
+          {
+            "name": "pactIds",
+            "type": "string[]"
+          },
+          {
+            "name": "collectedItemIds",
+            "type": "string[]"
+          },
+          {
+            "name": "claimedRewardIds",
+            "type": "string[]"
+          }
+        ]
+      },
+      {
+        "v5Type": "ExpeditionRoomCompletionSaveData",
+        "v6FrozenType": "LegacyExpeditionRoomCompletionSaveDataV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "roomNodeId",
+            "type": "string"
+          },
+          {
+            "name": "resultId",
+            "type": "string"
+          },
+          {
+            "name": "resultJson",
+            "type": "string"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "roomNodeId",
+            "type": "string"
+          },
+          {
+            "name": "resultId",
+            "type": "string"
+          },
+          {
+            "name": "resultJson",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "v5Type": "GameSettingsSaveData",
+        "v6FrozenType": "LegacyGameSettingsSaveDataV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "languageId",
+            "type": "string"
+          },
+          {
+            "name": "masterVolume",
+            "type": "float"
+          },
+          {
+            "name": "musicVolume",
+            "type": "float"
+          },
+          {
+            "name": "effectsVolume",
+            "type": "float"
+          },
+          {
+            "name": "ambienceVolume",
+            "type": "float"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "languageId",
+            "type": "string"
+          },
+          {
+            "name": "masterVolume",
+            "type": "float"
+          },
+          {
+            "name": "musicVolume",
+            "type": "float"
+          },
+          {
+            "name": "effectsVolume",
+            "type": "float"
+          },
+          {
+            "name": "ambienceVolume",
+            "type": "float"
+          }
+        ]
+      },
+      {
+        "v5Type": "FortuneOfferBookSnapshot",
+        "v6FrozenType": "LegacyFortuneOfferBookSnapshotV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "snapshotVersion",
+            "type": "int"
+          },
+          {
+            "name": "generationVersion",
+            "type": "int"
+          },
+          {
+            "name": "seed",
+            "type": "uint"
+          },
+          {
+            "name": "raceId",
+            "type": "string"
+          },
+          {
+            "name": "charges",
+            "type": "int"
+          },
+          {
+            "name": "offers",
+            "type": "FortuneOfferSnapshot[]"
+          },
+          {
+            "name": "processedGuardianIds",
+            "type": "string[]"
+          },
+          {
+            "name": "rerollReceipts",
+            "type": "FortuneRerollReceiptSnapshot[]"
+          },
+          {
+            "name": "fortuneBrewReceipts",
+            "type": "FortuneBrewReceiptSnapshot[]"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "snapshotVersion",
+            "type": "int"
+          },
+          {
+            "name": "generationVersion",
+            "type": "int"
+          },
+          {
+            "name": "seed",
+            "type": "uint"
+          },
+          {
+            "name": "raceId",
+            "type": "string"
+          },
+          {
+            "name": "charges",
+            "type": "int"
+          },
+          {
+            "name": "offers",
+            "type": "FortuneOfferSnapshot[]"
+          },
+          {
+            "name": "processedGuardianIds",
+            "type": "string[]"
+          },
+          {
+            "name": "rerollReceipts",
+            "type": "FortuneRerollReceiptSnapshot[]"
+          },
+          {
+            "name": "fortuneBrewReceipts",
+            "type": "FortuneBrewReceiptSnapshot[]"
+          }
+        ]
+      },
+      {
+        "v5Type": "FortuneOfferSnapshot",
+        "v6FrozenType": "LegacyFortuneOfferSnapshotV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "offerId",
+            "type": "string"
+          },
+          {
+            "name": "contextId",
+            "type": "string"
+          },
+          {
+            "name": "eligibleOptionIds",
+            "type": "string[]"
+          },
+          {
+            "name": "history",
+            "type": "FortuneOfferHistorySnapshot[]"
+          },
+          {
+            "name": "selectedOptionId",
+            "type": "string"
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "offerId",
+            "type": "string"
+          },
+          {
+            "name": "contextId",
+            "type": "string"
+          },
+          {
+            "name": "eligibleOptionIds",
+            "type": "string[]"
+          },
+          {
+            "name": "history",
+            "type": "FortuneOfferHistorySnapshot[]"
+          },
+          {
+            "name": "selectedOptionId",
+            "type": "string"
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
+          }
+        ]
+      },
+      {
+        "v5Type": "FortuneOfferHistorySnapshot",
+        "v6FrozenType": "LegacyFortuneOfferHistorySnapshotV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "optionIds",
+            "type": "string[]"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "optionIds",
+            "type": "string[]"
+          }
+        ]
+      },
+      {
+        "v5Type": "FortuneRerollReceiptSnapshot",
+        "v6FrozenType": "LegacyFortuneRerollReceiptSnapshotV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "offerId",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": "int"
+          },
+          {
+            "name": "contextId",
+            "type": "string"
+          },
+          {
+            "name": "optionIds",
+            "type": "string[]"
+          },
+          {
+            "name": "selectedOptionId",
+            "type": "string"
+          },
+          {
+            "name": "rerollCount",
+            "type": "int"
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
+          },
+          {
+            "name": "remainingCharges",
+            "type": "int"
+          },
+          {
+            "name": "hasOffer",
+            "type": "bool"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "offerId",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": "int"
+          },
+          {
+            "name": "contextId",
+            "type": "string"
+          },
+          {
+            "name": "optionIds",
+            "type": "string[]"
+          },
+          {
+            "name": "selectedOptionId",
+            "type": "string"
+          },
+          {
+            "name": "rerollCount",
+            "type": "int"
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
+          },
+          {
+            "name": "remainingCharges",
+            "type": "int"
+          },
+          {
+            "name": "hasOffer",
+            "type": "bool"
+          }
+        ]
+      },
+      {
+        "v5Type": "FortuneBrewReceiptSnapshot",
+        "v6FrozenType": "LegacyFortuneBrewReceiptSnapshotV6",
+        "fieldNameOrderEqual": true,
+        "normalizedFieldShapesEqual": true,
+        "v5OnlyFields": [],
+        "v6OnlyFields": [],
+        "v5Fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "itemInstanceId",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": "int"
+          },
+          {
+            "name": "currentCharges",
+            "type": "int"
+          }
+        ],
+        "v6Fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "itemInstanceId",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": "int"
+          },
+          {
+            "name": "currentCharges",
+            "type": "int"
+          }
+        ]
+      }
+    ],
+    "onlyDeclaredV5ToV6FieldAddition": {
+      "path": "LegacyProfileSaveDataV6.processedContractProgressEvents",
+      "v5": "absent",
+      "v6Type": "LegacyContractProgressEventReceiptSaveDataV6[]",
+      "receiptFields": [
+        {
+          "order": 1,
+          "name": "eventId",
+          "type": "string",
+          "declaration": "public string eventId;"
+        },
+        {
+          "order": 2,
+          "name": "progressEvent",
+          "type": "int",
+          "declaration": "public int progressEvent;"
+        }
+      ],
+      "position": "after processedSettlementRunIds and before progressionPurchaseTransactions"
+    },
+    "allOtherPairedShapesEqual": true,
+    "liveV6RuntimeVsFrozen": {
+      "sourcePath": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "sourceSha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+      "comparisons": [
+        {
+          "runtimeType": "ProfileSaveEnvelope",
+          "frozenType": "LegacyProfileSaveEnvelopeV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "schemaVersion",
+              "type": "int"
+            },
+            {
+              "name": "contentVersion",
+              "type": "int"
+            },
+            {
+              "name": "generation",
+              "type": "int"
+            },
+            {
+              "name": "sequence",
+              "type": "long"
+            },
+            {
+              "name": "savedAtUtc",
+              "type": "string"
+            },
+            {
+              "name": "checksum",
+              "type": "string"
+            },
+            {
+              "name": "profile",
+              "type": "ProfileSaveData"
+            },
+            {
+              "name": "hasActiveExpedition",
+              "type": "bool"
+            },
+            {
+              "name": "activeExpedition",
+              "type": "ExpeditionSaveData"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "schemaVersion",
+              "type": "int"
+            },
+            {
+              "name": "contentVersion",
+              "type": "int"
+            },
+            {
+              "name": "generation",
+              "type": "int"
+            },
+            {
+              "name": "sequence",
+              "type": "long"
+            },
+            {
+              "name": "savedAtUtc",
+              "type": "string"
+            },
+            {
+              "name": "checksum",
+              "type": "string"
+            },
+            {
+              "name": "profile",
+              "type": "ProfileSaveData"
+            },
+            {
+              "name": "hasActiveExpedition",
+              "type": "bool"
+            },
+            {
+              "name": "activeExpedition",
+              "type": "ExpeditionSaveData"
+            }
+          ]
+        },
+        {
+          "runtimeType": "SettingsSaveEnvelope",
+          "frozenType": "LegacySettingsSaveEnvelopeV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "schemaVersion",
+              "type": "int"
+            },
+            {
+              "name": "contentVersion",
+              "type": "int"
+            },
+            {
+              "name": "generation",
+              "type": "int"
+            },
+            {
+              "name": "sequence",
+              "type": "long"
+            },
+            {
+              "name": "savedAtUtc",
+              "type": "string"
+            },
+            {
+              "name": "checksum",
+              "type": "string"
+            },
+            {
+              "name": "settings",
+              "type": "GameSettingsSaveData"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "schemaVersion",
+              "type": "int"
+            },
+            {
+              "name": "contentVersion",
+              "type": "int"
+            },
+            {
+              "name": "generation",
+              "type": "int"
+            },
+            {
+              "name": "sequence",
+              "type": "long"
+            },
+            {
+              "name": "savedAtUtc",
+              "type": "string"
+            },
+            {
+              "name": "checksum",
+              "type": "string"
+            },
+            {
+              "name": "settings",
+              "type": "GameSettingsSaveData"
+            }
+          ]
+        },
+        {
+          "runtimeType": "ProfileSaveData",
+          "frozenType": "LegacyProfileSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "availableRenown",
+              "type": "int"
+            },
+            {
+              "name": "healthUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "energyUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "additionalPotionUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "unlockedRaceIds",
+              "type": "string[]"
+            },
+            {
+              "name": "unlockedStartingKitIds",
+              "type": "string[]"
+            },
+            {
+              "name": "acceptedContractIds",
+              "type": "string[]"
+            },
+            {
+              "name": "claimedContractIds",
+              "type": "string[]"
+            },
+            {
+              "name": "readStoryFragmentIds",
+              "type": "string[]"
+            },
+            {
+              "name": "contractCounters",
+              "type": "ContractCounterSaveData[]"
+            },
+            {
+              "name": "processedSettlementRunIds",
+              "type": "string[]"
+            },
+            {
+              "name": "processedContractProgressEvents",
+              "type": "ContractProgressEventReceiptSaveData[]"
+            },
+            {
+              "name": "progressionPurchaseTransactions",
+              "type": "PermanentUpgradePurchaseSaveData[]"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "availableRenown",
+              "type": "int"
+            },
+            {
+              "name": "healthUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "energyUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "additionalPotionUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "unlockedRaceIds",
+              "type": "string[]"
+            },
+            {
+              "name": "unlockedStartingKitIds",
+              "type": "string[]"
+            },
+            {
+              "name": "acceptedContractIds",
+              "type": "string[]"
+            },
+            {
+              "name": "claimedContractIds",
+              "type": "string[]"
+            },
+            {
+              "name": "readStoryFragmentIds",
+              "type": "string[]"
+            },
+            {
+              "name": "contractCounters",
+              "type": "ContractCounterSaveData[]"
+            },
+            {
+              "name": "processedSettlementRunIds",
+              "type": "string[]"
+            },
+            {
+              "name": "processedContractProgressEvents",
+              "type": "ContractProgressEventReceiptSaveData[]"
+            },
+            {
+              "name": "progressionPurchaseTransactions",
+              "type": "PermanentUpgradePurchaseSaveData[]"
+            }
+          ]
+        },
+        {
+          "runtimeType": "ContractCounterSaveData",
+          "frozenType": "LegacyContractCounterSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "contractId",
+              "type": "string"
+            },
+            {
+              "name": "progress",
+              "type": "int"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "contractId",
+              "type": "string"
+            },
+            {
+              "name": "progress",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "runtimeType": "ContractProgressEventReceiptSaveData",
+          "frozenType": "LegacyContractProgressEventReceiptSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "eventId",
+              "type": "string"
+            },
+            {
+              "name": "progressEvent",
+              "type": "int"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "eventId",
+              "type": "string"
+            },
+            {
+              "name": "progressEvent",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "runtimeType": "PermanentUpgradePurchaseSaveData",
+          "frozenType": "LegacyPermanentUpgradePurchaseSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "transactionId",
+              "type": "string"
+            },
+            {
+              "name": "kind",
+              "type": "int"
+            },
+            {
+              "name": "cost",
+              "type": "int"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "transactionId",
+              "type": "string"
+            },
+            {
+              "name": "kind",
+              "type": "int"
+            },
+            {
+              "name": "cost",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "runtimeType": "ExpeditionSaveData",
+          "frozenType": "LegacyExpeditionSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "runId",
+              "type": "string"
+            },
+            {
+              "name": "seed",
+              "type": "uint"
+            },
+            {
+              "name": "generationVersion",
+              "type": "int"
+            },
+            {
+              "name": "contentVersion",
+              "type": "int"
+            },
+            {
+              "name": "classId",
+              "type": "string"
+            },
+            {
+              "name": "raceId",
+              "type": "string"
+            },
+            {
+              "name": "selectedSkillIds",
+              "type": "string[]"
+            },
+            {
+              "name": "startingEquipmentInstanceIds",
+              "type": "string[]"
+            },
+            {
+              "name": "routeSnapshotJson",
+              "type": "string"
+            },
+            {
+              "name": "currentNodeId",
+              "type": "string"
+            },
+            {
+              "name": "visitedNodeIds",
+              "type": "string[]"
+            },
+            {
+              "name": "completedRoomIds",
+              "type": "string[]"
+            },
+            {
+              "name": "completedRoomResults",
+              "type": "ExpeditionRoomCompletionSaveData[]"
+            },
+            {
+              "name": "roomEntryCheckpointJson",
+              "type": "string"
+            },
+            {
+              "name": "inventorySnapshotJson",
+              "type": "string"
+            },
+            {
+              "name": "maximumHealth",
+              "type": "int"
+            },
+            {
+              "name": "currentHealth",
+              "type": "int"
+            },
+            {
+              "name": "maximumEnergy",
+              "type": "int"
+            },
+            {
+              "name": "currentEnergy",
+              "type": "int"
+            },
+            {
+              "name": "healthPotionCharges",
+              "type": "int"
+            },
+            {
+              "name": "frozenPermanentUpgrades",
+              "type": "ExpeditionPermanentUpgradeSnapshotSaveData"
+            },
+            {
+              "name": "hasFrozenPermanentUpgrades",
+              "type": "bool"
+            },
+            {
+              "name": "accumulatedRenown",
+              "type": "int"
+            },
+            {
+              "name": "pactIds",
+              "type": "string[]"
+            },
+            {
+              "name": "fortuneOfferBookSnapshot",
+              "type": "FortuneOfferBookSnapshot"
+            },
+            {
+              "name": "collectedItemIds",
+              "type": "string[]"
+            },
+            {
+              "name": "claimedRewardIds",
+              "type": "string[]"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "runId",
+              "type": "string"
+            },
+            {
+              "name": "seed",
+              "type": "uint"
+            },
+            {
+              "name": "generationVersion",
+              "type": "int"
+            },
+            {
+              "name": "contentVersion",
+              "type": "int"
+            },
+            {
+              "name": "classId",
+              "type": "string"
+            },
+            {
+              "name": "raceId",
+              "type": "string"
+            },
+            {
+              "name": "selectedSkillIds",
+              "type": "string[]"
+            },
+            {
+              "name": "startingEquipmentInstanceIds",
+              "type": "string[]"
+            },
+            {
+              "name": "routeSnapshotJson",
+              "type": "string"
+            },
+            {
+              "name": "currentNodeId",
+              "type": "string"
+            },
+            {
+              "name": "visitedNodeIds",
+              "type": "string[]"
+            },
+            {
+              "name": "completedRoomIds",
+              "type": "string[]"
+            },
+            {
+              "name": "completedRoomResults",
+              "type": "ExpeditionRoomCompletionSaveData[]"
+            },
+            {
+              "name": "roomEntryCheckpointJson",
+              "type": "string"
+            },
+            {
+              "name": "inventorySnapshotJson",
+              "type": "string"
+            },
+            {
+              "name": "maximumHealth",
+              "type": "int"
+            },
+            {
+              "name": "currentHealth",
+              "type": "int"
+            },
+            {
+              "name": "maximumEnergy",
+              "type": "int"
+            },
+            {
+              "name": "currentEnergy",
+              "type": "int"
+            },
+            {
+              "name": "healthPotionCharges",
+              "type": "int"
+            },
+            {
+              "name": "frozenPermanentUpgrades",
+              "type": "ExpeditionPermanentUpgradeSnapshotSaveData"
+            },
+            {
+              "name": "hasFrozenPermanentUpgrades",
+              "type": "bool"
+            },
+            {
+              "name": "accumulatedRenown",
+              "type": "int"
+            },
+            {
+              "name": "pactIds",
+              "type": "string[]"
+            },
+            {
+              "name": "fortuneOfferBookSnapshot",
+              "type": "FortuneOfferBookSnapshot"
+            },
+            {
+              "name": "collectedItemIds",
+              "type": "string[]"
+            },
+            {
+              "name": "claimedRewardIds",
+              "type": "string[]"
+            }
+          ]
+        },
+        {
+          "runtimeType": "ExpeditionPermanentUpgradeSnapshotSaveData",
+          "frozenType": "LegacyExpeditionPermanentUpgradeSnapshotSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "healthUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "energyUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "additionalPotionUpgradeLevel",
+              "type": "int"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "healthUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "energyUpgradeLevel",
+              "type": "int"
+            },
+            {
+              "name": "additionalPotionUpgradeLevel",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "runtimeType": "ExpeditionRoomCheckpointSaveData",
+          "frozenType": "LegacyExpeditionRoomCheckpointSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "roomNodeId",
+              "type": "string"
+            },
+            {
+              "name": "inventorySnapshotJson",
+              "type": "string"
+            },
+            {
+              "name": "maximumHealth",
+              "type": "int"
+            },
+            {
+              "name": "currentHealth",
+              "type": "int"
+            },
+            {
+              "name": "maximumEnergy",
+              "type": "int"
+            },
+            {
+              "name": "currentEnergy",
+              "type": "int"
+            },
+            {
+              "name": "healthPotionCharges",
+              "type": "int"
+            },
+            {
+              "name": "accumulatedRenown",
+              "type": "int"
+            },
+            {
+              "name": "fortuneOfferBookSnapshot",
+              "type": "FortuneOfferBookSnapshot"
+            },
+            {
+              "name": "pactIds",
+              "type": "string[]"
+            },
+            {
+              "name": "collectedItemIds",
+              "type": "string[]"
+            },
+            {
+              "name": "claimedRewardIds",
+              "type": "string[]"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "roomNodeId",
+              "type": "string"
+            },
+            {
+              "name": "inventorySnapshotJson",
+              "type": "string"
+            },
+            {
+              "name": "maximumHealth",
+              "type": "int"
+            },
+            {
+              "name": "currentHealth",
+              "type": "int"
+            },
+            {
+              "name": "maximumEnergy",
+              "type": "int"
+            },
+            {
+              "name": "currentEnergy",
+              "type": "int"
+            },
+            {
+              "name": "healthPotionCharges",
+              "type": "int"
+            },
+            {
+              "name": "accumulatedRenown",
+              "type": "int"
+            },
+            {
+              "name": "fortuneOfferBookSnapshot",
+              "type": "FortuneOfferBookSnapshot"
+            },
+            {
+              "name": "pactIds",
+              "type": "string[]"
+            },
+            {
+              "name": "collectedItemIds",
+              "type": "string[]"
+            },
+            {
+              "name": "claimedRewardIds",
+              "type": "string[]"
+            }
+          ]
+        },
+        {
+          "runtimeType": "ExpeditionRoomCompletionSaveData",
+          "frozenType": "LegacyExpeditionRoomCompletionSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "roomNodeId",
+              "type": "string"
+            },
+            {
+              "name": "resultId",
+              "type": "string"
+            },
+            {
+              "name": "resultJson",
+              "type": "string"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "roomNodeId",
+              "type": "string"
+            },
+            {
+              "name": "resultId",
+              "type": "string"
+            },
+            {
+              "name": "resultJson",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "runtimeType": "GameSettingsSaveData",
+          "frozenType": "LegacyGameSettingsSaveDataV6",
+          "fieldNameOrderEqual": true,
+          "normalizedFieldShapesEqual": true,
+          "runtimeFields": [
+            {
+              "name": "languageId",
+              "type": "string"
+            },
+            {
+              "name": "masterVolume",
+              "type": "float"
+            },
+            {
+              "name": "musicVolume",
+              "type": "float"
+            },
+            {
+              "name": "effectsVolume",
+              "type": "float"
+            },
+            {
+              "name": "ambienceVolume",
+              "type": "float"
+            }
+          ],
+          "frozenFields": [
+            {
+              "name": "languageId",
+              "type": "string"
+            },
+            {
+              "name": "masterVolume",
+              "type": "float"
+            },
+            {
+              "name": "musicVolume",
+              "type": "float"
+            },
+            {
+              "name": "effectsVolume",
+              "type": "float"
+            },
+            {
+              "name": "ambienceVolume",
+              "type": "float"
+            }
+          ]
+        }
+      ],
+      "allShapesEqual": true
+    },
+    "v6InspectorRulesFromSource": {
+      "schemaVersion": 1,
+      "contentVersion": 6,
+      "checksumEmptyInProjection": true,
+      "activePayloadClonedOnlyWhenMarkerTrueAndNonNull": true,
+      "routeInventoryCheckpointStringsRemainStringFields": true
+    },
+    "currentRuntimeTypesWorthVersioningSeparately": [
+      {
+        "type": "ProfileSaveData",
+        "currentV6Addition": "processedContractProgressEvents[]"
+      },
+      {
+        "type": "ExpeditionSaveData",
+        "V5AndV6FieldShapeEqual": true,
+        "directTypedChild": "FortuneOfferBookSnapshot"
+      },
+      {
+        "type": "FortuneOfferBookSnapshot and child snapshots",
+        "v5AndV6RootSnapshotSha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+        "frozenV6UsesCopies": true
+      },
+      {
+        "type": "GameSettingsSaveData",
+        "V5AndV6FieldShapeEqual": true
+      },
+      {
+        "type": "ExpeditionInventorySnapshot",
+        "savedInto": "inventorySnapshotJson string",
+        "V6FrozenOuterDTO": "retains it as a string; has no typed frozen inventory graph"
+      }
+    ],
+    "futureBump": "Source facts only; no decision about which live fields a later version should retain."
+  },
+  "minimumHarnessFreezeSet": {
+    "purpose": "Exact V5 writer/DTO/checkpoint/nested-snapshot contract plus Unity serializer environment; inject deterministic strings and an in-memory ISaveStore.",
+    "count": 14,
+    "files": [
+      {
+        "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+        "bytes": 65551,
+        "sha256": "a3cbae2a1bad70f58f60c4802258367a72f155753817b91f82e6535b27c2d8cc",
+        "gitBlobSha": "84c48271920a1aa453e2c33ad280a39881890934"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "bytes": 34415,
+        "sha256": "0cbedf7cf7f03c91c74aa3d4312090c19bb0d80e6f2847887d5d6c14a6be96ca",
+        "gitBlobSha": "f8630a252ec692df371a430756686db927e631cb"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+        "bytes": 17775,
+        "sha256": "e8c6bf1eec595c3f7c7ba5881583980312ca8fdecb5b8a0a849315aa11a3ab9b",
+        "gitBlobSha": "c024a305a080a93fb6cfc961bff92a2d3c9bf290"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+        "bytes": 786,
+        "sha256": "35293ee134ed543c83914eae2109c350f0dd86bc66719de207f87c48e39cc437",
+        "gitBlobSha": "9677253e647ea4b7805fc9fef3421f0c57e3ab34"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "bytes": 2163,
+        "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+        "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+        "bytes": 2538,
+        "sha256": "7712b104e5e3e66611c6ee06b160f9a07fe9732342de772bac1b2a2f3c155b59",
+        "gitBlobSha": "946ba5e1ed03733563b13fda5e01a45ffdeafaae"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+        "bytes": 646,
+        "sha256": "64cd1b8904009884c823d6e737b5a934c67e7873d8887b9c785d0ce6134f1014",
+        "gitBlobSha": "673af38af1caca550343905c56aa9c26a6f8441d"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+        "bytes": 647,
+        "sha256": "d84dafaecc9746fcbea873573c34aaa3567e098b4e951dce72e81fe8d52f04c8",
+        "gitBlobSha": "9ec486ad1ae4aab1fca86adaab8812fbe7d5a1b2"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+        "bytes": 864,
+        "sha256": "f75fa31fe27c5ebdae3933c6da5a72ed440e835acb8f281cb2753fd1b91d1192",
+        "gitBlobSha": "6358eaa063e856a8c3362b450624de1bdbb46214"
+      },
+      {
+        "path": "ProjectSettings/ProjectVersion.txt",
+        "bytes": 83,
+        "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+        "gitBlobSha": "99bacd03c32572309212173ef6a8e7dab6cd92e6"
+      },
+      {
+        "path": "Packages/manifest.json",
+        "bytes": 2165,
+        "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+        "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1"
+      },
+      {
+        "path": "Packages/packages-lock.json",
+        "bytes": 14044,
+        "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+        "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+        "bytes": 484,
+        "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+        "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4"
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+        "bytes": 337,
+        "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+        "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b"
+      }
+    ],
+    "notRequiredForThisSerdeBoundary": [
+      "FileSaveStore.cs when using an in-memory store",
+      "route/inventory gameplay producers when opaque JSON string inputs are fixed"
+    ],
+    "compileLimit": "This is the minimum serialization-contract freeze set, not a claim that these 14 files alone compile the full SaveRepository or all validation dependencies; the recovered source package contains the exact 226-file source tree."
+  },
+  "limits": [
+    "Only source/declaration evidence; no Unity editor, JsonUtility, tests, or checksum ran.",
+    "No JSON preimage, checksum value, fixture, golden, new format, or compatibility acceptance claimed.",
+    "V5 authority is the a2590e1 source package; V6 comparison reference is the exact 345fb5a7 source proof."
+  ]
+}

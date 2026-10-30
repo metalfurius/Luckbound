@@ -105,6 +105,9 @@ namespace Luckbound.App
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
                 if (_pendingFortuneMutation == null)
                     return new ExpeditionMutationCommitResult<T>(default, false, false,
                         "There is no pending Fortune mutation.");
@@ -125,6 +128,9 @@ namespace Luckbound.App
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
                 if (_pendingFortuneMutation != null)
                 {
                     if (_pendingExpeditionCandidate == null && _pendingExpeditionSessionPublication == null)
@@ -186,6 +192,9 @@ namespace Luckbound.App
 
         private async Task<ExpeditionMutationCommitResult<T>> RetryPendingFortuneMutationUnderGateAsync<T>(T outcome)
         {
+            if (!CanWriteProfile)
+                return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
             if (!HasPendingExpeditionWrite)
             {
                 _pendingFortuneMutation = null;

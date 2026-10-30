@@ -1,0 +1,14 @@
+{
+  "assembly": "Luckbound.PlayMode.Tests",
+  "sourceCount": 70,
+  "newAppTestSha256": "a8d037b1512f10bd45341cb9ed9a338a86ed6d491b6a064546018885cb168ff9",
+  "newAppMetaSha256": "b57ced909b32e21cb9de09a1c82691d9e759e897b919e1884ed6d9d3240a15a2",
+  "newAppMetaGuidUnique": "0adbfeba01b447cc8f2f4b1cb392224b",
+  "newRepositoryTestSha256": "3b560349705615129101287e7715dbca6c4d3aea507a1729c2e66099725f662e",
+  "c08CandidateSha256": "196563e266ad719effe9a793c484c92e60a763d939d9a3210292272625aa891f",
+  "dependency": "Exact App47 r2 compile",
+  "exitCode": 0,
+  "logSha256": "105ea45147670c95558b691f79b8cac2202f4898a0cb3dc88fcd9570b9c17194",
+  "unityExecuted": false,
+  "nunitExecuted": false
+}

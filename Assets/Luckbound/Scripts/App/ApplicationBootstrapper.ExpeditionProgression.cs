@@ -125,6 +125,9 @@ namespace Luckbound.App
             bool retainMutationGate = false;
             try
             {
+                if (!CanWriteProfile)
+                    return RoomAdvanceCommitResult.Failure(false, ProfileWriteBlockReason);
+
                 if (_pendingRoomAdvance != null)
                 {
                     if (!_pendingRoomAdvance.Matches(transitionController, sourceRoomId, targetNodeId, resultId,
@@ -140,6 +143,8 @@ namespace Luckbound.App
                     return RoomAdvanceCommitResult.Failure(false,
                         "Another profile mutation is in progress; retry the room advance after it settles.");
                 mutationGateAcquired = true;
+                if (!CanWriteProfile)
+                    return RoomAdvanceCommitResult.Failure(false, ProfileWriteBlockReason);
                 if (_pendingRoomAdvance != null)
                 {
                     if (!_pendingRoomAdvance.Matches(transitionController, sourceRoomId, targetNodeId, resultId,
@@ -337,6 +342,9 @@ namespace Luckbound.App
         /// <summary>Retries only the exact pending room candidate and its prepared room transition.</summary>
         public async Task<RoomAdvanceCommitResult> RetryPendingRoomAdvanceAsync()
         {
+            if (!CanWriteProfile)
+                return RoomAdvanceCommitResult.Failure(false, ProfileWriteBlockReason);
+
             PendingRoomAdvance pending = _pendingRoomAdvance;
             if (pending == null)
             {
@@ -353,6 +361,9 @@ namespace Luckbound.App
 
         private async Task<RoomAdvanceCommitResult> RetryPendingRoomAdvanceUnderHeldGateAsync()
         {
+            if (!CanWriteProfile)
+                return RoomAdvanceCommitResult.Failure(false, ProfileWriteBlockReason);
+
             PendingRoomAdvance pending = _pendingRoomAdvance;
             if (pending == null)
                 return RoomAdvanceCommitResult.Failure(false, "There is no pending room advance.");

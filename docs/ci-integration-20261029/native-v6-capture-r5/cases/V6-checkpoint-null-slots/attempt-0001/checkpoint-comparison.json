@@ -1,0 +1,7 @@
+{
+    "role": "checkpoint-null-boundary-dto-json-separated-not-envelope",
+    "liveLegacyBytesEqual": true,
+    "liveByteCount": 3821,
+    "legacyByteCount": 3821,
+    "claim": "Separate DTO serializer equivalence only; no profile/settings envelope was produced."
+}

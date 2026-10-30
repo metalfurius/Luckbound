@@ -199,6 +199,9 @@ namespace Luckbound.App
                 hasPendingPublication, hasPendingRoomAdvance, roomAdvanceInFlight,
                 hasPendingSessionMutation, hasPauseProvider, hasSessionPublication);
 
+            if (!CanWriteProfile)
+                return CreateReadinessAuthority(ExpeditionReadinessAuthorityState.Unavailable,
+                    null, null, revisionAfter, flags);
             if (!ReferenceEquals(registration.Application, this))
                 return CreateReadinessAuthority(ExpeditionReadinessAuthorityState.ContextMismatch,
                     null, null, revisionAfter, flags);

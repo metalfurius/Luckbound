@@ -200,8 +200,11 @@ namespace Luckbound.Tests.PlayMode
                     "; resin=" + inventory.GetMaterialCount(MaterialKind.DarkResin));
                 Assert.That(rejectionPreservesGameState, Is.True);
 
-                Task<SaveLoadResult<ProfileSaveEnvelope>> durableLoad = new SaveRepository(backingStore).LoadProfileAsync();
+                var diagnosticRepository = new SaveRepository(backingStore);
+                Task<SaveLoadResult<ProfileSaveEnvelope>> durableLoad = diagnosticRepository.LoadProfileAsync();
                 while (!durableLoad.IsCompleted) yield return null;
+                Assert.That(durableLoad.Result.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing),
+                    "A fresh repository loading the active V6 bytes must expose the protected capability.");
                 ProfileSaveEnvelope durableProfile = durableLoad.Result.Data;
                 ExpeditionSaveData durableExpedition = durableProfile == null ? null : durableProfile.activeExpedition;
                 ExpeditionInventorySnapshot durableSnapshot = durableExpedition == null ? null :
@@ -217,34 +220,110 @@ namespace Luckbound.Tests.PlayMode
                     "; successReceipts=" + CountCraftReceipts(durableSnapshot, CraftingOperationStatus.Succeeded) +
                     "; rejectionReceipts=" + CountCraftReceipts(durableSnapshot, CraftingOperationStatus.RejectedInsufficientMaterials));
                 Assert.That(durableReceiptsUnique, Is.True);
+                string durableProfileJson = diagnosticRepository.ExportLoadedProfileJson();
+                Task<SaveStorageSnapshot> storedBeforeRestartTask = backingStore.ReadAsync(SaveDocument.Profile);
+                while (!storedBeforeRestartTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storedBeforeRestart = storedBeforeRestartTask.Result;
+                Assert.That(durableProfileJson, Is.EqualTo(storedBeforeRestart.PrimaryJson),
+                    "The selected durable profile text must match the saved active snapshot exactly.");
+                int profileWritesBeforeRestart = failingStore.ProfileWriteAttempts;
 
-                evidence.RecordInput(8, "ProcessRestart", "Destroy app, load Bootstrap from the same isolated profile");
+                evidence.RecordInput(8, "ProcessRestart", "Destroy app, load the active V6 profile read-only from the same isolated store");
                 UnityEngine.Object.Destroy(app.gameObject);
                 yield return null;
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
                 for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
-                    !ApplicationBootstrapper.Instance.SaveDataReady || ApplicationBootstrapper.Instance.ActiveRun == null ||
-                    SceneManager.GetActiveScene().name != "Expedition"); frame++)
+                    !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
                     yield return null;
                 app = ApplicationBootstrapper.Instance;
-                ExpeditionInventory restoredInventory = app == null || app.ActiveRun == null ? null : app.ActiveRun.Inventory;
                 ExpeditionSaveData restoredExpedition = app == null ? null : app.ActiveExpedition;
-                ExpeditionInventorySnapshot restoredSnapshot = restoredInventory == null ? null : restoredInventory.CreateSnapshot();
-                bool restartRestoresImmutableRoomEntry = app != null && app.SaveDataReady && restoredInventory != null &&
-                    restoredExpedition != null && restoredExpedition.currentNodeId == roomEntry.currentNodeId &&
-                    restoredInventory.QuickConsumable != null && restoredInventory.QuickConsumable.Quantity == 2 &&
-                    restoredInventory.GetMaterialCount(MaterialKind.UmbraHerb) == 0 &&
-                    restoredInventory.GetMaterialCount(MaterialKind.DarkResin) == 0 &&
-                    app.ContractProgression.GetProgress("CT04") == 1 &&
-                    !restoredSnapshot.transactions.Any(item => item.transactionId == committedCraftId.ToString()) &&
-                    !restoredSnapshot.transactions.Any(item => item.transactionId == rejectedCraftId.ToString());
-                evidence.RecordAssertion("Restart restores the immutable entry checkpoint for this unfinished room",
-                    restartRestoresImmutableRoomEntry, "entry inventory has 2 potions, no gathered materials or in-room craft receipts",
-                    restoredInventory == null ? "active run was not restored" :
-                    "potions=" + restoredInventory.QuickConsumable?.Quantity +
-                    "; herbs=" + restoredInventory.GetMaterialCount(MaterialKind.UmbraHerb) +
-                    "; resin=" + restoredInventory.GetMaterialCount(MaterialKind.DarkResin));
-                Assert.That(restartRestoresImmutableRoomEntry, Is.True);
+                const string legacyDiagnostic = "LegacyEncounterPinMissing";
+                const string legacyMessage = "La expedición guardada se conserva, pero no puede continuarse porque falta la referencia de su catálogo de encuentros.";
+                ExpeditionInventorySnapshot restoredSnapshot = restoredExpedition == null ? null :
+                    JsonUtility.FromJson<ExpeditionInventorySnapshot>(restoredExpedition.inventorySnapshotJson);
+                bool restartPreservesWrittenSnapshot = app != null && app.SaveDataReady &&
+                    app.ProfileLoadStatus == SaveLoadStatus.LoadedPrimary &&
+                    app.ProfileAccess == SaveDataAccess.ReadOnlyLegacyEncounterPinMissing && !app.CanWriteProfile &&
+                    !app.CanStartNewExpedition && !app.CanContinueExpedition && app.HasActiveExpedition && app.ActiveRun == null &&
+                    app.ActiveExpeditionLoadError == legacyDiagnostic && app.ProfileLoadMessage == legacyMessage &&
+                    SceneManager.GetActiveScene().name == "Menu" && restoredExpedition != null && durableExpedition != null &&
+                    JsonUtility.ToJson(restoredExpedition, false) == JsonUtility.ToJson(durableExpedition, false) &&
+                    restoredExpedition.currentNodeId == roomEntry.currentNodeId &&
+                    durableExpedition.roomEntryCheckpointJson == roomEntry.roomEntryCheckpointJson &&
+                    restoredExpedition.roomEntryCheckpointJson == durableExpedition.roomEntryCheckpointJson &&
+                    restoredExpedition.healthPotionCharges == 3 && restoredSnapshot != null &&
+                    CountCraftReceipts(restoredSnapshot, CraftingOperationStatus.Succeeded) == 1 &&
+                    CountCraftReceipts(restoredSnapshot, CraftingOperationStatus.RejectedInsufficientMaterials) == 1 &&
+                    app.ContractProgression.GetProgress("CT04") == 1;
+                evidence.RecordAssertion("Restart preserves the active V6 craft receipts and entry checkpoint without applying App rollback",
+                    restartPreservesWrittenSnapshot, "Menu with no ActiveRun; 3 potions and both receipts remain in the stored snapshot",
+                    restoredExpedition == null ? "saved snapshot missing" :
+                    "scene=" + SceneManager.GetActiveScene().name + "; access=" + app.ProfileAccess +
+                    "; run=" + (app.ActiveRun == null ? "none" : app.ActiveRun.RunId.ToString()) +
+                    "; potions=" + restoredExpedition.healthPotionCharges +
+                    "; successReceipts=" + CountCraftReceipts(restoredSnapshot, CraftingOperationStatus.Succeeded) +
+                    "; rejectedReceipts=" + CountCraftReceipts(restoredSnapshot, CraftingOperationStatus.RejectedInsufficientMaterials));
+                Assert.That(restartPreservesWrittenSnapshot, Is.True);
+
+                var postRestartRepository = new SaveRepository(backingStore);
+                Task<SaveLoadResult<ProfileSaveEnvelope>> postRestartLoad = postRestartRepository.LoadProfileAsync();
+                while (!postRestartLoad.IsCompleted) yield return null;
+                Assert.That(postRestartLoad.Result.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                Assert.That(postRestartRepository.ExportLoadedProfileJson(), Is.EqualTo(durableProfileJson));
+                Task<SaveStorageSnapshot> storedAfterRestartTask = backingStore.ReadAsync(SaveDocument.Profile);
+                while (!storedAfterRestartTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storedAfterRestart = storedAfterRestartTask.Result;
+                Assert.That(storedAfterRestart.PrimaryJson, Is.EqualTo(storedBeforeRestart.PrimaryJson));
+                Assert.That(storedAfterRestart.BackupJson, Is.EqualTo(storedBeforeRestart.BackupJson));
+                Assert.That(failingStore.ProfileWriteAttempts, Is.EqualTo(profileWritesBeforeRestart),
+                    "Loading the protected profile must not write, repair, or rotate the active snapshot.");
+
+                string profileBeforeBlockedCalls = JsonUtility.ToJson(app.Profile, false);
+                string expeditionBeforeBlockedCalls = JsonUtility.ToJson(app.ActiveExpedition, false);
+                long revisionBeforeBlockedCalls = app.ActiveExpeditionRevision;
+                int renownBeforeBlockedCalls = app.AvailableRenown;
+                Task<SaveWriteResult> blockedStart = app.BeginExpeditionAsync(null);
+                while (!blockedStart.IsCompleted) yield return null;
+                Assert.That(blockedStart.Result.Succeeded, Is.False);
+                Assert.Throws<InvalidOperationException>(() => app.ContinueActiveExpedition());
+                Task<SaveWriteResult> blockedSnapshot = app.SaveActiveExpeditionStateAsync(app.ActiveExpedition);
+                while (!blockedSnapshot.IsCompleted) yield return null;
+                Task<CraftingCommitResult> blockedCraft = app.CraftActiveExpeditionAsync(
+                    HealthPotionRecipeId, TransactionId.New());
+                while (!blockedCraft.IsCompleted) yield return null;
+                Task<CraftingCommitResult> blockedCraftRetry = app.RetryPendingCraftingAsync();
+                while (!blockedCraftRetry.IsCompleted) yield return null;
+                Task<SaveWriteResult> blockedWriteRetry = app.RetryPendingExpeditionWriteAsync();
+                while (!blockedWriteRetry.IsCompleted) yield return null;
+                Task<ExpeditionSettlementCommitResult> blockedSettlement = app.SettleActiveRunAsync(ExpeditionOutcome.Abandoned, 0);
+                while (!blockedSettlement.IsCompleted) yield return null;
+                Task<ExpeditionSettlementCommitResult> blockedSettlementRetry = app.RetryPendingSettlementAsync();
+                while (!blockedSettlementRetry.IsCompleted) yield return null;
+                Task<SaveStorageSnapshot> storedAfterCallsTask = backingStore.ReadAsync(SaveDocument.Profile);
+                while (!storedAfterCallsTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storedAfterCalls = storedAfterCallsTask.Result;
+                bool protectedApisDidNotMutate = !blockedSnapshot.Result.Succeeded &&
+                    !blockedCraft.Result.Persisted && !blockedCraft.Result.Pending && blockedCraft.Result.Outcome == null &&
+                    !blockedCraftRetry.Result.Persisted && !blockedCraftRetry.Result.Pending && blockedCraftRetry.Result.Outcome == null &&
+                    !blockedWriteRetry.Result.Succeeded && blockedSettlement.Result.Receipt == null &&
+                    !blockedSettlement.Result.Persisted && !blockedSettlement.Result.Pending &&
+                    blockedSettlementRetry.Result.Receipt == null && !blockedSettlementRetry.Result.Persisted &&
+                    !blockedSettlementRetry.Result.Pending &&
+                    JsonUtility.ToJson(app.Profile, false) == profileBeforeBlockedCalls &&
+                    JsonUtility.ToJson(app.ActiveExpedition, false) == expeditionBeforeBlockedCalls &&
+                    app.ActiveExpeditionRevision == revisionBeforeBlockedCalls && app.AvailableRenown == renownBeforeBlockedCalls &&
+                    app.HasActiveExpedition && app.ActiveRun == null && !app.HasPendingExpeditionWrite &&
+                    !app.HasPendingCraftingWrite && !app.HasPendingSettlement &&
+                    SceneManager.GetActiveScene().name == "Menu" &&
+                    storedAfterCalls.PrimaryJson == storedBeforeRestart.PrimaryJson &&
+                    storedAfterCalls.BackupJson == storedBeforeRestart.BackupJson &&
+                    failingStore.ProfileWriteAttempts == profileWritesBeforeRestart;
+                evidence.RecordAssertion("Protected crafting and settlement APIs reject without changing receipts, inventory, ledger, or stored bytes",
+                    protectedApisDidNotMutate, "no outcome/receipt/payment; active snapshot and both profile files stay exact",
+                    "start=" + blockedStart.Result.Succeeded + "; snapshot=" + blockedSnapshot.Result.Succeeded +
+                    "; craft=" + blockedCraft.Result.Persisted + "; settlement=" + blockedSettlement.Result.Persisted +
+                    "; writes=" + (failingStore.ProfileWriteAttempts - profileWritesBeforeRestart));
+                Assert.That(protectedApisDidNotMutate, Is.True);
 
                 Assert.That(evidence.Complete(), Is.Zero, "E02 crafting scenario failed. Evidence: " + evidence.ReportPath);
             }
@@ -336,19 +415,27 @@ namespace Luckbound.Tests.PlayMode
             public FailOnceProfileWriteStore(ISaveStore inner) { _inner = inner; }
             public string LastSuccessfulProfileJson { get; private set; }
             public string LastFailedProfileJson { get; private set; }
+            public int ProfileWriteAttempts { get; private set; }
             public void FailNextProfileWrite() => _failNextProfileWrite = true;
             public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
 
             public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
             {
-                if (document == SaveDocument.Profile && _failNextProfileWrite)
+                if (document == SaveDocument.Profile)
                 {
-                    _failNextProfileWrite = false;
-                    LastFailedProfileJson = json;
-                    throw new IOException("simulated profile storage failure");
+                    ProfileWriteAttempts++;
+                    if (_failNextProfileWrite)
+                    {
+                        _failNextProfileWrite = false;
+                        LastFailedProfileJson = json;
+                        throw new IOException("simulated profile storage failure");
+                    }
                 }
                 await _inner.WriteAsync(document, json, lastKnownGoodPrimaryJson);
-                if (document == SaveDocument.Profile) LastSuccessfulProfileJson = json;
+                if (document == SaveDocument.Profile)
+                {
+                    LastSuccessfulProfileJson = json;
+                }
             }
         }
     }

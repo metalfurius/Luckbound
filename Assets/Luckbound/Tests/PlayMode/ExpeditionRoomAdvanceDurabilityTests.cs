@@ -976,18 +976,6 @@ namespace Luckbound.Tests.PlayMode
                 int successfulWrites = store.ProfileWriteSuccesses;
                 int targetVisitedCount = app.ActiveExpedition.visitedNodeIds.Count(node => node == targetNodeId);
 
-                DestroyRoomWorld(world);
-                world = null;
-                pauseProviderBinding.Dispose();
-                pauseProviderBinding = null;
-                DestroyApplication();
-                yield return null;
-                yield return StartApplication(value => app = value, "Expedition");
-                pauseProviderBinding = BindNoopSimulationPauseLeaseProvider(app);
-                ExpeditionSaveData restored = app.ActiveExpedition;
-                Assert.That(restored.currentNodeId, Is.EqualTo(targetNodeId));
-                world = CreateRoomWorld(app.ActiveRun, restored.visitedNodeIds);
-
                 RoomAdvanceCommitResult replay = null;
                 yield return Complete(app.CompleteAndAdvanceRoomAsync(world.Controller, sourceRoomId,
                     targetNodeId, resultId, resultJson), value => replay = value);
@@ -1016,6 +1004,64 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(app.ActiveExpedition.currentNodeId, Is.EqualTo(targetNodeId));
                 Assert.That(world.Controller.CurrentNodeId, Is.EqualTo(targetNodeId));
                 Assert.That(store.ProfileWriteSuccesses, Is.EqualTo(successfulWrites));
+
+                ExpeditionSaveData committedSnapshot = app.ActiveExpedition;
+                string committedSnapshotJson = JsonUtility.ToJson(committedSnapshot);
+                SaveStorageSnapshot committedStorage = store.ReadAsync(SaveDocument.Profile).GetAwaiter().GetResult();
+                Assert.That(committedStorage.PrimaryJson, Is.EqualTo(store.ProfilePrimary));
+
+                DestroyRoomWorld(world);
+                world = null;
+                pauseProviderBinding.Dispose();
+                pauseProviderBinding = null;
+                DestroyApplication();
+                yield return null;
+                yield return StartApplication(value => app = value, "Menu");
+                pauseProviderBinding = BindNoopSimulationPauseLeaseProvider(app);
+                ExpeditionSaveData restored = app.ActiveExpedition;
+                Assert.That(app.ProfileLoadStatus, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
+                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                Assert.That(app.SaveDataReady, Is.True);
+                Assert.That(app.CanWriteProfile, Is.False);
+                Assert.That(app.CanStartNewExpedition, Is.False);
+                Assert.That(app.CanContinueExpedition, Is.False);
+                Assert.That(app.ActiveRun, Is.Null);
+                Assert.That(app.HasActiveExpedition, Is.True);
+                Assert.That(restored.currentNodeId, Is.EqualTo(targetNodeId));
+                Assert.That(JsonUtility.ToJson(restored), Is.EqualTo(committedSnapshotJson));
+                Assert.That(app.ActiveExpeditionLoadError, Is.EqualTo("LegacyEncounterPinMissing"));
+                Assert.That(app.ProfileLoadMessage, Is.EqualTo(
+                    "La expedición guardada se conserva, pero no puede continuarse porque falta la referencia de su catálogo de encuentros."));
+
+                bool continueRejected = false;
+                try { app.ContinueActiveExpedition(); }
+                catch (InvalidOperationException) { continueRejected = true; }
+                Assert.That(continueRejected, Is.True);
+                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
+
+                SaveWriteResult blockedStart = null;
+                yield return Complete(app.BeginExpeditionAsync(run), value => blockedStart = value);
+                Assert.That(blockedStart.Succeeded, Is.False);
+
+                world = CreateRoomWorld(run, restored.visitedNodeIds);
+                RoomInstanceId protectedRoomId = world.Controller.CurrentRoomId;
+                string protectedWorldNodeBefore = world.Controller.CurrentNodeId;
+                RoomAdvanceCommitResult blockedReplay = null;
+                yield return Complete(app.CompleteAndAdvanceRoomAsync(world.Controller, protectedRoomId,
+                    targetNodeId, resultId, resultJson), value => blockedReplay = value);
+                Assert.That(blockedReplay.Persisted, Is.False);
+                Assert.That(blockedReplay.AlreadyApplied, Is.False);
+                Assert.That(blockedReplay.Activated, Is.False);
+                Assert.That(blockedReplay.Pending, Is.False);
+                Assert.That(world.Controller.CurrentNodeId, Is.EqualTo(protectedWorldNodeBefore));
+                Assert.That(world.Controller.ActiveRoomCount, Is.EqualTo(1));
+                Assert.That(app.ActiveRun, Is.Null);
+                Assert.That(JsonUtility.ToJson(app.ActiveExpedition), Is.EqualTo(committedSnapshotJson));
+                SaveStorageSnapshot storageAfterBlockedCalls = store.ReadAsync(SaveDocument.Profile).GetAwaiter().GetResult();
+                Assert.That(storageAfterBlockedCalls.PrimaryJson, Is.EqualTo(committedStorage.PrimaryJson));
+                Assert.That(storageAfterBlockedCalls.BackupJson, Is.EqualTo(committedStorage.BackupJson));
+                Assert.That(store.ProfileWriteSuccesses, Is.EqualTo(successfulWrites));
+                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
             }
             finally
             {

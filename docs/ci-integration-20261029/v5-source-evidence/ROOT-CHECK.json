@@ -1,0 +1,169 @@
+{
+  "mapSha256": "2a7822134773592d655ea7589c6d9ebde468f8fe172f8702d900d3213d5d13ed",
+  "verifiedSources": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "a3cbae2a1bad70f58f60c4802258367a72f155753817b91f82e6535b27c2d8cc",
+      "gitBlobSha": "84c48271920a1aa453e2c33ad280a39881890934"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "0cbedf7cf7f03c91c74aa3d4312090c19bb0d80e6f2847887d5d6c14a6be96ca",
+      "gitBlobSha": "f8630a252ec692df371a430756686db927e631cb"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "e8c6bf1eec595c3f7c7ba5881583980312ca8fdecb5b8a0a849315aa11a3ab9b",
+      "gitBlobSha": "c024a305a080a93fb6cfc961bff92a2d3c9bf290"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "35293ee134ed543c83914eae2109c350f0dd86bc66719de207f87c48e39cc437",
+      "gitBlobSha": "9677253e647ea4b7805fc9fef3421f0c57e3ab34"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+      "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "7712b104e5e3e66611c6ee06b160f9a07fe9732342de772bac1b2a2f3c155b59",
+      "gitBlobSha": "946ba5e1ed03733563b13fda5e01a45ffdeafaae"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "64cd1b8904009884c823d6e737b5a934c67e7873d8887b9c785d0ce6134f1014",
+      "gitBlobSha": "673af38af1caca550343905c56aa9c26a6f8441d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "d84dafaecc9746fcbea873573c34aaa3567e098b4e951dce72e81fe8d52f04c8",
+      "gitBlobSha": "9ec486ad1ae4aab1fca86adaab8812fbe7d5a1b2"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "f75fa31fe27c5ebdae3933c6da5a72ed440e835acb8f281cb2753fd1b91d1192",
+      "gitBlobSha": "6358eaa063e856a8c3362b450624de1bdbb46214"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/FileSaveStore.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "14c210882e6d43e0a5cffb7b66d26db6af66db5d387402bbd1fbf7edb8c73dc9",
+      "gitBlobSha": "cf4fbe5a0595b5e7dc2f84236a66b05eec8f807f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOffer.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "b59ea0f210ae913b634d13c392ae37c9f7253786af261377ded13fec8baf44ed",
+      "gitBlobSha": "c420209b4ef06569cead365cdfb871e1ed2566bd"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactSnapshot.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "26da18387e3a7c5632670240adad4903871e180241907fe72c3ddace02587ff9",
+      "gitBlobSha": "be37573f2600496104740181de036703b97bffa3"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionSnapshot.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "047f9c4e611ae92e285b0d433dac501ba1a16285d8cfe512d0c0131132b20719",
+      "gitBlobSha": "3400355d8adea2604c78d3b1a50bc8f145d0166a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "d6a174761d20db0f259fc4929993fe175e4eae92c069d7c3354a6982ccc95de7",
+      "gitBlobSha": "60cfc240264643c0ba4780c9d1c9dd3f8aa81b1b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "5add5065ce33766c40712413effaf5f59d7c655c1bbf405936a3fb6497a74712",
+      "gitBlobSha": "22976d498ee44fbff4c4c8351324ff027c0a3cfe"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRoomIdentity.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "bacee0d0741353ea08bef201fb15d66887d642b27b2e5fb9ff61f042b2d74c33",
+      "gitBlobSha": "77bab38eb87263b9272f5663a738aacc16cb932e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "40c10aeadc9e4e065b3c075d19e810689179bf7bd9d79300a8fbd7c346bcb593",
+      "gitBlobSha": "832074a1b578628add724cd9b54d2bcec51ab501"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+      "gitBlobSha": "99bacd03c32572309212173ef6a8e7dab6cd92e6"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+      "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+      "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+      "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "authority": "historical-v5-source-manifest",
+      "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+      "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+      "authority": "root-exact-source-proof",
+      "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+      "gitBlobSha": "44cee851931dc470bbff3bf3f6da308aa2c274c9"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+      "authority": "root-exact-source-proof",
+      "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+      "gitBlobSha": "6551c633a2de7e4c15998169618379938077af8c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "authority": "root-exact-source-proof",
+      "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+      "gitBlobSha": "d62c870fcd0ed5861cce0296c57592fb8d0221b6"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "authority": "root-exact-source-proof",
+      "sha256": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+      "gitBlobSha": "12ee0d6a179bcb5b5da8432fd406f2bd15995933"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "authority": "root-exact-source-proof",
+      "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+      "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727"
+    }
+  ],
+  "freezeFilesVerified": 14,
+  "scope": "Source provenance only; field interpretation and capture contract require Sol, no historical golden or Unity claim"
+}

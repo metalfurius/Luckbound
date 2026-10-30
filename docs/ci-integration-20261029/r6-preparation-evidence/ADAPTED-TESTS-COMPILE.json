@@ -1,0 +1,48 @@
+{
+  "assembly": "Luckbound.PlayMode.Tests",
+  "sourceCount": 70,
+  "adaptedFiles": [
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAdvanceDurabilityTests.cs",
+      "beforeSha256": "ca7ea5fae01f6f9a8bd04e6f77aae430bb740069e10eda4afafe717ac1c90181",
+      "afterSha256": "8dd7e7b161fdac197b383f52ae9508f06ec15fb91a2bc2cfd45875c340efb74e",
+      "package": "LegacyReadOnlyStorageTestsCandidate-20261030-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
+      "beforeSha256": "4266de4566cb61ae835d2df6e37e06717708f2205a0fe7286045b748a35fc32b",
+      "afterSha256": "cef96d70e7bc3bbbc49461fb06fab9072a70096dd33683c1e1f915fac149dbfc",
+      "package": "LegacyReadOnlyStorageTestsCandidate-20261030-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/CraftingSessionTests.cs",
+      "beforeSha256": "50e71c75f8dede4c7b562d972b777e2054cd1075f3e29608d0cf19e447561d17",
+      "afterSha256": "ad83d7e2c3f3bfe0bec62302657c113738e894695ce2358b7b6a26b15fe2d01b",
+      "package": "LegacyReadOnlyHubCraftTestsCandidate-20261030-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+      "beforeSha256": "21733a62844de9df468be4c5573f8fe07371852994c4a3cc44c024bb695073d6",
+      "afterSha256": "53772af61eac98a1e5f97127f82775a96ae9cbf6c12a650fd934e8bb3ad77a73",
+      "package": "LegacyReadOnlyHubCraftTestsCandidate-20261030-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneBrewTests.cs",
+      "beforeSha256": "25bc3243128e3d72af8087385f378dfc98fc9021ca9a6d18b65dd73707b71b9e",
+      "afterSha256": "b29d94f7f62adca84ce98a4c59d3e2098ea9efe2b5a9e1f3165a44118d90e8d6",
+      "package": "LegacyReadOnlyFortuneTestsCandidate-20261030-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneRewardTests.cs",
+      "beforeSha256": "4c80caf28da38e9512098db97047c92d5ff44a53a0314fd2aab80f2893a6c3b2",
+      "afterSha256": "17039fa62d5373b8efb8b110dc3cb4d360994c8295d34568f96b635c9984345a",
+      "package": "LegacyReadOnlyFortuneTestsCandidate-20261030-r1"
+    }
+  ],
+  "exitCode": 0,
+  "logSha256": "d7ce7b32ed0c67ae3513c41abf8da7d552440e6d5be12f9ed98363b30a6ef6ca",
+  "appDependency": "Exact accepted App47/Repo r2 graph",
+  "c08Source": "Live 6.6 baseline f9592b1c...; failed diagnostics candidates excluded",
+  "unityExecuted": false,
+  "nunitExecuted": false
+}

@@ -1,0 +1,89 @@
+{
+  "csharpInputsVerified": 16,
+  "fullGraph": "377 sources, 16 assemblies, all exit0; old six test versions superseded only by subsequent PlayMode70 compile",
+  "subsequentCompileExitCode": 0,
+  "failedC08CandidatesExcluded": true,
+  "unityExecuted": false,
+  "inputs": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+      "sha256": "5a812d97de481206f8148aea83af57c7303a42e089b6171700a12260b70adbf4",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs",
+      "sha256": "d74ef2755605bcfb93a4f91f9519ae369cbd317001b2a4897eeed2c32b9eaa3f",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionProgression.cs",
+      "sha256": "7e9b05340161ebb0dc2c5f0adbd0e6d0266e53d1ac6c80b1139da1eccea6274c",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.Fortune.cs",
+      "sha256": "975613289cbe4e4437fa2480e8f049a9387c6945c8ebffaa9df556614b8945e6",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneBrew.cs",
+      "sha256": "a55bdc426cc0881d4e5971aaeda3ca0da028bda60365eaf45cbe19abf278b294",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneReward.cs",
+      "sha256": "44902870763bc7ab2a782ac6c46777efdc00026cc7e5e80e7956680cc76031a0",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterResolver.cs",
+      "sha256": "fb5016d6dac1189913e5043f143ecc5fefc3340d97651db7042d87fc9be89724",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "sha256": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs",
+      "sha256": "3b560349705615129101287e7715dbca6c4d3aea507a1729c2e66099725f662e",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+      "sha256": "a8d037b1512f10bd45341cb9ed9a338a86ed6d491b6a064546018885cb168ff9",
+      "evidence": "gate-c-graph-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAdvanceDurabilityTests.cs",
+      "sha256": "8dd7e7b161fdac197b383f52ae9508f06ec15fb91a2bc2cfd45875c340efb74e",
+      "evidence": "gate-c-adapted-tests-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
+      "sha256": "cef96d70e7bc3bbbc49461fb06fab9072a70096dd33683c1e1f915fac149dbfc",
+      "evidence": "gate-c-adapted-tests-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/CraftingSessionTests.cs",
+      "sha256": "ad83d7e2c3f3bfe0bec62302657c113738e894695ce2358b7b6a26b15fe2d01b",
+      "evidence": "gate-c-adapted-tests-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+      "sha256": "53772af61eac98a1e5f97127f82775a96ae9cbf6c12a650fd934e8bb3ad77a73",
+      "evidence": "gate-c-adapted-tests-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneBrewTests.cs",
+      "sha256": "b29d94f7f62adca84ce98a4c59d3e2098ea9efe2b5a9e1f3165a44118d90e8d6",
+      "evidence": "gate-c-adapted-tests-offline-r1"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneRewardTests.cs",
+      "sha256": "17039fa62d5373b8efb8b110dc3cb4d360994c8295d34568f96b635c9984345a",
+      "evidence": "gate-c-adapted-tests-offline-r1"
+    }
+  ]
+}

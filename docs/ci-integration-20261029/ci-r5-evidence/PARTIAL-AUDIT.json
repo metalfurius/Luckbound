@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "audit": "finite CI test phase r5",
+  "status": "Not reviewable at case-level; run metadata and published summaries only",
+  "observedAtUtc": "2026-10-30T10:07:58Z",
+  "run": {
+    "id": 41036480359,
+    "url": "https://github.com/metalfurius/Luckbound/actions/runs/41036480359",
+    "attempt": 1,
+    "suiteId": 111237234297,
+    "statusAtInitialJobRead": "in_progress",
+    "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+    "tree": "01cad582c0ed8283d1bc255ab0dd7137064a81d5",
+    "parentCommit": "345fb5a7b1cf023505deae566a8c4bd462573aeb",
+    "branch": "codex/luckbound-integration-20261029",
+    "workflow": ".github/workflows/build.yml"
+  },
+  "testJob": {
+    "id": 123998449854,
+    "name": "EditMode and PlayMode tests",
+    "status": "completed",
+    "conclusion": "success",
+    "startedAtUtc": "2026-10-30T09:51:34Z",
+    "completedAtUtc": "2026-10-30T10:02:12Z",
+    "steps": [
+      { "name": "Run Unity tests", "status": "completed", "conclusion": "success" },
+      { "name": "Verify explicit V6 capture", "status": "completed", "conclusion": "success" },
+      { "name": "Upload test results", "status": "completed", "conclusion": "success" }
+    ]
+  },
+  "publishedTestSummary": {
+    "checkRunId": 124002599226,
+    "status": "completed",
+    "conclusion": "neutral",
+    "title": "Unity EditMode and PlayMode - 937/937 - Passed in 287.774s",
+    "editMode": { "reportedPassed": 585, "reportedTotal": 585, "reportedSeconds": 124.197 },
+    "playMode": { "reportedPassed": 352, "reportedTotal": 352, "reportedSeconds": 163.576 },
+    "summarySays": "Test details omitted from GitHub UI due to length. See console logs for details.",
+    "source": "GitHub check-runs API output; not raw JUnit XML"
+  },
+  "artifact": {
+    "id": 12968393946,
+    "name": "test-results-85ef222fd28573b2e3e994c13744b39ac5b93697",
+    "bytes": 9095189,
+    "expectedSha256": "4bd62741fed04a65190b06c1756562084e51a98fc83e661a7e64969c0508f67c",
+    "expired": false,
+    "canonicalApiUrl": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/12968393946/zip",
+    "nightlySuiteUrl": "https://nightly.link/metalfurius/Luckbound/suites/111237234297/artifacts/12968393946",
+    "nightlyRunNameUrl": "https://nightly.link/metalfurius/Luckbound/actions/runs/41036480359/test-results-85ef222fd28573b2e3e994c13744b39ac5b93697.zip",
+    "localArchivePresent": false,
+    "localSha256Verified": false,
+    "downloadAttempts": [
+      { "route": "nightly suite/artifact via supplied helper, sandboxed", "result": "WinError 10013: socket access is not permitted" },
+      { "route": "nightly suite/artifact via supplied helper, escalated", "result": "HTTP 500 Internal Server Error" },
+      { "route": "nightly run/name via supplied helper, escalated", "result": "HTTP 500 Internal Server Error" },
+      { "route": "nightly suite/artifact retry after GitHub metadata reads, escalated", "result": "HTTP 500 Internal Server Error" },
+      { "route": "GitHub artifact ZIP API via curl, escalated", "result": "HTTP 401; 0 bytes" }
+    ],
+    "localGhAuth": "gh auth status reported the default token invalid; no login or token recovery attempted"
+  },
+  "rawJunit": {
+    "obtained": false,
+    "editMode": { "reportedPassed": 585, "reportedTotal": 585, "caseNodes": null, "failureNodes": null, "skippedNodes": null },
+    "playMode": { "reportedPassed": 352, "reportedTotal": 352, "caseNodes": null, "failureNodes": null, "skippedNodes": null },
+    "caseLevelClaims": "none"
+  },
+  "captureGate": {
+    "workflowBlob": "2b37ba575cf983bfad2f1297514057fa884b9fd3",
+    "verifierBlob": "329c41c57fae4b62d08442adee368170340d2f4e",
+    "workflowCommand": "python3 Tools/Automation/verify_v6_capture.py --capture-dir Logs/Scenarios/V6Capture-${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT} --commit ${GITHUB_SHA}",
+    "workflowCondition": "!cancelled(), target branch, and steps.unity_tests.outcome == success",
+    "stepRecord": "completed/success from job 123998449854",
+    "stdoutObtained": false,
+    "gateOutputOrCaptureMetrics": null
+  },
+  "sourceProvenance": {
+    "remoteTreeRead": { "sha": "01cad582c0ed8283d1bc255ab0dd7137064a81d5", "entryCount": 5219, "truncated": false },
+    "v6Sources": [
+      { "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs", "gitBlobSha": "44cee851931dc470bbff3bf3f6da308aa2c274c9" },
+      { "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs", "gitBlobSha": "6551c633a2de7e4c15998169618379938077af8c" },
+      { "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs", "gitBlobSha": "d62c870fcd0ed5861cce0296c57592fb8d0221b6" },
+      { "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs", "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727" },
+      { "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs", "gitBlobSha": "12ee0d6a179bcb5b5da8432fd406f2bd15995933" },
+      { "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs", "gitBlobSha": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d" },
+      { "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs", "gitBlobSha": "0cbc490fd521398cb4b10954e2ccc447d28f2ebf" },
+      { "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json", "gitBlobSha": "afca9976e04c128293afdce4b09102a1497f9b18" },
+      { "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef", "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4" },
+      { "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef", "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b" },
+      { "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef", "gitBlobSha": "97904300d05845e188c731d5a2e0964855d9ef01" },
+      { "path": "ProjectSettings/ProjectVersion.txt", "gitBlobSha": "99bacd03c32572309212173ef6a8e7dab6cd92e6" },
+      { "path": "Packages/manifest.json", "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1" },
+      { "path": "Packages/packages-lock.json", "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c" }
+    ],
+    "r4Continuity": "All 14 V6 Git blob IDs match the R4 source inventory at parent commit 345fb5a7b1cf023505deae566a8c4bd462573aeb.",
+    "f02TestSource": {
+      "path": "Assets/Luckbound/Tests/EditMode/Editor/F02SpriteFamilyManifestImporterTests.cs",
+      "gitBlobSha": "6b806cd55201c357adf7450bb050c752eac92dd1",
+      "remoteLineEndings": { "crlf": 0, "lf": 2759, "bom": false },
+      "correctedMethods": [
+        "ExistingClipWithCorruptLastFrameKeyTime_IsRejectedWithoutRepair",
+        "ImageTraceability_NullResourceIdInheritsFamilyDefaultWithUniqueEffectiveIds",
+        "UnownedOutputFolderMissingMarkerWithDeclaredPng_IsRejectedWithoutChangingAssets"
+      ]
+    },
+    "ciSourceLineEndings": {
+      "workflow": { "gitBlobSha": "2b37ba575cf983bfad2f1297514057fa884b9fd3", "crlf": 0, "lf": 379, "bom": false },
+      "verifier": { "gitBlobSha": "329c41c57fae4b62d08442adee368170340d2f4e", "crlf": 0, "lf": 207, "bom": false }
+    }
+  },
+  "r4Reference": {
+    "gateBAcceptance": "docs/ci-integration-20261029/SOL-V6-GATE-B-R4.md",
+    "priorDataComparison": "docs/ci-integration-20261029/ci-r4-evidence/NATIVE-R2-R4-DATA-COMPARISON.json",
+    "priorDataComparisonSha256": "0f235aff947ca6ea48522193e9471b2c58d0f0efed1210938ac4e27936439d4c",
+    "r5ComparisonPerformed": false
+  },
+  "localCheckout": { "head": "a2590e141c46729e6efa7d01ea33647768b58711", "dirtyAtStart": true, "sourceFilesModifiedByThisAudit": false },
+  "limits": [
+    "Raw EditMode/PlayMode XML totals, case nodes, failures, skips and named-case results were not reviewed.",
+    "The 3 F02 corrected case results, C08 10/10 and the recorded jump phase, V6 34, SaveRepository 24, E04 3, and the R5 97-output/11-case capture were not verified from the missing artifact.",
+    "The verifier step's success status is recorded, but its stdout/gate output was not obtained.",
+    "No conclusion is made about the overall workflow, game behavior, Windows/WebGL build completion, Gate C, or Unity 6000.6.7."
+  ]
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "path": "ROOT-TEST-AUDIT.json",
+    "bytes": 20037,
+    "sha256": "28e849370e03ad3d8988b125b884716776c35d634a71b58265577c5fd84b6b07"
+  },
+  {
+    "path": "ROOT-FINAL-VERIFICATION.json",
+    "bytes": 35272,
+    "sha256": "1a1510862fab9bd02645d5993ecc85d82573e64d6e48bed0f1e30cae6788c806"
+  },
+  {
+    "path": "REAL-GATE-RESULT.json",
+    "bytes": 400,
+    "sha256": "15838a6ec01a4ea3dd33a14f7a1aff0e98a5ff16bc23c3f214beb549f23591e4"
+  },
+  {
+    "path": "REAL-GATE-LOG.json",
+    "bytes": 985,
+    "sha256": "7d0d082af6f83903df49e869921c94729d620f10997c4670bb4b441efd6c0088"
+  },
+  {
+    "path": "editmode-results.xml",
+    "bytes": 511059,
+    "sha256": "a354dcf4c42a50a6c4d34d835a5721fed3315552a74b22db00cb6a9325dfa7e8"
+  },
+  {
+    "path": "playmode-results.xml",
+    "bytes": 863601,
+    "sha256": "aff4d080724f97063a3021fc0f7094ff68d2bc631985574b79bbb36e730d0e93"
+  }
+]

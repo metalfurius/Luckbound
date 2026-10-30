@@ -73,6 +73,15 @@ namespace Luckbound.App
         public GameSettingsSaveData PendingSettingsForRetry =>
             _saveRepository?.PendingSettingsForRetry?.Clone();
         public bool SaveDataReady { get; private set; }
+        public SaveDataAccess ProfileAccess => _saveRepository?.ProfileAccess ?? SaveDataAccess.Unavailable;
+        public bool CanWriteProfile => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
+            ProfileAccess == SaveDataAccess.ReadWrite;
+        private const string LegacyEncounterPinMissing = "LegacyEncounterPinMissing";
+        private const string LegacyEncounterPinMissingMessage =
+            "La expedición guardada se conserva, pero no puede continuarse porque falta la referencia de su catálogo de encuentros.";
+        private string ProfileWriteBlockReason => ProfileAccess == SaveDataAccess.ReadOnlyLegacyEncounterPinMissing
+            ? LegacyEncounterPinMissingMessage
+            : "The profile is unavailable for changes; its existing data is preserved.";
         public SaveLoadStatus ProfileLoadStatus { get; private set; } = SaveLoadStatus.Missing;
         public string ProfileLoadMessage { get; private set; } = string.Empty;
         public SaveLoadStatus SettingsLoadStatus { get; private set; } = SaveLoadStatus.Missing;
@@ -94,10 +103,10 @@ namespace Luckbound.App
             : ExpeditionRoomIdentity.ForNode(ActiveRun.RunId, _activeExpedition.currentNodeId);
         public bool HasPendingExpeditionWrite => _pendingExpeditionCandidate != null ||
             _pendingExpeditionSessionPublication != null;
-        public bool CanStartNewExpedition => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
+        public bool CanStartNewExpedition => CanWriteProfile &&
             !HasPendingSettlement && !HasPendingPermanentUpgradePurchase && !HasPendingContractProgression &&
             !HasPendingExpeditionWrite && !HasActiveExpedition;
-        public bool CanContinueExpedition => SaveDataReady && IsUsableProfileStatus(ProfileLoadStatus) &&
+        public bool CanContinueExpedition => CanWriteProfile &&
             !HasPendingSettlement && !HasPendingContractProgression && !HasPendingExpeditionWrite && HasActiveExpedition &&
             string.IsNullOrEmpty(_activeExpeditionLoadError);
         public string PendingProfileExport => _saveRepository == null ? null : _saveRepository.ExportPendingJson(SaveDocument.Profile);
@@ -141,6 +150,13 @@ namespace Luckbound.App
 
         private bool TryAcquireRoomAdvanceSimulationPauseLease(out IDisposable lease, out string error)
         {
+            if (!CanWriteProfile)
+            {
+                lease = null;
+                error = ProfileWriteBlockReason;
+                return false;
+            }
+
             lease = null;
             error = string.Empty;
             if (_pendingRoomAdvance != null || ActiveRun == null) return true;
@@ -151,6 +167,13 @@ namespace Luckbound.App
         /// <summary>Acquires a short simulation lease before gameplay captures a durable room result.</summary>
         public bool TryAcquireExpeditionSimulationPauseLease(out IDisposable lease, out string error)
         {
+            if (!CanWriteProfile)
+            {
+                lease = null;
+                error = ProfileWriteBlockReason;
+                return false;
+            }
+
             lease = null;
             error = string.Empty;
             if (ActiveRun == null)
@@ -235,9 +258,15 @@ namespace Luckbound.App
         /// <summary>Durably accepts one implemented guild contract. A rejected attempt leaves the profile unchanged.</summary>
         public async Task<ContractProgressionCommitResult> AcceptContractAsync(string contractId)
         {
+            if (!CanWriteProfile)
+                return ContractProgressionFailure(ContractProgressionCommitOperation.Accept, ProfileWriteBlockReason);
+
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return ContractProgressionFailure(ContractProgressionCommitOperation.Accept, ProfileWriteBlockReason);
+
                 if (HasPendingContractProgression)
                     return PendingContractProgressionResult(ContractProgressionCommitOperation.Accept,
                         "Retry the exact pending contract progression write before accepting another contract.");
@@ -268,6 +297,9 @@ namespace Luckbound.App
         internal async Task<ContractProgressionCommitResult> RecordContractProgressEventAsync(
             ContractProgressEvent progressEvent, string eventId)
         {
+            if (!CanWriteProfile)
+                return ContractProgressionFailure(ContractProgressionCommitOperation.RecordProgress, ProfileWriteBlockReason);
+
             if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
                 throw new ArgumentOutOfRangeException(nameof(progressEvent));
             var receipt = new ContractProgressEventReceipt(eventId, progressEvent);
@@ -284,7 +316,7 @@ namespace Luckbound.App
         /// </summary>
         internal void RecordContractProgressEventFromGameplay(ContractProgressEvent progressEvent, string eventId)
         {
-            if (!SaveDataReady) return;
+            if (!CanWriteProfile) return;
             if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
             {
                 Debug.LogWarning("Ignored an invalid gameplay contract progress event: " + progressEvent, this);
@@ -305,6 +337,9 @@ namespace Luckbound.App
         private async Task<ContractProgressionCommitResult> RecordContractProgressEventUnderGateAsync(
             ContractProgressEvent progressEvent, string eventId)
         {
+            if (!CanWriteProfile)
+                return ContractProgressionFailure(ContractProgressionCommitOperation.RecordProgress, ProfileWriteBlockReason);
+
             if (!Enum.IsDefined(typeof(ContractProgressEvent), progressEvent))
                 throw new ArgumentOutOfRangeException(nameof(progressEvent));
             var receipt = new ContractProgressEventReceipt(eventId, progressEvent);
@@ -333,14 +368,14 @@ namespace Luckbound.App
 
         private void ScheduleGameplayProgressEventDrain()
         {
-            if (!SaveDataReady || _isDrainingGameplayProgressEvents || _queuedGameplayProgressEvents.Count == 0)
+            if (!CanWriteProfile || _isDrainingGameplayProgressEvents || _queuedGameplayProgressEvents.Count == 0)
                 return;
             _ = DrainGameplayProgressEventsAsync();
         }
 
         private async Task DrainGameplayProgressEventsAsync()
         {
-            if (_isDrainingGameplayProgressEvents) return;
+            if (!CanWriteProfile || _isDrainingGameplayProgressEvents) return;
             _isDrainingGameplayProgressEvents = true;
             try
             {
@@ -349,7 +384,7 @@ namespace Luckbound.App
                     await _profileMutationGate.WaitAsync();
                     try
                     {
-                        if (HasPendingContractProgression)
+                        if (!CanWriteProfile || HasPendingContractProgression)
                             return;
 
                         ContractProgressEventReceipt receipt = _queuedGameplayProgressEvents.Peek();
@@ -395,9 +430,15 @@ namespace Luckbound.App
         /// <summary>Durably claims one completed contract reward in the tavern.</summary>
         public async Task<ContractProgressionCommitResult> ClaimContractRewardAsync(string contractId)
         {
+            if (!CanWriteProfile)
+                return ContractProgressionFailure(ContractProgressionCommitOperation.Claim, ProfileWriteBlockReason);
+
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return ContractProgressionFailure(ContractProgressionCommitOperation.Claim, ProfileWriteBlockReason);
+
                 if (HasPendingContractProgression)
                     return PendingContractProgressionResult(ContractProgressionCommitOperation.Claim,
                         "Retry the exact pending contract progression write before claiming another reward.");
@@ -427,9 +468,15 @@ namespace Luckbound.App
         /// <summary>Retries the same repository payload after a failed contract-profile write.</summary>
         public async Task<ContractProgressionCommitResult> RetryPendingContractProgressionAsync()
         {
+            if (!CanWriteProfile)
+                return ContractProgressionFailure(ContractProgressionCommitOperation.None, ProfileWriteBlockReason);
+
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return ContractProgressionFailure(ContractProgressionCommitOperation.None, ProfileWriteBlockReason);
+
                 if (_pendingContractProgression == null)
                     return ContractProgressionFailure(ContractProgressionCommitOperation.None,
                         "There is no pending contract progression write.");
@@ -455,9 +502,15 @@ namespace Luckbound.App
         public async Task<ProgressionPurchaseCommitResult> PurchasePermanentUpgradeAsync(
             PermanentUpgradeKind kind, TransactionId transactionId)
         {
+            if (!CanWriteProfile)
+                return new ProgressionPurchaseCommitResult(null, persisted: false, pending: false, ProfileWriteBlockReason);
+
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return new ProgressionPurchaseCommitResult(null, persisted: false, pending: false, ProfileWriteBlockReason);
+
                 if (_pendingPermanentUpgradePurchase != null)
                 {
                     if (_pendingPermanentUpgradePurchase.Purchase.TransactionId != transactionId ||
@@ -530,6 +583,9 @@ namespace Luckbound.App
 
         private async Task<ProgressionPurchaseCommitResult> RetryPendingPermanentUpgradeUnderGateAsync()
         {
+            if (!CanWriteProfile)
+                return new ProgressionPurchaseCommitResult(null, persisted: false, pending: false, ProfileWriteBlockReason);
+
             if (_pendingPermanentUpgradePurchase == null)
                 return new ProgressionPurchaseCommitResult(null, persisted: false, pending: false,
                     "There is no pending permanent-upgrade purchase.");
@@ -592,9 +648,9 @@ namespace Luckbound.App
                 reason = "Profile data has not finished loading.";
                 return false;
             }
-            if (!IsUsableProfileStatus(ProfileLoadStatus))
+            if (!CanWriteProfile)
             {
-                reason = "The profile could not be loaded safely; its existing data is preserved.";
+                reason = ProfileWriteBlockReason;
                 return false;
             }
             if (HasPendingSettlement || HasPendingPermanentUpgradePurchase || HasPendingCraftingWrite ||
@@ -619,6 +675,9 @@ namespace Luckbound.App
             ContractAcceptStatus? acceptStatus, ContractProgressStatus? progressStatus,
             ContractClaimStatus? claimStatus, ContractReward reward)
         {
+            if (!CanWriteProfile)
+                return ContractProgressionFailure(operation, ProfileWriteBlockReason);
+
             SaveWriteResult save = await _saveRepository.SaveProfileAsync(candidate, _activeExpedition);
             if (save.Succeeded)
             {
@@ -764,6 +823,9 @@ namespace Luckbound.App
 
         public async Task<SaveWriteResult> BeginExpeditionAsync(ExpeditionRunConfiguration run)
         {
+            if (!CanWriteProfile)
+                return new SaveWriteResult(false, ProfileWriteBlockReason);
+
             if (!CanStartNewExpedition)
             {
                 string reason = HasPendingContractProgression
@@ -815,6 +877,9 @@ namespace Luckbound.App
 
         public async Task<SaveWriteResult> RetryPendingExpeditionWriteAsync()
         {
+            if (!CanWriteProfile)
+                return new SaveWriteResult(false, ProfileWriteBlockReason);
+
             await _profileMutationGate.WaitAsync();
             try
             {
@@ -839,9 +904,15 @@ namespace Luckbound.App
         public async Task<CraftingCommitResult> CraftActiveExpeditionAsync(
             string recipeId, TransactionId transactionId, ItemInstanceId upgradeTargetInstanceId = default)
         {
+            if (!CanWriteProfile)
+                return new CraftingCommitResult(null, persisted: false, pending: false, ProfileWriteBlockReason);
+
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return new CraftingCommitResult(null, persisted: false, pending: false, ProfileWriteBlockReason);
+
                 if (_pendingCraft != null)
                 {
                     if (_pendingCraft.TransactionId != transactionId ||
@@ -926,6 +997,9 @@ namespace Luckbound.App
 
         private async Task<CraftingCommitResult> RetryPendingCraftingUnderGateAsync()
         {
+            if (!CanWriteProfile)
+                return new CraftingCommitResult(null, persisted: false, pending: false, ProfileWriteBlockReason);
+
             if (_pendingCraft == null)
                 return new CraftingCommitResult(null, persisted: false, pending: false,
                     "There is no pending crafting operation to retry.");
@@ -1037,9 +1111,15 @@ namespace Luckbound.App
         /// <summary>Retries only the exact pending economy operation and returns its original result.</summary>
         public async Task<ExpeditionMutationCommitResult<T>> RetryPendingEconomyMutationAsync<T>(string operationKey)
         {
+            if (!CanWriteProfile)
+                return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
             await _profileMutationGate.WaitAsync();
             try
             {
+                if (!CanWriteProfile)
+                    return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
                 if (_pendingEconomyMutation == null)
                     return new ExpeditionMutationCommitResult<T>(default, false, false,
                         "There is no pending economy mutation.");
@@ -1079,10 +1159,16 @@ namespace Luckbound.App
             string progressEventId = null,
             Func<T, bool> shouldRecordProgress = null)
         {
+            if (!CanWriteProfile)
+                return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
             await _profileMutationGate.WaitAsync();
             IDisposable sessionPauseLease = null;
             try
             {
+                if (!CanWriteProfile)
+                    return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
                 if (_pendingEconomyMutation != null)
                 {
                     if (!string.Equals(_pendingEconomyMutation.OperationKey, operationKey, StringComparison.Ordinal))
@@ -1180,6 +1266,9 @@ namespace Luckbound.App
 
         private async Task<ExpeditionMutationCommitResult<T>> RetryPendingEconomyMutationUnderGateAsync<T>(T outcome)
         {
+            if (!CanWriteProfile)
+                return new ExpeditionMutationCommitResult<T>(default, false, false, ProfileWriteBlockReason);
+
             if (!HasPendingExpeditionWrite)
             {
                 _pendingEconomyMutation = null;
@@ -1240,6 +1329,9 @@ namespace Luckbound.App
 
         private async Task<SaveWriteResult> RetryPendingExpeditionWriteUnderGateAsync()
         {
+            if (!CanWriteProfile)
+                return new SaveWriteResult(false, ProfileWriteBlockReason);
+
             if (_pendingExpeditionCandidate == null && _pendingExpeditionSessionPublication != null)
             {
                 try
@@ -1298,6 +1390,9 @@ namespace Luckbound.App
         /// <summary>Commits a complete in-room snapshot while preserving the immutable room-entry rollback point.</summary>
         public Task<SaveWriteResult> SaveActiveExpeditionStateAsync(ExpeditionSaveData currentState)
         {
+            if (!CanWriteProfile)
+                return Task.FromResult(new SaveWriteResult(false, ProfileWriteBlockReason));
+
             if (_activeExpedition == null) throw new InvalidOperationException("There is no active expedition to update.");
             if (currentState == null) throw new ArgumentNullException(nameof(currentState));
             long expectedRevision = _activeExpeditionRevision;
@@ -1313,6 +1408,9 @@ namespace Luckbound.App
 
         public async Task<SaveWriteResult> CompleteCurrentRoomAsync(string resultId, string resultJson)
         {
+            if (!CanWriteProfile)
+                return new SaveWriteResult(false, ProfileWriteBlockReason);
+
             if (_activeExpedition == null) throw new InvalidOperationException("There is no active expedition to complete a room for.");
             if (string.IsNullOrWhiteSpace(resultId) || string.IsNullOrWhiteSpace(resultJson))
                 throw new ArgumentException("A stable result ID and serialized room result are required.");
@@ -1331,6 +1429,9 @@ namespace Luckbound.App
 
         public async Task<SaveWriteResult> AdvanceToRoomAsync(string nextNodeId)
         {
+            if (!CanWriteProfile)
+                return new SaveWriteResult(false, ProfileWriteBlockReason);
+
             if (_activeExpedition == null) throw new InvalidOperationException("There is no active expedition to advance.");
             long expectedRevision = _activeExpeditionRevision;
             ExpeditionSaveData candidate;
@@ -1351,6 +1452,9 @@ namespace Luckbound.App
             IDisposable preacquiredSessionPauseLease = null, bool sessionStateCaptured = false,
             ProfileSaveData profileToCommit = null)
         {
+            if (!CanWriteProfile)
+                return new SaveWriteResult(false, ProfileWriteBlockReason);
+
             IDisposable sessionPauseLease = preacquiredSessionPauseLease;
             bool retainSessionPauseLease = false;
             Action publishSession = null;
@@ -1511,6 +1615,9 @@ namespace Luckbound.App
 
         private async Task<ExpeditionSettlementCommitResult> SettleActiveRunUnderGateAsync(ExpeditionOutcome outcome, int accumulatedRenown)
         {
+            if (!CanWriteProfile)
+                return new ExpeditionSettlementCommitResult(null, persisted: false, pending: false, ProfileWriteBlockReason);
+
             if (!SaveDataReady) throw new InvalidOperationException("Profile data has not finished loading.");
             if (!IsUsableProfileStatus(ProfileLoadStatus))
                 throw new InvalidOperationException("The profile is unavailable; the expedition result was not changed or settled. " + ProfileLoadMessage);
@@ -1569,6 +1676,9 @@ namespace Luckbound.App
 
         private async Task<ExpeditionSettlementCommitResult> RetryPendingSettlementUnderGateAsync()
         {
+            if (!CanWriteProfile)
+                return new ExpeditionSettlementCommitResult(null, persisted: false, pending: false, ProfileWriteBlockReason);
+
             if (_pendingSettlement == null)
                 return new ExpeditionSettlementCommitResult(null, persisted: false, pending: false, "There is no pending settlement.");
             SaveWriteResult save = await _saveRepository.RetryPendingAsync(SaveDocument.Profile);
@@ -1634,16 +1744,26 @@ namespace Luckbound.App
                         _profileData.processedSettlementRunIds.Select(RunId.Parse));
                     if (profileResult.Data.hasActiveExpedition && profileResult.Data.activeExpedition != null)
                     {
-                        try
-                        {
-                            ActiveRun = ExpeditionSaveMapper.Restore(profileResult.Data.activeExpedition, out _activeExpedition);
-                        }
-                        catch (Exception exception)
+                        if (profileResult.Access == SaveDataAccess.ReadOnlyLegacyEncounterPinMissing)
                         {
                             _activeExpedition = profileResult.Data.activeExpedition.Clone();
-                            _activeExpeditionLoadError = exception.Message;
-                            ProfileLoadMessage = "The saved expedition was preserved but could not be resumed: " + exception.Message;
-                            Debug.LogError(ProfileLoadMessage);
+                            ActiveRun = null;
+                            _activeExpeditionLoadError = LegacyEncounterPinMissing;
+                            ProfileLoadMessage = LegacyEncounterPinMissingMessage;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                ActiveRun = ExpeditionSaveMapper.Restore(profileResult.Data.activeExpedition, out _activeExpedition);
+                            }
+                            catch (Exception exception)
+                            {
+                                _activeExpedition = profileResult.Data.activeExpedition.Clone();
+                                _activeExpeditionLoadError = exception.Message;
+                                ProfileLoadMessage = "The saved expedition was preserved but could not be resumed: " + exception.Message;
+                                Debug.LogError(ProfileLoadMessage);
+                            }
                         }
                     }
                 }

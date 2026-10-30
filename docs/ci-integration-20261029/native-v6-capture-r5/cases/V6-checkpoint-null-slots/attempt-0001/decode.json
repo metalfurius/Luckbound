@@ -1,0 +1,9 @@
+{
+    "method": "Not executed: no complete save envelope exists for checkpoint DTO capture.",
+    "executed": false,
+    "result": "NotApplicable",
+    "status": "",
+    "valid": false,
+    "errorType": "",
+    "errorMessage": "Not executed for the separate checkpoint DTO role."
+}

@@ -1,0 +1,1591 @@
+{
+  "sourceCommit": "a2590e141c46729e6efa7d01ea33647768b58711",
+  "sourceTree": "658f45412efb0b6f554d6c458400116838369a97",
+  "sourceEditorPin": "m_EditorVersion: 6000.6.6f1\nm_EditorVersionWithRevision: 6000.6.6f1 (d20c9ac777da)\n",
+  "sourceContentVersion": 5,
+  "classification": "Versioned historical source; no capture/fixture/golden or compatibility acceptance claimed",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs",
+      "gitBlobSha": "97535d3c0aa3a59c0048e4c5b0b720ff83a5e492",
+      "mode": "100644",
+      "bytes": 8494,
+      "sha256": "0b95b6a8c64f180bdad26dc823f7b94d94ba1991dcd1e5635e3c776232635cc2"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionAmbience.cs",
+      "gitBlobSha": "f35ca387701669903a880caa2d1e73c1154f3b9c",
+      "mode": "100644",
+      "bytes": 2144,
+      "sha256": "59443464b38f5a527f1638b6a344aa443a8b286b76a749c8e4116b01db8d207b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionProgression.cs",
+      "gitBlobSha": "b94096673fe8274279bbc278ad84c5108c22b707",
+      "mode": "100644",
+      "bytes": 19185,
+      "sha256": "a01b5996c3ba2db6f4e1dd9af72877ec395a58707d1e76388ba21fc6929c8b26"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.Fortune.cs",
+      "gitBlobSha": "df5aeabbff5b3a5941204c1e6a4911dc472360ec",
+      "mode": "100644",
+      "bytes": 12576,
+      "sha256": "8948b9fc5df424cde1a6eb6ac435cf0a0f123cced35a870cf3ed8ddb2a094811"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneBrew.cs",
+      "gitBlobSha": "95f9db301f4476014cb321e856ab5c93c116bb98",
+      "mode": "100644",
+      "bytes": 12404,
+      "sha256": "9aa5f8c076ff3ee47a18ab4ed829d6f4b58b4e7e1e38c31e2f6a9c5c517874d5"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneReward.cs",
+      "gitBlobSha": "77bcd2c8ef2fef0b2656b7b17adbedc297cdcc87",
+      "mode": "100644",
+      "bytes": 9881,
+      "sha256": "4393a2e2cb2dbd24461bb8325a10194ff4cbaa97cef38a59dcb92abe5571cab0"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+      "gitBlobSha": "03a05e9459b05bb260347d7a2caa2e6938b9f1e0",
+      "mode": "100644",
+      "bytes": 79764,
+      "sha256": "dc3a750f42752120208f64d4bbd6546833a2d4a640a94245b7f8584c3da36bef"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+      "gitBlobSha": "b7aea35b9054c23b95d378a569a29a150b043dc8",
+      "mode": "100644",
+      "bytes": 11596,
+      "sha256": "ef3d2c4061e5133de435c8d2c602340a689f8287bf87b9a38113b368ac68847a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ContractProgressionCommitResult.cs",
+      "gitBlobSha": "78954930188d22be37ef1b4065df9c1345f1715b",
+      "mode": "100644",
+      "bytes": 1893,
+      "sha256": "0dbafae3ce95d2fab282b1742361256990ee5906cc0001177000f4ac3abb4c1d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/CraftingCommitResult.cs",
+      "gitBlobSha": "c87fdcbc11ffaaf628557f6316278230d8f96f98",
+      "mode": "100644",
+      "bytes": 665,
+      "sha256": "eb00afd82bfada7a316a4ea2ef078fa6ee15cec59d8aa655c4365bbf9f4a55cd"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/CustodianArenaComposition.cs",
+      "gitBlobSha": "222941dbadec54a696e61436fa7c900a480d664e",
+      "mode": "100644",
+      "bytes": 9057,
+      "sha256": "78f9a0a9a72f13c80b111931db944d400c9d1bde5d06c15d3bac0101a072a998"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionBellatorRunBinder.cs",
+      "gitBlobSha": "40dbdcfcc8e733c69bc697381c6235287f73aa6d",
+      "mode": "100644",
+      "bytes": 1475,
+      "sha256": "4f762b7e5afe82cf546eb96ff39763a15de764d5f47bfc1600a27cb3e17b6718"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionGameplayComposition.cs",
+      "gitBlobSha": "b310cc9c7e89d75852aa5c544f10dcaf31406080",
+      "mode": "100644",
+      "bytes": 14848,
+      "sha256": "ac6d1c3048372786f56959d11b1b0d4706b43a4cdf6c3edd3e00364e7b2b3e70"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionMutationCommitResult.cs",
+      "gitBlobSha": "1aa9a50a0c94c454d8fa6bd40853650b2b22d77c",
+      "mode": "100644",
+      "bytes": 638,
+      "sha256": "f94e63a9edeeb79cfc323e16587bc22ccc84c4732a5564208af1ad80327f3dc1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionPauseController.cs",
+      "gitBlobSha": "78e9b88c0de8335d6092d98a49fc48b345a61311",
+      "mode": "100644",
+      "bytes": 3788,
+      "sha256": "e3d7f5a55c727b58801441e345e87309e5ac615df07f0eff02a44243fa4570c4"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+      "gitBlobSha": "e4143b76452929ca08923e53463fbff1ff090d50",
+      "mode": "100644",
+      "bytes": 21577,
+      "sha256": "12554366593c8ddf99733363950833060ac7ee73b581f81af02f6d93fe6b8b6f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomAmbienceRouter.cs",
+      "gitBlobSha": "e559d9558e32f40ad19652ac175819c14c33505b",
+      "mode": "100644",
+      "bytes": 4725,
+      "sha256": "6cd33042145885e571ed1ae462aaf2c762fba7f8c39ad62a9388acf0f9534e94"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomPrefabRegistry.cs",
+      "gitBlobSha": "5fe106b899614cfe6786a35b20d828c05f5843c7",
+      "mode": "100644",
+      "bytes": 2811,
+      "sha256": "aa6dbbb4c2aa5462df1297a0579e781d5887b2838e8c36404fbb9dff8aedaebf"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomTransitionController.cs",
+      "gitBlobSha": "a8b1d3df1438b68e67a15c71beb16c39b5cb7d41",
+      "mode": "100644",
+      "bytes": 17600,
+      "sha256": "bd7da4b1f59f39178f2b4c836587410f8105e03c5a6e7a7515dc2ff5ca42b5c9"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionRunConfigurationFactory.cs",
+      "gitBlobSha": "f81c8f867b08eee70642a5339b46516ad5181af9",
+      "mode": "100644",
+      "bytes": 6633,
+      "sha256": "1bff5c8f8cae4efab392a389595fc7802229de330be0d84046e2098bdc974678"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionRunSessionPresenter.cs",
+      "gitBlobSha": "fff3fec021fab834c1be1626f8e835e74656200e",
+      "mode": "100644",
+      "bytes": 11135,
+      "sha256": "a248bf3c2bd08c7e4a6b9cc6a47835c48e93057d4de5cd5d4b6e86662ed965f1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+      "gitBlobSha": "c024a305a080a93fb6cfc961bff92a2d3c9bf290",
+      "mode": "100644",
+      "bytes": 17775,
+      "sha256": "e8c6bf1eec595c3f7c7ba5881583980312ca8fdecb5b8a0a849315aa11a3ab9b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/FileSaveStore.cs",
+      "gitBlobSha": "cf4fbe5a0595b5e7dc2f84236a66b05eec8f807f",
+      "mode": "100644",
+      "bytes": 5382,
+      "sha256": "14c210882e6d43e0a5cffb7b66d26db6af66db5d387402bbd1fbf7edb8c73dc9"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+      "gitBlobSha": "0219e2628c23694fbc66e65d06eb84acc2d1e240",
+      "mode": "100644",
+      "bytes": 18467,
+      "sha256": "a178562a9137bd784a22aeb39ec643e807cf94e779f664409ebdee5c8076b1b8"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "gitBlobSha": "083aa187e6504f25f3036cc43cf04604e176c7eb",
+      "mode": "100644",
+      "bytes": 60869,
+      "sha256": "cef55c8f664b29ac6d53640763f3214042ed4c68d0c23214435ca3d5b7838b58"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "gitBlobSha": "e2651ceea22370bc71db6eec997af038463ea2c4",
+      "mode": "100644",
+      "bytes": 484,
+      "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
+      "gitBlobSha": "d4ba6393e94dd2438c82da41d0e978eda4c5d4ed",
+      "mode": "100644",
+      "bytes": 2951,
+      "sha256": "1486f65b49186a0598bcf6a0d0660261a7942637e8f4c9eb5a57a176f6c2008b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/MovementDemoComposition.cs",
+      "gitBlobSha": "4bc56a4a42f22f9355f800f37113b54e32cfb364",
+      "mode": "100644",
+      "bytes": 6642,
+      "sha256": "722725f64b046bb4e3521c34bcd92c2ef2786611e699a20a224417c6b3638f46"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/MovementDemoGoalTrigger.cs",
+      "gitBlobSha": "2923c38002bb671c20d49015ae67420ea5c8deb0",
+      "mode": "100644",
+      "bytes": 883,
+      "sha256": "f9c3269b4aaf461b989f79763ade0e271fabbe70a5566064d8520158e3405786"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/PauseAudioSettingsPanel.cs",
+      "gitBlobSha": "41be16c5b8d3ab3e88a18a91219023939bf2ea80",
+      "mode": "100644",
+      "bytes": 21193,
+      "sha256": "a9d2249f524e989a92cc48f47da4c8bfd97af2ad4b1afd459ca6de2c33267745"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ProgressionPurchaseCommitResult.cs",
+      "gitBlobSha": "7d381c933cd436b0d392998cdfb65301e4727708",
+      "mode": "100644",
+      "bytes": 662,
+      "sha256": "d24217a7411f9e280d019b70a06a6704c9ae245fbef2f9220380e6c3437feef8"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/RestStopEntryCommitData.cs",
+      "gitBlobSha": "ec76b5bce5b1ecfd708b28f04acf97b61cfad771",
+      "mode": "100644",
+      "bytes": 581,
+      "sha256": "b0ac0d467725eac71b6dbcb398b14195ec8d337bd705105f98bcdc49ba5322e8"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs",
+      "gitBlobSha": "751d263adfe43ade17df9a08ed052dede9847410",
+      "mode": "100644",
+      "bytes": 44337,
+      "sha256": "b7fde61a9e4af20efd7ac60c4329827a7b7b526cbc5611cde9ff2bbe13248e3a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "gitBlobSha": "84c48271920a1aa453e2c33ad280a39881890934",
+      "mode": "100644",
+      "bytes": 65551,
+      "sha256": "a3cbae2a1bad70f58f60c4802258367a72f155753817b91f82e6535b27c2d8cc"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/WebGlFileSystemSyncer.cs",
+      "gitBlobSha": "7ac0cceacd2f01a4cd92674869f3e780e16f17ad",
+      "mode": "100644",
+      "bytes": 2188,
+      "sha256": "dd35a211df07907082a254b6c67baef3de32dd7d02e27c6d72ef822503f0779f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/ArmorCatalogJsonLoader.cs",
+      "gitBlobSha": "5413d6796244254b0b5ab2bb6fd2eddb66f697f7",
+      "mode": "100644",
+      "bytes": 14156,
+      "sha256": "28cf0a3782343ac285d7a2d1e17e9dc57fd7563e7387295b26ab484d4cbe541d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/CombatEncounterJsonLoader.cs",
+      "gitBlobSha": "72151ba091c4ce41db9acbf5dcf9ca58a0d3c577",
+      "mode": "100644",
+      "bytes": 3475,
+      "sha256": "a94d55c79f3ad2acb2549f953770d8fb6fb4ff5d5d0b2c8f4119315dea7e2b9a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/ContentAssemblyMarker.cs",
+      "gitBlobSha": "a58b2f942a50f4b7bbf251a6209ada7843e89959",
+      "mode": "100644",
+      "bytes": 154,
+      "sha256": "515aeaef39427f8797aaec2d900f64c4deae3b5ceabab5943cd1988096f39264"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/CustodianBossJsonLoader.cs",
+      "gitBlobSha": "4606c318b14be3084f8b64c45b771bc883930ba9",
+      "mode": "100644",
+      "bytes": 3435,
+      "sha256": "7e53da687fd344740038e1edab373874b263dcc22ea787e76b0b2f0e5268f047"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/ExpeditionRouteCatalogJsonLoader.cs",
+      "gitBlobSha": "16578e79ddbb60eeee573fa665b8d962a65bb38e",
+      "mode": "100644",
+      "bytes": 4198,
+      "sha256": "10eec6abaf1ba65651123c756931d1e7020133ce1a23e5e1e82d39274c7c3575"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/ExpeditionSampleRouteJsonLoader.cs",
+      "gitBlobSha": "70489fd7691c78238b08d0b3dd7e6a70b19b5b81",
+      "mode": "100644",
+      "bytes": 4402,
+      "sha256": "2c1ef0791e0c0df103cd3a92f153e0bcfb3761d6e532913a9477bb3688a63d22"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/ItemCatalogJsonLoader.cs",
+      "gitBlobSha": "1581b383eac83263dd67989f781d7052c3e140c0",
+      "mode": "100644",
+      "bytes": 5105,
+      "sha256": "1d49a53ea14cf7054fab86259b8aace35fca04f87b7b912a6f6afc2a2813e885"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/Localization/LocalizationJsonLoader.cs",
+      "gitBlobSha": "6a22d180502a52b08867720f60c1984cd8fd837c",
+      "mode": "100644",
+      "bytes": 14250,
+      "sha256": "39d3fb7be8e93dea6f1bb7dd9379295fcc1e3dcb611b61f376ac783aa6d32a1a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/Localization/LocalizationService.cs",
+      "gitBlobSha": "cb5ff862c40235e6e77adb42425a80fe8e5b8583",
+      "mode": "100644",
+      "bytes": 1578,
+      "sha256": "aeb3b3d8e86bb9edd850281e8dc714074705cf37c9210409dc1331b5c5e58f13"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/Localization/LocalizedTextCatalog.cs",
+      "gitBlobSha": "23239d07949c8c00d5906853685a5b1112569cbf",
+      "mode": "100644",
+      "bytes": 2742,
+      "sha256": "ce7af5c3b970eb1380ef0507f8146939c8836e426869ba706c10691c6d4778f1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/Luckbound.Content.asmdef",
+      "gitBlobSha": "d6cb7be4bf74de290045558a5af1852c99b11bcd",
+      "mode": "100644",
+      "bytes": 360,
+      "sha256": "e07091fd4636de407bb96a868d9dfabca45457b898a68e70a9bf8df59d19ee58"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/RecipeCatalogJsonLoader.cs",
+      "gitBlobSha": "a8a8899cf2d8f90c2c99d4f2e471f990c6dab2a1",
+      "mode": "100644",
+      "bytes": 7954,
+      "sha256": "6376eb8f4241fcd36610fd688c27ae809adcdb6ef9cafff40e6725c89f45af6a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/RoomTemplateJsonLoader.cs",
+      "gitBlobSha": "f22fc2b7c1349a65be7f3e192be588132e67e67e",
+      "mode": "100644",
+      "bytes": 14128,
+      "sha256": "890c847f76d6f9404599987c265c451460391f7c6ecdd191a79f6321458d9037"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/SkillCatalogJsonLoader.cs",
+      "gitBlobSha": "e97e8dcef7f31eca5686abc63e7a8fe1352f1f81",
+      "mode": "100644",
+      "bytes": 4830,
+      "sha256": "dbfee22790b35ced83b480773206c7b3e712f2b4bdb9bf0249524ccefe88ee9c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/WeaponCatalogJsonLoader.cs",
+      "gitBlobSha": "f686932a67f3320f0ffca209373c4eb92e824dc1",
+      "mode": "100644",
+      "bytes": 21124,
+      "sha256": "5a67a48ef3feaec6bb1e8156d9fb688365e883e3f93fe5918947a13e5a6a70da"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorCatalog.cs",
+      "gitBlobSha": "dda9ba93f5bd42a5b10b2f2ac8dc1ff8985cd801",
+      "mode": "100644",
+      "bytes": 2555,
+      "sha256": "e5826034418ab5876ec8efff3fb545e23e2100f617740d6ac674bdcb9c6fbece"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorProfile.cs",
+      "gitBlobSha": "29ce3a3cdc52f616fbcf0cac49ea878f42c7d25c",
+      "mode": "100644",
+      "bytes": 3388,
+      "sha256": "447990e6f41864ced9a08ed52356cc99699315387892645ef8d6b118045a1a9d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorResolution.cs",
+      "gitBlobSha": "1eaf0b69957099053a64e1dbbfea4da64f94ab8f",
+      "mode": "100644",
+      "bytes": 1506,
+      "sha256": "e7e390631cd67afe9f7ff028d529c0a69d1dbf1762f2596c12dcdf05606ee5d3"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorStatsResolver.cs",
+      "gitBlobSha": "a04d3e879d8342e657e0a0e31124afca37f79ddd",
+      "mode": "100644",
+      "bytes": 2308,
+      "sha256": "eb731b9dc42fd612535d7903b8c6ed9b873050b5fcf8395dcc55a44a7ac86663"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/ActorDamageState.cs",
+      "gitBlobSha": "005107ea164b518ba3be012c668e7038ae723759",
+      "mode": "100644",
+      "bytes": 6104,
+      "sha256": "6291a09a1eccf08d60bb201438af5d19ee8bda5a7826bdffbaedb8809551b511"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Bellator/BellatorCombatState.cs",
+      "gitBlobSha": "22b8da9a78b2fb9a824fa5528e81f3f1d4dd9735",
+      "mode": "100644",
+      "bytes": 5366,
+      "sha256": "8e767a268444510d68b7b919bc2b6534fcd55f32d64849f97368feebdfc61695"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Bellator/BellatorSkillLoadout.cs",
+      "gitBlobSha": "5c75bb5bb6eed426c34ed52d82db0af80a53fca0",
+      "mode": "100644",
+      "bytes": 4643,
+      "sha256": "3ef1003b7e67db2844dd107c8b14a864689f34271242cd7272b0b85f50d20f70"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/CombatStats.cs",
+      "gitBlobSha": "ff32fb9af3c03a409368f6de06ae07483bba7a4f",
+      "mode": "100644",
+      "bytes": 1171,
+      "sha256": "98f70a42ff644090d06cf9edac69ad831f97fe6fcec367ddeb56755d4e1db214"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/CustodianBossDefinition.cs",
+      "gitBlobSha": "562ec1e0af7784d7ced9a58444b28c90b151a04f",
+      "mode": "100644",
+      "bytes": 2764,
+      "sha256": "ea55e1326711027aa7857e277bb4728bcec016989c4b98319752acc52e591402"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/DamageCalculationRequest.cs",
+      "gitBlobSha": "686afb30f50eb4d424333dff7f88f87c84ef8990",
+      "mode": "100644",
+      "bytes": 3191,
+      "sha256": "8dba6bd3b0cd307d9eaeab25125088e42fd5ed192a1e2d7e068626b808756ca0"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/DamageResolution.cs",
+      "gitBlobSha": "c09c7fa95ceb5d6dfd3d5f64be1ad4a0c8989645",
+      "mode": "100644",
+      "bytes": 490,
+      "sha256": "953c8af6ff39797cff7c3612680c31e42a7860f61b86a4f7b9d5126492a958e4"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/DamageResolver.cs",
+      "gitBlobSha": "b78abaddf0b26f3efcf9370867d262788edfdbb2",
+      "mode": "100644",
+      "bytes": 1544,
+      "sha256": "b8fe839c3342faff222c62a3617e60ff0b44b5ce8f321259347477334ebff4fb"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/DirectImpactOutcome.cs",
+      "gitBlobSha": "9e853c1074ce9323ee8dc2da8fdd65d3c487710b",
+      "mode": "100644",
+      "bytes": 1296,
+      "sha256": "9b967c64a5a84c99674e00820709c9778ab680fee210e5a2157f7817e40f20f1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseOutcome.cs",
+      "gitBlobSha": "4fbf8058ec8caae49fa0449dd536acb8c090a464",
+      "mode": "100644",
+      "bytes": 491,
+      "sha256": "57d0498b7d77d5aa9acfc30a9ade8401db9a4ced496b5a239a704a6a0ca3a9ee"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseState.cs",
+      "gitBlobSha": "c3e8964e2d8e88a114f38f4f16c7b0386e7b5fae",
+      "mode": "100644",
+      "bytes": 5016,
+      "sha256": "e5cb9f0eef232b67c408dd350fee954b138dde886f793c71d9b7eaa68e526283"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseStatus.cs",
+      "gitBlobSha": "8f0f5931e3f4eeddbd7753dca06542c97026bffd",
+      "mode": "100644",
+      "bytes": 241,
+      "sha256": "f9225d7d20433584b1e77213d1e7d334663ad48bde32c0d9976193a707cffcbd"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseOutcome.cs",
+      "gitBlobSha": "dfea2e65ee1db7e17e09a8ce5aa1bd8614e8753a",
+      "mode": "100644",
+      "bytes": 495,
+      "sha256": "400d73eea5067273248a3c5cc24d692fe9d16b32e011238b2277b81d07c1944e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+      "gitBlobSha": "746c2e8bf778b24684e65a038b5ed690934dc428",
+      "mode": "100644",
+      "bytes": 4698,
+      "sha256": "abc4c946f54081d4354c57680f77403d0cbb412667688b1d7eadc104298c2192"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseStatus.cs",
+      "gitBlobSha": "0201d8f7d41c20236f50d9858f78b5b2389b4861",
+      "mode": "100644",
+      "bytes": 239,
+      "sha256": "6df21b75318c65e629f78a77a8d2f25eb13a6701ab9b52346e43aa8f0e8f6a05"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackProfile.cs",
+      "gitBlobSha": "9346c225aec4f147fcdd78339c01c1c295017904",
+      "mode": "100644",
+      "bytes": 1580,
+      "sha256": "2f48de6d6902b4ee3673bcd110a3a16714aca44463f7623620a46522d0130822"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackSnapshot.cs",
+      "gitBlobSha": "95a6592d5341df9652a8ea1b9145b3479078667d",
+      "mode": "100644",
+      "bytes": 1263,
+      "sha256": "66c5cf1608f08b95362e36b76110f2a324bbd4b484ffee39bcb6e3db1c2a5989"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackState.cs",
+      "gitBlobSha": "3adc280396dfcb671978cda4db040eb9ae347773",
+      "mode": "100644",
+      "bytes": 2217,
+      "sha256": "0d9dda55bb9cfa3ffe415ff29bc62af956847f13fa78dd34b6c7d81c64dd2889"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusCombatResult.cs",
+      "gitBlobSha": "af456ba75322e7eed09881f2253ad7efbc614e46",
+      "mode": "100644",
+      "bytes": 703,
+      "sha256": "61a7432f25c7c2d1c1c637b55cf9835642e98e32a17a14d366196f1765e9cbbf"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusCombatState.cs",
+      "gitBlobSha": "c61e2933a1f2e1fdc4ac6287215dcf3d55ed04ea",
+      "mode": "100644",
+      "bytes": 4656,
+      "sha256": "64f1f2457a738bcf9b775d71bb947f905b2e4ee226e595ac9a05fb7f1fe9d8b1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusSkillActivation.cs",
+      "gitBlobSha": "df9f045145d6ff481c69c9287a58881ee54511ba",
+      "mode": "100644",
+      "bytes": 5650,
+      "sha256": "7ae8f1030672ce621ff0d11ea4ebcce5165f0a099a7ccf1c1cfd72e565aa2441"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusSkillLoadout.cs",
+      "gitBlobSha": "70bb08128fc896d61740e3dc42ccf303326f1c0c",
+      "mode": "100644",
+      "bytes": 4656,
+      "sha256": "e451cf0a4e5f10a979170645848d473c714b0e9753067db2b13841b3ae1ad490"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusStatusSnapshot.cs",
+      "gitBlobSha": "fcf7896110f73af02ea5b1f093071b58aa1f91b5",
+      "mode": "100644",
+      "bytes": 1392,
+      "sha256": "7e7db3097c9d539f143726044f54c974e42605e61e51925a530564957ee6b6b5"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusStatusState.cs",
+      "gitBlobSha": "7ac5fcfc20775606da7fc314e300414857bc1178",
+      "mode": "100644",
+      "bytes": 6836,
+      "sha256": "21ccb163c8b1abe29c06f62e4b81a58b88214fd82c1cb5aee0cb70f2a19b220d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackProfile.cs",
+      "gitBlobSha": "9f6fddd417758f25e5efc2fe10ea05969322f42f",
+      "mode": "100644",
+      "bytes": 2286,
+      "sha256": "7bc4698950e1370162b46201c349c5622b7e197d7fa8f95a4fafc333dd057211"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackSnapshot.cs",
+      "gitBlobSha": "17ec3ca4eb10c52c00c9369dcb945bd66cc5a159",
+      "mode": "100644",
+      "bytes": 1182,
+      "sha256": "ceb6ae5fe338e4cb3862cca3f9d1da0878b71ae6d2e82f0bf5b2fbc6bb4c8fb5"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackState.cs",
+      "gitBlobSha": "5ca0693f530223fe4b9357a6c11ec026398aa231",
+      "mode": "100644",
+      "bytes": 4059,
+      "sha256": "5afff02bead25f2ec67dbdd9913e418be691690b587c92f847a335813b926a98"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeComboSequence.cs",
+      "gitBlobSha": "cf2b0f696f1017ebc1b2a5a3aa6cbceb79c91d78",
+      "mode": "100644",
+      "bytes": 2666,
+      "sha256": "dfa58d153f241cac07d3bd7ad155ef0bbb5bda445fd6fcb1ce45edbab8e34bd8"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeHitWindow.cs",
+      "gitBlobSha": "020b4154b4588a92a9cccb59d8cf4085cad5a088",
+      "mode": "100644",
+      "bytes": 1018,
+      "sha256": "259da8f14e1159089034a240e23425d0ed5c369d8075e333602788bc6e2f197b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/ProjectileDefinition.cs",
+      "gitBlobSha": "d07a69ea5a6db85d9c7514c2cfdb277626a0f5b1",
+      "mode": "100644",
+      "bytes": 2668,
+      "sha256": "c803f6ac020c67d025ccfac96668b8f0e0b6bc2025c150a7bddc335f1ffd18a2"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/ProjectileImpact.cs",
+      "gitBlobSha": "160196cdbd4dc4bca460f0fdaa17d33f448aacde",
+      "mode": "100644",
+      "bytes": 2808,
+      "sha256": "c03e4f16ae248fca0c49d94ecb9526f787919ea2c4dceb4936a9fb9525a83feb"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillCatalog.cs",
+      "gitBlobSha": "c62ec4917338916d86944a999be172bcfb039223",
+      "mode": "100644",
+      "bytes": 2210,
+      "sha256": "6565364aad33be2bdcf0c6dd0764952133136d6eb635cc34233cb3dfe876aefd"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillDefinition.cs",
+      "gitBlobSha": "b814a48b452ad5b08b0bb3d970987b852b7c10ad",
+      "mode": "100644",
+      "bytes": 10609,
+      "sha256": "812a205aeee34d1b7faab2df9019241393f684cec88f3ac5e788e1aaa14820ee"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillUseOutcome.cs",
+      "gitBlobSha": "a9c5fff1b8f27348d68f6a87067cd7205185958c",
+      "mode": "100644",
+      "bytes": 838,
+      "sha256": "5d397470d3ef4a74e480bffe46b2c406c740e9fefeae95f0eb168bd5e97d843d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+      "gitBlobSha": "d850d6317cce84d6a0e1f37f730d7779206f7641",
+      "mode": "100644",
+      "bytes": 6127,
+      "sha256": "5b31ed33e65ae546c19cbf6e189e383d86c300a613d4fe77b9e96870448319cf"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackProfile.cs",
+      "gitBlobSha": "3a322cadd46dfe2c97d873cb9a8741a957932524",
+      "mode": "100644",
+      "bytes": 2148,
+      "sha256": "22b47058ff8ab225cf5d9ed9c115504e2fc64dd594b087fcab7da5fe5cfb7f34"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackSnapshot.cs",
+      "gitBlobSha": "5adcfd93432b50991b73c45275b60fd2edb91333",
+      "mode": "100644",
+      "bytes": 1027,
+      "sha256": "aa27fb50264d58455303b6a3ec7c64e28b7a82cc67dc1664790266ddd5b8a4ac"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackState.cs",
+      "gitBlobSha": "386b64b0f998ff088ce9df8b90b95d6aa3789725",
+      "mode": "100644",
+      "bytes": 4524,
+      "sha256": "e833e8ccae8f856c08af253bca4e1003c66391ca272a2d7c6caa7f9793b7b853"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatResult.cs",
+      "gitBlobSha": "a1f83551e506403772ed740b8a5ce611406cce9f",
+      "mode": "100644",
+      "bytes": 709,
+      "sha256": "e6a89115d8c95a5220076f1c089a81eda5d4fe4894851b4e60090e6c816810ad"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatState.cs",
+      "gitBlobSha": "c3d3b090085901d5904c82d5dba3964457743b66",
+      "mode": "100644",
+      "bytes": 4611,
+      "sha256": "dca4ee502cbbf9496a8d4225dc6a2bf674dfaa211175d5e0486d3e3c744bb659"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorSkillActivation.cs",
+      "gitBlobSha": "73f46ef8c2cfe05809e70ca3cb9521ee06c3f8df",
+      "mode": "100644",
+      "bytes": 4371,
+      "sha256": "8577342bedc29c2fe3b9704c1f2980e17445e525316d3c4e4b6d8ab270aa5ae4"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorSkillLoadout.cs",
+      "gitBlobSha": "3b932eec080ee45f77b8414784a0a69e76e29de6",
+      "mode": "100644",
+      "bytes": 4745,
+      "sha256": "7c11f4e8c5ba7444d426a316074cf3d047b76bdc7c8f1e05cdb770c8d432420b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponCatalog.cs",
+      "gitBlobSha": "b4385b09c03f53aa6f12d01984edf8849d5b8a64",
+      "mode": "100644",
+      "bytes": 2031,
+      "sha256": "823c5775ce4fc00614f58eab01f3d1b0a9ff33b618d1fa795f361f282412d547"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponProfile.cs",
+      "gitBlobSha": "8e8314354cd116b869b5e3ba083e02a06ae5bece",
+      "mode": "100644",
+      "bytes": 16546,
+      "sha256": "3b00cf38a6bbb6fe8b74279144e245e494f8fc52e454b149bb2307780529d9cf"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponTrait.cs",
+      "gitBlobSha": "4c641b36b872e5e6e2bb43d398e06048334d056f",
+      "mode": "100644",
+      "bytes": 4534,
+      "sha256": "8611cbe11ed8b722b6cc19d479be81948b86329514d859df8ce3e52fa289a14c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Consumables/AntidoteEffect.cs",
+      "gitBlobSha": "02a3cd8957033ebae22a71c36a34e754d828c557",
+      "mode": "100644",
+      "bytes": 2622,
+      "sha256": "ae234a8b7af54937798f8f24ba5dcf8360cd21fde5ed59781d3c5c3376820792"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Consumables/BombEffect.cs",
+      "gitBlobSha": "01a3a475c03658c3d50c10f626d4c60ad967a9eb",
+      "mode": "100644",
+      "bytes": 2918,
+      "sha256": "7d5a0fcae94a330d6e7e3b708f76a24234c26932285ff0270c81cbcfd607a771"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Consumables/FortuneBrewEffect.cs",
+      "gitBlobSha": "93f8e888576e6345cf6c1666d183966d18d65f5d",
+      "mode": "100644",
+      "bytes": 1422,
+      "sha256": "0c8475c68e594de0d334f01cea622eece4e80daec6a2ffbee0aaa6fe941b09a4"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Consumables/TorchEffect.cs",
+      "gitBlobSha": "b0c4252737e4ada1828b1365d39dbfa98f02cb72",
+      "mode": "100644",
+      "bytes": 1347,
+      "sha256": "9f417a725fcbe051766fb2eedb809ffb6b234a74953b086cabf388842c0ff370"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/CoreAssemblyMarker.cs",
+      "gitBlobSha": "c80a9a319692c99e333c2a51026265dbf819a9f9",
+      "mode": "100644",
+      "bytes": 267,
+      "sha256": "f595ae51aa701617b13bb363cbeb9ab3e9f9995af629cb09e05a89be4d91e52c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingOperationStatus.cs",
+      "gitBlobSha": "508598dc63b2460cf44cb0afd2acd151f2e659b1",
+      "mode": "100644",
+      "bytes": 709,
+      "sha256": "52e2ebfa7a91ff3f1888dc38c393e8884346d7edf1a8d17a52a9819c30a499c8"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingOutcome.cs",
+      "gitBlobSha": "e68a41a5d2cae2bcee6f34dc7ceb5246d7f4f05e",
+      "mode": "100644",
+      "bytes": 1799,
+      "sha256": "a58d903624408c0ae50e12f376de14bb1dd4d2a29eca7af6263840ad145f5415"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingResultKind.cs",
+      "gitBlobSha": "cfefb01b2ce487084af8b12e56121647c8661bf9",
+      "mode": "100644",
+      "bytes": 192,
+      "sha256": "353bfd7a52abc54652049f633dffba5ffb5a124c805bfe157348a9acbb9c828f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeCatalog.cs",
+      "gitBlobSha": "4c750aa524d0460d7760efe4ce87f14418c68181",
+      "mode": "100644",
+      "bytes": 2033,
+      "sha256": "8184303ed56db18c1ec1d1acb3fd1f68ea0b9be8521c4ec4c40349d900f98f43"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeDefinition.cs",
+      "gitBlobSha": "027cf6419dcca9a2f9944a54930699dfe66aa68e",
+      "mode": "100644",
+      "bytes": 5094,
+      "sha256": "ad731e44231aa56c89e57069960803732b371b4ca36734e43559d6b5577b2f5d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeMaterialCost.cs",
+      "gitBlobSha": "15c86c8d34006bd7e0233542f66469a61726ed30",
+      "mode": "100644",
+      "bytes": 781,
+      "sha256": "168b167dfd95535d086c800085a78a790fe9e0e51a910639c3d2af14a68bc581"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/EconomyOperationStatus.cs",
+      "gitBlobSha": "3432d86e964d033e106cf2e85a8d90f3139d07d1",
+      "mode": "100644",
+      "bytes": 1003,
+      "sha256": "aa60bb06c42b11766ce2ee79a31c75987673b78b6f2fd42b349ffdb6eb547867"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/EconomyTransactionOutcome.cs",
+      "gitBlobSha": "411b248c4c91932e4787d38566f81ebb1bea0233",
+      "mode": "100644",
+      "bytes": 1919,
+      "sha256": "446b72ce99739262b9ad153533909cf5eae5ea16969e6e644e0d721e8d030390"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+      "gitBlobSha": "9ec486ad1ae4aab1fca86adaab8812fbe7d5a1b2",
+      "mode": "100644",
+      "bytes": 647,
+      "sha256": "d84dafaecc9746fcbea873573c34aaa3567e098b4e951dce72e81fe8d52f04c8"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantPricing.cs",
+      "gitBlobSha": "7100640ee78916bd8199f5d3aba9e27fb6a526a8",
+      "mode": "100644",
+      "bytes": 4054,
+      "sha256": "83804729c6001887865bf786437a9b9bb16575d42605f460c0a14727c4399ebe"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantService.cs",
+      "gitBlobSha": "afb4dc41eaf53da179814e29a2fe0e249ca3c23c",
+      "mode": "100644",
+      "bytes": 5744,
+      "sha256": "6b82101733e9f5baf108fb69f57bc48270f66a74af9f35907374497b453dd44c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+      "gitBlobSha": "673af38af1caca550343905c56aa9c26a6f8441d",
+      "mode": "100644",
+      "bytes": 646,
+      "sha256": "64cd1b8904009884c823d6e737b5a934c67e7873d8887b9c785d0ce6134f1014"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopOutcome.cs",
+      "gitBlobSha": "10cd7263d336fc6e5708f050ae58af78483aa952",
+      "mode": "100644",
+      "bytes": 846,
+      "sha256": "2c2475a3466ad84b10c6c697f1c66f6164d226751ce2492f9f10837c11869821"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopService.cs",
+      "gitBlobSha": "5e2e1464b1fcdba0847af1f8e3dff875c972ebd3",
+      "mode": "100644",
+      "bytes": 1260,
+      "sha256": "0712a46c0642cab55b46e19117191cf6fa04dea5d9cadc15d6320c2ae220734d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+      "gitBlobSha": "6358eaa063e856a8c3362b450624de1bdbb46214",
+      "mode": "100644",
+      "bytes": 864,
+      "sha256": "f75fa31fe27c5ebdae3933c6da5a72ed440e835acb8f281cb2753fd1b91d1192"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/SmithingOutcome.cs",
+      "gitBlobSha": "c046af70df1b19b4a05dc0d64da8f7d62ff61f35",
+      "mode": "100644",
+      "bytes": 725,
+      "sha256": "45f63892a29dc946de95b076620f93d8698ef39beb2c3c5c72725a15f2742ed7"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Economy/SmithingService.cs",
+      "gitBlobSha": "a0c106dbe599931297e74fce0966b898373cffc2",
+      "mode": "100644",
+      "bytes": 834,
+      "sha256": "818a5ce76aaefb478575bcedce709d4b02040002d40433a31a659b72a36d83d8"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRoomIdentity.cs",
+      "gitBlobSha": "77bab38eb87263b9272f5663a738aacc16cb932e",
+      "mode": "100644",
+      "bytes": 1307,
+      "sha256": "bacee0d0741353ea08bef201fb15d66887d642b27b2e5fb9ff61f042b2d74c33"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+      "gitBlobSha": "5260714b1019e5f3702f19fd5f3cdeef71967cfb",
+      "mode": "100644",
+      "bytes": 41958,
+      "sha256": "193fdd08f1b734be69d2614f2eed6b32d0c05a36eda4d7d8be5e06759a168c26"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
+      "gitBlobSha": "22976d498ee44fbff4c4c8351324ff027c0a3cfe",
+      "mode": "100644",
+      "bytes": 3764,
+      "sha256": "5add5065ce33766c40712413effaf5f59d7c655c1bbf405936a3fb6497a74712"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+      "gitBlobSha": "60cfc240264643c0ba4780c9d1c9dd3f8aa81b1b",
+      "mode": "100644",
+      "bytes": 7853,
+      "sha256": "d6a174761d20db0f259fc4929993fe175e4eae92c069d7c3354a6982ccc95de7"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+      "gitBlobSha": "832074a1b578628add724cd9b54d2bcec51ab501",
+      "mode": "100644",
+      "bytes": 9461,
+      "sha256": "40c10aeadc9e4e065b3c075d19e810689179bf7bd9d79300a8fbd7c346bcb593"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/PlayableRaceRules.cs",
+      "gitBlobSha": "e0393d8dc31e354506a05d8cab7cdf70da06086e",
+      "mode": "100644",
+      "bytes": 3534,
+      "sha256": "39195264dc7322987bb3981476d17b199de2e5e5b7441db8ed03db0fd01688f4"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOffer.cs",
+      "gitBlobSha": "c420209b4ef06569cead365cdfb871e1ed2566bd",
+      "mode": "100644",
+      "bytes": 4200,
+      "sha256": "b59ea0f210ae913b634d13c392ae37c9f7253786af261377ded13fec8baf44ed"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBook.cs",
+      "gitBlobSha": "46699d707aa257c92df2813a4dda00f166e5c919",
+      "mode": "100644",
+      "bytes": 34419,
+      "sha256": "5ab56b86a7ec320b59cfa13bcb3855b011d26a555a7ce063c9305de6f68a7073"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "gitBlobSha": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+      "mode": "100644",
+      "bytes": 2163,
+      "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/ActorId.cs",
+      "gitBlobSha": "771acea72e87396d1d4711802b7d38c88b851648",
+      "mode": "100644",
+      "bytes": 1836,
+      "sha256": "9107be9804d6e2546dac2cb4d6182dde3e5c839c77de2014cb426946c38cf61e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/EntityId.cs",
+      "gitBlobSha": "c9530c5802d771cda035b5e8a5c452e26e0d2481",
+      "mode": "100644",
+      "bytes": 1853,
+      "sha256": "2d917f0b12c600ce604ad1e827a95bebaeb84abe8a88ee78485225075005cd61"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/HitId.cs",
+      "gitBlobSha": "2566fa976b7e8d5fa795bc624975fea24225251a",
+      "mode": "100644",
+      "bytes": 1331,
+      "sha256": "4cd13139bf77205cb38e6ecadfa426b081898b8cb2212a188c8c0ac0c3bdb427"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/IdParsing.cs",
+      "gitBlobSha": "813df595fb28d310fd5ef3d411d7f959d9654173",
+      "mode": "100644",
+      "bytes": 559,
+      "sha256": "4057e919c196a7f402396932ec0706d10011e2c578bfa6171804603f1b8fad79"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/ItemInstanceId.cs",
+      "gitBlobSha": "64cec6ce40c5fd6893c439dd280ac809da6a4dc8",
+      "mode": "100644",
+      "bytes": 1956,
+      "sha256": "09adbada747bce91e3a421884bcd6c24fbbd406f219ecd11e75fac8a0315e51c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/RoomInstanceId.cs",
+      "gitBlobSha": "10310d6d489666afc2b3305b199ca1e8f2ab76ca",
+      "mode": "100644",
+      "bytes": 1955,
+      "sha256": "6f6f38241cdcb519f9205a7eac7c123ea84a5d58ac78539c2e5664baec440904"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/RunId.cs",
+      "gitBlobSha": "ab82cf18afe5cfecffdaceae767fb9749dd706bc",
+      "mode": "100644",
+      "bytes": 1801,
+      "sha256": "5b7ced374f9c43ba1900285013ad56e058a449389a5ace5d4a52b5d7c6b80f72"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/SessionId.cs",
+      "gitBlobSha": "2e229ed9df85edd3bbda6b5b912988160e6d04e3",
+      "mode": "100644",
+      "bytes": 1869,
+      "sha256": "8a178e53bcf5496de4d00e5566c38d523bc952a582ae426a0c861a196b464aa2"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Identifiers/TransactionId.cs",
+      "gitBlobSha": "f803ecb999e495ae0311e9b32068b329971b2050",
+      "mode": "100644",
+      "bytes": 1937,
+      "sha256": "b7815a3e93b559af8afc0c579fb0f5769c8791850520e3becbec51592c9d550b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Input/IPlayerInputSource.cs",
+      "gitBlobSha": "a779cc8c67244f653ad6fa0eb0bf754c6f62288e",
+      "mode": "100644",
+      "bytes": 129,
+      "sha256": "8a1731381f797b22b89984f2a74a1f076b4e992177c92ca5bd57c56ca3cb36ff"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
+      "gitBlobSha": "60b7152202a2aad75456fdb72f2f908f3496f25c",
+      "mode": "100644",
+      "bytes": 381,
+      "sha256": "5e970f5a046aff2beb6ed28f1acf71ba2e4a1e5149c0201db13c3d2e958d6993"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
+      "gitBlobSha": "845b9e2db2834c15831c911447d223fda0510987",
+      "mode": "100644",
+      "bytes": 1227,
+      "sha256": "bcd02bf74457d74e0f005f13c96f1203bbdc4330c797874d887ece29bed499e5"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
+      "gitBlobSha": "4742fc2c3d0ae86821e177ab1132fef18ee5b409",
+      "mode": "100644",
+      "bytes": 3545,
+      "sha256": "a0c309ba3aaf13f3238b065c929b4d6447e8893fd51aced7fea9e8b57b75e748"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/EquipmentSlot.cs",
+      "gitBlobSha": "65e4436c42790cf343989df62e27d0b0c599e97a",
+      "mode": "100644",
+      "bytes": 192,
+      "sha256": "3828cccb4e1621d7827311e9a3ed1607756e197b565ce87b6213769f54df5208"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
+      "gitBlobSha": "3f060569eb326ceb773df52b75a6fb684f04f3e1",
+      "mode": "100644",
+      "bytes": 89150,
+      "sha256": "b0f84e2de86ccfee2937588210cbea49b607f9a122b5fee349826decb892d702"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+      "gitBlobSha": "946ba5e1ed03733563b13fda5e01a45ffdeafaae",
+      "mode": "100644",
+      "bytes": 2538,
+      "sha256": "7712b104e5e3e66611c6ee06b160f9a07fe9732342de772bac1b2a2f3c155b59"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryItemStack.cs",
+      "gitBlobSha": "634b7de2a909a26a3f46810b29feadffc186cf56",
+      "mode": "100644",
+      "bytes": 1522,
+      "sha256": "dbccdbbbf71596081f487b2e5b2f5e089fa5b43978b5ec2398b4409cba298ead"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationOutcome.cs",
+      "gitBlobSha": "2d5fc4e9b0270e2c4e67b65dfdeb43603930bfeb",
+      "mode": "100644",
+      "bytes": 1003,
+      "sha256": "896e6e37900ac54d4931c9d0ab02d7f6718625c1eff4e0c097fb8344a796ef89"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationStatus.cs",
+      "gitBlobSha": "b929e46dd29adb3208cb9140d90912b34d696ec4",
+      "mode": "100644",
+      "bytes": 653,
+      "sha256": "025cd965dbeb21da93eda7c3dbfa156bd98c39b5ed92f89e4fe682051d6d2d5b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs",
+      "gitBlobSha": "4ed7b65abd5bfddd1a54fee3e9250defb1999e31",
+      "mode": "100644",
+      "bytes": 5504,
+      "sha256": "7fd457ef32d618b92455b4d6279e0c5abfcf93160e52eb6e675452904e8428fd"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemDefinition.cs",
+      "gitBlobSha": "9619dada8d4e423e7b066ade755947b485b9f846",
+      "mode": "100644",
+      "bytes": 6027,
+      "sha256": "468ca1cc8d98dc62e18581a929d1b08f99131fea10454d5b0cd5aa6da69be790"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
+      "gitBlobSha": "60288deb30d497440ac9fc5aea997f0f4dfbfa4d",
+      "mode": "100644",
+      "bytes": 179,
+      "sha256": "f6df7b19c86c9ba961491bd881865621ee98396e39bbadfc52519ee32b36402e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemRarity.cs",
+      "gitBlobSha": "a395e97850881e6b076066880ca8879cfea88d34",
+      "mode": "100644",
+      "bytes": 133,
+      "sha256": "632e85fc973f3aa355c5ac6443bc62ffdbb07920dfd87fd27fced04663ddbab2"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
+      "gitBlobSha": "df1b252adbbe2d37ce9998bb596856689e38091e",
+      "mode": "100644",
+      "bytes": 214,
+      "sha256": "d6c61f839e6553a3a7122b5d50ec51934bc010b551cb9d869384c37e1a05ec63"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/StartingLoadout.cs",
+      "gitBlobSha": "8e5ede6427e11ddff3b84074ab947f235244abf7",
+      "mode": "100644",
+      "bytes": 1068,
+      "sha256": "e8b750374aaf15aad341adc67a03d1fed98c629e4a349e92295a8a9f9adffcc0"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "gitBlobSha": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+      "mode": "100644",
+      "bytes": 337,
+      "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactIds.cs",
+      "gitBlobSha": "e3b67f53e1b82d16b203fabe39cc1543a9672af8",
+      "mode": "100644",
+      "bytes": 992,
+      "sha256": "487e35fbaa56a1fcfc261ad390f284f67ab682119dfea4557a038f79d9f116f1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactModifierTotals.cs",
+      "gitBlobSha": "abacdee6c21f39ace6fdced5930e83bbbaf6d8fb",
+      "mode": "100644",
+      "bytes": 5350,
+      "sha256": "5d47c05f6b2321acbf078d94dd0060f3e11a9f4829726e1fda12069fad6bccd0"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactPreview.cs",
+      "gitBlobSha": "110a4daebff488b0f9631ac7882a74b632fcf4cb",
+      "mode": "100644",
+      "bytes": 2449,
+      "sha256": "d185eb2e8e61de8276e1821424e4a479b285aec33e46f8d8bbb1cc51bb127252"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactSnapshot.cs",
+      "gitBlobSha": "be37573f2600496104740181de036703b97bffa3",
+      "mode": "100644",
+      "bytes": 1960,
+      "sha256": "26da18387e3a7c5632670240adad4903871e180241907fe72c3ddace02587ff9"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactState.cs",
+      "gitBlobSha": "30c61e1e536f41fc68d8d33cd6880e287ef36453",
+      "mode": "100644",
+      "bytes": 4867,
+      "sha256": "63364132a07c2597ca45806c74d9743ee38988f55aa57c3471807c0964acfb1b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Presentation/PlayerHudState.cs",
+      "gitBlobSha": "310795d3873c1e987ff9d03dbd63f8908499a903",
+      "mode": "100644",
+      "bytes": 1321,
+      "sha256": "d75aa06a2292f8d227c1215171eeb0560548aeb5e7d42bf914a23bf68cadcdf7"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Presentation/PlayerVisualState.cs",
+      "gitBlobSha": "e4878efb25e7fa401360b834086058e327eb7ef8",
+      "mode": "100644",
+      "bytes": 2036,
+      "sha256": "fb6fff59e51b67967ec2aa3a59798dca402477072c2b664ef08e63cc813acf7c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractCatalog.cs",
+      "gitBlobSha": "098a7c917fadb20eac810aa6b765a2751cd834a1",
+      "mode": "100644",
+      "bytes": 3078,
+      "sha256": "00275209dac8f7fb51dd15a49d961370571a0981a9f73485bd04bc521b11870a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractDefinition.cs",
+      "gitBlobSha": "630a4a4034a38e35734f32824412400455af7396",
+      "mode": "100644",
+      "bytes": 4179,
+      "sha256": "4a4d2e05faa15f49166070a57c83472cd3ea89450c22673b69a6850baa21fd38"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionRules.cs",
+      "gitBlobSha": "4bce6508eb7709cc573f93f4d57273c9fd148122",
+      "mode": "100644",
+      "bytes": 7406,
+      "sha256": "3bdce9e1021436d28913109c59d18fe2d0baa813d8462b7f801dd3dfb4fd69f4"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionSnapshot.cs",
+      "gitBlobSha": "3400355d8adea2604c78d3b1a50bc8f145d0166a",
+      "mode": "100644",
+      "bytes": 10070,
+      "sha256": "047f9c4e611ae92e285b0d433dac501ba1a16285d8cfe512d0c0131132b20719"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeKind.cs",
+      "gitBlobSha": "440e7dca42fc99ecfe39193369aa907bfb1a7020",
+      "mode": "100644",
+      "bytes": 479,
+      "sha256": "bf2a394e8b4c95047f8276ec1d54490fb4cb38dd201f0dc055a43f896a90793a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradePurchaseRecord.cs",
+      "gitBlobSha": "c700bf230dfd6fcb248b7564e2d3593c90a3acc8",
+      "mode": "100644",
+      "bytes": 977,
+      "sha256": "28a09f2998b1f86c1659af302bdfb9c0f982b5ab5867416012891d7ef741d284"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradePurchaseResult.cs",
+      "gitBlobSha": "a8a32244a69f131a5c54a1f4ce01b96f3201d21b",
+      "mode": "100644",
+      "bytes": 1071,
+      "sha256": "aa764c49d392d7313c7a2c4d71f1b451cdbbdf934f8b073ac5c20b8e30a1930d"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeRules.cs",
+      "gitBlobSha": "f4cc203c2adaeac5666f67f3d2be95bc8a101bb8",
+      "mode": "100644",
+      "bytes": 5251,
+      "sha256": "4db6f0ef04d2c30872bda9dc4edac7e71ec5d64080fc1e19c490b6d2669cbf7f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeSnapshot.cs",
+      "gitBlobSha": "c62f06525d5a58213db557af353dfe3673ddbaf5",
+      "mode": "100644",
+      "bytes": 4065,
+      "sha256": "d593a3bc63b535436fb86676445c1b05e5ff68c3805314ec8ceaa1389f57eb7e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Randomness/Xorshift32.cs",
+      "gitBlobSha": "1bf61176cae3731959997b852de3dcb1bdfa7f89",
+      "mode": "100644",
+      "bytes": 4303,
+      "sha256": "2037370edf826afb0eeb7decba78aea2b05fc8e276d9026bbd98ceb3f1de9c04"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Relics/SupportRelicResolver.cs",
+      "gitBlobSha": "35461f4c435c7ae3f8c5fe8142d3ecb5e6556a17",
+      "mode": "100644",
+      "bytes": 7855,
+      "sha256": "b4edc89824902f63ff1a6ca18d8777c0b16e44b645f921bd0a201cd14266fa24"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+      "gitBlobSha": "9677253e647ea4b7805fc9fef3421f0c57e3ab34",
+      "mode": "100644",
+      "bytes": 786,
+      "sha256": "35293ee134ed543c83914eae2109c350f0dd86bc66719de207f87c48e39cc437"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "gitBlobSha": "f8630a252ec692df371a430756686db927e631cb",
+      "mode": "100644",
+      "bytes": 34415,
+      "sha256": "0cbedf7cf7f03c91c74aa3d4312090c19bb0d80e6f2847887d5d6c14a6be96ca"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Sessions/GameSession.cs",
+      "gitBlobSha": "e36fbe8c9d4507c0daa4eb2c9011afc6d0e74a8d",
+      "mode": "100644",
+      "bytes": 2478,
+      "sha256": "6b3d74ab6b3011b09aa5d68bfd8583f660e31e2677e38e9dab7fd505b7cdfedb"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Sessions/IActorState.cs",
+      "gitBlobSha": "e9c0d70c1c863028f7220a5c27bb94d513896638",
+      "mode": "100644",
+      "bytes": 280,
+      "sha256": "0e0e2790fe295b46a5501295341bc50d5d9568813818bb01bf93f6c862820051"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Magus/MagusBasicAttackRequest.cs",
+      "gitBlobSha": "8b26c9b3d14c7f274d3e3a0a26d67bfc2251d1f3",
+      "mode": "100644",
+      "bytes": 763,
+      "sha256": "99835da57dde0e52ee85d7713e60a77abe5f5eebe61b69499fcc981b4c378772"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Magus/MagusBurnTick.cs",
+      "gitBlobSha": "5f99611808f86c2db52b16281dd3712644176213",
+      "mode": "100644",
+      "bytes": 2034,
+      "sha256": "eba0625f27a27459938d1f7413eddc7538148e62b48651333cd74938b0716477"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Magus/MagusCombatAdapter2D.cs",
+      "gitBlobSha": "ecde35d991075d98183b595173dffa3edb81bea8",
+      "mode": "100644",
+      "bytes": 7480,
+      "sha256": "48dc38c4882106e87ca61cf8db5d9947b0ec9754d0f66dd7e6b219682d470c0f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Magus/MagusRoomBinding.cs",
+      "gitBlobSha": "1a4312d88e33efedf11691f0611e70323dbb202b",
+      "mode": "100644",
+      "bytes": 1309,
+      "sha256": "0a6d983cbfdbaf0598420fa0bdb3108f4da859b1ff5e2b49a0a75eaf250d394c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Magus/MagusRoomEffectsScope2D.cs",
+      "gitBlobSha": "b44b7d4c704bcac7b20826cdf146656ed0e02e37",
+      "mode": "100644",
+      "bytes": 14464,
+      "sha256": "583d137d01bf4c912017c66135190bc81e0b3978c74f34fd2534cf7b8b9ca7c2"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Magus/MagusStatusEffectTarget2D.cs",
+      "gitBlobSha": "9ccde9307732f8bb6a1cb647189316da577f24b9",
+      "mode": "100644",
+      "bytes": 6939,
+      "sha256": "29209ad1f476a1b65e0be56aa01180ea957da83f236b2582e35800727113d9de"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/MeleeImpact.cs",
+      "gitBlobSha": "7b50f58687ee55953f6bbe019ef02148510bd979",
+      "mode": "100644",
+      "bytes": 2955,
+      "sha256": "eac40a0a9e0ba4836595d5506cb0b1c97812ae62f984a7b0fc7d0982e6dcc539"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Projectile2D.cs",
+      "gitBlobSha": "2c674904baa9eb5f23a269388cb49fb20039c180",
+      "mode": "100644",
+      "bytes": 5747,
+      "sha256": "a5e68cfd937165a2dd94b3a14e54c3b22dc433f6738a257067ef9788d97bb7a7"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/ProjectileImpactTarget2D.cs",
+      "gitBlobSha": "648c29d58058c4ab78e87b19b7e5178b77b1b969",
+      "mode": "100644",
+      "bytes": 3215,
+      "sha256": "7484bd64b4ead09cdd05271b5282d1cb9ae95b0f4ac5288b259d7d50017e9943"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/ProjectilePool2D.cs",
+      "gitBlobSha": "27191b1068b59c1273d39aba91861535d77a3938",
+      "mode": "100644",
+      "bytes": 4479,
+      "sha256": "959d614975680b4e88ee6bf8c755c3dfa0c9ce0ace97e8e46ed95be79aef205c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/RoomProjectileScope.cs",
+      "gitBlobSha": "439a85f2a4180a126ca32810d67e5ed26dfb0004",
+      "mode": "100644",
+      "bytes": 2766,
+      "sha256": "37c95b9a1b486beba382f6fdf1339b066b0a1264435fd1449affaaca9089381a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Venator/VenatorRoomBinding.cs",
+      "gitBlobSha": "0f4d33297882dde02ea9a4bdd69e47821a8888e3",
+      "mode": "100644",
+      "bytes": 1372,
+      "sha256": "1e66dca0b1b67ab92a391dc4a8be20015b7035f626aaca08b7fba2f108c0b387"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Venator/VenatorRootTrap2D.cs",
+      "gitBlobSha": "b795223e5bf8e8393d07c85465f956e9170c1d89",
+      "mode": "100644",
+      "bytes": 4141,
+      "sha256": "b0cf3b89c6da97042cf9de185b34750448be57aee5c60d46ee38ba24a82cdf33"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Venator/VenatorRootTrapPool2D.cs",
+      "gitBlobSha": "6ea7b11c9e1866426ab30b5e075eebee2da11679",
+      "mode": "100644",
+      "bytes": 4464,
+      "sha256": "a5cd12b21b3f6980bbd430b5b9dba897fb312a3c537d3aeace8ec42ae8c5c23f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Combat/Venator/VenatorRootedMovement2D.cs",
+      "gitBlobSha": "e43fe268ee712076769e1e7ec493f3df45ec0973",
+      "mode": "100644",
+      "bytes": 2356,
+      "sha256": "e0a4c6426d21efcb0f41b4f8d5ce4f192fd1b8404c2f55c18e967bb26ce63c85"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Enemies/CustodianBoss2D.cs",
+      "gitBlobSha": "1c7fc82be8b8cb9d3a2707e5e9c1afc22733a96e",
+      "mode": "100644",
+      "bytes": 23254,
+      "sha256": "050adc8a945ddd7ba255541916ba9c44835ac52fe3f5640142c00cdb31ffaed6"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Enemies/CustodianWaveHazard2D.cs",
+      "gitBlobSha": "55a36643dfbf9cdecaec1b6fc082f54e4af909d7",
+      "mode": "100644",
+      "bytes": 3802,
+      "sha256": "c647ac2e3e8909e2dda99898ba806cd6ba95d0e1df5ab51c19c694212e485178"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Enemies/Huesoguardia2D.cs",
+      "gitBlobSha": "13d43de0c331e9a73583372a023986d898336ad4",
+      "mode": "100644",
+      "bytes": 19602,
+      "sha256": "4199260a1152e0cbc56f4fed7cb6fa5c126cee4a6d6d631c9b03e2d99e52c559"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Enemies/Slime2D.cs",
+      "gitBlobSha": "c4e32a2cf1add1b1a3a1fe529457848f52711fe6",
+      "mode": "100644",
+      "bytes": 17951,
+      "sha256": "ebc1028696cfa9ba034f43a8f88d1e4c2701ff5cd70a07b16bcc4a62d3881855"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/GameplayAssemblyMarker.cs",
+      "gitBlobSha": "5c7a0de6ce91090d84d2cf50d8e8a78766e1889b",
+      "mode": "100644",
+      "bytes": 157,
+      "sha256": "5b3bcb628cbbe7a9590720a31d224d20d3661c95195220c124221cd08aa75a15"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Input/PlayerInputSource.cs",
+      "gitBlobSha": "40e360f4bf8a5c2b69db205aaccc4f580823505c",
+      "mode": "100644",
+      "bytes": 4917,
+      "sha256": "3ae117fff4517003daf4ccac767979a887efb00ee4f9eae093ddc0949ce6c6f3"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Interactions/RestStopInteraction2D.cs",
+      "gitBlobSha": "75d888254ba7ab1841b2ffc148732a65d3ec92da",
+      "mode": "100644",
+      "bytes": 3490,
+      "sha256": "9ebbed608df8d1d3b38cb54aa7a2bcf75a593d74269db2baabe57d6142e301d1"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/IPlayerFortuneBrewRuntime.cs",
+      "gitBlobSha": "f40491150b4dde95a7fb0bc6ab670599b9bc725d",
+      "mode": "100644",
+      "bytes": 422,
+      "sha256": "9dbda9cc68e4352e968ef71f6364bad49340e759ee0ca4f88c4e01cb1ab42d5f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/IStagedLootDrop.cs",
+      "gitBlobSha": "9aaf88742f8c2a1e10fc597b74ee14a8ccf0080a",
+      "mode": "100644",
+      "bytes": 248,
+      "sha256": "cc4e9a42f3e14d9a211020cbee827574f4f65a1ad6888839f057e56524f0ade0"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/ItemCollector2D.cs",
+      "gitBlobSha": "1520f6c274d526315b81510b1993e92f680d5281",
+      "mode": "100644",
+      "bytes": 6583,
+      "sha256": "859241c8827db07771fe226cc10ecb4d7146850b4bff235c2e5332706e1a6f3e"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/LootPickup2D.cs",
+      "gitBlobSha": "39675525378b8b732e772c5ba686d03d98f31405",
+      "mode": "100644",
+      "bytes": 2595,
+      "sha256": "1fcdfd517404b82d1559971e8bb0186ca3ae050e9abc114d06c89ab927c6bc95"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/LootPickupDropStager2D.cs",
+      "gitBlobSha": "95f3cc04cce538ec6fe3427d0a306ddf89bbe750",
+      "mode": "100644",
+      "bytes": 3174,
+      "sha256": "0c0ab2605f9e11a21e0a1a5cf9a6cfba3c19e5dab9b16f152b8325005a6d5a97"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/LootPickupInteractionStatus.cs",
+      "gitBlobSha": "790869b2bdac8abc0e51c3984ea3696d83f787bc",
+      "mode": "100644",
+      "bytes": 272,
+      "sha256": "777ed88222cbaa6e88ac910c48b034ed8c922c7d668a1080136ddd21f2e334eb"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/PlayerConsumableUseOutcome.cs",
+      "gitBlobSha": "6b805975d676882a75f5173cda5d9f7643631f91",
+      "mode": "100644",
+      "bytes": 1234,
+      "sha256": "552ba2c302d72d0dae32ce4dc8d49767880fc650359e193e0daa782430ce5299"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/PlayerFortuneBrewCommitOutcome.cs",
+      "gitBlobSha": "75e12cda84e7237dfa4e78c86658646672f52b92",
+      "mode": "100644",
+      "bytes": 1842,
+      "sha256": "7308bb8e6417234ed0a8ba0a55ff0819921fd41d9a6007fe4433c929fa51100b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Inventory/WorldMaterialPickup2D.cs",
+      "gitBlobSha": "706f18655fc4cde5de13b77b5e4a74989286523a",
+      "mode": "100644",
+      "bytes": 2160,
+      "sha256": "92f74433e8244ed0c68819c023145693e1fc8ae6a15164b69a92c44e6492bc27"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Luckbound.Gameplay.asmdef",
+      "gitBlobSha": "8f1a06fa5a4f410baf1ba5caf6907a54ad478e0a",
+      "mode": "100644",
+      "bytes": 450,
+      "sha256": "3ff6a8df2f1d2cbdbba898c0d72c22fa54e3185b00d0bb1c1ed699d556494fa9"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+      "gitBlobSha": "ec40ff2bda4d350c9084c4068332191b2fca7460",
+      "mode": "100644",
+      "bytes": 107153,
+      "sha256": "cd84b7c397d7dd0e1448dbf686540792fbbb45e9b6fc8b338c0d047c6009eab5"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Rooms/RoomLifetimeScope.cs",
+      "gitBlobSha": "772cb9d7a173004292c0f75bc29ce94faac246fe",
+      "mode": "100644",
+      "bytes": 4850,
+      "sha256": "73fb4f1d99dca24f6c311cbbadd4b35f4f91faa028427cd2fec2258f31caed5c"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Rooms/RoomPortMarker2D.cs",
+      "gitBlobSha": "e81e3deca0c4e1d06f1dc4993b55fcf65b642f82",
+      "mode": "100644",
+      "bytes": 1080,
+      "sha256": "36ac5870e901a9b25ab19b0b051314f56b710532ccdc2885b774a8315403b538"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Rooms/RoomPositionMarker2D.cs",
+      "gitBlobSha": "f3970bbb0e9b0f353d430b31da99c4ce9a34fc8f",
+      "mode": "100644",
+      "bytes": 801,
+      "sha256": "b7ab0cf124e70af70e5c50d85278686ef587f063ee1f796698272d11c51700d7"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Rooms/RoomTemplatePrefab2D.cs",
+      "gitBlobSha": "660a1bb47aa3185358c1a2f616f1d82ab0c3c210",
+      "mode": "100644",
+      "bytes": 7172,
+      "sha256": "2850a3f04e84b81d7783a35cc672c2cae1d8204f548151b2c5806b3ddc15fb8f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Presentation/Audio/RuntimeAmbienceDirector.cs",
+      "gitBlobSha": "3ba9c1379c14cb8323fc015bd010a06907b9dd40",
+      "mode": "100644",
+      "bytes": 17136,
+      "sha256": "1ff22b493563e6387485a694c57248d31d9aab8c47c3a7d3fa26cbc838dc9e3a"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Presentation/Audio/RuntimeAudioDirector.cs",
+      "gitBlobSha": "32be168e5e4dee360f78e4942a9d70f4b3c18902",
+      "mode": "100644",
+      "bytes": 32287,
+      "sha256": "8570a4b178c001d22786c724d09d1e2d088352de4c37f29fff76a998c6c1202f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Presentation/Luckbound.Presentation.asmdef",
+      "gitBlobSha": "c9aa26710ba4db7a28528e85788d87932fced0a7",
+      "mode": "100644",
+      "bytes": 515,
+      "sha256": "a08ea9cb882862612d0daa689f901700f11921404caf44481602e651cd8be691"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Presentation/PlayerHudPresenter.cs",
+      "gitBlobSha": "66816b71ef16e8f21f7b3ddbff4fdaf1b9ee9817",
+      "mode": "100644",
+      "bytes": 2144,
+      "sha256": "f90e54235e0ec186c5c2205fa6a5fe4a72d66bcef7447f5bd16a5b2abef1d29f"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Presentation/PlayerVisualStatePresenter.cs",
+      "gitBlobSha": "f2f109ae3dd6f08765dff055f027914f1a294c01",
+      "mode": "100644",
+      "bytes": 3530,
+      "sha256": "8abcd8c870be72585c60d797bf0de7abcfab6f0c7385a4cb7b04333bf814d05b"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Presentation/PresentationAssemblyMarker.cs",
+      "gitBlobSha": "1a9072ba09f2f5e8bdf7a8683e70c5227f0bcc89",
+      "mode": "100644",
+      "bytes": 169,
+      "sha256": "171eb54ba44df85672fcc2c3c3c3f19a8681d9471d7604f23d09b35f2a65d0e0"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Presentation/RoomCameraRig2D.cs",
+      "gitBlobSha": "c43420a6480b7eeaf358ca5a219df12f5c9e572f",
+      "mode": "100644",
+      "bytes": 6183,
+      "sha256": "6aa9c767cd364d0c35aaece59e37f192c45922c3e50cea43a5bd4945fabfd50e"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
+      "gitBlobSha": "114aaad1d71aeb9012d491278c6d660ff52da954",
+      "mode": "100644",
+      "bytes": 65468,
+      "sha256": "18c6c440466bed480e71aec1d8cd676bcc10c82ebee3b70f6095fb67495ebba1"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "gitBlobSha": "0df120389f01f83f360d65d0870db74aead1b4d1",
+      "mode": "100644",
+      "bytes": 2165,
+      "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "gitBlobSha": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+      "mode": "100644",
+      "bytes": 14044,
+      "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "gitBlobSha": "99bacd03c32572309212173ef6a8e7dab6cd92e6",
+      "mode": "100644",
+      "bytes": 83,
+      "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661"
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+    "schemaVersion": 1,
+    "sessionId": "e2abfc16192c44ab8a179b256b8bdf05",
+    "commit": "85ef222fd28573b2e3e994c13744b39ac5b93697",
+    "unityVersion": "6000.6.6f1",
+    "projectVersionDeclared": "6000.6.6f1",
+    "caseId": "V6-checkpoint-null-slots",
+    "attemptDirectory": "cases/V6-checkpoint-null-slots/attempt-0001",
+    "descriptorPath": "cases/V6-checkpoint-null-slots/attempt-0001/descriptor.json",
+    "testMethod": "RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence",
+    "variant": "includeNullSlots=true",
+    "role": "checkpoint-null-boundary-dto-json-separated-not-envelope",
+    "roleExpectation": "Capture separate checkpoint DTO JSON only; no envelope, checksum, or save-validity claim.",
+    "startedAtUtc": "2026-10-30T09:58:24.7545720Z",
+    "observedAtUtc": "2026-10-30T09:58:24.7585700Z",
+    "activationArgumentObserved": true,
+    "activationArgument": "-luckboundV6CaptureDir",
+    "activationValue": "Logs/Scenarios/V6Capture-85ef222fd28573b2e3e994c13744b39ac5b93697-41036480359-1",
+    "sourceHashesBefore": [
+        {
+            "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+            "bytes": 7266,
+            "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+            "bytes": 16578,
+            "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+            "bytes": 37224,
+            "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+            "bytes": 2163,
+            "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+            "bytes": 71590,
+            "sha256": "3a4520d9c7bd0f5c1ed95dd8ec7681a2cac4099fd00b8fe95c0b56997a469c83",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+            "bytes": 99,
+            "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+            "bytes": 163348,
+            "sha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+            "bytes": 40662,
+            "sha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+            "bytes": 484,
+            "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+            "bytes": 337,
+            "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+            "error": ""
+        },
+        {
+            "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+            "bytes": 647,
+            "sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+            "error": ""
+        },
+        {
+            "path": "ProjectSettings/ProjectVersion.txt",
+            "bytes": 83,
+            "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+            "error": ""
+        },
+        {
+            "path": "Packages/manifest.json",
+            "bytes": 2165,
+            "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+            "error": ""
+        },
+        {
+            "path": "Packages/packages-lock.json",
+            "bytes": 14044,
+            "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+            "error": ""
+        }
+    ],
+    "jsonUtilityAssembly": "UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "jsonUtilityModule": "UnityEngine.JSONSerializeModule.dll",
+    "jsonUtilityMvid": "1f4144d6-4409-465d-9a7a-99a08455999d",
+    "cultureName": "",
+    "cultureNumberDecimalSeparator": ".",
+    "files": [
+        {
+            "path": "checkpoint-current.json",
+            "bytes": 3821,
+            "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb"
+        },
+        {
+            "path": "checkpoint-legacy.json",
+            "bytes": 3821,
+            "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb"
+        },
+        {
+            "path": "checkpoint-current.sha256.txt",
+            "bytes": 64,
+            "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d"
+        },
+        {
+            "path": "checkpoint-legacy.sha256.txt",
+            "bytes": 64,
+            "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d"
+        },
+        {
+            "path": "checkpoint-comparison.json",
+            "bytes": 265,
+            "sha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b"
+        },
+        {
+            "path": "semantic-validation.json",
+            "bytes": 284,
+            "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c"
+        },
+        {
+            "path": "decode.json",
+            "bytes": 281,
+            "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9"
+        },
+        {
+            "path": "inspector.json",
+            "bytes": 503,
+            "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896"
+        }
+    ],
+    "semanticValidation": {
+        "method": "Not executed: no complete save envelope exists for checkpoint DTO capture.",
+        "executed": false,
+        "result": "NotApplicable",
+        "accepted": false,
+        "errors": [],
+        "errorType": "",
+        "errorMessage": "Not executed for the separate checkpoint DTO role."
+    },
+    "decode": {
+        "method": "Not executed: no complete save envelope exists for checkpoint DTO capture.",
+        "executed": false,
+        "result": "NotApplicable",
+        "status": "",
+        "valid": false,
+        "errorType": "",
+        "errorMessage": "Not executed for the separate checkpoint DTO role."
+    },
+    "inspector": {
+        "method": "Not executed: no complete save envelope exists for checkpoint DTO capture.",
+        "executed": false,
+        "result": "NotApplicable",
+        "status": "",
+        "encodeChecksum": "",
+        "storedChecksum": "",
+        "computedChecksum": "",
+        "storedChecksumMatchesEncode": false,
+        "computedChecksumMatchesEncode": false,
+        "preimageAvailable": false,
+        "preimageMatchesLiveProjection": false,
+        "errorType": "",
+        "errorMessage": "Not executed for the separate checkpoint DTO role."
+    },
+    "liveProjectionMatchesTestAssertions": true,
+    "liveProjectionMatchesLegacyProjection": true,
+    "liveProjectionByteCount": 3821,
+    "legacyProjectionByteCount": 3821,
+    "checkpointComparison": {
+        "role": "checkpoint-null-boundary-dto-json-separated-not-envelope",
+        "liveLegacyBytesEqual": true,
+        "liveByteCount": 3821,
+        "legacyByteCount": 3821,
+        "claim": "Separate DTO serializer equivalence only; no profile/settings envelope was produced."
+    },
+    "complete": true,
+    "semanticAcceptance": true,
+    "semanticAcceptanceMeaning": "Role-specific requirement only; see roleExpectation and separate observations.",
+    "failureCode": "",
+    "failureMessage": ""
+}

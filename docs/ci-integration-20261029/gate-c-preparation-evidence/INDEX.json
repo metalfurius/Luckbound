@@ -1,0 +1,32 @@
+[
+  {
+    "path": "GRAPH-RESULTS.json",
+    "source": "Logs/FullIntegrationFix-20261030-r5/gate-c-graph-offline-r1/RESULTS.json",
+    "bytes": 6776,
+    "sha256": "f1043871a245381c80132eb87b8046e384ef387b8e7720c852a46ecb1e94d488"
+  },
+  {
+    "path": "INPUT-SOURCE-HASHES.json",
+    "source": "Logs/FullIntegrationFix-20261030-r5/gate-c-graph-offline-r1/INPUT-SOURCE-HASHES.json",
+    "bytes": 53548,
+    "sha256": "4840acb0f077e6c8069f03292e3d1eb940bf6d3bfbf616d8d6e911a963b04612"
+  },
+  {
+    "path": "APP-R2-COMPILE.json",
+    "source": "Logs/FullIntegrationFix-20261030-r5/legacy-readonly-r2-offline-r1/Luckbound.App.RESULTS.json",
+    "bytes": 396,
+    "sha256": "3e4283042ee48e0c021774c9c9096e75d067ba02956e79a317f9c7fe119771a8"
+  },
+  {
+    "path": "COMBINED-TESTS-COMPILE.json",
+    "source": "Logs/FullIntegrationFix-20261030-r5/legacy-readonly-combined-playmode-offline-r1/RESULTS.json",
+    "bytes": 705,
+    "sha256": "6ce72de28cc69a8c6e9a67c2037d2b134d213007959f28a73bbff54cc2b5de43"
+  },
+  {
+    "path": "EXISTING-TESTS-IMPACT.md",
+    "source": "Logs/LegacyReadOnlyExistingTestsImpact-20261030/REPORT.md",
+    "bytes": 7604,
+    "sha256": "ad8484684c3f58f1a3f4f55b32410a734c6a4e4e1a42d493c6dd7e0c031e1b07"
+  }
+]

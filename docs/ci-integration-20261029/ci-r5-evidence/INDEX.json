@@ -1,0 +1,14 @@
+[
+  {
+    "path": "PARTIAL-REPORT.md",
+    "source": "Logs/CI-41036480359-review/REPORT.md",
+    "bytes": 3995,
+    "sha256": "0d1f18a180fc19b3acfe337a7931fd479b1217bad4dab7825408ccd70d2e5598"
+  },
+  {
+    "path": "PARTIAL-AUDIT.json",
+    "source": "Logs/CI-41036480359-review/AUDIT.json",
+    "bytes": 8066,
+    "sha256": "e8138733f7ace291e74ec0ab3672671b43a5fd03688c094fc61cf36685462bbd"
+  }
+]

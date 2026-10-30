@@ -1,0 +1,55 @@
+{
+  "run": 41038321991,
+  "commit": "7819bee3f064074010509edcdd82c6be95fe3055",
+  "suites": {
+    "editmode": {
+      "counts": {
+        "id": "2",
+        "testcasecount": "585",
+        "result": "Passed",
+        "total": "585",
+        "passed": "585",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-30 10:14:08Z",
+        "end-time": "2026-10-30 10:16:11Z",
+        "duration": "123.561118"
+      },
+      "caseNodes": 585,
+      "xmlSha256": "d05717d4369aa74e1253b5c03da85c94acbefad015da0f7eb04a554637ac6d3d",
+      "failures": []
+    },
+    "playmode": {
+      "counts": {
+        "id": "2",
+        "testcasecount": "352",
+        "result": "Failed(Child)",
+        "total": "352",
+        "passed": "351",
+        "failed": "1",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-30 10:11:12Z",
+        "end-time": "2026-10-30 10:13:42Z",
+        "duration": "150.2515584"
+      },
+      "caseNodes": 352,
+      "xmlSha256": "9c52c68a20abf60a763872504ed99a8dc28fdd091f0c5d5b60ab8955ff3347e3",
+      "failures": [
+        {
+          "name": "Luckbound.Tests.PlayMode.CombatArenaTests.PlayerCanWinTheGeneratedArenaWithKeyboardCombatAndWithoutForcedEnemyRemoval",
+          "result": "Failed",
+          "message": "Unhandled log message: '[Error] Cached unprocessed value unexpectedly became outdated for unknown reason, new value '0' old value '1'.'. Use UnityEngine.TestTools.LogAssert.Expect",
+          "stack": "UnityEngine.InputSystem.Controls.ButtonControl:get_isPressed ()\nLuckbound.Tests.PlayMode.CombatArenaTests/<>c__DisplayClass14_0:<PlayerCanWinTheGeneratedArenaWithKeyboardCombatAndWithoutForcedEnemyRemoval>b__3 (string) (at Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs:257)\nLuckbound.Tests.PlayMode.CombatArenaTests/<PlayerCanWinTheGeneratedArenaWithKeyboardCombatAndWithoutForcedEnemyRemoval>d__14:MoveNext () (at Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs:287)\nUnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)\n\n"
+        }
+      ]
+    }
+  }
+}

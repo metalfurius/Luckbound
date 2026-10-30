@@ -1,0 +1,151 @@
+{
+  "status": "Integrated awaiting Unity",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "5ecd95885a0d3508e6cde11a6dfd6c4d7b1b5034415f731582c869e10c945f04",
+      "afterSha256": "5a812d97de481206f8148aea83af57c7303a42e089b6171700a12260b70adbf4",
+      "bytes": 105867
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "032848445d48224242dca61775463327391ba5bdd89f36f1a5feaa87ead5cce5",
+      "afterSha256": "d74ef2755605bcfb93a4f91f9519ae369cbd317001b2a4897eeed2c32b9eaa3f",
+      "bytes": 19230
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionProgression.cs",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "34e12bc3b31b8fbe227203fd87584074fb7a87c1462890e7f630518206c2ae22",
+      "afterSha256": "7e9b05340161ebb0dc2c5f0adbd0e6d0266e53d1ac6c80b1139da1eccea6274c",
+      "bytes": 34064
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.Fortune.cs",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "9c0e6d3de17c163c43dfdea6bb27e5a66ee974cba4a942a61f1b78431e7dfd7c",
+      "afterSha256": "975613289cbe4e4437fa2480e8f049a9387c6945c8ebffaa9df556614b8945e6",
+      "bytes": 13316
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneBrew.cs",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "b3d6ac43c3ef71af4e1025cb359e18bfcaa75096889150a959c921545b9f28ba",
+      "afterSha256": "a55bdc426cc0881d4e5971aaeda3ca0da028bda60365eaf45cbe19abf278b294",
+      "bytes": 12779
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneReward.cs",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "3f69778816a21a4bb74a0850411fb0c79fcac78a06ac07ecb80993b91a9a3e81",
+      "afterSha256": "44902870763bc7ab2a782ac6c46777efdc00026cc7e5e80e7956680cc76031a0",
+      "bytes": 10223
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterResolver.cs",
+      "package": "LegacyReadOnlyAppCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "b8fd0d8ee794651b2bbf5b8494249ac8052be39d5d0693769061a3a67857668c",
+      "afterSha256": "fb5016d6dac1189913e5043f143ecc5fefc3340d97651db7042d87fc9be89724",
+      "bytes": 24598
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "package": "LegacyReadOnlyRepositoryCandidate-20261030-r2",
+      "newFile": false,
+      "beforeSha256": "9f5283e58129bff637ccc9b43e62e9ee38100461c7b538b6a1bd510f361d1a3a",
+      "afterSha256": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+      "bytes": 75121
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs",
+      "package": "LegacyReadOnlyRepositoryCandidate-20261030-r2",
+      "newFile": true,
+      "beforeSha256": null,
+      "afterSha256": "3b560349705615129101287e7715dbca6c4d3aea507a1729c2e66099725f662e",
+      "bytes": 29115
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs.meta",
+      "package": "LegacyReadOnlyRepositoryCandidate-20261030-r2",
+      "newFile": true,
+      "beforeSha256": null,
+      "afterSha256": "51744586455ae57f5d9f73ac11a6e97bba97010da2a1a8bd91675e061450b14d",
+      "bytes": 251
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+      "package": "LegacyReadOnlyApplicationTestsCandidate-20261030-r1",
+      "newFile": true,
+      "beforeSha256": null,
+      "afterSha256": "a8d037b1512f10bd45341cb9ed9a338a86ed6d491b6a064546018885cb168ff9",
+      "bytes": 32661
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs.meta",
+      "package": "LegacyReadOnlyApplicationTestsCandidate-20261030-r1",
+      "newFile": true,
+      "beforeSha256": null,
+      "afterSha256": "b57ced909b32e21cb9de09a1c82691d9e759e897b919e1884ed6d9d3240a15a2",
+      "bytes": 240
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAdvanceDurabilityTests.cs",
+      "package": "LegacyReadOnlyStorageTestsCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "ca7ea5fae01f6f9a8bd04e6f77aae430bb740069e10eda4afafe717ac1c90181",
+      "afterSha256": "8dd7e7b161fdac197b383f52ae9508f06ec15fb91a2bc2cfd45875c340efb74e",
+      "bytes": 77626
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
+      "package": "LegacyReadOnlyStorageTestsCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "4266de4566cb61ae835d2df6e37e06717708f2205a0fe7286045b748a35fc32b",
+      "afterSha256": "cef96d70e7bc3bbbc49461fb06fab9072a70096dd33683c1e1f915fac149dbfc",
+      "bytes": 81173
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/CraftingSessionTests.cs",
+      "package": "LegacyReadOnlyHubCraftTestsCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "50e71c75f8dede4c7b562d972b777e2054cd1075f3e29608d0cf19e447561d17",
+      "afterSha256": "ad83d7e2c3f3bfe0bec62302657c113738e894695ce2358b7b6a26b15fe2d01b",
+      "bytes": 33038
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+      "package": "LegacyReadOnlyHubCraftTestsCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "21733a62844de9df468be4c5573f8fe07371852994c4a3cc44c024bb695073d6",
+      "afterSha256": "53772af61eac98a1e5f97127f82775a96ae9cbf6c12a650fd934e8bb3ad77a73",
+      "bytes": 75555
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneBrewTests.cs",
+      "package": "LegacyReadOnlyFortuneTestsCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "25bc3243128e3d72af8087385f378dfc98fc9021ca9a6d18b65dd73707b71b9e",
+      "afterSha256": "b29d94f7f62adca84ce98a4c59d3e2098ea9efe2b5a9e1f3165a44118d90e8d6",
+      "bytes": 34373
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneRewardTests.cs",
+      "package": "LegacyReadOnlyFortuneTestsCandidate-20261030-r1",
+      "newFile": false,
+      "beforeSha256": "4c80caf28da38e9512098db97047c92d5ff44a53a0314fd2aab80f2893a6c3b2",
+      "afterSha256": "17039fa62d5373b8efb8b110dc3cb4d360994c8295d34568f96b635c9984345a",
+      "bytes": 33767
+    }
+  ],
+  "unityExecuted": false,
+  "existingTestsReviewSha256": "1b84a6711deb502c7626170463cd8d404e6060e374cf1f9f088abce91a43da4e"
+}

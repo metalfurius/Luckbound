@@ -1,6 +1,6 @@
 # Luckbound — snapshot de integración y captura V6
 
-Actualizado el 30 de octubre de 2026. **R7 F02 está integrado, Accepted estático y compilado sin errores; se prepara la CI r5.** La última integración `345fb5a7` / run40923742946 pasó 582/585 EditMode y 352/352 PlayMode, con tres fixtures F02 fallidas y cero omitidos. [Gate B V6 Accepted](SOL-V6-GATE-B-R4.md) permite implementar el contrato read-only Gate C en candidato aislado. Trial6.7 `3c7330d7` / run41033111947 falló esos tres F02 más el caso de salto/landing de C08; las builds quedaron omitidas. Sin adopción: integración/local en6000.6.6f1; F02 global y F10 abiertos.
+Actualizado el 30 de octubre de 2026. **R5 quedó verificado:937/937 pruebas, gate nativo real y ZIPs Windows/WebGL correctos.** [Cierre](ci-r5-evidence/FINAL-REPORT.md). Gate C está integrado y listo para CI R6:18 archivos revisados, grafo377/16 y PlayMode70 compilados, todavía sin aceptación Unity. La integración sigue en6000.6.6f1. Trial3 de6.7 corrige por separado la sonda C08; no hay adopción ni publicación. F02 global, Gate D–G y F09/F10 siguen abiertos.
 
 El corte r3 añade únicamente el arreglo acotado I06 y [diagnósticos F02 revisados](SOL-F02-R3-DIAGNOSTICS.md), ambos compilados offline. Conserva todos los criterios F02 y su caso explícito null. La próxima CI medirá los valores actuales; no se considera aún un arreglo de los 31 fallos de importación.
 

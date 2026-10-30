@@ -1,0 +1,26 @@
+[
+  {
+    "path": "SOURCE-MANIFEST.json",
+    "source": "Logs/LegacyV5Source-20261030/SOURCE-MANIFEST.json",
+    "bytes": 66008,
+    "sha256": "51052341801fa724cd236762c7b8c7a7c69ad0baf9fa8bd285d25f1fcae66478"
+  },
+  {
+    "path": "REPORT.md",
+    "source": "Logs/LegacyV5Source-20261030/audit/REPORT.md",
+    "bytes": 4302,
+    "sha256": "37bee6e17647dd0fd713e3d7f4516281d4b6ca2563df7db35044c130a7d46534"
+  },
+  {
+    "path": "SOURCE-FIELD-MAP.json",
+    "source": "Logs/LegacyV5Source-20261030/audit/SOURCE-FIELD-MAP.json",
+    "bytes": 116051,
+    "sha256": "2a7822134773592d655ea7589c6d9ebde468f8fe172f8702d900d3213d5d13ed"
+  },
+  {
+    "path": "ROOT-CHECK.json",
+    "source": "Logs/FullIntegrationFix-20261030-r5/V5-SOURCE-MAP-ROOT-CHECK.json",
+    "bytes": 7959,
+    "sha256": "016fd6e15b03d37f9ab745bd5c06e4644d7be206760b68505f5c1e45808461f2"
+  }
+]

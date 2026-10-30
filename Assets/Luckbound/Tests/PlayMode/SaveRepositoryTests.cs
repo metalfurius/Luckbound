@@ -762,15 +762,56 @@ namespace Luckbound.Tests.PlayMode
 
                 var restartedProcess = new SaveRepository(new FileSaveStore(directory, null));
                 SaveLoadResult<ProfileSaveEnvelope> loaded = Wait(restartedProcess.LoadProfileAsync());
+                FileSaveStore interruptedStore = new FileSaveStore(directory, null);
+                string interruptedPrimaryPath = interruptedStore.GetPrimaryPath(SaveDocument.Profile);
+                string interruptedBackupPath = interruptedStore.GetBackupPath(SaveDocument.Profile);
+                byte[] interruptedPrimaryBefore = File.ReadAllBytes(interruptedPrimaryPath);
+                byte[] interruptedBackupBefore = File.ReadAllBytes(interruptedBackupPath);
+                string interruptedExportBefore = restartedProcess.ExportLoadedProfileJson();
+                string interruptedSnapshotBefore = JsonUtility.ToJson(loaded.Data.activeExpedition);
+                Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
+                Assert.That(loaded.HasUsableData, Is.True);
+                Assert.That(loaded.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                Assert.That(restartedProcess.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
                 ExpeditionRunConfiguration resumed = ExpeditionSaveMapper.Restore(loaded.Data.activeExpedition, out ExpeditionSaveData rolledBack);
-                evidence.RecordAssertion("Restart returns to the room-entry snapshot rather than keeping interrupted gains",
+                evidence.RecordAssertion("The pure mapper returns the room-entry snapshot without granting the loaded profile continuation access",
                     loaded.Status == SaveLoadStatus.LoadedPrimary && resumed.RunId == run.RunId &&
                     rolledBack.currentHealth == entry.currentHealth && rolledBack.accumulatedRenown == entry.accumulatedRenown &&
                     resumed.Inventory.Gold == run.Inventory.Gold,
                     "same RunId, entry health/Renown/gold", rolledBack.currentHealth + "/" + rolledBack.accumulatedRenown + "/" + resumed.Inventory.Gold);
 
-                ExpeditionSaveData completed = rolledBack.Clone();
+                ExpeditionSaveData rejectedCompletion = rolledBack.Clone();
                 string resultJson = "{\"outcome\":\"cleared\",\"renown\":12,\"lootId\":\"reward.d09.test\"}";
+                rejectedCompletion.completedRoomIds = new[] { rejectedCompletion.currentNodeId };
+                rejectedCompletion.completedRoomResults = new[]
+                {
+                    new ExpeditionRoomCompletionSaveData
+                    {
+                        roomNodeId = rejectedCompletion.currentNodeId,
+                        resultId = "result." + rejectedCompletion.currentNodeId,
+                        resultJson = resultJson
+                    }
+                };
+                rejectedCompletion.roomEntryCheckpointJson = string.Empty;
+                SaveWriteResult blockedCompletionWrite = Wait(restartedProcess.SaveProfileAsync(loaded.Data.profile, rejectedCompletion));
+                Assert.That(blockedCompletionWrite.Succeeded, Is.False);
+                Assert.That(restartedProcess.ExportLoadedProfileJson(), Is.EqualTo(interruptedExportBefore));
+                Assert.That(restartedProcess.ExportPendingJson(SaveDocument.Profile), Is.Null);
+                Assert.That(JsonUtility.ToJson(loaded.Data.activeExpedition), Is.EqualTo(interruptedSnapshotBefore));
+                CollectionAssert.AreEqual(interruptedPrimaryBefore, File.ReadAllBytes(interruptedPrimaryPath));
+                CollectionAssert.AreEqual(interruptedBackupBefore, File.ReadAllBytes(interruptedBackupPath));
+                Assert.That(restartedProcess.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                evidence.RecordAssertion("A profile loaded from V6 cannot persist the mapper result and leaves its selected bytes and checkpoint unchanged",
+                    !blockedCompletionWrite.Succeeded && restartedProcess.ExportLoadedProfileJson() == interruptedExportBefore &&
+                    JsonUtility.ToJson(loaded.Data.activeExpedition) == interruptedSnapshotBefore,
+                    "read-only export, primary/backup, and interrupted checkpoint preserved", blockedCompletionWrite.Message);
+
+                // This isolated writer demonstrates a committed result in the session that created it. Its bytes are
+                // then read by a new repository, which classifies the loaded V6 document as read-only.
+                string completedDirectory = Path.Combine(_directory, "D09CommittedResult");
+                Directory.CreateDirectory(completedDirectory);
+                var completionWriter = new SaveRepository(new FileSaveStore(completedDirectory, null));
+                ExpeditionSaveData completed = entry.Clone();
                 completed.completedRoomIds = new[] { completed.currentNodeId };
                 completed.completedRoomResults = new[]
                 {
@@ -782,16 +823,36 @@ namespace Luckbound.Tests.PlayMode
                     }
                 };
                 completed.roomEntryCheckpointJson = string.Empty;
-                SaveWriteResult completeWrite = Wait(restartedProcess.SaveProfileAsync(loaded.Data.profile, completed));
+                SaveWriteResult completionStartWrite = Wait(completionWriter.SaveProfileAsync(
+                    ProfileSaveData.CreateNewProfile(), entry));
+                SaveWriteResult completeWrite = Wait(completionWriter.SaveProfileAsync(
+                    ProfileSaveData.CreateNewProfile(), completed));
+                Assert.That(completionStartWrite.Succeeded, Is.True, completionStartWrite.Message);
                 Assert.That(completeWrite.Succeeded, Is.True, completeWrite.Message);
-                SaveLoadResult<ProfileSaveEnvelope> afterCompletionRestart = Wait(new SaveRepository(new FileSaveStore(directory, null)).LoadProfileAsync());
-                ExpeditionSaveMapper.Restore(afterCompletionRestart.Data.activeExpedition, out ExpeditionSaveData completionState);
-                bool completedResultSurvives = completionState.completedRoomIds.Contains(completionState.currentNodeId) &&
+                Assert.That(completionWriter.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadWrite));
+
+                FileSaveStore completedStore = new FileSaveStore(completedDirectory, null);
+                string completedPrimaryPath = completedStore.GetPrimaryPath(SaveDocument.Profile);
+                string completedBackupPath = completedStore.GetBackupPath(SaveDocument.Profile);
+                byte[] completedPrimaryBytes = File.ReadAllBytes(completedPrimaryPath);
+                byte[] completedBackupBytes = File.ReadAllBytes(completedBackupPath);
+                string completedPrimaryJson = File.ReadAllText(completedPrimaryPath);
+                var completionReader = new SaveRepository(new FileSaveStore(completedDirectory, null));
+                SaveLoadResult<ProfileSaveEnvelope> completionReload = Wait(completionReader.LoadProfileAsync());
+                ExpeditionSaveData completionState = completionReload.Data.activeExpedition;
+                bool completedResultSurvives = completionReload.Status == SaveLoadStatus.LoadedPrimary && completionReload.HasUsableData &&
+                    completionReload.Access == SaveDataAccess.ReadOnlyLegacyEncounterPinMissing &&
+                    completionReader.ProfileAccess == SaveDataAccess.ReadOnlyLegacyEncounterPinMissing &&
+                    completionReader.ExportLoadedProfileJson() == completedPrimaryJson &&
+                    completionState.completedRoomIds.Contains(completionState.currentNodeId) &&
                     completionState.completedRoomResults.Length == 1 && completionState.completedRoomResults[0].resultJson == resultJson &&
                     string.IsNullOrWhiteSpace(completionState.roomEntryCheckpointJson);
-                evidence.RecordAssertion("A completed room reloads its committed result without generating a fresh entry checkpoint",
-                    completedResultSurvives, "one stable result, completed room, no entry rollback", completionState.completedRoomResults.Length.ToString());
+                evidence.RecordAssertion("A separate ReadWrite session persists the completed result before a new reader loads its exact V6 bytes",
+                    completedResultSurvives, "one stable result, completed room, no entry checkpoint; subsequent load is read-only",
+                    completionState.completedRoomResults.Length.ToString());
                 Assert.That(completedResultSurvives, Is.True);
+                CollectionAssert.AreEqual(completedPrimaryBytes, File.ReadAllBytes(completedPrimaryPath));
+                CollectionAssert.AreEqual(completedBackupBytes, File.ReadAllBytes(completedBackupPath));
                 int failedAssertions = evidence.Complete();
                 Assert.That(failedAssertions, Is.Zero, "D09 scenario evidence: " + evidence.ReportPath);
             }

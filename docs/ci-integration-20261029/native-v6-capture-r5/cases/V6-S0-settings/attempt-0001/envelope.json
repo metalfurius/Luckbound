@@ -1,0 +1,15 @@
+{
+    "schemaVersion": 1,
+    "contentVersion": 6,
+    "generation": 1,
+    "sequence": 11,
+    "savedAtUtc": "2000-01-01T00:00:00Z",
+    "checksum": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+    "settings": {
+        "languageId": "en",
+        "masterVolume": 0.800000011920929,
+        "musicVolume": 0.4000000059604645,
+        "effectsVolume": 0.699999988079071,
+        "ambienceVolume": 0.30000001192092896
+    }
+}
