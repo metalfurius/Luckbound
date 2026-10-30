@@ -1,0 +1,47 @@
+[
+  {
+    "path": "CHANGES.json",
+    "bytes": 801,
+    "sha256": "372f93eeb52684adbced3b8c922505ecc84a5ff311cc53ce56398daa1066aa7d"
+  },
+  {
+    "path": "changes.diff",
+    "bytes": 13654,
+    "sha256": "99c6a83c82193f7d2cb8bed605bd4e397816afce89c2d496cb97d7531badec23"
+  },
+  {
+    "path": "REPORT.md",
+    "bytes": 1902,
+    "sha256": "4cd8e8d366d2f07483d3d8978d07f268bb00cf9716dec9db512354afb0b60dfa"
+  },
+  {
+    "path": "TRIAL3-COMPILE-SOURCE-BLOBS.json",
+    "bytes": 16069,
+    "sha256": "d40105047eded9869541a5c0df4d120acde42dd5d81f13a689b106571b67bbe3"
+  },
+  {
+    "path": "TIMING-ASSERTION-INVENTORY.json",
+    "bytes": 430,
+    "sha256": "fb525a97e274c531e59c328af9911253437f5f992138e1312792f6b6ef54dc70"
+  },
+  {
+    "path": "COMPILE-INPUTS.json",
+    "bytes": 73361,
+    "sha256": "6458e7d4dffff7e4320fdfebc864046d661595792faa9ad0fcf44b2634f6f621"
+  },
+  {
+    "path": "COMPILE-RESULTS.json",
+    "bytes": 567,
+    "sha256": "5bb5a1e308a2239a2a02311153a1b555f88a91e835e3c17badc1705464230f99"
+  },
+  {
+    "path": "COMPILE-App.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "COMPILE-PlayMode.log",
+    "bytes": 2916,
+    "sha256": "5111fedca6f36f73b8752606da099da6cbf6a54a5d3e381074f14c9d3a197daa"
+  }
+]

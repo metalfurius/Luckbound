@@ -1,0 +1,462 @@
+[
+  {
+    "path": "Assets/Luckbound/Scripts/App/ApplicationAudioRouter.cs",
+    "sha": "2e8e9541edb9e7cf5af38f1ff7bfdc778327cc4c"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs",
+    "sha": "79b50ec4eec3b1ac672bacd0894aaec86fa0b022"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionAmbience.cs",
+    "sha": "f35ca387701669903a880caa2d1e73c1154f3b9c"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.ExpeditionProgression.cs",
+    "sha": "2cf9cf0b9aaa50089e76075288f8835c68dd3858"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.Fortune.cs",
+    "sha": "d7f8ca2ccafaf2aee1bf6d3c7b12fe9ab673f020"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneBrew.cs",
+    "sha": "f545e0b2bc5210162f7b2b6e525ed661234acf90"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.FortuneReward.cs",
+    "sha": "e88de43d41859960198ab423f741de7da0cfa27e"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.cs",
+    "sha": "38f0320bf7e6a20b61eddfbe8078960ad4020266"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+    "sha": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+    "sha": "4561e37cd5d0c7daa8a0cbb88bec8b606f122d91"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+    "sha": "6551c633a2de7e4c15998169618379938077af8c"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+    "sha": "44cee851931dc470bbff3bf3f6da308aa2c274c9"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ContractProgressionCommitResult.cs",
+    "sha": "78954930188d22be37ef1b4065df9c1345f1715b"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/CraftingCommitResult.cs",
+    "sha": "c87fdcbc11ffaaf628557f6316278230d8f96f98"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/CustodianArenaComposition.cs",
+    "sha": "983a85811b57b6e48cde940a54299032ac4acbc1"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionBellatorRunBinder.cs",
+    "sha": "40dbdcfcc8e733c69bc697381c6235287f73aa6d"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterResolver.cs",
+    "sha": "9670c2961d757058c271f0bfa9ca8e7fa07c8b81"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterRosterState.cs",
+    "sha": "c3c5d05305bfb06bc9a32d38766d8c3068137f60"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterSessionSnapshotSource.cs",
+    "sha": "26e8ede78f26b265c681d8eeec131021d8c5b318"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionGameplayComposition.cs",
+    "sha": "c436743a23f187397264565fd3a02a821eea4991"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionMutationCommitResult.cs",
+    "sha": "1aa9a50a0c94c454d8fa6bd40853650b2b22d77c"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionPauseController.cs",
+    "sha": "0470e92a8d20fb5c433cda210a6dfa511290c656"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+    "sha": "ee5c56fb918f04e7b3f0ee2f5e4c44db6dfaf13f"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomAmbienceRouter.cs",
+    "sha": "e559d9558e32f40ad19652ac175819c14c33505b"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomPrefabRegistry.cs",
+    "sha": "5fe106b899614cfe6786a35b20d828c05f5843c7"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionRoomTransitionController.cs",
+    "sha": "00ab180984ab2e0285fea266bd8f6a890f83c798"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionRunConfigurationFactory.cs",
+    "sha": "f81c8f867b08eee70642a5339b46516ad5181af9"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionRunSessionPresenter.cs",
+    "sha": "45824b38dd08e64e5d62796780f0aabc91382da6"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionSaveMapper.cs",
+    "sha": "c024a305a080a93fb6cfc961bff92a2d3c9bf290"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionSessionReadinessRegistration.cs",
+    "sha": "d0450cc12686ec3ee32ff416240f8ecca2ef3c41"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/FileSaveStore.cs",
+    "sha": "cf4fbe5a0595b5e7dc2f84236a66b05eec8f807f"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+    "sha": "0219e2628c23694fbc66e65d06eb84acc2d1e240"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+    "sha": "c0f7a0a427af1733fdead2f5455f551e8105bde9"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/MenuNavigationController.cs",
+    "sha": "8153dce1745b083b63c5df37112fd520018fce09"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/MenuNavigationFocusAudioRelay.cs",
+    "sha": "4dbd5c00ec86cd6f7fceda8a1952337902725fce"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/MovementDemoComposition.cs",
+    "sha": "8709bd9a465c6074c89600a98591ddbfb0349320"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/MovementDemoGoalTrigger.cs",
+    "sha": "2923c38002bb671c20d49015ae67420ea5c8deb0"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/PauseAudioSettingsPanel.cs",
+    "sha": "4983fcfae98a977b742bf45649342a0bfafaf3bc"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ProgressionPurchaseCommitResult.cs",
+    "sha": "7d381c933cd436b0d392998cdfb65301e4727708"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/RestStopEntryCommitData.cs",
+    "sha": "ec76b5bce5b1ecfd708b28f04acf97b61cfad771"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs",
+    "sha": "c2663530a039621ac32c60a9c217e1f590f56957"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/RoomEncounterActorBinding.cs",
+    "sha": "a03c9845d3e6eef609620224b79002089881ae36"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/RoomEncounterActorLifetimeRelay2D.cs",
+    "sha": "bce6bcac83c273e9f8d8ec58511404e67a845b6d"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/RoomEncounterDriver2D.cs",
+    "sha": "2e3933c53a40c2b09008dd6d8a7b90789f79b4bd"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/RoomEncounterRuntime.cs",
+    "sha": "77abd45ca9c161d279fb5042f7d2936dce656f8b"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+    "sha": "12ee0d6a179bcb5b5da8432fd406f2bd15995933"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/WebGlFileSystemSyncer.cs",
+    "sha": "7ac0cceacd2f01a4cd92674869f3e780e16f17ad"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ApplicationAudioInputLifecycleTests.cs",
+    "sha": "3bdfd09d3c29d91b891a867d1ebba163f3900b1b"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ApplicationAudioRouterTests.cs",
+    "sha": "7e6cb814195b3ceb1597837c5d131e480e527734"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ApplicationContractProgressionTests.cs",
+    "sha": "489e1da4b353ed6dc73bdbddec315bd61fd415d9"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneBrewTests.cs",
+    "sha": "43fec8d9402226084261697036ba9133c3312462"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ApplicationFortuneRewardTests.cs",
+    "sha": "1d016ffad887998f690d455d5fe77016c2164216"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/BellatorAbilitiesTests.cs",
+    "sha": "d685ea2cbb74e0fab7497b2d61cc1acaf931ac57"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/BellatorChargeTests.cs",
+    "sha": "d27cf7ed82e085c1a7e48fb214dc00f2e3e22380"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/BellatorWeaponRuntimeAcceptanceTests.cs",
+    "sha": "a7e121ddc9e10b83edcce3e4db8f4d221b24528a"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+    "sha": "a0a3919dbafee17ccea5c10abd9b175f6c08a647"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/CombatEffectRoutingTests.cs",
+    "sha": "9154280dba211be47981aaf530f983095ba648d8"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/CraftingSessionTests.cs",
+    "sha": "328efe90b1c97c7320e2c087ff43b685987b8de8"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/CustodianBossTests.cs",
+    "sha": "4b4fbd0c5b540ace36512dbc66714f43b921f36a"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/E04LegacyFortuneMigrationAcceptanceTests.cs",
+    "sha": "b9d740229868ed079e9703419540c802070098b2"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Economy/MerchantApplicationTests.cs",
+    "sha": "35f35379dec9497ba75b29c8f0467be047d98f40"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopApplicationTests.cs",
+    "sha": "d4533a577ff753d7c881873f07eb53eb552efe67"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+    "sha": "dc6a669b81bce16935c577665533413c230bd018"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionBellatorRunBinderTests.cs",
+    "sha": "b35522b8d3b9672ef70f32229e8b1f85e8853ffb"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterRosterStateTests.cs",
+    "sha": "8bb2796762daea4d623361ba0ada1f0c30f89df3"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionPlayerRunBinderTests.cs",
+    "sha": "a56917cd65251214a5435708cbfa2458b2482f45"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAdvanceDurabilityTests.cs",
+    "sha": "f0b170ed69059b623c2dfa555f5fb97dc2be861a"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRoomAmbienceRouterTests.cs",
+    "sha": "223f3632cbd35a78ceffbc20dcfec0bd1bb1ae22"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionRouteGenerationTests.cs",
+    "sha": "0de8b0950e21c3c9d932666461f7683554575cd0"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSampleRunTests.cs",
+    "sha": "22c3c615db14e4f6319bb267750f3c13eb9a4555"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSessionReadinessContractTests.cs",
+    "sha": "3556343f2710d1f120c28755a63011f7964cee9c"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSettlementFlowTests.cs",
+    "sha": "64ee585239fb2e30d26fd34fc1647015e8a2a339"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSimulationPauseLeaseTests.cs",
+    "sha": "4d599296d1c3820c393291c899fe12080e573573"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+    "sha": "117dc69b916f81fc9bc33ff38e7d94d323027ff2"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationProfileIntegrationTests.cs",
+    "sha": "bec954410da2502f5f7d42df34490d648622e1a3"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+    "sha": "3fa3d15e2ed35ed0d4591e4af9aea9b07b47d599"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/HuesoguardiaTests.cs",
+    "sha": "81635bda3f1072f5378d962078936e1abebf2ff4"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/I06LootPickupCueTests.cs",
+    "sha": "e678c738b50f801f554c2d62bfed7f71705a10a3"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/I06MenuFocusAudioRoutingTests.cs",
+    "sha": "b599adfd2f6d1b88f17f24a146649a2e61b44c26"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/I06UiAudioRoutingTests.cs",
+    "sha": "3c80093ed1c0cbd408373f7539bc137c4af2e263"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ItemCatalogAndPickupTests.cs",
+    "sha": "6215e89dd5b7952d35fd90b0f5966068e49bc27b"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/JumpControlTests.cs",
+    "sha": "f355ee93e251ef01e8c9ddebb2c9eb11b7028219"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/LegacyProfileV5TestFixture.cs",
+    "sha": "5930df52aae17b53cf7e5a8fc80cb48d8f2d43d1"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/LuckboundInputTestFixture.cs",
+    "sha": "66146654a9e58f70c0c6530046faa8a23c46de2a"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Magus/MagusGameplayAdapterTests.cs",
+    "sha": "de89cef1c55c43e58b92e890c71b3f55d2e0ca94"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Magus/MagusPlayerMotorTests.cs",
+    "sha": "5779152a10c29ad304708672a57cd7be20518891"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/MagusWeaponRuntimeAcceptanceTests.cs",
+    "sha": "0ee2df98fc7d01aecdb16a294f774fd14578acb6"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/MeleeAttackMotorTests.cs",
+    "sha": "276d341f64b29f0885b2f87be38b2cd9791464ee"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/MovementDemoFlowTests.cs",
+    "sha": "2938a62aeaf967c0de4e7eedffc561be56aaeb11"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PauseAudioSettingsTests.cs",
+    "sha": "ba999e00470b88b2e24f150d1cd6eba551bf6f95"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PermanentUpgradeFlowTests.cs",
+    "sha": "0a80a03b033d3c3a9e19d15d000ccd14713fc7bd"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PlayerConsumableRuntimeTests.cs",
+    "sha": "404097b57c4d0fb5a8e55d94099ed89ca88ef4b1"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PlayerDamageTests.cs",
+    "sha": "f2fa2b3aa2b73fdaae02923a6c23efbca7791153"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PlayerDodgeTests.cs",
+    "sha": "ae070e85d0c12c47f49b4c77da9aef39554d66e0"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PlayerHudConsumableTests.cs",
+    "sha": "49f0c9da04d843081d215c21a3726b76032aa9f1"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PlayerInputSourceTests.cs",
+    "sha": "1716150afbdbcf052a2c9657f716d9b356d08667"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PlayerMotorTests.cs",
+    "sha": "b2b753ae85457706c80c6c53eebd38738969ac5f"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/PlayerPresentationTests.cs",
+    "sha": "5bfb6fb38b698a212f62072b3da1b2e5d1a6bc82"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ProjectilePoolTests.cs",
+    "sha": "695c20f3d6e85e4240cb7a56b0ba3368c504e6d1"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/RoomEncounterRuntimeLifecycleTests.cs",
+    "sha": "e0f7f5267f1cf6153bc0e6423538db38c9dc89ad"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/RoomEncounterRuntimePhysicalTests.cs",
+    "sha": "44d36252017acdc2b1d5c73809b1f885ec992361"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/RoomTemplateTests.cs",
+    "sha": "bfbb512787386320128b5dec5fc11d7c0e3cdd67"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/RoomTransitionLifecycleTests.cs",
+    "sha": "22ce20a1e42ea40aec6c488de59eb3f3e5e91d6e"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/RuntimeAmbienceDirectorTests.cs",
+    "sha": "5bbddea824975b2d8055cea1a09882525f8169fe"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/RuntimeAudioDirectorTests.cs",
+    "sha": "b21706f3bf2b3d4812d27f2d82f2911f136325a4"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryTests.cs",
+    "sha": "7ad381bc0297cb38b486d410d47dae1d9717d726"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+    "sha": "0cbc490fd521398cb4b10954e2ccc447d28f2ebf"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ScenarioEvidenceRecorder.cs",
+    "sha": "d99ed8529ae8e83f56b3dea201e95fe335d2a8c5"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SkillCatalogContentTests.cs",
+    "sha": "ef04c527f7f7d92155fdda8461c8b38443eec45f"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SlimeEncounterDefeatedTests.cs",
+    "sha": "2b25ce0efabc28a6a0c60b5c5fe5d38618794d43"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SlimeTests.cs",
+    "sha": "2bfe20afaa11e5da7b3bd84cb36b63b885327d56"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/StartupFlowTests.cs",
+    "sha": "f6bec6e97971cfc30b478980ff0c4e7f4697b293"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Venator/VenatorGameplayTests.cs",
+    "sha": "005e3b886cfbc9144b1913d1f294173cabd497c5"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Venator/VenatorTestImpactActor2D.cs",
+    "sha": "7169efba6b9d28391cd00767ca4051970ba2a50d"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/VenatorWeaponRuntimeAcceptanceTests.cs",
+    "sha": "1b542fa79e38097293ece2a8c08888de3f2c3c2f"
+  }
+]

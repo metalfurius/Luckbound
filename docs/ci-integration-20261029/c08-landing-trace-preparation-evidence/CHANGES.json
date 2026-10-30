@@ -1,0 +1,14 @@
+[
+  {
+    "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+    "source": "C:\\Users\\Fran\\Documents\\GitHub\\Luckbound\\Assets\\Luckbound\\Scripts\\App\\CombatArenaComposition.cs",
+    "beforeSha256": "c6d77e01503d9f3b76d79e409b2bc378c66b03c673d76e983e0619b4fdd27893",
+    "afterSha256": "2ab115dec747be4de9b79bba68303a73318a1f1889f749b2135598cb6359bd56"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+    "source": "C:\\Users\\Fran\\Documents\\GitHub\\Luckbound\\Logs\\C08InputBoundaryCandidate-20261030-r2\\after\\Assets\\Luckbound\\Tests\\PlayMode\\CombatArenaTests.cs",
+    "beforeSha256": "371960fce539b43490ecdc2ce35268f5d2c5d8008e25e36053799e2ec9ce88ae",
+    "afterSha256": "c02c0c9a933d01bca1c5ae43d8416e6d2f675f8d78bd683b04f6fc846b195953"
+  }
+]

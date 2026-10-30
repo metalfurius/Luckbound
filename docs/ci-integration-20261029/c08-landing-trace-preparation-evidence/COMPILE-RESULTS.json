@@ -1,0 +1,20 @@
+{
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "referenceEditor": "6000.6.6f1",
+  "trialSourceCommit": "7618870e24613407b5e9c4ba6163ced4c74d47ce",
+  "results": [
+    {
+      "assembly": "Luckbound.App",
+      "sourceCount": 47,
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 68,
+      "exitCode": 0,
+      "logSha256": "5111fedca6f36f73b8752606da099da6cbf6a54a5d3e381074f14c9d3a197daa"
+    }
+  ]
+}

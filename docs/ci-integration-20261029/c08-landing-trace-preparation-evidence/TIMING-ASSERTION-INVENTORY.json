@@ -1,0 +1,27 @@
+[
+  {
+    "needle": "evidence.RecordAssertion(",
+    "before": 10,
+    "after": 10
+  },
+  {
+    "needle": "yield return",
+    "before": 18,
+    "after": 18
+  },
+  {
+    "needle": "InputSystem.Update()",
+    "before": 3,
+    "after": 3
+  },
+  {
+    "needle": "simulatedTicks < 12000",
+    "before": 1,
+    "after": 1
+  },
+  {
+    "needle": "groundedWaitTicks < 60",
+    "before": 1,
+    "after": 1
+  }
+]

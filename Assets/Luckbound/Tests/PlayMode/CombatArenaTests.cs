@@ -36,10 +36,17 @@ namespace Luckbound.Tests.PlayMode
         private bool _restoreSaveStoreFactory;
         private bool _previousAudioListenerPaused;
         private bool _restoreAudioListenerPause;
+        private Action<CombatArenaComposition.AudioTraceSnapshot> _previousAudioTrace;
+        private bool _restoreAudioTrace;
 
         [UnityTearDown]
         public IEnumerator RestoreContractTestApplication()
         {
+            if (_restoreAudioTrace)
+            {
+                CombatArenaComposition.EditorAudioTraceForTests = _previousAudioTrace;
+                _restoreAudioTrace = false;
+            }
             if (_restoreAudioListenerPause)
             {
                 AudioListener.pause = _previousAudioListenerPaused;
@@ -213,6 +220,41 @@ namespace Luckbound.Tests.PlayMode
                 _pressedKeys.Clear();
                 _leftHeld = false;
                 _rightHeld = false;
+                AudioClip landingClip = Resources.Load<AudioClip>("Luckbound/Audio/Effects/landing");
+                RuntimeAudioDirector traceDirector = app.GetComponent<RuntimeAudioDirector>();
+                Func<string> traceVoices = () => "listenerPaused=" + AudioListener.pause + "; voices=" +
+                    (traceDirector == null ? "MissingDirector" : string.Join("|",
+                        traceDirector.GetComponentsInChildren<AudioSource>(true).Select(source =>
+                            "voice=" + source.GetEntityId() + ",clip=" +
+                            (source.clip == null ? "Missing" : source.clip.GetEntityId().ToString()) +
+                            ",landing=" + (source.clip == landingClip && landingClip != null) +
+                            ",isPlaying=" + source.isPlaying)));
+                int traceUpdates = 0;
+                int traceRecords = 0;
+                int traceOverflow = 0;
+                int traceLandingCalls = 0;
+                int traceLandingSamples = 0;
+                bool traceFirstGroundedRecorded = false;
+                long traceFirstGroundedTick = -1;
+                bool traceWindowExpired = false;
+                var tracePreviousStates = new Dictionary<string, string>();
+                _previousAudioTrace = CombatArenaComposition.EditorAudioTraceForTests;
+                _restoreAudioTrace = true;
+                CombatArenaComposition.EditorAudioTraceForTests = snapshot =>
+                {
+                    if (snapshot.Tick > 180) { traceWindowExpired = true; return; }
+                    if (snapshot.Phase == "audio-before") traceUpdates++;
+                    if (snapshot.Phase == "ground-decision-after" && snapshot.LandingCall) traceLandingCalls++;
+                    string signature = snapshot.Grounded + "/" + snapshot.Baseline + "/" +
+                        snapshot.ReportedGrounded + "/" + snapshot.Jumps + "/" + snapshot.ReportedJumps;
+                    bool changed = !tracePreviousStates.TryGetValue(snapshot.Phase, out string previous) || previous != signature;
+                    tracePreviousStates[snapshot.Phase] = signature;
+                    if (snapshot.Phase != "initialized" && traceUpdates > 8 && !changed && !snapshot.LandingCall) return;
+                    if (traceRecords >= 500) { traceOverflow++; return; }
+                    traceRecords++;
+                    evidence.RecordEvent("C08 landing trace phase=" + snapshot.Phase + "; " + snapshot.Details + "; " + traceVoices());
+                };
+                evidence.RecordEvent("C08 landing trace before arena; pending=" + app.AudioRouter.PendingEffectRequestCount + "; " + traceVoices());
                 Button arenaButton = GameObject.Find("StartCombatArenaButton")?.GetComponent<Button>();
                 bool menuExposesArenaButton = arenaButton != null && arenaButton.interactable;
                 if (menuExposesArenaButton) arenaButton.onClick.Invoke();
@@ -245,7 +287,6 @@ namespace Luckbound.Tests.PlayMode
                 bool meleeStayedQueuedUntilTheFollowingFixedTick = false;
                 bool enemyDamageAudioRouted = false;
                 AudioClip enemyDamageClip = Resources.Load<AudioClip>("Luckbound/Audio/Effects/enemy_damage");
-                AudioClip landingClip = Resources.Load<AudioClip>("Luckbound/Audio/Effects/landing");
                 bool jumpStartedForLandingTest = false;
                 bool sawAirborneAfterLandingTestJump = false;
                 bool landingAudioRouted = false;
@@ -380,10 +421,23 @@ namespace Luckbound.Tests.PlayMode
                         sawAirborneAfterLandingTestJump = true;
                     if (!landingAudioRouted && sawAirborneAfterLandingTestJump && player.IsGrounded)
                     {
+                        if (!traceFirstGroundedRecorded)
+                        {
+                            traceFirstGroundedRecorded = true;
+                            traceFirstGroundedTick = player.SimulationTick;
+                            evidence.RecordEvent("C08 first grounded after airborne before existing yield; frame=" + Time.frameCount +
+                                "; tick=" + player.SimulationTick + "; " + traceVoices());
+                        }
                         yield return null;
                         RuntimeAudioDirector audioDirector = app.GetComponent<RuntimeAudioDirector>();
                         landingAudioRouted = landingClip != null && audioDirector != null &&
                             audioDirector.GetComponentsInChildren<AudioSource>(true).Any(source => source.clip == landingClip);
+                        if (traceLandingSamples < 8)
+                        {
+                            traceLandingSamples++;
+                            evidence.RecordEvent("C08 existing landing clip probe=" + traceLandingSamples + "; frame=" + Time.frameCount +
+                                "; tick=" + player.SimulationTick + "; routed=" + landingAudioRouted + "; " + traceVoices());
+                        }
                     }
                     if (attackHeld && simulatedTicks - lastAttackTick >= 1)
                     {
@@ -401,6 +455,10 @@ namespace Luckbound.Tests.PlayMode
                 SetMove(0f);
                 foreach (Key key in _pressedKeys.ToArray()) SetKey(key, false);
 
+                evidence.RecordEvent("C08 landing trace summary; updates=" + traceUpdates + "; records=" + traceRecords +
+                    "; overflow=" + traceOverflow + "; landingCalls=" + traceLandingCalls + "; firstGrounded=" + traceFirstGroundedRecorded +
+                    "; probes=" + traceLandingSamples + "; tickWindowExpired=" + traceWindowExpired +
+                    "; producerTransitionCompleteness=NotAssessed; fixtureReturnWithinWindowAndProbeObserved=" + (traceFirstGroundedRecorded && traceFirstGroundedTick <= 180 && traceLandingSamples > 0 && traceOverflow == 0));
                 bool won = arena.Result == CombatArenaResult.Victory;
                 bool bothSlimesDied = firstWaveSlimes.Length == 2 && firstWaveSlimes.All(enemy => enemy != null && enemy.IsDead);
                 bool bothHuesoguardiasDied = arena.Huesoguardias.Count == 2 && arena.Huesoguardias.All(enemy => enemy != null && enemy.IsDead);
