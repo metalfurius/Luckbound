@@ -1,0 +1,74 @@
+{
+  "task": "F09.PLAN-TO-ROSTER.TECH",
+  "staging": "Logs/F09PlanProjection-20261030-r1",
+  "outputs": [
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/App/ExpeditionEncounterPlanProjection.cs",
+      "sha256": "72f0395e78cb62f22b64beffc7155112fd09d6a1abdb803598fc077b765cd8f1"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs",
+      "sha256": "68a1b97a10e4406da1ed50713ad7da91ddd8ac684221d216aebc9224e4328f79"
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "0187e56a2f299c0d7b19222ae8306ec548239ba723dfbf0349672d204b224938"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "620c2e46cd80cc75c79d3b905cffd5b5b64b176200cbd991de6a680558e845c3"
+    },
+    {
+      "path": "docs/ci-integration-20261029/SOL-F09-AFTER-GATE-D-NEXT-CONTRACT.md",
+      "sha256": "38428bfd3c8e7480b0fa5b7ff00c86d0770c46f1dfd0e909b8af9393e66f25f3"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterRosterState.cs",
+      "sha256": "17f918bd59eb320116aff4ec86d731d3cc9d0446e82a4b3f25402370a84becf7"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/EncounterCatalogJsonLoaderV1.cs",
+      "sha256": "ef1ac28095cf89a5c66bc5c0e61f059c3c47018b16a5ed7b58c309e791f99122"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Content/EncounterCatalogRegistryV1.cs",
+      "sha256": "b16f917ab26dd4615acecbd94bd16c6d07b0bad15122a755de31cd47ee8d3b23"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+      "sha256": "f81a7c0b9c012a0152003ecfe4b9c06fdd43bce72c0b727e7f46ef3a24f226da"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+      "sha256": "1feb3f6f1b1284ed22cff5cbcb6be54f1b87697201e588c7dd0137f796539ddc"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Content/Expeditions/EncounterCatalogContentTests.cs",
+      "sha256": "bec5673b827ed57531d9f7803618f24d46c21a75f87b3df104d91e7212d4eb0f"
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanV1.cs",
+      "sha256": "5bd123f2c9e045d07014d8550ce029d418cb1b05508c0afd60a2b3d33eb1a14f"
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolverV1.cs",
+      "sha256": "878a54abe3f9150ed07f666a0bc39c0852cdfe585b105dd866cf853be161098e"
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanCanonicalV1.cs",
+      "sha256": "47d7ecc92dc417ec675f59f1acbbe9914e72362bd844814c54e63cacf49d5a10"
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolutionErrorV1.cs",
+      "sha256": "b17211dbe2cb3b33579d11709fe07e13df63b48d7c9313fb41ba66c8e63ad880"
+    }
+  ],
+  "verification": {
+    "compile": "not_run",
+    "tests": "not_run",
+    "unity": "not_run",
+    "ci": "not_run"
+  }
+}

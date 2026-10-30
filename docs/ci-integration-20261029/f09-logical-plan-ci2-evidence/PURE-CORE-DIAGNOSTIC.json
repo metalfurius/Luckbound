@@ -1,0 +1,83 @@
+{
+  "kind": "Supplemental pure .NET method invocation with NUnit assertions",
+  "unityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "framework": ".NET 9.0.17",
+  "testsAssemblySha256": "34c58ced450b1362531f40e47d1dbdaa82de6fb35cd63743d6e04496cc13079a",
+  "coreAssemblySha256": "4b7fc168de24b9ce9846b8220a4ea41773d455eaa9561b52ff039316551a7597",
+  "total": 14,
+  "passed": 14,
+  "failed": 0,
+  "results": [
+    {
+      "method": "ChangingPlanSemanticsChangesPlanDigestButKeepsPrimarySpawnKey",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "IndependentEncounterCanonicalByteAndSha256VectorIncludesUtf8AndDescriptorClosure",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "IndependentNoneCanonicalByteAndSha256Vector",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "MissingBindingFailsAndFactoryRejectsAmbiguousBindingKeys",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "NoVinculoCalendarRequiresZeroScheduleAndZeroSpawnOrdinals",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "NoneBindingIsExplicitAndHasNoEncounterPayloadOrSpawnIdentities",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "PlanCopiesSelectedVariantCollectionsAndDescriptorClosure",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "RejectsNullUnknownDuplicateAndOverLimitPactContexts",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "RejectsUnsupportedResolverIdAndRevision",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ResolutionContextIsCopiedSortedOrdinallyAndIndependentOfCulture",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ResolvesExactEncounterBindingAndCanonicalizesSpawnOrderWithoutChangingWaveOrder",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "RouteGenerationAndNodeMustBeExactAndSupported",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "V\u00EDnculoRequiresMissingResolutionAuthorityInsteadOfInferringAnOrdinal",
+      "passed": true,
+      "error": null
+    },
+    {
+      "method": "ZeroOrMultipleApplicableVariantsFailClosed",
+      "passed": true,
+      "error": null
+    }
+  ]
+}

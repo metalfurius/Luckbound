@@ -1,0 +1,23 @@
+{
+  "package": "G04.PALEBONE.ARCANEFLASK.RUNTIME-FIX",
+  "source": "after/Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+  "before_source": "before/Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+  "before_sha256": "713e7a7b94f9abee53f1e18dbb412fb9d606267fc81bdc73e461e7de7e113538",
+  "sha256": "6b931ee940c626a2e9ee9c18add62496b04ce0de93a1529994947c1d4dcda8dc",
+  "unity_test_methods": 7,
+  "source_changes": [
+    "Drive Venator skill preparation/cooldown with real buffered input and fixed motor ticks; damage before casting and pause simulation during equipment commits.",
+    "Expect the exact Expedition scene only for the restored writable V5 active-expedition fixture; retain Menu as the helper default."
+  ],
+  "input_ci": {
+    "run_id": "41102637556",
+    "commit": "b0af9fde",
+    "artifact_id": "13000511017",
+    "artifact_sha256": "04d46a1ce691429a6cb1301df6b5453e291b79845b2d22503c316bab46e5f9ef",
+    "passed": 1023,
+    "failed": 2
+  },
+  "offline_compile_for_candidate": false,
+  "unity_playmode_executed_for_candidate": false,
+  "ci_executed_for_candidate": false
+}

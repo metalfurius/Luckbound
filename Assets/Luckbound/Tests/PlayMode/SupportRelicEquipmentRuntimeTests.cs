@@ -306,26 +306,66 @@ namespace Luckbound.Tests.PlayMode
             SkillDefinition firstSkill = session.Skills.Get(VenatorSkillLoadout.PiercingArrowId);
             SkillDefinition secondSkill = session.Skills.Get(VenatorSkillLoadout.TripleShotId);
             session.Motor.SkillUses.SetCurrentEnergy(40);
-            Assert.That(skillState.Update(0, firstSkill, actionValid: true, interrupted: false).Status,
-                Is.EqualTo(SkillUseStatus.Preparing));
-            long activationTick = Math.Max(1, firstSkill.PreparationTicks);
-            SkillUseOutcome activated = skillState.Update(activationTick, firstSkill,
-                actionValid: true, interrupted: false);
-            Assert.That(activated.Status, Is.EqualTo(SkillUseStatus.Activated));
-            long preparingTick = activated.ReadyAtTick - 1;
-            Assert.That(skillState.Update(preparingTick, secondSkill, actionValid: true, interrupted: false).Status,
-                Is.EqualTo(SkillUseStatus.Preparing));
-            Assert.That(skillState.IsPreparing, Is.True);
-            Assert.That(skillState.IsReady(firstSkill.Id, preparingTick), Is.False);
-
             var damage = new DamageCalculationRequest(6m, 1m, 1m, 0m, 0, 0m,
                 session.Motor.CombatStats, targetIsInvulnerable: false);
-            session.Motor.ReceiveDirectImpact(HitId.New(), damage, impactTick: 0,
+            session.Motor.ReceiveDirectImpact(HitId.New(), damage, impactTick: session.Motor.SimulationTick,
                 knockbackVelocity: Vector2.zero, stunDurationTicks: 0);
+            int healthAfterImpact = session.Motor.CurrentHealth;
+
+            session.Actor.Input.Press(PlayerAction.Skill1);
+            SkillUseOutcome activated = default;
+            long activationTick = -1;
+            for (int frame = 0; frame < WaitFrameLimit; frame++)
+            {
+                yield return new WaitForFixedUpdate();
+                VenatorCombatResult result = session.Motor.LastVenatorCombatResult;
+                Assert.That(result, Is.Not.Null, "The bound motor must publish its real Venator tick result.");
+                activated = result.SkillOutcome;
+                if (activated.Status == SkillUseStatus.Activated)
+                {
+                    activationTick = session.Motor.SimulationTick;
+                    break;
+                }
+            }
+            session.Actor.Input.Release(PlayerAction.Skill1);
+            Assert.That(activated.Status, Is.EqualTo(SkillUseStatus.Activated));
+            Assert.That(activationTick, Is.GreaterThanOrEqualTo(0));
+            Assert.That(activated.ReadyAtTick,
+                Is.EqualTo(activationTick + firstSkill.CooldownTicks));
+
+            session.Actor.Input.Press(PlayerAction.Skill2);
+            SkillUseOutcome preparingSecond = default;
+            long preparingTick = -1;
+            for (int frame = 0; frame < WaitFrameLimit; frame++)
+            {
+                yield return new WaitForFixedUpdate();
+                VenatorCombatResult result = session.Motor.LastVenatorCombatResult;
+                Assert.That(result, Is.Not.Null, "The bound motor must publish its real Venator tick result.");
+                preparingSecond = result.SkillOutcome;
+                if (preparingSecond.Status == SkillUseStatus.Preparing && skillState.IsPreparing)
+                {
+                    preparingTick = session.Motor.SimulationTick;
+                    break;
+                }
+            }
+            session.Actor.Input.Release(PlayerAction.Skill2);
+            Assert.That(preparingSecond.Status, Is.EqualTo(SkillUseStatus.Preparing));
+            Assert.That(preparingTick, Is.GreaterThanOrEqualTo(0));
+            Assert.That(skillState.IsPreparing, Is.True);
+            Assert.That(skillState.IsReady(firstSkill.Id, preparingTick), Is.False);
+            Assert.That(preparingTick, Is.LessThan(activated.ReadyAtTick),
+                "The first skill is still cooling down while the second skill prepares.");
+
             int healthBefore = session.Motor.CurrentHealth;
             int energyBefore = session.Motor.CurrentEnergy;
+            Assert.That(healthBefore, Is.EqualTo(healthAfterImpact));
             ActorId actorIdBefore = session.Motor.ActorId;
             int writesBefore = store.ProfileWriteAttempts;
+
+            session.Pause.SetPaused(true);
+            Assert.That(session.Pause.IsPaused, Is.True);
+            Assert.That(session.Pause.IsSimulationPaused, Is.True);
+            Assert.That(Time.timeScale, Is.EqualTo(0f));
 
             RoomInstanceId room = session.App.ActiveRoomInstanceId;
             int boneIndex = FindBackpackIndex(session.App.ActiveRun.Inventory, bone.InstanceId);
@@ -354,7 +394,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(session.Motor.SkillUses, Is.SameAs(skillState));
             Assert.That(session.Motor.SkillUses.IsPreparing, Is.True);
             Assert.That(session.Motor.SkillUses.PreparingSkillId, Is.EqualTo(secondSkill.Id));
-            Assert.That(session.Motor.SkillUses.IsReady(firstSkill.Id, preparingTick), Is.False,
+            Assert.That(session.Motor.SkillUses.IsReady(firstSkill.Id, session.Motor.SimulationTick), Is.False,
                 "Equipment publication must retain the independent cooldown timeline.");
             Assert.That(session.Motor.CurrentHealth, Is.EqualTo(healthBefore),
                 "Maximum health bonuses do not heal the actor.");
@@ -417,7 +457,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(session.Motor.SkillUses, Is.SameAs(skillState));
             Assert.That(session.Motor.SkillUses.IsPreparing, Is.True);
             Assert.That(session.Motor.SkillUses.PreparingSkillId, Is.EqualTo(secondSkill.Id));
-            Assert.That(session.Motor.SkillUses.IsReady(firstSkill.Id, preparingTick), Is.False);
+            Assert.That(session.Motor.SkillUses.IsReady(firstSkill.Id, session.Motor.SimulationTick), Is.False);
             int healthBeforeArmorPublish = session.Motor.CurrentHealth;
             int energyBeforeArmorPublish = session.Motor.CurrentEnergy;
             int writesBeforeArmorPublish = store.ProfileWriteAttempts;
@@ -440,7 +480,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(session.Motor.SkillUses, Is.SameAs(skillState));
             Assert.That(session.Motor.SkillUses.IsPreparing, Is.True);
             Assert.That(session.Motor.SkillUses.PreparingSkillId, Is.EqualTo(secondSkill.Id));
-            Assert.That(session.Motor.SkillUses.IsReady(firstSkill.Id, preparingTick), Is.False);
+            Assert.That(session.Motor.SkillUses.IsReady(firstSkill.Id, session.Motor.SimulationTick), Is.False);
             Assert.That(store.ProfileWriteAttempts, Is.EqualTo(writesBeforeArmorPublish),
                 "Preparing and publishing a binder candidate does not claim a profile save.");
         }
@@ -638,7 +678,7 @@ namespace Luckbound.Tests.PlayMode
             string unknownLegacyProfile = CreateUnknownLegacyProfileWithEquippedPaleBone();
             var unknownStore = new RecordingSaveStore(profilePrimaryJson: unknownLegacyProfile);
             ApplicationBootstrapper unknownApp = null;
-            yield return StartApplication(unknownStore, value => unknownApp = value);
+            yield return StartApplication(unknownStore, value => unknownApp = value, expectedSceneName: "Expedition");
             Assert.That(unknownApp.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadWrite));
             Assert.That(unknownApp.ActiveRun, Is.Not.Null);
             Assert.That(unknownApp.ActiveRun.HasKnownStartingLoadout, Is.False);
@@ -834,7 +874,8 @@ namespace Luckbound.Tests.PlayMode
             ready(CreateRuntimeSession(app, run, app.ActiveExpedition));
         }
 
-        private IEnumerator StartApplication(RecordingSaveStore store, Action<ApplicationBootstrapper> ready)
+        private IEnumerator StartApplication(RecordingSaveStore store, Action<ApplicationBootstrapper> ready,
+            string expectedSceneName = "Menu")
         {
             ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => store;
             if (ApplicationBootstrapper.Instance != null)
@@ -842,11 +883,12 @@ namespace Luckbound.Tests.PlayMode
             yield return null;
             SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
             for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
-                !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
+                !ApplicationBootstrapper.Instance.SaveDataReady ||
+                SceneManager.GetActiveScene().name != expectedSceneName); frame++)
                 yield return null;
             Assert.That(ApplicationBootstrapper.Instance, Is.Not.Null);
             Assert.That(ApplicationBootstrapper.Instance.SaveDataReady, Is.True);
-            Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Menu"));
+            Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(expectedSceneName));
             ready(ApplicationBootstrapper.Instance);
         }
 

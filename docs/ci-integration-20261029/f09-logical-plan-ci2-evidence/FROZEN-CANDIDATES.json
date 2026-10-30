@@ -1,0 +1,37 @@
+[
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanV1.cs",
+    "sha256": "5bd123f2c9e045d07014d8550ce029d418cb1b05508c0afd60a2b3d33eb1a14f",
+    "bytes": 8626
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolverV1.cs",
+    "sha256": "878a54abe3f9150ed07f666a0bc39c0852cdfe585b105dd866cf853be161098e",
+    "bytes": 21345
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanCanonicalV1.cs",
+    "sha256": "47d7ecc92dc417ec675f59f1acbbe9914e72362bd844814c54e63cacf49d5a10",
+    "bytes": 9259
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolutionErrorV1.cs",
+    "sha256": "b17211dbe2cb3b33579d11709fe07e13df63b48d7c9313fb41ba66c8e63ad880",
+    "bytes": 1186
+  },
+  {
+    "path": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanResolutionV1Tests.cs",
+    "sha256": "de8ea3e36ec507b9eb365b71550d29cb4a6a9303913403788171c22d148c0e52",
+    "bytes": 33857
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterPlanProjection.cs",
+    "sha256": "72f0395e78cb62f22b64beffc7155112fd09d6a1abdb803598fc077b765cd8f1",
+    "bytes": 2719
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionEncounterPlanProjectionTests.cs",
+    "sha256": "68a1b97a10e4406da1ed50713ad7da91ddd8ac684221d216aebc9224e4328f79",
+    "bytes": 17134
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "commit": "b0af9fde908c5b4e88ef75ad51c19e1f8fbbcc25",
+  "tree": "4057545a5ae4c130bf444c097a75a278a51d9c03",
+  "run": 41102637556,
+  "suite": 111421787823,
+  "status": "completed",
+  "conclusion": "failure",
+  "artifact": 13000511017,
+  "artifactSha256": "04d46a1ce691429a6cb1301df6b5453e291b79845b2d22503c316bab46e5f9ef",
+  "editMode": {
+    "passed": 585,
+    "total": 585
+  },
+  "playMode": {
+    "passed": 438,
+    "total": 440
+  },
+  "newG04Passed": 5,
+  "newG04Total": 7,
+  "failures": [
+    {
+      "method": "ArmorAndRelicCommitsPreserveActorSkillTimelineAndUnfilledResources",
+      "message": "Unhandled log message: '[Exception] InvalidOperationException: Skill use state must be updated once per increasing simulation tick.'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "stack": "Luckbound.Core.Combat.SkillUseState.Update (System.Int64 tick, Luckbound.Core.Combat.SkillDefinition requestedSkill, System.Boolean actionValid, System.Boolean interrupted) (at Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs:156)\nLuckbound.Core.Combat.VenatorCombatState.Tick (Luckbound.Core.Input.PlayerCommand command, System.Boolean isAlive, System.Boolean interrupted) (at Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatState.cs:66)\nLuckbound.Gameplay.Movement.PlayerMotor2D.TickVenatorCommand (Luckbound.Core.Input.PlayerCommand command, System.Boolean canAct) (at Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs:1897)\nLuckbound.Gameplay.Movement.PlayerMotor2D.FixedUpdate () (at Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs:1652)\nUnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:50)\n\n"
+    },
+    {
+      "method": "CheckpointRoomRebindAndUnknownLegacyMaximumGuardUseTheExactPersistedState",
+      "message": "  Expected string length 4 but was 10. Strings differ at index 0.\n  Expected: \"Menu\"\n  But was:  \"Expedition\"\n  -----------^\n",
+      "stack": "at Luckbound.Tests.PlayMode.SupportRelicEquipmentRuntimeTests+<StartApplication>d__21.MoveNext () [0x00115] in /github/workspace/Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs:849\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@ba1d06c8c02f/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n"
+    }
+  ],
+  "omitted": 0,
+  "inconclusive": 0,
+  "windows": "skipped",
+  "webgl": "skipped",
+  "release": "skipped",
+  "deploy": "skipped",
+  "nativeGate": {
+    "unityOutcome": "failure",
+    "v6GateOutcome": "skipped",
+    "sentinelSucceeded": false,
+    "evidence": {
+      "unityFailureEnv": true,
+      "v6SkippedEnv": true,
+      "sentinelCommandPresent": true,
+      "rawLogSha256": "1021ce346f7a80bb2a839ac640615b4ed7cd446d3d1aab2c33304b100f6facfa",
+      "rawLogPublished": false
+    }
+  },
+  "capture": {
+    "attempts": 11,
+    "dataFiles": 97,
+    "sourceFiles": 14,
+    "allDataIdenticalToAcceptedCi3": true,
+    "technicalCaptureGateAccepted": false
+  }
+}

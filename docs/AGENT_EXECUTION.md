@@ -1,8 +1,8 @@
 # Luckbound — Ejecución con agentes Luna
 
-**Versión:** 2.62 · 30 de octubre de 2026.
+**Versión:** 2.63 · 30 de octubre de 2026.
 
-**Snapshot activo y gates visuales:** desarrollo en Unity6000.6.7f1. Gate D técnico [Accepted](ci-integration-20261029/SOL-GATE-D-CORRECTIVE-RUNTIME.md) sobre93c6ea46 / CI41095991782:1018/1018,77 filas, gate V6 real yambas builds verificadas. No repetir Gates B/C/D por metadata histórica. G04 HP/energía quedó integrado tras [Accepted estático R2](ci-integration-20261029/SOL-G04-HP-ENERGY-TESTS-R2.md): App52/Tests73 compila; runtime/CI propia pendiente1025 previstos. Dos Luna max preparan [F09 plan lógico yproyección al roster](ci-integration-20261029/SOL-F09-AFTER-GATE-D-NEXT-CONTRACT.md) con pruebas sintéticas, sin pin, Save7 oactivación física. F09/F10 yG04 completo permanecen abiertos. Sin Unity local, ventanas o publicación.
+**Snapshot activo y gates visuales:** desarrollo en Unity6000.6.7f1. GateD Accepted sobre93c6ea46/CI41095991782,1018/1018 y ambas builds verificadas; no repetirB/C/D. CI1G04 b0af9fde falló1023/1025; fallo conservado ycorrectivo test6b931 Accepted382ef259. F09plan/proyección A/B Accepted estático e integrados (siete fuentes/metas nuevas). Conjunto final compila cinco assemblies/323 inputs exit0,392 C# y 492 fixtures intactos; próxima CI conjunta esperada1042, runtime pendiente. Ver [evidencia compuesta](ci-integration-20261029/f09-logical-plan-ci2-evidence/REPORT.md). G04/F09/F10 completos, pin, Save 7 yactivación física siguen abiertos. Sin Unity local, ventanas o publicación.
 
 **Checkpoint del 28 de octubre:** las novedades y límites vigentes están en [PROGRESS.md, Estado actual](PROGRESS.md#estado-actual-28-de-octubre-de-2026). La aprobación estática inicial de `loot_pickup` fue corregida por Sol en su alcance de producto: wiring App retirado, evento/tests solo preparación hasta el commit durable F09; mapa conservado en 21/36. F02 r2 y V5 r2 son preparación/inventario aceptados en ámbitos limitados y mantienen sus gates. La prioridad es convertir esos requisitos en evidencia integrada del recorrido F10 y contener nueva documentación sin efecto sobre ese camino.
 

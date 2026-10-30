@@ -1,0 +1,21 @@
+{
+  "id": 41102637556,
+  "suite": 111421787823,
+  "headSha": "b0af9fde908c5b4e88ef75ad51c19e1f8fbbcc25",
+  "tree": "4057545a5ae4c130bf444c097a75a278a51d9c03",
+  "branch": "codex/luckbound-integration-unity-20261030",
+  "status": "completed",
+  "conclusion": "failure",
+  "passed": 1023,
+  "total": 1025,
+  "failed": 2,
+  "skipped": 0,
+  "artifactId": 13000511017,
+  "artifactSha256": "04d46a1ce691429a6cb1301df6b5453e291b79845b2d22503c316bab46e5f9ef",
+  "v6Gate": "skipped",
+  "windows": "skipped",
+  "webgl": "skipped",
+  "release": "skipped",
+  "deploy": "skipped",
+  "url": "https://github.com/metalfurius/Luckbound/actions/runs/41102637556"
+}

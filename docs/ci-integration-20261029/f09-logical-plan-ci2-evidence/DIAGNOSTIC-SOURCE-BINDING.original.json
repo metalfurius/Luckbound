@@ -1,0 +1,12 @@
+{
+  "testSourceSha256": "de8ea3e36ec507b9eb365b71550d29cb4a6a9303913403788171c22d148c0e52",
+  "compilerReport": "../final-a-r1/RESULTS.json",
+  "compilerReportSha256": "3a15c84d6afa5826c37054851d1c8a0786215c9a37c5ca34361e3b967882a853",
+  "harnessSourceSha256": "8aa55bbe0b3e2fe3b66de81b1335deb96b834767681b309428770166232b9bfc",
+  "testsAssemblySha256": "34c58ced450b1362531f40e47d1dbdaa82de6fb35cd63743d6e04496cc13079a",
+  "coreAssemblySha256": "4b7fc168de24b9ce9846b8220a4ea41773d455eaa9561b52ff039316551a7597",
+  "nativeUnityExecuted": false,
+  "nunitRunnerExecuted": false,
+  "total": 14,
+  "passed": 14
+}

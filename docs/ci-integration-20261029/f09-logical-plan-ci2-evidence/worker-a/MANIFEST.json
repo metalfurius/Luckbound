@@ -1,0 +1,217 @@
+{
+  "package": "F09.RESOLVED-PLAN.TECH",
+  "date": "2026-10-30",
+  "stage": "Logs/F09ResolvedPlan-20261030-r1",
+  "candidate": "Logs/F09ResolvedPlan-20261030-r1/candidate",
+  "inputs": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "620c2e46cd80cc75c79d3b905cffd5b5b64b176200cbd991de6a680558e845c3",
+      "bytes": 6850
+    },
+    {
+      "path": "docs/ci-integration-20261029/SOL-F09-AFTER-GATE-D-NEXT-CONTRACT.md",
+      "sha256": "38428bfd3c8e7480b0fa5b7ff00c86d0770c46f1dfd0e909b8af9393e66f25f3",
+      "bytes": 6453
+    },
+    {
+      "path": "docs/agent_staging/sol-f09-encounter-catalog-pin-design-20261026/REPORT.md",
+      "sha256": "3c49d050448957b7a4e79a03be0463552f5d4ca64a3ddfa798759d2295a1c4cc",
+      "bytes": 26780
+    },
+    {
+      "path": "docs/DEVELOPMENT_PLAN.md",
+      "sha256": "4ff63d2b79f5f63033746852ebd7a43b9610630ea24f3bfc881510a38f805d29",
+      "bytes": 158671
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogModels.cs",
+      "sha256": "8a55339d4c8c69bd3ce4c031c0c9ee91bf8753a1fcdcd30513cad935438bed2d",
+      "bytes": 7808
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogFactoryV1.cs",
+      "sha256": "d19a1c1af936edfe2d01bf82a56740e477c202610586cca04542396c5dd8b767",
+      "bytes": 30920
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogCanonicalV1.cs",
+      "sha256": "fe69ac0be152fd45d861923bc6f25c417fe3d734eb4ebb2619322af9296ca6f5",
+      "bytes": 10034
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogTokensV1.cs",
+      "sha256": "a4c18991f94a8b414c0784e8e2c6293ad827617ef9649cc330130d8d280f3c51",
+      "bytes": 5253
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogError.cs",
+      "sha256": "b8c651c20d289f9f538fdee06d6fd688e236b32819215f59806e3ec24aa6d144",
+      "bytes": 950
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterSpawnIdentityV1.cs",
+      "sha256": "74311d35bf605573b819af8c21c46ac31b03a3e6f7645c78541479d7ce308990",
+      "bytes": 16645
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+      "sha256": "1feb3f6f1b1284ed22cff5cbcb6be54f1b87697201e588c7dd0137f796539ddc",
+      "bytes": 42771
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+      "sha256": "f81a7c0b9c012a0152003ecfe4b9c06fdd43bce72c0b727e7f46ef3a24f226da",
+      "bytes": 7986
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRoomIdentity.cs",
+      "sha256": "bacee0d0741353ea08bef201fb15d66887d642b27b2e5fb9ff61f042b2d74c33",
+      "bytes": 1307
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Pacts/PactIds.cs",
+      "sha256": "3dc20c58b80dd109dcbb2bf3fddcec71ed6dfbdb8fb7f52c8754e383fa23bd8c",
+      "bytes": 1531
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
+      "sha256": "115ea8789104b8dae7adeef61fb3b8334399edcc36cf735b34b0081e03165f70",
+      "bytes": 90726
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs",
+      "sha256": "7fd457ef32d618b92455b4d6279e0c5abfcf93160e52eb6e675452904e8428fd",
+      "bytes": 5504
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemDefinition.cs",
+      "sha256": "468ca1cc8d98dc62e18581a929d1b08f99131fea10454d5b0cd5aa6da69be790",
+      "bytes": 6027
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
+      "sha256": "d6c61f839e6553a3a7122b5d50ec51934bc010b551cb9d869384c37e1a05ec63",
+      "bytes": 214
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionEncounterRosterState.cs",
+      "sha256": "17f918bd59eb320116aff4ec86d731d3cc9d0446e82a4b3f25402370a84becf7",
+      "bytes": 11510
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterCatalogCoreTests.cs",
+      "sha256": "683c8e31adbb8205cea5881d93c88a4e287bc7fe7e90d4ecc1026b9f317f9f60",
+      "bytes": 28621
+    },
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/ExpeditionSampleRouteTests.cs",
+      "sha256": "21cd73d29e6625ff5a5b86f0e53b9e925a7854c43a5548ca9284b032bed5a375",
+      "bytes": 9812
+    },
+    {
+      "path": "Logs/F09PlanIntegration-20261030-r1/EARLY-A-SNAPSHOT.json",
+      "sha256": "6310dc5f5ccf749b1bb072bc13fb1bc43e830580546159250f1c8c000f75b135",
+      "bytes": 964
+    }
+  ],
+  "outputs": [
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanV1.cs",
+      "sha256": "5bd123f2c9e045d07014d8550ce029d418cb1b05508c0afd60a2b3d33eb1a14f",
+      "bytes": 8626
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolverV1.cs",
+      "sha256": "878a54abe3f9150ed07f666a0bc39c0852cdfe585b105dd866cf853be161098e",
+      "bytes": 21345
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanCanonicalV1.cs",
+      "sha256": "47d7ecc92dc417ec675f59f1acbbe9914e72362bd844814c54e63cacf49d5a10",
+      "bytes": 9259
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolutionErrorV1.cs",
+      "sha256": "b17211dbe2cb3b33579d11709fe07e13df63b48d7c9313fb41ba66c8e63ad880",
+      "bytes": 1186
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/candidate/Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanResolutionV1Tests.cs",
+      "sha256": "de8ea3e36ec507b9eb365b71550d29cb4a6a9303913403788171c22d148c0e52",
+      "bytes": 33857
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/REPORT.md",
+      "sha256": "4af516ca4ca9b9c87cbb978c44291968cb1b9bd2dd4af7ee2d72b3cc79ca632d",
+      "bytes": 1470
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/before-r1/EARLY-A-SNAPSHOT.json",
+      "sha256": "6310dc5f5ccf749b1bb072bc13fb1bc43e830580546159250f1c8c000f75b135",
+      "bytes": 964
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/before-r1/Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanV1.cs",
+      "sha256": "55de8bea6149393fc9525ffb994b55e26161efc3a9a74eb94b656deade70a939",
+      "bytes": 8431
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/before-r1/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolverV1.cs",
+      "sha256": "878a54abe3f9150ed07f666a0bc39c0852cdfe585b105dd866cf853be161098e",
+      "bytes": 21345
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/before-r1/Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanCanonicalV1.cs",
+      "sha256": "47d7ecc92dc417ec675f59f1acbbe9914e72362bd844814c54e63cacf49d5a10",
+      "bytes": 9259
+    },
+    {
+      "path": "Logs/F09ResolvedPlan-20261030-r1/before-r1/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolutionErrorV1.cs",
+      "sha256": "b17211dbe2cb3b33579d11709fe07e13df63b48d7c9313fb41ba66c8e63ad880",
+      "bytes": 1186
+    }
+  ],
+  "verificationEvidence": {
+    "path": "Logs/F09PlanIntegration-20261030-r1/final-a-r1/RESULTS.json",
+    "sha256": "3a15c84d6afa5826c37054851d1c8a0786215c9a37c5ca34361e3b967882a853",
+    "unityExecuted": false,
+    "nunitExecuted": false,
+    "assemblies": [
+      {
+        "name": "Luckbound.Core",
+        "sourceCount": 141,
+        "exitCode": 0
+      },
+      {
+        "name": "Luckbound.Core.Tests",
+        "sourceCount": 37,
+        "exitCode": 0
+      }
+    ]
+  },
+  "checks": [
+    {
+      "check": "canonical-vector-byte-constants",
+      "status": "offline-checked",
+      "details": "None vector SHA256 2af2991af4b3d9c3e96e46a7674e8e2e9a5f6e753e2325d0bd25564e29bb81f3; Encounter vector SHA256 6e5c8f94838702a4bc898005d16457555b539f5865674af81866263f61a0e70b; hashes recomputed from literal byte constants without executing NUnit."
+    },
+    {
+      "check": "EditMode-tests",
+      "status": "not-run",
+      "details": "NUnit/Unity test runner was not executed."
+    },
+    {
+      "check": "Unity-and-joint-CI",
+      "status": "not-run",
+      "details": "Unity was not launched; local license is blocked per coordinator instruction."
+    }
+  ],
+  "scope": {
+    "liveProductionFilesModified": 0,
+    "candidateCodeAndTestFiles": 5,
+    "globalF09Complete": false,
+    "globalF10Complete": false
+  },
+  "manifestSelfHash": "omitted"
+}

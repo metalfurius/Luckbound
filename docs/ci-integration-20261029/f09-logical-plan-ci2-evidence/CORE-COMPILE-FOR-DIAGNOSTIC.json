@@ -1,0 +1,920 @@
+{
+  "unityExecuted": false,
+  "nunitExecuted": false,
+  "referenceEditor": "6000.6.6f1",
+  "targetCiEditor": "6000.6.7f1",
+  "guardedLiveSources": 385,
+  "stageRoots": [
+    "Logs/F09PlanIntegration-20261030-r1/frozen-r1"
+  ],
+  "results": [
+    {
+      "assembly": "Luckbound.Core",
+      "sourceCount": 141,
+      "exitCode": 0,
+      "responseSha256": "94a47b371fab5da2ad79fa938906c5b4500d1338efdd3f6da93345908d9c4dcb",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inputs": [
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorCatalog.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Armor/ArmorCatalog.cs",
+          "sha256": "af6288a08abf0da7fcd0866bf37c85fdf3846d562e0b1398143d83adf1b0bd02"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorProfile.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Armor/ArmorProfile.cs",
+          "sha256": "34fb2afe061b00fba3c3455db99fcd8ef98e9a5e019feb0437b0dc787f0e8428"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorReplacementResolver.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Armor/ArmorReplacementResolver.cs",
+          "sha256": "d5acef9cbb5c25f6f8753125109e34577f8199ad2b9a91ba7e1a0f1878112109"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorResolution.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Armor/ArmorResolution.cs",
+          "sha256": "8c7cc14584eedcce93f8dd433973edb83ed80fa490874995db161a6b7ea23639"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Armor/ArmorStatsResolver.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Armor/ArmorStatsResolver.cs",
+          "sha256": "6a3408ca7e705e48e9898946a1793a5f1a026b3850f20e52ed540f1f7f23bcb1"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/ActorDamageState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/ActorDamageState.cs",
+          "sha256": "c3c1ad9c890441a6e86caff6ad63451b7d21e5b70751ef82298b2801566df8b6"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Bellator/BellatorCombatState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Bellator/BellatorCombatState.cs",
+          "sha256": "1404f4ab35d4f0462a91c2a8db2f4cfc44ea0dd7641ddca46810788fb6494e86"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Bellator/BellatorSkillLoadout.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Bellator/BellatorSkillLoadout.cs",
+          "sha256": "3ef1003b7e67db2844dd107c8b14a864689f34271242cd7272b0b85f50d20f70"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/CombatStats.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/CombatStats.cs",
+          "sha256": "98f70a42ff644090d06cf9edac69ad831f97fe6fcec367ddeb56755d4e1db214"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/CustodianBossDefinition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/CustodianBossDefinition.cs",
+          "sha256": "ea55e1326711027aa7857e277bb4728bcec016989c4b98319752acc52e591402"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/DamageCalculationRequest.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/DamageCalculationRequest.cs",
+          "sha256": "8dba6bd3b0cd307d9eaeab25125088e42fd5ed192a1e2d7e068626b808756ca0"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/DamageResolution.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/DamageResolution.cs",
+          "sha256": "953c8af6ff39797cff7c3612680c31e42a7860f61b86a4f7b9d5126492a958e4"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/DamageResolver.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/DamageResolver.cs",
+          "sha256": "b8fe839c3342faff222c62a3617e60ff0b44b5ce8f321259347477334ebff4fb"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/DirectImpactOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/DirectImpactOutcome.cs",
+          "sha256": "9b967c64a5a84c99674e00820709c9778ab680fee210e5a2157f7817e40f20f1"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseOutcome.cs",
+          "sha256": "8a4785fedbab4f1a1713f349bafb1a31e8abcaefc045f40183f49feb8f8a96dc"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseState.cs",
+          "sha256": "6a44ca74f31534cc09f39c4453d4459aa1d0ad516cf431a1c0c161961e308149"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseStatus.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/EnergyTonicUseStatus.cs",
+          "sha256": "176c0e00b7d1ba41368fa9384a6cb00adc7ef209b1cfc66015838091add00826"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseOutcome.cs",
+          "sha256": "400d73eea5067273248a3c5cc24d692fe9d16b32e011238b2277b81d07c1944e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+          "sha256": "7f9aa774f64eac318f7c4605ca9159ba27bbf40b5bbda60f06576ff5338c2a4e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseStatus.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseStatus.cs",
+          "sha256": "6df21b75318c65e629f78a77a8d2f25eb13a6701ab9b52346e43aa8f0e8f6a05"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackProfile.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackProfile.cs",
+          "sha256": "445f9f084b7c160699fa4d9362c53219cc3c7f5bac3870edff1cf0533f6f076d"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackSnapshot.cs",
+          "sha256": "7316ae7a5da70fff23bcb04f4058fa5450f64b9e92714cd7daecadb58945e7ec"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusBasicAttackState.cs",
+          "sha256": "210f342b01da437634f902b8adb14a542391256a3a1b1fddba823e40bc12ffca"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusCombatResult.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusCombatResult.cs",
+          "sha256": "d86b3ec3360346fd978cdcdf94cfe61f4bd9f11b1cc6954ee59ca19d36eac57d"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusCombatState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusCombatState.cs",
+          "sha256": "4c8e5bbb893f87016a35093ae3807105b7af1df16ffe0cc775cfb7953a2fb9c6"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusSkillActivation.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusSkillActivation.cs",
+          "sha256": "f4a5eb26a0289626ec6905eb4889be829fa2370c0f4d9769f87928a71dd495b7"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusSkillLoadout.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusSkillLoadout.cs",
+          "sha256": "684f64133231b5987dd752a96d5e67db53d8d88fd55a08fbb09372f5f5533640"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusStatusSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusStatusSnapshot.cs",
+          "sha256": "caa897a66863bdc0ea9da17edee9bb448bfab14f1475345260d5dd01c22df01f"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Magus/MagusStatusState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Magus/MagusStatusState.cs",
+          "sha256": "11edcfc20d9f0882d1c224cac516f014551d0be0cb40dc9638d9727af44080e9"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackProfile.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/MeleeAttackProfile.cs",
+          "sha256": "7bc4698950e1370162b46201c349c5622b7e197d7fa8f95a4fafc333dd057211"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/MeleeAttackSnapshot.cs",
+          "sha256": "ceb6ae5fe338e4cb3862cca3f9d1da0878b71ae6d2e82f0bf5b2fbc6bb4c8fb5"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeAttackState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/MeleeAttackState.cs",
+          "sha256": "1a29e37000fce8922067fde58f27a07855f4120c8ab8d5c62887783c5c8a426d"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeComboSequence.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/MeleeComboSequence.cs",
+          "sha256": "dfa58d153f241cac07d3bd7ad155ef0bbb5bda445fd6fcb1ce45edbab8e34bd8"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/MeleeHitWindow.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/MeleeHitWindow.cs",
+          "sha256": "259da8f14e1159089034a240e23425d0ed5c369d8075e333602788bc6e2f197b"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/ProjectileDefinition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/ProjectileDefinition.cs",
+          "sha256": "08c7602ff8c75c53cbf0a860aeeeeedb8e72ba46c35c01e65f36511b0be66ab4"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/ProjectileImpact.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/ProjectileImpact.cs",
+          "sha256": "df052072d40d99d8512cae1e457f489eeac413449145d00f22aca6a57acd6ccc"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/SkillCatalog.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/SkillCatalog.cs",
+          "sha256": "6565364aad33be2bdcf0c6dd0764952133136d6eb635cc34233cb3dfe876aefd"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/SkillDefinition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/SkillDefinition.cs",
+          "sha256": "812a205aeee34d1b7faab2df9019241393f684cec88f3ac5e788e1aaa14820ee"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/SkillUseOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/SkillUseOutcome.cs",
+          "sha256": "5d397470d3ef4a74e480bffe46b2c406c740e9fefeae95f0eb168bd5e97d843d"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+          "sha256": "b3d57413331b973f1e4d46024ba5f11fbdc2da7b6084aa0ccf0ef72381651fb5"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackProfile.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackProfile.cs",
+          "sha256": "a1a39e4e660ee06251cbf60748c0abb17f9fb9d1cddb9e638abda4caeb611408"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackSnapshot.cs",
+          "sha256": "3823ad985af0a27d8329391dafb206c36dba7b8ff9594c9686a99a1970a2ac05"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorBasicAttackState.cs",
+          "sha256": "065278a96e7847b06b4cd038856892e1b98fdcb9989d9c2bec19c7e2aea5da1d"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatResult.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatResult.cs",
+          "sha256": "f1a222f9d329bedc851f9bf982ebe63d230a4343ac1bf912d727de6a3fe66dd1"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorCombatState.cs",
+          "sha256": "d549d10f38d2b4725546084426b6aa75035fd0a63855d17711537991f5ac06e4"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorSkillActivation.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorSkillActivation.cs",
+          "sha256": "730af215ccb1ca23f996e73dffb8d301774f646714a73a4c06a3a0be5d049da9"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorSkillLoadout.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/Venator/VenatorSkillLoadout.cs",
+          "sha256": "5adecf49ecadb9b664e3aea35ffc710d11b8ae4fbe26d77b50c6a1a69bed2368"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponCatalog.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/WeaponCatalog.cs",
+          "sha256": "0f6749cbfa11601f7bb692a37541d6c4d433f2762d0b32e2f2d5f53319770549"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponProfile.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/WeaponProfile.cs",
+          "sha256": "d6700cd0669a2b69ff18e8dd00cd18b42f1ad79979b37e19d01eb6ecfebfff3b"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Combat/WeaponTrait.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Combat/WeaponTrait.cs",
+          "sha256": "18ec7445c6c8b771d41ce8f844d43f32a8c4d7240e318ecae316a9e43d085e62"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Consumables/AntidoteEffect.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Consumables/AntidoteEffect.cs",
+          "sha256": "87fae6a72f9835b08880e09576d32342063b92ab6ec2292d50bba120f21a4b7f"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Consumables/BombEffect.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Consumables/BombEffect.cs",
+          "sha256": "c75a67ba220d465871893573b6ebef24fbf92a86498cb67bb16d19c0f8d6f665"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Consumables/FortuneBrewEffect.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Consumables/FortuneBrewEffect.cs",
+          "sha256": "e9cfef5d04b46bdb9102111f0421cc3cc38d2dfa982b085c805973559059075d"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Consumables/TorchEffect.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Consumables/TorchEffect.cs",
+          "sha256": "77997018b50559bb2e6d3f4a4d98869e12b1210289e823f70684e8391fa57e36"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/CoreAssemblyMarker.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/CoreAssemblyMarker.cs",
+          "sha256": "f595ae51aa701617b13bb363cbeb9ab3e9f9995af629cb09e05a89be4d91e52c"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingOperationStatus.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Crafting/CraftingOperationStatus.cs",
+          "sha256": "89aaa515702c712f98e42b049b6a87961cde2aae929a2ca35e65b52b551fc42a"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Crafting/CraftingOutcome.cs",
+          "sha256": "3897131f0c312ec19443ea5177cb69d9603d57382e0f25b9cea9e87e2ede66df"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Crafting/CraftingResultKind.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Crafting/CraftingResultKind.cs",
+          "sha256": "515018ad1f034950c40731193d7e2a5001aecbf579c304de6bd30a2768bd18b5"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeCatalog.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Crafting/RecipeCatalog.cs",
+          "sha256": "cb5470425015e3c579d1b3c66636d87e1e9d2ab4482166750029cfb35a00960b"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeDefinition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Crafting/RecipeDefinition.cs",
+          "sha256": "d977ba5309f46bd36fdac960ec4f129bf2bd97c06de198d5350301bbb59770ea"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Crafting/RecipeMaterialCost.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Crafting/RecipeMaterialCost.cs",
+          "sha256": "a2676ce8e19b4f553dde276f3f42c1dbb0ca2a123c7d3c98d3077ca6e1006f46"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/EconomyOperationStatus.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/EconomyOperationStatus.cs",
+          "sha256": "ccc6e2983b589d8867f3de14df527dade001cb1c2112af29bf6ac66b1ad64fed"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/EconomyTransactionOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/EconomyTransactionOutcome.cs",
+          "sha256": "9befda16d620d044c8b70779ef13a16eeb9267950d28341023f1ff6cdb6a7ce0"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/MerchantOfferSnapshot.cs",
+          "sha256": "4d2c43353685e2af5db360eb117518cf919c5aaf785ae414b61fad2a161f8428"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantPricing.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/MerchantPricing.cs",
+          "sha256": "ff719951718b612a66578e72e2f1a12e733beca2759cca4f6447a2f294f8a332"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantService.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/MerchantService.cs",
+          "sha256": "23121543d7496a9b11db76de2078c433dbc4a85767840582a43295eb25bf9c75"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/MerchantStockSnapshot.cs",
+          "sha256": "d032f82bb36a88254bfdb96f2a3ddab96622577b78e7fb8226b3c02b2554d69e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/RestStopOutcome.cs",
+          "sha256": "cbdc05f476048de50a404361ac5d66d38ea8b6bd149cc18840750a6d788417e1"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopService.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/RestStopService.cs",
+          "sha256": "c53d3a9697c54693524bb8eb132e70569db77b25b207c01a03b2fb976e90b058"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/RestStopUseSnapshot.cs",
+          "sha256": "8c9a02e49fea9458c16af1917f38bf204e74d9d8aafd796971ed7c7af8b9b281"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/SmithingOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/SmithingOutcome.cs",
+          "sha256": "b60e1f348e14a769ffecf2916a3b6bdf2d7ac2c01f4d2355334c32fca234cab1"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Economy/SmithingService.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Economy/SmithingService.cs",
+          "sha256": "fe5d5ac503e68a8558623e01678c1bcf62a528fbde9e1131213086845579a102"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogCanonicalV1.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogCanonicalV1.cs",
+          "sha256": "fe69ac0be152fd45d861923bc6f25c417fe3d734eb4ebb2619322af9296ca6f5"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogError.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogError.cs",
+          "sha256": "b8c651c20d289f9f538fdee06d6fd688e236b32819215f59806e3ec24aa6d144"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogFactoryV1.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogFactoryV1.cs",
+          "sha256": "d19a1c1af936edfe2d01bf82a56740e477c202610586cca04542396c5dd8b767"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogModels.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogModels.cs",
+          "sha256": "8a55339d4c8c69bd3ce4c031c0c9ee91bf8753a1fcdcd30513cad935438bed2d"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogTokensV1.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/EncounterCatalogTokensV1.cs",
+          "sha256": "a4c18991f94a8b414c0784e8e2c6293ad827617ef9649cc330130d8d280f3c51"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolutionErrorV1.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/F09PlanIntegration-20261030-r1/frozen-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolutionErrorV1.cs",
+          "sha256": "b17211dbe2cb3b33579d11709fe07e13df63b48d7c9313fb41ba66c8e63ad880"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolverV1.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/F09PlanIntegration-20261030-r1/frozen-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/EncounterPlanResolverV1.cs",
+          "sha256": "878a54abe3f9150ed07f666a0bc39c0852cdfe585b105dd866cf853be161098e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/EncounterSpawnIdentityV1.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/EncounterSpawnIdentityV1.cs",
+          "sha256": "74311d35bf605573b819af8c21c46ac31b03a3e6f7645c78541479d7ce308990"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionEncounterRewardPolicy.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionEncounterRewardPolicy.cs",
+          "sha256": "08ec563b3de5c900328401777477073f6b43873b2d030c88d03a0fe0c22e7b12"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRoomIdentity.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRoomIdentity.cs",
+          "sha256": "bacee0d0741353ea08bef201fb15d66887d642b27b2e5fb9ff61f042b2d74c33"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteGenerator.cs",
+          "sha256": "1feb3f6f1b1284ed22cff5cbcb6be54f1b87697201e588c7dd0137f796539ddc"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRouteTraversal.cs",
+          "sha256": "5add5065ce33766c40712413effaf5f59d7c655c1bbf405936a3fb6497a74712"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionRunConfiguration.cs",
+          "sha256": "f81a7c0b9c012a0152003ecfe4b9c06fdd43bce72c0b727e7f46ef3a24f226da"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/ExpeditionSettlementLedger.cs",
+          "sha256": "40c10aeadc9e4e065b3c075d19e810689179bf7bd9d79300a8fbd7c346bcb593"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/PlayableRaceRules.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Expeditions/PlayableRaceRules.cs",
+          "sha256": "a28b42917e5083dc8e536ae194613595f09b75037543b3680f9869a8fb8ea0f3"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanCanonicalV1.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/F09PlanIntegration-20261030-r1/frozen-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanCanonicalV1.cs",
+          "sha256": "47d7ecc92dc417ec675f59f1acbbe9914e72362bd844814c54e63cacf49d5a10"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanV1.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/F09PlanIntegration-20261030-r1/frozen-r1/candidate/Assets/Luckbound/Scripts/Core/Expeditions/ResolvedEncounterPlanV1.cs",
+          "sha256": "5bd123f2c9e045d07014d8550ce029d418cb1b05508c0afd60a2b3d33eb1a14f"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOffer.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Fortune/FortuneOffer.cs",
+          "sha256": "e6b4e57bd338c5d8c8ca2edc521bf429c1366d21f33db82be29173aefd03f4a2"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBook.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBook.cs",
+          "sha256": "da8bdf1725aed84471b52083375d2cfc7628af51d25fa15bf867e920466ab6f8"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+          "sha256": "5664d1d555c438d408267d144f77f6d134cdf71cc1e272b6eed732223caee6af"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneRelicResolver.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Fortune/FortuneRelicResolver.cs",
+          "sha256": "83880f0b78835c26014811e9e8a5bf4d8430ce14b80002fcd3e3d9a43ee4caf6"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/ActorId.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/ActorId.cs",
+          "sha256": "9107be9804d6e2546dac2cb4d6182dde3e5c839c77de2014cb426946c38cf61e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/EntityId.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/EntityId.cs",
+          "sha256": "2d917f0b12c600ce604ad1e827a95bebaeb84abe8a88ee78485225075005cd61"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/HitId.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/HitId.cs",
+          "sha256": "4cd13139bf77205cb38e6ecadfa426b081898b8cb2212a188c8c0ac0c3bdb427"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/IdParsing.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/IdParsing.cs",
+          "sha256": "4057e919c196a7f402396932ec0706d10011e2c578bfa6171804603f1b8fad79"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/ItemInstanceId.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/ItemInstanceId.cs",
+          "sha256": "09adbada747bce91e3a421884bcd6c24fbbd406f219ecd11e75fac8a0315e51c"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/RoomInstanceId.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/RoomInstanceId.cs",
+          "sha256": "6f6f38241cdcb519f9205a7eac7c123ea84a5d58ac78539c2e5664baec440904"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/RunId.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/RunId.cs",
+          "sha256": "5b7ced374f9c43ba1900285013ad56e058a449389a5ace5d4a52b5d7c6b80f72"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/SessionId.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/SessionId.cs",
+          "sha256": "8a178e53bcf5496de4d00e5566c38d523bc952a582ae426a0c861a196b464aa2"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Identifiers/TransactionId.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Identifiers/TransactionId.cs",
+          "sha256": "b7815a3e93b559af8afc0c579fb0f5769c8791850520e3becbec51592c9d550b"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Input/IPlayerInputSource.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Input/IPlayerInputSource.cs",
+          "sha256": "8a1731381f797b22b89984f2a74a1f076b4e992177c92ca5bd57c56ca3cb36ff"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Input/PlayerAction.cs",
+          "sha256": "5e970f5a046aff2beb6ed28f1acf71ba2e4a1e5149c0201db13c3d2e958d6993"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Input/PlayerCommand.cs",
+          "sha256": "bcd02bf74457d74e0f005f13c96f1203bbdc4330c797874d887ece29bed499e5"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Input/PlayerInputBuffer.cs",
+          "sha256": "a0c309ba3aaf13f3238b065c929b4d6447e8893fd51aced7fea9e8b57b75e748"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/EquipmentSlot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/EquipmentSlot.cs",
+          "sha256": "3828cccb4e1621d7827311e9a3ed1607756e197b565ce87b6213769f54df5208"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventory.cs",
+          "sha256": "115ea8789104b8dae7adeef61fb3b8334399edcc36cf735b34b0081e03165f70"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/ExpeditionInventorySnapshot.cs",
+          "sha256": "6c9183729f93a35c127e461e2e5f8b491374e6fc7e7a0fab1fdba161f7f7816b"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryItemStack.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/InventoryItemStack.cs",
+          "sha256": "dbccdbbbf71596081f487b2e5b2f5e089fa5b43978b5ec2398b4409cba298ead"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationOutcome.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationOutcome.cs",
+          "sha256": "7283c645efe8f5def404f163a037fa0245d42b3a2455f2f03df52c8ef1e3bc92"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationStatus.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/InventoryOperationStatus.cs",
+          "sha256": "025cd965dbeb21da93eda7c3dbfa156bd98c39b5ed92f89e4fe682051d6d2d5b"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/ItemCatalog.cs",
+          "sha256": "7fd457ef32d618b92455b4d6279e0c5abfcf93160e52eb6e675452904e8428fd"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemDefinition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/ItemDefinition.cs",
+          "sha256": "468ca1cc8d98dc62e18581a929d1b08f99131fea10454d5b0cd5aa6da69be790"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/ItemKind.cs",
+          "sha256": "f6df7b19c86c9ba961491bd881865621ee98396e39bbadfc52519ee32b36402e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/ItemRarity.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/ItemRarity.cs",
+          "sha256": "632e85fc973f3aa355c5ac6443bc62ffdbb07920dfd87fd27fced04663ddbab2"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/MaterialKind.cs",
+          "sha256": "d6c61f839e6553a3a7122b5d50ec51934bc010b551cb9d869384c37e1a05ec63"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Inventory/StartingLoadout.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Inventory/StartingLoadout.cs",
+          "sha256": "e8b750374aaf15aad341adc67a03d1fed98c629e4a349e92295a8a9f9adffcc0"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Pacts/PactIds.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Pacts/PactIds.cs",
+          "sha256": "3dc20c58b80dd109dcbb2bf3fddcec71ed6dfbdb8fb7f52c8754e383fa23bd8c"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Pacts/PactModifierTotals.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Pacts/PactModifierTotals.cs",
+          "sha256": "b1a0e25818a7b6cd709503bac8754f9cce0e1401123e74d1f49f605a4d389b19"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Pacts/PactPreview.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Pacts/PactPreview.cs",
+          "sha256": "cd24fbfcfafe86ce2e8b020a3ee53e48559da1033621fa0254f24186f696d8df"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Pacts/PactSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Pacts/PactSnapshot.cs",
+          "sha256": "d99bc19a56394868f6ce4d411b47f7d5cb3e7b699b8c7a7aad71c11f8f28c56a"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Pacts/PactState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Pacts/PactState.cs",
+          "sha256": "9ef945add86b80d32974adb3ce65e11a1def34375ced936776998a4582d9345b"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Presentation/PlayerHudState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Presentation/PlayerHudState.cs",
+          "sha256": "d75aa06a2292f8d227c1215171eeb0560548aeb5e7d42bf914a23bf68cadcdf7"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Presentation/PlayerVisualState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Presentation/PlayerVisualState.cs",
+          "sha256": "fb6fff59e51b67967ec2aa3a59798dca402477072c2b664ef08e63cc813acf7c"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractCatalog.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractCatalog.cs",
+          "sha256": "d6cc2dfb41a515a527a7e0cbba8167605bde006248440061b5a0b13d53ce0c1e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractDefinition.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractDefinition.cs",
+          "sha256": "fd9f743c2a0cee11ed6fa244c10687c3e2751722ef3c050a7fff67eb57623195"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionRules.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionRules.cs",
+          "sha256": "18271e670d340189eb5d150c363a8455b031aee36c2585e3dda3a063dfa84073"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/Contracts/ContractProgressionSnapshot.cs",
+          "sha256": "17253e4ebbbdc4ad8fcd7864666929cf6bfcbac6f4c26daa3b2c10fc6443e5ab"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeKind.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeKind.cs",
+          "sha256": "bf2a394e8b4c95047f8276ec1d54490fb4cb38dd201f0dc055a43f896a90793a"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradePurchaseRecord.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradePurchaseRecord.cs",
+          "sha256": "28a09f2998b1f86c1659af302bdfb9c0f982b5ab5867416012891d7ef741d284"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradePurchaseResult.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradePurchaseResult.cs",
+          "sha256": "aa764c49d392d7313c7a2c4d71f1b451cdbbdf934f8b073ac5c20b8e30a1930d"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeRules.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeRules.cs",
+          "sha256": "4db6f0ef04d2c30872bda9dc4edac7e71ec5d64080fc1e19c490b6d2669cbf7f"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeSnapshot.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Progression/PermanentUpgradeSnapshot.cs",
+          "sha256": "d593a3bc63b535436fb86676445c1b05e5ff68c3805314ec8ceaa1389f57eb7e"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Randomness/Xorshift32.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Randomness/Xorshift32.cs",
+          "sha256": "2037370edf826afb0eeb7decba78aea2b05fc8e276d9026bbd98ceb3f1de9c04"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Relics/CombatRelicResolver.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Relics/CombatRelicResolver.cs",
+          "sha256": "1075e3c0ed4b5b0d4c14b489419e029a9d46d9157576364262cff4f93147b462"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Relics/SupportRelicResolver.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Relics/SupportRelicResolver.cs",
+          "sha256": "d1da19d4afdcf64ca157496b00696aaa718cb18049f75173894886db7b3bfe02"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Saves/ISaveStore.cs",
+          "sha256": "35293ee134ed543c83914eae2109c350f0dd86bc66719de207f87c48e39cc437"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+          "sha256": "8984ef60556b441e92d831eeb3bc30d0b929149707326f2e17b4308c8d394574"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Sessions/GameSession.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Sessions/GameSession.cs",
+          "sha256": "6b3d74ab6b3011b09aa5d68bfd8583f660e31e2677e38e9dab7fd505b7cdfedb"
+        },
+        {
+          "path": "Assets/Luckbound/Scripts/Core/Sessions/IActorState.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Scripts/Core/Sessions/IActorState.cs",
+          "sha256": "0e0e2790fe295b46a5501295341bc50d5d9568813818bb01bf93f6c862820051"
+        }
+      ]
+    },
+    {
+      "assembly": "Luckbound.Core.Tests",
+      "sourceCount": 37,
+      "exitCode": 0,
+      "responseSha256": "445e8e0e84b7b6b932f5748b909a4f92f21a4a3a39b2523cf98a5741369d175d",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inputs": [
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/ActorDamageStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/ActorDamageStateTests.cs",
+          "sha256": "c138cadd55a82b2e4967dd6b1d0ecfe3b35dca7965263396b2ff1847be8c6b2e"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/ActorSessionTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/ActorSessionTests.cs",
+          "sha256": "ae8fb5082511a16272443b440a1473ac11768fe003df620fbe2a70f37b443771"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Armor/ArmorCatalogTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Armor/ArmorCatalogTests.cs",
+          "sha256": "ab078bb99630cc202523584f96b193a55f517aacc718d833cea2e0d82b0168d3"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Armor/ArmorReplacementResolverTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Armor/ArmorReplacementResolverTests.cs",
+          "sha256": "9a3289dcfcc7b56ba6fdbe667e5bd504636b5f03e7863017a4722b4f1f0f8783"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Bellator/BellatorCombatStateSkillsTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Bellator/BellatorCombatStateSkillsTests.cs",
+          "sha256": "094d80bdaa683274d9279cef03f368aed9f6fb8a8c41ca8edcbb6b47fbc772d0"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Consumables/ConsumableEffectTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Consumables/ConsumableEffectTests.cs",
+          "sha256": "d36b79d6d741461c5e9af5c66ca9cf8ff6685e0f0169f3b3154bf967dbe28939"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Consumables/QuickConsumableTransactionTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Consumables/QuickConsumableTransactionTests.cs",
+          "sha256": "f289055c5c74aa871b734eb2b5aa986181e4244399371a83e58fd0bffa81a45a"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/CoreAssemblyTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/CoreAssemblyTests.cs",
+          "sha256": "de72e6c79165385d9c69e4e50ad9d0efcb03975c871dfd4c16a4dd00c641fee4"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/CustodianBossDefinitionTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/CustodianBossDefinitionTests.cs",
+          "sha256": "d18f12da9cbdb722a4d5aaeac526c52e79d6731d657407a56a1fbdabf038d773"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/DamageResolverTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/DamageResolverTests.cs",
+          "sha256": "d8794fcafd8b957b646487174d5a3ba2ba60715184994d9b86ddab1f8de3f45f"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Economy/EconomyServiceTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Economy/EconomyServiceTests.cs",
+          "sha256": "0a188fcef18c87268f4cbd27e21b72edb51f8b9b074e93f3ba8be72b2bf1ee3f"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/EnergyTonicUseStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/EnergyTonicUseStateTests.cs",
+          "sha256": "662de4c3a128cd8635e35c1abf5ac0debf4e64e90d58ef14776010afd53dbf75"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/ExpeditionRoomIdentityTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/ExpeditionRoomIdentityTests.cs",
+          "sha256": "b02ad816e0a8fcba74c457e9f44d3abf6c21ed8945c31fef6bb73c0fa018faa2"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/ExpeditionRouteGeneratorTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/ExpeditionRouteGeneratorTests.cs",
+          "sha256": "00fb5b182b5da1d98867b52ea4c69d3e844c10c6d38aea7870075082a604bc3b"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/ExpeditionRouteTraversalTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/ExpeditionRouteTraversalTests.cs",
+          "sha256": "171ebb83ac4108539dda4be7dfad88166ae0356bb172a49fbca50bdcd9a2fb3b"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/ExpeditionSampleRouteTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/ExpeditionSampleRouteTests.cs",
+          "sha256": "21cd73d29e6625ff5a5b86f0e53b9e925a7854c43a5548ca9284b032bed5a375"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/ExpeditionSettlementTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/ExpeditionSettlementTests.cs",
+          "sha256": "61af14c1bde9383a68ccc3cd321d8c51b3d17aa11430e85a163dc98fae9d49db"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterCatalogCoreTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Expeditions/EncounterCatalogCoreTests.cs",
+          "sha256": "683c8e31adbb8205cea5881d93c88a4e287bc7fe7e90d4ecc1026b9f317f9f60"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanResolutionV1Tests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/F09PlanIntegration-20261030-r1/frozen-r1/candidate/Assets/Luckbound/Tests/EditMode/Expeditions/EncounterPlanResolutionV1Tests.cs",
+          "sha256": "de8ea3e36ec507b9eb365b71550d29cb4a6a9303913403788171c22d148c0e52"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Fortune/FortuneOfferBookTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Fortune/FortuneOfferBookTests.cs",
+          "sha256": "288d230601f94cdbe6f8fccb45d1c67be3e6e3083376c95a78b609c3fee91d7a"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Fortune/FortuneRelicResolverTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Fortune/FortuneRelicResolverTests.cs",
+          "sha256": "1d5aa098d55f2dce78b04ea6934397158693ea0e81a921418c1e0648fbe310f4"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Fortune/FortuneRerollTransactionTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Fortune/FortuneRerollTransactionTests.cs",
+          "sha256": "74c4460e2d78da089cb8f3c60e03ab1b5a7bf8c700181cfea4c9b10ddd137ba8"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/HealthPotionUseStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/HealthPotionUseStateTests.cs",
+          "sha256": "5b816077fa4e86392b16c7f378f97a3414b0746cd951fdf6d41a1c274bd4b98a"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Inventory/ExpeditionInventoryTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Inventory/ExpeditionInventoryTests.cs",
+          "sha256": "2435bf715eaed174a6f9e608638a45bebd04c666bd32ab3aa1215185b0c16223"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Magus/MagusCombatStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Magus/MagusCombatStateTests.cs",
+          "sha256": "3ea0de5eaddb2c034070753e4a93f3d1e888798209505c2b26d031a55a259e12"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Magus/MagusStatusStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Magus/MagusStatusStateTests.cs",
+          "sha256": "4d6f33eb05c132ae1e5e1d6e0614ddc6406a189d1bf36fe483f16c0ae2e1e9bb"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/MeleeAttackTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/MeleeAttackTests.cs",
+          "sha256": "f231a0ae0e43275f76944b9055f05c2d974aaadc9eef46ba889eddd57ee52fad"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Pacts/PactStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Pacts/PactStateTests.cs",
+          "sha256": "db45f13fa6be0f8b5787c6ecdbe308a1cd0b72c0bfa3b98b5cd8910610a3861c"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/PlayableRaceRulesTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/PlayableRaceRulesTests.cs",
+          "sha256": "98256908145b366a407593411c1530835bda05e95279185b08e2f0d5651d3d84"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/PlayerInputBufferTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/PlayerInputBufferTests.cs",
+          "sha256": "a7500e371679acd94508124a3c87a58e37587839056bbff22abef312643d2a30"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/PlayerVisualStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/PlayerVisualStateTests.cs",
+          "sha256": "c54af97d9ea228856249a87303bacc242b13bf274be2cc28eac6fa20fa76321d"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Progression/Contracts/ContractProgressionRulesTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Progression/Contracts/ContractProgressionRulesTests.cs",
+          "sha256": "43a70de25860fbe5b1013f722aee3a392e60a95421c44f745d109dbf5f3acead"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Progression/PermanentUpgradeRulesTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Progression/PermanentUpgradeRulesTests.cs",
+          "sha256": "58e949e0c485517484491ef7a5bf45f6f8cdc5d2912ecbb97f3ce09a0bc39f75"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Relics/CombatRelicResolverTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Relics/CombatRelicResolverTests.cs",
+          "sha256": "1755f718500bd934a0552083617349745ce990f2b3e2eac265845434a24037f2"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Relics/SupportRelicResolverTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Relics/SupportRelicResolverTests.cs",
+          "sha256": "cf5ada4b61c5d4d9ee712981163b792df5e2f1a90878b57245a274eee5ec75d0"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/SkillUseStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/SkillUseStateTests.cs",
+          "sha256": "15d1d93716db06e0505285c084e8f17758e773b19c08d7f242671165162b01b0"
+        },
+        {
+          "path": "Assets/Luckbound/Tests/EditMode/Venator/VenatorCombatStateTests.cs",
+          "actual": "C:/Users/Fran/Documents/GitHub/Luckbound/Assets/Luckbound/Tests/EditMode/Venator/VenatorCombatStateTests.cs",
+          "sha256": "75f41b05b4cb99ce8bd79a065555d4f50354742d746bbfae08109a8f71882a7d"
+        }
+      ]
+    }
+  ]
+}
