@@ -1,0 +1,20 @@
+{
+  "run": 41051041675,
+  "commit": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+  "artifactId": 12974039603,
+  "artifactBytes": 50480638,
+  "artifactSha256": "40bebca9df81499eff4b3d05d9291c3bc23c449a80692c9f8d9d3758d78e7c24",
+  "downloadSha256": "40bebca9df81499eff4b3d05d9291c3bc23c449a80692c9f8d9d3758d78e7c24",
+  "files": 210,
+  "executables": [
+    {
+      "path": "Luckbound.exe",
+      "signature": "MZ"
+    },
+    {
+      "path": "UnityCrashHandler64.exe",
+      "signature": "MZ"
+    }
+  ],
+  "playerExecutedLocally": false
+}

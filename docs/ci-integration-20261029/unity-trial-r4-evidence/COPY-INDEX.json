@@ -1,0 +1,56 @@
+[
+  {
+    "path": "REPORT.md",
+    "source": "REPORT.md",
+    "bytes": 3463,
+    "sha256": "9f6746f4af6e692a8de952826c0625eda993fcdba17cbafdc481e3ec1de43a1b"
+  },
+  {
+    "path": "AUDIT.json",
+    "source": "AUDIT.json",
+    "bytes": 45862,
+    "sha256": "0538ab0b68626a8b3b0a2dc01c3770ca4589c8c523eb8dddc08e1f7492055351"
+  },
+  {
+    "path": "PROVENANCE.json",
+    "source": "PROVENANCE.json",
+    "bytes": 1587,
+    "sha256": "e982700c963290db1057c099496793c525dc8527cb2d8a407fe52160d2bc63b2"
+  },
+  {
+    "path": "TRACE-SUMMARY.md",
+    "source": "selected/TRACE-SUMMARY.md",
+    "bytes": 2952,
+    "sha256": "05c46a7f13c3e48e43d7d389380d82b745c82668f4f2f99dab8e630d99db8dab"
+  },
+  {
+    "path": "C08-scenario-report.json",
+    "source": "selected/C08-scenario-report.json",
+    "bytes": 31881,
+    "sha256": "52e932cff14756dabae590a114fc25f37abb3e8e993371074a5762ed977c2773"
+  },
+  {
+    "path": "C08-scenario.log",
+    "source": "selected/C08-scenario.log",
+    "bytes": 29626,
+    "sha256": "ea6a254c30d85fd566920191cf36493492e2ab315a82fd9dac977893f462eca5"
+  },
+  {
+    "path": "C08-source-manifest.sha256",
+    "source": "selected/C08-source-manifest.sha256",
+    "bytes": 636354,
+    "sha256": "4bea22607ec37469f793285b3d5e884908207f4cd278629522fc4d4125e37436"
+  },
+  {
+    "path": "editmode-results.xml",
+    "source": "selected/editmode-results.xml",
+    "bytes": 511051,
+    "sha256": "310f75eca6a7ff5bec363208053dc8db57a51cb025bd098700bc0ff33b6052ce"
+  },
+  {
+    "path": "playmode-results.xml",
+    "source": "selected/playmode-results.xml",
+    "bytes": 840386,
+    "sha256": "e83fe2948e4c6df9298f77385fd48fa46ef03067baf64ba5c7ada840d06ebc46"
+  }
+]

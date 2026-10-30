@@ -1,0 +1,60 @@
+{
+  "run": 41051041675,
+  "commit": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+  "artifact": 12974807769,
+  "artifactSha256": "10d53afaeae83cfa809d57d4afb52e13e5b8f48dfd85744d86d14b553c8ce2be",
+  "suites": [
+    {
+      "suite": "editmode",
+      "total": 585,
+      "passed": 585,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "sha256": "d29ca8a1b197b90ea377793958a0e1e959f5811a77a1c89eaaa61f6fd5700b94"
+    },
+    {
+      "suite": "playmode",
+      "total": 373,
+      "passed": 373,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "sha256": "538620d1e8b04b31e34fd5d6a62581484837040e380e9ecc675d708d19ff9a40"
+    }
+  ],
+  "totalPassed": 958,
+  "fixedCases": [
+    {
+      "fullname": "Luckbound.Tests.App.ExpeditionFortuneSaveTests.UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore",
+      "result": "Passed"
+    },
+    {
+      "fullname": "Luckbound.Tests.PlayMode.ExpeditionSampleRunTests.EverySampleCheckpointIsPreservedForDiagnosticReadAcrossRepositoryRestart",
+      "result": "Passed"
+    },
+    {
+      "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart",
+      "result": "Passed"
+    },
+    {
+      "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity",
+      "result": "Passed"
+    },
+    {
+      "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+      "result": "Passed"
+    },
+    {
+      "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+      "result": "Passed"
+    }
+  ],
+  "classCounts": {
+    "SaveLegacyReadOnlyRepositoryTests": 18,
+    "SaveLegacyReadOnlyApplicationTests": 3,
+    "SaveV6CharacterizationTests": 34
+  },
+  "unityExecutedLocally": false,
+  "scope": "Root independently checked exact archived XML and extraction bytes"
+}

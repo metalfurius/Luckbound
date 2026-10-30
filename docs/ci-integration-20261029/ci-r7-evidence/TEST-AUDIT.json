@@ -1,0 +1,593 @@
+{
+  "schema_version": 1,
+  "repository": "metalfurius/Luckbound",
+  "run": {
+    "id": 41051041675,
+    "suite_id": 111277070455,
+    "branch": "codex/luckbound-integration-20261029",
+    "commit": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+    "tree": "95c5aab76768a25b2d88d630b506561572ffd210"
+  },
+  "job_snapshot": {
+    "run_id": 41051041675,
+    "run_status_at_last_api_read": "in_progress",
+    "suite_id": 111277070455,
+    "test_job_id": 124046863852,
+    "test_job_conclusion": "success",
+    "steps": {
+      "Run Unity tests": {
+        "status": "completed",
+        "conclusion": "success",
+        "completed_at": "2026-10-30T11:58:16Z"
+      },
+      "Verify explicit V6 capture": {
+        "status": "completed",
+        "conclusion": "success",
+        "completed_at": "2026-10-30T11:58:16Z"
+      },
+      "Upload test results": {
+        "status": "completed",
+        "conclusion": "success",
+        "completed_at": "2026-10-30T11:58:18Z"
+      }
+    },
+    "scope_note": "At last GitHub API read, Windows x64 and WebGL builds were still in progress; parent handles those jobs."
+  },
+  "artifact": {
+    "name": "test-results-2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+    "id": 12974807769,
+    "suite_id": 111277070455,
+    "url": "https://nightly.link/metalfurius/Luckbound/suites/111277070455/artifacts/12974807769",
+    "path": "download-attempt1/artifact.zip",
+    "sha256": "10d53afaeae83cfa809d57d4afb52e13e5b8f48dfd85744d86d14b553c8ce2be",
+    "zip_bytes": 8613673,
+    "extracted_files": 241,
+    "download_helper": "Logs/VisualCorrection-20261028/download_artifact.py",
+    "download_attempts": [
+      {
+        "attempt": 1,
+        "result": "local setup error: helper refused pre-created output directory; no network request"
+      },
+      {
+        "attempt": 2,
+        "result": "WinError 10013 in sandbox before socket connection; no HTTP response"
+      },
+      {
+        "attempt": 3,
+        "result": "success; read-only escalated; digest matched"
+      }
+    ],
+    "http_500_observed": false
+  },
+  "xml_results": {
+    "editmode": {
+      "xml_path": "test-results/editmode-results.xml",
+      "xml_sha256": "d29ca8a1b197b90ea377793958a0e1e959f5811a77a1c89eaaa61f6fd5700b94",
+      "root_attributes": {
+        "id": "2",
+        "testcasecount": "585",
+        "result": "Passed",
+        "total": "585",
+        "passed": "585",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-30 11:56:19Z",
+        "end-time": "2026-10-30 11:57:41Z",
+        "duration": "82.4752967"
+      },
+      "total": 585,
+      "passed": 585,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "playmode": {
+      "xml_path": "test-results/playmode-results.xml",
+      "xml_sha256": "538620d1e8b04b31e34fd5d6a62581484837040e380e9ecc675d708d19ff9a40",
+      "root_attributes": {
+        "id": "2",
+        "testcasecount": "373",
+        "result": "Passed",
+        "total": "373",
+        "passed": "373",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-30 11:53:21Z",
+        "end-time": "2026-10-30 11:55:58Z",
+        "duration": "156.9313052"
+      },
+      "total": 373,
+      "passed": 373,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    }
+  },
+  "combined": {
+    "total": 958,
+    "passed": 958,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "new_r6_feature_invocations": {
+    "total_expected": 21,
+    "total_observed": 21,
+    "repository": {
+      "total": 18,
+      "passed": 18,
+      "failed": 0,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ActiveV6CapabilitySurvivesMutableDtoChangesAndRejectsEveryProfileWriteShape",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ActiveV6CapabilitySurvivesMutableDtoChangesAndRejectsEveryProfileWriteShape",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.CorruptSettingsFallbackUsesWritableDefaults",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "CorruptSettingsFallbackUsesWritableDefaults",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.CurrentWriterKeepsReadWriteUntilActiveV6IsReloaded",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "CurrentWriterKeepsReadWriteUntilActiveV6IsReloaded",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.FileSaveStoreKeepsBothProtectedProfileFilesByteExactWhileSettingsWrites",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "FileSaveStoreKeepsBothProtectedProfileFilesByteExactWhileSettingsWrites",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.IncompatibleSettingsReturnUnavailableWithoutChangingTheProfilePolicy",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "IncompatibleSettingsReturnUnavailableWithoutChangingTheProfilePolicy",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.P0AndMissingProfilesRemainReadWriteAndMissingHasNoLoadedJson",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "P0AndMissingProfilesRemainReadWriteAndMissingHasNoLoadedJson",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.PendingReadWriteProfileBlocksConcurrentReloadThenRetriesSameJson",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "PendingReadWriteProfileBlocksConcurrentReloadThenRetriesSameJson",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SemanticallyInvalidV6WithValidChecksumRemainsUnavailable(\"V6-P4-null-empty-boundary.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "SemanticallyInvalidV6WithValidChecksumRemainsUnavailable",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SemanticallyInvalidV6WithValidChecksumRemainsUnavailable(\"V6-P5-flag-payload-conflict.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "SemanticallyInvalidV6WithValidChecksumRemainsUnavailable",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ValidActiveV6BackupIsRecoveredReadOnlyWithoutRepair(\"V6-P1-active-known-nontrivial.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ValidActiveV6BackupIsRecoveredReadOnlyWithoutRepair",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ValidActiveV6BackupIsRecoveredReadOnlyWithoutRepair(\"V6-P2-active-unknown-null.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ValidActiveV6BackupIsRecoveredReadOnlyWithoutRepair",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ValidActiveV6BackupIsRecoveredReadOnlyWithoutRepair(\"V6-P2-active-unknown-inline-empty.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ValidActiveV6BackupIsRecoveredReadOnlyWithoutRepair",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ValidActiveV6BackupIsRecoveredReadOnlyWithoutRepair(\"V6-P3-receipts-full.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ValidActiveV6BackupIsRecoveredReadOnlyWithoutRepair",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ValidActiveV6PrimaryIsUsableReadOnlyAndExportsTheSelectedBytes(\"V6-P1-active-known-nontrivial.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ValidActiveV6PrimaryIsUsableReadOnlyAndExportsTheSelectedBytes",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ValidActiveV6PrimaryIsUsableReadOnlyAndExportsTheSelectedBytes(\"V6-P2-active-unknown-null.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ValidActiveV6PrimaryIsUsableReadOnlyAndExportsTheSelectedBytes",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ValidActiveV6PrimaryIsUsableReadOnlyAndExportsTheSelectedBytes(\"V6-P2-active-unknown-inline-empty.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ValidActiveV6PrimaryIsUsableReadOnlyAndExportsTheSelectedBytes",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.ValidActiveV6PrimaryIsUsableReadOnlyAndExportsTheSelectedBytes(\"V6-P3-receipts-full.Frozen.envelope.json\")",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "ValidActiveV6PrimaryIsUsableReadOnlyAndExportsTheSelectedBytes",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        }
+      ]
+    },
+    "application": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyApplicationTests.BootstrapKeepsFrozenP0P1P2P3ReadableAndRoutesToMenu",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyApplicationTests",
+          "methodname": "BootstrapKeepsFrozenP0P1P2P3ReadableAndRoutesToMenu",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyApplicationTests.ProtectedPrimaryBlocksApplicationMutationGatewaysAndHubEntry",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyApplicationTests",
+          "methodname": "ProtectedPrimaryBlocksApplicationMutationGatewaysAndHubEntry",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyApplicationTests.RecoveredBackupStaysReadOnlyWhileSettingsWriteAndRetryRemainIndependent",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyApplicationTests",
+          "methodname": "RecoveredBackupStaysReadOnlyWhileSettingsWriteAndRetryRemainIndependent",
+          "result": "Passed",
+          "skip_reason": null,
+          "message": null,
+          "stack_trace": null
+        }
+      ]
+    }
+  },
+  "prior_eight_adapted_legacy_methods": {
+    "total": 8,
+    "results": [
+      {
+        "methodname": "SuccessConsumesOneFromAStackAndReplayAfterReloadIsBlocked",
+        "r7_result": "Passed",
+        "r7_fullname": "Luckbound.Tests.PlayMode.ApplicationFortuneBrewTests.SuccessConsumesOneFromAStackAndReplayAfterReloadIsBlocked",
+        "case_count": 1
+      },
+      {
+        "methodname": "InterruptedRoomReloadPreservesTheD09EntryBrewSnapshotWithoutResuming",
+        "r7_result": "Passed",
+        "r7_fullname": "Luckbound.Tests.PlayMode.ApplicationFortuneBrewTests.InterruptedRoomReloadPreservesTheD09EntryBrewSnapshotWithoutResuming",
+        "case_count": 1
+      },
+      {
+        "methodname": "E04_RewardCommitRetryKeepsLegacySnapshotReadOnlyAfterReload",
+        "r7_result": "Passed",
+        "r7_fullname": "Luckbound.Tests.PlayMode.ApplicationFortuneRewardTests.E04_RewardCommitRetryKeepsLegacySnapshotReadOnlyAfterReload",
+        "case_count": 1
+      },
+      {
+        "methodname": "E04_ClaimRewardReplayIsIdempotentBeforeReloadAndBlockedAfterReload",
+        "r7_result": "Passed",
+        "r7_fullname": "Luckbound.Tests.PlayMode.ApplicationFortuneRewardTests.E04_ClaimRewardReplayIsIdempotentBeforeReloadAndBlockedAfterReload",
+        "case_count": 1
+      },
+      {
+        "methodname": "E02_PhysicalPickupCraftRetryRejectionAndRoomCheckpointRestart",
+        "r7_result": "Passed",
+        "r7_fullname": "Luckbound.Tests.PlayMode.CraftingSessionTests.E02_PhysicalPickupCraftRetryRejectionAndRoomCheckpointRestart",
+        "case_count": 1
+      },
+      {
+        "methodname": "StableRoomResultReplayAfterReloadIsIdempotentAndConflictsDoNotChangeRoute",
+        "r7_result": "Passed",
+        "r7_fullname": "Luckbound.Tests.PlayMode.ExpeditionRoomAdvanceDurabilityTests.StableRoomResultReplayAfterReloadIsIdempotentAndConflictsDoNotChangeRoute",
+        "case_count": 1
+      },
+      {
+        "methodname": "D09_BootstrapRestoresCheckpointCompletionAndNextRoomAcrossRestarts",
+        "r7_result": "Passed",
+        "r7_fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.D09_BootstrapRestoresCheckpointCompletionAndNextRoomAcrossRestarts",
+        "case_count": 1
+      },
+      {
+        "methodname": "D09_RestartRollsBackInterruptedRoomAndKeepsCommittedRoomResult",
+        "r7_result": "Passed",
+        "r7_fullname": "Luckbound.Tests.PlayMode.SaveRepositoryTests.D09_RestartRollsBackInterruptedRoomAndKeepsCommittedRoomResult",
+        "case_count": 1
+      }
+    ]
+  },
+  "save_v6_characterization": {
+    "total": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "case_names": [
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenCheckpointBytesMatchMeasuredSeparateJson(False,\"V6-checkpoint-empty-slots\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenCheckpointBytesMatchMeasuredSeparateJson(True,\"V6-checkpoint-null-slots\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(\"V6-P0-profile-no-active\",\"P0NoActive\",True,\"Valid\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(\"V6-P1-active-known-zero\",\"P1KnownFrozenZero\",True,\"Valid\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(\"V6-P1-active-known-nontrivial\",\"P1KnownFrozenNonTrivial\",True,\"Valid\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(\"V6-P2-active-unknown-null\",\"P2UnknownNullFrozen\",True,\"Valid\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(\"V6-P2-active-unknown-inline-empty\",\"P2UnknownEmptyInlineFrozen\",True,\"Valid\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(\"V6-P3-receipts-full\",\"P3ReceiptsFull\",True,\"Valid\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(\"V6-P4-null-empty-boundary\",\"P4NullEmptyBoundary\",False,\"Corrupted\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenProfileFixturesMatchMeasuredBytesAndKeepTheirRoles(\"V6-P5-flag-payload-conflict\",\"P5FalseMarkerWithPayload\",False,\"Corrupted\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedFrozenSettingsFixtureMatchesMeasuredBytesAndEncoder",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.CapturedNullEmptyAndFalseMarkerCasesKeepTheirDistinctRolesDespiteSharedBytes",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.DeterministicProfileBuildersHaveCompleteLiveAndLegacyProjectionByteEquivalence",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.DeterministicSettingsBuilderHasCompleteLiveAndLegacyProjectionByteEquivalence",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.FalseActiveMarkerExcludesPayloadFromProjectionButSemanticValidationRejectsIt",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.FrozenInspectionIsRepeatableAcrossCultureAndReturnsUnmodifiedCapturedBytes",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.FrozenP3RetainsNestedJsonStringsAndSerializedArrayOrder",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.FrozenPositiveProfilesAndSettingsAreReadByAnIsolatedRepositoryWithoutRewritingEitherCopy",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InputOnlyProfileAndSettingsDocumentsReportChecksumMismatch",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InspectionFactoryRejectsNullAndCallerCreatedAccessKeys",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.InspectionPreimageGetterReturnsDefensiveCopies",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.JsonUtilityMalformedInputNeverReportsChecksumValid(\"{\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.JsonUtilityMalformedInputNeverReportsChecksumValid(\"not-json\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.N0MutationOfCapturedEnvelopeKeepsOriginalChecksumAndDiffersFromMalformed",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NonV6HeadersAreReportedWithoutRewritingTheInput",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(null)",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(\"\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.NullOrWhitespaceDocumentsAreMalformed(\" \\r\\n\\t\")",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.P3NestedJsonStringsRemainLiteralAcrossBothByteProjections",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.ProfileProjectionDoesNotMutateInputAndReturnsIndependentByteArrays",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.ProjectionRejectsHeadersOutsideTheFrozenV6Shape",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence(False)",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.RoomEntryCheckpointUsesCompleteLiveAndLegacyDtoByteEquivalence(True)",
+      "Luckbound.Tests.PlayMode.SaveV6CharacterizationTests.SettingsProjectionDoesNotMutateInputAndReturnsIndependentByteArrays"
+    ]
+  },
+  "six_r6_failure_corrections": [
+    {
+      "r6_failed_case": "Luckbound.Tests.App.ExpeditionFortuneSaveTests.UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore",
+      "r7_case": "Luckbound.Tests.App.ExpeditionFortuneSaveTests.UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore",
+      "r7_result": "Passed"
+    },
+    {
+      "r6_failed_case": "Luckbound.Tests.PlayMode.ExpeditionSampleRunTests.EverySampleCheckpointSurvivesRealRepositoryRestartWithItsVersionAndHistory",
+      "r7_case": "Luckbound.Tests.PlayMode.ExpeditionSampleRunTests.EverySampleCheckpointIsPreservedForDiagnosticReadAcrossRepositoryRestart",
+      "r7_result": "Passed"
+    },
+    {
+      "r6_failed_case": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart",
+      "r7_case": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart",
+      "r7_result": "Passed"
+    },
+    {
+      "r6_failed_case": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity",
+      "r7_case": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity",
+      "r7_result": "Passed"
+    },
+    {
+      "r6_failed_case": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+      "r7_case": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+      "r7_result": "Passed"
+    },
+    {
+      "r6_failed_case": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+      "r7_case": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+      "r7_result": "Passed"
+    }
+  ],
+  "source_characterization": {
+    "capture_manifest_path": "Logs/Scenarios/V6Capture-2e9f60484c6c395ce569a1eae10f3ac83a86c706-41051041675-1/manifest.json",
+    "session_path": "Logs/Scenarios/V6Capture-2e9f60484c6c395ce569a1eae10f3ac83a86c706-41051041675-1/session.json",
+    "expected_capture_case_ids": [
+      "V6-P0-profile-no-active",
+      "V6-P1-active-known-zero",
+      "V6-P1-active-known-nontrivial",
+      "V6-P2-active-unknown-null",
+      "V6-P2-active-unknown-inline-empty",
+      "V6-P3-receipts-full",
+      "V6-P4-null-empty-boundary",
+      "V6-P5-flag-payload-conflict",
+      "V6-S0-settings",
+      "V6-checkpoint-empty-slots",
+      "V6-checkpoint-null-slots"
+    ],
+    "actual_attempt_count": 11,
+    "all_expected_case_ids_present": true,
+    "all_attempts_complete_and_semantically_accepted": true,
+    "data_complete": true,
+    "role_requirements_passed": true,
+    "sources_stable": true,
+    "session_document_stable": true,
+    "monitored_source_count": 14,
+    "monitored_sources": [
+      {
+        "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+        "before_sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+        "after_sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+        "before_sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+        "after_sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+        "before_sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+        "after_sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+        "before_sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+        "after_sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+        "before_sha256": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+        "after_sha256": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+        "before_sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+        "after_sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+        "before_sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+        "after_sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+        "before_sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+        "after_sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+        "before_sha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+        "after_sha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+        "before_sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+        "after_sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+        "same": true
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+        "before_sha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+        "after_sha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+        "same": true
+      },
+      {
+        "path": "Packages/manifest.json",
+        "before_sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+        "after_sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+        "same": true
+      },
+      {
+        "path": "Packages/packages-lock.json",
+        "before_sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+        "after_sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+        "same": true
+      },
+      {
+        "path": "ProjectSettings/ProjectVersion.txt",
+        "before_sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+        "after_sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+        "same": true
+      }
+    ],
+    "cross_run_97_data_file_comparison_to_R5_R4": "not performed; no conclusion asserted"
+  },
+  "c08": {
+    "scenario_id": "C08_RealKeyboardTwoWaveCombat",
+    "source_commit": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+    "unity_version": "6000.6.6f1",
+    "project_version_declared": "6000.6.6f1",
+    "platform": "LinuxEditor",
+    "source_manifest_sha256": "f555279e35a8f674bcc3f799e1e41fa37e593542a1f4491d3c99b334830c303c",
+    "source_file_count": 4251,
+    "passed": true,
+    "exit_code": 0,
+    "assertions_total": 10,
+    "assertions_passed": 10,
+    "assertions_failed": 0,
+    "errors": [],
+    "screenshot_status": "Not attempted",
+    "evidence_path": "Logs/Scenarios/C08/20261030T115337660Z_C08_RealKeyboardTwoWaveCombat_dfe94b37",
+    "metrics_note": "Runtime scenario evidence only; no sensory/perceptual acceptance is inferred."
+  },
+  "failures": [],
+  "skips": [],
+  "limits": [
+    "The full workflow was not terminal at the last API snapshot; only test job, V6 capture step, artifact, and C08 evidence are audited here.",
+    "Windows x64 and WebGL build results are owned by the parent and are not inferred here.",
+    "No local Unity/tests were run.",
+    "A successful V6 capture verifier is not a comparison of the 97 data files with R5/R4."
+  ]
+}

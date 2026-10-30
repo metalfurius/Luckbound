@@ -1,0 +1,47 @@
+[
+  {
+    "path": "TEST-REPORT.md",
+    "bytes": 4641,
+    "sha256": "74785b979137ca4fc072882988c0703a5365560baa4dae84785c38d63f7a1e1b"
+  },
+  {
+    "path": "TEST-AUDIT.json",
+    "bytes": 30114,
+    "sha256": "94594bc1a8a0ee57db34693a7bcf3b4123f8ca104cdae8769973aa0abf0ccb3f"
+  },
+  {
+    "path": "editmode-results.xml",
+    "bytes": 511029,
+    "sha256": "d29ca8a1b197b90ea377793958a0e1e959f5811a77a1c89eaaa61f6fd5700b94"
+  },
+  {
+    "path": "playmode-results.xml",
+    "bytes": 1502870,
+    "sha256": "538620d1e8b04b31e34fd5d6a62581484837040e380e9ecc675d708d19ff9a40"
+  },
+  {
+    "path": "ROOT-TEST-VERIFICATION.json",
+    "bytes": 2138,
+    "sha256": "34a602d0020e9c7e3739184aba119250f8f0dfcdec5355367ae40960a08db99a"
+  },
+  {
+    "path": "REAL-GATE-LOG.json",
+    "bytes": 1492,
+    "sha256": "043fafff7bfaa3fafe7793e5025a0ff89830d30ec8c0376417302f3a150299ce"
+  },
+  {
+    "path": "WINDOWS-VERIFICATION.json",
+    "bytes": 534,
+    "sha256": "152a60a6e96ed59cd7e3933a2486cf6383784a3d8d115908fc7e3c1bbfe4ec95"
+  },
+  {
+    "path": "V6-manifest.json",
+    "bytes": 17874,
+    "sha256": "b754583ef11d4116abf1a973829079f72189181ff0d38b32af44366209accdd4"
+  },
+  {
+    "path": "V6-session.json",
+    "bytes": 4551,
+    "sha256": "f27d777dd8f5715951dc902784a7a931be4cd3012c06de91e2344c959456b332"
+  }
+]

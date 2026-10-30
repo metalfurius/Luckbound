@@ -1,0 +1,52 @@
+{
+  "run": 41051041675,
+  "suite": 111277070455,
+  "commit": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+  "tree": "95c5aab76768a25b2d88d630b506561572ffd210",
+  "conclusion": "success",
+  "editMode": {
+    "passed": 585,
+    "total": 585
+  },
+  "playMode": {
+    "passed": 373,
+    "total": 373
+  },
+  "failed": 0,
+  "skipped": 0,
+  "inconclusive": 0,
+  "gateV6": {
+    "executedInCI": true,
+    "status": "success",
+    "cases": 11,
+    "attempts": 11,
+    "outputs": 97,
+    "sources": 14,
+    "sessionId": "ab5c2a76dbb84845948fb0e061d542a6",
+    "manifestSha256": "b754583ef11d4116abf1a973829079f72189181ff0d38b32af44366209accdd4"
+  },
+  "testsArtifact": {
+    "id": 12974807769,
+    "bytes": 8613673,
+    "sha256": "10d53afaeae83cfa809d57d4afb52e13e5b8f48dfd85744d86d14b553c8ce2be"
+  },
+  "windowsArtifact": {
+    "id": 12974039603,
+    "bytes": 50480638,
+    "sha256": "40bebca9df81499eff4b3d05d9291c3bc23c449a80692c9f8d9d3758d78e7c24",
+    "files": 210
+  },
+  "webglArtifact": {
+    "id": 12975955959,
+    "bytes": 16110822,
+    "sha256": "a87fab26ec773b9daa675f33efb6d1cf2d1e5123d2bd46d789e968f6a0a44385",
+    "files": 17
+  },
+  "allArtifactsDownloadedAndDigestVerified": true,
+  "playersExecutedLocally": false,
+  "release": "skipped",
+  "deploy": "skipped",
+  "gateC": "Accepted by Sol",
+  "gateCReviewSha256": "dd32fb8b49dab4ad896ec4e19417bcdf99d72700c1ae9c30fd97ec5700f4429f",
+  "f09f10Accepted": false
+}

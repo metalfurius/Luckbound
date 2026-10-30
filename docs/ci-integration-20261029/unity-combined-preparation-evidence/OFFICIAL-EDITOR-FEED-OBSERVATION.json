@@ -1,0 +1,93 @@
+{
+  "url": "https://services.api.unity.com/unity/editor/release/v1/releases?limit=25&order=RELEASE_DATE_DESC",
+  "observedAtUtc": "2026-10-30T12:56:46.016527+00:00",
+  "rawSha256": "f0663d15fc2f686fc8dce783c2ed5d43bb015a34d4da2f2f87835a8667452f86",
+  "returnedReleases": 25,
+  "stableReleases": [
+    {
+      "version": "6000.6.7f1",
+      "releaseDate": "2026-10-21T09:54:08.135Z",
+      "stream": "SUPPORTED",
+      "revision": null,
+      "shortRevision": "b22767f04f04"
+    },
+    {
+      "version": "6000.3.27f1",
+      "releaseDate": "2026-10-20T13:42:16.544Z",
+      "stream": "LTS",
+      "revision": null,
+      "shortRevision": "672d562a42a7"
+    },
+    {
+      "version": "6000.0.85f1",
+      "releaseDate": "2026-10-15T11:57:40.778Z",
+      "stream": "LTS",
+      "revision": null,
+      "shortRevision": "ee7790f1426a"
+    },
+    {
+      "version": "6000.6.6f1",
+      "releaseDate": "2026-10-15T10:53:45.590Z",
+      "stream": "SUPPORTED",
+      "revision": null,
+      "shortRevision": "d20c9ac777da"
+    },
+    {
+      "version": "6000.3.26f1",
+      "releaseDate": "2026-10-08T13:38:24.193Z",
+      "stream": "LTS",
+      "revision": null,
+      "shortRevision": "de8167e7440c"
+    },
+    {
+      "version": "6000.6.5f1",
+      "releaseDate": "2026-10-08T12:57:26.317Z",
+      "stream": "SUPPORTED",
+      "revision": null,
+      "shortRevision": "3ff58d469c8a"
+    },
+    {
+      "version": "6000.6.4f1",
+      "releaseDate": "2026-10-01T09:17:15.974Z",
+      "stream": "SUPPORTED",
+      "revision": null,
+      "shortRevision": "12bfff696524"
+    },
+    {
+      "version": "6000.3.25f1",
+      "releaseDate": "2026-09-24T12:52:52.227Z",
+      "stream": "LTS",
+      "revision": null,
+      "shortRevision": "e1dba0a9aba4"
+    },
+    {
+      "version": "6000.6.3f1",
+      "releaseDate": "2026-09-24T12:16:52.273Z",
+      "stream": "SUPPORTED",
+      "revision": null,
+      "shortRevision": "45d8eee7de74"
+    },
+    {
+      "version": "6000.6.2f1",
+      "releaseDate": "2026-09-18T09:11:19.349Z",
+      "stream": "SUPPORTED",
+      "revision": null,
+      "shortRevision": "770e33f6875c"
+    },
+    {
+      "version": "6000.6.1f1",
+      "releaseDate": "2026-09-16T14:52:02.514Z",
+      "stream": "SUPPORTED",
+      "revision": null,
+      "shortRevision": "7efac9f6c10e"
+    },
+    {
+      "version": "6000.0.84f1",
+      "releaseDate": "2026-09-16T08:37:48.008Z",
+      "stream": "LTS",
+      "revision": null,
+      "shortRevision": "78ab6fc243d5"
+    }
+  ],
+  "scope": "Public feed observation only; no installation, adoption, build or runtime validation"
+}

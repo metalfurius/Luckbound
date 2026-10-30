@@ -9,12 +9,17 @@ on:
       - Main
       - codex/luckbound-visual-20261028
       - codex/luckbound-integration-20261029
+      - codex/luckbound-integration-unity-20261030
     tags:
       - 'v*'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+env:
+  # Literal ref selection remains independent of ProjectVersion and capture metadata.
+  LUCKBOUND_CI_UNITY_VERSION: ${{ github.ref == 'refs/heads/codex/luckbound-integration-unity-20261030' && '6000.6.7f1' || '6000.6.6f1' }}
 
 jobs:
   tests:
@@ -34,9 +39,9 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: Library
-          key: luckbound-linux-6000.6.6f1-tests-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: luckbound-linux-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-tests-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            luckbound-linux-6000.6.6f1-tests-
+            luckbound-linux-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-tests-
 
       - name: Run Unity tests
         id: unity_tests
@@ -50,20 +55,34 @@ jobs:
           GAME_CI_COVERAGE_ENABLED: 'false'
         with:
           cliVersion: v0.1.72
-          customImage: unityci/editor:ubuntu-6000.6.6f1-base-3.2.2
+          customImage: unityci/editor:ubuntu-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-base-3.2.2
           testMode: all
-          customParameters: "${{ github.ref == 'refs/heads/codex/luckbound-integration-20261029' && format('-testFilter Luckbound -luckboundV6CaptureDir Logs/Scenarios/V6Capture-{0}-{1}-{2}', github.sha, github.run_id, github.run_attempt) || '-testFilter Luckbound' }}"
+          customParameters: "${{ (github.ref == 'refs/heads/codex/luckbound-integration-20261029' || github.ref == 'refs/heads/codex/luckbound-integration-unity-20261030') && format('-testFilter Luckbound -luckboundV6CaptureDir Logs/Scenarios/V6Capture-{0}-{1}-{2} -luckboundV6ExpectedUnityVersion {3}', github.sha, github.run_id, github.run_attempt, env.LUCKBOUND_CI_UNITY_VERSION) || '-testFilter Luckbound' }}"
           artifactsPath: test-results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: Unity EditMode and PlayMode
 
       - name: Verify explicit V6 capture
-        if: ${{ !cancelled() && github.ref == 'refs/heads/codex/luckbound-integration-20261029' && steps.unity_tests.outcome == 'success' }}
+        id: verify_v6
+        if: ${{ !cancelled() && (github.ref == 'refs/heads/codex/luckbound-integration-20261029' || github.ref == 'refs/heads/codex/luckbound-integration-unity-20261030') && steps.unity_tests.outcome == 'success' }}
         shell: bash
         run: |
           python3 Tools/Automation/verify_v6_capture.py \
             --capture-dir "Logs/Scenarios/V6Capture-${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
-            --commit "${GITHUB_SHA}"
+            --commit "${GITHUB_SHA}" \
+            --expected-unity-version "${LUCKBOUND_CI_UNITY_VERSION}" \
+            --project-root "${GITHUB_WORKSPACE}"
+
+      - name: Require successful tests and explicit V6 capture
+        if: ${{ !cancelled() && (github.ref == 'refs/heads/codex/luckbound-integration-20261029' || github.ref == 'refs/heads/codex/luckbound-integration-unity-20261030') }}
+        shell: bash
+        env:
+          UNITY_TEST_OUTCOME: ${{ steps.unity_tests.outcome }}
+          V6_GATE_OUTCOME: ${{ steps.verify_v6.outcome }}
+        run: |
+          set -eu
+          test "${UNITY_TEST_OUTCOME}" = success
+          test "${V6_GATE_OUTCOME}" = success
 
       - name: Upload test results
         if: always()
@@ -92,9 +111,9 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: Library
-          key: luckbound-linux-6000.6.6f1-windows-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: luckbound-linux-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-windows-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            luckbound-linux-6000.6.6f1-windows-
+            luckbound-linux-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-windows-
 
       - name: Build Windows player
         uses: game-ci/unity-builder@v6.0.0
@@ -104,7 +123,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           cliVersion: v0.1.72
-          customImage: unityci/editor:ubuntu-6000.6.6f1-windows-mono-3.2.2
+          customImage: unityci/editor:ubuntu-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-windows-mono-3.2.2
           targetPlatform: StandaloneWindows64
           buildName: Luckbound
           buildsPath: build
@@ -184,9 +203,9 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: Library
-          key: luckbound-linux-6000.6.6f1-webgl-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: luckbound-linux-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-webgl-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            luckbound-linux-6000.6.6f1-webgl-
+            luckbound-linux-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-webgl-
 
       - name: Build WebGL player
         uses: game-ci/unity-builder@v6.0.0
@@ -196,7 +215,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           cliVersion: v0.1.72
-          customImage: unityci/editor:ubuntu-6000.6.6f1-webgl-3.2.2
+          customImage: unityci/editor:ubuntu-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-webgl-3.2.2
           targetPlatform: WebGL
           buildProfile: Assets/Settings/Build Profiles/WebGL.asset
           buildsPath: build
@@ -266,7 +285,7 @@ jobs:
           jq -n \
             --arg tag "$tag" \
             --arg commit "$GITHUB_SHA" \
-            --arg unity "6000.6.6f1" \
+            --arg unity "${{ env.LUCKBOUND_CI_UNITY_VERSION }}" \
             --arg workflow "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
             --arg windows "$(basename "$windows_zip")" \
             --arg webgl "$(basename "$webgl_zip")" \
@@ -363,7 +382,7 @@ jobs:
 
           jq -n \
             --arg commit "$SOURCE_COMMIT" \
-            --arg unity "6000.6.6f1" \
+            --arg unity "${{ env.LUCKBOUND_CI_UNITY_VERSION }}" \
             --arg run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
             '{sourceCommit: $commit, unityEditor: $unity, sourceWorkflow: $run}' \
             > site/builds/"$SOURCE_COMMIT"/build-version.json

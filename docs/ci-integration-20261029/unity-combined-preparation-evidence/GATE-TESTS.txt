@@ -1,0 +1,15 @@
+test_cli_rejects_duplicated_expected_version_selector (__main__.VerifyV6CaptureSyntheticTests.test_cli_rejects_duplicated_expected_version_selector) ... ok
+test_does_not_infer_alternate_expected_version_from_capture_metadata (__main__.VerifyV6CaptureSyntheticTests.test_does_not_infer_alternate_expected_version_from_capture_metadata) ... ok
+test_rejects_descriptor_version_declaration_mismatch (__main__.VerifyV6CaptureSyntheticTests.test_rejects_descriptor_version_declaration_mismatch) ... ok
+test_rejects_expected_version_outside_literal_allowlist (__main__.VerifyV6CaptureSyntheticTests.test_rejects_expected_version_outside_literal_allowlist) ... ok
+test_rejects_manifest_project_version_declaration_mismatch (__main__.VerifyV6CaptureSyntheticTests.test_rejects_manifest_project_version_declaration_mismatch) ... ok
+test_rejects_manifest_runtime_mismatch (__main__.VerifyV6CaptureSyntheticTests.test_rejects_manifest_runtime_mismatch) ... ok
+test_rejects_project_pin_mismatch_against_independent_expectation (__main__.VerifyV6CaptureSyntheticTests.test_rejects_project_pin_mismatch_against_independent_expectation) ... ok
+test_rejects_runtime_mismatch_even_when_session_and_manifest_agree (__main__.VerifyV6CaptureSyntheticTests.test_rejects_runtime_mismatch_even_when_session_and_manifest_agree) ... ok
+test_rejects_session_project_version_declaration_mismatch (__main__.VerifyV6CaptureSyntheticTests.test_rejects_session_project_version_declaration_mismatch) ... ok
+test_three_argument_api_and_cli_keep_6_6_6_default (__main__.VerifyV6CaptureSyntheticTests.test_three_argument_api_and_cli_keep_6_6_6_default) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.664s
+
+OK

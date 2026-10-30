@@ -22,6 +22,54 @@ namespace Luckbound.App
     /// <summary>Composes the player, two-wave C08 encounter, camera and expedition HUD.</summary>
     public sealed class CombatArenaComposition : MonoBehaviour
     {
+#if UNITY_EDITOR
+        internal readonly struct AudioTraceSnapshot
+        {
+            internal AudioTraceSnapshot(string phase, long tick, bool grounded, bool baseline,
+                bool reportedGrounded, int jumps, int reportedJumps, bool landingCall, string details)
+            {
+                Phase = phase; Tick = tick; Grounded = grounded; Baseline = baseline;
+                ReportedGrounded = reportedGrounded; Jumps = jumps; ReportedJumps = reportedJumps;
+                LandingCall = landingCall; Details = details;
+            }
+            internal string Phase { get; }
+            internal long Tick { get; }
+            internal bool Grounded { get; }
+            internal bool Baseline { get; }
+            internal bool ReportedGrounded { get; }
+            internal int Jumps { get; }
+            internal int ReportedJumps { get; }
+            internal bool LandingCall { get; }
+            internal string Details { get; }
+        }
+        internal static Action<AudioTraceSnapshot> EditorAudioTraceForTests { get; set; }
+
+        private void EmitAudioTrace(string phase, bool baselineBefore, bool groundedBefore,
+            int reportedJumpsBefore, bool landingCall = false, bool? landingResult = null,
+            int pendingBeforeLanding = -1)
+        {
+            Action<AudioTraceSnapshot> observer = EditorAudioTraceForTests;
+            if (observer == null || _playerMotor == null) return;
+            bool routerPresent = _audioRouter != null;
+            string details = "instance=" + GetEntityId() + "; frame=" + Time.frameCount +
+                "; fixedTime=" + Time.fixedTime.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
+                "; tick=" + _playerMotor.SimulationTick + "; jumps=" + _playerMotor.SuccessfulJumpCount +
+                "; reportedJumpsBefore=" + reportedJumpsBefore + "; reportedJumpsAfter=" + _reportedSuccessfulJumps +
+                "; grounded=" + _playerMotor.IsGrounded + "; baselineBefore=" + baselineBefore +
+                "; baselineAfter=" + _hasGroundedAudioBaseline + "; reportedGroundBefore=" + groundedBefore +
+                "; reportedGroundAfter=" + _reportedPlayerGrounded + "; landingCall=" + landingCall +
+                "; landingResult=" + (landingResult.HasValue ? landingResult.Value.ToString() : "NotCalledOrRouterMissing") +
+                "; routerPresent=" + routerPresent + "; routerActive=" + (routerPresent && _audioRouter.isActiveAndEnabled) +
+                "; routerId=" + (routerPresent ? _audioRouter.GetEntityId().ToString() : "Missing") +
+                "; gesture=" + (routerPresent && _audioRouter.UserGestureObserved) +
+                "; pendingBeforeLanding=" + pendingBeforeLanding +
+                "; pendingNow=" + (routerPresent ? _audioRouter.PendingEffectRequestCount : -1);
+            observer(new AudioTraceSnapshot(phase, _playerMotor.SimulationTick, _playerMotor.IsGrounded,
+                _hasGroundedAudioBaseline, _reportedPlayerGrounded, _playerMotor.SuccessfulJumpCount,
+                _reportedSuccessfulJumps, landingCall, details));
+        }
+#endif
+
         private const string EncounterResourcePath = "Luckbound/Data/Encounters/C08Arena";
         private const float ArenaFloorTop = -3.5f;
 
@@ -107,6 +155,9 @@ namespace Luckbound.App
             _reportedDodgeActivations = _playerMotor.DodgeActivationCount;
             _reportedSuccessfulPlayerHits = CountSuccessfulPlayerHits();
             _reportedHealthPotionUses = _playerMotor.SuccessfulHealthPotionUseCount;
+#if UNITY_EDITOR
+            EmitAudioTrace("initialized", _hasGroundedAudioBaseline, _reportedPlayerGrounded, _reportedSuccessfulJumps);
+#endif
             visualPresenter.Initialize(_playerMotor);
             _hudPresenter = gameObject.AddComponent<PlayerHudPresenter>();
             _hudPresenter.Initialize(_playerMotor, _telemetryText);
@@ -231,6 +282,15 @@ namespace Luckbound.App
         {
             if (_playerMotor == null) return;
 
+#if UNITY_EDITOR
+            bool traceBaselineBefore = _hasGroundedAudioBaseline;
+            bool traceGroundedBefore = _reportedPlayerGrounded;
+            int traceReportedJumpsBefore = _reportedSuccessfulJumps;
+            bool traceLandingCall = false;
+            bool? traceLandingResult = null;
+            int tracePendingBeforeLanding = -1;
+            EmitAudioTrace("audio-before", traceBaselineBefore, traceGroundedBefore, traceReportedJumpsBefore);
+#endif
             int newSuccessfulJumps = ConsumeCounterDelta(
                 ref _reportedSuccessfulJumps,
                 _playerMotor.SuccessfulJumpCount);
@@ -291,10 +351,22 @@ namespace Luckbound.App
             else
             {
                 if (!_reportedPlayerGrounded && playerIsGrounded)
+                {
+#if UNITY_EDITOR
+                    traceLandingCall = true;
+                    tracePendingBeforeLanding = _audioRouter != null ? _audioRouter.PendingEffectRequestCount : -1;
+                    traceLandingResult = _audioRouter?.PlayEffect(ApplicationAudioRouter.LandingEffectId);
+#else
                     _audioRouter?.PlayEffect(ApplicationAudioRouter.LandingEffectId);
+#endif
+                }
                 _reportedPlayerGrounded = playerIsGrounded;
             }
 
+#if UNITY_EDITOR
+            EmitAudioTrace("ground-decision-after", traceBaselineBefore, traceGroundedBefore, traceReportedJumpsBefore,
+                traceLandingCall, traceLandingResult, tracePendingBeforeLanding);
+#endif
             foreach (Slime2D slime in _slimes)
             {
                 if (slime == null) continue;
@@ -314,6 +386,10 @@ namespace Luckbound.App
                 UpdateEnemyDamageAudio(huesoguardia.ActorId,
                     CountEnemyImpacts(huesoguardia.MeleeImpactCount, huesoguardia.ProjectileImpactCount));
             }
+#if UNITY_EDITOR
+            EmitAudioTrace("audio-after", traceBaselineBefore, traceGroundedBefore, traceReportedJumpsBefore,
+                traceLandingCall, traceLandingResult, tracePendingBeforeLanding);
+#endif
         }
 
         private void SetEnemyDamageAudioBaseline(ActorId actorId, int impactCount)

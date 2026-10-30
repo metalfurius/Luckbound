@@ -1,0 +1,52 @@
+{
+  "base": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+  "branch": "codex/luckbound-integration-unity-20261030",
+  "contractSha256": "9a53542919248b2b88ddf69106828aaf52d28e258e55204b602e65e98ebf6fa0",
+  "files": [
+    {
+      "path": ".github/workflows/build.yml",
+      "source": "C:\\Users\\Fran\\Documents\\GitHub\\Luckbound\\Logs\\UnityCombinedCandidate-20261030-r1\\root\\after\\.github\\workflows\\build.yml",
+      "beforeSha256": "4c152985d354cb8768cc9d399df6d06a7615f5b27df6832dd43cfcb4d32ccf03",
+      "afterSha256": "67f3f4235aeba072519b32121251f883592c471e9158366bd538e4764cd6f252",
+      "bytes": 15516
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "source": "C:\\Users\\Fran\\Documents\\GitHub\\Luckbound\\Logs\\UnityCombinedCandidate-20261030-r1\\root\\after\\ProjectSettings\\ProjectVersion.txt",
+      "beforeSha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+      "afterSha256": "2a88e6864b6f54588287bed3bc6e9260e65bd49498910cca4478770ca8a5d674",
+      "bytes": 83
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "source": "C:\\Users\\Fran\\Documents\\GitHub\\Luckbound\\Logs\\UnityCombinedCandidate-20261030-r1\\harness\\after\\Assets\\Luckbound\\Tests\\PlayMode\\SaveV6CharacterizationTests.cs",
+      "beforeSha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+      "afterSha256": "c06d716deb425ba58f2aab70b5ca6bce91a0cb443f70134345ba89eb49afc54c",
+      "bytes": 165904
+    },
+    {
+      "path": "Tools/Automation/verify_v6_capture.py",
+      "source": "C:\\Users\\Fran\\Documents\\GitHub\\Luckbound\\Logs\\UnityCombinedCandidate-20261030-r1\\gate\\after\\Tools\\Automation\\verify_v6_capture.py",
+      "beforeSha256": "6faf5138c26708ffac8dac99da9e0a54bea7437862c0c273ab2bba2514a0ce39",
+      "afterSha256": "8fa124240161c07f97fefddcea0aa89a02b5af9ab1ad97cc1462d57d4079427e",
+      "bytes": 12854
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+      "source": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/C08LandingTraceCandidate-20261030-r1/after/Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+      "beforeSha256": "c6d77e01503d9f3b76d79e409b2bc378c66b03c673d76e983e0619b4fdd27893",
+      "afterSha256": "2ab115dec747be4de9b79bba68303a73318a1f1889f749b2135598cb6359bd56",
+      "bytes": 22296
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+      "source": "C:/Users/Fran/Documents/GitHub/Luckbound/Logs/C08LandingTraceCandidate-20261030-r1/after/Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+      "beforeSha256": "f9592b1c4ff0d4bed9d1a18d039729bd778996f9d83fce5d920ed36bca48d906",
+      "afterSha256": "c02c0c9a933d01bca1c5ae43d8416e6d2f675f8d78bd683b04f6fc846b195953",
+      "bytes": 38207
+    }
+  ],
+  "contentVersion": 6,
+  "fixturesChanged": false,
+  "editorAdopted": false
+}

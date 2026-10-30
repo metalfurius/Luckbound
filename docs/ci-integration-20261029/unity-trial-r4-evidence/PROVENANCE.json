@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "repository": "metalfurius/Luckbound",
+  "run": {
+    "id": 41051955738,
+    "suite_id": 111279611890,
+    "branch": "codex/luckbound-unity-20261029",
+    "commit": "2f1d5fd29d28d1ba768340ec9f269ab9863489d8",
+    "tree": "da7d887bd6afbe295c991e26490935c1742fe2bd"
+  },
+  "github": {
+    "test_job_id": 124049956182,
+    "test_job_conclusion": "success",
+    "run_status_at_last_api_read": "in_progress",
+    "verify_explicit_v6_capture": {
+      "conclusion": "skipped",
+      "completed_at": "2026-10-30T12:09:18Z",
+      "meaning": "No Gate C verifier result for this branch/run."
+    },
+    "windows_x64_and_webgl": "in_progress at last API read; parent owns these jobs."
+  },
+  "artifact": {
+    "id": 12975746445,
+    "name": "test-results-2f1d5fd29d28d1ba768340ec9f269ab9863489d8",
+    "suite_id": 111279611890,
+    "url": "https://nightly.link/metalfurius/Luckbound/suites/111279611890/artifacts/12975746445",
+    "path": "download-attempt1/artifact.zip",
+    "zip_bytes": 8939244,
+    "sha256": "80c56808c97cf927b6571bdb1034d03793b29ddb424cd0ae0daaf0e9a33b4636",
+    "extracted_files": 131,
+    "expires_at": "2026-11-13T12:09:19Z"
+  },
+  "downloads": {
+    "helper": "Logs/VisualCorrection-20261028/download_artifact.py",
+    "root_attempt_before_assignment": {
+      "reported_result": "HTTP 500",
+      "retry_by_this_auditor": false
+    },
+    "this_auditor_attempts": [
+      {
+        "attempt": 1,
+        "result": "success",
+        "read_only_escalated": true,
+        "digest_matched": true
+      }
+    ],
+    "no_further_retry": true
+  }
+}

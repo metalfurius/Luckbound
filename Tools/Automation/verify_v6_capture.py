@@ -20,6 +20,7 @@ EXPECTED_IDS = {
     "V6-checkpoint-empty-slots",
     "V6-checkpoint-null-slots",
 }
+ALLOWED_UNITY_VERSIONS = frozenset({"6000.6.6f1", "6000.6.7f1"})
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 COMMIT = re.compile(r"[0-9a-f]{40}\Z")
 REQUIRED_SOURCES = {
@@ -108,7 +109,18 @@ def source_inventory(entries):
     return result
 
 
-def verify(capture_dir, commit, project_root):
+def project_version_pin(project_root):
+    path = safe_file(project_root, "ProjectSettings/ProjectVersion.txt")
+    text = path.read_text(encoding="utf-8")
+    versions = re.findall(r"(?m)^m_EditorVersion: ([^\r\n]+)$", text)
+    require(len(versions) == 1, "ProjectVersion must declare exactly one m_EditorVersion")
+    return versions[0]
+
+
+def verify(capture_dir, commit, project_root, expected_unity_version="6000.6.6f1"):
+    require(isinstance(expected_unity_version, str) and
+            expected_unity_version in ALLOWED_UNITY_VERSIONS,
+            "Unsupported expected Unity version")
     require(COMMIT.fullmatch(commit) is not None, "Expected exact commit SHA")
     require(capture_dir.is_dir() and not capture_dir.is_symlink(), "Missing/linked capture directory")
     session = load_object(safe_file(capture_dir, "session.json"))
@@ -119,7 +131,6 @@ def verify(capture_dir, commit, project_root):
         require(record.get("schemaVersion") == 1, "Unknown capture schema")
         require(record.get("sessionId") == session_id, "Capture-session identity mismatch")
         require(record.get("commit") == commit, "Capture commit mismatch")
-        require(record.get("unityVersion") == "6000.6.6f1", "Unexpected Unity runtime")
         ids = record.get("expectedCaseIds")
         require(isinstance(ids, list) and len(ids) == len(EXPECTED_IDS), "Wrong expected-case count")
         require(set(ids) == EXPECTED_IDS, "Expected-case IDs changed")
@@ -132,6 +143,15 @@ def verify(capture_dir, commit, project_root):
         source = safe_file(project_root, relative)
         require(source.stat().st_size == size and hash_file(source) == digest,
                 "Source differs from checked-out snapshot: " + relative)
+    project_pin = project_version_pin(project_root)
+    require(project_pin == expected_unity_version,
+            "ProjectVersion pin mismatch: expected " + expected_unity_version +
+            ", observed " + project_pin)
+    for record_name, record in (("session", session), ("manifest", manifest)):
+        require(record.get("unityVersion") == expected_unity_version,
+                "Unexpected Unity runtime in " + record_name)
+        require(record.get("projectVersionDeclared") == expected_unity_version,
+                "ProjectVersion declaration mismatch in " + record_name)
     attempts = manifest.get("attempts")
     require(isinstance(attempts, list) and attempts, "No captured attempts")
     descriptors = set()
@@ -153,6 +173,10 @@ def verify(capture_dir, commit, project_root):
         descriptor = load_object(descriptor_file)
         require(descriptor.get("schemaVersion") == 1, "Unknown descriptor schema")
         require(descriptor.get("sessionId") == session_id, "Descriptor session mismatch")
+        require(descriptor.get("unityVersion") == expected_unity_version,
+                "Unexpected Unity runtime in descriptor")
+        require(descriptor.get("projectVersionDeclared") == expected_unity_version,
+                "ProjectVersion declaration mismatch in descriptor")
         require(descriptor.get("caseId") == case_id, "Descriptor case mismatch")
         require(descriptor.get("complete") is True, "Incomplete attempt descriptor")
         require(descriptor.get("semanticAcceptance") is True, "Unaccepted attempt role")
@@ -188,10 +212,22 @@ def verify(capture_dir, commit, project_root):
     actual_attempts = {p.relative_to(capture_dir).as_posix()
                        for p in capture_dir.glob("cases/*/attempt-*") if p.is_dir()}
     require(actual_attempts == {a["attemptDirectory"] for a in attempts}, "Unlisted partial attempt")
-    return {"commit": commit, "sessionId": session_id, "caseCount": len(seen_ids),
+    return {"commit": commit, "sessionId": session_id,
+            "expectedUnityVersion": expected_unity_version,
+            "observedUnityVersion": session.get("unityVersion"),
+            "projectVersionDeclared": session.get("projectVersionDeclared"),
+            "projectPinUnityVersion": project_pin,
+            "caseCount": len(seen_ids),
             "attemptCount": len(attempts), "outputFileCount": output_count,
             "sourceCount": len(after), "manifestSha256": hash_file(capture_dir / "manifest.json"),
             "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"}
+
+
+class SingleExpectedUnityVersion(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if getattr(namespace, self.dest) is not None:
+            parser.error("--expected-unity-version may be supplied only once")
+        setattr(namespace, self.dest, values)
 
 
 def main():
@@ -199,8 +235,11 @@ def main():
     parser.add_argument("--capture-dir", type=Path, required=True)
     parser.add_argument("--commit", required=True)
     parser.add_argument("--project-root", type=Path, default=Path.cwd())
+    parser.add_argument("--expected-unity-version", action=SingleExpectedUnityVersion, default=None)
     args = parser.parse_args()
-    print(json.dumps(verify(args.capture_dir, args.commit, args.project_root), indent=2))
+    print(json.dumps(verify(args.capture_dir, args.commit, args.project_root,
+                            args.expected_unity_version if args.expected_unity_version is not None
+                            else "6000.6.6f1"), indent=2))
 
 
 if __name__ == "__main__":

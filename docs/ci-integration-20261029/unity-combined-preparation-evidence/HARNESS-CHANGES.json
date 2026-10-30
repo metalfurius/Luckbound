@@ -1,0 +1,74 @@
+{
+  "candidate": "UnityCombinedCandidate-20261030-r1/harness",
+  "contract": {
+    "path": "docs/ci-integration-20261029/SOL-UNITY-COMBINED-R7-CONTRACT.md",
+    "sha256": "9a53542919248b2b88ddf69106828aaf52d28e258e55204b602e65e98ebf6fa0"
+  },
+  "source": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+  "baseAuthorities": [
+    {
+      "path": "docs/ci-integration-20261029/r6-preparation-evidence/R6-SOURCE-GUARD.json",
+      "recordedRawSha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9"
+    },
+    {
+      "path": "docs/ci-integration-20261029/ci-r7-evidence/V6-manifest.json",
+      "sourceHashes": [
+        "sourceHashesBefore",
+        "sourceHashesAfter"
+      ],
+      "recordedBytes": 163348,
+      "recordedRawSha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9"
+    }
+  ],
+  "before": {
+    "path": "Logs/UnityCombinedCandidate-20261030-r1/harness/before/Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+    "bytes": 163348,
+    "sha256Raw": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+    "bytesCanonicalLF": 163348,
+    "sha256CanonicalLF": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+    "crlfSequences": 0,
+    "bareLfSequences": 3123,
+    "bareCrSequences": 0
+  },
+  "after": {
+    "path": "Logs/UnityCombinedCandidate-20261030-r1/harness/after/Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+    "bytes": 165904,
+    "sha256Raw": "c06d716deb425ba58f2aab70b5ca6bce91a0cb443f70134345ba89eb49afc54c",
+    "bytesCanonicalLF": 165904,
+    "sha256CanonicalLF": "c06d716deb425ba58f2aab70b5ca6bce91a0cb443f70134345ba89eb49afc54c",
+    "crlfSequences": 0,
+    "bareLfSequences": 3155,
+    "bareCrSequences": 0
+  },
+  "diff": {
+    "path": "Logs/UnityCombinedCandidate-20261030-r1/harness/proposal.diff",
+    "bytes": 6696,
+    "sha256Raw": "154d24a8b5cc9e82d6abc3e5351f3a89b034ab4615808ad2778611a333b713c8",
+    "bytesCanonicalLF": 6696,
+    "sha256CanonicalLF": "154d24a8b5cc9e82d6abc3e5351f3a89b034ab4615808ad2778611a333b713c8",
+    "crlfSequences": 0,
+    "bareLfSequences": 107,
+    "bareCrSequences": 0
+  },
+  "scope": {
+    "filesChanged": 1,
+    "onlySourceFile": true,
+    "changes": [
+      "Add the optional -luckboundV6ExpectedUnityVersion argument, defaulting to 6000.6.6f1.",
+      "Allow only the exact literals 6000.6.6f1 and 6000.6.7f1.",
+      "Require the expected version to match Application.unityVersion and ProjectVersion.txt m_EditorVersion before creating or writing capture output.",
+      "Preserve the existing runtime and declared ProjectVersion fields in session, manifest, and descriptors."
+    ],
+    "preserved": [
+      "Existing 34 test cases, attributes, assertions, builders, and capture output schema.",
+      "Core code, DTOs, saved data, checksums, fixtures, assets, and ProjectVersion pin."
+    ]
+  },
+  "verification": {
+    "baseRawHashMatchedR6GuardAndR7CaptureManifest": true,
+    "diffInspectedForScope": true,
+    "unityExecuted": false,
+    "unityCompilationOrTestsRunByThisWorker": false,
+    "ciRun": false
+  }
+}

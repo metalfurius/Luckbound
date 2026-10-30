@@ -1,0 +1,29 @@
+{
+  "run": 41051041675,
+  "job": 124046863852,
+  "bytes": 5165526,
+  "sha256": "7eecd6b1df7265213cde707343d1d9c1200ce86ad6bcbfab8e547a880383bd8c",
+  "gateStdoutLines": [
+    "2026-10-30T11:58:16.7244126Z {",
+    "2026-10-30T11:58:16.7244591Z   \"commit\": \"2e9f60484c6c395ce569a1eae10f3ac83a86c706\",",
+    "2026-10-30T11:58:16.7245118Z   \"sessionId\": \"ab5c2a76dbb84845948fb0e061d542a6\",",
+    "2026-10-30T11:58:16.7245580Z   \"caseCount\": 11,",
+    "2026-10-30T11:58:16.7245942Z   \"attemptCount\": 11,",
+    "2026-10-30T11:58:16.7246321Z   \"outputFileCount\": 97,",
+    "2026-10-30T11:58:16.7246699Z   \"sourceCount\": 14,",
+    "2026-10-30T11:58:16.7247286Z   \"manifestSha256\": \"b754583ef11d4116abf1a973829079f72189181ff0d38b32af44366209accdd4\",",
+    "2026-10-30T11:58:16.7248014Z   \"scope\": \"Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML\"",
+    "2026-10-30T11:58:16.7248570Z }"
+  ],
+  "scope": "Selected nonsecret stdout from actual completed CI verifier step; raw log retained only in ignored Logs",
+  "parsedGate": {
+    "commit": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+    "sessionId": "ab5c2a76dbb84845948fb0e061d542a6",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "b754583ef11d4116abf1a973829079f72189181ff0d38b32af44366209accdd4",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  }
+}

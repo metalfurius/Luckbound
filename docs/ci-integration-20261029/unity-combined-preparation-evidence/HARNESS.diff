@@ -1,0 +1,107 @@
+--- before/Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs
++++ after/Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs
+@@ -28,7 +28,9 @@
+         private const string FixedSavedAtUtc = "2000-01-01T00:00:00Z";
+         private const uint FixedExpeditionSeed = 17320508u;
+         private const string V6CaptureArgument = "-luckboundV6CaptureDir";
++        private const string V6CaptureExpectedUnityVersionArgument = "-luckboundV6ExpectedUnityVersion";
+         private const string V6CaptureUnityVersion = "6000.6.6f1";
++        private const string V6CaptureAlternateUnityVersion = "6000.6.7f1";
+         private const string V6CaptureRelativePrefix = "Logs/Scenarios/";
+         private static readonly UTF8Encoding V6CaptureUtf8NoBom = new UTF8Encoding(false);
+         private static readonly object V6CaptureGate = new object();
+@@ -79,21 +81,26 @@
+         public void InitializeV6CaptureIfRequested()
+         {
+             string relativeCapturePath;
+-            if (!TryReadV6CaptureArgument(out relativeCapturePath)) return;
++            string expectedUnityVersion;
++            if (!TryReadV6CaptureArguments(out relativeCapturePath, out expectedUnityVersion)) return;
++            if (!IsSupportedV6CaptureUnityVersion(expectedUnityVersion))
++                throw new InvalidOperationException("V6 capture expected Unity version is not allowlisted: " + expectedUnityVersion + ".");
+ 
+             string runtimeVersion = Application.unityVersion;
+-            if (!string.Equals(runtimeVersion, V6CaptureUnityVersion, StringComparison.Ordinal))
+-                throw new InvalidOperationException("V6 capture requires Unity " + V6CaptureUnityVersion +
+-                    "; observed " + runtimeVersion + ".");
++            string projectRoot = ResolveProjectRoot();
++            string declaredEditorVersion = ReadDeclaredEditorVersion(projectRoot);
++            if (!string.Equals(runtimeVersion, expectedUnityVersion, StringComparison.Ordinal) ||
++                !string.Equals(declaredEditorVersion, expectedUnityVersion, StringComparison.Ordinal))
++                throw new InvalidOperationException("V6 capture requires expected Unity " + expectedUnityVersion +
++                    " to match Application.unityVersion and ProjectSettings/ProjectVersion.txt m_EditorVersion; observed runtime=" +
++                    runtimeVersion + ", projectVersionDeclared=" + declaredEditorVersion + ".");
+ 
+             string commit = Environment.GetEnvironmentVariable("GITHUB_SHA");
+             if (!IsSha40(commit))
+                 throw new InvalidOperationException("V6 capture requires the public GITHUB_SHA value to be a 40-character commit SHA.");
+             commit = commit.ToLowerInvariant();
+ 
+-            string projectRoot = ResolveProjectRoot();
+             string captureRoot = ResolveAndCreateCaptureRoot(projectRoot, relativeCapturePath);
+-            string declaredEditorVersion = ReadDeclaredEditorVersion(projectRoot);
+             V6CaptureSourceHash[] sourceHashesBefore = HashCaptureSources(projectRoot, false);
+             V6CaptureRuntimeIdentity runtimeIdentity = ReadJsonUtilityIdentity();
+             CultureInfo culture = CultureInfo.CurrentCulture;
+@@ -1464,19 +1471,21 @@
+             return File.ReadAllBytes(fixturePath);
+         }
+ 
+-        private static bool TryReadV6CaptureArgument(out string captureValue)
++        private static bool TryReadV6CaptureArguments(out string captureValue, out string expectedUnityVersion)
+         {
+             string[] arguments = Environment.GetCommandLineArgs();
+             captureValue = null;
+-            int foundIndex = -1;
++            expectedUnityVersion = V6CaptureUnityVersion;
++            bool captureArgumentFound = false;
++            bool expectedUnityVersionArgumentFound = false;
+             for (int index = 0; index < arguments.Length; index++)
+             {
+                 string argument = arguments[index];
+                 if (string.Equals(argument, V6CaptureArgument, StringComparison.Ordinal))
+                 {
+-                    if (foundIndex >= 0)
++                    if (captureArgumentFound)
+                         throw new InvalidOperationException("V6 capture argument was supplied more than once.");
+-                    foundIndex = index;
++                    captureArgumentFound = true;
+                     if (index + 1 >= arguments.Length || string.IsNullOrWhiteSpace(arguments[index + 1]) ||
+                         arguments[index + 1].StartsWith("-", StringComparison.Ordinal))
+                         throw new InvalidOperationException("V6 capture argument requires one directory value.");
+@@ -1486,9 +1495,32 @@
+                 {
+                     throw new InvalidOperationException("V6 capture argument must use the exact flag followed by one value.");
+                 }
+-            }
+-
+-            return foundIndex >= 0;
++                else if (string.Equals(argument, V6CaptureExpectedUnityVersionArgument, StringComparison.Ordinal))
++                {
++                    if (expectedUnityVersionArgumentFound)
++                        throw new InvalidOperationException("V6 capture expected Unity version argument was supplied more than once.");
++                    expectedUnityVersionArgumentFound = true;
++                    if (index + 1 >= arguments.Length || string.IsNullOrWhiteSpace(arguments[index + 1]) ||
++                        arguments[index + 1].StartsWith("-", StringComparison.Ordinal))
++                        throw new InvalidOperationException("V6 capture expected Unity version argument requires one version value.");
++                    expectedUnityVersion = arguments[index + 1];
++                }
++                else if (argument != null && argument.StartsWith(V6CaptureExpectedUnityVersionArgument, StringComparison.Ordinal))
++                {
++                    throw new InvalidOperationException("V6 capture expected Unity version argument must use the exact flag followed by one value.");
++                }
++            }
++
++            if (expectedUnityVersionArgumentFound && !captureArgumentFound)
++                throw new InvalidOperationException("V6 capture expected Unity version requires the explicit capture directory opt-in.");
++
++            return captureArgumentFound;
++        }
++
++        private static bool IsSupportedV6CaptureUnityVersion(string version)
++        {
++            return string.Equals(version, V6CaptureUnityVersion, StringComparison.Ordinal) ||
++                string.Equals(version, V6CaptureAlternateUnityVersion, StringComparison.Ordinal);
+         }
+ 
+         private static bool IsSha40(string value)

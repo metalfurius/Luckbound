@@ -1,0 +1,14 @@
+{
+  "commit": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+  "sessionId": "ab5c2a76dbb84845948fb0e061d542a6",
+  "expectedUnityVersion": "6000.6.6f1",
+  "observedUnityVersion": "6000.6.6f1",
+  "projectVersionDeclared": "6000.6.6f1",
+  "projectPinUnityVersion": "6000.6.6f1",
+  "caseCount": 11,
+  "attemptCount": 11,
+  "outputFileCount": 97,
+  "sourceCount": 14,
+  "manifestSha256": "b754583ef11d4116abf1a973829079f72189181ff0d38b32af44366209accdd4",
+  "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+}

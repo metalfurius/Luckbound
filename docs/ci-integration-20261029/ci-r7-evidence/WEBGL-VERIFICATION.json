@@ -1,0 +1,30 @@
+{
+  "run": 41051041675,
+  "commit": "2e9f60484c6c395ce569a1eae10f3ac83a86c706",
+  "artifactId": 12975955959,
+  "bytes": 16110822,
+  "sha256": "a87fab26ec773b9daa675f33efb6d1cf2d1e5123d2bd46d789e968f6a0a44385",
+  "files": 17,
+  "htmlAndWasmPresent": true,
+  "paths": [
+    "WebGL/Build/WebGL.data.br",
+    "WebGL/Build/WebGL.framework.js.br",
+    "WebGL/Build/WebGL.loader.js",
+    "WebGL/Build/WebGL.wasm.br",
+    "WebGL/index.html",
+    "WebGL/TemplateData/favicon.ico",
+    "WebGL/TemplateData/fullscreen-button.png",
+    "WebGL/TemplateData/MemoryProfiler.png",
+    "WebGL/TemplateData/progress-bar-empty-dark.png",
+    "WebGL/TemplateData/progress-bar-empty-light.png",
+    "WebGL/TemplateData/progress-bar-full-dark.png",
+    "WebGL/TemplateData/progress-bar-full-light.png",
+    "WebGL/TemplateData/style.css",
+    "WebGL/TemplateData/unity-logo-dark.png",
+    "WebGL/TemplateData/unity-logo-light.png",
+    "WebGL/TemplateData/unity-logo-title-footer.png",
+    "WebGL/TemplateData/webmemd-icon.png"
+  ],
+  "playerExecutedLocally": false,
+  "browserOpened": false
+}
