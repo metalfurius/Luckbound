@@ -1,0 +1,51 @@
+{
+  "parentCommit": "4d7ee0126939208d819787c27b9c075d59e31f28",
+  "scope": "Six failed R6 invocations in five test files; no production changes",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Tests/EditMode/Saves/ExpeditionFortuneSaveTests.cs",
+      "package": "GateCR6DiagnosticTestsFix-20261030-r1",
+      "beforeRawSha256": "f15f6d3ddd0348e79b88f226c50b81681e4ba6e70c39c331765de9b6a62f9d45",
+      "workerBeforeSha256": "f15f6d3ddd0348e79b88f226c50b81681e4ba6e70c39c331765de9b6a62f9d45",
+      "beforeRelation": "raw-equal",
+      "afterSha256": "ca6bf2a717f4b08453fedfca53235fbe8de18b072ac484cdb4585426452efadc",
+      "bytes": 40074
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/ExpeditionSampleRunTests.cs",
+      "package": "GateCR6DiagnosticTestsFix-20261030-r1",
+      "beforeRawSha256": "15e533151f761bd6e682a72d650115bcefbe66e36567c64e7782465f723ea6bb",
+      "workerBeforeSha256": "15e533151f761bd6e682a72d650115bcefbe66e36567c64e7782465f723ea6bb",
+      "beforeRelation": "raw-equal",
+      "afterSha256": "f37c576391a737ab6337f6afafbdd2963a851de1425c883c926058af43a00338",
+      "bytes": 5988
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs",
+      "package": "GateCR6SettingsFixtureFix-20261030-r1",
+      "beforeRawSha256": "3b560349705615129101287e7715dbca6c4d3aea507a1729c2e66099725f662e",
+      "workerBeforeSha256": "3b560349705615129101287e7715dbca6c4d3aea507a1729c2e66099725f662e",
+      "beforeRelation": "raw-equal",
+      "afterSha256": "ea3b516ff2141f2abf4dd75e98b51f49f5e61b8e151f116d4d3ec93b7023beb8",
+      "bytes": 29202
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopApplicationTests.cs",
+      "package": "GateCR6RestTestsFix-20261030-r1",
+      "beforeRawSha256": "e974a4a37f9997c8a89a8593fed061fbfc07aba198e317f509bef6b95ccef02d",
+      "workerBeforeSha256": "e974a4a37f9997c8a89a8593fed061fbfc07aba198e317f509bef6b95ccef02d",
+      "beforeRelation": "raw-equal",
+      "afterSha256": "f6e8528e8d75a39b0b7247db42167dea54e72aa2ea9214517571a2740529fb61",
+      "bytes": 49445
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+      "package": "GateCR6RestTestsFix-20261030-r1",
+      "beforeRawSha256": "f3588449345701c04d723f99110af91076117333a008d128d70d6cbbe046fd42",
+      "workerBeforeSha256": "f638146faf647be8a52b9f3c4080630c788a677491ecc54c79f8c9b9e7469ac7",
+      "beforeRelation": "local-CRLF-to-LF-equals-pinned-remote",
+      "afterSha256": "6923dccd004940ced4fa28623e7ec84fe1b8f878501a2f7ba224e1d451049144",
+      "bytes": 50777
+    }
+  ]
+}

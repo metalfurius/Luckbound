@@ -1,0 +1,52 @@
+[
+  {
+    "path": "REPORT.md",
+    "bytes": 2212,
+    "sha256": "a2eed4cb99723cde4ad5829b0b87345f96ff1a76feccd86c77a60a657eeb0f62"
+  },
+  {
+    "path": "AUDIT.md",
+    "bytes": 3661,
+    "sha256": "43bc4cf5267d9ad74c23296fc2c489dff7c99a4d634b22a18db5cbc805155abc"
+  },
+  {
+    "path": "FAILURES.md",
+    "bytes": 4050,
+    "sha256": "0c05ee1654ff20ca349f5619c67f0d4046426993a85ecc653d8f63e1ca60bf04"
+  },
+  {
+    "path": "FAILURES.json",
+    "bytes": 5217,
+    "sha256": "86eef5bf77ac2c4e7e0cfe8e8df01b25510c56383590844dbe9c9489aa96f7aa"
+  },
+  {
+    "path": "TEST-AUDIT.json",
+    "bytes": 11700,
+    "sha256": "5020ce951bae8679cb24834e413e8b43f4356a98cc83c0fdfbe72b2e0307dcd1"
+  },
+  {
+    "path": "C08-AUDIT.json",
+    "bytes": 939,
+    "sha256": "6620241278a4a70cd120dde6194f467eaee1553b9ca766ce2d4b64257682bbac"
+  },
+  {
+    "path": "V6-CAPTURE-DIAGNOSTIC.json",
+    "bytes": 1144,
+    "sha256": "9a2bbc5729f21f0a6785d314b53274447d1298ac031d313b05992357e76f0d1d"
+  },
+  {
+    "path": "PROVENANCE.json",
+    "bytes": 5974,
+    "sha256": "c4d9c74409b25e6316b92fbbcc83d4636c26a4f81a3e5496331975db12ba2ab3"
+  },
+  {
+    "path": "editmode-results.xml",
+    "bytes": 512334,
+    "sha256": "e283de898fd3780d9d290bb6f18efe3a2c237c8e76192a4f7bd0401f71c6cea7"
+  },
+  {
+    "path": "playmode-results.xml",
+    "bytes": 999326,
+    "sha256": "c5771cce33c2a7eaeb3f288aef3ecfef7f2b836bdb593221827a8abb91cefda6"
+  }
+]

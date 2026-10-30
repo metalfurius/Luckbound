@@ -34,7 +34,7 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [Test]
-        public void EverySampleCheckpointSurvivesRealRepositoryRestartWithItsVersionAndHistory()
+        public void EverySampleCheckpointIsPreservedForDiagnosticReadAcrossRepositoryRestart()
         {
             string directory = Path.Combine(Path.GetTempPath(), "LuckboundSampleSaves", Guid.NewGuid().ToString("N"));
             try
@@ -42,9 +42,12 @@ namespace Luckbound.Tests.PlayMode
                 ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.CreateSample(
                     BellatorSkillLoadout.ClassId, ExpeditionRunConfiguration.HumanRaceId,
                     new[] { BellatorSkillLoadout.ChargeId, BellatorSkillLoadout.CircularCutId }, 2, 2, 1);
-                var repository = new SaveRepository(new FileSaveStore(directory, null));
                 for (int index = 0; index < run.Route.MandatoryNodeIds.Count; index++)
                 {
+                    // Each checkpoint has an independent original writer; the loaded reader is never reused as one.
+                    string checkpointDirectory = Path.Combine(directory, index.ToString());
+                    var fileStore = new FileSaveStore(checkpointDirectory, null);
+                    var repository = new SaveRepository(fileStore);
                     ExpeditionSaveData state = ExpeditionSaveMapper.Create(run);
                     state.currentNodeId = run.Route.MandatoryNodeIds[index];
                     state.visitedNodeIds = run.Route.MandatoryNodeIds.Take(index + 1).ToArray();
@@ -55,9 +58,13 @@ namespace Luckbound.Tests.PlayMode
                         .GetAwaiter().GetResult();
                     Assert.That(write.Succeeded, Is.True, write.Message);
 
-                    var restarted = new SaveRepository(new FileSaveStore(directory, null));
+                    var restarted = new SaveRepository(new FileSaveStore(checkpointDirectory, null));
                     SaveLoadResult<ProfileSaveEnvelope> loaded = restarted.LoadProfileAsync().GetAwaiter().GetResult();
                     Assert.That(loaded.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), loaded.Message);
+                    Assert.That(loaded.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                    byte[] originalBytes = File.ReadAllBytes(fileStore.GetPrimaryPath(SaveDocument.Profile));
+                    Assert.That(restarted.ExportLoadedProfileJson(), Is.EqualTo(File.ReadAllText(fileStore.GetPrimaryPath(SaveDocument.Profile))));
+                    // Restore is a pure mapper inspection here, not a product Continue operation.
                     ExpeditionRunConfiguration restored = ExpeditionSaveMapper.Restore(loaded.Data.activeExpedition,
                         out ExpeditionSaveData resumed);
                     Assert.That(restored.RunId, Is.EqualTo(run.RunId));
@@ -70,7 +77,12 @@ namespace Luckbound.Tests.PlayMode
                     Assert.That(restored.HealthUpgradeLevel, Is.EqualTo(2));
                     Assert.That(restored.EnergyUpgradeLevel, Is.EqualTo(2));
                     Assert.That(restored.AdditionalPotionUpgradeLevel, Is.EqualTo(1));
-                    repository = restarted;
+                    SaveWriteResult blockedWrite = restarted.SaveProfileAsync(loaded.Data.profile, loaded.Data.activeExpedition)
+                        .GetAwaiter().GetResult();
+                    Assert.That(blockedWrite.Succeeded, Is.False);
+                    Assert.That(restarted.ExportPendingJson(SaveDocument.Profile), Is.Null);
+                    CollectionAssert.AreEqual(originalBytes, File.ReadAllBytes(fileStore.GetPrimaryPath(SaveDocument.Profile)));
+                    Assert.That(File.Exists(fileStore.GetBackupPath(SaveDocument.Profile)), Is.False);
                 }
             }
             finally

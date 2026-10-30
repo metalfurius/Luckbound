@@ -1,0 +1,257 @@
+{
+  "run": "41045183446",
+  "commit": "4d7ee0126939208d819787c27b9c075d59e31f28",
+  "tests": {
+    "editmode": {
+      "path": "Logs/CI-41045183446-root/tests-attempt1/extracted/test-results/editmode-results.xml",
+      "sha256": "e283de898fd3780d9d290bb6f18efe3a2c237c8e76192a4f7bd0401f71c6cea7",
+      "rootAttributes": {
+        "id": "2",
+        "testcasecount": "585",
+        "result": "Failed(Child)",
+        "total": "585",
+        "passed": "584",
+        "failed": "1",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-30 11:07:42Z",
+        "end-time": "2026-10-30 11:09:42Z",
+        "duration": "120.218197"
+      },
+      "testCases": 585,
+      "caseResults": {
+        "Passed": 584,
+        "Failed": 1
+      },
+      "classes": {
+        "SaveLegacyReadOnlyRepositoryTests": {
+          "total": 0,
+          "results": {}
+        },
+        "SaveLegacyReadOnlyApplicationTests": {
+          "total": 0,
+          "results": {}
+        },
+        "SaveV6CharacterizationTests": {
+          "total": 0,
+          "results": {}
+        }
+      },
+      "issues": [
+        {
+          "result": "Failed",
+          "fullname": "Luckbound.Tests.App.ExpeditionFortuneSaveTests.UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore",
+          "classname": "Luckbound.Tests.App.ExpeditionFortuneSaveTests",
+          "methodname": "UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore",
+          "message": "  Profile writes are blocked because the loaded profile is read-only or unavailable.\n  Expected: True\n  But was:  False\n",
+          "stackTrace": "at Luckbound.Tests.App.ExpeditionFortuneSaveTests.UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore () [0x001a9] in /github/workspace/Assets/Luckbound/Tests/EditMode/Saves/ExpeditionFortuneSaveTests.cs:158\n",
+          "skipReason": null
+        }
+      ],
+      "adaptedMethods": null
+    },
+    "playmode": {
+      "path": "Logs/CI-41045183446-root/tests-attempt1/extracted/test-results/playmode-results.xml",
+      "sha256": "c5771cce33c2a7eaeb3f288aef3ecfef7f2b836bdb593221827a8abb91cefda6",
+      "rootAttributes": {
+        "id": "2",
+        "testcasecount": "373",
+        "result": "Failed(Child)",
+        "total": "373",
+        "passed": "368",
+        "failed": "5",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-30 11:04:40Z",
+        "end-time": "2026-10-30 11:07:18Z",
+        "duration": "158.4132977"
+      },
+      "testCases": 373,
+      "caseResults": {
+        "Passed": 368,
+        "Failed": 5
+      },
+      "classes": {
+        "SaveLegacyReadOnlyRepositoryTests": {
+          "total": 18,
+          "results": {
+            "Passed": 17,
+            "Failed": 1
+          }
+        },
+        "SaveLegacyReadOnlyApplicationTests": {
+          "total": 3,
+          "results": {
+            "Passed": 3
+          }
+        },
+        "SaveV6CharacterizationTests": {
+          "total": 34,
+          "results": {
+            "Passed": 34
+          }
+        }
+      },
+      "issues": [
+        {
+          "result": "Failed",
+          "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart",
+          "classname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests",
+          "methodname": "E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart",
+          "message": "System.NullReferenceException : Object reference not set to an instance of an object",
+          "stackTrace": "  at Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests+<E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart>d__1.MoveNext () [0x00b6e] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/RestStopApplicationTests.cs:251 \n  at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52 ",
+          "skipReason": null
+        },
+        {
+          "result": "Failed",
+          "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity",
+          "classname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests",
+          "methodname": "E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity",
+          "message": "  Expected: True\n  But was:  False\n",
+          "stackTrace": "at Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests+<E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity>d__0.MoveNext () [0x006ad] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/RestStopApplicationTests.cs:110\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+          "skipReason": null
+        },
+        {
+          "result": "Failed",
+          "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+          "classname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests",
+          "methodname": "E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+          "message": "  Expected: ea418667bdb80eacb74030741cf09371\n  But was:  \n",
+          "stackTrace": "at Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests+<E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase>d__0.MoveNext () [0x01265] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs:193\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+          "skipReason": null
+        },
+        {
+          "result": "Failed",
+          "fullname": "Luckbound.Tests.PlayMode.ExpeditionSampleRunTests.EverySampleCheckpointSurvivesRealRepositoryRestartWithItsVersionAndHistory",
+          "classname": "Luckbound.Tests.PlayMode.ExpeditionSampleRunTests",
+          "methodname": "EverySampleCheckpointSurvivesRealRepositoryRestartWithItsVersionAndHistory",
+          "message": "  Profile writes are blocked because the loaded profile is read-only or unavailable.\n  Expected: True\n  But was:  False\n",
+          "stackTrace": "at Luckbound.Tests.PlayMode.ExpeditionSampleRunTests.EverySampleCheckpointSurvivesRealRepositoryRestartWithItsVersionAndHistory () [0x000e3] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionSampleRunTests.cs:56\n",
+          "skipReason": null
+        },
+        {
+          "result": "Failed",
+          "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+          "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+          "methodname": "SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+          "message": "  Expected: not null and not <empty>\n  But was:  null\n",
+          "stackTrace": "at Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson () [0x000ce] in /github/workspace/Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs:244\n",
+          "skipReason": null
+        }
+      ],
+      "adaptedMethods": [
+        {
+          "methodname": "SuccessConsumesOneFromAStackAndReplayAfterReloadIsBlocked",
+          "caseCount": 1,
+          "results": {
+            "Passed": 1
+          },
+          "cases": [
+            {
+              "fullname": "Luckbound.Tests.PlayMode.ApplicationFortuneBrewTests.SuccessConsumesOneFromAStackAndReplayAfterReloadIsBlocked",
+              "result": "Passed"
+            }
+          ]
+        },
+        {
+          "methodname": "InterruptedRoomReloadPreservesTheD09EntryBrewSnapshotWithoutResuming",
+          "caseCount": 1,
+          "results": {
+            "Passed": 1
+          },
+          "cases": [
+            {
+              "fullname": "Luckbound.Tests.PlayMode.ApplicationFortuneBrewTests.InterruptedRoomReloadPreservesTheD09EntryBrewSnapshotWithoutResuming",
+              "result": "Passed"
+            }
+          ]
+        },
+        {
+          "methodname": "E04_RewardCommitRetryKeepsLegacySnapshotReadOnlyAfterReload",
+          "caseCount": 1,
+          "results": {
+            "Passed": 1
+          },
+          "cases": [
+            {
+              "fullname": "Luckbound.Tests.PlayMode.ApplicationFortuneRewardTests.E04_RewardCommitRetryKeepsLegacySnapshotReadOnlyAfterReload",
+              "result": "Passed"
+            }
+          ]
+        },
+        {
+          "methodname": "E04_ClaimRewardReplayIsIdempotentBeforeReloadAndBlockedAfterReload",
+          "caseCount": 1,
+          "results": {
+            "Passed": 1
+          },
+          "cases": [
+            {
+              "fullname": "Luckbound.Tests.PlayMode.ApplicationFortuneRewardTests.E04_ClaimRewardReplayIsIdempotentBeforeReloadAndBlockedAfterReload",
+              "result": "Passed"
+            }
+          ]
+        },
+        {
+          "methodname": "E02_PhysicalPickupCraftRetryRejectionAndRoomCheckpointRestart",
+          "caseCount": 1,
+          "results": {
+            "Passed": 1
+          },
+          "cases": [
+            {
+              "fullname": "Luckbound.Tests.PlayMode.CraftingSessionTests.E02_PhysicalPickupCraftRetryRejectionAndRoomCheckpointRestart",
+              "result": "Passed"
+            }
+          ]
+        },
+        {
+          "methodname": "StableRoomResultReplayAfterReloadIsIdempotentAndConflictsDoNotChangeRoute",
+          "caseCount": 1,
+          "results": {
+            "Passed": 1
+          },
+          "cases": [
+            {
+              "fullname": "Luckbound.Tests.PlayMode.ExpeditionRoomAdvanceDurabilityTests.StableRoomResultReplayAfterReloadIsIdempotentAndConflictsDoNotChangeRoute",
+              "result": "Passed"
+            }
+          ]
+        },
+        {
+          "methodname": "D09_BootstrapRestoresCheckpointCompletionAndNextRoomAcrossRestarts",
+          "caseCount": 1,
+          "results": {
+            "Passed": 1
+          },
+          "cases": [
+            {
+              "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.D09_BootstrapRestoresCheckpointCompletionAndNextRoomAcrossRestarts",
+              "result": "Passed"
+            }
+          ]
+        },
+        {
+          "methodname": "D09_RestartRollsBackInterruptedRoomAndKeepsCommittedRoomResult",
+          "caseCount": 1,
+          "results": {
+            "Passed": 1
+          },
+          "cases": [
+            {
+              "fullname": "Luckbound.Tests.PlayMode.SaveRepositoryTests.D09_RestartRollsBackInterruptedRoomAndKeepsCommittedRoomResult",
+              "result": "Passed"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "newInvocationTotal": 21
+}

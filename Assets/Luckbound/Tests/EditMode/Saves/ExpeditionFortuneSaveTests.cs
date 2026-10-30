@@ -135,8 +135,16 @@ namespace Luckbound.Tests.App
             profile.energyUpgradeLevel = 2;
             profile.additionalPotionUpgradeLevel = 1;
 
-            SaveWriteResult write = Wait(NewRepository().SaveProfileAsync(profile, state));
-            SaveLoadResult<ProfileSaveEnvelope> firstLoad = Wait(NewRepository().LoadProfileAsync());
+            // Re-saving remains a positive codec check within the original write session.
+            var writer = NewRepository();
+            SaveWriteResult write = Wait(writer.SaveProfileAsync(profile, state));
+            SaveWriteResult resave = Wait(writer.SaveProfileAsync(profile, state));
+            Assert.That(resave.Succeeded, Is.True, resave.Message);
+            var diagnosticReader = NewRepository();
+            SaveLoadResult<ProfileSaveEnvelope> firstLoad = Wait(diagnosticReader.LoadProfileAsync());
+            Assert.That(firstLoad.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+            byte[] primaryBefore = File.ReadAllBytes(NewFileStore().GetPrimaryPath(SaveDocument.Profile));
+            byte[] backupBefore = File.ReadAllBytes(NewFileStore().GetBackupPath(SaveDocument.Profile));
             ExpeditionRunConfiguration firstRestore = ExpeditionSaveMapper.Restore(firstLoad.Data.activeExpedition,
                 out ExpeditionSaveData firstResumed);
             Assert.That(write.Succeeded, Is.True, write.Message);
@@ -149,13 +157,17 @@ namespace Luckbound.Tests.App
             Assert.Throws<InvalidOperationException>(() => _ = firstRestore.StartingEnergy);
             Assert.Throws<InvalidOperationException>(() => _ = firstRestore.StartingHealthPotions);
 
-            SaveWriteResult resave = Wait(NewRepository().SaveProfileAsync(firstLoad.Data.profile,
+            SaveWriteResult blockedResave = Wait(diagnosticReader.SaveProfileAsync(firstLoad.Data.profile,
                 firstLoad.Data.activeExpedition));
+            Assert.That(blockedResave.Succeeded, Is.False, "A loaded V6 active run remains diagnostic-only.");
+            Assert.That(diagnosticReader.ExportPendingJson(SaveDocument.Profile), Is.Null);
+            CollectionAssert.AreEqual(primaryBefore, File.ReadAllBytes(NewFileStore().GetPrimaryPath(SaveDocument.Profile)));
+            CollectionAssert.AreEqual(backupBefore, File.ReadAllBytes(NewFileStore().GetBackupPath(SaveDocument.Profile)));
             SaveLoadResult<ProfileSaveEnvelope> afterRestart = Wait(NewRepository().LoadProfileAsync());
             ExpeditionRunConfiguration secondRestore = ExpeditionSaveMapper.Restore(afterRestart.Data.activeExpedition,
                 out ExpeditionSaveData secondResumed);
 
-            Assert.That(resave.Succeeded, Is.True, resave.Message);
+            Assert.That(afterRestart.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
             Assert.That(afterRestart.Status, Is.EqualTo(SaveLoadStatus.LoadedPrimary), afterRestart.Message);
             Assert.That(secondResumed.hasFrozenPermanentUpgrades, Is.False);
             Assert.That(secondResumed.frozenPermanentUpgrades, Is.Null,

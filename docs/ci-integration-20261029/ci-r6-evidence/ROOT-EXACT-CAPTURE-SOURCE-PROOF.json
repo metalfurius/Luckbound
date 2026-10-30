@@ -1,0 +1,106 @@
+{
+  "sourceOnlySnapshot": true,
+  "unityExecutedLocally": false,
+  "commit": "4d7ee0126939208d819787c27b9c075d59e31f28",
+  "sourceCount": 14,
+  "sources": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+      "bytes": 7266,
+      "sha256": "56de2f732c3b8a922e54239eecb50d3735b71f25454b24dcfdbc76cbb01030cc",
+      "gitBlob": "44cee851931dc470bbff3bf3f6da308aa2c274c9",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+      "bytes": 16578,
+      "sha256": "f5fa5cf6540329a14eb65132d0c0690eab7b9647a90d047f363fb60a518f7479",
+      "gitBlob": "6551c633a2de7e4c15998169618379938077af8c",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+      "bytes": 37224,
+      "sha256": "c977919b071d3acb141c1553b5508eb7d803b8cd375a7ede3a33ae872105c1d4",
+      "gitBlob": "d62c870fcd0ed5861cce0296c57592fb8d0221b6",
+      "normalization": "CRLF-to-LF"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+      "bytes": 2163,
+      "sha256": "5bf9a13ee6f153e8cb5986cb8595fe8f3e4cbbf6a57acddf5ba3f37724359f79",
+      "gitBlob": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+      "normalization": "CRLF-to-LF"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "bytes": 75121,
+      "sha256": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+      "gitBlob": "3fd1d267d6c04fe6aa660ecc4aa97b1fe52948cc",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+      "bytes": 99,
+      "sha256": "10636b9bcba77b100660e9eea7552831a77368d3aba58e26d9a992675776edda",
+      "gitBlob": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "bytes": 163348,
+      "sha256": "f55057e300656d9c5e281482ef80cc52c72ebc2ecfdbbc3ca334a1a6d76af6a9",
+      "gitBlob": "0cbc490fd521398cb4b10954e2ccc447d28f2ebf",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+      "bytes": 40662,
+      "sha256": "0aeaa4cbd7b376c8ff3480a76487f69ddd3c36fd87fc52b8702dc821349dd8ca",
+      "gitBlob": "afca9976e04c128293afdce4b09102a1497f9b18",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+      "bytes": 484,
+      "sha256": "68ca963ffb9e8796f38cca6753172e476ac006fe7b92edb711c63cc46b6c047f",
+      "gitBlob": "e2651ceea22370bc71db6eec997af038463ea2c4",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+      "bytes": 337,
+      "sha256": "dd71efb12260ce763dee6a120025fb51d34a03ce3bb4d9b9ceb6187b77d1d03a",
+      "gitBlob": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+      "normalization": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+      "bytes": 647,
+      "sha256": "37033a3a94bc36aca69ed327bbfb1a7d511755f57d87483e977536eed8714ee7",
+      "gitBlob": "97904300d05845e188c731d5a2e0964855d9ef01",
+      "normalization": "raw"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "bytes": 83,
+      "sha256": "9207210a75d6f7e920816752a3a9228f1366df762e660fb6c1f8f56ee3af8661",
+      "gitBlob": "99bacd03c32572309212173ef6a8e7dab6cd92e6",
+      "normalization": "raw"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "bytes": 2165,
+      "sha256": "103c1898171747f4a48b662ec59d6ad8f93e87730d6d195bc43abf08b6fcb595",
+      "gitBlob": "0df120389f01f83f360d65d0870db74aead1b4d1",
+      "normalization": "CRLF-to-LF"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "bytes": 14044,
+      "sha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225",
+      "gitBlob": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+      "normalization": "raw"
+    }
+  ]
+}

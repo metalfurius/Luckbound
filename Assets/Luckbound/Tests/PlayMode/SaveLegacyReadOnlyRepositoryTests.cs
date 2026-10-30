@@ -232,7 +232,7 @@ namespace Luckbound.Tests.PlayMode
             SaveLoadResult<ProfileSaveEnvelope> profileLoad = Wait(repository.LoadProfileAsync());
             SaveLoadResult<SettingsSaveEnvelope> settingsLoad = Wait(repository.LoadSettingsAsync());
             GameSettingsSaveData changedSettings = settingsLoad.Data.settings.Clone();
-            changedSettings.languageId = "fr";
+            changedSettings.languageId = "en";
             store.FailNextSettingsWrite = true;
 
             SaveWriteResult failed = Wait(repository.SaveSettingsAsync(changedSettings));
@@ -241,6 +241,7 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(profileLoad.Access, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
             Assert.That(settingsLoad.Access, Is.EqualTo(SaveDataAccess.ReadWrite));
             Assert.That(failed.Succeeded, Is.False);
+            StringAssert.Contains("Injected settings write failure.", failed.Message);
             Assert.That(pendingJson, Is.Not.Null.And.Not.Empty);
             Assert.That(store.WriteCalls.Count, Is.EqualTo(1));
             Assert.That(store.WriteCalls[0].Document, Is.EqualTo(SaveDocument.Settings));

@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "repository": "metalfurius/Luckbound",
+  "run": {
+    "id": 41045183446,
+    "url": "https://github.com/metalfurius/Luckbound/actions/runs/41045183446",
+    "status": "completed",
+    "conclusion": "failure",
+    "branch": "codex/luckbound-integration-20261029",
+    "commit": "4d7ee0126939208d819787c27b9c075d59e31f28",
+    "tree": "a8b9e79f7e8dc944afe4d6058ce5931e432e557c",
+    "suiteId": 111261023044,
+    "completedAt": "2026-10-30T11:10:17Z"
+  },
+  "job": {
+    "id": 124027417195,
+    "name": "EditMode and PlayMode tests",
+    "status": "completed",
+    "conclusion": "failure",
+    "steps": {
+      "Run Unity tests": "failure",
+      "Verify explicit V6 capture": "skipped",
+      "Upload test results": "success"
+    },
+    "downstream": {
+      "Build Windows x64": "skipped",
+      "Build WebGL": "skipped",
+      "Create version release": "skipped",
+      "Publish versioned WebGL on gh-pages": "skipped"
+    }
+  },
+  "artifact": {
+    "id": 12973100108,
+    "name": "test-results-4d7ee0126939208d819787c27b9c075d59e31f28",
+    "sizeBytes": 8610409,
+    "digest": "sha256:62eca34f3b6b2c716ab7cd9eb8575be11b422756f2ee346205ad095feefe47ce",
+    "createdAt": "2026-10-30T11:10:14Z",
+    "expiresAt": "2026-11-13T11:10:13Z",
+    "expired": false,
+    "downloaded": true,
+    "suiteUrl": "https://nightly.link/metalfurius/Luckbound/suites/111261023044/artifacts/12973100108",
+    "localPath": "Logs/CI-41045183446-root/tests-attempt1/artifact.zip",
+    "extractedPath": "Logs/CI-41045183446-root/tests-attempt1/extracted",
+    "files": 241,
+    "retrievedBy": "Root coordinator after terminal run; this auditor did not repeat its HTTP 500 attempt"
+  },
+  "downloadHelper": {
+    "path": "Logs/VisualCorrection-20261028/download_artifact.py",
+    "sha256": "52b7c76e9dfca7aff7a9792be1d61a906e9e556cf6028aa33c38adef10ef748c",
+    "arguments": {
+      "run": 41045183446,
+      "name": "test-results-4d7ee0126939208d819787c27b9c075d59e31f28",
+      "sha256": "62eca34f3b6b2c716ab7cd9eb8575be11b422756f2ee346205ad095feefe47ce",
+      "suite": 111261023044,
+      "artifactId": 12973100108
+    },
+    "attempts": [
+      {
+        "output": "Logs/CI-41045183446-review/download",
+        "result": "WinError 10013",
+        "escalated": false
+      },
+      {
+        "output": "Logs/CI-41045183446-review/download-allow",
+        "result": "HTTP 500 Internal Server Error",
+        "escalated": true,
+        "authorization": "Fran's read-only escalation already authorized for WinError 10013"
+      }
+    ],
+    "retryPolicy": "Stop after HTTP 500; no loop, rerun, auth change, or alternate channel. Await follow-up on the same IDs."
+  },
+  "staticChecks": {
+    "workflow": {
+      "path": ".github/workflows/build.yml",
+      "blob": "2b37ba575cf983bfad2f1297514057fa884b9fd3",
+      "testFilter": "Luckbound",
+      "unityEditor": "6000.6.6f1",
+      "captureVerifierCondition": "Only after Unity tests succeed"
+    },
+    "testSourceCountsNotExecution": {
+      "SaveLegacyReadOnlyRepositoryTests": 18,
+      "SaveLegacyReadOnlyApplicationTests": 3,
+      "SaveV6CharacterizationTests": 34,
+      "captureCaseIds": 11,
+      "captureSourcePaths": 14
+    },
+    "captureRepositorySource": {
+      "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+      "sha256FromR6SourceGuard": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73"
+    },
+    "c08BaselineR5ToR6": {
+      "projectVersion": "6000.6.6f1 (d20c9ac777da)",
+      "projectVersionBlob": "99bacd03c32572309212173ef6a8e7dab6cd92e6",
+      "combatArenaTestsBlob": "0b0e7ba393948d839766ce12b678ff3c2fa63b8f",
+      "c08ArenaDataBlob": "b143b3f541f920ebe4f85044034b35ebc8bab0a7",
+      "sameAcrossCommits": true,
+      "priorR5ScenarioOnly": {
+        "assertions": 10,
+        "impacts": 16,
+        "hp": 60
+      }
+    },
+    "nativeV6": {
+      "executedInR6": false,
+      "reason": "Unity tests failed; workflow skipped verifier",
+      "dataFilesCompared97": false,
+      "sourcesStable14": false
+    }
+  },
+  "status": "audit complete for available XML; native V6 gate remains unexecuted because the Unity test step failed",
+  "testResults": {
+    "editMode": {
+      "total": 585,
+      "passed": 584,
+      "failed": 1,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "playMode": {
+      "total": 373,
+      "passed": 368,
+      "failed": 5,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "combined": {
+      "total": 958,
+      "passed": 952,
+      "failed": 6,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "newInvocations": {
+      "total": 21,
+      "passed": 20,
+      "failed": 1,
+      "repository": {
+        "total": 18,
+        "passed": 17,
+        "failed": 1
+      },
+      "application": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0
+      },
+      "saveV6Characterization": {
+        "total": 34,
+        "passed": 34,
+        "failed": 0
+      },
+      "adaptedLegacyMethods": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0
+      }
+    }
+  },
+  "testAuditFiles": [
+    "Logs/CI-41045183446-review/TEST-AUDIT.json",
+    "Logs/CI-41045183446-review/FAILURES.json",
+    "Logs/CI-41045183446-review/FAILURES.md"
+  ],
+  "c08Audit": {
+    "report": "Logs/CI-41045183446-review/C08-AUDIT.json",
+    "passed": true,
+    "assertions": "10/10",
+    "unity": "6000.6.6f1",
+    "screenshot": "Not attempted"
+  },
+  "nativeV6": {
+    "diagnostic": "Logs/CI-41045183446-review/V6-CAPTURE-DIAGNOSTIC.json",
+    "sourcesBeforeAfterStable": true,
+    "sourceCount": 14,
+    "saveRepositorySha256": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+    "workflowVerifier": "skipped because Unity tests failed",
+    "gateAccepted": false,
+    "nativeDataFileComparisonToR5R4": "not performed"
+  }
+}

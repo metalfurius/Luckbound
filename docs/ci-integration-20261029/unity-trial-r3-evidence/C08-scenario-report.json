@@ -1,0 +1,265 @@
+{
+    "taskId": "C08",
+    "scenarioId": "C08_RealKeyboardTwoWaveCombat",
+    "seed": 17320508,
+    "sourceCommit": "7618870e24613407b5e9c4ba6163ced4c74d47ce",
+    "sourceHash": "790dcc82ee0d8dfa6528542881554f7367579e41a746846130e7dcb7d98a53ce",
+    "sourceHashVersion": 2,
+    "sourceFileCount": 4247,
+    "sourceSnapshotCapturedUtc": "2026-10-30T10:58:02.4387240Z",
+    "sourceWorkingTree": "unspecified",
+    "unityVersion": "6000.6.7f1",
+    "platform": "LinuxEditor",
+    "graphicsDevice": "OpenGLCore",
+    "startedUtc": "2026-10-30T10:58:04.6847660Z",
+    "completedUtc": "2026-10-30T10:58:17.4713050Z",
+    "evidenceDirectory": "Logs/Scenarios/C08/20261030T105802435Z_C08_RealKeyboardTwoWaveCombat_6ce36516",
+    "screenshotStatus": "Not attempted",
+    "passed": false,
+    "exitCode": 1,
+    "inputs": [
+        {
+            "frame": 0,
+            "action": "MenuButton",
+            "value": "LUCHAR · ARENA 0.2"
+        },
+        {
+            "frame": 1,
+            "action": "Keyboard",
+            "value": "A/D move, J attack, Left Shift dodge, F health potion"
+        },
+        {
+            "frame": 0,
+            "action": "Jump",
+            "value": "Space: one real jump to verify the landing cue"
+        },
+        {
+            "frame": 90,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 116,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 119,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 148,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 201,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 228,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 230,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 259,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 288,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 296,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 317,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 346,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 375,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 404,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 405,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 434,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 463,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 488,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 492,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 521,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 550,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 559,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 579,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 608,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 633,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 637,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 666,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 695,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 712,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 737,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        }
+    ],
+    "events": [
+        "C08 jump boundary=before-enqueue; frame=43830; fixedTime=15.8; updateMode=ProcessEventsInDynamicUpdate; tick=0; successfulJumps=0; spaceLastPump=NotSampled; spaceSamplePhase=NotSampled; spaceSampleFrame=-1; grounded=True; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.499; velocityY=0",
+        "C08 jump boundary=after-down-pump; frame=43830; fixedTime=15.8; updateMode=ProcessEventsInDynamicUpdate; tick=0; successfulJumps=0; spaceLastPump=True; spaceSamplePhase=after-down-pump; spaceSampleFrame=43830; grounded=True; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.499; velocityY=0",
+        "C08 jump boundary=after-fixed; frame=43830; fixedTime=15.8166666; updateMode=ProcessEventsInDynamicUpdate; tick=1; successfulJumps=1; spaceLastPump=True; spaceSamplePhase=after-down-pump; spaceSampleFrame=43830; grounded=False; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.25941682; velocityY=14.375",
+        "C08 jump boundary=after-release-pump; frame=43830; fixedTime=15.8166666; updateMode=ProcessEventsInDynamicUpdate; tick=1; successfulJumps=1; spaceLastPump=False; spaceSamplePhase=after-release-pump; spaceSampleFrame=43830; grounded=False; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.25941682; velocityY=14.375",
+        "Wave 1 Slimes confirmed dead; wave 2 Huesoguardias spawned at tick 267.",
+        "ticks=745; result=Victory; playerHealth=60; meleeQueued=15; slimesDead=True; huesoguardiasDead=True; wave=2"
+    ],
+    "assertions": [
+        {
+            "name": "Arena opens from its menu button with two live Slimes",
+            "passed": true,
+            "expected": "wave 1; two live Slimes; menu button route",
+            "actual": "button=True; wave=1; slimes=2; alive=2"
+        },
+        {
+            "name": "The player uses the real melee overlap path against targets",
+            "passed": true,
+            "expected": "at least one queued and applied melee impact",
+            "actual": "queued=15; applied=15"
+        },
+        {
+            "name": "Melee contact stays queued until a later 60 Hz simulation tick",
+            "passed": true,
+            "expected": "a collected hit remains pending during its collection tick",
+            "actual": "delayedResolutionObserved=True"
+        },
+        {
+            "name": "Accepted physical enemy impacts request the enemy_damage effect while audio output stays paused",
+            "passed": true,
+            "expected": "an applied Slime or Huesoguardia impact assigns the enemy_damage clip to an audio voice",
+            "actual": "routed=True; listenerPaused=True; clipAvailable=True"
+        },
+        {
+            "name": "Spawn contact stays silent and a real jump landing requests the landing effect",
+            "passed": false,
+            "expected": "the player leaves the floor, returns to grounded, and assigns the landing clip to an audio voice",
+            "actual": "pendingAtSpawn=0; jumpStarted=True; airborne=True; routed=False; listenerPaused=True; clipAvailable=True; jumpCountBefore=0; jumpCountAfter=1; jumpTickBefore=0; jumpTickAfter=1"
+        },
+        {
+            "name": "Both Slimes die through combat before the next wave",
+            "passed": true,
+            "expected": "two Slimes dead and wave 2 reached",
+            "actual": "dead=True; wave=2"
+        },
+        {
+            "name": "The two Huesoguardias die through combat without forced removal",
+            "passed": true,
+            "expected": "two Huesoguardias enter Dead after melee impacts",
+            "actual": "dead=True; states=Dead,Dead"
+        },
+        {
+            "name": "Victory requires clearing both configured encounter waves",
+            "passed": true,
+            "expected": "Victory; zero living enemies; player alive",
+            "actual": "result=Victory; alive=0; playerHealth=60"
+        },
+        {
+            "name": "The standalone combat demo does not advance Expedition contracts",
+            "passed": true,
+            "expected": "CT01=0 and CT03=0 after a physical demo victory",
+            "actual": "won=True; CT01=0; CT03=0; afterExtraFrames=0/0"
+        },
+        {
+            "name": "Standalone demo victories leave Expedition contract progress unchanged after restart",
+            "passed": true,
+            "expected": "reloaded profile CT01=0 and CT03=0",
+            "actual": "CT01=0; CT03=0"
+        }
+    ],
+    "errors": [
+        "Spawn contact stays silent and a real jump landing requests the landing effect: expected 'the player leaves the floor, returns to grounded, and assigns the landing clip to an audio voice', actual 'pendingAtSpawn=0; jumpStarted=True; airborne=True; routed=False; listenerPaused=True; clipAvailable=True; jumpCountBefore=0; jumpCountAfter=1; jumpTickBefore=0; jumpTickAfter=1'."
+    ],
+    "artifacts": [
+        "source-manifest.sha256",
+        "scenario.log",
+        "scenario-report.json"
+    ]
+}

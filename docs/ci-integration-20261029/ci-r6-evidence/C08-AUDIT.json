@@ -1,0 +1,19 @@
+{
+  "path": "Logs/CI-41045183446-root/tests-attempt1/extracted/Logs/Scenarios/C08/20261030T110456956Z_C08_RealKeyboardTwoWaveCombat_633e885a/scenario-report.json",
+  "sha256": "5fbfd97e5b0b827d04519ae0e833fd62cc6757be345880292287791a5b25eb8b",
+  "sourceCommit": "4d7ee0126939208d819787c27b9c075d59e31f28",
+  "unityVersion": "6000.6.6f1",
+  "platform": "LinuxEditor",
+  "passed": true,
+  "exitCode": 0,
+  "screenshotStatus": "Not attempted",
+  "assertionCount": 10,
+  "assertionsPassed": 10,
+  "failedAssertions": [],
+  "events": [
+    "Wave 1 Slimes confirmed dead; wave 2 Huesoguardias spawned at tick 268.",
+    "ticks=776; result=Victory; playerHealth=60; meleeQueued=16; slimesDead=True; huesoguardiasDead=True; wave=2"
+  ],
+  "errors": [],
+  "sourceManifest": "Logs/CI-41045183446-root/tests-attempt1/extracted/Logs/Scenarios/C08/20261030T110456956Z_C08_RealKeyboardTwoWaveCombat_633e885a/source-manifest.sha256"
+}

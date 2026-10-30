@@ -1,0 +1,52 @@
+[
+  {
+    "path": "MANIFEST.json",
+    "bytes": 2634,
+    "sha256": "2c57572282d803a92d795095f7e46413ba1902ac93736abc522ce75c62cf9fe5"
+  },
+  {
+    "path": "SOURCE-GUARD.json",
+    "bytes": 198115,
+    "sha256": "a602492b606f075f3fe4cec3588b636dad5387984c7531a628fe710c3be5929a"
+  },
+  {
+    "path": "INTEGRATION-RECEIPT.json",
+    "bytes": 283,
+    "sha256": "ff760942ec1a1e112b2cbead9c836e515fd3d1c6d989699aab6c8f2db969ff1d"
+  },
+  {
+    "path": "COMPILE-RESULTS.json",
+    "bytes": 25087,
+    "sha256": "b349ab72bdddc5558b21ea6c0dc2e5974ea67906ca338255838028c14cf4fedc"
+  },
+  {
+    "path": "COMPILE-App.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "COMPILE-PlayMode.log",
+    "bytes": 2704,
+    "sha256": "d2eb158d4657affcfd715c45b65a702928213d9a0db08a2a8772a496c6cd02b6"
+  },
+  {
+    "path": "CHANGES.diff",
+    "bytes": 47199,
+    "sha256": "6ae523a933da91b92b6036514fdbb11b9bc221dd4c57edd0ec732f2340eb3615"
+  },
+  {
+    "path": "ROOT-DIAGNOSTIC-REPORT.md",
+    "bytes": 1327,
+    "sha256": "74884f5e09c566e280659f984509ead9632802ea78ab92e542a19c63e7313c2a"
+  },
+  {
+    "path": "REST-TESTS-REPORT.md",
+    "bytes": 5878,
+    "sha256": "cb74780361600e40f77d609b78ebbf9cca51e3d63c23c1d44b820adf7d185e41"
+  },
+  {
+    "path": "SETTINGS-FIX.diff",
+    "bytes": 1304,
+    "sha256": "cbb47876c8e15994a61d6cb71c578576db186c2112c31d7f0b438a5fea831655"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "integrated": true,
+  "files": 5,
+  "sourceGuardVerified": 377,
+  "productionChanged": false,
+  "solReviewSha256": "1b13d620e275230c7505e4367ea08e0a681efea2770a2a50d3a51dec1aef9235",
+  "compile": "offline-r1/RESULTS.json",
+  "unityExecutedLocally": false,
+  "ciRequired": true
+}

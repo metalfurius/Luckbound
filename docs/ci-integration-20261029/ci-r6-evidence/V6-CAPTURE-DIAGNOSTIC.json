@@ -1,0 +1,24 @@
+{
+  "manifestPath": "Logs/CI-41045183446-root/tests-attempt1/extracted/Logs/Scenarios/V6Capture-4d7ee0126939208d819787c27b9c075d59e31f28-41045183446-1/manifest.json",
+  "manifestSha256": "f41aad911e908525a3642cea01da5ab575798fdbdd96b89f3389e3f8933f434c",
+  "sessionId": "a4e0a9b09fd24d888c0dff6d22360974",
+  "commit": "4d7ee0126939208d819787c27b9c075d59e31f28",
+  "unityVersion": "6000.6.6f1",
+  "projectVersionDeclared": "6000.6.6f1",
+  "expectedCaseCount": 11,
+  "sourceCountBefore": 14,
+  "sourceCountAfter": 14,
+  "manifestSourcesStable": true,
+  "independentBeforeAfterEqual": true,
+  "changedSourcePaths": [],
+  "saveRepository": {
+    "before": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+    "after": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73",
+    "expectedR6SourceGuard": "be756fe7c029af9de6ff0a4eb0cc8a2082d2d59a8d570c3e594401afd7264f73"
+  },
+  "rawManifestDataComplete": true,
+  "rawManifestRoleRequirementsPassed": true,
+  "verifierStep": "skipped because Unity test step failed",
+  "nativeGateAccepted": false,
+  "dataFileComparisonToR5R4Performed": false
+}

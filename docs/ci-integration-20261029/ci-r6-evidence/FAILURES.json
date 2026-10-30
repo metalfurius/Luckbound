@@ -1,0 +1,62 @@
+[
+  {
+    "suite": "editmode",
+    "result": "Failed",
+    "fullname": "Luckbound.Tests.App.ExpeditionFortuneSaveTests.UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore",
+    "classname": "Luckbound.Tests.App.ExpeditionFortuneSaveTests",
+    "methodname": "UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore",
+    "message": "  Profile writes are blocked because the loaded profile is read-only or unavailable.\n  Expected: True\n  But was:  False\n",
+    "stackTrace": "at Luckbound.Tests.App.ExpeditionFortuneSaveTests.UnknownFrozenUpgradeSnapshotStaysAbsentAcrossSaveReloadAndRestore () [0x001a9] in /github/workspace/Assets/Luckbound/Tests/EditMode/Saves/ExpeditionFortuneSaveTests.cs:158\n",
+    "skipReason": null
+  },
+  {
+    "suite": "playmode",
+    "result": "Failed",
+    "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart",
+    "classname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests",
+    "methodname": "E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart",
+    "message": "System.NullReferenceException : Object reference not set to an instance of an object",
+    "stackTrace": "  at Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests+<E03_PersistsRestEntryStockTaliaAndPurchaseAcrossExactRetryAndRestart>d__1.MoveNext () [0x00b6e] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/RestStopApplicationTests.cs:251 \n  at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52 ",
+    "skipReason": null
+  },
+  {
+    "suite": "playmode",
+    "result": "Failed",
+    "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests.E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity",
+    "classname": "Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests",
+    "methodname": "E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity",
+    "message": "  Expected: True\n  But was:  False\n",
+    "stackTrace": "at Luckbound.Tests.PlayMode.Economy.RestStopApplicationTests+<E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity>d__0.MoveNext () [0x006ad] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/RestStopApplicationTests.cs:110\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+    "skipReason": null
+  },
+  {
+    "suite": "playmode",
+    "result": "Failed",
+    "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+    "classname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests",
+    "methodname": "E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+    "message": "  Expected: ea418667bdb80eacb74030741cf09371\n  But was:  \n",
+    "stackTrace": "at Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests+<E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase>d__0.MoveNext () [0x01265] in /github/workspace/Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs:193\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@33f8a1e9aefd/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+    "skipReason": null
+  },
+  {
+    "suite": "playmode",
+    "result": "Failed",
+    "fullname": "Luckbound.Tests.PlayMode.ExpeditionSampleRunTests.EverySampleCheckpointSurvivesRealRepositoryRestartWithItsVersionAndHistory",
+    "classname": "Luckbound.Tests.PlayMode.ExpeditionSampleRunTests",
+    "methodname": "EverySampleCheckpointSurvivesRealRepositoryRestartWithItsVersionAndHistory",
+    "message": "  Profile writes are blocked because the loaded profile is read-only or unavailable.\n  Expected: True\n  But was:  False\n",
+    "stackTrace": "at Luckbound.Tests.PlayMode.ExpeditionSampleRunTests.EverySampleCheckpointSurvivesRealRepositoryRestartWithItsVersionAndHistory () [0x000e3] in /github/workspace/Assets/Luckbound/Tests/PlayMode/ExpeditionSampleRunTests.cs:56\n",
+    "skipReason": null
+  },
+  {
+    "suite": "playmode",
+    "result": "Failed",
+    "fullname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+    "classname": "Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests",
+    "methodname": "SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson",
+    "message": "  Expected: not null and not <empty>\n  But was:  null\n",
+    "stackTrace": "at Luckbound.Tests.PlayMode.SaveLegacyReadOnlyRepositoryTests.SettingsFailureAndRetryAreIndependentFromProtectedProfileAndReuseExactJson () [0x000ce] in /github/workspace/Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyRepositoryTests.cs:244\n",
+    "skipReason": null
+  }
+]

@@ -60,6 +60,10 @@ namespace Luckbound.Tests.PlayMode.Economy
                 RestStopServicesPanelController controller = null;
                 yield return LoadExpedition(value => controller = value);
                 app = ApplicationBootstrapper.Instance;
+                RoomInstanceId initialRoomId = app.ActiveRoomInstanceId;
+                Assert.That(initialRoomId.IsValid, Is.True);
+                string initialRunId = app.ActiveRun.RunId.ToString();
+                string initialNodeId = app.ActiveExpedition.currentNodeId;
                 evidence.RecordAssertion("A valid rest room offers the service entry point", controller.IsServiceOffered,
                     "service entry point visible and enabled", controller.IsServiceOffered ? "offered" : "hidden");
                 Assert.That(controller.IsServiceOffered, Is.True,
@@ -184,58 +188,100 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(34));
 
                 RoomInstanceId savedRoomId = app.ActiveRoomInstanceId;
-                evidence.RecordInput(9, "ProcessRestart", "Reload Bootstrap and the saved expedition before inspecting services again");
+                bool roomIdentityStableInWriteSession = savedRoomId == initialRoomId &&
+                    app.ActiveRun.RunId.ToString() == initialRunId && app.ActiveExpedition.currentNodeId == initialNodeId;
+                evidence.RecordAssertion("Run, route node and room identity remain stable in the read-write session",
+                    roomIdentityStableInWriteSession, "same RunId, node and RoomInstanceId through rest services",
+                    "run=" + app.ActiveRun.RunId + "; node=" + app.ActiveExpedition.currentNodeId +
+                    "; room=" + app.ActiveRoomInstanceId);
+                Assert.That(roomIdentityStableInWriteSession, Is.True);
+                Button spentTaliaButton = FindButton(controller, "UseTalia");
+                Assert.That(spentTaliaButton, Is.Not.Null);
+                bool oneTimeServicesRemainSpent = FindButton(controller, "EnterRestStop") == null && !spentTaliaButton.interactable;
+                evidence.RecordAssertion("One-time rest entry and Talia remain spent in the read-write session",
+                    oneTimeServicesRemainSpent, "entry absent and Talia disabled", "entry=" +
+                    (FindButton(controller, "EnterRestStop") == null ? "absent" : "present") +
+                    "; Talia interactable=" + spentTaliaButton.interactable);
+                Assert.That(oneTimeServicesRemainSpent, Is.True);
+
+                string runIdBeforeRestart = app.ActiveRun.RunId.ToString();
+                string nodeIdBeforeRestart = app.ActiveExpedition.currentNodeId;
+                string expeditionJsonBeforeRestart = JsonUtility.ToJson(app.ActiveExpedition, false);
+                int profileWritesBeforeRestart = store.ProfileWriteAttempts;
+                Task<SaveStorageSnapshot> storageBeforeRestartTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageBeforeRestartTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageBeforeRestart = storageBeforeRestartTask.Result;
+                evidence.RecordInput(9, "ProcessRestart", "Reload Bootstrap and inspect the preserved V6 snapshot in diagnostic-only mode");
                 UnityEngine.Object.Destroy(app.gameObject);
                 yield return null;
                 yield return LoadBootstrap();
                 app = ApplicationBootstrapper.Instance;
                 Assert.That(app, Is.Not.Null);
-                Assert.That(app.ActiveRoomInstanceId, Is.EqualTo(savedRoomId));
-                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(90));
-                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(34));
-                Assert.That(app.ActiveRun.Inventory.RelicOne.ItemId, Is.EqualTo(SupportRelicIds.MerchantSeal));
-                Assert.That(app.ActiveRun.Inventory.RelicTwo.ItemId, Is.EqualTo("relic.marked_coin"));
-                Assert.That(app.ActiveRun.Inventory.Weapon.UpgradeLevel, Is.EqualTo(1));
-                Assert.That(app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore), Is.Zero);
-                Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "relic.marked_coin").remainingQuantity,
-                    Is.Zero, "The purchase must remain deducted from the same persisted stock after restart.");
-                bool servicesRestored = app.ActiveExpedition.currentHealth == 90 && app.ActiveRun.Inventory.Gold == 34 &&
-                    app.ActiveRun.Inventory.Weapon.UpgradeLevel == 1 &&
-                    app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore) == 0 &&
-                    app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "relic.marked_coin").remainingQuantity == 0;
-                evidence.RecordAssertion("Shop, smithing and Talia state survive restart",
-                    servicesRestored, "health 90; gold 34; weapon +1; ore 0; marked-coin offer remains exhausted",
-                    "health=" + app.ActiveExpedition.currentHealth + "; gold=" + app.ActiveRun.Inventory.Gold +
-                    "; weapon +" + app.ActiveRun.Inventory.Weapon.UpgradeLevel +
-                    "; ore=" + app.ActiveRun.Inventory.GetMaterialCount(MaterialKind.Ore) +
-                    "; marked-coin stock=" + app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "relic.marked_coin").remainingQuantity);
-                Assert.That(servicesRestored, Is.True);
+                bool preservedReadOnlySnapshot = app.SaveDataReady &&
+                    app.ProfileAccess == SaveDataAccess.ReadOnlyLegacyEncounterPinMissing && !app.CanWriteProfile &&
+                    !app.CanStartNewExpedition && !app.CanContinueExpedition && app.HasActiveExpedition && app.ActiveRun == null &&
+                    app.ActiveExpedition != null && app.ActiveExpeditionLoadError == "LegacyEncounterPinMissing" &&
+                    SceneManager.GetActiveScene().name == "Menu" && app.ActiveExpedition.runId == runIdBeforeRestart &&
+                    app.ActiveExpedition.currentNodeId == nodeIdBeforeRestart &&
+                    JsonUtility.ToJson(app.ActiveExpedition, false) == expeditionJsonBeforeRestart &&
+                    store.ProfileWriteAttempts == profileWritesBeforeRestart;
+                evidence.RecordAssertion("V6 restart preserves shop, smithing and Talia state for diagnostics only",
+                    preservedReadOnlySnapshot, "Menu, no ActiveRun, read-only V6 and same run/node snapshot with no load-time write",
+                    "scene=" + SceneManager.GetActiveScene().name + "; access=" + app.ProfileAccess +
+                    "; activeRun=" + (app.ActiveRun != null) + "; error=" + app.ActiveExpeditionLoadError +
+                    "; run=" + app.ActiveExpedition?.runId + "; node=" + app.ActiveExpedition?.currentNodeId +
+                    "; writes=" + (store.ProfileWriteAttempts - profileWritesBeforeRestart));
+                Assert.That(preservedReadOnlySnapshot, Is.True);
 
-                yield return LoadExpedition(value => controller = value);
-                ExpeditionSaveData reloadedExpedition = app.ActiveExpedition;
-                ExpeditionRouteNode reloadedNode = app.ActiveRun.Route.Nodes.FirstOrDefault(node =>
-                    node.NodeId == reloadedExpedition.currentNodeId);
-                Button reloadedAccessButton = controller.AccessButton;
-                string reloadedServiceState = "scene=" + SceneManager.GetActiveScene().name +
-                    "; ready=" + app.SaveDataReady + "; activeRun=" + (app.ActiveRun != null) +
-                    "; loadError=" + app.ActiveExpeditionLoadError + "; node=" + reloadedExpedition.currentNodeId +
-                    "; kind=" + (reloadedNode == null ? "missing" : reloadedNode.Kind.ToString()) +
-                    "; offered=" + controller.IsServiceOffered +
-                    "; accessActive=" + (reloadedAccessButton != null && reloadedAccessButton.gameObject.activeInHierarchy);
-                evidence.RecordAssertion("The rest stop remains available after restart", controller.IsServiceOffered,
-                    "service entry point visible and enabled", reloadedServiceState);
-                Assert.That(controller.IsServiceOffered, Is.True, reloadedServiceState);
-                SimulatePointerClick(controller.AccessButton);
-                Assert.That(FindButton(controller, "EnterRestStop"), Is.Null,
-                    "The once-only rest-entry service must no longer be offered after restart.");
-                Button spentTaliaButton = FindButton(controller, "UseTalia");
-                Assert.That(spentTaliaButton, Is.Not.Null);
-                bool oneTimeServicesRemainSpent = FindButton(controller, "EnterRestStop") == null && !spentTaliaButton.interactable;
-                evidence.RecordAssertion("One-time rest entry and Talia remain spent after restart",
-                    oneTimeServicesRemainSpent, "entry absent and Talia disabled", "entry=" +
-                    (FindButton(controller, "EnterRestStop") == null ? "absent" : "present") + "; Talia interactable=" + spentTaliaButton.interactable);
-                Assert.That(spentTaliaButton.interactable, Is.False,
-                    "Talia's once-per-rest service must remain spent after restart.");
+                Task<SaveStorageSnapshot> storageAfterLoadTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageAfterLoadTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageAfterLoad = storageAfterLoadTask.Result;
+                Assert.That(storageAfterLoad.PrimaryJson, Is.EqualTo(storageBeforeRestart.PrimaryJson));
+                Assert.That(storageAfterLoad.BackupJson, Is.EqualTo(storageBeforeRestart.BackupJson));
+
+                string profileBeforeBlockedCalls = JsonUtility.ToJson(app.Profile, false);
+                string expeditionBeforeBlockedCalls = JsonUtility.ToJson(app.ActiveExpedition, false);
+                long revisionBeforeBlockedCalls = app.ActiveExpeditionRevision;
+                Task<SaveWriteResult> blockedStart = app.BeginExpeditionAsync(null);
+                while (!blockedStart.IsCompleted) yield return null;
+                Assert.That(blockedStart.Result.Succeeded, Is.False);
+                Assert.Throws<InvalidOperationException>(() => app.ContinueActiveExpedition());
+                Task<SaveWriteResult> blockedSnapshot = app.SaveActiveExpeditionStateAsync(app.ActiveExpedition);
+                while (!blockedSnapshot.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<RestStopEntryCommitData>> blockedEntry = app.EnterRestStopAsync(savedRoomId);
+                while (!blockedEntry.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> blockedTalia =
+                    app.UseTaliaAsync(savedRoomId, TransactionId.New());
+                while (!blockedTalia.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> blockedPurchase =
+                    app.PurchaseFromMerchantAsync(savedRoomId, "relic.marked_coin", 1, 15, pendingPurchaseId);
+                while (!blockedPurchase.IsCompleted) yield return null;
+                Assert.That(blockedSnapshot.Result.Succeeded, Is.False);
+                Assert.That(blockedEntry.Result.Persisted, Is.False);
+                Assert.That(blockedEntry.Result.Pending, Is.False);
+                Assert.That(blockedEntry.Result.Outcome, Is.Null);
+                Assert.That(blockedTalia.Result.Persisted, Is.False);
+                Assert.That(blockedTalia.Result.Pending, Is.False);
+                Assert.That(blockedTalia.Result.Outcome, Is.Null);
+                Assert.That(blockedPurchase.Result.Persisted, Is.False);
+                Assert.That(blockedPurchase.Result.Pending, Is.False);
+                Assert.That(blockedPurchase.Result.Outcome, Is.Null);
+                Task<SaveStorageSnapshot> storageAfterCallsTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageAfterCallsTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageAfterCalls = storageAfterCallsTask.Result;
+                bool blockedCallsPreserveProtectedState =
+                    JsonUtility.ToJson(app.Profile, false) == profileBeforeBlockedCalls &&
+                    JsonUtility.ToJson(app.ActiveExpedition, false) == expeditionBeforeBlockedCalls &&
+                    app.ActiveExpeditionRevision == revisionBeforeBlockedCalls && app.ActiveRun == null &&
+                    app.HasActiveExpedition && !app.HasPendingExpeditionWrite && !app.HasPendingEconomyMutation &&
+                    storageAfterCalls.PrimaryJson == storageBeforeRestart.PrimaryJson &&
+                    storageAfterCalls.BackupJson == storageBeforeRestart.BackupJson &&
+                    store.ProfileWriteAttempts == profileWritesBeforeRestart;
+                evidence.RecordAssertion("Protected V6 rejects continuation and rest services without writes",
+                    blockedCallsPreserveProtectedState, "snapshot and primary/backup bytes unchanged; zero profile writes",
+                    "run=" + app.ActiveExpedition.runId + "; node=" + app.ActiveExpedition.currentNodeId +
+                    "; writes=" + (store.ProfileWriteAttempts - profileWritesBeforeRestart));
+                Assert.That(blockedCallsPreserveProtectedState, Is.True);
                 Assert.That(evidence.Complete(), Is.Zero, "E03 player-facing services scenario failed. Evidence: " + evidence.ReportPath);
             }
             finally
@@ -673,11 +719,13 @@ namespace Luckbound.Tests.PlayMode.Economy
             private bool _failNextProfileWrite;
 
             public FailOnceProfileWriteStore(ISaveStore inner) { _inner = inner; }
+            public int ProfileWriteAttempts { get; private set; }
             public void FailNextProfileWrite() => _failNextProfileWrite = true;
             public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
 
             public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
             {
+                if (document == SaveDocument.Profile) ProfileWriteAttempts++;
                 if (document == SaveDocument.Profile && _failNextProfileWrite)
                 {
                     _failNextProfileWrite = false;

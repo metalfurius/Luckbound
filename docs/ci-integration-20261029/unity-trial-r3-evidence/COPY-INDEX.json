@@ -1,0 +1,39 @@
+{
+  "run": 41044025404,
+  "attempt": 1,
+  "commit": "7618870e24613407b5e9c4ba6163ced4c74d47ce",
+  "artifact": 12971169922,
+  "artifactSha256": "b87030a3765124f98eff61507b60793b0a261a676b2feafa6cc93ef401638087",
+  "files": [
+    {
+      "source": "test-results/editmode-results.xml",
+      "path": "editmode-results.xml",
+      "bytes": 511047,
+      "sha256": "f6e60b3795cf8733cb01d9997bea97c56a7d3bf4fea20cfd65bc36c8530ea7c3"
+    },
+    {
+      "source": "test-results/playmode-results.xml",
+      "path": "playmode-results.xml",
+      "bytes": 861608,
+      "sha256": "2e026528b8fd09ae87a4480db608e1ff4d52214f5d48f129db00e29c6649c3d6"
+    },
+    {
+      "source": "Logs/Scenarios/C08/20261030T105802435Z_C08_RealKeyboardTwoWaveCombat_6ce36516/scenario.log",
+      "path": "C08-scenario.log",
+      "bytes": 7028,
+      "sha256": "1a4b576e9879cb5cb0f7a18ffd7d8cc4c6996bc06a132f19ceef6bbbe3a115dc"
+    },
+    {
+      "source": "Logs/Scenarios/C08/20261030T105802435Z_C08_RealKeyboardTwoWaveCombat_6ce36516/scenario-report.json",
+      "path": "C08-scenario-report.json",
+      "bytes": 10448,
+      "sha256": "e21e2cd762500b45ad5a9ccef65e83213db003e680577c840323d71cf027b327"
+    },
+    {
+      "source": "Logs/Scenarios/C08/20261030T105802435Z_C08_RealKeyboardTwoWaveCombat_6ce36516/source-manifest.sha256",
+      "path": "C08-source-manifest.sha256",
+      "bytes": 636354,
+      "sha256": "790dcc82ee0d8dfa6528542881554f7367579e41a746846130e7dcb7d98a53ce"
+    }
+  ]
+}

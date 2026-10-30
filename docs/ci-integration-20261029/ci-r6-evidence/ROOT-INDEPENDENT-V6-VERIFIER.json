@@ -1,0 +1,18 @@
+{
+  "commit": "4d7ee0126939208d819787c27b9c075d59e31f28",
+  "sessionId": "a4e0a9b09fd24d888c0dff6d22360974",
+  "caseCount": 11,
+  "attemptCount": 11,
+  "outputFileCount": 97,
+  "sourceCount": 14,
+  "manifestSha256": "f41aad911e908525a3642cea01da5ab575798fdbdd96b89f3389e3f8933f434c",
+  "verification": {
+    "command": "python -B Tools/Automation/verify_v6_capture.py --capture-dir C:/Users/Fran/Documents/GitHub/Luckbound/Logs/CI-41045183446-root/tests-attempt1/extracted/Logs/Scenarios/V6Capture-4d7ee0126939208d819787c27b9c075d59e31f28-41045183446-1 --commit 4d7ee0126939208d819787c27b9c075d59e31f28 --project-root C:/Users/Fran/Documents/GitHub/Luckbound/Logs/CI-41045183446-root/v6-source-only-exact",
+    "exitCode": 0,
+    "kind": "Independent offline verification by Root after CI failure; not the skipped CI step",
+    "sourceOnlySnapshot": true
+  },
+  "ciVerifierStep": "skipped",
+  "unityExecutedLocally": false,
+  "gateCAccepted": false
+}

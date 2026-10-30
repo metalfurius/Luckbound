@@ -30,7 +30,7 @@ namespace Luckbound.Tests.PlayMode.Economy
         public IEnumerator E03_RejectsRestServicesOutsideRestAndRestoresStableRoomIdentity()
         {
             string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE03", System.Guid.NewGuid().ToString("N"));
-            var store = new FileSaveStore(saveDirectory, null);
+            var store = new FailOnceProfileWriteStore(new FileSaveStore(saveDirectory, null));
             var evidence = new ScenarioEvidenceRecorder("E03", "E03_RestStopBoundariesAndIdentity", 11235813);
             try
             {
@@ -88,26 +88,93 @@ namespace Luckbound.Tests.PlayMode.Economy
 
                 string runIdBeforeRestart = app.ActiveRun.RunId.ToString();
                 string nodeIdBeforeRestart = afterRejectedCalls.currentNodeId;
+                bool roomIdentityStableInWriteSession = app.ActiveRun.RunId.ToString() == runIdBeforeRestart &&
+                    app.ActiveExpedition.currentNodeId == nodeIdBeforeRestart && app.ActiveRoomInstanceId == roomIdBeforeRestart;
+                evidence.RecordAssertion("Run, route node and room identity remain stable in the read-write session",
+                    roomIdentityStableInWriteSession, "same RunId, node and derived RoomInstanceId before reload",
+                    "run=" + app.ActiveRun.RunId + "; node=" + app.ActiveExpedition.currentNodeId +
+                    "; room=" + app.ActiveRoomInstanceId);
+                Assert.That(roomIdentityStableInWriteSession, Is.True);
+                string expeditionJsonBeforeRestart = JsonUtility.ToJson(app.ActiveExpedition, false);
+                int profileWritesBeforeRestart = store.ProfileWriteAttempts;
+                Task<SaveStorageSnapshot> storageBeforeRestartTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageBeforeRestartTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageBeforeRestart = storageBeforeRestartTask.Result;
                 evidence.RecordInput(4, "ProcessRestart", "Reload the persisted expedition from Bootstrap");
                 Object.Destroy(app.gameObject);
                 yield return null;
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
                 for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
-                    !ApplicationBootstrapper.Instance.SaveDataReady || ApplicationBootstrapper.Instance.ActiveRun == null ||
-                    SceneManager.GetActiveScene().name != "Expedition"); frame++)
+                    !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
                     yield return null;
 
                 app = ApplicationBootstrapper.Instance;
-                bool sameRoomAfterRestart = app != null && app.ActiveRun != null && app.ActiveExpedition != null &&
-                    app.ActiveRun.RunId.ToString() == runIdBeforeRestart &&
-                    app.ActiveExpedition.currentNodeId == nodeIdBeforeRestart &&
-                    app.ActiveRoomInstanceId == roomIdBeforeRestart;
-                evidence.RecordAssertion("Room identity is stable for the same expedition and route node after restart",
-                    sameRoomAfterRestart, "same RunId, current route node and derived RoomInstanceId",
-                    app == null ? "application did not restore" :
-                    "run=" + app.ActiveRun?.RunId + "; node=" + app.ActiveExpedition?.currentNodeId +
-                    "; room=" + app.ActiveRoomInstanceId);
-                Assert.That(sameRoomAfterRestart, Is.True);
+                bool preservedReadOnlySnapshot = app != null && app.SaveDataReady &&
+                    app.ProfileAccess == SaveDataAccess.ReadOnlyLegacyEncounterPinMissing && !app.CanWriteProfile &&
+                    !app.CanStartNewExpedition && !app.CanContinueExpedition && app.HasActiveExpedition && app.ActiveRun == null &&
+                    app.ActiveExpedition != null && app.ActiveExpeditionLoadError == "LegacyEncounterPinMissing" &&
+                    SceneManager.GetActiveScene().name == "Menu" &&
+                    app.ActiveExpedition.runId == runIdBeforeRestart && app.ActiveExpedition.currentNodeId == nodeIdBeforeRestart &&
+                    JsonUtility.ToJson(app.ActiveExpedition, false) == expeditionJsonBeforeRestart &&
+                    store.ProfileWriteAttempts == profileWritesBeforeRestart;
+                evidence.RecordAssertion("V6 restart preserves the active snapshot for diagnostics and blocks continuation",
+                    preservedReadOnlySnapshot, "Menu, no ActiveRun, read-only V6, same run/node snapshot and no load-time profile write",
+                    app == null ? "application did not load" :
+                    "scene=" + SceneManager.GetActiveScene().name + "; access=" + app.ProfileAccess +
+                    "; activeRun=" + (app.ActiveRun != null) + "; error=" + app.ActiveExpeditionLoadError +
+                    "; run=" + app.ActiveExpedition?.runId + "; node=" + app.ActiveExpedition?.currentNodeId +
+                    "; writes=" + (store.ProfileWriteAttempts - profileWritesBeforeRestart));
+                Assert.That(preservedReadOnlySnapshot, Is.True);
+
+                Task<SaveStorageSnapshot> storageAfterLoadTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageAfterLoadTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageAfterLoad = storageAfterLoadTask.Result;
+                Assert.That(storageAfterLoad.PrimaryJson, Is.EqualTo(storageBeforeRestart.PrimaryJson));
+                Assert.That(storageAfterLoad.BackupJson, Is.EqualTo(storageBeforeRestart.BackupJson));
+
+                string profileBeforeBlockedCalls = JsonUtility.ToJson(app.Profile, false);
+                string expeditionBeforeBlockedCalls = JsonUtility.ToJson(app.ActiveExpedition, false);
+                long revisionBeforeBlockedCalls = app.ActiveExpeditionRevision;
+                Task<SaveWriteResult> blockedStart = app.BeginExpeditionAsync(null);
+                while (!blockedStart.IsCompleted) yield return null;
+                Assert.That(blockedStart.Result.Succeeded, Is.False);
+                Assert.Throws<InvalidOperationException>(() => app.ContinueActiveExpedition());
+                Task<SaveWriteResult> blockedSnapshot = app.SaveActiveExpeditionStateAsync(app.ActiveExpedition);
+                while (!blockedSnapshot.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<RestStopEntryCommitData>> blockedEntry = app.EnterRestStopAsync(roomIdBeforeRestart);
+                while (!blockedEntry.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> blockedPurchase =
+                    app.PurchaseFromMerchantAsync(roomIdBeforeRestart, "consumable.health_potion", 1, 0, TransactionId.New());
+                while (!blockedPurchase.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> blockedTalia =
+                    app.UseTaliaAsync(roomIdBeforeRestart, TransactionId.New());
+                while (!blockedTalia.IsCompleted) yield return null;
+                Assert.That(blockedSnapshot.Result.Succeeded, Is.False);
+                Assert.That(blockedEntry.Result.Persisted, Is.False);
+                Assert.That(blockedEntry.Result.Pending, Is.False);
+                Assert.That(blockedEntry.Result.Outcome, Is.Null);
+                Assert.That(blockedPurchase.Result.Persisted, Is.False);
+                Assert.That(blockedPurchase.Result.Pending, Is.False);
+                Assert.That(blockedPurchase.Result.Outcome, Is.Null);
+                Assert.That(blockedTalia.Result.Persisted, Is.False);
+                Assert.That(blockedTalia.Result.Pending, Is.False);
+                Assert.That(blockedTalia.Result.Outcome, Is.Null);
+                Task<SaveStorageSnapshot> storageAfterCallsTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageAfterCallsTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageAfterCalls = storageAfterCallsTask.Result;
+                bool blockedCallsPreserveProtectedState =
+                    JsonUtility.ToJson(app.Profile, false) == profileBeforeBlockedCalls &&
+                    JsonUtility.ToJson(app.ActiveExpedition, false) == expeditionBeforeBlockedCalls &&
+                    app.ActiveExpeditionRevision == revisionBeforeBlockedCalls && app.ActiveRun == null &&
+                    app.HasActiveExpedition && !app.HasPendingExpeditionWrite && !app.HasPendingEconomyMutation &&
+                    storageAfterCalls.PrimaryJson == storageBeforeRestart.PrimaryJson &&
+                    storageAfterCalls.BackupJson == storageBeforeRestart.BackupJson &&
+                    store.ProfileWriteAttempts == profileWritesBeforeRestart;
+                evidence.RecordAssertion("Protected V6 rejects start, continuation, save and rest services without writes",
+                    blockedCallsPreserveProtectedState, "snapshot and primary/backup bytes unchanged; zero profile writes",
+                    "run=" + app.ActiveExpedition.runId + "; node=" + app.ActiveExpedition.currentNodeId +
+                    "; writes=" + (store.ProfileWriteAttempts - profileWritesBeforeRestart));
+                Assert.That(blockedCallsPreserveProtectedState, Is.True);
 
                 Assert.That(evidence.Complete(), Is.Zero, "E03 boundary scenario failed. Evidence: " + evidence.ReportPath);
             }
@@ -235,35 +302,6 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(laterHealthWrite.Result.Succeeded, Is.True, laterHealthWrite.Result.Message);
                 Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(60));
 
-                string runId = app.ActiveRun.RunId.ToString();
-                string nodeId = app.ActiveExpedition.currentNodeId;
-                evidence.RecordInput(4, "ProcessRestart", "Reload the saved rest room, health, merchant stock, and transaction receipts");
-                Object.Destroy(app.gameObject);
-                yield return null;
-                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
-                for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
-                    !ApplicationBootstrapper.Instance.SaveDataReady || ApplicationBootstrapper.Instance.ActiveRun == null ||
-                    SceneManager.GetActiveScene().name != "Expedition"); frame++)
-                    yield return null;
-
-                app = ApplicationBootstrapper.Instance;
-                Assert.That(app, Is.Not.Null);
-                Assert.That(app.ActiveRun.RunId.ToString(), Is.EqualTo(runId));
-                Assert.That(app.ActiveExpedition.currentNodeId, Is.EqualTo(nodeId));
-                Assert.That(app.ActiveRoomInstanceId, Is.EqualTo(roomId));
-                Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(60));
-                Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(62));
-                Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
-                    .remainingQuantity, Is.EqualTo(1));
-                evidence.RecordAssertion("Rest room state survives process restart with stable room identity",
-                    app.ActiveRun.RunId.ToString() == runId && app.ActiveExpedition.currentNodeId == nodeId &&
-                    app.ActiveRoomInstanceId == roomId && app.ActiveExpedition.currentHealth == 60 &&
-                    app.ActiveRun.Inventory.Gold == 62 && app.GetActiveMerchantStock().offers.Single(
-                        offer => offer.itemId == "consumable.health_potion").remainingQuantity == 1,
-                    "same run/node/room identity, saved health, gold and remaining stock",
-                    "run=" + app.ActiveRun.RunId + "; node=" + nodeId + "; room=" + app.ActiveRoomInstanceId +
-                    "; health=" + app.ActiveExpedition.currentHealth + "; gold=" + app.ActiveRun.Inventory.Gold);
-
                 Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> repeatedTalia =
                     app.UseTaliaAsync(roomId, taliaId);
                 while (!repeatedTalia.IsCompleted) yield return null;
@@ -272,7 +310,7 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(app.ActiveExpedition.currentHealth, Is.EqualTo(60),
                     "A cached Talia receipt must not overwrite health that changed after its original transaction.");
                 Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(62),
-                    "A persisted Talia transaction ID must not charge again after restart.");
+                    "Replaying a Talia receipt in the original read-write session must not charge again.");
 
                 Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> repeatedPurchase =
                     app.PurchaseFromMerchantAsync(roomId, "consumable.health_potion", 1, 0, purchaseId);
@@ -280,15 +318,106 @@ namespace Luckbound.Tests.PlayMode.Economy
                 Assert.That(repeatedPurchase.Result.Persisted, Is.True);
                 Assert.That(repeatedPurchase.Result.Outcome.Succeeded, Is.True);
                 Assert.That(app.ActiveRun.Inventory.Gold, Is.EqualTo(62),
-                    "A persisted purchase transaction ID must not charge again after restart.");
+                    "Replaying the purchase transaction in the original read-write session must not charge again.");
                 Assert.That(app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                     .remainingQuantity, Is.EqualTo(1));
                 bool noDuplicateCharge = app.ActiveRun.Inventory.Gold == 62 && app.ActiveExpedition.currentHealth == 60 &&
                     app.GetActiveMerchantStock().offers.Single(offer => offer.itemId == "consumable.health_potion")
                         .remainingQuantity == 1;
-                evidence.RecordAssertion("Replaying Talia and purchase transaction IDs after restart does not repeat their effects",
+                evidence.RecordAssertion("Replaying Talia and purchase transaction IDs in the read-write session is idempotent",
                     noDuplicateCharge, "gold remains 62, health 60 and one potion remains in stock",
                     noDuplicateCharge ? "no duplicate health, stock or currency mutation" : "a replay mutated saved state");
+                Assert.That(noDuplicateCharge, Is.True);
+
+                string runId = app.ActiveRun.RunId.ToString();
+                string nodeId = app.ActiveExpedition.currentNodeId;
+                bool roomIdentityStableInWriteSession = app.ActiveRun.RunId.ToString() == runId &&
+                    app.ActiveExpedition.currentNodeId == nodeId && app.ActiveRoomInstanceId == roomId;
+                evidence.RecordAssertion("Run, route node and room identity remain stable in the read-write session",
+                    roomIdentityStableInWriteSession, "same RunId, node and RoomInstanceId through rest services",
+                    "run=" + app.ActiveRun.RunId + "; node=" + app.ActiveExpedition.currentNodeId +
+                    "; room=" + app.ActiveRoomInstanceId);
+                Assert.That(roomIdentityStableInWriteSession, Is.True);
+                string expeditionJsonBeforeRestart = JsonUtility.ToJson(app.ActiveExpedition, false);
+                int profileWritesBeforeRestart = store.ProfileWriteAttempts;
+                Task<SaveStorageSnapshot> storageBeforeRestartTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageBeforeRestartTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageBeforeRestart = storageBeforeRestartTask.Result;
+                evidence.RecordInput(4, "ProcessRestart", "Reload the saved rest room, health, merchant stock, and transaction receipts");
+                Object.Destroy(app.gameObject);
+                yield return null;
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+                for (int frame = 0; frame < 120 && (ApplicationBootstrapper.Instance == null ||
+                    !ApplicationBootstrapper.Instance.SaveDataReady || SceneManager.GetActiveScene().name != "Menu"); frame++)
+                    yield return null;
+
+                app = ApplicationBootstrapper.Instance;
+                Assert.That(app, Is.Not.Null);
+                bool preservedReadOnlySnapshot = app.SaveDataReady &&
+                    app.ProfileAccess == SaveDataAccess.ReadOnlyLegacyEncounterPinMissing && !app.CanWriteProfile &&
+                    !app.CanStartNewExpedition && !app.CanContinueExpedition && app.HasActiveExpedition && app.ActiveRun == null &&
+                    app.ActiveExpedition != null && app.ActiveExpeditionLoadError == "LegacyEncounterPinMissing" &&
+                    SceneManager.GetActiveScene().name == "Menu" && app.ActiveExpedition.runId == runId &&
+                    app.ActiveExpedition.currentNodeId == nodeId &&
+                    JsonUtility.ToJson(app.ActiveExpedition, false) == expeditionJsonBeforeRestart &&
+                    store.ProfileWriteAttempts == profileWritesBeforeRestart;
+                evidence.RecordAssertion("V6 restart preserves the active rest snapshot for diagnostics and blocks continuation",
+                    preservedReadOnlySnapshot, "Menu, no ActiveRun, read-only V6, same run/node snapshot and no load-time profile write",
+                    "scene=" + SceneManager.GetActiveScene().name + "; access=" + app.ProfileAccess +
+                    "; activeRun=" + (app.ActiveRun != null) + "; error=" + app.ActiveExpeditionLoadError +
+                    "; run=" + app.ActiveExpedition?.runId + "; node=" + app.ActiveExpedition?.currentNodeId +
+                    "; writes=" + (store.ProfileWriteAttempts - profileWritesBeforeRestart));
+                Assert.That(preservedReadOnlySnapshot, Is.True);
+
+                Task<SaveStorageSnapshot> storageAfterLoadTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageAfterLoadTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageAfterLoad = storageAfterLoadTask.Result;
+                Assert.That(storageAfterLoad.PrimaryJson, Is.EqualTo(storageBeforeRestart.PrimaryJson));
+                Assert.That(storageAfterLoad.BackupJson, Is.EqualTo(storageBeforeRestart.BackupJson));
+
+                string profileBeforeBlockedCalls = JsonUtility.ToJson(app.Profile, false);
+                string expeditionBeforeBlockedCalls = JsonUtility.ToJson(app.ActiveExpedition, false);
+                long revisionBeforeBlockedCalls = app.ActiveExpeditionRevision;
+                Task<SaveWriteResult> blockedStart = app.BeginExpeditionAsync(null);
+                while (!blockedStart.IsCompleted) yield return null;
+                Assert.That(blockedStart.Result.Succeeded, Is.False);
+                Assert.Throws<InvalidOperationException>(() => app.ContinueActiveExpedition());
+                Task<SaveWriteResult> blockedSnapshot = app.SaveActiveExpeditionStateAsync(app.ActiveExpedition);
+                while (!blockedSnapshot.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<RestStopEntryCommitData>> blockedEntry = app.EnterRestStopAsync(roomId);
+                while (!blockedEntry.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> blockedTalia =
+                    app.UseTaliaAsync(roomId, TransactionId.New());
+                while (!blockedTalia.IsCompleted) yield return null;
+                Task<ExpeditionMutationCommitResult<EconomyTransactionOutcome>> blockedPurchase =
+                    app.PurchaseFromMerchantAsync(roomId, "consumable.health_potion", 1, 0, TransactionId.New());
+                while (!blockedPurchase.IsCompleted) yield return null;
+                Assert.That(blockedSnapshot.Result.Succeeded, Is.False);
+                Assert.That(blockedEntry.Result.Persisted, Is.False);
+                Assert.That(blockedEntry.Result.Pending, Is.False);
+                Assert.That(blockedEntry.Result.Outcome, Is.Null);
+                Assert.That(blockedTalia.Result.Persisted, Is.False);
+                Assert.That(blockedTalia.Result.Pending, Is.False);
+                Assert.That(blockedTalia.Result.Outcome, Is.Null);
+                Assert.That(blockedPurchase.Result.Persisted, Is.False);
+                Assert.That(blockedPurchase.Result.Pending, Is.False);
+                Assert.That(blockedPurchase.Result.Outcome, Is.Null);
+                Task<SaveStorageSnapshot> storageAfterCallsTask = store.ReadAsync(SaveDocument.Profile);
+                while (!storageAfterCallsTask.IsCompleted) yield return null;
+                SaveStorageSnapshot storageAfterCalls = storageAfterCallsTask.Result;
+                bool blockedCallsPreserveProtectedState =
+                    JsonUtility.ToJson(app.Profile, false) == profileBeforeBlockedCalls &&
+                    JsonUtility.ToJson(app.ActiveExpedition, false) == expeditionBeforeBlockedCalls &&
+                    app.ActiveExpeditionRevision == revisionBeforeBlockedCalls && app.ActiveRun == null &&
+                    app.HasActiveExpedition && !app.HasPendingExpeditionWrite && !app.HasPendingEconomyMutation &&
+                    storageAfterCalls.PrimaryJson == storageBeforeRestart.PrimaryJson &&
+                    storageAfterCalls.BackupJson == storageBeforeRestart.BackupJson &&
+                    store.ProfileWriteAttempts == profileWritesBeforeRestart;
+                evidence.RecordAssertion("Protected V6 rejects start, continuation, save and rest services without writes",
+                    blockedCallsPreserveProtectedState, "snapshot and primary/backup bytes unchanged; zero profile writes",
+                    "run=" + app.ActiveExpedition.runId + "; node=" + app.ActiveExpedition.currentNodeId +
+                    "; writes=" + (store.ProfileWriteAttempts - profileWritesBeforeRestart));
+                Assert.That(blockedCallsPreserveProtectedState, Is.True);
                 Assert.That(evidence.Complete(), Is.Zero, "E03 rest service scenario failed. Evidence: " + evidence.ReportPath);
             }
             finally
@@ -573,11 +702,13 @@ namespace Luckbound.Tests.PlayMode.Economy
             private bool _failNextProfileWrite;
 
             public FailOnceProfileWriteStore(ISaveStore inner) { _inner = inner; }
+            public int ProfileWriteAttempts { get; private set; }
             public void FailNextProfileWrite() => _failNextProfileWrite = true;
             public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
 
             public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
             {
+                if (document == SaveDocument.Profile) ProfileWriteAttempts++;
                 if (document == SaveDocument.Profile && _failNextProfileWrite)
                 {
                     _failNextProfileWrite = false;
