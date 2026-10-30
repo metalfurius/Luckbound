@@ -1,5 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using UnityEditor;
+using UnityEditor.PackageManager;
+using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -58,6 +63,7 @@ namespace Luckbound.Tests.V5SourceCapture
                 _captureRoot = ResolveNewCaptureDirectory(_projectRoot, captureArgumentValue);
                 _executionCommit = ReadExecutionCommit();
                 RequireNoReparseAncestors(_captureRoot);
+                V5UrpRuntimeEvidenceCollector.Capture("S1", _captureRoot, _projectRoot, _executionCommit, Invocations.Count);
                 Directory.CreateDirectory(_captureRoot);
             }
         }
@@ -67,6 +73,8 @@ namespace Luckbound.Tests.V5SourceCapture
         {
             lock (Sync)
             {
+                if (!string.IsNullOrWhiteSpace(_captureRoot))
+                    V5UrpRuntimeEvidenceCollector.Capture("S2", _captureRoot, _projectRoot, _executionCommit, Invocations.Count);
                 Assert.That(Invocations.Count, Is.EqualTo(24), "All twelve case IDs must run with both cultures.");
                 AssertP2AndN0Relations();
                 if (string.IsNullOrWhiteSpace(_captureRoot)) return;
@@ -1503,7 +1511,1036 @@ namespace Luckbound.Tests.V5SourceCapture
             }
         }
     }
+
+    internal static class V5UrpRuntimeEvidenceCollector
+    {
+        private const int SchemaVersion = 1;
+        private const string EvidenceBaseRelativePath = "Logs/V5UrpEvidence";
+        private const string AssetRelativePath = "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset";
+        private static readonly UTF8Encoding Utf8NoBom = new UTF8Encoding(false);
+        private static readonly string[] SourceExtensions = { ".cs", ".asmdef" };
+
+        // The caller must guard this with the existing -luckboundV5CaptureDir opt-in.
+        // A missing opt-in is deliberately a no-I/O path.
+        internal static bool Capture(string phase, string captureRoot, string projectRoot,
+            string executionCommit, int invocationsObserved)
+        {
+            if (string.IsNullOrWhiteSpace(captureRoot)) return false;
+
+            var snapshot = new PhaseSnapshot
+            {
+                schemaVersion = SchemaVersion,
+                phase = phase,
+                observationStartedAtUtc = UtcNow(),
+                invocationCountAtObservation = invocationsObserved,
+                errors = new ObservationError[0],
+                packages = new PackageRecord[0],
+                assemblies = new AssemblyRecord[0],
+                projectFiles = new FileRecord[0]
+            };
+            var errors = new List<ObservationError>();
+            string evidenceRoot = null;
+
+            try
+            {
+                if (phase != "S1" && phase != "S2")
+                    throw new ArgumentException("Only S1 and S2 are editor observation phases.");
+                if (string.IsNullOrWhiteSpace(projectRoot))
+                    throw new ArgumentException("Project root is required.");
+                ParsedRunIdentity parsedRun = ParseRunIdentity(captureRoot);
+                bool commitMatches = IsHexCommit(executionCommit) &&
+                    string.Equals(parsedRun.commit, executionCommit.Trim(), StringComparison.OrdinalIgnoreCase);
+                string githubCrossCheck = CrossCheckOptionalGitHubIdentity(parsedRun, errors);
+                snapshot.run = new RunIdentity
+                {
+                    captureRootLeaf = parsedRun.leaf,
+                    executionCommit = parsedRun.commit,
+                    harnessExecutionCommit = executionCommit ?? string.Empty,
+                    runId = parsedRun.runId,
+                    runAttempt = parsedRun.runAttempt,
+                    identitySource = "capture-root-leaf",
+                    githubCrossCheck = githubCrossCheck,
+                    runIdentityComplete = parsedRun.valid && commitMatches && githubCrossCheck != "mismatch"
+                };
+                if (!parsedRun.valid)
+                    AddError(errors, "capture-root-run-identity-invalid", parsedRun.leaf, null);
+                if (!commitMatches)
+                    AddError(errors, "capture-root-commit-does-not-match-harness-commit", parsedRun.leaf, null);
+
+                string runKey = ComputeRunKey(parsedRun.commit, parsedRun.runId, parsedRun.runAttempt);
+                snapshot.runKeySha256 = runKey;
+                string fullProjectRoot = Path.GetFullPath(projectRoot);
+                string evidenceBase = Path.GetFullPath(Path.Combine(fullProjectRoot,
+                    EvidenceBaseRelativePath.Replace('/', Path.DirectorySeparatorChar)));
+                evidenceRoot = Path.GetFullPath(Path.Combine(evidenceBase, runKey));
+                if (!IsChildPath(evidenceBase, evidenceRoot))
+                    throw new IOException("Evidence directory escaped its expected Logs/V5UrpEvidence root.");
+                EnsureNoReparseAncestors(evidenceRoot);
+                Directory.CreateDirectory(evidenceRoot);
+                EnsureNoReparseAncestors(evidenceRoot);
+                snapshot.evidenceRelativeDirectory = EvidenceBaseRelativePath + "/" + runKey;
+
+                // The asset is deliberately the first project observation at each cut.
+                snapshot.asset = ObserveAsset(fullProjectRoot, evidenceRoot, phase, errors);
+                snapshot.process = ObserveProcess(errors);
+                snapshot.projectFiles = ObserveAndCopyProjectPackageFiles(fullProjectRoot,
+                    evidenceRoot, phase, errors).ToArray();
+
+                List<PackageAssociation> packageAssociations;
+                snapshot.assemblies = ObserveLoadedAssemblies(errors, out packageAssociations).ToArray();
+                snapshot.packages = ObservePackages(packageAssociations, evidenceRoot, phase, errors).ToArray();
+            }
+            catch (Exception exception)
+            {
+                AddError(errors, "collector-exception", "collector", exception);
+            }
+
+            snapshot.observationCompletedAtUtc = UtcNow();
+            snapshot.errors = errors.ToArray();
+            snapshot.observationComplete = errors.Count == 0 &&
+                snapshot.asset != null && snapshot.asset.status == "observed" &&
+                snapshot.process != null && snapshot.process.status == "observed" &&
+                snapshot.run != null && snapshot.run.runIdentityComplete;
+
+            if (evidenceRoot == null)
+            {
+                Console.Error.WriteLine("[V5 URP evidence] No evidence directory could be resolved; phase is incomplete.");
+                return false;
+            }
+
+            try
+            {
+                string outputName = "editor-" + phase + ".json";
+                WriteNewFile(Path.Combine(evidenceRoot, outputName), Utf8NoBom.GetBytes(SerializeJson(snapshot)));
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine("[V5 URP evidence] Could not write " + phase + " observation (" + exception.GetType().Name + ").");
+                return false;
+            }
+
+            return snapshot.observationComplete;
+        }
+
+        private static AssetObservation ObserveAsset(string projectRoot, string evidenceRoot, string phase, List<ObservationError> errors)
+        {
+            var result = new AssetObservation
+            {
+                path = AssetRelativePath,
+                observedAtUtc = UtcNow(),
+                status = "unavailable"
+            };
+            try
+            {
+                string fullPath = Path.GetFullPath(Path.Combine(projectRoot,
+                    AssetRelativePath.Replace('/', Path.DirectorySeparatorChar)));
+                if (!IsChildPath(projectRoot, fullPath))
+                    throw new IOException("Asset path escaped project root.");
+                EnsureNoReparseAncestors(fullPath);
+                FileAttributes attributes = File.GetAttributes(fullPath);
+                if ((attributes & FileAttributes.ReparsePoint) != 0)
+                    throw new IOException("Asset path is a reparse point; it was not followed.");
+                if ((attributes & FileAttributes.Directory) != 0)
+                    throw new IOException("Asset path names a directory.");
+
+                result.snapshotPath = "snapshots/" + phase + "/asset/" + AssetRelativePath;
+                HashResult hash = HashAndOptionallyCopy(fullPath,
+                    Path.Combine(evidenceRoot, result.snapshotPath.Replace('/', Path.DirectorySeparatorChar)), true, evidenceRoot);
+                result.bytes = hash.bytes;
+                result.sha256 = hash.sha256;
+                result.status = "observed";
+            }
+            catch (Exception exception)
+            {
+                AddError(errors, "asset-observation-failed", AssetRelativePath, exception);
+            }
+            return result;
+        }
+
+        private static ProcessObservation ObserveProcess(List<ObservationError> errors)
+        {
+            var result = new ProcessObservation
+            {
+                status = "unavailable",
+                unityVersion = Application.unityVersion,
+                platform = Application.platform.ToString(),
+                isBatchMode = Application.isBatchMode,
+                editorContentsPath = EditorApplication.applicationContentsPath
+            };
+            try
+            {
+                using (Process process = Process.GetCurrentProcess())
+                {
+                    result.processId = process.Id;
+                    result.processName = process.ProcessName;
+                    result.processStartedAtUtc = process.StartTime.ToUniversalTime().ToString("O");
+                    result.status = "observed";
+                }
+            }
+            catch (Exception exception)
+            {
+                AddError(errors, "process-context-unavailable", "current-process", exception);
+            }
+            return result;
+        }
+
+        private static List<FileRecord> ObserveAndCopyProjectPackageFiles(string projectRoot,
+            string evidenceRoot, string phase, List<ObservationError> errors)
+        {
+            var records = new List<FileRecord>();
+            string[] paths = { "Packages/manifest.json", "Packages/packages-lock.json" };
+            foreach (string relativePath in paths)
+            {
+                string normalized = relativePath.Replace('/', Path.DirectorySeparatorChar);
+                string source = Path.GetFullPath(Path.Combine(projectRoot, normalized));
+                string destination = Path.Combine(evidenceRoot, "snapshots", phase, "project",
+                    normalized);
+                try
+                {
+                    if (!IsChildPath(projectRoot, source))
+                        throw new IOException("Project package metadata escaped project root.");
+                    EnsureNoReparseAncestors(source);
+                    FileAttributes attributes = File.GetAttributes(source);
+                    if ((attributes & FileAttributes.ReparsePoint) != 0 ||
+                        (attributes & FileAttributes.Directory) != 0)
+                        throw new IOException("Project package metadata is not a regular file.");
+                    HashResult hash = HashAndOptionallyCopy(source, destination, true, evidenceRoot);
+                    records.Add(new FileRecord
+                    {
+                        path = relativePath,
+                        type = "file",
+                        bytes = hash.bytes,
+                        sha256 = hash.sha256,
+                        status = "observed-and-copied"
+                    });
+                }
+                catch (Exception exception)
+                {
+                    records.Add(new FileRecord { path = relativePath, type = "file", status = "unavailable" });
+                    AddError(errors, "project-package-file-unavailable", relativePath, exception);
+                }
+            }
+            return records;
+        }
+
+        private static List<AssemblyRecord> ObserveLoadedAssemblies(List<ObservationError> errors,
+            out List<PackageAssociation> associations)
+        {
+            associations = new List<PackageAssociation>();
+            var result = new List<AssemblyRecord>();
+            Assembly coreModule = typeof(UnityEngine.Object).Assembly;
+            Assembly jsonUtility = typeof(JsonUtility).Assembly;
+            Assembly[] loaded;
+            try
+            {
+                loaded = UnityEngine.Assemblies.CurrentAssemblies.GetLoadedAssemblies().ToArray();
+            }
+            catch (Exception exception)
+            {
+                AddError(errors, "loaded-assembly-enumeration-failed", "UnityEngine.Assemblies.CurrentAssemblies", exception);
+                return result;
+            }
+
+            var targets = new Dictionary<Assembly, List<string>>();
+            foreach (Assembly assembly in loaded)
+            {
+                string name = SafeAssemblyName(assembly);
+                if (!IsRenderPipelineAssembly(name)) continue;
+                AddRole(targets, assembly, name.StartsWith("Unity.RenderPipelines.Universal.", StringComparison.Ordinal)
+                    ? "URP" : "Core");
+                if (name.EndsWith(".Editor", StringComparison.Ordinal)) AddRole(targets, assembly, "Editor");
+            }
+            AddRole(targets, coreModule, "CoreModule");
+            AddRole(targets, jsonUtility, "JsonUtility");
+
+            bool foundUrp = false;
+            bool foundCore = false;
+            bool foundEditor = false;
+            foreach (KeyValuePair<Assembly, List<string>> entry in targets.OrderBy(item => SafeAssemblyName(item.Key), StringComparer.Ordinal))
+            {
+                Assembly assembly = entry.Key;
+                string assemblyName = SafeAssemblyName(assembly);
+                bool packageAssembly = IsRenderPipelineAssembly(assemblyName);
+                var record = new AssemblyRecord
+                {
+                    roles = entry.Value.OrderBy(role => role, StringComparer.Ordinal).ToArray(),
+                    assemblyName = assemblyName,
+                    fullName = SafeFullAssemblyName(assembly),
+                    status = "unavailable"
+                };
+                if (entry.Value.Contains("URP")) foundUrp = true;
+                if (entry.Value.Contains("Core")) foundCore = true;
+                if (entry.Value.Contains("Editor")) foundEditor = true;
+
+                try
+                {
+                    record.location = assembly.GetLoadedAssemblyPath();
+                    record.moduleVersionId = assembly.ManifestModule.ModuleVersionId.ToString("D");
+                    if (string.IsNullOrWhiteSpace(record.location))
+                        throw new IOException("Loaded assembly has no file location.");
+                    FileAttributes attributes = File.GetAttributes(record.location);
+                    if ((attributes & FileAttributes.ReparsePoint) != 0 ||
+                        (attributes & FileAttributes.Directory) != 0)
+                        throw new IOException("Loaded assembly location is not a regular file.");
+                    HashResult hash = HashRegularFile(record.location);
+                    record.bytes = hash.bytes;
+                    record.sha256 = hash.sha256;
+                    record.status = "observed";
+                }
+                catch (Exception exception)
+                {
+                    AddError(errors, "loaded-assembly-file-unavailable", assemblyName, exception);
+                }
+
+                PackageInfo packageInfo = null;
+                try
+                {
+                    packageInfo = PackageInfo.FindForAssembly(assembly);
+                }
+                catch (Exception exception)
+                {
+                    AddError(errors, "package-info-resolution-failed", assemblyName, exception);
+                }
+
+                if (packageInfo != null)
+                {
+                    record.packageId = packageInfo.packageId;
+                    record.packageName = packageInfo.name;
+                    record.packageVersion = packageInfo.version;
+                    record.packageSource = packageInfo.source.ToString();
+                    record.packageResolvedPath = packageInfo.resolvedPath;
+                    associations.Add(new PackageAssociation { assembly = assembly, info = packageInfo });
+                }
+                else if (packageAssembly)
+                {
+                    record.packageInfoStatus = "unavailable-for-render-pipeline-assembly";
+                    AddError(errors, "render-pipeline-package-info-unavailable", assemblyName, null);
+                }
+                else if (IsInsideEditorContents(record.location))
+                {
+                    record.packageInfoStatus = "unity-editor-builtin-no-package-info";
+                    record.originKind = "unity-editor-builtin";
+                }
+                else
+                {
+                    record.packageInfoStatus = "package-info-not-returned";
+                    record.originKind = "unresolved";
+                    AddError(errors, "builtin-or-package-origin-unresolved", assemblyName, null);
+                }
+                if (string.IsNullOrWhiteSpace(record.originKind)) record.originKind = packageInfo == null ? "unresolved" : "package";
+                result.Add(record);
+            }
+
+            if (!foundUrp) AddError(errors, "loaded-urp-assembly-unavailable", "Unity.RenderPipelines.Universal.*", null);
+            if (!foundCore) AddError(errors, "loaded-core-assembly-unavailable", "Unity.RenderPipelines.Core.*", null);
+            if (!foundEditor) AddError(errors, "loaded-render-pipeline-editor-assembly-unavailable", "Unity.RenderPipelines.*.Editor", null);
+            if (!targets.ContainsKey(coreModule)) AddError(errors, "core-module-assembly-unavailable", "UnityEngine.Object", null);
+            if (!targets.ContainsKey(jsonUtility)) AddError(errors, "json-utility-assembly-unavailable", "UnityEngine.JsonUtility", null);
+            return result;
+        }
+
+        private static List<PackageRecord> ObservePackages(List<PackageAssociation> associations,
+            string evidenceRoot, string phase, List<ObservationError> errors)
+        {
+            var groups = associations
+                .GroupBy(item => SafePackageId(item.info) + "\n" + SafePackageResolvedPath(item.info), StringComparer.Ordinal)
+                .OrderBy(group => group.Key, StringComparer.Ordinal);
+            var result = new List<PackageRecord>();
+            foreach (IGrouping<string, PackageAssociation> group in groups)
+            {
+                PackageInfo info = group.First().info;
+                string resolvedPath;
+                try
+                {
+                    resolvedPath = Path.GetFullPath(info.resolvedPath);
+                }
+                catch (Exception exception)
+                {
+                    AddError(errors, "package-resolved-path-invalid", SafePackageId(info), exception);
+                    continue;
+                }
+
+                var record = new PackageRecord
+                {
+                    packageId = info.packageId,
+                    name = info.name,
+                    version = info.version,
+                    source = info.source.ToString(),
+                    resolvedPath = resolvedPath,
+                    associatedAssemblies = group.Select(item => SafeFullAssemblyName(item.assembly))
+                        .Distinct(StringComparer.Ordinal).OrderBy(value => value, StringComparer.Ordinal).ToArray(),
+                    status = "inventory-incomplete",
+                    inventory = new FileRecord[0],
+                    copiedSourcePaths = new string[0]
+                };
+                string copyFolder = "snapshots/" + phase + "/packages/" + SafeSegment(info.packageId) + "-" +
+                    HashText(resolvedPath).Substring(0, 12);
+                record.sourceSnapshotDirectory = copyFolder;
+                List<FileRecord> inventory = InventoryPackage(resolvedPath, evidenceRoot, copyFolder,
+                    phase, record, errors);
+                record.inventory = inventory.OrderBy(item => item.path, StringComparer.Ordinal).ToArray();
+                bool hasPackageJson = inventory.Any(item => item.type == "file" &&
+                    item.status == "observed-and-copied" &&
+                    string.Equals(item.path, "package.json", StringComparison.OrdinalIgnoreCase));
+                bool hasManagedSource = inventory.Any(item => item.type == "file" &&
+                    item.status == "observed-and-copied" &&
+                    (item.path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) ||
+                     item.path.EndsWith(".asmdef", StringComparison.OrdinalIgnoreCase)));
+                if (!hasPackageJson)
+                    AddError(errors, "resolved-package-json-unavailable", info.packageId + "/package.json", null);
+                if (!hasManagedSource)
+                    AddError(errors, "resolved-package-managed-source-unavailable", info.packageId, null);
+                record.inventoryComplete = hasPackageJson && hasManagedSource && !errors.Any(error =>
+                    error.path.StartsWith(info.packageId + "/", StringComparison.Ordinal) ||
+                    error.path == info.packageId);
+                record.status = record.inventoryComplete ? "inventory-complete" : "inventory-incomplete";
+                record.copiedSourcePaths = inventory
+                    .Where(item => item.status == "observed-and-copied")
+                    .Select(item => item.path).OrderBy(path => path, StringComparer.Ordinal).ToArray();
+                if (!record.inventoryComplete)
+                    AddError(errors, "package-inventory-incomplete", info.packageId, null);
+                result.Add(record);
+            }
+            return result;
+        }
+
+        private static List<FileRecord> InventoryPackage(string packageRoot, string evidenceRoot,
+            string copyFolder, string phase, PackageRecord package, List<ObservationError> errors)
+        {
+            var records = new List<FileRecord>();
+            try
+            {
+                if (!Directory.Exists(packageRoot))
+                    throw new DirectoryNotFoundException("Resolved package directory is unavailable.");
+                FileAttributes rootAttributes = File.GetAttributes(packageRoot);
+                if ((rootAttributes & FileAttributes.ReparsePoint) != 0)
+                    throw new IOException("Resolved package root is a reparse point; it was not followed.");
+                if (PathsEqual(packageRoot, evidenceRoot) || IsChildPath(packageRoot, evidenceRoot) ||
+                    IsChildPath(evidenceRoot, packageRoot))
+                    throw new IOException("Evidence output is inside a package root.");
+
+                var pending = new Stack<string>();
+                pending.Push(Path.GetFullPath(packageRoot));
+                records.Add(new FileRecord { path = ".", type = "directory", status = "observed" });
+                while (pending.Count > 0)
+                {
+                    string directory = pending.Pop();
+                    string[] entries;
+                    try
+                    {
+                        entries = Directory.GetFileSystemEntries(directory)
+                            .OrderBy(path => path, StringComparer.Ordinal).ToArray();
+                    }
+                    catch (Exception exception)
+                    {
+                        string relativeDirectory = RelativePath(packageRoot, directory);
+                        AddError(errors, "package-directory-enumeration-failed",
+                            package.packageId + "/" + relativeDirectory, exception);
+                        records.Add(new FileRecord { path = relativeDirectory, type = "directory", status = "unreadable" });
+                        continue;
+                    }
+
+                    foreach (string entry in entries)
+                    {
+                        string relative = RelativePath(packageRoot, entry);
+                        string packagePath = package.packageId + "/" + relative;
+                        try
+                        {
+                            FileAttributes attributes = File.GetAttributes(entry);
+                            if ((attributes & FileAttributes.ReparsePoint) != 0)
+                            {
+                                records.Add(new FileRecord { path = relative, type = "reparse", status = "not-followed" });
+                                AddError(errors, "package-reparse-point-not-followed", packagePath, null);
+                                continue;
+                            }
+                            if ((attributes & FileAttributes.Directory) != 0)
+                            {
+                                records.Add(new FileRecord { path = relative, type = "directory", status = "observed" });
+                                pending.Push(entry);
+                                continue;
+                            }
+
+                            bool copySource = IsSourceOrPackageManifest(relative);
+                            string copyPath = copySource
+                                ? Path.Combine(evidenceRoot, (copyFolder + "/" + relative).Replace('/', Path.DirectorySeparatorChar))
+                                : null;
+                            HashResult hash = HashAndOptionallyCopy(entry, copyPath, copySource, evidenceRoot);
+                            records.Add(new FileRecord
+                            {
+                                path = relative,
+                                type = "file",
+                                bytes = hash.bytes,
+                                sha256 = hash.sha256,
+                                status = copySource ? "observed-and-copied" : "observed"
+                            });
+                        }
+                        catch (Exception exception)
+                        {
+                            records.Add(new FileRecord { path = relative, type = "file", status = "unreadable" });
+                            AddError(errors, "package-entry-unavailable", packagePath, exception);
+                        }
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                AddError(errors, "package-inventory-failed", package.packageId, exception);
+            }
+            return records;
+        }
+
+        private static HashResult HashAndOptionallyCopy(string source, string destination,
+            bool copy, string evidenceRoot)
+        {
+            FileStream output = null;
+            if (copy)
+            {
+                string destinationFull = Path.GetFullPath(destination);
+                if (!IsChildPath(evidenceRoot, destinationFull))
+                    throw new IOException("Evidence copy escaped the evidence directory.");
+                string destinationDirectory = Path.GetDirectoryName(destinationFull);
+                EnsureNoReparseAncestors(destinationDirectory);
+                Directory.CreateDirectory(destinationDirectory);
+                EnsureNoReparseAncestors(destinationDirectory);
+                output = new FileStream(destinationFull, FileMode.CreateNew, FileAccess.Write, FileShare.Read);
+            }
+
+            try
+            {
+                using (var input = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (SHA256 sha = SHA256.Create())
+                {
+                    var buffer = new byte[64 * 1024];
+                    long total = 0;
+                    int read;
+                    while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        sha.TransformBlock(buffer, 0, read, buffer, 0);
+                        if (output != null) output.Write(buffer, 0, read);
+                        total += read;
+                    }
+                    sha.TransformFinalBlock(new byte[0], 0, 0);
+                    if (total != input.Length)
+                        throw new IOException("File length changed or could not be read consistently.");
+                    return new HashResult { bytes = total, sha256 = ToHex(sha.Hash) };
+                }
+            }
+            finally
+            {
+                if (output != null)
+                {
+                    output.Flush();
+                    output.Dispose();
+                }
+            }
+        }
+
+        private static HashResult HashRegularFile(string path)
+        {
+            using (var input = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (SHA256 sha = SHA256.Create())
+            {
+                var buffer = new byte[64 * 1024];
+                long total = 0;
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    sha.TransformBlock(buffer, 0, read, buffer, 0);
+                    total += read;
+                }
+                sha.TransformFinalBlock(new byte[0], 0, 0);
+                if (total != input.Length)
+                    throw new IOException("File length changed or could not be read consistently.");
+                return new HashResult { bytes = total, sha256 = ToHex(sha.Hash) };
+            }
+        }
+
+        private static bool IsSourceOrPackageManifest(string relativePath)
+        {
+            string extension = Path.GetExtension(relativePath);
+            return string.Equals(Path.GetFileName(relativePath), "package.json", StringComparison.OrdinalIgnoreCase) ||
+                SourceExtensions.Any(candidate => string.Equals(extension, candidate, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool IsRenderPipelineAssembly(string name)
+        {
+            return name.StartsWith("Unity.RenderPipelines.Universal.", StringComparison.Ordinal) ||
+                name.StartsWith("Unity.RenderPipelines.Core.", StringComparison.Ordinal);
+        }
+
+        private static void AddRole(Dictionary<Assembly, List<string>> targets, Assembly assembly, string role)
+        {
+            List<string> roles;
+            if (!targets.TryGetValue(assembly, out roles))
+            {
+                roles = new List<string>();
+                targets.Add(assembly, roles);
+            }
+            if (!roles.Contains(role)) roles.Add(role);
+        }
+
+        private static bool IsInsideEditorContents(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return false;
+            string editorContents = EditorApplication.applicationContentsPath;
+            if (string.IsNullOrWhiteSpace(editorContents)) return false;
+            try
+            {
+                return IsChildPath(Path.GetFullPath(editorContents), Path.GetFullPath(path));
+            }
+            catch { return false; }
+        }
+
+        private static string SafeAssemblyName(Assembly assembly)
+        {
+            try { return assembly.GetName().Name ?? string.Empty; }
+            catch { return string.Empty; }
+        }
+
+        private static string SafeFullAssemblyName(Assembly assembly)
+        {
+            try { return assembly.FullName ?? string.Empty; }
+            catch { return string.Empty; }
+        }
+
+        private static string SafePackageId(PackageInfo info)
+        {
+            try { return info.packageId ?? string.Empty; }
+            catch { return string.Empty; }
+        }
+
+        private static string SafePackageResolvedPath(PackageInfo info)
+        {
+            try { return info.resolvedPath ?? string.Empty; }
+            catch { return string.Empty; }
+        }
+
+        private static string RelativePath(string root, string path)
+        {
+            string fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string fullPath = Path.GetFullPath(path);
+            if (string.Equals(fullRoot, fullPath, PathComparison())) return ".";
+            string prefix = fullRoot + Path.DirectorySeparatorChar;
+            if (!fullPath.StartsWith(prefix, PathComparison()))
+                throw new IOException("Observed entry escaped its package root.");
+            return fullPath.Substring(prefix.Length).Replace(Path.DirectorySeparatorChar, '/');
+        }
+
+        private static bool IsChildPath(string root, string candidate)
+        {
+            string fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string fullCandidate = Path.GetFullPath(candidate).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (string.Equals(fullRoot, fullCandidate, PathComparison())) return false;
+            return fullCandidate.StartsWith(fullRoot + Path.DirectorySeparatorChar, PathComparison());
+        }
+
+        private static bool PathsEqual(string left, string right)
+        {
+            return string.Equals(Path.GetFullPath(left).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                Path.GetFullPath(right).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar), PathComparison());
+        }
+
+        private static StringComparison PathComparison()
+        {
+            return Path.DirectorySeparatorChar == '\\' ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        }
+
+        private static void EnsureNoReparseAncestors(string path)
+        {
+            string current = Path.GetFullPath(path);
+            while (!string.IsNullOrEmpty(current))
+            {
+                try
+                {
+                    FileAttributes attributes = File.GetAttributes(current);
+                    if ((attributes & FileAttributes.ReparsePoint) != 0)
+                        throw new IOException("Evidence/source path contains a reparse point; it was not followed.");
+                }
+                catch (FileNotFoundException) { }
+                catch (DirectoryNotFoundException) { }
+                string parent = Path.GetDirectoryName(current);
+                if (string.IsNullOrEmpty(parent) || string.Equals(parent, current, PathComparison())) break;
+                current = parent;
+            }
+        }
+
+        private static void WriteNewFile(string path, byte[] bytes)
+        {
+            EnsureNoReparseAncestors(path);
+            using (var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
+                stream.Write(bytes, 0, bytes.Length);
+        }
+
+        private static string ReadAllowedEnvironmentValue(string name)
+        {
+            string value = Environment.GetEnvironmentVariable(name);
+            return string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+        }
+
+        private static ParsedRunIdentity ParseRunIdentity(string captureRoot)
+        {
+            string leaf = string.Empty;
+            try
+            {
+                string fullPath = Path.GetFullPath(captureRoot)
+                    .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                leaf = Path.GetFileName(fullPath);
+            }
+            catch { }
+
+            int attemptSeparator = leaf.LastIndexOf('-');
+            int runIdSeparator = attemptSeparator > 0 ? leaf.LastIndexOf('-', attemptSeparator - 1) : -1;
+            if (runIdSeparator <= 0 || attemptSeparator <= runIdSeparator + 1 || attemptSeparator == leaf.Length - 1)
+                return new ParsedRunIdentity { leaf = leaf };
+
+            string commit = leaf.Substring(0, runIdSeparator);
+            string runId = leaf.Substring(runIdSeparator + 1, attemptSeparator - runIdSeparator - 1);
+            string runAttempt = leaf.Substring(attemptSeparator + 1);
+            bool valid = IsHexCommit(commit) && IsDecimal(runId) && IsDecimal(runAttempt);
+            return new ParsedRunIdentity
+            {
+                leaf = leaf,
+                commit = valid ? commit.ToLowerInvariant() : commit,
+                runId = runId,
+                runAttempt = runAttempt,
+                valid = valid
+            };
+        }
+
+        private static string CrossCheckOptionalGitHubIdentity(ParsedRunIdentity parsed, List<ObservationError> errors)
+        {
+            string githubSha = ReadAllowedEnvironmentValue("GITHUB_SHA");
+            string githubRunId = ReadAllowedEnvironmentValue("GITHUB_RUN_ID");
+            string githubRunAttempt = ReadAllowedEnvironmentValue("GITHUB_RUN_ATTEMPT");
+            int provided = 0;
+            bool matches = true;
+
+            if (!string.IsNullOrWhiteSpace(githubSha))
+            {
+                provided++;
+                if (!IsHexCommit(githubSha) || !string.Equals(githubSha, parsed.commit, StringComparison.OrdinalIgnoreCase))
+                {
+                    matches = false;
+                    AddError(errors, "optional-github-sha-mismatch", "GITHUB_SHA", null);
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(githubRunId))
+            {
+                provided++;
+                if (!IsDecimal(githubRunId) || !string.Equals(githubRunId, parsed.runId, StringComparison.Ordinal))
+                {
+                    matches = false;
+                    AddError(errors, "optional-github-run-id-mismatch", "GITHUB_RUN_ID", null);
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(githubRunAttempt))
+            {
+                provided++;
+                if (!IsDecimal(githubRunAttempt) || !string.Equals(githubRunAttempt, parsed.runAttempt, StringComparison.Ordinal))
+                {
+                    matches = false;
+                    AddError(errors, "optional-github-run-attempt-mismatch", "GITHUB_RUN_ATTEMPT", null);
+                }
+            }
+
+            if (!matches) return "mismatch";
+            if (provided == 0) return "not-forwarded";
+            return provided == 3 ? "match" : "partial-match";
+        }
+
+        private static bool IsHexCommit(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value) || value.Length != 40) return false;
+            return value.All(character => (character >= '0' && character <= '9') ||
+                (character >= 'a' && character <= 'f') || (character >= 'A' && character <= 'F'));
+        }
+
+        private static bool IsDecimal(string value)
+        {
+            return !string.IsNullOrWhiteSpace(value) && value.All(character => character >= '0' && character <= '9');
+        }
+
+        private static string ComputeRunKey(string commit, string runId, string runAttempt)
+        {
+            string canonical = "luckbound-v5-urp-evidence-v1\n" +
+                (commit ?? string.Empty).Trim().ToLowerInvariant() + "\n" +
+                (runId ?? string.Empty).Trim() + "\n" +
+                (runAttempt ?? string.Empty).Trim();
+            return HashText(canonical);
+        }
+
+        private static string HashText(string value)
+        {
+            using (SHA256 sha = SHA256.Create())
+                return ToHex(sha.ComputeHash(Utf8NoBom.GetBytes(value ?? string.Empty)));
+        }
+
+        // Keep the observation path independent from Unity JsonUtility: its V5
+        // invocation count, inputs, and serializer timing are part of the experiment.
+        private static string SerializeJson(object value)
+        {
+            var builder = new StringBuilder(4096);
+            AppendJsonValue(builder, value, 0);
+            builder.Append('\n');
+            return builder.ToString();
+        }
+
+        private static void AppendJsonValue(StringBuilder builder, object value, int depth)
+        {
+            if (value == null)
+            {
+                builder.Append("null");
+                return;
+            }
+
+            string text = value as string;
+            if (text != null)
+            {
+                AppendJsonString(builder, text);
+                return;
+            }
+            if (value is bool)
+            {
+                builder.Append((bool)value ? "true" : "false");
+                return;
+            }
+            if (value is int)
+            {
+                builder.Append(((int)value).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                return;
+            }
+            if (value is long)
+            {
+                builder.Append(((long)value).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                return;
+            }
+
+            Array array = value as Array;
+            if (array != null)
+            {
+                builder.Append("[\n");
+                for (int index = 0; index < array.Length; index++)
+                {
+                    AppendIndent(builder, depth + 1);
+                    AppendJsonValue(builder, array.GetValue(index), depth + 1);
+                    builder.Append(index + 1 == array.Length ? "\n" : ",\n");
+                }
+                AppendIndent(builder, depth);
+                builder.Append(']');
+                return;
+            }
+
+            Type valueType = value.GetType();
+            FieldInfo[] fields = valueType.GetFields(BindingFlags.Instance | BindingFlags.Public)
+                .OrderBy(field => field.MetadataToken).ToArray();
+            builder.Append("{\n");
+            for (int index = 0; index < fields.Length; index++)
+            {
+                FieldInfo field = fields[index];
+                AppendIndent(builder, depth + 1);
+                AppendJsonString(builder, field.Name);
+                builder.Append(": ");
+                AppendJsonValue(builder, field.GetValue(value), depth + 1);
+                builder.Append(index + 1 == fields.Length ? "\n" : ",\n");
+            }
+            AppendIndent(builder, depth);
+            builder.Append('}');
+        }
+
+        private static void AppendJsonString(StringBuilder builder, string value)
+        {
+            builder.Append('"');
+            foreach (char character in value)
+            {
+                switch (character)
+                {
+                    case '"': builder.Append("\\\""); break;
+                    case '\\': builder.Append("\\\\"); break;
+                    case '\b': builder.Append("\\b"); break;
+                    case '\f': builder.Append("\\f"); break;
+                    case '\n': builder.Append("\\n"); break;
+                    case '\r': builder.Append("\\r"); break;
+                    case '\t': builder.Append("\\t"); break;
+                    default:
+                        if (character < 0x20 || character > 0x7e)
+                            builder.Append("\\u").Append(((int)character).ToString("x4", System.Globalization.CultureInfo.InvariantCulture));
+                        else
+                            builder.Append(character);
+                        break;
+                }
+            }
+            builder.Append('"');
+        }
+
+        private static void AppendIndent(StringBuilder builder, int depth)
+        {
+            builder.Append(' ', depth * 2);
+        }
+
+        private static string ToHex(byte[] bytes)
+        {
+            var builder = new StringBuilder(bytes.Length * 2);
+            foreach (byte value in bytes) builder.Append(value.ToString("x2", System.Globalization.CultureInfo.InvariantCulture));
+            return builder.ToString();
+        }
+
+        private static string SafeSegment(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return "unknown-package";
+            var builder = new StringBuilder(value.Length);
+            foreach (char character in value)
+                builder.Append(char.IsLetterOrDigit(character) || character == '-' || character == '_' || character == '.'
+                    ? character : '_');
+            return builder.ToString();
+        }
+
+        private static void AddError(List<ObservationError> errors, string code, string path, Exception exception)
+        {
+            errors.Add(new ObservationError
+            {
+                code = code,
+                path = path ?? string.Empty,
+                exceptionType = exception == null ? string.Empty : exception.GetType().FullName,
+                observedAtUtc = UtcNow()
+            });
+        }
+
+        private static string UtcNow()
+        {
+            return DateTime.UtcNow.ToString("O", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private sealed class PackageAssociation
+        {
+            internal Assembly assembly;
+            internal PackageInfo info;
+        }
+
+        private sealed class ParsedRunIdentity
+        {
+            internal string leaf = string.Empty;
+            internal string commit = string.Empty;
+            internal string runId = string.Empty;
+            internal string runAttempt = string.Empty;
+            internal bool valid;
+        }
+
+        private sealed class HashResult
+        {
+            internal long bytes;
+            internal string sha256;
+        }
+
+        [Serializable]
+        private sealed class PhaseSnapshot
+        {
+            public int schemaVersion;
+            public string phase;
+            public string observationStartedAtUtc;
+            public string observationCompletedAtUtc;
+            public int invocationCountAtObservation;
+            public string evidenceRelativeDirectory;
+            public string runKeySha256;
+            public bool observationComplete;
+            public RunIdentity run;
+            public ProcessObservation process;
+            public AssetObservation asset;
+            public FileRecord[] projectFiles;
+            public AssemblyRecord[] assemblies;
+            public PackageRecord[] packages;
+            public ObservationError[] errors;
+        }
+
+        [Serializable]
+        private sealed class RunIdentity
+        {
+            public string captureRootLeaf;
+            public string executionCommit;
+            public string harnessExecutionCommit;
+            public string runId;
+            public string runAttempt;
+            public string identitySource;
+            public string githubCrossCheck;
+            public bool runIdentityComplete;
+        }
+
+        [Serializable]
+        private sealed class ProcessObservation
+        {
+            public string status;
+            public int processId;
+            public string processName;
+            public string processStartedAtUtc;
+            public string unityVersion;
+            public string platform;
+            public bool isBatchMode;
+            public string editorContentsPath;
+        }
+
+        [Serializable]
+        private sealed class AssetObservation
+        {
+            public string path;
+            public string snapshotPath;
+            public string observedAtUtc;
+            public string status;
+            public long bytes;
+            public string sha256;
+        }
+
+        [Serializable]
+        private sealed class FileRecord
+        {
+            public string path;
+            public string type;
+            public long bytes;
+            public string sha256;
+            public string status;
+        }
+
+        [Serializable]
+        private sealed class AssemblyRecord
+        {
+            public string[] roles;
+            public string assemblyName;
+            public string fullName;
+            public string location;
+            public string status;
+            public long bytes;
+            public string sha256;
+            public string moduleVersionId;
+            public string packageId;
+            public string packageName;
+            public string packageVersion;
+            public string packageSource;
+            public string packageResolvedPath;
+            public string packageInfoStatus;
+            public string originKind;
+        }
+
+        [Serializable]
+        private sealed class PackageRecord
+        {
+            public string packageId;
+            public string name;
+            public string version;
+            public string source;
+            public string resolvedPath;
+            public string[] associatedAssemblies;
+            public string sourceSnapshotDirectory;
+            public bool inventoryComplete;
+            public string status;
+            public FileRecord[] inventory;
+            public string[] copiedSourcePaths;
+        }
+
+        [Serializable]
+        private sealed class ObservationError
+        {
+            public string code;
+            public string path;
+            public string exceptionType;
+            public string observedAtUtc;
+        }
+    }
 }
-
-
-

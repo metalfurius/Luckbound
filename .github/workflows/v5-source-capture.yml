@@ -97,6 +97,226 @@ jobs:
           print('Physical symlink rejection passed; synthetic path probe, no save capture or golden.')
           PY
 
+      - name: Observe exact URP asset before Editor
+        id: urp_before
+        shell: bash
+        run: |
+          cat > Logs/V5UrpEvidenceHost.py <<'PY'
+          """Read-only URP observation host; generated under Logs by the reviewed workflow."""
+          import argparse
+          from datetime import datetime, timezone
+          import hashlib
+          import json
+          import os
+          from pathlib import Path, PurePosixPath
+          import re
+          import stat
+          
+          ASSET = "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset"
+          PROJECT_FILES = ("Packages/manifest.json", "Packages/packages-lock.json")
+          PACKAGES = {"com.unity.render-pipelines.core", "com.unity.render-pipelines.universal"}
+          
+          
+          def digest(raw):
+              return hashlib.sha256(raw).hexdigest()
+          
+          
+          def regular(path):
+              for candidate in (path, *path.parents):
+                  info = candidate.lstat()
+                  if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+                      raise ValueError("Link/reparse path rejected: " + str(candidate))
+              if not stat.S_ISREG(path.lstat().st_mode):
+                  raise ValueError("Not a regular file: " + str(path))
+              return path.read_bytes()
+          
+          
+          def safe_child(root, relative):
+              parts = PurePosixPath(relative)
+              if parts.is_absolute() or any(p in ("", ".", "..") or ":" in p or "\\" in p for p in parts.parts):
+                  raise ValueError("Unsafe relative path: " + relative)
+              return root.joinpath(*parts.parts)
+          
+          
+          def write_new(path, raw):
+              path.parent.mkdir(parents=True, exist_ok=True)
+              for parent in (path.parent, *path.parent.parents):
+                  info = parent.lstat()
+                  if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+                      raise ValueError("Linked output parent rejected")
+              with path.open("xb") as stream:
+                  stream.write(raw)
+          
+          
+          def encode(value):
+              return (json.dumps(value, indent=2) + "\n").encode()
+          
+          
+          def inventory(root):
+              result = [{"path": ".", "type": "directory", "bytes": 0, "sha256": ""}]
+              def visit(directory):
+                  info = directory.lstat()
+                  if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+                      raise ValueError("Package directory is not regular: " + str(directory))
+                  for child in sorted(directory.iterdir()):
+                      info = child.lstat()
+                      relative = child.relative_to(root).as_posix()
+                      if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+                          raise ValueError("Package link rejected: " + relative)
+                      if stat.S_ISDIR(info.st_mode):
+                          result.append({"path": relative, "type": "directory", "bytes": 0, "sha256": ""})
+                          visit(child)
+                      elif stat.S_ISREG(info.st_mode):
+                          raw = regular(child)
+                          result.append({"path": relative, "type": "file", "bytes": len(raw), "sha256": digest(raw)})
+                      else:
+                          raise ValueError("Unsupported package entry: " + relative)
+              visit(root)
+              return sorted(result, key=lambda row: row["path"])
+          
+          
+          def normalized_inventory(rows):
+              result = []
+              seen = set()
+              for row in rows:
+                  if row["path"] in seen or row["type"] not in ("file", "directory"):
+                      raise ValueError("Invalid or duplicate package entry")
+                  seen.add(row["path"])
+                  if row.get("status", "observed") not in ("observed", "observed-and-copied"):
+                      raise ValueError("Incomplete package entry")
+                  if row["type"] == "directory":
+                      if row.get("bytes", 0) != 0 or row.get("sha256") not in (None, ""):
+                          raise ValueError("Invalid directory observation")
+                      result.append({"path": row["path"], "type": "directory", "bytes": 0, "sha256": ""})
+                  else:
+                      if type(row.get("bytes")) is not int or row["bytes"] < 0 or not re.fullmatch(r"[0-9a-f]{64}", row.get("sha256", "")):
+                          raise ValueError("Invalid file observation")
+                      result.append({key: row[key] for key in ("path", "type", "bytes", "sha256")})
+              return sorted(result, key=lambda row: row["path"])
+          
+          
+          def host_package_path(root, resolved):
+              prefix = "/github/workspace/"
+              if resolved.startswith(prefix):
+                  return safe_child(root, resolved[len(prefix):])
+              return None
+          
+          
+          def check_editor(root, evidence, phase, identity, key):
+              doc = json.loads(regular(evidence / ("editor-" + phase + ".json")))
+              if doc["phase"] != phase or doc["runKeySha256"] != key or any(doc["run"].get(k) != v for k, v in identity.items()) or doc["run"].get("runIdentityComplete") is not True:
+                  raise ValueError("Editor identity mismatch")
+              if not doc["observationComplete"] or doc["errors"]:
+                  raise ValueError("Editor observation incomplete: " + phase)
+              if doc["invocationCountAtObservation"] != (0 if phase == "S1" else 24):
+                  raise ValueError("Wrong invocation boundary")
+              if doc["process"]["unityVersion"] != "6000.6.6f1" or doc["process"]["isBatchMode"] is not True:
+                  raise ValueError("Wrong Editor environment")
+              asset = doc["asset"]
+              if asset["path"] != ASSET or asset["status"] != "observed":
+                  raise ValueError("Asset observation missing")
+              raw = regular(safe_child(evidence, asset["snapshotPath"]))
+              if len(raw) != asset["bytes"] or digest(raw) != asset["sha256"]:
+                  raise ValueError("Asset snapshot differs from observation")
+              for assembly in doc["assemblies"]:
+                  if assembly["status"] != "observed" or not assembly["location"] or not assembly["moduleVersionId"] or not re.fullmatch(r"[0-9a-f]{64}", assembly["sha256"]):
+                      raise ValueError("Loaded assembly provenance incomplete")
+              roles = {role for assembly in doc["assemblies"] for role in assembly["roles"]}
+              if not {"URP", "Core", "Editor", "CoreModule", "JsonUtility"} <= roles:
+                  raise ValueError("Required assembly role missing")
+              for package in doc["packages"]:
+                  if not package["inventoryComplete"] or package["status"] != "inventory-complete":
+                      raise ValueError("Package observation incomplete")
+                  entries = normalized_inventory(package["inventory"])
+                  source_paths = set(package["copiedSourcePaths"])
+                  if not source_paths or "package.json" not in source_paths:
+                      raise ValueError("Package sources were not retained")
+                  for relative in source_paths:
+                      entry = next(item for item in entries if item["path"] == relative)
+                      source = regular(safe_child(evidence, package["sourceSnapshotDirectory"] + "/" + relative))
+                      if len(source) != entry["bytes"] or digest(source) != entry["sha256"]:
+                          raise ValueError("Copied package source differs")
+              if not PACKAGES <= {p["name"] for p in doc["packages"]}:
+                  raise ValueError("Core/URP PackageInfo missing")
+              project = {p["path"]: p for p in doc["projectFiles"]}
+              if set(project) != set(PROJECT_FILES):
+                  raise ValueError("Project package input inventory incomplete")
+              for relative, item in project.items():
+                  copied = regular(safe_child(evidence, "snapshots/" + phase + "/project/" + relative))
+                  if len(copied) != item["bytes"] or digest(copied) != item["sha256"]:
+                      raise ValueError("Copied project package input differs")
+              return doc
+          
+          
+          def observe(root, phase, commit, run_id, attempt):
+              if not re.fullmatch(r"[0-9a-f]{40}", commit) or not run_id.isdecimal() or not attempt.isdecimal():
+                  raise ValueError("Invalid host run identity")
+              identity = {"executionCommit": commit, "runId": run_id, "runAttempt": attempt}
+              key = digest(("luckbound-v5-urp-evidence-v1\n" + commit + "\n" + run_id + "\n" + attempt).encode())
+              evidence = root / "Logs/V5UrpEvidence" / key
+              result = {"schemaVersion": 1, "phase": phase, "run": identity, "runKeySha256": key, "observedAtUtc": datetime.now(timezone.utc).isoformat(), "hostHelperSha256": digest(Path(__file__).read_bytes()), "errors": [], "observationComplete": False}
+              errors = result["errors"]
+              try:
+                  raw = regular(root / ASSET)
+                  relative = "snapshots/" + phase + "/asset/" + ASSET
+                  write_new(evidence / relative, raw)
+                  result["asset"] = {"path": ASSET, "snapshotPath": relative, "bytes": len(raw), "sha256": digest(raw), "status": "observed"}
+                  result["projectFiles"] = {rel: {"bytes": len(data), "sha256": digest(data)} for rel in PROJECT_FILES for data in [regular(root / rel)]}
+              except (OSError, ValueError) as error:
+                  errors.append({"stage": "host-observation", "reason": str(error)})
+              if phase == "S3":
+                  try:
+                      s0 = json.loads(regular(evidence / "host-S0.json"))
+                      if not s0["observationComplete"] or s0["run"] != identity:
+                          raise ValueError("S0 absent, incomplete or mismatched")
+                      s1 = check_editor(root, evidence, "S1", identity, key)
+                      s2 = check_editor(root, evidence, "S2", identity, key)
+                      if s0["projectFiles"] != result.get("projectFiles"):
+                          raise ValueError("Project package inputs changed")
+                      for editor in (s1, s2):
+                          if {p["path"]: {k: p[k] for k in ("bytes", "sha256")} for p in editor["projectFiles"]} != s0["projectFiles"]:
+                              raise ValueError("Project package inputs differ in Editor phase")
+                      result["packages"] = []
+                      for package in s2["packages"]:
+                          earlier = next(p for p in s1["packages"] if p["packageId"] == package["packageId"])
+                          before, after = normalized_inventory(earlier["inventory"]), normalized_inventory(package["inventory"])
+                          if before != after or earlier["resolvedPath"] != package["resolvedPath"]:
+                              raise ValueError("Package changed between S1/S2: " + package["name"])
+                          host_path = host_package_path(root, package["resolvedPath"])
+                          if host_path is None:
+                              result["packages"].append({"name": package["name"], "status": "Unavailable", "resolvedPath": package["resolvedPath"]})
+                              raise ValueError("Exact package root is unavailable after container exit: " + package["name"])
+                          host_inventory = inventory(host_path)
+                          if after != host_inventory:
+                              raise ValueError("Package changed after Editor: " + package["name"])
+                          result["packages"].append({"name": package["name"], "resolvedPath": package["resolvedPath"], "hostPath": str(host_path), "status": "observed", "inventory": host_inventory})
+                      assembly_keys = ("assemblyName", "fullName", "location", "bytes", "sha256", "moduleVersionId", "packageId")
+                      if [{k: a.get(k) for k in assembly_keys} for a in s1["assemblies"]] != [{k: a.get(k) for k in assembly_keys} for a in s2["assemblies"]]:
+                          raise ValueError("Loaded assembly identities changed between S1/S2")
+                      result["editorImageBinariesAfterExit"] = "Unavailable in host namespace; S1/S2 identities retained, no post-exit binary equality claimed"
+                      result["fourCutAssetHashes"] = {"S0": s0["asset"]["sha256"], "S1": s1["asset"]["sha256"], "S2": s2["asset"]["sha256"], "S3": result["asset"]["sha256"]}
+                      result["sourceIntegrityOverride"] = False
+                  except (OSError, ValueError, KeyError, StopIteration) as error:
+                      errors.append({"stage": "post-Editor-comparison", "reason": str(error)})
+              result["observationComplete"] = not errors
+              write_new(evidence / ("host-" + phase + ".json"), encode(result))
+              print(json.dumps({"phase": phase, "runKey": key, "observationComplete": result["observationComplete"], "errors": errors}, indent=2))
+              return result
+          
+          
+          if __name__ == "__main__":
+              parser = argparse.ArgumentParser()
+              parser.add_argument("--phase", choices=("S0", "S3"), required=True)
+              parser.add_argument("--project-root", type=Path, default=Path.cwd())
+              parser.add_argument("--commit", required=True)
+              parser.add_argument("--run-id", required=True)
+              parser.add_argument("--attempt", required=True)
+              args = parser.parse_args()
+              report = observe(args.project_root.resolve(), args.phase, args.commit, args.run_id, args.attempt)
+              raise SystemExit(0 if report["observationComplete"] else 1)
+          PY
+          python3 -B Logs/V5UrpEvidenceHost.py --phase S0 --project-root "$GITHUB_WORKSPACE" --commit "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" --attempt "$GITHUB_RUN_ATTEMPT"
+
       - name: Run only historical serializer capture tests
         id: capture
         uses: game-ci/unity-test-runner@v4.4.0
@@ -113,6 +333,13 @@ jobs:
           artifactsPath: test-results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: Historical V5 source capture
+
+      - name: Observe URP asset and packages after Editor
+        id: urp_after
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          python3 -B Logs/V5UrpEvidenceHost.py --phase S3 --project-root "$GITHUB_WORKSPACE" --commit "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" --attempt "$GITHUB_RUN_ATTEMPT"
 
       - name: Verify entire source tree remains unchanged
         id: source_after
@@ -266,11 +493,15 @@ jobs:
           CAPTURE: ${{ steps.capture.outcome }}
           SOURCE_AFTER: ${{ steps.source_after.outcome }}
           VERIFIER: ${{ steps.verify_capture.outcome }}
+          URP_BEFORE: ${{ steps.urp_before.outcome }}
+          URP_AFTER: ${{ steps.urp_after.outcome }}
         run: |
           test "$SOURCE_BEFORE" = success
           test "$CAPTURE" = success
           test "$SOURCE_AFTER" = success
           test "$VERIFIER" = success
+          test "$URP_BEFORE" = success
+          test "$URP_AFTER" = success
 
       - name: Preserve XML, logs, capture and source proofs
         if: always()
@@ -286,5 +517,7 @@ jobs:
             Logs/V5-source-before-inventory.json
             Logs/V5-source-differences.json
             Logs/V5SourceIntegrity
+            Logs/V5UrpEvidence
+            Logs/V5UrpEvidenceHost.py
           if-no-files-found: error
           retention-days: 30

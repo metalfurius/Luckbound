@@ -131,6 +131,56 @@ PLACEHOLDER_CHILD_DTO = {
     ("ExpeditionSaveData", "fortuneOfferBookSnapshot"): "FortuneOfferBookSnapshot",
 }
 
+# Closed V5 absence placeholder from the historical DTO member set above and
+# its declared V5 defaults, then confirmed against the exact R4 wire captures.
+# The 100/100/50/50/2 defaults are present in the historical expedition DTO;
+# all remaining scalars use their typed zero defaults and arrays serialize as
+# empty arrays. `fortunaCharges` is a property, not a wire field. Do not derive
+# this object from the payload currently being verified or from the live V6 DTO.
+V5_EMPTY_EXPEDITION_PLACEHOLDER = {
+    "runId": "",
+    "seed": 0,
+    "generationVersion": 0,
+    "contentVersion": 0,
+    "classId": "",
+    "raceId": "",
+    "selectedSkillIds": [],
+    "startingEquipmentInstanceIds": [],
+    "routeSnapshotJson": "",
+    "currentNodeId": "",
+    "visitedNodeIds": [],
+    "completedRoomIds": [],
+    "completedRoomResults": [],
+    "roomEntryCheckpointJson": "",
+    "inventorySnapshotJson": "",
+    "maximumHealth": 100,
+    "currentHealth": 100,
+    "maximumEnergy": 50,
+    "currentEnergy": 50,
+    "healthPotionCharges": 2,
+    "frozenPermanentUpgrades": {
+        "healthUpgradeLevel": 0,
+        "energyUpgradeLevel": 0,
+        "additionalPotionUpgradeLevel": 0,
+    },
+    "hasFrozenPermanentUpgrades": False,
+    "accumulatedRenown": 0,
+    "pactIds": [],
+    "fortuneOfferBookSnapshot": {
+        "snapshotVersion": 0,
+        "generationVersion": 0,
+        "seed": 0,
+        "raceId": "",
+        "charges": 0,
+        "offers": [],
+        "processedGuardianIds": [],
+        "rerollReceipts": [],
+        "fortuneBrewReceipts": [],
+    },
+    "collectedItemIds": [],
+    "claimedRewardIds": [],
+}
+
 
 class CaptureError(ValueError):
     """Raised when a capture artifact contradicts the frozen contract."""
@@ -718,49 +768,45 @@ def _validate_decode(row: dict[str, Any], result: dict[str, Any], case: dict[str
         raise CaptureError(f"Unknown expectedDecode value in pinned schema: {expected!r}")
 
 
-def _is_empty_placeholder_value(value: Any) -> bool:
-    if value is None:
-        return True
-    if isinstance(value, bool):
-        return value is False
-    if type(value) is int:
-        return value == 0
-    if type(value) is float:
-        return math.isfinite(value) and value == 0.0
-    if isinstance(value, str):
-        return value == ""
-    if isinstance(value, list):
-        return len(value) == 0
-    return False
+def _matches_exact_typed_value(actual: Any, expected: Any) -> bool:
+    """Match a fixed JSON shape without Python's bool/int equality aliases."""
+    if type(expected) is dict:
+        return (
+            type(actual) is dict
+            and actual.keys() == expected.keys()
+            and all(_matches_exact_typed_value(actual[key], expected[key]) for key in expected)
+        )
+    if type(expected) is list:
+        return (
+            type(actual) is list
+            and len(actual) == len(expected)
+            and all(_matches_exact_typed_value(actual_item, expected_item)
+                    for actual_item, expected_item in zip(actual, expected))
+        )
+    return type(actual) is type(expected) and actual == expected
+
+
+def _matches_declared_placeholder_dto_shape(payload: Any) -> bool:
+    if type(payload) is not dict or payload.keys() != PLACEHOLDER_DTO_FIELDS["ExpeditionSaveData"]:
+        return False
+    for field in payload:
+        child_dto = PLACEHOLDER_CHILD_DTO.get(("ExpeditionSaveData", field))
+        child = payload[field]
+        if child_dto is None:
+            if type(child) is dict:
+                return False
+            continue
+        if type(child) is not dict or child.keys() != PLACEHOLDER_DTO_FIELDS[child_dto]:
+            return False
+    return True
 
 
 def is_empty_expedition_placeholder(payload: Any) -> bool:
-    """Accept only recursively empty values on fields declared by historical V5 DTOs."""
-    if not isinstance(payload, dict):
-        return False
-    allowed_top_fields = PLACEHOLDER_DTO_FIELDS["ExpeditionSaveData"]
-    for field, value in payload.items():
-        if field not in allowed_top_fields:
-            return False
-        child_dto = PLACEHOLDER_CHILD_DTO.get(("ExpeditionSaveData", field))
-        if isinstance(value, dict):
-            if child_dto is None or not _is_empty_placeholder_dto(value, child_dto):
-                return False
-        elif not _is_empty_placeholder_value(value):
-            return False
-    return True
-
-
-def _is_empty_placeholder_dto(value: dict[str, Any], dto_name: str) -> bool:
-    allowed_fields = PLACEHOLDER_DTO_FIELDS[dto_name]
-    for field, child_value in value.items():
-        if field not in allowed_fields:
-            return False
-        if isinstance(child_value, dict):
-            return False
-        if not _is_empty_placeholder_value(child_value):
-            return False
-    return True
+    """Accept only the complete, typed historical V5 absent-candidate DTO value."""
+    return (
+        _matches_declared_placeholder_dto_shape(payload)
+        and _matches_exact_typed_value(payload, V5_EMPTY_EXPEDITION_PLACEHOLDER)
+    )
 
 
 def _validate_m0_payload_matches_p1(p1_payload: Any, m0_payload: Any, label: str) -> None:
