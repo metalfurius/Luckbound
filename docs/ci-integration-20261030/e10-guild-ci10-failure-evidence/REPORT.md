@@ -1,0 +1,5 @@
+# CI10 — dos fallos Guild conservados
+
+[CI41156774137](https://github.com/metalfurius/Luckbound/actions/runs/41156774137), commit e17ea0fe, intento1:654/654 EditMode y515/517 PlayMode,1169/1171 en total, cero omisiones. Las1168 regresiones previas y el nuevo caso readonly/pending pasan. Dos casos Guild fallan: título146.791306 de ancho preferido frente a140.5 disponible; Enter simulado no deja conversación activa tras navegar a personaje2. Los XML exactos conservan mensajes/stacks y flujo alcanzado.
+
+El gateV6 y builders quedaron skipped; no se atribuye éxito del checker, builds o percepción a este run. El fallo de Enter se investiga con la API instalada y su fase de actualización, no como defecto histórico del engine ni fallo SUT supuesto. Los textos que aparecen después del primer assert fallido aún no quedaron comprobados por ese método. No se relajan aserciones ni se fuerzan flags/victorias; correctivo pendiente con dictamen propio. Sin Unity local, player, UI/audio/cursor de Fran o publicación.

@@ -683,8 +683,8 @@ namespace Luckbound.App
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = rect.anchorMin;
             rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = new Vector2(38f, 111f);
-            rect.sizeDelta = new Vector2(140f, 28f);
+            rect.anchoredPosition = new Vector2(43f, 111f);
+            rect.sizeDelta = new Vector2(150f, 28f);
         }
 
         private void ConfigureGuildIntroNavigation()

@@ -1,0 +1,29 @@
+{
+  "assemblies": [
+    {
+      "assembly": "Luckbound.App",
+      "sourceCount": 56,
+      "exitCode": 0,
+      "responseSha256": "237da1814107c279b442fc9291892e68a949a7ec27b1297d7747a9f30b024cdd",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 79,
+      "exitCode": 0,
+      "responseSha256": "7c6a0fca97e48af87602eb03deb90ef30ae17bd62ff0427e71bc1d4d6989f844",
+      "logSha256": "9665ea262f6ee3ec6a42e9fea1b8717d18f15191eac5179ee14b72afd3a9f6a7"
+    }
+  ],
+  "inputCount": 135,
+  "sourceInputsMatchFrozenBytes": true,
+  "liveSourcesUnchanged": 412,
+  "unchangedWarningCount": 8,
+  "testMethods": [
+    "E10GuildIntroReadsAllFiveExactEntriesInBothLanguagesAndReusesOnePresentation",
+    "E10GuildIntroSubmitBackCloseEscapeAndLanguagePreserveFocusAndPreparation",
+    "E10GuildIntroRemainsReadableForAuthenticReadOnlyAndUnrelatedPendingProfiles"
+  ],
+  "UnityExecuted": false,
+  "NUnitExecuted": false
+}

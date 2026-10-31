@@ -1,0 +1,28 @@
+{
+  "task": "E10 Guild CI10 corrective test worker",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-E10-GUILD-CI10-CORRECTIVE-CONTRACT.md",
+    "sha256": "4bedfee4e719c575a36a73e653f1cbfc15af93eb7565415ff76ba2fa281104b0"
+  },
+  "baseline": {
+    "path": "worker-test/before/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+    "sha256": "7850FC962BCF01FD5617F98A3198DFA237AC1D4374924C31767BB444A188F03B",
+    "live_path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+    "live_sha256": "7850FC962BCF01FD5617F98A3198DFA237AC1D4374924C31767BB444A188F03B"
+  },
+  "candidate": {
+    "path": "candidate/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+    "sha256": "DF5AC503DD29734F01D4ADCD1A61E59B307B5825EC8267F78DB2156B791230CC"
+  },
+  "diff": {
+    "path": "worker-test/DIFF.patch",
+    "sha256": "7525CFDACA29FDADDD656EA8501F3D341819F6971F55A86784D2A9A15DC51993",
+    "git_apply_check": "passed"
+  },
+  "scope": {
+    "owned_candidate_only": true,
+    "live_source_modified": false,
+    "unity_or_ci_executed": false,
+    "native_review_claimed": false
+  }
+}

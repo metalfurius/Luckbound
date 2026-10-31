@@ -1,0 +1,99 @@
+{
+  "files": [
+    {
+      "path": "BASELINE-GUARD.json",
+      "bytes": 382342,
+      "sha256": "ecaf21b8587e68878123eb44c86526773c5b8042cfa76e2c4f9012dc55e70588"
+    },
+    {
+      "path": "FIXTURES-GIT-BINDING.json",
+      "bytes": 128,
+      "sha256": "7c43038c7b00341cd4c9e07b03743e739b76ad249621ea88374704df800d770b"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 741,
+      "sha256": "b85060eaf1fce4dc35f4592272d97336a248c9addf7b174d963202a3e3306ee0"
+    },
+    {
+      "path": "INTEGRATION.json",
+      "bytes": 1634,
+      "sha256": "f4212b94b5cf1ee5e96bce026662f8865e42a959e5cc5e9f458dad9b766cdeb2"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1850,
+      "sha256": "30ee6eaaffa493831479cc486190bb9713144485e7d6d73396f30ffeaac75708"
+    },
+    {
+      "path": "after/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "797d3be0e86bc540fba9912413187dcec4b32d4615554a3e5654e9ace6d8b979"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 52941,
+      "sha256": "df5ac503dd29734f01d4adcd1a61e59b307b5825ec8267f78db2156b791230cc"
+    },
+    {
+      "path": "before/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "1d92de53b3ba0acfe1b1f79d4737176bd951cc09cfb36834cd0e6419bc6a12c9"
+    },
+    {
+      "path": "before/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 43480,
+      "sha256": "7850fc962bcf01fd5617f98a3198dfa237ac1d4374924c31767bb444a188f03b"
+    },
+    {
+      "path": "compile-r1/INPUT-BINDING.json",
+      "bytes": 1024,
+      "sha256": "9e8f356786f11a8a079f236e9658d6ef4acad29a539931087cb0b91e14aa9f36"
+    },
+    {
+      "path": "compile-r1/Luckbound.App.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "compile-r1/Luckbound.App.rsp",
+      "bytes": 52919,
+      "sha256": "237da1814107c279b442fc9291892e68a949a7ec27b1297d7747a9f30b024cdd"
+    },
+    {
+      "path": "compile-r1/Luckbound.PlayMode.Tests.log",
+      "bytes": 2704,
+      "sha256": "9665ea262f6ee3ec6a42e9fea1b8717d18f15191eac5179ee14b72afd3a9f6a7"
+    },
+    {
+      "path": "compile-r1/Luckbound.PlayMode.Tests.rsp",
+      "bytes": 55881,
+      "sha256": "7c6a0fca97e48af87602eb03deb90ef30ae17bd62ff0427e71bc1d4d6989f844"
+    },
+    {
+      "path": "compile-r1/RESULTS.json",
+      "bytes": 44710,
+      "sha256": "b40213442bb4dc94b05e7256cbb63b8ff53db45a159ba51b8ec5d8bbac0f4f37"
+    },
+    {
+      "path": "compile_candidates.py",
+      "bytes": 6413,
+      "sha256": "2b8c94e853f700534bf3d49cad25cc68c145a0d65ffabcac4d5077a92beb0838"
+    },
+    {
+      "path": "worker-test/DIFF.patch",
+      "bytes": 13687,
+      "sha256": "7525cfdaca29fdaddd656ea8501f3d341819f6971f55a86784d2a9a15dc51993"
+    },
+    {
+      "path": "worker-test/MANIFEST.json",
+      "bytes": 1100,
+      "sha256": "e83b2a89d0fba7510952a4034644e0c8f396acfb22396c1bfa293f727909c2fc"
+    },
+    {
+      "path": "worker-test/REPORT.md",
+      "bytes": 2527,
+      "sha256": "22966b55d1f725475e80dbe2ff7e502e2353d80f311999a66aa6968621bcd1a9"
+    }
+  ]
+}

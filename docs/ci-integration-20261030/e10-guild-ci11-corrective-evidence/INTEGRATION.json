@@ -1,0 +1,46 @@
+{
+  "baseCommit": "e17ea0fea7cdef17b16cc8342025cdf0b4d47567",
+  "actaSha256": "d7e1a2efd2683f16be774a3e102a0f685b7868ae845a4251f2e14305f6aa9723",
+  "changes": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "beforeSha256": "1d92de53b3ba0acfe1b1f79d4737176bd951cc09cfb36834cd0e6419bc6a12c9",
+      "afterSha256": "797d3be0e86bc540fba9912413187dcec4b32d4615554a3e5654e9ace6d8b979"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 52941,
+      "beforeSha256": "7850fc962bcf01fd5617f98a3198dfa237ac1d4374924c31767bb444a188f03b",
+      "afterSha256": "df5ac503dd29734f01d4adcd1a61e59b307b5825ec8267f78db2156b791230cc"
+    }
+  ],
+  "sourceCount": 412,
+  "existingSourcesUnchanged": 410,
+  "sourceDelta": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "before": "1d92de53b3ba0acfe1b1f79d4737176bd951cc09cfb36834cd0e6419bc6a12c9",
+      "after": "797d3be0e86bc540fba9912413187dcec4b32d4615554a3e5654e9ace6d8b979"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "before": "7850fc962bcf01fd5617f98a3198dfa237ac1d4374924c31767bb444a188f03b",
+      "after": "df5ac503dd29734f01d4adcd1a61e59b307b5825ec8267f78db2156b791230cc"
+    }
+  ],
+  "metas": {
+    "count": 869,
+    "allUnchanged": true,
+    "uniqueGuids": 869
+  },
+  "fixtures": {
+    "currentCompleteSnapshot": 493,
+    "allUnchanged": true,
+    "priorHistoricalSubsetCount": 492
+  },
+  "compiledInputsMatchLive": 135,
+  "UnityExecuted": false,
+  "NUnitExecuted": false,
+  "published": false
+}

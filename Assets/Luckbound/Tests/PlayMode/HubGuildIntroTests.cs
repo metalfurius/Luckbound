@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -20,6 +21,49 @@ namespace Luckbound.Tests.PlayMode
 {
     public sealed class HubGuildIntroTests : LuckboundInputTestFixture
     {
+        [Serializable]
+        private sealed class GuildTextMetricLog
+        {
+            public string name;
+            public string content;
+            public string fontName;
+            public int fontSize;
+            public float anchoredX;
+            public float anchoredY;
+            public float rectWidth;
+            public float rectHeight;
+            public float pixelsPerUnit;
+            public float preferredWidth;
+            public float preferredHeight;
+            public int visibleCount;
+        }
+
+        [Serializable]
+        private sealed class GuildLayoutMetricLog
+        {
+            public GuildTextMetricLog hubTitle;
+            public GuildTextMetricLog[] languageStatuses;
+        }
+
+        [Serializable]
+        private sealed class GuildSubmitDiagnostic
+        {
+            public string updateMode;
+            public bool eventSystemEnabled;
+            public bool moduleEnabled;
+            public bool sendNavigationEvents;
+            public bool submitEnabled;
+            public bool enterResolved;
+            public int queuedFrame = -1;
+            public int performedCount;
+            public int performedFrame = -1;
+            public string matchedControlPath;
+            public int observedFrame = -1;
+            public string selectedBefore;
+            public string selectedAfter;
+            public bool conversationActive;
+            public string characterName;
+        }
         private static readonly string[] SpanishNames =
         {
             "Maelis Argentia", "Ronan Verax", "Talia Arboris", "Bram Ferrum", "Neris Vela"
@@ -73,6 +117,7 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(FindText("GuildIntroListTitle").text, Is.EqualTo("GREMIO"));
                 Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildCharacterButton0").gameObject));
                 AssertThatModalExclusive(canvas, "GuildIntroRoot");
+                LogGuildLayoutDiagnostics(canvas);
                 AssertHubHeaderGeometry(canvas);
                 AssertGuildTextLayout(FindText("HubTitle"));
                 AssertGuildTextLayout(FindText("OpenGuildIntroButtonLabel"));
@@ -195,9 +240,72 @@ namespace Luckbound.Tests.PlayMode
                 yield return PressUiKey(keyboard, Key.DownArrow);
                 yield return PressUiKey(keyboard, Key.DownArrow);
                 Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildCharacterButton2").gameObject));
-                yield return PressUiKey(keyboard, Key.Enter);
-                for (int frame = 0; frame < 3 && !FindObject(canvas, "GuildIntroConversationView").activeSelf; frame++) yield return null;
-                Assert.That(FindText("GuildIntroCharacterName").text, Is.EqualTo("Talia Arboris"));
+                Button selectedCharacter = FindButton("GuildCharacterButton2");
+                GameObject selectedBeforeSubmit = EventSystem.current.currentSelectedGameObject;
+                Assert.That(selectedBeforeSubmit, Is.SameAs(selectedCharacter.gameObject));
+                EventSystem eventSystem = EventSystem.current;
+                var uiModule = eventSystem == null ? null : eventSystem.currentInputModule as InputSystemUIInputModule;
+                InputAction submitAction = uiModule == null || uiModule.submit == null ? null : uiModule.submit.action;
+                InputSettings.UpdateMode updateMode = InputSystem.settings.updateMode;
+                bool moduleEnabled = uiModule != null && uiModule.isActiveAndEnabled;
+                bool eventSystemEnabled = eventSystem != null && eventSystem.isActiveAndEnabled;
+                bool sendNavigationEvents = eventSystem != null && eventSystem.sendNavigationEvents;
+                bool submitEnabled = submitAction != null && submitAction.enabled;
+                bool enterResolved = submitAction != null && keyboard.enterKey != null && submitAction.controls.Contains(keyboard.enterKey);
+                var submitDiagnostic = new GuildSubmitDiagnostic
+                {
+                    updateMode = updateMode.ToString(),
+                    eventSystemEnabled = eventSystemEnabled,
+                    moduleEnabled = moduleEnabled,
+                    sendNavigationEvents = sendNavigationEvents,
+                    submitEnabled = submitEnabled,
+                    enterResolved = enterResolved,
+                    selectedBefore = selectedBeforeSubmit == null ? "<none>" : selectedBeforeSubmit.name
+                };
+                Debug.Log("[E10.GUILD.SUBMIT.PRECONDITION] " + JsonUtility.ToJson(submitDiagnostic));
+                Assert.That(updateMode, Is.EqualTo(InputSettings.UpdateMode.ProcessEventsInDynamicUpdate),
+                    "The fixture must use the existing dynamic player-loop input mode.");
+                Assert.That(eventSystemEnabled, Is.True, "Hub EventSystem must be active and enabled.");
+                Assert.That(moduleEnabled, Is.True, "Hub InputSystemUIInputModule must be active and enabled.");
+                Assert.That(sendNavigationEvents, Is.True, "Hub EventSystem must send navigation events.");
+                Assert.That(submitEnabled, Is.True, "Hub UI Submit action must be enabled.");
+                Assert.That(enterResolved, Is.True, "The fixture keyboard Enter control must resolve in UI Submit.");
+
+                Action<InputAction.CallbackContext> onSubmitPerformed = context =>
+                {
+                    if (!object.ReferenceEquals(context.control, keyboard.enterKey)) return;
+                    submitDiagnostic.performedCount++;
+                    submitDiagnostic.performedFrame = Time.frameCount;
+                    submitDiagnostic.matchedControlPath = context.control.path;
+                };
+                submitAction.performed += onSubmitPerformed;
+                try
+                {
+                    yield return PressUiKey(keyboard, Key.Enter, frame => submitDiagnostic.queuedFrame = frame);
+                    for (int frame = 0; frame < 3 && !FindObject(canvas, "GuildIntroConversationView").activeSelf; frame++)
+                        yield return null;
+                    submitDiagnostic.observedFrame = Time.frameCount;
+                    GameObject selectedAfterSubmit = EventSystem.current == null ? null : EventSystem.current.currentSelectedGameObject;
+                    submitDiagnostic.selectedAfter = selectedAfterSubmit == null ? "<none>" : selectedAfterSubmit.name;
+                    submitDiagnostic.conversationActive = FindObject(canvas, "GuildIntroConversationView").activeSelf;
+                    Text conversationName = FindTextOnCanvas(canvas, "GuildIntroCharacterName");
+                    submitDiagnostic.characterName = conversationName.text;
+                    Debug.Log("[E10.GUILD.SUBMIT.RESULT] " + JsonUtility.ToJson(submitDiagnostic));
+
+                    Assert.That(submitDiagnostic.performedCount, Is.EqualTo(1),
+                        "Exactly one Submit performed callback must match the fixture's Enter control.");
+                    Assert.That(submitDiagnostic.performedFrame, Is.GreaterThanOrEqualTo(submitDiagnostic.queuedFrame));
+                    Assert.That(submitDiagnostic.performedFrame, Is.LessThanOrEqualTo(submitDiagnostic.observedFrame));
+                    Assert.That(submitDiagnostic.matchedControlPath, Is.EqualTo(keyboard.enterKey.path));
+                    Assert.That(submitDiagnostic.conversationActive, Is.True);
+                    Assert.That(submitDiagnostic.characterName, Is.EqualTo("Talia Arboris"));
+                    Assert.That(FindText("GuildIntroCharacterName").text, Is.EqualTo("Talia Arboris"));
+                    Assert.That(selectedAfterSubmit, Is.SameAs(FindButton("GuildIntroBackButton").gameObject));
+                }
+                finally
+                {
+                    submitAction.performed -= onSubmitPerformed;
+                }
                 Button language = FindButton("GuildIntroConversationLanguageButton");
                 EventSystem.current.SetSelectedGameObject(language.gameObject);
                 store.FailNextSettingsWrite();
@@ -510,14 +618,76 @@ namespace Luckbound.Tests.PlayMode
             return text;
         }
 
+        private static void LogGuildLayoutDiagnostics(Canvas canvas)
+        {
+            Text title = FindTextOnCanvas(canvas, "HubTitle");
+            Text languageLabel = FindTextOnCanvas(canvas, "GuildIntroListLanguageButtonLabel");
+            var diagnostic = new GuildLayoutMetricLog
+            {
+                hubTitle = MeasureGuildText(title, title.text),
+                languageStatuses = new[]
+                {
+                    MeasureGuildText(languageLabel, "GUARDANDO"),
+                    MeasureGuildText(languageLabel, "SAVING"),
+                    MeasureGuildText(languageLabel, "REINTENTAR"),
+                    MeasureGuildText(languageLabel, "RETRY")
+                }
+            };
+            Debug.Log("[E10.GUILD.LAYOUT] " + JsonUtility.ToJson(diagnostic));
+        }
+
+        private static GuildTextMetricLog MeasureGuildText(Text text, string contentOverride)
+        {
+            Canvas.ForceUpdateCanvases();
+            RectTransform rect = text.rectTransform;
+            Vector2 extents = rect.rect.size;
+            TextGenerationSettings settings = text.GetGenerationSettings(extents);
+            var preferredGenerator = new TextGenerator();
+            preferredGenerator.Populate(contentOverride, settings);
+            float pixelsPerUnit = text.pixelsPerUnit;
+            float preferredWidth = -1f;
+            float preferredHeight = -1f;
+            if (IsFinite(pixelsPerUnit) && pixelsPerUnit > 0f)
+            {
+                preferredWidth = FiniteOrSentinel(preferredGenerator.GetPreferredWidth(contentOverride, settings) / pixelsPerUnit);
+                preferredHeight = FiniteOrSentinel(preferredGenerator.GetPreferredHeight(contentOverride, settings) / pixelsPerUnit);
+            }
+            var visibilityGenerator = new TextGenerator();
+            visibilityGenerator.Populate(contentOverride, settings);
+            return new GuildTextMetricLog
+            {
+                name = text.name,
+                content = contentOverride,
+                fontName = text.font == null ? string.Empty : text.font.name,
+                fontSize = text.fontSize,
+                anchoredX = FiniteOrSentinel(rect.anchoredPosition.x),
+                anchoredY = FiniteOrSentinel(rect.anchoredPosition.y),
+                rectWidth = FiniteOrSentinel(extents.x),
+                rectHeight = FiniteOrSentinel(extents.y),
+                pixelsPerUnit = FiniteOrSentinel(pixelsPerUnit),
+                preferredWidth = preferredWidth,
+                preferredHeight = preferredHeight,
+                visibleCount = visibilityGenerator.characterCountVisible
+            };
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return !float.IsNaN(value) && !float.IsInfinity(value);
+        }
+
+        private static float FiniteOrSentinel(float value)
+        {
+            return IsFinite(value) ? value : -1f;
+        }
         private static void AssertHubHeaderGeometry(Canvas canvas)
         {
             Text title = FindTextOnCanvas(canvas, "HubTitle");
             RectTransform titleRect = title.rectTransform;
             Assert.That(title.text, Is.EqualTo("LA TABERNA"));
             Assert.That(title.fontSize, Is.EqualTo(21));
-            Assert.That(titleRect.anchoredPosition, Is.EqualTo(new Vector2(38f, 111f)));
-            Assert.That(titleRect.sizeDelta, Is.EqualTo(new Vector2(140f, 28f)));
+            Assert.That(titleRect.anchoredPosition, Is.EqualTo(new Vector2(43f, 111f)));
+            Assert.That(titleRect.sizeDelta, Is.EqualTo(new Vector2(150f, 28f)));
 
             RectTransform guildRect = FindButton("OpenGuildIntroButton").GetComponent<RectTransform>();
             Assert.That(guildRect.anchorMin, Is.EqualTo(new Vector2(0f, 1f)));
@@ -626,13 +796,13 @@ namespace Luckbound.Tests.PlayMode
             for (int frame = 0; frame < 2; frame++) yield return null;
         }
 
-        private static IEnumerator PressUiKey(Keyboard keyboard, Key key)
+        private static IEnumerator PressUiKey(Keyboard keyboard, Key key, Action<int> onQueued = null)
         {
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(key));
-            InputSystem.Update();
-            for (int frame = 0; frame < 2; frame++) yield return null;
+            onQueued?.Invoke(Time.frameCount);
+            yield return null;
+            yield return null;
             InputSystem.QueueStateEvent(keyboard, new KeyboardState());
-            InputSystem.Update();
             yield return null;
         }
 

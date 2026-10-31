@@ -1,0 +1,47 @@
+{
+  "run": 41156774137,
+  "commit": "e17ea0fea7cdef17b16cc8342025cdf0b4d47567",
+  "tree": "295bbc9fdda0c4c8f66ce84a16e4276a1fb37833",
+  "suite": 111567051822,
+  "conclusion": "failure",
+  "artifact": {
+    "id": 13025935942,
+    "bytes": 9903430,
+    "sha256": "6ea31d666e178e0f0fd10cc93117b632829449014a8eebee928ac547d564ff54",
+    "crcChecked": true,
+    "files": 247
+  },
+  "native": {
+    "edit": {
+      "total": 654,
+      "passed": 654
+    },
+    "play": {
+      "total": 517,
+      "passed": 515,
+      "failed": 2
+    },
+    "total": 1171,
+    "passed": 1169,
+    "skipped": 0,
+    "inconclusive": 0,
+    "old1168Passed": true,
+    "newReadOnlyPassed": true
+  },
+  "failures": [
+    {
+      "test": "E10GuildIntroReadsAllFiveExactEntriesInBothLanguagesAndReusesOnePresentation",
+      "causeObserved": "HubTitle preferredWidth146.791306 exceeds rect140+0.5",
+      "line": 77
+    },
+    {
+      "test": "E10GuildIntroSubmitBackCloseEscapeAndLanguagePreserveFocusAndPreparation",
+      "causeObserved": "After queued Enter conversation name GameObject inactive/not found; two Down movements had selected character2",
+      "line": 200
+    }
+  ],
+  "V6Gate": "skipped, no real verifier success claimed",
+  "builds": "skipped",
+  "publication": "skipped",
+  "playersExecutedLocal": false
+}
