@@ -1,0 +1,19 @@
+{
+  "preparedOnly": true,
+  "remoteMutations": 0,
+  "target": "refs/heads/codex/f02-authority-20261031",
+  "acta": "../SOL-F02-AUTHORITY-CANDIDATE-R1.md",
+  "actaSha256": "424ec8674b00137e0b34272187aad930c65dcd449bf1619e8307f6ac7c2afdd2",
+  "files": [
+    {
+      "path": "policy.json",
+      "bytes": 609,
+      "sha256": "3111b38d5b19b4a280e3660139e8d03312959a3a91204044a4a909ea028f2b99"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 7524,
+      "sha256": "c2092af2cc5883022f2bacbda805a9222aed339f57e3d58a53fc620be01e8468"
+    }
+  ]
+}

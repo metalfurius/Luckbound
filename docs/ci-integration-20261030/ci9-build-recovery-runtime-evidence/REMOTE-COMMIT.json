@@ -1,0 +1,35 @@
+{
+  "sha": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+  "node_id": "C_kwDONB2jd9oAKGRjNjQ1Y2U5YWE3NWY0N2U0NjI5NWM3ZjkzYjRmM2Y0NGEyOTliMGQ",
+  "url": "https://api.github.com/repos/metalfurius/Luckbound/git/commits/dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+  "html_url": "https://github.com/metalfurius/Luckbound/commit/dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+  "author": {
+    "name": "metalfurius",
+    "email": "75508084+metalfurius@users.noreply.github.com",
+    "date": "2026-10-31T00:17:05Z"
+  },
+  "committer": {
+    "name": "metalfurius",
+    "email": "75508084+metalfurius@users.noreply.github.com",
+    "date": "2026-10-31T00:17:05Z"
+  },
+  "tree": {
+    "sha": "64b00524e7e676374a3134de016d1a5cb6f81359",
+    "url": "https://api.github.com/repos/metalfurius/Luckbound/git/trees/64b00524e7e676374a3134de016d1a5cb6f81359"
+  },
+  "message": "Gate contract board writes and instrument headless Windows/WebGL builds",
+  "parents": [
+    {
+      "sha": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/git/commits/579d30f75a31a7e2bbe8d3f74171ca2068741003",
+      "html_url": "https://github.com/metalfurius/Luckbound/commit/579d30f75a31a7e2bbe8d3f74171ca2068741003"
+    }
+  ],
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}

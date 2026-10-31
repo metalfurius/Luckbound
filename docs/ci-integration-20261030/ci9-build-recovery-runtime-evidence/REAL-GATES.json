@@ -1,0 +1,33 @@
+{
+  "testJob": 124381822367,
+  "testJobConclusion": "success",
+  "unityOutcome": "success",
+  "v6GateOutcome": "success",
+  "sentinelConclusion": "success",
+  "evidence": {
+    "verifierCommand": "python3 Tools/Automation/verify_v6_capture.py",
+    "sentinel": [
+      "test \"${UNITY_TEST_OUTCOME}\" = success",
+      "test \"${V6_GATE_OUTCOME}\" = success",
+      "UNITY_TEST_OUTCOME: success",
+      "V6_GATE_OUTCOME: success"
+    ],
+    "rawLogBytes": 4431133,
+    "rawLogSha256": "f6887d1806e022b03a6a21f935c3e7a11555325d5a87d77a34e990b6906a4f69",
+    "rawLogPublished": false
+  },
+  "verifier": {
+    "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+    "sessionId": "efa315bab314484bab99e5c885e18c8c",
+    "expectedUnityVersion": "6000.6.7f1",
+    "observedUnityVersion": "6000.6.7f1",
+    "projectVersionDeclared": "6000.6.7f1",
+    "projectPinUnityVersion": "6000.6.7f1",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "b0900d52667024fc473a9d9c5d26e0a4d0738622d0459db861b30c58d328a8d6",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "AppCompileReused": true,
+  "AppControllerSha256": "1d92de53b3ba0acfe1b1f79d4737176bd951cc09cfb36834cd0e6419bc6a12c9",
+  "references": [
+    {
+      "name": "Luckbound.Content.ref.dll",
+      "sha256": "f3da426e064a458e1c40480606dac9666c33c966dc60d2f0b87fe6ffd624b208",
+      "origin": "accepted dependency reference seed"
+    },
+    {
+      "name": "Luckbound.Content.Route.Tests.ref.dll",
+      "sha256": "1d3dec6d92f9a62eea01e793e67e45d0bc2848c214c1128bbe087f3591314182",
+      "origin": "accepted dependency reference seed"
+    },
+    {
+      "name": "Luckbound.Core.ref.dll",
+      "sha256": "2e8eed9d8b9b34d5e9dbaaec35fa0fd0afb3cab07d4955172192c67b1cd12891",
+      "origin": "accepted dependency reference seed"
+    },
+    {
+      "name": "Luckbound.Core.Tests.ref.dll",
+      "sha256": "f330bd32952fb8e2382b0f0f91b5ae4b168485b77362b3efcb83e64a44b6e7e3",
+      "origin": "accepted dependency reference seed"
+    },
+    {
+      "name": "Luckbound.Gameplay.ref.dll",
+      "sha256": "9f0be8bad5dffabeb75946e1c6e45b1087e27ff61ae0be46cae70329bdd62a7c",
+      "origin": "accepted dependency reference seed"
+    },
+    {
+      "name": "Luckbound.PlayMode.Tests.ref.dll",
+      "sha256": "1cd4d1720ca935b7e3dd5808902ee11feaa7c08dd9e18d7c61d669fb3a6002b2",
+      "origin": "accepted dependency reference seed"
+    },
+    {
+      "name": "Luckbound.App.ref.dll",
+      "sha256": "5be471df10908160ff4699b231d8c71f4572bf3d06c7f526f4cc252a7099c3c3",
+      "origin": "combined-r2/compile-r1 App56 exit0, Controller1d92 unchanged"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "preliminaryOnly": true,
+  "testsPending": true,
+  "files": [
+    {
+      "originalPath": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "portablePath": "review-baselines/preliminary-r1/HubPreparationController.cs.txt",
+      "bytes": 86602,
+      "sha256": "a2bc009e2813d148518e5fe16ddd392cffd910cd60f27a817d3be0a4b1177c8f"
+    },
+    {
+      "originalPath": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "portablePath": "review-baselines/preliminary-r1/Initial.json.txt",
+      "bytes": 24822,
+      "sha256": "04f078acbc977696f2ca260992f85cc6c51747bedb5f3aef592356db1819c750"
+    }
+  ]
+}

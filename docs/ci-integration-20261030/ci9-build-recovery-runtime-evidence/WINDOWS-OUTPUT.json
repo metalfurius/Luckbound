@@ -1,0 +1,24 @@
+{
+  "run": 41149331963,
+  "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+  "job": 124384267850,
+  "attempt": 1,
+  "status": "success",
+  "artifact": {
+    "id": 13022164355,
+    "bytes": 50565758,
+    "sha256": "cfc6427d7f27f2105a48d1945d46bd9a69c955a0ba48df3d46f206eeaa6c3b86"
+  },
+  "crcChecked": true,
+  "extractedFiles": 210,
+  "exe": {
+    "path": "Luckbound.exe",
+    "bytes": 667136,
+    "sha256": "9806abde4a406ed68647e9505852c49f6aa72a372f4f084e2aa2821affea57a2",
+    "magic": "MZ",
+    "machine": "AMD64/0x8664",
+    "peSignatureVerified": true
+  },
+  "unityPlayerPresent": true,
+  "playerExecuted": false
+}

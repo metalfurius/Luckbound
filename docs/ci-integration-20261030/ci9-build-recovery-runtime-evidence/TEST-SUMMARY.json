@@ -1,0 +1,826 @@
+{
+  "run": 41149331963,
+  "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+  "editMode": {
+    "total": 654,
+    "passed": 654
+  },
+  "playMode": {
+    "total": 514,
+    "passed": 514
+  },
+  "total": 1168,
+  "passed": 1168,
+  "failed": 0,
+  "skipped": 0,
+  "inconclusive": 0,
+  "groups": [
+    {
+      "class": "HubPreparationTests",
+      "count": 19,
+      "passed": 19,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.D05_TavernSelectionStartsANewRunAndDoesNotInheritPriorExpeditionState",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.D05RunFactoryBuildsTheClassKitAndAcceptsOnlyTwoClassSkills(\"class.bellator\",\"weapon.bellator.rusted_sword\",\"armor.bellator.guild_cuirass\",\"skill.bellator.circular_cut\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.D05RunFactoryBuildsTheClassKitAndAcceptsOnlyTwoClassSkills(\"class.venator\",\"weapon.venator.short_bow\",\"armor.venator.leather_vest\",\"skill.venator.piercing_arrow\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.D05RunFactoryBuildsTheClassKitAndAcceptsOnlyTwoClassSkills(\"class.magus\",\"weapon.magus.ember_staff\",\"armor.magus.traveler_robe\",\"skill.magus.fireball\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.D09_BootstrapRestoresCheckpointCompletionAndNextRoomAcrossRestarts",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E09_UnlockedRaceSelectionSurvivesClassChangeAndIsPersisted",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E09RunConfigurationAcceptsKnownRacesAndAssignsStartingFortuna(\"race.human\",2)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E09RunConfigurationAcceptsKnownRacesAndAssignsStartingFortuna(\"race.orcini\",1)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E09RunConfigurationAcceptsKnownRacesAndAssignsStartingFortuna(\"race.alvari\",1)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E09RunConfigurationAcceptsKnownRacesAndAssignsStartingFortuna(\"race.dvergar\",1)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E09RunConfigurationRejectsUnknownRaceIds",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E10_ContractBoardAcceptsClaimsPersistsAndChangesLanguageWithoutLosingFocus",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E10_ContractBoardBlocksAcceptAndClaimAfterAuthenticReadOnlyLoad",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E10_ContractBoardBlocksFreshAcceptWhileAnotherProfileWriteIsPending",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E10_ContractBoardEnforcesThreeActiveAndRejectsIncompleteClaims",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E10_ContractBoardLanguageChangesKeepFocusAndSettingsWritableWithReadonlyProfile",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E10_ContractBoardRecreatedControllerRetriesOnlyItsExactPendingPayloadOnce",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E10_ContractBoardRetriesTheSamePendingProfilePayload",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.HubPreparationTests.E10_GameplayProgressRetryDoesNotEmitContractUiConfirmation",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SupportRelicResolverTests",
+      "count": 29,
+      "passed": 29,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.AddSumsMatchingPercentageCategoriesBeforeTheyAreApplied",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EachSupportRelicResolvesItsSpecifiedModifier(\"relic.pale_bone\",15,0,0,0,0,0,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EachSupportRelicResolvesItsSpecifiedModifier(\"relic.arcane_flask\",0,10,0,0,0,0,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EachSupportRelicResolvesItsSpecifiedModifier(\"relic.apprentice_gear\",0,0,10,0,0,0,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EachSupportRelicResolvesItsSpecifiedModifier(\"relic.alvari_leaf\",0,0,0,10,0,0,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EachSupportRelicResolvesItsSpecifiedModifier(\"relic.route_cord\",0,0,0,0,8,0,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EachSupportRelicResolvesItsSpecifiedModifier(\"relic.blessed_vial\",0,0,0,0,0,20,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EachSupportRelicResolvesItsSpecifiedModifier(\"relic.sigiled_bark\",0,0,0,0,0,0,25,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EachSupportRelicResolvesItsSpecifiedModifier(\"relic.merchant_seal\",0,0,0,0,0,0,0,15)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.EmptySlotsAreAcceptedAndRemovingOneSlotRemovesItsModifiers",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.MaximumResourceBonusesRespectTheirInputAndOverflowLimits",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.MaximumResourceRelicsDoNotRefillCurrentResources",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.SupportCatalogContainsExactlyTheEightPlannedIds",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TheSameRelicCannotOccupyBothSlots(\"relic.pale_bone\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TheSameRelicCannotOccupyBothSlots(\"relic.arcane_flask\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TheSameRelicCannotOccupyBothSlots(\"relic.apprentice_gear\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TheSameRelicCannotOccupyBothSlots(\"relic.alvari_leaf\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TheSameRelicCannotOccupyBothSlots(\"relic.route_cord\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TheSameRelicCannotOccupyBothSlots(\"relic.blessed_vial\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TheSameRelicCannotOccupyBothSlots(\"relic.sigiled_bark\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TheSameRelicCannotOccupyBothSlots(\"relic.merchant_seal\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TwoDistinctValidSlotsCombineBonusesByTheirOwnCategory(\"relic.pale_bone\",\"relic.arcane_flask\",15,10,0,0,0,0,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TwoDistinctValidSlotsCombineBonusesByTheirOwnCategory(\"relic.apprentice_gear\",\"relic.alvari_leaf\",0,0,10,10,0,0,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TwoDistinctValidSlotsCombineBonusesByTheirOwnCategory(\"relic.route_cord\",\"relic.blessed_vial\",0,0,0,0,8,20,0,0)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.TwoDistinctValidSlotsCombineBonusesByTheirOwnCategory(\"relic.sigiled_bark\",\"relic.merchant_seal\",0,0,0,0,0,0,25,15)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.UnknownAndOtherFamilyRelicsAreRejected(\"relic.unknown\",null,\"relicOneId\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.UnknownAndOtherFamilyRelicsAreRejected(null,\"relic.unknown\",\"relicTwoId\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.UnknownAndOtherFamilyRelicsAreRejected(\"relic.marked_coin\",null,\"relicOneId\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicResolverTests.UnknownAndOtherFamilyRelicsAreRejected(null,\"relic.hidden_pouch\",\"relicTwoId\")",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SupportRelicSkillUseTests",
+      "count": 7,
+      "passed": 7,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.Core.SupportRelicSkillUseTests.CombinedCooldownUsesCeilingAndThirtyTickMinimum",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.SupportRelicSkillUseTests.CombinedCostUsesAddedPercentagesThenAlvariHalfUpAtEffectStart",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.SupportRelicSkillUseTests.CooldownsRemainIndependentPerSkillWithCombinedModifiers",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.SupportRelicSkillUseTests.EffectStartRevalidatesEnergyAgainstLatestCommittedModifiers",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.SupportRelicSkillUseTests.InterruptedPreparationRemainsFreeAfterModifierReplacement",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.SupportRelicSkillUseTests.ReplacementsDuringPreparationApplyAtEffectWithoutRefillOrClockReset",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.SupportRelicSkillUseTests.SkillCostUsesCeilingAndPreservesOnePointMinimum",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SupportRelicHealingUseTests",
+      "count": 8,
+      "passed": 8,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests.BlessedVialHealingClampsToMissingHealth",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests.BlessedVialMakesTheConsumedPotionRestoreThirty",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests.DefaultPotionStillRestoresTwentyFiveAfterTwentyOneTicks",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests.EquippingVialDuringPreparationPreservesClockAndAppliesAtConsumption",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests.FullHealthRejectsVialPotionWithoutStartingOrSpending",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests.InterruptedVialPreparationCancelsWithoutConsumingCharge",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests.RemovingVialDuringPreparationPreservesClockAndUsesBaseHealing",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicHealingUseTests.RepeatedEquipAndRemovalDoNotHealOrRefillPotionCharges",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SupportRelicActorRulesTests",
+      "count": 6,
+      "passed": 6,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests.HarmfulDurationAddsArmorAndBarkBeforeHalfUpRounding",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests.HarmfulDurationClampsReductionAndPreservesPositiveMinimum",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests.HarmfulDurationRejectsNegativeBaseAndCheckedPercentageOverflow",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests.HorizontalSpeedAddsArmorPactAndTwoSlotSupportPercentagesOnce",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests.HorizontalSpeedRejectsNegativeBaseAndCheckedOverflow",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Relics.SupportRelicActorRulesTests.HorizontalSpeedUsesDecimalArithmeticAndCapsAtEightPointFive",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SupportRelicEquipmentRuntimeTests",
+      "count": 7,
+      "passed": 7,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicEquipmentRuntimeTests.ApplicationRelicSwapsReplayAndMerchantSealNeverNeedAnUnequipOperation",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicEquipmentRuntimeTests.ArmorAndRelicCommitsPreserveActorSkillTimelineAndUnfilledResources",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicEquipmentRuntimeTests.CheckpointRoomRebindAndUnknownLegacyMaximumGuardUseTheExactPersistedState",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicEquipmentRuntimeTests.DuplicateWrongItemSlotKeyConflictAndV6ReadonlyRejectWithoutFalseSuccess",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicEquipmentRuntimeTests.DurableSaveWithFailedPublicationRetriesWithoutAnotherWriteAndPreservesManualPause",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicEquipmentRuntimeTests.FailedWriteKeepsOldActorAndRetriesTheExactCandidateAndLease",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicEquipmentRuntimeTests.NewBindingsApplyKnownBonusesInBothOrdersAndIgnoreCombatRelicsAcrossAllClasses",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SupportRelicPassiveEquipmentRuntimeTests",
+      "count": 7,
+      "passed": 7,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.CheckpointRebindSlotsReplayAndReadonlyRepositoryPreserveTheContract",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.CordAndBarkUseArmorAndPactsForRigidbodySpeedAndRealReceivedStun",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.FailedActorPublicationRetriesWithoutASecondWrite",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.FailedWriteKeepsOldPassiveAndExactRetryPublishesOneCandidate",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.GearAndLeafInBothRelicSlotsChangeEffectiveCostAndReadyTickWithPacts",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.RepeatedCommittedSwapsPreserveActorAndSkillTimelineAndResources",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SupportRelicPassiveEquipmentRuntimeTests.VialChangesHealthPotionOnlyAndPreservesFullInterruptAndTonicRules",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "RestStopServicesPanelTests",
+      "count": 5,
+      "passed": 5,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_ClickAndKeyboardSubmitPersistServicesAndRetryTheSamePurchase",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_DoesNotOfferRestServicesOutsideAValidRestRoom",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.E03_MerchantOfferKeepsBasePriceWithoutMerchantSeal",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.I06_ExplicitCancelAndCloseRoutesRemainDistinct",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.Economy.RestStopServicesPanelTests.I06_TerminalRejectedMerchantActionQueuesOneSilentUiError",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "FortuneOfferPanelControllerTests",
+      "count": 7,
+      "passed": 7,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.FortuneOfferPanelControllerTests.DefinitiveUnmaterializableClaimDoesNotBecomePendingRetryOrWrite",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.FortuneOfferPanelControllerTests.DisplaysThreePersistedOptionsLocksChoiceAndClaimsRewardOnlyOnce",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.FortuneOfferPanelControllerTests.OwnPendingChoiceRerollAndClaimExposeOnlyTheirExactRetry",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.FortuneOfferPanelControllerTests.PendingFortuneMutationForAnotherOfferBlocksDestinationPanelUntilApiRetry",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.FortuneOfferPanelControllerTests.PendingRerollRetryReusesItsTransactionIdAndCommitsOneNewOffer",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.FortuneOfferPanelControllerTests.ReadOnlyV6ProfileDisablesFreshPanelActionsForUnclaimedAndChosenOffers",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.FortuneOfferPanelControllerTests.ShowsEveryCoreRerollUnavailableReason",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "CombatArenaTests",
+      "count": 6,
+      "passed": 6,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.CombatArenaTests.C08EncounterDataDefinesTwoValidWavesAndKeepsEverySpawnClearOfTheEntrance",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.CombatArenaTests.C08SpawnIdsStayExplicitAcrossSpawnOrderAndPositionChangesWhileWaveOrderIsPreserved",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.CombatArenaTests.C08SpawnIdUniquenessUsesOrdinalCaseSensitiveComparison",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.CombatArenaTests.EarlyAcceptedJumpRoutesLandingBeforeAnyGroundedAudioBaseline",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.CombatArenaTests.ObservedSpawnContactStaysSilentAndLaterJumpRoutesLanding",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.CombatArenaTests.PlayerCanWinTheGeneratedArenaWithKeyboardCombatAndWithoutForcedEnemyRemoval",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SaveV7StateTests",
+      "count": 26,
+      "passed": 26,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.ActiveV7RequiresTypedPinAndUnfinishedCheckpointMarker",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingAllowsEmptyCheckpointForInactiveOrCompletedCurrentState",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingComparesPactsAsAnOrdinalSetAndAllowsZeroEnergy",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"seed\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"generation\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"race\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointBindingRejectsFortuneIdentityOrPactContextMismatchWithoutChangingRoomReference(\"pacts\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointRejectsNegativeOrOverMaximumEnergyAndActiveRunStillRequiresPositiveMaximum",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CheckpointRequiresExactCurrentNodeAndPinnedPlanReference",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreAcceptsNontrivialProfileAndCheckpointBooksWithoutMutatingDtos",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"future-version\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"charges\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"status\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"duplicate-offer\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"duplicate-transaction\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-selection\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-history\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"invalid-brew-id\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"unknown-status\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.CoreFortuneRestoreRejectsInvalidProfileAndCheckpointBooksWithoutMutatingDtos(\"unknown-options\")",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.NullPinAndCheckpointArraysAreRejectedAndErrorsHaveNonNullText",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.PinEntryMustNameTheCurrentRouteCursor",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.RouteMutationCannotPassThePinnedCanonicalRouteDigest",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.SettingsV7UsesFrozenFieldsAndDefaultsWithoutChangingLiveSaveFormat",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.TypedCloneDeepCopiesNestedDtosAndPreservesValuesOrderAndNulls",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.Core.Expeditions.SaveV7StateTests.TypedClonePreservesNullArraysWithoutFillingDefaults",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SaveV7CodecTests",
+      "count": 15,
+      "passed": 15,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.CheckpointCodec_IsTypedAndStrictWithoutAnIndependentChecksum",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ChecksumTamperingAndSemanticMutationAreRejectedWithoutRepair",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.EmbeddedCheckpointMustMatchThePinFromTheSameProfile",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.NullArrayIsNotNormalizedToEmptyByEncode",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileAuthenticationRejectsMutationWithoutReplacingChecksum",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileEncode_EmitsExplicitEncounterPayloadOnlyForEncounterMode",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileEncode_EscapesDeterministicallyAndPreservesOpaqueUnicode",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileEncode_RejectsUnpairedSurrogateWithoutMutatingInput",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileRoundTrip_DoesNotCreateCheckpointForCompletedOrInactiveRuns",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.ProfileRoundTrip_PreservesSixteenClosedDtosAndTypedPin",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.SettingsEncode_RequiresAnEmptyOrWellFormedInputChecksum",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.SettingsVector_IsInvariantAcrossCulturesAndRoundTrips",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.SettingsVector_UsesIndependentBytesAndSha256",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.StrictReaderRejectsInvalidUtf8SurrogatesUnknownDuplicateMissingAndTrailingData",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7CodecTests.StrictReaderRejectsModeNumbersCasingAndNonePayloadKeys",
+          "result": "Passed"
+        }
+      ]
+    },
+    {
+      "class": "SaveV7AtomicRepositoryTests",
+      "count": 37,
+      "passed": 37,
+      "cases": [
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.CandidateCapturesInputsAndEnvelopeGettersWithoutAliases",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.ExplicitV6InactiveMigrationPreservesProfileArraysReceiptsAndAdvancesDurableIdentity",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.FileStoreCommitsInitialAndTransitionAtomicallyAndRestoresExactRetainedRevisionAndBackup",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.FileStoreFinalizationFailureRetainsExactPendingBytesAndIndependentSettings",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.FuturePrimaryNeverFallsBackAndOperationalV6RejectsARealV7Document",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.InitialCommitRejectsCatalogMissingOnlyAFutureNodeWithoutWritingOrResolvingItsVariant",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.PendingV6PreventsLatchWithoutReadOrCacheChangeAndRetriesOriginalProtocol",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.PendingV7NeverReadsOrReencodesAndSerializesConcurrentV6Access",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.PinAdapterMatchesOriginalCoreBytesAndRejectsLossyInputs(False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.PinAdapterMatchesOriginalCoreBytesAndRejectsLossyInputs(True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.RejectsMutableEnvelopeTamperingMissingRevisionAndRewrittenEntryCheckpoint",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.SignedUnknownInventorySchemaAndMissingEnteredBindingFailBeforeStorageOrPublication",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(1,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(1,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(2,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(2,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(3,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(3,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(4,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(4,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(5,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(5,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(6,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyActiveMatrixAuthenticatesAndRemainsReadOnly(6,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(1,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(1,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(2,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(2,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(3,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(3,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(4,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(4,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(5,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(5,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(6,False)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7LegacyInactiveMatrixIsDiagnosticOnlyUntilExplicitCommit(6,True)",
+          "result": "Passed"
+        },
+        {
+          "fullname": "Luckbound.Tests.PlayMode.SaveV7AtomicRepositoryTests.V7ProfileLatchLeavesFrozenV6SettingsOnTheIndependentOperationalPath",
+          "result": "Passed"
+        }
+      ]
+    }
+  ]
+}

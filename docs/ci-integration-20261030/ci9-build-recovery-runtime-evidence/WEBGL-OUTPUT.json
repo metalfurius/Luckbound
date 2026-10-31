@@ -1,0 +1,31 @@
+{
+  "run": 41149331963,
+  "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+  "job": 124384267788,
+  "attempt": 1,
+  "status": "success",
+  "artifact": {
+    "id": 13022942093,
+    "bytes": 16200659,
+    "sha256": "a77d5523707b65375f420daa591739df799117d59f4f2ff24fee2b6329cc7146"
+  },
+  "crcChecked": true,
+  "extractedFiles": 17,
+  "index": {
+    "bytes": 6378,
+    "sha256": "60c482428b1e203d52cf95042c65f65c05bab3a8094fe7abd02342ebce1e067b",
+    "referencedBuildFilesPresent": true
+  },
+  "loader": {
+    "bytes": 27675,
+    "sha256": "5f626a04398d28ad14deaa9c99857c689cded125535f863a6f6d4866e60cb848"
+  },
+  "wasm": {
+    "compressedBytes": 8409746,
+    "compressedSha256": "446986d469c11902f6d8fb923dd2af8384223eeb3d8f91174b1b73ed30b3423f",
+    "decompressedBytes": 41575640,
+    "decompressedSha256": "ac26dacd29386b8669eb7123c36482e8d53fc271e1591ff8552f0a7b35ee1b1b",
+    "magicAndVersion": "0061736d01000000"
+  },
+  "playerExecuted": false
+}

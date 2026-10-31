@@ -1,0 +1,186 @@
+{
+  "run": 41149331963,
+  "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+  "files": [
+    {
+      "path": "c08/C08_EarlyJumpLanding-scenario-report.json",
+      "bytes": 7651,
+      "sha256": "0c8b04f6abeb058205ae27266496803283c44f17f7a24e4804befbfa8e4b5b09"
+    },
+    {
+      "path": "c08/C08_EarlyJumpLanding-scenario.log",
+      "bytes": 6934,
+      "sha256": "0aed4638ee241c69dbf8c607077b61b3cc06603e5836a72b25bdc552b3e36907"
+    },
+    {
+      "path": "c08/C08_ObservedSpawnLanding-scenario-report.json",
+      "bytes": 7653,
+      "sha256": "dde23f078492b8760021320cd13fc23c9823ef97b03e1cc0140d86a00ac0075d"
+    },
+    {
+      "path": "c08/C08_ObservedSpawnLanding-scenario.log",
+      "bytes": 6931,
+      "sha256": "dbc069f55cf6da09c32b5ae47925664ec5a6497ab8d6b4770d3c70f790f8e3b4"
+    },
+    {
+      "path": "c08/C08_RealKeyboardTwoWaveCombat-scenario-report.json",
+      "bytes": 29879,
+      "sha256": "89c26cb09483521e10e33d0b451f88b3624b9ba4b4f841d3ce7982402df20e93"
+    },
+    {
+      "path": "c08/C08_RealKeyboardTwoWaveCombat-scenario.log",
+      "bytes": 27624,
+      "sha256": "e0683cd7c0e0c5b905924e4a06f97aff13e0554fac17533ae49bac31718add29"
+    },
+    {
+      "path": "c08/source-manifest.sha256",
+      "bytes": 715410,
+      "sha256": "4eba02c4d2b0f16d191e4783b0570dea3661f8c125745410d93aded64fe95ff1"
+    },
+    {
+      "path": "C08-SUMMARY.json",
+      "bytes": 1736,
+      "sha256": "44613d1bc712b0abf9fd2963681a6fe13e3b4372185ad03c6d71e7322f76b083"
+    },
+    {
+      "path": "CI-ARTIFACTS.json",
+      "bytes": 4702,
+      "sha256": "da4643e10d67455669e8973f4a16c5af5bddddf52cabcc840e0d04d87ae3afa0"
+    },
+    {
+      "path": "CI-JOBS-FINAL.json",
+      "bytes": 15404,
+      "sha256": "04330bb1d344f9f76e5445d75c460772226500db2d7ce2ceb49bae217835be40"
+    },
+    {
+      "path": "CI-RUN-FINAL.json",
+      "bytes": 13771,
+      "sha256": "c91ff37ca655c03a146066376132bedab50a8b1e9dacd89498ccdcce8b429ace"
+    },
+    {
+      "path": "DATA-COMPARISON.json",
+      "bytes": 30899,
+      "sha256": "f3a6ec827e405a387f40a56e39229273f955b2b87b6bea81332c50ae316dad51"
+    },
+    {
+      "path": "diagnostics/webgl/metadata.json",
+      "bytes": 930,
+      "sha256": "b380328b21c8201a1d57c78de7a817827d1bea93bd7ca2dd9c9c294da5466bcd"
+    },
+    {
+      "path": "diagnostics/webgl/observer-done.json",
+      "bytes": 258,
+      "sha256": "8a9a55b8fe5f7ad3e9c57e4bfdd112187d1be60030fd9088a3f7cc367ea9b072"
+    },
+    {
+      "path": "diagnostics/webgl/observer-ready.json",
+      "bytes": 72,
+      "sha256": "0d89afb0383e609134512e1ac215ffedffaca50db6e901476efa412131b7c85c"
+    },
+    {
+      "path": "diagnostics/webgl/records.jsonl",
+      "bytes": 1285688,
+      "sha256": "90743b30732e092fff288ab49364d1e249bc9b12288259a415f135d0b509f638"
+    },
+    {
+      "path": "diagnostics/webgl/stop-requested",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "diagnostics/windows/metadata.json",
+      "bytes": 932,
+      "sha256": "d9ae48739f9b1a70d28feb2662698d7d5f8ace75cc5699caa5b02be931931a6b"
+    },
+    {
+      "path": "diagnostics/windows/observer-done.json",
+      "bytes": 260,
+      "sha256": "c02666b0df17e83eef1ae91f5ec83a30bd57aa2629ffb708ac51b6cb4e911420"
+    },
+    {
+      "path": "diagnostics/windows/observer-ready.json",
+      "bytes": 72,
+      "sha256": "0d89afb0383e609134512e1ac215ffedffaca50db6e901476efa412131b7c85c"
+    },
+    {
+      "path": "diagnostics/windows/records.jsonl",
+      "bytes": 337906,
+      "sha256": "260d28ed902be8428ec85d12aa073021005ad40fa0ddab098bf60975707688cd"
+    },
+    {
+      "path": "diagnostics/windows/stop-requested",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "editmode-results.xml",
+      "bytes": 568832,
+      "sha256": "33e98bb7b7ae98036486e9384ff4669b6528ed19b794843bb63199c627411a49"
+    },
+    {
+      "path": "NATIVE-CALLSITE-BINDING.json",
+      "bytes": 6497,
+      "sha256": "d4fe48894f160bb02f1484496f69aca563f2d44a7f4b37ca26774d8e5e5a484e"
+    },
+    {
+      "path": "NATIVE-MANIFEST.json",
+      "bytes": 17874,
+      "sha256": "b0900d52667024fc473a9d9c5d26e0a4d0738622d0459db861b30c58d328a8d6"
+    },
+    {
+      "path": "OBSERVABILITY-VERIFICATION.json",
+      "bytes": 26605,
+      "sha256": "0268c45afa1a0565c9719cc61dce66c67ac3b57142d8a57ee68a7d65785c500b"
+    },
+    {
+      "path": "playmode-results.xml",
+      "bytes": 1014713,
+      "sha256": "ccffab99d372b82056e1feec4a53abc121c905aed718e0fe78fb3ff3d9b3b81b"
+    },
+    {
+      "path": "REAL-GATES.json",
+      "bytes": 1183,
+      "sha256": "d0b1f4948cca2e80a1ed25d097c9f3924e641d730824eccfdd92dc3cd5debea3"
+    },
+    {
+      "path": "REMOTE-COMMIT.json",
+      "bytes": 1388,
+      "sha256": "1ebc60d6d898054b2635ea4b903272910347c3e2a46d27128741f7f2a9c0a935"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2241,
+      "sha256": "bcd88254040a22ce35d4bb8019f503bb05a3ae93790dc066240bc0cc30522c98"
+    },
+    {
+      "path": "SOURCE-BINDING.json",
+      "bytes": 5541,
+      "sha256": "b3365ed05a3be43de4f2caf97d5cf3295ef4161eaf011d83ca826bcbb8d142a2"
+    },
+    {
+      "path": "TEST-SUMMARY.json",
+      "bytes": 37855,
+      "sha256": "1a4c270ecdd49e6010eb9bb22382446fed45bbc1a7e473f54693d4973a55c232"
+    },
+    {
+      "path": "WEBGL-DIAGNOSTIC-SUMMARY.json",
+      "bytes": 3857,
+      "sha256": "6d0b57cc0ddce1254b7462b90d51726d4ef3bd972bce6e8a80f4a675b938f6ef"
+    },
+    {
+      "path": "WEBGL-OUTPUT.json",
+      "bytes": 955,
+      "sha256": "73f8d3cde050b6cc4fb8a64b00010484b2773d294e5a014b6240c534a52877ad"
+    },
+    {
+      "path": "WINDOWS-DIAGNOSTIC-SUMMARY.json",
+      "bytes": 3867,
+      "sha256": "1961d5762340ad9aa026b28e63991918e25dcbd486f913faac753d24e068bc6f"
+    },
+    {
+      "path": "WINDOWS-OUTPUT.json",
+      "bytes": 625,
+      "sha256": "a3b247966ccaed3d36b7f9a7e12a3729b1f0739a535f2c5968ddc5b228b077fe"
+    }
+  ]
+}

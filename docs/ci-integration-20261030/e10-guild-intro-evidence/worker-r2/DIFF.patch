@@ -1,0 +1,160 @@
+diff --git "a/Logs\\E10GuildIntro-20261031-r1\\candidate\\Assets\\Luckbound\\Tests\\PlayMode\\HubGuildIntroTests.cs" "b/Logs\\E10GuildIntro-20261031-r2\\after\\Assets\\Luckbound\\Tests\\PlayMode\\HubGuildIntroTests.cs"
+index 93a98dc..d523cf0 100644
+--- "a/Logs\\E10GuildIntro-20261031-r1\\candidate\\Assets\\Luckbound\\Tests\\PlayMode\\HubGuildIntroTests.cs"
++++ "b/Logs\\E10GuildIntro-20261031-r2\\after\\Assets\\Luckbound\\Tests\\PlayMode\\HubGuildIntroTests.cs"
+@@ -25,6 +25,11 @@ namespace Luckbound.Tests.PlayMode
+             "Maelis Argentia", "Ronan Verax", "Talia Arboris", "Bram Ferrum", "Neris Vela"
+         };
+ 
++        private static readonly string[] EnglishNames =
++        {
++            "Maelis Argentia", "Ronan Verax", "Talia Arboris", "Bram Ferrum", "Neris Vela"
++        };
++
+         private static readonly string[] SpanishIntros =
+         {
+             "El gremio busca tres ecos para estabilizar el castillo. Empieza por el Patio y regresa con vida.",
+@@ -44,7 +49,7 @@ namespace Luckbound.Tests.PlayMode
+         };
+ 
+         [UnityTest]
+-        public IEnumerator E10GuildIntroReadsAllFiveExactSpanishEntriesAndReusesOnePresentation()
++        public IEnumerator E10GuildIntroReadsAllFiveExactEntriesInBothLanguagesAndReusesOnePresentation()
+         {
+             string saveDirectory = NewSaveDirectory("LuckboundE10GuildContent");
+             var store = new TrackingSaveStore(new FileSaveStore(saveDirectory, null));
+@@ -87,14 +92,44 @@ namespace Luckbound.Tests.PlayMode
+                     Assert.That(FindText("GuildIntroCharacterName").text, Is.EqualTo(SpanishNames[index]));
+                     Assert.That(FindText("GuildIntroText").text, Is.EqualTo(SpanishIntros[index]));
+                     AssertGuildTextLayout(FindText("GuildIntroCharacterName"));
+-                    AssertGuildTextLayout(FindText("GuildIntroText"));
++                    AssertGuildTextLayout(FindText("GuildIntroText"), wrapped: true);
+                     Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildIntroBackButton").gameObject));
+                     AssertThatModalExclusive(canvas, "GuildIntroRoot");
+ 
+                     SimulateSubmit(FindButton("GuildIntroBackButton"));
+                     Assert.That(FindObject(canvas, "GuildIntroListView").activeSelf, Is.True);
+                     Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(character.gameObject),
+-                        "Volver keeps focus on the same character in the list.");
++                        "Volver conserva el foco en el mismo personaje de la lista.");
++                }
++
++                Button listLanguage = FindButton("GuildIntroListLanguageButton");
++                SimulatePointerClick(listLanguage);
++                Text listLanguageLabel = listLanguage.GetComponentInChildren<Text>(true);
++                for (int frame = 0; frame < 300 && (app.Settings.languageId != "en" || listLanguageLabel.text != "Español"); frame++)
++                    yield return null;
++                Assert.That(app.Settings.languageId, Is.EqualTo("en"));
++                Assert.That(listLanguageLabel.text, Is.EqualTo("Español"));
++                Assert.That(FindText("GuildIntroListTitle").text, Is.EqualTo("GUILD"));
++
++                for (int index = 0; index < EnglishNames.Length; index++)
++                {
++                    Button character = FindButton("GuildCharacterButton" + index);
++                    Assert.That(character.GetComponentInChildren<Text>(true).text, Is.EqualTo(EnglishNames[index]));
++                    SimulateSubmit(character);
++
++                    Assert.That(FindObject(canvas, "GuildIntroListView").activeSelf, Is.False);
++                    Assert.That(FindObject(canvas, "GuildIntroConversationView").activeSelf, Is.True);
++                    Assert.That(FindText("GuildIntroCharacterName").text, Is.EqualTo(EnglishNames[index]));
++                    Assert.That(FindText("GuildIntroText").text, Is.EqualTo(EnglishIntros[index]));
++                    AssertGuildTextLayout(FindText("GuildIntroCharacterName"));
++                    AssertGuildTextLayout(FindText("GuildIntroText"), wrapped: true);
++                    Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildIntroBackButton").gameObject));
++                    AssertThatModalExclusive(canvas, "GuildIntroRoot");
++
++                    SimulateSubmit(FindButton("GuildIntroBackButton"));
++                    Assert.That(FindObject(canvas, "GuildIntroListView").activeSelf, Is.True);
++                    Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(character.gameObject),
++                        "Back keeps focus on the same character in the list.");
+                 }
+ 
+                 SimulatePointerClick(FindButton("GuildIntroListCloseButton"));
+@@ -103,7 +138,7 @@ namespace Luckbound.Tests.PlayMode
+ 
+                 SimulatePointerClick(FindButton("OpenGuildIntroButton"));
+                 SimulateSubmit(FindButton("GuildCharacterButton4"));
+-                Assert.That(FindText("GuildIntroText").text, Is.EqualTo(SpanishIntros[4]));
++                Assert.That(FindText("GuildIntroText").text, Is.EqualTo(EnglishIntros[4]));
+                 Assert.That(CountNamed(canvas, "GuildIntroRoot"), Is.EqualTo(1));
+                 Assert.That(CountNamed(canvas, "GuildIntroListView"), Is.EqualTo(1));
+                 Assert.That(CountNamed(canvas, "GuildIntroConversationView"), Is.EqualTo(1));
+@@ -180,7 +215,7 @@ namespace Luckbound.Tests.PlayMode
+                 AssertGuildTextLayout(FindText("HubTitle"));
+                 AssertGuildTextLayout(FindText("OpenGuildIntroButtonLabel"));
+                 AssertGuildTextLayout(FindText("GuildIntroCharacterName"));
+-                AssertGuildTextLayout(FindText("GuildIntroText"));
++                AssertGuildTextLayout(FindText("GuildIntroText"), wrapped: true);
+                 AssertGuildTextLayout(languageLabel);
+                 AssertGuildTextLayout(FindText("GuildIntroBackButtonLabel"));
+                 AssertGuildTextLayout(FindText("GuildIntroConversationCloseButtonLabel"));
+@@ -195,7 +230,7 @@ namespace Luckbound.Tests.PlayMode
+                 Assert.That(app.Settings.languageId, Is.EqualTo("en"));
+                 Assert.That(languageLabel.text, Is.EqualTo("Español"));
+                 AssertGuildTextLayout(languageLabel);
+-                AssertGuildTextLayout(FindText("GuildIntroText"));
++                AssertGuildTextLayout(FindText("GuildIntroText"), wrapped: true);
+                 AssertGuildTextLayout(FindText("GuildIntroConversationCloseButtonLabel"));
+                 Assert.That(store.SettingsPayloads.Count, Is.GreaterThanOrEqualTo(settingsWritesBefore + 2));
+                 for (int index = settingsWritesBefore + 1; index < store.SettingsPayloads.Count; index++)
+@@ -488,26 +523,32 @@ namespace Luckbound.Tests.PlayMode
+             Assert.That(guildRect.sizeDelta, Is.EqualTo(new Vector2(108f, 28f)));
+         }
+ 
+-        private static void AssertGuildTextLayout(Text text)
++        private static void AssertGuildTextLayout(Text text, bool wrapped = false)
+         {
+             Assert.That(text, Is.Not.Null);
+             Canvas.ForceUpdateCanvases();
+             RectTransform rect = text.rectTransform;
+             Vector2 extents = rect.rect.size;
+             TextGenerationSettings settings = text.GetGenerationSettings(extents);
+-            var generator = new TextGenerator();
+-            generator.Populate(text.text, settings);
+-            float pixelsPerUnit = Mathf.Max(1f, text.pixelsPerUnit);
+-            float preferredWidth = generator.GetPreferredWidth(text.text, settings) / pixelsPerUnit;
+-            float preferredHeight = generator.GetPreferredHeight(text.text, settings) / pixelsPerUnit;
++            var preferredSizeGenerator = new TextGenerator();
++            preferredSizeGenerator.Populate(text.text, settings);
++            Assert.That(text.pixelsPerUnit, Is.GreaterThan(0f),
++                text.name + " must expose a positive pixels-per-unit scale.");
++            float preferredWidth = preferredSizeGenerator.GetPreferredWidth(text.text, settings) / text.pixelsPerUnit;
++            float preferredHeight = preferredSizeGenerator.GetPreferredHeight(text.text, settings) / text.pixelsPerUnit;
+             Assert.That(text.fontSize * (320f / 480f), Is.GreaterThanOrEqualTo(14f),
+                 text.name + " must render at or above 14 px at 320x180.");
+-            Assert.That(preferredWidth, Is.LessThanOrEqualTo(extents.x + 0.5f),
+-                text.name + " preferred width must fit its available rect.");
++            if (!wrapped)
++            {
++                Assert.That(preferredWidth, Is.LessThanOrEqualTo(extents.x + 0.5f),
++                    text.name + " preferred width must fit its available rect.");
++            }
+             Assert.That(preferredHeight, Is.LessThanOrEqualTo(extents.y + 0.5f),
+                 text.name + " preferred height must fit its available rect.");
+-            Assert.That(generator.characterCountVisible, Is.EqualTo(text.text.Length),
+-                text.name + " must display every authored character.");
++            var visibilityGenerator = new TextGenerator();
++            visibilityGenerator.Populate(text.text, settings);
++            Assert.That(visibilityGenerator.characterCountVisible, Is.EqualTo(text.text.Length),
++                text.name + " must display every authored character with its configured overflow mode.");
+         }
+ 
+         private static int CountNamed(Canvas canvas, string name)
+@@ -564,14 +605,14 @@ namespace Luckbound.Tests.PlayMode
+ 
+         private static IEnumerator SimulateScreenPointerClick(Mouse mouse, Vector2 screenPosition)
+         {
+-            InputSystem.QueueStateEvent(mouse, new MouseState().WithPosition(screenPosition));
++            InputSystem.QueueStateEvent(mouse, new MouseState { position = screenPosition });
+             InputSystem.Update();
+             yield return null;
+             InputSystem.QueueStateEvent(mouse,
+-                new MouseState().WithPosition(screenPosition).WithButton(MouseButton.Left));
++                new MouseState { position = screenPosition }.WithButton(MouseButton.Left));
+             InputSystem.Update();
+             yield return null;
+-            InputSystem.QueueStateEvent(mouse, new MouseState().WithPosition(screenPosition));
++            InputSystem.QueueStateEvent(mouse, new MouseState { position = screenPosition });
+             InputSystem.Update();
+             for (int frame = 0; frame < 2; frame++) yield return null;
+         }

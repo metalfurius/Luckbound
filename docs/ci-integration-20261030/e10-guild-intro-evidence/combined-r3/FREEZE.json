@@ -1,0 +1,23 @@
+{
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "1d92de53b3ba0acfe1b1f79d4737176bd951cc09cfb36834cd0e6419bc6a12c9"
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "bytes": 24822,
+      "sha256": "04f078acbc977696f2ca260992f85cc6c51747bedb5f3aef592356db1819c750"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 42961,
+      "sha256": "8b0d5327a73736f30e2d3e435ba828091b1b7ef0eb3b6bd042ccbac51123c14b"
+    }
+  ],
+  "previousCombined": "combined-r2",
+  "AppAndLocaleIdentical": true,
+  "threeUnityTests": true,
+  "AppCompileReused": "../combined-r2/compile-r1/RESULTS.json"
+}

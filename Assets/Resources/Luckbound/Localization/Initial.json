@@ -171,6 +171,19 @@
     {"key":"character.neris.role","es":"Comercio y extracción","en":"Trade and extraction"},
     {"key":"character.neris.dialogue.intro","es":"Puedo comerciar y ayudarte a preparar una extracción. Para mí, una expedición cuenta si conseguimos volver.","en":"I can trade and help you prepare an extraction. To me, an expedition counts if we make it back."},
     {"key":"character.neris.dialogue.reveal","es":"La separación de Eryndor mantuvo a salvo la taberna, pero no a todos. Hay personas que siguen atrapadas en las fracturas; no las contaré como pérdidas.","en":"Eryndor's separation kept the tavern safe, but not everyone. People remain trapped in the fractures; I will not count them as lost."},
-    {"key":"character.neris.dialogue.ending","es":"No llamaré segura a una ruta hasta que haya salida. Ayudaré al gremio a sostenerse mientras buscamos cómo recuperar a quienes siguen dentro.","en":"I will not call a route safe until there is a way out. I will help keep the guild going as we seek a way to recover those still inside."}
+    {"key":"character.neris.dialogue.ending","es":"No llamaré segura a una ruta hasta que haya salida. Ayudaré al gremio a sostenerse mientras buscamos cómo recuperar a quienes siguen dentro.","en":"I will not call a route safe until there is a way out. I will help keep the guild going as we seek a way to recover those still inside."},
+    {"key":"ui.guild.title","es":"GREMIO","en":"GUILD"},
+    {"key":"ui.guild.back","es":"Volver","en":"Back"},
+    {"key":"ui.guild.close","es":"Cerrar","en":"Close"},
+    {"key":"npc.maelis.name","es":"Maelis Argentia","en":"Maelis Argentia"},
+    {"key":"npc.maelis.intro","es":"El gremio busca tres ecos para estabilizar el castillo. Empieza por el Patio y regresa con vida.","en":"The guild seeks three echoes to stabilize the castle. Start in the Courtyard and return alive."},
+    {"key":"npc.ronan.name","es":"Ronan Verax","en":"Ronan Verax"},
+    {"key":"npc.ronan.intro","es":"Dicen que Eryndor trajo el fragmento que protege esta taberna. Los relatos cambian; el refugio sigue aquí.","en":"They say Eryndor brought the fragment that protects this tavern. The stories change; the refuge remains."},
+    {"key":"npc.talia.name","es":"Talia Arboris","en":"Talia Arboris"},
+    {"key":"npc.talia.intro","es":"El bosque y las fracturas están unidos. Antes de salir, revisa tu salud y los estados que te afectan.","en":"The forest and the fractures are connected. Before you leave, check your health and the conditions affecting you."},
+    {"key":"npc.bram.name","es":"Bram Ferrum","en":"Bram Ferrum"},
+    {"key":"npc.bram.intro","es":"Busco técnicas de las antiguas forjas. Podemos empezar por aprender a fabricar y mejorar lo que llevas.","en":"I seek techniques from the ancient forges. We can start by learning to craft and upgrade your equipment."},
+    {"key":"npc.neris.name","es":"Neris Vela","en":"Neris Vela"},
+    {"key":"npc.neris.intro","es":"Lo que traes de vuelta mantiene al gremio. Revisa tus provisiones: regresar con vida también es una decisión.","en":"What you bring back sustains the guild. Check your supplies: returning alive is a choice too."}
   ]
 }

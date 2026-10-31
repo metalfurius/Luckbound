@@ -1,0 +1,7 @@
+{
+  "accepted": false,
+  "reason": "Source preparation failed before creation of additive stage; only78 prior test files compiled",
+  "expected": 79,
+  "observed": 78,
+  "noUnityOrNative": true
+}

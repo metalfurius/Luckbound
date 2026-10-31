@@ -1,0 +1,11 @@
+# CI9 — resultado Native y builds
+
+CI [41149331963](https://github.com/metalfurius/Luckbound/actions/runs/41149331963), intento1, commit `dc645ce9aa75f47e46295c7f93b4f3f44a299b0d`, árbol `64b00524e7e676374a3134de016d1a5cb6f81359`, Unity6000.6.7f1. Resultado final success; publicación y release skipped. Los JSON finales conservan run, jobs y artefactos exactos.
+
+XML reales: 654/654 EditMode y514/514 PlayMode, 1168/1168 en total, cero fallos, omisiones o inconclusos. GateV6 ejecutado realmente:11casos/11intentos/97outputs/14fuentes, sentinel Unity+V6 success. Comparación directa con GateD:97/97datos y77/77observaciones idénticos.14fuentes estables ligadas al árbol Git y16callsites Native/Git comprobados. Las tres rutas C08 pasan: early3/3 sin baseline previo, referencia3/3 con baseline, combate físico completo10/10;776ticks,HP60,16impactos.
+
+Windows: job124384267850 success; artefacto13022164355,SHA256cfc6427d7f27f2105a48d1945d46bd9a69c955a0ba48df3d46f206eeaa6c3b86,50.565.758bytes. ZIP/CRC210archivos,exeMZ+PEAMD64 yUnityPlayer presentes. WebGL: job124384267788 success; artefacto13022942093,SHA256a77d5523707b65375f420daa591739df799117d59f4f2ff24fee2b6329cc7146,16.200.659bytes. ZIP/CRC17archivos,index yrecursos presentes,Wasm Brotli descomprimido conmagic+versión válidos. Ningún player ejecutado localmente.
+
+Diagnóstico real por plataforma: Windows181registros/WebGL580registros; S0/S1,memoria,disco,cgroup yDocker observados,3eventos vistos/registrados por plataforma y0eventos perdidos declarados. dmesg quedó Unavailable enS0/S1 deambas plataformas,command_exit_nonzero/return1; no se atribuye su causa ni los137 anteriores aOOM. Estas métricas no equivalenHostGuard ni aceptación perceptiva. Los5archivos exactos de cada diagnóstico se conservan en diagnostics/.
+
+El log bruto de tests permanece privado en Logs/CI-41149331963-root/test-job.txt; solo se conserva su digest y el fragmento whitelist del verificador/sentinel en REAL-GATES.json. Sin credenciales, log de licencia, UI, audio ni publicación. Este paquete documenta el resultado técnico exacto; el dictamen de Sol y los estados del plan se conservan por separado. E04/E10/G07/F09/F10 ySaveFormat7 operativo no quedan cerrados por este run.

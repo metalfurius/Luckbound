@@ -1,0 +1,22 @@
+{
+  "previous": "combined-r3",
+  "owner": "Root after completed worker handoff",
+  "scope": "Only content override plus four literal metrics on the active list/conversation language Text; no control/text assignment or new cases",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "1d92de53b3ba0acfe1b1f79d4737176bd951cc09cfb36834cd0e6419bc6a12c9"
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "bytes": 24822,
+      "sha256": "04f078acbc977696f2ca260992f85cc6c51747bedb5f3aef592356db1819c750"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 43480,
+      "sha256": "7850fc962bcf01fd5617f98a3198dfa237ac1d4374924c31767bb444a188f03b"
+    }
+  ]
+}

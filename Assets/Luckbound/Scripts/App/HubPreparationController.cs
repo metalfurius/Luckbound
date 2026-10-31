@@ -11,6 +11,7 @@ using Luckbound.Core.Saves;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -33,6 +34,22 @@ namespace Luckbound.App
             "CONTRATO DE COMBATE",
             "CONTRATO DE HISTORIA",
             "CONTRATO DE FABRICACIÓN"
+        };
+        private static readonly string[] GuildIntroNameKeys =
+        {
+            "npc.maelis.name",
+            "npc.ronan.name",
+            "npc.talia.name",
+            "npc.bram.name",
+            "npc.neris.name"
+        };
+        private static readonly string[] GuildIntroTextKeys =
+        {
+            "npc.maelis.intro",
+            "npc.ronan.intro",
+            "npc.talia.intro",
+            "npc.bram.intro",
+            "npc.neris.intro"
         };
         private static ApplicationBootstrapper _contractUiAudioStateOwner;
         private static PendingContractUiOperation _pendingContractUiOperation;
@@ -70,6 +87,11 @@ namespace Luckbound.App
         private UnityAction _retryContractWriteHandler;
         private UnityAction _contractLanguageHandler;
         private UnityAction[] _contractActionHandlers;
+        private UnityAction _openGuildIntroHandler;
+        private UnityAction _guildLanguageHandler;
+        private UnityAction _guildBackHandler;
+        private UnityAction _guildCloseHandler;
+        private UnityAction[] _guildCharacterHandlers;
         private SkillCatalog _skillCatalog;
         private List<SkillDefinition> _classSkills = new List<SkillDefinition>(3);
         private readonly List<Button> _contractActionButtons = new List<Button>(4);
@@ -77,6 +99,8 @@ namespace Luckbound.App
         private readonly List<Text> _contractObjectiveTexts = new List<Text>(4);
         private readonly List<Text> _contractRewardTexts = new List<Text>(4);
         private readonly List<Text> _contractProgressTexts = new List<Text>(4);
+        private readonly List<Button> _guildCharacterButtons = new List<Button>(5);
+        private readonly List<Button> _guildLanguageButtons = new List<Button>(2);
         private Button _openContractsButton;
         private Button _closeContractsButton;
         private Button _retryContractWriteButton;
@@ -86,6 +110,18 @@ namespace Luckbound.App
         private Text _contractActiveLimitText;
         private Text _contractStatusText;
         private Text _contractLanguageStatusText;
+        private Button _openGuildIntroButton;
+        private Button _guildListLanguageButton;
+        private Button _guildConversationLanguageButton;
+        private Button _guildBackButton;
+        private Button _guildListCloseButton;
+        private Button _guildConversationCloseButton;
+        private GameObject _guildIntroRoot;
+        private GameObject _guildListView;
+        private GameObject _guildConversationView;
+        private Text _guildListTitleText;
+        private Text _guildCharacterNameText;
+        private Text _guildIntroText;
         private LocalizationService _localization;
         private GameSettingsSaveData _pendingLanguageSettings;
         private GameObject _selectionBeforeContracts;
@@ -99,6 +135,8 @@ namespace Luckbound.App
         private bool _purchasingUpgrade;
         private bool _contractOperationInProgress;
         private bool _languageWriteInProgress;
+        private bool _restoreGuildOpenerFocusOnEnable;
+        private int _selectedGuildIntroCharacterIndex = -1;
         private string _upgradeStatusMessage;
 
         public string SelectedClassId => PlayableClasses[_selectedClassIndex];
@@ -109,6 +147,7 @@ namespace Luckbound.App
         {
             ValidateReferences();
             EnsureContractPresentation();
+            EnsureGuildIntroPresentation();
             if (_localization != null)
             {
                 _localization.LanguageChanged -= OnContractLanguageChanged;
@@ -163,6 +202,54 @@ namespace Luckbound.App
                 _contractActionHandlers[index] = () => ActivateContract(contractId);
                 _contractActionButtons[index].onClick.AddListener(_contractActionHandlers[index]);
             }
+            _openGuildIntroHandler = OpenGuildIntro;
+            _guildLanguageHandler = ChangeContractLanguage;
+            _guildBackHandler = BackToGuildIntroList;
+            _guildCloseHandler = CloseGuildIntro;
+            if (_openGuildIntroButton != null) _openGuildIntroButton.onClick.AddListener(_openGuildIntroHandler);
+            for (int index = 0; index < _guildLanguageButtons.Count; index++)
+                if (_guildLanguageButtons[index] != null) _guildLanguageButtons[index].onClick.AddListener(_guildLanguageHandler);
+            if (_guildBackButton != null) _guildBackButton.onClick.AddListener(_guildBackHandler);
+            if (_guildListCloseButton != null) _guildListCloseButton.onClick.AddListener(_guildCloseHandler);
+            if (_guildConversationCloseButton != null) _guildConversationCloseButton.onClick.AddListener(_guildCloseHandler);
+            _guildCharacterHandlers = new UnityAction[_guildCharacterButtons.Count];
+            for (int index = 0; index < _guildCharacterButtons.Count; index++)
+            {
+                int capturedIndex = index;
+                _guildCharacterHandlers[index] = () => SelectGuildIntroCharacter(capturedIndex);
+                _guildCharacterButtons[index].onClick.AddListener(_guildCharacterHandlers[index]);
+            }
+            if (_restoreGuildOpenerFocusOnEnable && _openGuildIntroButton != null &&
+                _openGuildIntroButton.gameObject.activeInHierarchy && EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(_openGuildIntroButton.gameObject);
+                _restoreGuildOpenerFocusOnEnable = false;
+            }
+        }
+
+        private void Update()
+        {
+            if (_guildIntroRoot == null || !_guildIntroRoot.activeSelf) return;
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+            {
+                CloseGuildIntro();
+                return;
+            }
+
+            EventSystem eventSystem = EventSystem.current;
+            if (eventSystem == null) return;
+            GameObject activeView = _guildConversationView.activeSelf
+                ? _guildConversationView
+                : _guildListView;
+            GameObject selected = eventSystem.currentSelectedGameObject;
+            if (selected != null && selected.activeInHierarchy && selected.transform.IsChildOf(activeView.transform)) return;
+
+            GameObject firstSelectable = _guildConversationView.activeSelf
+                ? _guildBackButton.gameObject
+                : _guildCharacterButtons[0].gameObject;
+            if (firstSelectable.activeInHierarchy && firstSelectable.GetComponent<Selectable>().interactable)
+                eventSystem.SetSelectedGameObject(firstSelectable);
         }
 
         private void Start()
@@ -173,6 +260,7 @@ namespace Luckbound.App
                 if (skillData == null) throw new InvalidOperationException("Skills.json could not be loaded.");
                 _skillCatalog = SkillCatalogJsonLoader.Load(skillData.text);
                 InitializeContractLocalization();
+                RefreshGuildIntro();
                 RefreshProfileStatus();
                 SelectClass(0);
                 SelectHumanRace();
@@ -213,6 +301,27 @@ namespace Luckbound.App
             if (_contractActionButtons != null && _contractActionHandlers != null)
                 for (int index = 0; index < _contractActionButtons.Count && index < _contractActionHandlers.Length; index++)
                     if (_contractActionButtons[index] != null) _contractActionButtons[index].onClick.RemoveListener(_contractActionHandlers[index]);
+            if (_openGuildIntroButton != null && _openGuildIntroHandler != null)
+                _openGuildIntroButton.onClick.RemoveListener(_openGuildIntroHandler);
+            if (_guildLanguageButtons != null && _guildLanguageHandler != null)
+                for (int index = 0; index < _guildLanguageButtons.Count; index++)
+                    if (_guildLanguageButtons[index] != null) _guildLanguageButtons[index].onClick.RemoveListener(_guildLanguageHandler);
+            if (_guildBackButton != null && _guildBackHandler != null) _guildBackButton.onClick.RemoveListener(_guildBackHandler);
+            if (_guildListCloseButton != null && _guildCloseHandler != null)
+                _guildListCloseButton.onClick.RemoveListener(_guildCloseHandler);
+            if (_guildConversationCloseButton != null && _guildCloseHandler != null)
+                _guildConversationCloseButton.onClick.RemoveListener(_guildCloseHandler);
+            if (_guildCharacterButtons != null && _guildCharacterHandlers != null)
+                for (int index = 0; index < _guildCharacterButtons.Count && index < _guildCharacterHandlers.Length; index++)
+                    if (_guildCharacterButtons[index] != null) _guildCharacterButtons[index].onClick.RemoveListener(_guildCharacterHandlers[index]);
+            if (_guildIntroRoot != null && _guildIntroRoot.activeSelf)
+            {
+                _restoreGuildOpenerFocusOnEnable = true;
+                _guildIntroRoot.SetActive(false);
+                if (EventSystem.current != null && _openGuildIntroButton != null &&
+                    _openGuildIntroButton.gameObject.activeInHierarchy)
+                    EventSystem.current.SetSelectedGameObject(_openGuildIntroButton.gameObject);
+            }
             if (_localization != null) _localization.LanguageChanged -= OnContractLanguageChanged;
         }
 
@@ -398,6 +507,8 @@ namespace Luckbound.App
         public void OpenUpgradePanel()
         {
             if (_upgradePanel == null) return;
+            if (_contractPanel != null) _contractPanel.SetActive(false);
+            if (_guildIntroRoot != null) _guildIntroRoot.SetActive(false);
             _upgradeStatusMessage = string.Empty;
             _upgradePanel.SetActive(true);
             RefreshView();
@@ -488,6 +599,207 @@ namespace Luckbound.App
             _contractPanel.SetActive(false);
         }
 
+        private void EnsureGuildIntroPresentation()
+        {
+            if (_openGuildIntroButton != null && _guildIntroRoot != null) return;
+            Canvas canvas = GameObject.Find("HubPreparationCanvas")?.GetComponent<Canvas>();
+            if (canvas == null) canvas = FindAnyObjectByType<Canvas>();
+            if (canvas == null) return;
+
+            _openGuildIntroButton = CreateRuntimeButton("OpenGuildIntroButton", "GREMIO", canvas.transform,
+                new Vector2(92f, -10f), new Vector2(108f, 28f), 21, "#E8E3CD", "#493363", topLeft: true);
+            ReserveGuildHeaderSpace(canvas);
+
+            _guildIntroRoot = new GameObject("GuildIntroRoot", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            _guildIntroRoot.transform.SetParent(canvas.transform, false);
+            RectTransform overlayRect = _guildIntroRoot.GetComponent<RectTransform>();
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
+            overlayRect.offsetMin = Vector2.zero;
+            overlayRect.offsetMax = Vector2.zero;
+            Image overlay = _guildIntroRoot.GetComponent<Image>();
+            overlay.color = new Color(0.025f, 0.03f, 0.055f, 0.88f);
+            overlay.raycastTarget = true;
+
+            Image board = CreateRuntimeImage("GuildIntroBoard", _guildIntroRoot.transform, "#171621");
+            board.raycastTarget = true;
+            PlaceRuntimeRect(board.rectTransform, Vector2.zero, new Vector2(430f, 240f));
+
+            _guildListView = new GameObject("GuildIntroListView", typeof(RectTransform));
+            _guildListView.transform.SetParent(board.transform, false);
+            PlaceRuntimeRect(_guildListView.GetComponent<RectTransform>(), Vector2.zero, new Vector2(430f, 240f));
+            _guildConversationView = new GameObject("GuildIntroConversationView", typeof(RectTransform));
+            _guildConversationView.transform.SetParent(board.transform, false);
+            PlaceRuntimeRect(_guildConversationView.GetComponent<RectTransform>(), Vector2.zero, new Vector2(430f, 240f));
+
+            _guildListTitleText = CreateRuntimeText("GuildIntroListTitle", string.Empty, _guildListView.transform,
+                new Vector2(60f, 99f), new Vector2(210f, 30f), 24, "#F0C15A", FontStyle.Bold);
+            _guildListTitleText.alignment = TextAnchor.MiddleCenter;
+            _guildListLanguageButton = CreateRuntimeButton("GuildIntroListLanguageButton", "ENGLISH", _guildListView.transform,
+                new Vector2(-140f, 99f), new Vector2(140f, 30f), 21, "#E8E3CD", "#32251F");
+            _guildListCloseButton = CreateRuntimeButton("GuildIntroListCloseButton", string.Empty, _guildListView.transform,
+                new Vector2(0f, -101f), new Vector2(120f, 28f), 21, "#E8E3CD", "#493363");
+
+            float[] rowPositions = { 62f, 30f, -2f, -34f, -66f };
+            for (int index = 0; index < GuildIntroNameKeys.Length; index++)
+            {
+                Button characterButton = CreateRuntimeButton("GuildCharacterButton" + index, string.Empty,
+                    _guildListView.transform, new Vector2(0f, rowPositions[index]), new Vector2(390f, 28f),
+                    21, "#E8E3CD", "#282338");
+                _guildCharacterButtons.Add(characterButton);
+            }
+
+            _guildConversationLanguageButton = CreateRuntimeButton("GuildIntroConversationLanguageButton", "ENGLISH",
+                _guildConversationView.transform, new Vector2(-140f, 99f), new Vector2(140f, 30f),
+                21, "#E8E3CD", "#32251F");
+            _guildCharacterNameText = CreateRuntimeText("GuildIntroCharacterName", string.Empty,
+                _guildConversationView.transform, new Vector2(0f, 62f), new Vector2(300f, 30f),
+                24, "#F0C15A", FontStyle.Bold);
+            _guildCharacterNameText.alignment = TextAnchor.MiddleCenter;
+            _guildIntroText = CreateRuntimeText("GuildIntroText", string.Empty,
+                _guildConversationView.transform, new Vector2(0f, -2f), new Vector2(390f, 120f),
+                21, "#E8E3CD", FontStyle.Normal);
+            _guildIntroText.alignment = TextAnchor.MiddleCenter;
+            _guildIntroText.verticalOverflow = VerticalWrapMode.Truncate;
+            _guildBackButton = CreateRuntimeButton("GuildIntroBackButton", string.Empty, _guildConversationView.transform,
+                new Vector2(-74f, -101f), new Vector2(130f, 28f), 21, "#E8E3CD", "#32251F");
+            _guildConversationCloseButton = CreateRuntimeButton("GuildIntroConversationCloseButton", string.Empty,
+                _guildConversationView.transform, new Vector2(74f, -101f), new Vector2(130f, 28f),
+                21, "#E8E3CD", "#493363");
+
+            _guildLanguageButtons.Add(_guildListLanguageButton);
+            _guildLanguageButtons.Add(_guildConversationLanguageButton);
+            ConfigureGuildIntroNavigation();
+            _guildConversationView.SetActive(false);
+            _guildIntroRoot.SetActive(false);
+        }
+
+        private static void ReserveGuildHeaderSpace(Canvas canvas)
+        {
+            Transform titleTransform = canvas.transform.Find("HubTitle");
+            Text title = titleTransform == null ? null : titleTransform.GetComponent<Text>();
+            if (title == null) throw new InvalidOperationException("HubTitle is required to reserve the guild button header slot.");
+            RectTransform rect = title.rectTransform;
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = rect.anchorMin;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2(38f, 111f);
+            rect.sizeDelta = new Vector2(140f, 28f);
+        }
+
+        private void ConfigureGuildIntroNavigation()
+        {
+            if (_guildCharacterButtons.Count != GuildIntroNameKeys.Length) return;
+            for (int index = 0; index < _guildCharacterButtons.Count; index++)
+            {
+                Navigation navigation = new Navigation { mode = Navigation.Mode.Explicit };
+                navigation.selectOnUp = index == 0 ? _guildListLanguageButton : _guildCharacterButtons[index - 1];
+                navigation.selectOnDown = index == _guildCharacterButtons.Count - 1
+                    ? _guildListCloseButton
+                    : _guildCharacterButtons[index + 1];
+                _guildCharacterButtons[index].navigation = navigation;
+            }
+
+            Navigation listLanguage = new Navigation { mode = Navigation.Mode.Explicit };
+            listLanguage.selectOnDown = _guildCharacterButtons[0];
+            _guildListLanguageButton.navigation = listLanguage;
+            Navigation listClose = new Navigation { mode = Navigation.Mode.Explicit };
+            listClose.selectOnUp = _guildCharacterButtons[_guildCharacterButtons.Count - 1];
+            _guildListCloseButton.navigation = listClose;
+
+            Navigation conversationLanguage = new Navigation { mode = Navigation.Mode.Explicit };
+            conversationLanguage.selectOnDown = _guildBackButton;
+            _guildConversationLanguageButton.navigation = conversationLanguage;
+            Navigation back = new Navigation { mode = Navigation.Mode.Explicit };
+            back.selectOnUp = _guildConversationLanguageButton;
+            back.selectOnRight = _guildConversationCloseButton;
+            _guildBackButton.navigation = back;
+            Navigation close = new Navigation { mode = Navigation.Mode.Explicit };
+            close.selectOnUp = _guildConversationLanguageButton;
+            close.selectOnLeft = _guildBackButton;
+            _guildConversationCloseButton.navigation = close;
+        }
+
+        private void OpenGuildIntro()
+        {
+            if (_guildIntroRoot == null) return;
+            if (_contractPanel != null) _contractPanel.SetActive(false);
+            if (_upgradePanel != null) _upgradePanel.SetActive(false);
+            _selectedGuildIntroCharacterIndex = -1;
+            _guildListView.SetActive(true);
+            _guildConversationView.SetActive(false);
+            RefreshGuildIntro();
+            _guildIntroRoot.SetActive(true);
+            if (EventSystem.current != null && _guildCharacterButtons.Count > 0)
+                EventSystem.current.SetSelectedGameObject(_guildCharacterButtons[0].gameObject);
+        }
+
+        private void SelectGuildIntroCharacter(int index)
+        {
+            if (_guildIntroRoot == null || !_guildIntroRoot.activeSelf ||
+                index < 0 || index >= GuildIntroNameKeys.Length || index >= _guildCharacterButtons.Count)
+                return;
+            _selectedGuildIntroCharacterIndex = index;
+            _guildListView.SetActive(false);
+            _guildConversationView.SetActive(true);
+            RefreshGuildIntro();
+            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(_guildBackButton.gameObject);
+        }
+
+        private void BackToGuildIntroList()
+        {
+            if (_guildIntroRoot == null || !_guildIntroRoot.activeSelf ||
+                _selectedGuildIntroCharacterIndex < 0 || _selectedGuildIntroCharacterIndex >= _guildCharacterButtons.Count)
+                return;
+            int selectedIndex = _selectedGuildIntroCharacterIndex;
+            _guildConversationView.SetActive(false);
+            _guildListView.SetActive(true);
+            if (EventSystem.current != null)
+                EventSystem.current.SetSelectedGameObject(_guildCharacterButtons[selectedIndex].gameObject);
+        }
+
+        private void CloseGuildIntro()
+        {
+            if (_guildIntroRoot == null) return;
+            _guildIntroRoot.SetActive(false);
+            _selectedGuildIntroCharacterIndex = -1;
+            if (EventSystem.current != null && _openGuildIntroButton != null)
+                EventSystem.current.SetSelectedGameObject(_openGuildIntroButton.gameObject);
+        }
+
+        private void RefreshGuildIntro()
+        {
+            if (_openGuildIntroButton == null || _guildIntroRoot == null) return;
+            string language = _localization == null ? "es" : _localization.LanguageId;
+            string languageKey = language == "es" ? "ui.language.en" : "ui.language.es";
+            string languageButtonLabel = _languageWriteInProgress
+                ? LocalizedStatus("GUARDANDO", "SAVING")
+                : _pendingLanguageSettings != null
+                    ? LocalizedStatus("REINTENTAR", "RETRY")
+                    : GetText(languageKey);
+            SetLabel(_openGuildIntroButton, GetText("ui.guild.title"));
+            if (_guildListTitleText != null) _guildListTitleText.text = GetText("ui.guild.title");
+            if (_guildListLanguageButton != null) SetLabel(_guildListLanguageButton, languageButtonLabel);
+            if (_guildConversationLanguageButton != null) SetLabel(_guildConversationLanguageButton, languageButtonLabel);
+            if (_guildListCloseButton != null) SetLabel(_guildListCloseButton, GetText("ui.guild.close"));
+            if (_guildConversationCloseButton != null) SetLabel(_guildConversationCloseButton, GetText("ui.guild.close"));
+            if (_guildBackButton != null) SetLabel(_guildBackButton, GetText("ui.guild.back"));
+            for (int index = 0; index < _guildCharacterButtons.Count && index < GuildIntroNameKeys.Length; index++)
+                SetLabel(_guildCharacterButtons[index], GetText(GuildIntroNameKeys[index]));
+            if (_selectedGuildIntroCharacterIndex >= 0 && _selectedGuildIntroCharacterIndex < GuildIntroNameKeys.Length)
+            {
+                if (_guildCharacterNameText != null)
+                    _guildCharacterNameText.text = GetText(GuildIntroNameKeys[_selectedGuildIntroCharacterIndex]);
+                if (_guildIntroText != null)
+                    _guildIntroText.text = GetText(GuildIntroTextKeys[_selectedGuildIntroCharacterIndex]);
+            }
+            else
+            {
+                if (_guildCharacterNameText != null) _guildCharacterNameText.text = string.Empty;
+                if (_guildIntroText != null) _guildIntroText.text = string.Empty;
+            }
+        }
+
         private void InitializeContractLocalization()
         {
             TextAsset localizationData = Resources.Load<TextAsset>("Luckbound/Localization/Initial");
@@ -499,6 +811,7 @@ namespace Luckbound.App
             _localization.LanguageChanged -= OnContractLanguageChanged;
             _localization.LanguageChanged += OnContractLanguageChanged;
             RefreshContractBoard();
+            RefreshGuildIntro();
         }
 
         private void OnContractLanguageChanged(string languageId)
@@ -512,6 +825,8 @@ namespace Luckbound.App
         private void OpenContractBoard()
         {
             if (_contractPanel == null) return;
+            if (_upgradePanel != null) _upgradePanel.SetActive(false);
+            if (_guildIntroRoot != null) _guildIntroRoot.SetActive(false);
             _selectionBeforeContracts = EventSystem.current == null
                 ? null
                 : EventSystem.current.currentSelectedGameObject;
@@ -765,6 +1080,7 @@ namespace Luckbound.App
             {
                 _languageFeedback = LocalizedStatus("Idioma cambiado para esta sesión.", "Language changed for this session.");
                 RefreshContractBoard();
+                RefreshGuildIntro();
                 return;
             }
 
@@ -773,6 +1089,7 @@ namespace Luckbound.App
             _pendingLanguageSettings = candidate;
             _languageWriteInProgress = true;
             RefreshContractBoard();
+            RefreshGuildIntro();
             try
             {
                 SaveWriteResult result = await app.SaveSettingsAsync(candidate);
@@ -795,6 +1112,7 @@ namespace Luckbound.App
             {
                 _languageWriteInProgress = false;
                 RefreshContractBoard();
+                RefreshGuildIntro();
             }
         }
 
@@ -806,6 +1124,7 @@ namespace Luckbound.App
 
             _languageWriteInProgress = true;
             RefreshContractBoard();
+            RefreshGuildIntro();
             try
             {
                 GameSettingsSaveData requestedSettings = _pendingLanguageSettings;
@@ -842,6 +1161,7 @@ namespace Luckbound.App
             {
                 _languageWriteInProgress = false;
                 RefreshContractBoard();
+                RefreshGuildIntro();
             }
         }
 
@@ -1150,6 +1470,7 @@ namespace Luckbound.App
             }
             RefreshUpgradeControls();
             RefreshContractBoard();
+            RefreshGuildIntro();
             if (_statusText != null)
             {
                 string selectionStatus = string.IsNullOrEmpty(_statusMessage)

@@ -1,0 +1,646 @@
+using System;
+using System.Collections;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Luckbound.App;
+using Luckbound.Core.Expeditions;
+using Luckbound.Core.Progression.Contracts;
+using Luckbound.Core.Saves;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+using UnityEngine.UI;
+
+namespace Luckbound.Tests.PlayMode
+{
+    public sealed class HubGuildIntroTests : LuckboundInputTestFixture
+    {
+        private static readonly string[] SpanishNames =
+        {
+            "Maelis Argentia", "Ronan Verax", "Talia Arboris", "Bram Ferrum", "Neris Vela"
+        };
+
+        private static readonly string[] SpanishIntros =
+        {
+            "El gremio busca tres ecos para estabilizar el castillo. Empieza por el Patio y regresa con vida.",
+            "Dicen que Eryndor trajo el fragmento que protege esta taberna. Los relatos cambian; el refugio sigue aquí.",
+            "El bosque y las fracturas están unidos. Antes de salir, revisa tu salud y los estados que te afectan.",
+            "Busco técnicas de las antiguas forjas. Podemos empezar por aprender a fabricar y mejorar lo que llevas.",
+            "Lo que traes de vuelta mantiene al gremio. Revisa tus provisiones: regresar con vida también es una decisión."
+        };
+
+        private static readonly string[] EnglishIntros =
+        {
+            "The guild seeks three echoes to stabilize the castle. Start in the Courtyard and return alive.",
+            "They say Eryndor brought the fragment that protects this tavern. The stories change; the refuge remains.",
+            "The forest and the fractures are connected. Before you leave, check your health and the conditions affecting you.",
+            "I seek techniques from the ancient forges. We can start by learning to craft and upgrade your equipment.",
+            "What you bring back sustains the guild. Check your supplies: returning alive is a choice too."
+        };
+
+        [UnityTest]
+        public IEnumerator E10GuildIntroReadsAllFiveExactSpanishEntriesAndReusesOnePresentation()
+        {
+            string saveDirectory = NewSaveDirectory("LuckboundE10GuildContent");
+            var store = new TrackingSaveStore(new FileSaveStore(saveDirectory, null));
+            Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadBootstrappedApplication(store, value => app = value);
+                Assert.That(app != null && app.SaveDataReady, Is.True);
+                yield return LoadGuildHub();
+
+                HubPreparationController preparation = UnityEngine.Object.FindAnyObjectByType<HubPreparationController>();
+                Canvas canvas = FindHubCanvas();
+                Assert.That(preparation, Is.Not.Null);
+                Assert.That(canvas, Is.Not.Null);
+                SimulatePointerClick(FindButton("OpenGuildIntroButton"));
+                Assert.That(FindObject(canvas, "GuildIntroRoot").activeSelf, Is.True);
+                Assert.That(FindObject(canvas, "GuildIntroListView").activeSelf, Is.True);
+                Assert.That(FindObject(canvas, "GuildIntroConversationView").activeSelf, Is.False);
+                Assert.That(FindText("GuildIntroListTitle").text, Is.EqualTo("GREMIO"));
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildCharacterButton0").gameObject));
+                AssertThatModalExclusive(canvas, "GuildIntroRoot");
+                AssertHubHeaderGeometry(canvas);
+                AssertGuildTextLayout(FindText("HubTitle"));
+                AssertGuildTextLayout(FindText("OpenGuildIntroButtonLabel"));
+                AssertGuildTextLayout(FindText("GuildIntroListTitle"));
+                AssertGuildTextLayout(FindText("GuildIntroListLanguageButtonLabel"));
+                AssertGuildTextLayout(FindText("GuildIntroListCloseButtonLabel"));
+                AssertGuildTextLayout(FindText("GuildCharacterButton0Label"));
+
+                for (int index = 0; index < SpanishNames.Length; index++)
+                {
+                    Button character = FindButton("GuildCharacterButton" + index);
+                    Assert.That(character.GetComponentInChildren<Text>(true).text, Is.EqualTo(SpanishNames[index]));
+                    SimulateSubmit(character);
+
+                    Assert.That(FindObject(canvas, "GuildIntroListView").activeSelf, Is.False);
+                    Assert.That(FindObject(canvas, "GuildIntroConversationView").activeSelf, Is.True);
+                    Assert.That(FindText("GuildIntroCharacterName").text, Is.EqualTo(SpanishNames[index]));
+                    Assert.That(FindText("GuildIntroText").text, Is.EqualTo(SpanishIntros[index]));
+                    AssertGuildTextLayout(FindText("GuildIntroCharacterName"));
+                    AssertGuildTextLayout(FindText("GuildIntroText"));
+                    Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildIntroBackButton").gameObject));
+                    AssertThatModalExclusive(canvas, "GuildIntroRoot");
+
+                    SimulateSubmit(FindButton("GuildIntroBackButton"));
+                    Assert.That(FindObject(canvas, "GuildIntroListView").activeSelf, Is.True);
+                    Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(character.gameObject),
+                        "Volver keeps focus on the same character in the list.");
+                }
+
+                SimulatePointerClick(FindButton("GuildIntroListCloseButton"));
+                Assert.That(FindObject(canvas, "GuildIntroRoot").activeSelf, Is.False);
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("OpenGuildIntroButton").gameObject));
+
+                SimulatePointerClick(FindButton("OpenGuildIntroButton"));
+                SimulateSubmit(FindButton("GuildCharacterButton4"));
+                Assert.That(FindText("GuildIntroText").text, Is.EqualTo(SpanishIntros[4]));
+                Assert.That(CountNamed(canvas, "GuildIntroRoot"), Is.EqualTo(1));
+                Assert.That(CountNamed(canvas, "GuildIntroListView"), Is.EqualTo(1));
+                Assert.That(CountNamed(canvas, "GuildIntroConversationView"), Is.EqualTo(1));
+
+                SimulatePointerClick(FindButton("GuildIntroConversationCloseButton"));
+                Assert.That(FindObject(canvas, "GuildIntroRoot").activeSelf, Is.False);
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) UnityEngine.Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                DeleteSaveDirectory(saveDirectory);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10GuildIntroSubmitBackCloseEscapeAndLanguagePreserveFocusAndPreparation()
+        {
+            string saveDirectory = NewSaveDirectory("LuckboundE10GuildNavigation");
+            var store = new TrackingSaveStore(new FileSaveStore(saveDirectory, null));
+            Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Keyboard keyboard = InputSystem.AddDevice<Keyboard>();
+            Mouse mouse = InputSystem.AddDevice<Mouse>();
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadBootstrappedApplication(store, value => app = value);
+                Assert.That(app != null && app.SaveDataReady, Is.True);
+                yield return LoadGuildHub();
+
+                HubPreparationController preparation = UnityEngine.Object.FindAnyObjectByType<HubPreparationController>();
+                Canvas canvas = FindHubCanvas();
+                preparation.SelectClass(2);
+                string selectedClass = preparation.SelectedClassId;
+                string[] selectedSkills = preparation.SelectedSkillIds.ToArray();
+                string profileBefore = JsonUtility.ToJson(app.Profile, false);
+                int profileWritesBefore = store.ProfileWriteAttempts;
+                int settingsWritesBefore = store.SettingsWriteAttempts;
+
+                SimulatePointerClick(FindButton("OpenGuildIntroButton"));
+                RectTransform boardRect = FindObject(canvas, "GuildIntroBoard").GetComponent<RectTransform>();
+                Vector2 backgroundPoint = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera,
+                    boardRect.TransformPoint(new Vector3(0f, 46f, 0f)));
+                yield return SimulateScreenPointerClick(mouse, backgroundPoint);
+                Button firstCharacter = FindButton("GuildCharacterButton0");
+                for (int frame = 0; frame < 3 && EventSystem.current.currentSelectedGameObject != firstCharacter.gameObject; frame++)
+                    yield return null;
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(firstCharacter.gameObject),
+                    "A real background click that clears EventSystem selection restores focus within the Guild view.");
+                yield return PressUiKey(keyboard, Key.DownArrow);
+                yield return PressUiKey(keyboard, Key.DownArrow);
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildCharacterButton2").gameObject));
+                yield return PressUiKey(keyboard, Key.Enter);
+                for (int frame = 0; frame < 3 && !FindObject(canvas, "GuildIntroConversationView").activeSelf; frame++) yield return null;
+                Assert.That(FindText("GuildIntroCharacterName").text, Is.EqualTo("Talia Arboris"));
+                Button language = FindButton("GuildIntroConversationLanguageButton");
+                EventSystem.current.SetSelectedGameObject(language.gameObject);
+                store.FailNextSettingsWrite();
+                SimulatePointerClick(language);
+                Text languageLabel = language.GetComponentInChildren<Text>(true);
+                for (int frame = 0; frame < 300 && languageLabel.text != "RETRY"; frame++)
+                    yield return null;
+
+                Assert.That(app.Settings.languageId, Is.EqualTo("es"),
+                    "A failed Settings write leaves the persisted language unchanged while the exact candidate remains pending.");
+                Assert.That(languageLabel.text, Is.EqualTo("RETRY"));
+                string failedSettingsPayload = store.SettingsPayloads[settingsWritesBefore];
+                Assert.That(FindText("GuildIntroText").text, Is.EqualTo(EnglishIntros[2]),
+                    "The current in-memory language updates immediately while Settings waits for retry.");
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(language.gameObject));
+                AssertGuildTextLayout(FindText("HubTitle"));
+                AssertGuildTextLayout(FindText("OpenGuildIntroButtonLabel"));
+                AssertGuildTextLayout(FindText("GuildIntroCharacterName"));
+                AssertGuildTextLayout(FindText("GuildIntroText"));
+                AssertGuildTextLayout(languageLabel);
+                AssertGuildTextLayout(FindText("GuildIntroBackButtonLabel"));
+                AssertGuildTextLayout(FindText("GuildIntroConversationCloseButtonLabel"));
+                Assert.That(FindTextOnCanvas(canvas, "GuildIntroListTitle").text, Is.EqualTo("GUILD"));
+                Assert.That(FindTextOnCanvas(canvas, "GuildIntroListLanguageButtonLabel").text, Is.EqualTo("RETRY"));
+
+                SimulatePointerClick(language);
+                for (int frame = 0; frame < 300 &&
+                    (app.Settings.languageId != "en" || languageLabel.text != "Español"); frame++)
+                    yield return null;
+
+                Assert.That(app.Settings.languageId, Is.EqualTo("en"));
+                Assert.That(languageLabel.text, Is.EqualTo("Español"));
+                AssertGuildTextLayout(languageLabel);
+                AssertGuildTextLayout(FindText("GuildIntroText"));
+                AssertGuildTextLayout(FindText("GuildIntroConversationCloseButtonLabel"));
+                Assert.That(store.SettingsPayloads.Count, Is.GreaterThanOrEqualTo(settingsWritesBefore + 2));
+                for (int index = settingsWritesBefore + 1; index < store.SettingsPayloads.Count; index++)
+                    Assert.That(store.SettingsPayloads[index], Is.EqualTo(failedSettingsPayload),
+                        "The settings retry must write the exact failed candidate bytes.");
+                Assert.That(FindObject(canvas, "GuildIntroRoot").activeSelf, Is.True);
+                Assert.That(FindObject(canvas, "GuildIntroConversationView").activeSelf, Is.True);
+                Assert.That(FindText("GuildIntroCharacterName").text, Is.EqualTo("Talia Arboris"));
+                Assert.That(FindText("GuildIntroText").text, Is.EqualTo(EnglishIntros[2]));
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(language.gameObject),
+                    "LanguageChanged refreshes the existing conversation and preserves its selected control.");
+                AssertGuildTextLayout(FindTextOnCanvas(canvas, "GuildIntroListTitle"));
+                AssertGuildTextLayout(FindTextOnCanvas(canvas, "GuildIntroListLanguageButtonLabel"));
+                AssertGuildTextLayout(FindTextOnCanvas(canvas, "GuildCharacterButton0Label"));
+                Assert.That(preparation.SelectedClassId, Is.EqualTo(selectedClass));
+                Assert.That(preparation.SelectedSkillIds, Is.EqualTo(selectedSkills));
+                Assert.That(JsonUtility.ToJson(app.Profile, false), Is.EqualTo(profileBefore));
+                Assert.That(store.ProfileWriteAttempts, Is.EqualTo(profileWritesBefore),
+                    "Guild reading and the language change must not write Profile.");
+                Assert.That(store.SettingsWriteAttempts, Is.GreaterThanOrEqualTo(settingsWritesBefore + 2));
+
+                yield return SimulateScreenPointerClick(mouse, ScreenPoint(FindText("GuildIntroText"), canvas));
+                Button back = FindButton("GuildIntroBackButton");
+                for (int frame = 0; frame < 3 && EventSystem.current.currentSelectedGameObject != back.gameObject; frame++)
+                    yield return null;
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(back.gameObject),
+                    "A real click on the conversation body restores a valid selection inside that view.");
+                yield return PressUiKey(keyboard, Key.Enter);
+                Assert.That(FindObject(canvas, "GuildIntroListView").activeSelf, Is.True);
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildCharacterButton2").gameObject));
+                SimulateSubmit(FindButton("GuildCharacterButton2"));
+                Assert.That(FindText("GuildIntroText").text, Is.EqualTo(EnglishIntros[2]));
+
+                preparation.enabled = false;
+                Assert.That(FindObject(canvas, "GuildIntroRoot").activeSelf, Is.False);
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("OpenGuildIntroButton").gameObject),
+                    "Disabling an open Guild view returns selection to its active opener.");
+                preparation.enabled = true;
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("OpenGuildIntroButton").gameObject),
+                    "Re-enabling restores usable focus without reopening the modal.");
+                yield return SimulateScreenPointerClick(mouse, ScreenPoint(FindButton("OpenGuildIntroButton"), canvas));
+                Assert.That(FindObject(canvas, "GuildIntroRoot").activeSelf, Is.True);
+                Assert.That(FindObject(canvas, "GuildIntroListView").activeSelf, Is.True);
+                SimulateSubmit(FindButton("GuildCharacterButton2"));
+
+                SimulatePointerClick(FindButton("GuildIntroConversationCloseButton"));
+                Assert.That(FindObject(canvas, "GuildIntroRoot").activeSelf, Is.False);
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("OpenGuildIntroButton").gameObject));
+
+                SimulatePointerClick(FindButton("OpenGuildIntroButton"));
+                SimulateSubmit(FindButton("GuildCharacterButton2"));
+                yield return PressUiKey(keyboard, Key.Escape);
+                Assert.That(FindObject(canvas, "GuildIntroRoot").activeSelf, Is.False);
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("OpenGuildIntroButton").gameObject));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) UnityEngine.Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                DeleteSaveDirectory(saveDirectory);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10GuildIntroRemainsReadableForAuthenticReadOnlyAndUnrelatedPendingProfiles()
+        {
+            string readOnlyDirectory = NewSaveDirectory("LuckboundE10GuildReadonly");
+            string pendingDirectory = NewSaveDirectory("LuckboundE10GuildOtherPending");
+            var readOnlyStore = new TrackingSaveStore(new FileSaveStore(readOnlyDirectory, null));
+            var pendingStore = new TrackingSaveStore(new FileSaveStore(pendingDirectory, null));
+            Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadReadOnlyGuildProfile(readOnlyStore, value => app = value);
+                Assert.That(app.ProfileLoadStatus, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
+                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                Assert.That(app.SaveDataReady && !app.CanWriteProfile, Is.True);
+                Assert.That(app.ActiveRun, Is.Null,
+                    "The preserved legacy expedition is not required as an active runtime run to read guild text.");
+
+                Task<SaveStorageSnapshot> readOnlyBeforeTask = readOnlyStore.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(readOnlyBeforeTask, "read readonly guild fixture before browsing");
+                SaveStorageSnapshot readOnlyBefore = readOnlyBeforeTask.GetAwaiter().GetResult();
+                string readOnlyProfileBefore = JsonUtility.ToJson(app.Profile, false);
+                int readOnlyProgressBefore = app.ContractProgression.GetProgress(ContractCatalog.Ct01);
+                bool readOnlyAcceptedBefore = app.ContractProgression.IsAccepted(ContractCatalog.Ct01);
+                bool readOnlyClaimedBefore = app.ContractProgression.IsClaimed(ContractCatalog.Ct01);
+                int readOnlyWritesBefore = readOnlyStore.ProfileWriteAttempts;
+
+                yield return LoadGuildHub();
+                SimulatePointerClick(FindButton("OpenGuildIntroButton"));
+                SimulateSubmit(FindButton("GuildCharacterButton0"));
+                Assert.That(FindText("GuildIntroText").text, Is.EqualTo(SpanishIntros[0]));
+                SimulateSubmit(FindButton("GuildIntroBackButton"));
+                SimulatePointerClick(FindButton("GuildIntroListCloseButton"));
+                Assert.That(app.ActiveRun, Is.Null);
+                Assert.That(app.ContractProgression.GetProgress(ContractCatalog.Ct01), Is.EqualTo(readOnlyProgressBefore));
+                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct01), Is.EqualTo(readOnlyAcceptedBefore));
+                Assert.That(app.ContractProgression.IsClaimed(ContractCatalog.Ct01), Is.EqualTo(readOnlyClaimedBefore));
+                Assert.That(JsonUtility.ToJson(app.Profile, false), Is.EqualTo(readOnlyProfileBefore));
+                Assert.That(readOnlyStore.ProfileWriteAttempts, Is.EqualTo(readOnlyWritesBefore));
+                Task<SaveStorageSnapshot> readOnlyAfterTask = readOnlyStore.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(readOnlyAfterTask, "read readonly guild fixture after browsing");
+                SaveStorageSnapshot readOnlyAfter = readOnlyAfterTask.GetAwaiter().GetResult();
+                Assert.That(readOnlyAfter.PrimaryJson, Is.EqualTo(readOnlyBefore.PrimaryJson));
+                Assert.That(readOnlyAfter.BackupJson, Is.EqualTo(readOnlyBefore.BackupJson));
+
+                yield return LoadBootstrappedApplication(pendingStore, value => app = value);
+                Assert.That(app != null && app.SaveDataReady && app.CanWriteProfile, Is.True);
+                pendingStore.FailNextProfileWrite();
+                ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator",
+                    ExpeditionRunConfiguration.HumanRaceId,
+                    new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
+                Task<SaveWriteResult> beginTask = app.BeginExpeditionAsync(run);
+                yield return WaitForTask(beginTask, "create the unrelated pending expedition write fixture");
+                SaveWriteResult beginResult = beginTask.GetAwaiter().GetResult();
+                Assert.That(beginResult.Succeeded, Is.False);
+                Assert.That(app.HasPendingExpeditionWrite, Is.True);
+                Assert.That(app.HasPendingContractProgression, Is.False);
+                Assert.That(app.ActiveRun, Is.Null);
+                Assert.That(app.HasActiveExpedition, Is.False);
+
+                Task<SaveStorageSnapshot> pendingBeforeTask = pendingStore.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(pendingBeforeTask, "read unrelated pending fixture before guild browsing");
+                SaveStorageSnapshot pendingBefore = pendingBeforeTask.GetAwaiter().GetResult();
+                string pendingProfileBefore = JsonUtility.ToJson(app.Profile, false);
+                string pendingPayloadBefore = app.PendingProfileExport;
+                int pendingProgressBefore = app.ContractProgression.GetProgress(ContractCatalog.Ct01);
+                int pendingWritesBefore = pendingStore.ProfileWriteAttempts;
+
+                yield return LoadGuildHub();
+                SimulatePointerClick(FindButton("OpenGuildIntroButton"));
+                SimulateSubmit(FindButton("GuildCharacterButton4"));
+                Assert.That(FindText("GuildIntroText").text, Is.EqualTo(SpanishIntros[4]));
+                SimulatePointerClick(FindButton("GuildIntroConversationCloseButton"));
+
+                Assert.That(app.HasPendingExpeditionWrite, Is.True);
+                Assert.That(app.PendingProfileExport, Is.EqualTo(pendingPayloadBefore));
+                Assert.That(app.HasPendingContractProgression, Is.False);
+                Assert.That(app.ActiveRun, Is.Null);
+                Assert.That(app.HasActiveExpedition, Is.False);
+                Assert.That(app.ContractProgression.GetProgress(ContractCatalog.Ct01), Is.EqualTo(pendingProgressBefore));
+                Assert.That(JsonUtility.ToJson(app.Profile, false), Is.EqualTo(pendingProfileBefore));
+                Assert.That(pendingStore.ProfileWriteAttempts, Is.EqualTo(pendingWritesBefore));
+                Task<SaveStorageSnapshot> pendingAfterTask = pendingStore.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(pendingAfterTask, "read unrelated pending fixture after guild browsing");
+                SaveStorageSnapshot pendingAfter = pendingAfterTask.GetAwaiter().GetResult();
+                Assert.That(pendingAfter.PrimaryJson, Is.EqualTo(pendingBefore.PrimaryJson));
+                Assert.That(pendingAfter.BackupJson, Is.EqualTo(pendingBefore.BackupJson));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) UnityEngine.Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                DeleteSaveDirectory(readOnlyDirectory);
+                DeleteSaveDirectory(pendingDirectory);
+            }
+        }
+
+        private static IEnumerator LoadReadOnlyGuildProfile(
+            TrackingSaveStore store, Action<ApplicationBootstrapper> ready)
+        {
+            ApplicationBootstrapper app = null;
+            yield return LoadBootstrappedApplication(store, value => app = value);
+            Assert.That(app != null && app.CanWriteProfile, Is.True,
+                "The readonly V6 fixture starts writable and reaches readonly status through a real legacy reload.");
+
+            Task<ContractProgressionCommitResult> accepted = app.AcceptContractAsync(ContractCatalog.Ct01);
+            yield return WaitForTask(accepted, "accept CT01 for the readonly V6 fixture");
+            Assert.That(accepted.GetAwaiter().GetResult().Persisted, Is.True);
+            for (int index = 0; index < 3; index++)
+            {
+                Task<ContractProgressionCommitResult> progress = app.RecordContractProgressEventAsync(
+                    ContractProgressEvent.CombatRoomCompleted, "test/e10-guild/readonly-room-" + index);
+                yield return WaitForTask(progress, "record readonly V6 fixture progress " + index);
+                Assert.That(progress.GetAwaiter().GetResult().Persisted, Is.True);
+            }
+
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator",
+                ExpeditionRunConfiguration.HumanRaceId,
+                new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
+            Task<SaveWriteResult> begin = app.BeginExpeditionAsync(run);
+            yield return WaitForTask(begin, "save the legacy active expedition for the readonly V6 fixture");
+            Assert.That(begin.GetAwaiter().GetResult().Succeeded, Is.True);
+            Assert.That(app.HasActiveExpedition, Is.True);
+
+            UnityEngine.Object.Destroy(app.gameObject);
+            yield return null;
+            SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+            for (int frame = 0; frame < 120 &&
+                (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady ||
+                 SceneManager.GetActiveScene().name != "Menu"); frame++) yield return null;
+            app = ApplicationBootstrapper.Instance;
+            Assert.That(app != null && app.SaveDataReady, Is.True);
+            Assert.That(app.ProfileLoadStatus, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
+            Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+            Assert.That(app.CanWriteProfile, Is.False);
+            Assert.That(app.ActiveRun, Is.Null);
+            Assert.That(app.ContractProgression.IsComplete(ContractCatalog.Ct01), Is.True);
+            ready(app);
+        }
+
+        private static IEnumerator LoadBootstrappedApplication(ISaveStore store, Action<ApplicationBootstrapper> ready)
+        {
+            ApplicationBootstrapper old = ApplicationBootstrapper.Instance;
+            if (old != null) UnityEngine.Object.Destroy(old.gameObject);
+            yield return null;
+            ApplicationBootstrapper.EditorSaveStoreFactoryForTests = () => store;
+            SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+            for (int frame = 0; frame < 120 &&
+                (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady); frame++)
+                yield return null;
+            ready(ApplicationBootstrapper.Instance);
+        }
+
+        private static IEnumerator LoadGuildHub()
+        {
+            SceneManager.LoadScene("Hub", LoadSceneMode.Single);
+            HubPreparationController preparation = null;
+            for (int frame = 0; frame < 60 && preparation == null; frame++)
+            {
+                preparation = UnityEngine.Object.FindAnyObjectByType<HubPreparationController>();
+                if (preparation == null) yield return null;
+            }
+            Assert.That(preparation, Is.Not.Null);
+            for (int frame = 0; frame < 2; frame++) yield return null;
+        }
+
+        private static IEnumerator WaitForTask<T>(Task<T> task, string operation)
+        {
+            Assert.That(task, Is.Not.Null, operation + " returned no task.");
+            for (int frame = 0; frame < 300 && !task.IsCompleted; frame++) yield return null;
+            Assert.That(task.IsCompleted, Is.True, operation + " did not complete within 300 frames.");
+        }
+
+        private static void AssertThatModalExclusive(Canvas canvas, string activeName)
+        {
+            Transform contractPanel = canvas.transform.Find("ContractBoardPanel");
+            Transform upgradePanel = canvas.transform.Find("PermanentUpgradePanel");
+            Transform guildPanel = canvas.transform.Find("GuildIntroRoot");
+            Assert.That(guildPanel, Is.Not.Null);
+            if (activeName == "GuildIntroRoot")
+            {
+                Assert.That(guildPanel.gameObject.activeSelf, Is.True);
+                Assert.That(contractPanel == null || !contractPanel.gameObject.activeSelf, Is.True);
+                Assert.That(upgradePanel == null || !upgradePanel.gameObject.activeSelf, Is.True);
+            }
+        }
+
+        private static Canvas FindHubCanvas()
+        {
+            GameObject canvasObject = GameObject.Find("HubPreparationCanvas");
+            return canvasObject == null ? null : canvasObject.GetComponent<Canvas>();
+        }
+
+        private static GameObject FindObject(Canvas canvas, string name)
+        {
+            Assert.That(canvas, Is.Not.Null);
+            Transform found = canvas.GetComponentsInChildren<Transform>(true).FirstOrDefault(value => value.name == name);
+            Assert.That(found, Is.Not.Null, "Could not find Hub control " + name + ".");
+            return found.gameObject;
+        }
+
+        private static Text FindTextOnCanvas(Canvas canvas, string name)
+        {
+            GameObject found = FindObject(canvas, name);
+            Text text = found.GetComponent<Text>();
+            Assert.That(text, Is.Not.Null, name + " needs a Text component.");
+            return text;
+        }
+
+        private static void AssertHubHeaderGeometry(Canvas canvas)
+        {
+            Text title = FindTextOnCanvas(canvas, "HubTitle");
+            RectTransform titleRect = title.rectTransform;
+            Assert.That(title.text, Is.EqualTo("LA TABERNA"));
+            Assert.That(title.fontSize, Is.EqualTo(21));
+            Assert.That(titleRect.anchoredPosition, Is.EqualTo(new Vector2(38f, 111f)));
+            Assert.That(titleRect.sizeDelta, Is.EqualTo(new Vector2(140f, 28f)));
+
+            RectTransform guildRect = FindButton("OpenGuildIntroButton").GetComponent<RectTransform>();
+            Assert.That(guildRect.anchorMin, Is.EqualTo(new Vector2(0f, 1f)));
+            Assert.That(guildRect.anchoredPosition, Is.EqualTo(new Vector2(92f, -10f)));
+            Assert.That(guildRect.sizeDelta, Is.EqualTo(new Vector2(108f, 28f)));
+        }
+
+        private static void AssertGuildTextLayout(Text text)
+        {
+            Assert.That(text, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            RectTransform rect = text.rectTransform;
+            Vector2 extents = rect.rect.size;
+            TextGenerationSettings settings = text.GetGenerationSettings(extents);
+            var generator = new TextGenerator();
+            generator.Populate(text.text, settings);
+            float pixelsPerUnit = Mathf.Max(1f, text.pixelsPerUnit);
+            float preferredWidth = generator.GetPreferredWidth(text.text, settings) / pixelsPerUnit;
+            float preferredHeight = generator.GetPreferredHeight(text.text, settings) / pixelsPerUnit;
+            Assert.That(text.fontSize * (320f / 480f), Is.GreaterThanOrEqualTo(14f),
+                text.name + " must render at or above 14 px at 320x180.");
+            Assert.That(preferredWidth, Is.LessThanOrEqualTo(extents.x + 0.5f),
+                text.name + " preferred width must fit its available rect.");
+            Assert.That(preferredHeight, Is.LessThanOrEqualTo(extents.y + 0.5f),
+                text.name + " preferred height must fit its available rect.");
+            Assert.That(generator.characterCountVisible, Is.EqualTo(text.text.Length),
+                text.name + " must display every authored character.");
+        }
+
+        private static int CountNamed(Canvas canvas, string name)
+        {
+            return canvas.GetComponentsInChildren<Transform>(true).Count(value => value.name == name);
+        }
+
+        private static Button FindButton(string name)
+        {
+            GameObject found = GameObject.Find(name);
+            Assert.That(found, Is.Not.Null, "Could not find active Hub button " + name + ".");
+            Button button = found.GetComponent<Button>();
+            Assert.That(button, Is.Not.Null, name + " needs a Button component.");
+            return button;
+        }
+
+        private static Text FindText(string name)
+        {
+            GameObject found = GameObject.Find(name);
+            Assert.That(found, Is.Not.Null, "Could not find active Hub text " + name + ".");
+            Text text = found.GetComponent<Text>();
+            Assert.That(text, Is.Not.Null, name + " needs a Text component.");
+            return text;
+        }
+
+        private static void SimulatePointerClick(Button button)
+        {
+            Assert.That(button, Is.Not.Null);
+            Assert.That(button.interactable, Is.True, button.gameObject.name + " should be interactable.");
+            Assert.That(EventSystem.current, Is.Not.Null, "Hub should provide an EventSystem.");
+            var pointer = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };
+            ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerClickHandler);
+        }
+
+        private static void SimulateSubmit(Button button)
+        {
+            Assert.That(button, Is.Not.Null);
+            Assert.That(button.interactable, Is.True, button.gameObject.name + " should be interactable.");
+            Assert.That(EventSystem.current, Is.Not.Null, "Hub should provide an EventSystem.");
+            EventSystem.current.SetSelectedGameObject(button.gameObject);
+            ExecuteEvents.Execute(button.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
+        }
+
+        private static Vector2 ScreenPoint(Button button, Canvas canvas)
+        {
+            return RectTransformUtility.WorldToScreenPoint(canvas.worldCamera,
+                button.GetComponent<RectTransform>().position);
+        }
+
+        private static Vector2 ScreenPoint(Text text, Canvas canvas)
+        {
+            return RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, text.rectTransform.position);
+        }
+
+        private static IEnumerator SimulateScreenPointerClick(Mouse mouse, Vector2 screenPosition)
+        {
+            InputSystem.QueueStateEvent(mouse, new MouseState().WithPosition(screenPosition));
+            InputSystem.Update();
+            yield return null;
+            InputSystem.QueueStateEvent(mouse,
+                new MouseState().WithPosition(screenPosition).WithButton(MouseButton.Left));
+            InputSystem.Update();
+            yield return null;
+            InputSystem.QueueStateEvent(mouse, new MouseState().WithPosition(screenPosition));
+            InputSystem.Update();
+            for (int frame = 0; frame < 2; frame++) yield return null;
+        }
+
+        private static IEnumerator PressUiKey(Keyboard keyboard, Key key)
+        {
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState(key));
+            InputSystem.Update();
+            for (int frame = 0; frame < 2; frame++) yield return null;
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+            InputSystem.Update();
+            yield return null;
+        }
+
+        private static string NewSaveDirectory(string prefix)
+        {
+            string directory = Path.Combine(Path.GetTempPath(), prefix, Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            return directory;
+        }
+
+        private static void DeleteSaveDirectory(string directory)
+        {
+            string tempRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            string fullDirectory = Path.GetFullPath(directory);
+            if (!fullDirectory.StartsWith(tempRoot, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Refusing to delete a save directory outside the system temp root.");
+            if (Directory.Exists(fullDirectory)) Directory.Delete(fullDirectory, recursive: true);
+        }
+
+        private sealed class TrackingSaveStore : ISaveStore
+        {
+            private readonly FileSaveStore _inner;
+            private bool _failNextProfileWrite;
+            private bool _failNextSettingsWrite;
+
+            public TrackingSaveStore(FileSaveStore inner) { _inner = inner; }
+
+            public int ProfileWriteAttempts { get; private set; }
+            public int SettingsWriteAttempts { get; private set; }
+            public System.Collections.Generic.List<string> SettingsPayloads { get; } = new System.Collections.Generic.List<string>();
+            public string GetPrimaryPath(SaveDocument document) => _inner.GetPrimaryPath(document);
+            public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
+            public void FailNextProfileWrite() => _failNextProfileWrite = true;
+            public void FailNextSettingsWrite() => _failNextSettingsWrite = true;
+
+            public async Task WriteAsync(SaveDocument document, string json, string lastKnownGoodPrimaryJson)
+            {
+                if (document == SaveDocument.Profile)
+                {
+                    ProfileWriteAttempts++;
+                    if (_failNextProfileWrite)
+                    {
+                        _failNextProfileWrite = false;
+                        throw new IOException("Injected profile write failure for the unrelated pending-write fixture.");
+                    }
+                }
+                else
+                {
+                    SettingsWriteAttempts++;
+                    SettingsPayloads.Add(json);
+                    if (_failNextSettingsWrite)
+                    {
+                        _failNextSettingsWrite = false;
+                        throw new IOException("Injected settings write failure for the language retry fixture.");
+                    }
+                }
+                await _inner.WriteAsync(document, json, lastKnownGoodPrimaryJson);
+            }
+        }
+    }
+}

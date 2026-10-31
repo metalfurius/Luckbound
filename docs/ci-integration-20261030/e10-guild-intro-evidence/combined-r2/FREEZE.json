@@ -1,0 +1,23 @@
+{
+  "contractSha256": "093b7c607bab7466893e6678f48afbd193ac61ededa3550d336011c8b6c8f9a3",
+  "preliminaryCorrectionActa": "044728956c04f8699e3d6e9b1d4c68956673262ef69c684b5e0e2a521f9bda14",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "1d92de53b3ba0acfe1b1f79d4737176bd951cc09cfb36834cd0e6419bc6a12c9"
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "bytes": 24822,
+      "sha256": "04f078acbc977696f2ca260992f85cc6c51747bedb5f3aef592356db1819c750"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 40172,
+      "sha256": "4080ac53874e31bdee17571c907a5c80f1193ae777ad3e583937bf6c46811280"
+    }
+  ],
+  "workerReportSha256": "c8fa84584fc4750262a50bc8a65390056fea925309784df2126608bb15b4a015",
+  "workerDiffSha256": "bea37836a9bb1c553b434f430b80fa1d87a9f98a18529c7843b6b1e3ab3bdf9c"
+}

@@ -1,0 +1,136 @@
+{
+  "run": 41149331963,
+  "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+  "platform": "windows",
+  "artifact": {
+    "id": 13022597909,
+    "bytes": 10124,
+    "sha256": "d067b001b555123ff45a82c52dbf2061d4eac53e0ec43621b4c1a6e86bd5a388",
+    "crcChecked": true,
+    "extractedFiles": 5
+  },
+  "recordCount": 181,
+  "recordTypes": {
+    "snapshot": 2,
+    "dmesg": 2,
+    "docker_observer": 2,
+    "sample": 171,
+    "docker_event": 3,
+    "observer_finished": 1
+  },
+  "phases": [
+    {
+      "phase": "S0",
+      "utc": "2026-10-31T00:25:48.521+00:00",
+      "memory": {
+        "available_bytes": 15190880256,
+        "source": "proc_meminfo",
+        "state": "available",
+        "swap_available_bytes": 3221221376,
+        "swap_total_bytes": 3221221376,
+        "total_bytes": 16760344576
+      },
+      "workspaceDisk": {
+        "free_bytes": 90305392640,
+        "state": "available",
+        "total_bytes": 154894188544
+      },
+      "cgroupState": "available",
+      "cgroupScope": "cgroup-v2:e7f2a95e5fffbc48"
+    },
+    {
+      "phase": "S1",
+      "utc": "2026-10-31T00:28:39.588+00:00",
+      "memory": {
+        "available_bytes": 15473041408,
+        "source": "proc_meminfo",
+        "state": "available",
+        "swap_available_bytes": 3221176320,
+        "swap_total_bytes": 3221221376,
+        "total_bytes": 16760344576
+      },
+      "workspaceDisk": {
+        "free_bytes": 78246514688,
+        "state": "available",
+        "total_bytes": 154894188544
+      },
+      "cgroupState": "available",
+      "cgroupScope": "cgroup-v2:e7f2a95e5fffbc48"
+    }
+  ],
+  "observerFinished": {
+    "events_dropped": 0,
+    "events_inspect_skipped": 0,
+    "events_not_captured": 0,
+    "events_recorded": 3,
+    "events_seen": 3,
+    "identity": {
+      "attempt": 1,
+      "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+      "platform": "windows",
+      "run_id": "41149331963"
+    },
+    "inspects": 3,
+    "monotonic_seconds": 217.490792,
+    "phase": "S1",
+    "reason": "stop",
+    "record_type": "observer_finished",
+    "schema": "luckbound.ci9.build-diagnostics",
+    "state": "complete",
+    "timestamp_utc": "2026-10-31T00:28:39.609+00:00",
+    "version": 1
+  },
+  "done": {
+    "identity": {
+      "attempt": 1,
+      "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+      "platform": "windows",
+      "run_id": "41149331963"
+    },
+    "reason": "stop",
+    "schema": "luckbound.ci9.build-diagnostics",
+    "state": "complete",
+    "timestamp_utc": "2026-10-31T00:28:39.609+00:00",
+    "version": 1
+  },
+  "qualification": "Observed remote CI execution; metrics have their reported scope and availability, not an inferred cause for prior137; dmesg S0/S1 Unavailable exit1, cause not established.",
+  "rawUnitOrLicensingLogsPublished": false,
+  "dmesg": [
+    {
+      "identity": {
+        "attempt": 1,
+        "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+        "platform": "windows",
+        "run_id": "41149331963"
+      },
+      "monotonic_seconds": 46.423366,
+      "phase": "S0",
+      "reason": "command_exit_nonzero",
+      "record_type": "dmesg",
+      "return_code": 1,
+      "schema": "luckbound.ci9.build-diagnostics",
+      "source": "sudo_n_dmesg",
+      "state": "Unavailable",
+      "timestamp_utc": "2026-10-31T00:25:48.542+00:00",
+      "version": 1
+    },
+    {
+      "identity": {
+        "attempt": 1,
+        "commit": "dc645ce9aa75f47e46295c7f93b4f3f44a299b0d",
+        "platform": "windows",
+        "run_id": "41149331963"
+      },
+      "monotonic_seconds": 217.490753,
+      "phase": "S1",
+      "reason": "command_exit_nonzero",
+      "record_type": "dmesg",
+      "return_code": 1,
+      "schema": "luckbound.ci9.build-diagnostics",
+      "source": "sudo_n_dmesg",
+      "state": "Unavailable",
+      "timestamp_utc": "2026-10-31T00:28:39.609+00:00",
+      "version": 1
+    }
+  ]
+}

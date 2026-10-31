@@ -1,0 +1,46 @@
+{
+  "acceptedStaticActa": "docs/ci-integration-20261030/SOL-E10-GUILD-INTRO-STATIC-FINAL.md",
+  "actaSha256": "511c223b78b86999409cf6a363dbde8afb1db27ce42b4cb41b8c9eeb340510f1",
+  "changes": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "1d92de53b3ba0acfe1b1f79d4737176bd951cc09cfb36834cd0e6419bc6a12c9"
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "bytes": 24822,
+      "sha256": "04f078acbc977696f2ca260992f85cc6c51747bedb5f3aef592356db1819c750"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 43480,
+      "sha256": "7850fc962bcf01fd5617f98a3198dfa237ac1d4374924c31767bb444a188f03b"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs.meta",
+      "bytes": 60,
+      "sha256": "643f3b7530ec253adfae03a2e203815fa5dfb801e7a0f3b5e577ed04dcd2467b"
+    }
+  ],
+  "sourceGuard": {
+    "before": 411,
+    "after": 412,
+    "changedExisting": 1,
+    "added": 1,
+    "unchangedExisting": 410
+  },
+  "metas": {
+    "before": 868,
+    "after": 869,
+    "existingUnchanged": 868,
+    "unique": 869
+  },
+  "fixtures": {
+    "unchanged": 492
+  },
+  "compiledInputsMatchLive": 135,
+  "NativeExecuted": false,
+  "UnityLocalExecuted": false,
+  "GamePublished": false
+}
