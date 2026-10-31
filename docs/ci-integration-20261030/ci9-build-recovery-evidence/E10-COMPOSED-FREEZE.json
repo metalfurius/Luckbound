@@ -1,0 +1,19 @@
+{
+  "baseCommit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "beforeSha256": "938aef74df556eb7c887d19b531c1b04435063031808ae545965adc9250a8fad",
+      "sha256": "a595d0e18d28bafc352fa004b94ac80b15dbae5288544e24f45e8142be3c41fc",
+      "bytes": 70318,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/e10-composed-r2/overrides/Assets/Luckbound/Scripts/App/HubPreparationController.cs"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+      "beforeSha256": "53772af61eac98a1e5f97127f82775a96ae9cbf6c12a650fd934e8bb3ad77a73",
+      "sha256": "a2ffbcf281a94eca3d3ac1bcfaa02048dae1a509b120699558e1adfb9473d67e",
+      "bytes": 94374,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/e10-composed-r2/overrides/Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs"
+    }
+  ]
+}

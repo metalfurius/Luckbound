@@ -1,0 +1,59 @@
+{
+  "run": 41141336004,
+  "commit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "tree": "54f80444452785d3382db70bfc3a965636bf3325",
+  "testAttempt": 1,
+  "artifact": {
+    "id": 13020185153,
+    "bytes": 9898717,
+    "sha256": "c6b0d4d03798425d112a57bef51c7cf74837e8df0a7c71af8a27f0e595abce8e",
+    "extractedFiles": 247
+  },
+  "editMode": {
+    "total": 654,
+    "passed": 654
+  },
+  "playMode": {
+    "total": 510,
+    "passed": 510
+  },
+  "total": 1164,
+  "passed": 1164,
+  "failed": 0,
+  "skipped": 0,
+  "inconclusive": 0,
+  "capture": {
+    "cases": 11,
+    "attempts": 11,
+    "dataFiles": 97,
+    "sources": 14,
+    "stable": true,
+    "realGate": "success",
+    "realSentinel": "success",
+    "directGateDDataIdentical": 97,
+    "directGateDObservationsIdentical": 77
+  },
+  "g04HpEnRuntimePassed": 7,
+  "g04PassiveRuntimePassed": 7,
+  "e04PanelRuntimePassed": 7,
+  "v7RegressionPassed": 78,
+  "c08ScenariosPassed": 3,
+  "c08AssertionsPassed": 16,
+  "buildsAttempt1": "failure",
+  "singleFailedJobsRetryRequested": true,
+  "g04TaskVerified": false,
+  "fullGameAccepted": false,
+  "saveFormatOperational": 6,
+  "unityLocal": false,
+  "playersExecuted": false,
+  "formalRuntimeReview": {
+    "verdict": "Accepted technical Native only; G04 Conditional on build verification",
+    "report": "../SOL-CI8-NATIVE-BUILD-FAILURE-RUNTIME.md",
+    "sha256": "80dd8ec7f7693d8e376ff67bb9f8db7757fd9011ef828b19615d63ff04b92139"
+  },
+  "windowsAttempt2": "success",
+  "windowsArtifactVerified": true,
+  "webglAttempt2": "failure137",
+  "additionalBlindRetryAllowed": false,
+  "overallCi": "failure"
+}

@@ -115,6 +115,15 @@ jobs:
           restore-keys: |
             luckbound-linux-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-windows-
 
+      - name: Start Windows build diagnostics
+        shell: bash
+        run: |
+          diagnostics_dir="${RUNNER_TEMP}/Luckbound-BuildDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-windows"
+          python3 Tools/Automation/capture_ci_build_diagnostics.py start \
+            --platform windows --output-dir "$diagnostics_dir" \
+            --run-id "$GITHUB_RUN_ID" --attempt "$GITHUB_RUN_ATTEMPT" \
+            --commit "$GITHUB_SHA" --duration-seconds 3900
+
       - name: Build Windows player
         uses: game-ci/unity-builder@v6.0.0
         env:
@@ -129,49 +138,19 @@ jobs:
           buildsPath: build
           customParameters: '-nographics'
 
-      - name: Capture Windows build diagnostics
-        if: failure()
+      - name: Stop Windows build diagnostics
+        if: always()
         shell: bash
         run: |
-          diagnostics_dir="${RUNNER_TEMP}/Luckbound-WindowsDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          mkdir -p "$diagnostics_dir"
-          {
-            set +e
-            date -u '+%Y-%m-%dT%H:%M:%SZ UTC'
-            echo '$ free -h'
-            free -h
-            free_status=$?
-            printf 'free exit status: %s\n' "$free_status"
-            echo '$ df -h .'
-            df -h .
-            df_status=$?
-            printf 'df exit status: %s\n' "$df_status"
-            echo '$ sudo -n dmesg --ctime | rg -i "out of memory|oom-kill|killed process" | tail -n 30'
-            dmesg_status=0
-            dmesg_output="$(sudo -n dmesg --ctime 2>&1)" || dmesg_status=$?
-            printf 'dmesg exit status: %s\n' "$dmesg_status"
-            if [ "$dmesg_status" -ne 0 ]; then
-              printf '%s\n' "$dmesg_output"
-            else
-              matches_status=0
-              dmesg_matches="$(printf '%s\n' "$dmesg_output" | rg -i 'out of memory|oom-kill|killed process')" || matches_status=$?
-              printf 'OOM filter exit status: %s\n' "$matches_status"
-              if [ "$matches_status" -eq 0 ]; then
-                printf '%s\n' "$dmesg_matches" | tail -n 30
-              elif [ "$matches_status" -eq 1 ]; then
-                echo 'No matching OOM entries in readable dmesg output.'
-              else
-                echo 'OOM filter failed; diagnostic is inconclusive.'
-              fi
-            fi
-          } > "$diagnostics_dir/windows-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log" 2>&1
+          diagnostics_dir="${RUNNER_TEMP}/Luckbound-BuildDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-windows"
+          python3 Tools/Automation/capture_ci_build_diagnostics.py stop --output-dir "$diagnostics_dir"
 
       - name: Upload Windows build diagnostics
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: windows-diagnostics-${{ github.sha }}
-          path: ${{ runner.temp }}/Luckbound-WindowsDiagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build-diagnostics-windows-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/Luckbound-BuildDiagnostics-${{ github.run_id }}-${{ github.run_attempt }}-windows
           if-no-files-found: error
           retention-days: 14
 
@@ -207,6 +186,15 @@ jobs:
           restore-keys: |
             luckbound-linux-${{ env.LUCKBOUND_CI_UNITY_VERSION }}-webgl-
 
+      - name: Start WebGL build diagnostics
+        shell: bash
+        run: |
+          diagnostics_dir="${RUNNER_TEMP}/Luckbound-BuildDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-webgl"
+          python3 Tools/Automation/capture_ci_build_diagnostics.py start \
+            --platform webgl --output-dir "$diagnostics_dir" \
+            --run-id "$GITHUB_RUN_ID" --attempt "$GITHUB_RUN_ATTEMPT" \
+            --commit "$GITHUB_SHA" --duration-seconds 5700
+
       - name: Build WebGL player
         uses: game-ci/unity-builder@v6.0.0
         env:
@@ -219,6 +207,23 @@ jobs:
           targetPlatform: WebGL
           buildProfile: Assets/Settings/Build Profiles/WebGL.asset
           buildsPath: build
+          customParameters: '-nographics'
+
+      - name: Stop WebGL build diagnostics
+        if: always()
+        shell: bash
+        run: |
+          diagnostics_dir="${RUNNER_TEMP}/Luckbound-BuildDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-webgl"
+          python3 Tools/Automation/capture_ci_build_diagnostics.py stop --output-dir "$diagnostics_dir"
+
+      - name: Upload WebGL build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: build-diagnostics-webgl-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/Luckbound-BuildDiagnostics-${{ github.run_id }}-${{ github.run_attempt }}-webgl
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Verify WebGL output
         shell: bash

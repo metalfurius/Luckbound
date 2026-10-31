@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "sha256": "fe719c46bc2f408acdfaf205acb7658ed4266f76d0385b9ce74b8ed661baf3db",
+      "bytes": 59145,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r1/candidate/Tools/Automation/capture_ci_build_diagnostics.py"
+    },
+    {
+      "path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "sha256": "2d4c1066c6bdb3a21ed72b8f86ac2b564c0a152a0b7130f09f98427bd8329cc5",
+      "bytes": 20479,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r1/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py"
+    }
+  ],
+  "workerSourcesReadAfterFinalTestReport": true,
+  "workerManifestBindingPending": true
+}

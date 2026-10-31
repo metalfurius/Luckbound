@@ -1,0 +1,35 @@
+{
+  "sha": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "node_id": "C_kwDONB2jd9oAKDU3OWQzMGY3NWEzMWE3ZTJiYmU4ZDNmNzQxNzFjYTIwNjg3NDEwMDM",
+  "url": "https://api.github.com/repos/metalfurius/Luckbound/git/commits/579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "html_url": "https://github.com/metalfurius/Luckbound/commit/579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "author": {
+    "name": "metalfurius",
+    "email": "75508084+metalfurius@users.noreply.github.com",
+    "date": "2026-10-30T22:55:56Z"
+  },
+  "committer": {
+    "name": "metalfurius",
+    "email": "75508084+metalfurius@users.noreply.github.com",
+    "date": "2026-10-30T22:55:56Z"
+  },
+  "tree": {
+    "sha": "54f80444452785d3382db70bfc3a965636bf3325",
+    "url": "https://api.github.com/repos/metalfurius/Luckbound/git/trees/54f80444452785d3382db70bfc3a965636bf3325"
+  },
+  "message": "Fix early landing audio and Fortune retry gates; correct G04 runtime fixtures",
+  "parents": [
+    {
+      "sha": "bd1c2fb12625db168fe976854e3f4b4c350e8342",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/git/commits/bd1c2fb12625db168fe976854e3f4b4c350e8342",
+      "html_url": "https://github.com/metalfurius/Luckbound/commit/bd1c2fb12625db168fe976854e3f4b4c350e8342"
+    }
+  ],
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}

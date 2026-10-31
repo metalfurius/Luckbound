@@ -1,0 +1,45 @@
+{
+  "task": "E10.BOARD.CAPABILITY",
+  "revision": "r1",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-G04-PRECLOSE-NEXT-E10.md",
+    "sha256": "756a87fb8bf6a9468054ae7dbc33ccb56d2a77f07e867a8fc471cdb6e30aa058"
+  },
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "before": {
+        "sha256": "938aef74df556eb7c887d19b531c1b04435063031808ae545965adc9250a8fad",
+        "copy": "before/Assets/Luckbound/Scripts/App/HubPreparationController.cs"
+      },
+      "after": {
+        "sha256": "a595d0e18d28bafc352fa004b94ac80b15dbae5288544e24f45e8142be3c41fc",
+        "copy": "after/Assets/Luckbound/Scripts/App/HubPreparationController.cs"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+      "before": {
+        "sha256": "53772af61eac98a1e5f97127f82775a96ae9cbf6c12a650fd934e8bb3ad77a73",
+        "copy": "before/Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs"
+      },
+      "after": {
+        "sha256": "22034e6602a69dd70dc8e5543fceb2ae2fd3a27345d2eb41bf2854a9019c62ff",
+        "copy": "after/Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs"
+      }
+    }
+  ],
+  "assetsModified": false,
+  "verification": {
+    "beforeHashesMatched": true,
+    "workspaceAssetsStillMatchBefore": true,
+    "threePriorE10ScenariosTextuallyUnchanged": true,
+    "assertMultiplePresent": false,
+    "unityCompileRun": false,
+    "testsRun": false,
+    "ciRun": false
+  },
+  "diff": "diff.patch",
+  "report": "REPORT.md",
+  "frozenAtDelivery": true
+}

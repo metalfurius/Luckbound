@@ -1,0 +1,27 @@
+{
+  "testsRun": 23,
+  "passed": 23,
+  "failed": 0,
+  "errors": 0,
+  "exitCode": 0,
+  "observedDurationSeconds": 0.156,
+  "command": "python -B -m unittest discover -s Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r3/candidate/Tools/Automation/tests -p test_capture_ci_build_diagnostics.py -v",
+  "actualOutputFile": "ROOT-TEST-OUTPUT.log",
+  "actualOutputSha256": "c9cee719e4e26d42a7204a0d443739dbfdf13e36593922e5bf201a8a08c1b6b6",
+  "scope": "Windows actual unittest runner; Linux/proc/Docker/sudo/Popen fixtures simulated, no actual services",
+  "sources": [
+    {
+      "path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "sha256": "ffbbb0cdbf49a2bc6b981b83bd774655a55f6922d974d9f3d623004d6e1ad3f7",
+      "bytes": 67080,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r3/candidate/Tools/Automation/capture_ci_build_diagnostics.py"
+    },
+    {
+      "path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "sha256": "4d12903bdec97ef6e190e1143ab2376b14c8395b9119bc01c90368f52779c277",
+      "bytes": 33213,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r3/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py"
+    }
+  ],
+  "workflowCommandsParsed": 4
+}

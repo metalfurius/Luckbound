@@ -1,0 +1,40 @@
+{
+  "run": 41141336004,
+  "scenarios": [
+    {
+      "scenario": "C08_EarlyJumpLanding",
+      "sourceCommit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+      "sourceHash": "8a60cd7a8b5831414eb9828642a45c5ff5e8ea4544d9354178e58af35b892cda",
+      "sourceFileCount": 4743,
+      "sourceManifestSha256": "8a60cd7a8b5831414eb9828642a45c5ff5e8ea4544d9354178e58af35b892cda",
+      "reportSha256": "5a2f245603ee92602887a38e43284c268c712350e352eae14ab02fc52d92844d",
+      "passed": true,
+      "assertions": 3,
+      "allAssertionsPassed": true
+    },
+    {
+      "scenario": "C08_ObservedSpawnLanding",
+      "sourceCommit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+      "sourceHash": "8a60cd7a8b5831414eb9828642a45c5ff5e8ea4544d9354178e58af35b892cda",
+      "sourceFileCount": 4743,
+      "sourceManifestSha256": "8a60cd7a8b5831414eb9828642a45c5ff5e8ea4544d9354178e58af35b892cda",
+      "reportSha256": "0b165ce2f573724250390266deedaab6f526c73c98c2f127db786b77363342c4",
+      "passed": true,
+      "assertions": 3,
+      "allAssertionsPassed": true
+    },
+    {
+      "scenario": "C08_RealKeyboardTwoWaveCombat",
+      "sourceCommit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+      "sourceHash": "8a60cd7a8b5831414eb9828642a45c5ff5e8ea4544d9354178e58af35b892cda",
+      "sourceFileCount": 4743,
+      "sourceManifestSha256": "8a60cd7a8b5831414eb9828642a45c5ff5e8ea4544d9354178e58af35b892cda",
+      "reportSha256": "a50be46c3b80c540b6a71ec3c3d804b9836ab3b22cb69fbb5f3155e1d3a21a29",
+      "passed": true,
+      "assertions": 10,
+      "allAssertionsPassed": true
+    }
+  ],
+  "allPassed": true,
+  "perceptualReview": false
+}

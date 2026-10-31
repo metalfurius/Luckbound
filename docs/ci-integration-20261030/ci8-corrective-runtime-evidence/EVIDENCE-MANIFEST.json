@@ -1,0 +1,131 @@
+{
+  "run": 41141336004,
+  "commit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "files": [
+    {
+      "path": "ACCEPTANCE-SUMMARY.json",
+      "bytes": 1597,
+      "sha256": "4ea81081865d7f8df572f9c6500ba0197d35031c845f236043ee1d071c8420c2"
+    },
+    {
+      "path": "BUILD-ATTEMPT1-DIAGNOSTICS.json",
+      "bytes": 1418,
+      "sha256": "f390b20e403916c1cc7064d3778ce786ed646b8a6534472706c4a5dca32d8caf"
+    },
+    {
+      "path": "BUILD-ATTEMPT2-RESULTS.json",
+      "bytes": 1600,
+      "sha256": "25291c6a0d0402287ce45301f8d3ff2c4fd44c9becdc756fc42da197618f3d9d"
+    },
+    {
+      "path": "c08/C08_EarlyJumpLanding-scenario-report.json",
+      "bytes": 7662,
+      "sha256": "5a2f245603ee92602887a38e43284c268c712350e352eae14ab02fc52d92844d"
+    },
+    {
+      "path": "c08/C08_EarlyJumpLanding-scenario.log",
+      "bytes": 6945,
+      "sha256": "e04afa8d968aab54a401cacfa49b95aab1e6044f97fe12fc1eea030bfc4800c8"
+    },
+    {
+      "path": "c08/C08_ObservedSpawnLanding-scenario-report.json",
+      "bytes": 7663,
+      "sha256": "0b165ce2f573724250390266deedaab6f526c73c98c2f127db786b77363342c4"
+    },
+    {
+      "path": "c08/C08_ObservedSpawnLanding-scenario.log",
+      "bytes": 6941,
+      "sha256": "0d3a90edbaea575c040780b9cb11f34f70195ef8267546526de1d2e6d41fc0ea"
+    },
+    {
+      "path": "c08/C08_RealKeyboardTwoWaveCombat-scenario-report.json",
+      "bytes": 30503,
+      "sha256": "a50be46c3b80c540b6a71ec3c3d804b9836ab3b22cb69fbb5f3155e1d3a21a29"
+    },
+    {
+      "path": "c08/C08_RealKeyboardTwoWaveCombat-scenario.log",
+      "bytes": 28248,
+      "sha256": "d5f2199462d0dde3a6c0699b51340b7d559610f96ce583ca1e85357007141ade"
+    },
+    {
+      "path": "c08/source-manifest.sha256",
+      "bytes": 715410,
+      "sha256": "8a60cd7a8b5831414eb9828642a45c5ff5e8ea4544d9354178e58af35b892cda"
+    },
+    {
+      "path": "C08-SUMMARY.json",
+      "bytes": 1631,
+      "sha256": "96b6674993debe8d9ff5475e35c67960a5536b1483ec318deb4ceb9250fe16a8"
+    },
+    {
+      "path": "CI-ATTEMPT1-METADATA.json",
+      "bytes": 31426,
+      "sha256": "754fe98d69493bf1de7ae277e3ce9608f8846fda7d69dc63a275d70ad31cb7c4"
+    },
+    {
+      "path": "DATA-COMPARISON.json",
+      "bytes": 30948,
+      "sha256": "42c6ac4c96288a0e9b66675dc5ace4ca14b9e43c851fdb0766e9e306d5189068"
+    },
+    {
+      "path": "editmode-results.xml",
+      "bytes": 568835,
+      "sha256": "a4ff4697faa91ce239b5f877791fa540a3608bdeb628cb6731d2a402fcb1e94e"
+    },
+    {
+      "path": "NATIVE-CALLSITE-BINDING.json",
+      "bytes": 5733,
+      "sha256": "1f23af1d6e4cb4e1cd5cf6dcdb9e4809eb593ac31ef151ef03e834f3a08f382a"
+    },
+    {
+      "path": "NATIVE-MANIFEST.json",
+      "bytes": 17874,
+      "sha256": "58103b1a8b09c562f129d3fa6c602dfedc4fc7ce441bb89befefb512e79295bd"
+    },
+    {
+      "path": "OBSERVABILITY-VERIFICATION.json",
+      "bytes": 26605,
+      "sha256": "8f4a426a5723a7821819308df204da886637f01759b6ecb1f23d5dda1c91963d"
+    },
+    {
+      "path": "playmode-results.xml",
+      "bytes": 1615037,
+      "sha256": "5e601e89fc028fb1abb44fecc030efe81fae65607e68988a81a6054e10c324ed"
+    },
+    {
+      "path": "REAL-GATES.json",
+      "bytes": 2018,
+      "sha256": "142c85bfd68b2d60b70d40d318f905467bc06d5d308de39f339b66a66ab25084"
+    },
+    {
+      "path": "REMOTE-COMMIT.json",
+      "bytes": 1394,
+      "sha256": "e8d176bd6608cad1321f5ca7e6e2dbb18cd56b36df1c7a377e02a6a3e7f02438"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2896,
+      "sha256": "63851ec4d2dac6ab39b2af732223c2bed6c26132f76bf5f67a41b86ac0f8c4f5"
+    },
+    {
+      "path": "SOURCE-BINDING.json",
+      "bytes": 6199,
+      "sha256": "c2999d858bbeb6044e8530d0504ca1c775592fb8a653b4f1339fe050fd0aca61"
+    },
+    {
+      "path": "TEST-SUMMARY.json",
+      "bytes": 27600,
+      "sha256": "91921190d4c47d337f25c9258c113da2faa457fcc52a02bd22b5947418f04a48"
+    },
+    {
+      "path": "windows-attempt1-diagnostics.log",
+      "bytes": 763,
+      "sha256": "4c5b502a6afdeaaf848cfa21e33a7d874b536197814ea0909738adc6f0afc1f0"
+    },
+    {
+      "path": "WINDOWS-OUTPUT.json",
+      "bytes": 660,
+      "sha256": "fa214a0cf65f424afbc64915b7da54c65a3f0469bc49d48877252824d3a045eb"
+    }
+  ]
+}

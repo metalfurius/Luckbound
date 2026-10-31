@@ -1,0 +1,50 @@
+{
+  "scope": "Synthetic argv parsing only; no observer, Docker, sudo or actual start/stop was executed",
+  "workflowParser": "Bash -n plus exact staged command extraction; not a YAML parser",
+  "count": 4,
+  "allMatched": true,
+  "commands": [
+    {
+      "step": "Start Windows build diagnostics",
+      "parsed": {
+        "command": "start",
+        "platform": "windows",
+        "output_dir": "/tmp/ci9-fixture/Luckbound-BuildDiagnostics-90000000001-1-windows",
+        "run_id": "90000000001",
+        "attempt": 1,
+        "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "duration_seconds": 3900
+      },
+      "matched": true
+    },
+    {
+      "step": "Stop Windows build diagnostics",
+      "parsed": {
+        "command": "stop",
+        "output_dir": "/tmp/ci9-fixture/Luckbound-BuildDiagnostics-90000000001-1-windows"
+      },
+      "matched": true
+    },
+    {
+      "step": "Start WebGL build diagnostics",
+      "parsed": {
+        "command": "start",
+        "platform": "webgl",
+        "output_dir": "/tmp/ci9-fixture/Luckbound-BuildDiagnostics-90000000001-1-webgl",
+        "run_id": "90000000001",
+        "attempt": 1,
+        "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "duration_seconds": 5700
+      },
+      "matched": true
+    },
+    {
+      "step": "Stop WebGL build diagnostics",
+      "parsed": {
+        "command": "stop",
+        "output_dir": "/tmp/ci9-fixture/Luckbound-BuildDiagnostics-90000000001-1-webgl"
+      },
+      "matched": true
+    }
+  ]
+}

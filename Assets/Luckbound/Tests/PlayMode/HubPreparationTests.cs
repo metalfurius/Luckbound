@@ -852,6 +852,234 @@ namespace Luckbound.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator E10_ContractBoardBlocksAcceptAndClaimAfterAuthenticReadOnlyLoad()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Readonly", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var store = new FailingOnceProfileWriteStore(new FileSaveStore(saveDirectory, null), failFirstProfileWrite: false);
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadReadOnlyClaimableContractProfile(store, value => app = value);
+                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                Assert.That(app.SaveDataReady && !app.CanWriteProfile, Is.True);
+                Assert.That(app.ContractProgression.IsComplete(ContractCatalog.Ct01), Is.True,
+                    "The synthetic profile fixture must present a claimable contract after readonly reload.");
+                Assert.That(app.ContractProgression.IsClaimed(ContractCatalog.Ct01), Is.False);
+
+                yield return LoadContractHub();
+                HubPreparationController preparation = Object.FindAnyObjectByType<HubPreparationController>();
+                SimulateButtonClick(FindButton("OpenContractsButton"));
+                Button claim = FindButton("ContractCT01ActionButton");
+                Button accept = FindButton("ContractCT02ActionButton");
+                Assert.That(claim, Is.Not.Null);
+                Assert.That(claim.interactable, Is.False);
+                Assert.That(accept, Is.Not.Null);
+                Assert.That(accept.interactable, Is.False);
+
+                Task<SaveStorageSnapshot> storedBeforeTask = store.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(storedBeforeTask, "read profile before readonly contract actions");
+                SaveStorageSnapshot storedBefore = storedBeforeTask.GetAwaiter().GetResult();
+                string profileBefore = JsonUtility.ToJson(app.Profile, false);
+                int profileWritesBefore = store.ProfilePayloads.Count;
+
+                InvokeContractActivation(preparation, ContractCatalog.Ct01);
+                InvokeContractActivation(preparation, ContractCatalog.Ct02);
+                for (int frame = 0; frame < 2; frame++) yield return null;
+
+                Task<SaveStorageSnapshot> storedAfterTask = store.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(storedAfterTask, "read profile after readonly contract actions");
+                SaveStorageSnapshot storedAfter = storedAfterTask.GetAwaiter().GetResult();
+                Assert.That(app.ContractProgression.IsClaimed(ContractCatalog.Ct01), Is.False);
+                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct02), Is.False);
+                Assert.That(JsonUtility.ToJson(app.Profile, false), Is.EqualTo(profileBefore));
+                Assert.That(storedAfter.PrimaryJson, Is.EqualTo(storedBefore.PrimaryJson));
+                Assert.That(storedAfter.BackupJson, Is.EqualTo(storedBefore.BackupJson));
+                Assert.That(store.ProfilePayloads.Count, Is.EqualTo(profileWritesBefore));
+                Assert.That(ContractOperationIsInProgress(preparation), Is.False);
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10_ContractBoardBlocksFreshAcceptWhileAnotherProfileWriteIsPending()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10OtherPending", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var failingStore = new FailingOnceProfileWriteStore(new FileSaveStore(saveDirectory, null));
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadBootstrappedApplication(failingStore, value => app = value);
+                ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator",
+                    ExpeditionRunConfiguration.HumanRaceId,
+                    new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
+                Task<SaveWriteResult> begin = app.BeginExpeditionAsync(run);
+                yield return WaitForTask(begin, "create another-family pending profile fixture");
+                begin.GetAwaiter().GetResult();
+                Assert.That(app.HasPendingExpeditionWrite, Is.True,
+                    "The failed synthetic run profile write remains pending in its own owner.");
+                Assert.That(app.HasPendingContractProgression, Is.False);
+                string pendingProfileJson = app.PendingProfileExport;
+                Assert.That(string.IsNullOrEmpty(pendingProfileJson), Is.False);
+                int profileWritesBefore = failingStore.ProfilePayloads.Count;
+                Task<SaveStorageSnapshot> storedBeforeTask = failingStore.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(storedBeforeTask, "read profile before blocked contract action");
+                SaveStorageSnapshot storedBefore = storedBeforeTask.GetAwaiter().GetResult();
+
+                yield return LoadContractHub();
+                HubPreparationController preparation = Object.FindAnyObjectByType<HubPreparationController>();
+                SimulateButtonClick(FindButton("OpenContractsButton"));
+                Button accept = FindButton("ContractCT02ActionButton");
+                Assert.That(accept, Is.Not.Null);
+                Assert.That(accept.interactable, Is.False);
+                InvokeContractActivation(preparation, ContractCatalog.Ct02);
+                for (int frame = 0; frame < 2; frame++) yield return null;
+
+                Assert.That(app.HasPendingExpeditionWrite, Is.True);
+                Assert.That(app.HasPendingContractProgression, Is.False);
+                Assert.That(app.PendingProfileExport, Is.EqualTo(pendingProfileJson));
+                Assert.That(failingStore.ProfilePayloads.Count, Is.EqualTo(profileWritesBefore));
+                Assert.That(ContractOperationIsInProgress(preparation), Is.False);
+                Task<SaveStorageSnapshot> storedAfterTask = failingStore.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(storedAfterTask, "read profile after blocked contract action");
+                SaveStorageSnapshot storedAfter = storedAfterTask.GetAwaiter().GetResult();
+                Assert.That(storedAfter.PrimaryJson, Is.EqualTo(storedBefore.PrimaryJson));
+                Assert.That(storedAfter.BackupJson, Is.EqualTo(storedBefore.BackupJson));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10_ContractBoardRecreatedControllerRetriesOnlyItsExactPendingPayloadOnce()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10ExactRetry", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var failingStore = new FailingOnceProfileWriteStore(new FileSaveStore(saveDirectory, null));
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadBootstrappedApplication(failingStore, value => app = value);
+                yield return LoadContractHub();
+                SimulateButtonClick(FindButton("OpenContractsButton"));
+                SimulateButtonClick(FindButton("ContractCT02ActionButton"));
+                for (int frame = 0; frame < 120 && !app.HasPendingContractProgression; frame++) yield return null;
+
+                Assert.That(app.HasPendingContractProgression, Is.True);
+                Assert.That(app.PendingProfileExport, Is.EqualTo(failingStore.ProfilePayloads[0]));
+                int profileWritesBeforeRetry = failingStore.ProfilePayloads.Count;
+                string pendingPayload = app.PendingProfileExport;
+
+                yield return LoadContractHub();
+                SimulateButtonClick(FindButton("OpenContractsButton"));
+                Button retry = FindButton("RetryPendingContractProgressionButton");
+                for (int frame = 0; frame < 120 && (retry == null || !retry.gameObject.activeInHierarchy || !retry.interactable); frame++)
+                {
+                    yield return null;
+                    retry = FindButton("RetryPendingContractProgressionButton");
+                }
+                Assert.That(retry != null && retry.gameObject.activeInHierarchy && retry.interactable, Is.True);
+                SimulateButtonClick(retry);
+                for (int frame = 0; frame < 120 && app.HasPendingContractProgression; frame++) yield return null;
+                for (int frame = 0; frame < 120 && failingStore.ProfilePayloads.Count < profileWritesBeforeRetry + 1; frame++) yield return null;
+
+                Assert.That(app.HasPendingContractProgression, Is.False);
+                Assert.That(app.ContractProgression.IsAccepted(ContractCatalog.Ct02), Is.True);
+                Assert.That(failingStore.ProfilePayloads.Count, Is.EqualTo(profileWritesBeforeRetry + 1));
+                Assert.That(failingStore.ProfilePayloads[profileWritesBeforeRetry], Is.EqualTo(pendingPayload));
+                Assert.That(File.ReadAllText(failingStore.GetPrimaryPath(SaveDocument.Profile)), Is.EqualTo(pendingPayload));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator E10_ContractBoardLanguageChangesKeepFocusAndSettingsWritableWithReadonlyProfile()
+        {
+            string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10ReadonlyLanguage", System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(saveDirectory);
+            var store = new FailingOnceProfileWriteStore(new FileSaveStore(saveDirectory, null), failFirstProfileWrite: false);
+            System.Func<ISaveStore> previousFactory = ApplicationBootstrapper.EditorSaveStoreFactoryForTests;
+            ApplicationBootstrapper app = null;
+            Time.timeScale = 1f;
+            try
+            {
+                yield return LoadReadOnlyClaimableContractProfile(store, value => app = value);
+                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                Assert.That(app.Settings.languageId, Is.EqualTo("es"));
+                yield return LoadContractHub();
+
+                SimulateButtonClick(FindButton("OpenContractsButton"));
+                Button language = FindButton("ContractLanguageButton");
+                Assert.That(language, Is.Not.Null);
+                EventSystem.current.SetSelectedGameObject(language.gameObject);
+                int profileWritesBefore = store.ProfilePayloads.Count;
+                Task<SaveStorageSnapshot> profileBeforeTask = store.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(profileBeforeTask, "read profile before settings language changes");
+                SaveStorageSnapshot profileBefore = profileBeforeTask.GetAwaiter().GetResult();
+
+                SimulateButtonClick(language);
+                for (int frame = 0; frame < 120 && app.Settings.languageId != "en"; frame++) yield return null;
+                Assert.That(app.Settings.languageId, Is.EqualTo("en"));
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(language.gameObject));
+                Assert.That(FindText("ContractCT01Objective").text, Is.EqualTo("Complete three combat rooms"));
+
+                SimulateButtonClick(language);
+                for (int frame = 0; frame < 120 && app.Settings.languageId != "es"; frame++) yield return null;
+                Assert.That(app.Settings.languageId, Is.EqualTo("es"));
+                Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(language.gameObject));
+                Assert.That(FindText("ContractCT01Objective").text, Is.EqualTo("Completar tres salas de combate"));
+                Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+                Assert.That(store.ProfilePayloads.Count, Is.EqualTo(profileWritesBefore));
+
+                Task<SaveStorageSnapshot> profileAfterTask = store.ReadAsync(SaveDocument.Profile);
+                yield return WaitForTask(profileAfterTask, "read profile after settings language changes");
+                SaveStorageSnapshot profileAfter = profileAfterTask.GetAwaiter().GetResult();
+                Assert.That(profileAfter.PrimaryJson, Is.EqualTo(profileBefore.PrimaryJson));
+                Assert.That(profileAfter.BackupJson, Is.EqualTo(profileBefore.BackupJson));
+                Task<SaveStorageSnapshot> settingsTask = store.ReadAsync(SaveDocument.Settings);
+                yield return WaitForTask(settingsTask, "read persisted settings after language changes");
+                SettingsSaveEnvelope settings = JsonUtility.FromJson<SettingsSaveEnvelope>(
+                    settingsTask.GetAwaiter().GetResult().PrimaryJson);
+                Assert.That(settings.settings.languageId, Is.EqualTo("es"));
+            }
+            finally
+            {
+                ApplicationBootstrapper.EditorSaveStoreFactoryForTests = previousFactory;
+                app = ApplicationBootstrapper.Instance;
+                if (app != null) Object.Destroy(app.gameObject);
+                Time.timeScale = 1f;
+                if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
+            }
+        }
+
+        [UnityTest]
         public IEnumerator E10_GameplayProgressRetryDoesNotEmitContractUiConfirmation()
         {
             string saveDirectory = Path.Combine(Path.GetTempPath(), "LuckboundE10Ui", System.Guid.NewGuid().ToString("N"));
@@ -917,6 +1145,59 @@ namespace Luckbound.Tests.PlayMode
             for (int frame = 0; frame < 120 &&
                 (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady); frame++) yield return null;
             ready(ApplicationBootstrapper.Instance);
+        }
+
+        private static IEnumerator LoadReadOnlyClaimableContractProfile(
+            ISaveStore store, System.Action<ApplicationBootstrapper> ready)
+        {
+            ApplicationBootstrapper app = null;
+            yield return LoadBootstrappedApplication(store, value => app = value);
+            Assert.That(app != null && app.CanWriteProfile, Is.True,
+                "The synthetic fixture starts from a writable profile before creating its legacy snapshot.");
+
+            // Synthetic fixture data only: these test API calls do not use game buttons or gameplay emitters.
+            Task<ContractProgressionCommitResult> accepted = app.AcceptContractAsync(ContractCatalog.Ct01);
+            yield return WaitForTask(accepted, "accept synthetic CT01 fixture");
+            ContractProgressionCommitResult acceptResult = accepted.GetAwaiter().GetResult();
+            Assert.That(acceptResult.Persisted, Is.True, acceptResult.Message);
+            for (int index = 0; index < 3; index++)
+            {
+                Task<ContractProgressionCommitResult> progress = app.RecordContractProgressEventAsync(
+                    ContractProgressEvent.CombatRoomCompleted, "test/e10/readonly-room-" + index);
+                yield return WaitForTask(progress, "record synthetic CT01 progress " + index);
+                ContractProgressionCommitResult progressResult = progress.GetAwaiter().GetResult();
+                Assert.That(progressResult.Persisted, Is.True, progressResult.Message);
+            }
+
+            ExpeditionRunConfiguration run = ExpeditionRunConfigurationFactory.Create("class.bellator",
+                ExpeditionRunConfiguration.HumanRaceId,
+                new[] { "skill.bellator.circular_cut", "skill.bellator.guard" });
+            Task<SaveWriteResult> begin = app.BeginExpeditionAsync(run);
+            yield return WaitForTask(begin, "save synthetic active expedition for readonly fixture");
+            SaveWriteResult beginResult = begin.GetAwaiter().GetResult();
+            Assert.That(beginResult.Succeeded, Is.True, beginResult.Message);
+            Assert.That(app.HasActiveExpedition, Is.True);
+
+            Object.Destroy(app.gameObject);
+            yield return null;
+            SceneManager.LoadScene("Bootstrap", LoadSceneMode.Single);
+            for (int frame = 0; frame < 120 &&
+                (ApplicationBootstrapper.Instance == null || !ApplicationBootstrapper.Instance.SaveDataReady ||
+                 SceneManager.GetActiveScene().name != "Menu"); frame++) yield return null;
+            app = ApplicationBootstrapper.Instance;
+            Assert.That(app != null && app.SaveDataReady, Is.True);
+            Assert.That(app.ProfileLoadStatus, Is.EqualTo(SaveLoadStatus.LoadedPrimary));
+            Assert.That(app.ProfileAccess, Is.EqualTo(SaveDataAccess.ReadOnlyLegacyEncounterPinMissing));
+            Assert.That(app.CanWriteProfile, Is.False);
+            Assert.That(app.ContractProgression.IsComplete(ContractCatalog.Ct01), Is.True);
+            ready(app);
+        }
+
+        private static IEnumerator WaitForTask<T>(Task<T> task, string operation)
+        {
+            Assert.That(task, Is.Not.Null, operation + " returned no task.");
+            for (int frame = 0; frame < 300 && !task.IsCompleted; frame++) yield return null;
+            Assert.That(task.IsCompleted, Is.True, operation + " did not complete within 300 frames.");
         }
 
         private static IEnumerator LoadContractHub()

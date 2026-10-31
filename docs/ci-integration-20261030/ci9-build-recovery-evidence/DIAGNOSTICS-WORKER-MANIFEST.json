@@ -1,0 +1,76 @@
+{
+  "schema": "luckbound.ci9.build-diagnostics-candidate",
+  "schema_version": 1,
+  "prepared_utc_date": "2026-10-31",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-CI9-BUILD-DIAGNOSTIC-CONTRACT.md",
+    "sha256": "8b78d0cbc73ce7f5c2a3861f86b36526557260a5974e47bd7a2a645f71451853"
+  },
+  "candidate_root": "Logs/CI9BuildDiagnostics-20261031-r1/candidate",
+  "files": [
+    {
+      "logical_path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "candidate_path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "sha256": "fe719c46bc2f408acdfaf205acb7658ed4266f76d0385b9ce74b8ed661baf3db",
+      "bytes": 59145,
+      "lines": 1489
+    },
+    {
+      "logical_path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "candidate_path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "sha256": "2d4c1066c6bdb3a21ed72b8f86ac2b564c0a152a0b7130f09f98427bd8329cc5",
+      "bytes": 20479,
+      "lines": 421
+    },
+    {
+      "logical_path": "REPORT.md",
+      "candidate_path": "REPORT.md",
+      "sha256": "fbc84e5e466cd9cba0a69e9453f1b79674533557426bcf797090b6566887e19c",
+      "bytes": 4892
+    }
+  ],
+  "verification": {
+    "command": "python -B -m unittest discover -s Logs/CI9BuildDiagnostics-20261031-r1/candidate/Tools/Automation/tests -p test_capture_ci_build_diagnostics.py -v",
+    "result": "passed",
+    "tests_passed": 17,
+    "tests_failed": 0,
+    "elapsed_seconds": 0.093,
+    "python": "3.14.7",
+    "host": "Windows",
+    "pycache_directories_created": 0,
+    "external_docker_invoked": false,
+    "external_sudo_invoked": false,
+    "unity_invoked": false,
+    "network_used": false,
+    "actual_helper_process_launched": false
+  },
+  "bounds": {
+    "max_duration_seconds": 21900,
+    "max_sample_frequency_hz": 1,
+    "max_output_bytes": 33554432,
+    "max_records": 25000,
+    "max_record_bytes": 65536,
+    "start_ready_timeout_seconds": 10,
+    "stop_wait_timeout_seconds": 15,
+    "command_timeout_seconds": 3,
+    "docker_inspect_timeout_seconds": 2,
+    "docker_endpoint": "local_only",
+    "docker_event_count": 1024,
+    "docker_inspect_count": 256
+  },
+  "integration_state": {
+    "live_paths_modified": false,
+    "workflow_modified": false,
+    "git_staged": false,
+    "candidate_paths_ignored_by_gitignore_logs_rule": true,
+    "workflow_binding_checked": false,
+    "ci_build_run": false,
+    "root_or_sol_review": "pending"
+  },
+  "limitations": [
+    "Tests use synthetic cgroup/proc fixtures and injected Docker/sudo runners; they do not establish real runner permissions or availability.",
+    "Windows hosts report Linux cgroup and dmesg sources as Unavailable. Windows host memory uses GlobalMemoryStatusEx.",
+    "Docker observations are limited to the local Unix socket or Windows engine named pipe. Missing/denied data stays Unavailable.",
+    "No build, workflow, artifact upload, OOM attribution, GLX attribution, or causal conclusion was verified."
+  ]
+}

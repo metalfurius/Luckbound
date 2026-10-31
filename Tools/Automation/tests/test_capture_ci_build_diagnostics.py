@@ -1,0 +1,655 @@
+from __future__ import annotations
+
+import contextlib
+import errno
+import importlib.util
+import io
+import json
+import os
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest import mock
+
+
+SCRIPT_PATH = Path(__file__).resolve().parents[1] / "capture_ci_build_diagnostics.py"
+SPEC = importlib.util.spec_from_file_location("capture_ci_build_diagnostics", SCRIPT_PATH)
+assert SPEC is not None and SPEC.loader is not None
+ci9 = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = ci9
+SPEC.loader.exec_module(ci9)
+
+
+class FixtureProc:
+    def __init__(self, values: dict[str, bytes | str | BaseException]):
+        self.values = values
+
+    def __call__(self, path: str) -> bytes | str:
+        if path not in self.values:
+            raise FileNotFoundError(errno.ENOENT, "fixture missing")
+        value = self.values[path]
+        if isinstance(value, BaseException):
+            raise value
+        return value
+
+
+def cgroup_v2_fixture(oom_kill: int = 1, peak: int = 1500, local: bool = True) -> FixtureProc:
+    values: dict[str, bytes | str | BaseException] = {
+        "/proc/self/cgroup": "0::/ci/runner\n",
+        "/proc/self/mountinfo": "36 25 0:32 / /sys/fs/cgroup rw,nosuid,nodev,noexec,relatime - cgroup2 cgroup rw\n",
+        "/sys/fs/cgroup/ci/runner/memory.current": "1000\n",
+        "/sys/fs/cgroup/ci/runner/memory.peak": f"{peak}\n",
+        "/sys/fs/cgroup/ci/runner/memory.max": "max\n",
+        "/sys/fs/cgroup/ci/runner/memory.events": f"low 0\nhigh 1\nmax 2\noom 0\noom_kill {oom_kill}\n",
+    }
+    if local:
+        values["/sys/fs/cgroup/ci/runner/memory.events.local"] = f"low 0\nhigh 0\nmax 0\noom 0\noom_kill {oom_kill}\n"
+    return FixtureProc(values)
+
+
+def add_container_cgroup(fixture: FixtureProc, pid: int, scope: str, current: int = 1000) -> None:
+    directory = f"/sys/fs/cgroup{scope}"
+    fixture.values[f"/proc/{pid}/cgroup"] = f"0::{scope}\n"
+    fixture.values[f"{directory}/memory.current"] = f"{current}\n"
+    fixture.values[f"{directory}/memory.peak"] = f"{current + 500}\n"
+    fixture.values[f"{directory}/memory.max"] = "max\n"
+    fixture.values[f"{directory}/memory.events"] = "oom 0\noom_kill 0\n"
+    fixture.values[f"{directory}/memory.events.local"] = "oom 0\noom_kill 0\n"
+
+
+def inspect_json(container_id: str, pid: int) -> bytes:
+    return json.dumps({
+        "id": container_id,
+        "image_id": "sha256:" + "d" * 64,
+        "pid": pid,
+        "started_at": "2026-10-31T08:00:00.000000000Z",
+        "finished_at": "",
+        "exit_code": 0,
+        "oom_killed": False,
+        "memory_limit": 0,
+        "memory_swap_limit": 0,
+    }).encode()
+
+
+def identity() -> dict[str, object]:
+    return {"run_id": "42", "attempt": 1, "platform": "windows", "commit": "a" * 40}
+
+
+class FakeClock:
+    def __init__(self, value: float = 0.0):
+        self.value = value
+
+    def __call__(self) -> float:
+        return self.value
+
+    def sleep(self, seconds: float) -> None:
+        self.value += max(0.0, seconds)
+
+
+class FakeEventSource:
+    def __init__(self, initial: list[bytes] | None = None, dropped: int = 0):
+        self.pending = list(initial or [])
+        self.dropped = dropped
+        self.closed = False
+
+    def start(self) -> dict[str, object]:
+        return {"state": "observing", "source": "fixture"}
+
+    def drain(self, limit: int = ci9.MAX_QUEUED_EVENTS) -> list[bytes]:
+        values, self.pending = self.pending[:limit], self.pending[limit:]
+        return values
+
+    def status(self) -> dict[str, object] | None:
+        return None
+
+    def take_dropped(self) -> int:
+        dropped, self.dropped = self.dropped, 0
+        return dropped
+
+    def close(self) -> dict[str, object]:
+        self.closed = True
+        return {"state": "closed"}
+
+
+class CaptureCi9DiagnosticsTests(unittest.TestCase):
+    def test_cgroup_v2_records_metrics_and_delta_on_same_scope(self) -> None:
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            first = ci9._cgroup_snapshot(cgroup_v2_fixture(oom_kill=1, peak=1500))
+            second = ci9._cgroup_snapshot(cgroup_v2_fixture(oom_kill=3, peak=2400))
+        delta = ci9._delta_from(first, second)
+
+        self.assertEqual(first["version"], 2)
+        self.assertEqual(first["values"]["memory.current"]["value"], 1000)
+        self.assertTrue(first["values"]["memory.max"]["unlimited"])
+        self.assertEqual(delta["state"], "available")
+        self.assertEqual(delta["values"]["memory.events.oom_kill"], 2)
+        self.assertEqual(delta["values"]["memory.peak"], 900)
+
+    def test_cgroup_v1_records_failcnt_as_counter_and_oom_control(self) -> None:
+        fixture = FixtureProc({
+            "/proc/self/cgroup": "5:cpu,cpuacct:/runner\n7:memory:/docker/abc\n",
+            "/proc/self/mountinfo": "41 25 0:37 / /sys/fs/cgroup/memory rw,relatime - cgroup cgroup rw,memory\n",
+            "/sys/fs/cgroup/memory/docker/abc/memory.limit_in_bytes": "4096\n",
+            "/sys/fs/cgroup/memory/docker/abc/memory.usage_in_bytes": "2048\n",
+            "/sys/fs/cgroup/memory/docker/abc/memory.max_usage_in_bytes": "3072\n",
+            "/sys/fs/cgroup/memory/docker/abc/memory.failcnt": "2\n",
+            "/sys/fs/cgroup/memory/docker/abc/memory.oom_control": "oom_kill_disable 0\nunder_oom 1\n",
+        })
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            sample = ci9._cgroup_snapshot(fixture)
+
+        self.assertEqual(sample["version"], 1)
+        self.assertEqual(sample["values"]["memory.failcnt"]["value"], 2)
+        self.assertEqual(sample["values"]["memory.oom_control"]["counters"]["under_oom"], 1)
+
+    def test_missing_and_denied_cgroup_files_stay_unavailable(self) -> None:
+        fixture = cgroup_v2_fixture(local=False)
+        fixture.values["/sys/fs/cgroup/ci/runner/memory.peak"] = PermissionError(errno.EACCES, "fixture denied")
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            sample = ci9._cgroup_snapshot(fixture)
+
+        self.assertEqual(sample["values"]["memory.peak"]["state"], "Unavailable")
+        self.assertEqual(sample["values"]["memory.peak"]["reason"], "denied")
+        self.assertEqual(sample["values"]["memory.events.local"]["state"], "Unavailable")
+        self.assertNotIn("value", sample["values"]["memory.events.local"])
+
+    def test_cgroup_scope_change_does_not_create_a_delta(self) -> None:
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            first = ci9._cgroup_snapshot(cgroup_v2_fixture())
+        changed_fixture = cgroup_v2_fixture()
+        changed_fixture.values["/proc/self/cgroup"] = "0::/ci/other\n"
+        changed_fixture.values["/sys/fs/cgroup/ci/other/memory.current"] = "2000\n"
+        changed_fixture.values["/sys/fs/cgroup/ci/other/memory.peak"] = "2500\n"
+        changed_fixture.values["/sys/fs/cgroup/ci/other/memory.max"] = "max\n"
+        changed_fixture.values["/sys/fs/cgroup/ci/other/memory.events"] = "oom_kill 2\n"
+        changed_fixture.values["/sys/fs/cgroup/ci/other/memory.events.local"] = "oom_kill 2\n"
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            changed = ci9._cgroup_snapshot(changed_fixture)
+
+        self.assertEqual(ci9._delta_from(first, changed), {"state": "Unavailable", "reason": "scope_changed"})
+
+    def test_dmesg_no_match_is_distinct_from_denial_and_never_keeps_raw_message(self) -> None:
+        def no_match_runner(argv: object, timeout: float, limit: int) -> ci9.CommandResult:
+            self.assertEqual(tuple(argv), ("sudo", "-n", "dmesg", "--time-format", "raw"))
+            return ci9.CommandResult(0, b"[  10.000000] routine startup\n")
+
+        def denied_runner(argv: object, timeout: float, limit: int) -> ci9.CommandResult:
+            return ci9.CommandResult(1, b"private-secret denied by sudo")
+
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            no_match = ci9._filtered_dmesg("S0", 10.0, no_match_runner)
+            denied = ci9._filtered_dmesg("S0", 10.0, denied_runner)
+
+        self.assertEqual(no_match["state"], "available")
+        self.assertTrue(no_match["no_matching_message"])
+        self.assertEqual(denied["state"], "Unavailable")
+        self.assertEqual(denied["return_code"], 1)
+        self.assertNotIn("private-secret", json.dumps(denied))
+
+    def test_filtered_dmesg_keeps_only_timestamp_and_fixed_categories(self) -> None:
+        secret = "DO_NOT_CAPTURE_THIS_ARGUMENT_OR_CREDENTIAL"
+
+        def runner(argv: object, timeout: float, limit: int) -> ci9.CommandResult:
+            return ci9.CommandResult(0, f"[  11.250000] Out of memory: Killed process 123 ({secret})\n".encode())
+
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            record = ci9._filtered_dmesg("S1", 11.0, runner)
+
+        self.assertEqual(record["matches"], [{"timestamp_seconds_since_boot": 11.25, "categories": ["oom_kill", "killed_process"]}])
+        self.assertNotIn(secret, json.dumps(record))
+
+    def test_disappeared_container_inspect_is_unavailable_not_false(self) -> None:
+        container_id = "a" * 64
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        output_dir = Path(temporary.name)
+        runner_calls: list[tuple[str, ...]] = []
+
+        def runner(argv: object, timeout: float, limit: int) -> ci9.CommandResult:
+            runner_calls.append(tuple(argv))
+            return ci9.CommandResult(1, b"private-secret no such container")
+
+        writer = ci9.RecordWriter(output_dir, identity())
+        tracked = {container_id: {"pid": 123, "baseline_cgroup": {"state": "available", "scope_id": "cgroup-v2:scope"}}}
+        ci9._process_event({
+            "action": "die",
+            "container_id": container_id,
+            "timestamp_ns": 1_800_000_000_000_000_000,
+            "timestamp_utc": "2027-01-15T08:00:00+00:00",
+        }, writer, runner, cgroup_v2_fixture(), tracked, [0])
+        writer.close()
+        records = [json.loads(line) for line in (output_dir / "records.jsonl").read_text(encoding="utf-8").splitlines()]
+        record = records[0]
+
+        self.assertEqual(record["inspect"]["state"], "Unavailable")
+        self.assertEqual(record["inspect"]["reason"], "command_exit_nonzero")
+        self.assertNotIn("oom_killed", record["inspect"])
+        self.assertNotIn("private-secret", json.dumps(record))
+        self.assertNotIn(container_id, tracked)
+        self.assertEqual(len(runner_calls), 1)
+        self.assertIn("--format", runner_calls[0])
+        self.assertNotIn("{{json .}}", runner_calls[0])
+
+    def test_create_unavailable_cgroup_baseline_is_replaced_by_start(self) -> None:
+        container_id = "e" * 64
+        fixture = cgroup_v2_fixture()
+        add_container_cgroup(fixture, 123, f"/docker/{container_id}")
+        outputs = [inspect_json(container_id, 0), inspect_json(container_id, 123)]
+
+        def runner(argv: object, timeout: float, limit: int) -> ci9.CommandResult:
+            return ci9.CommandResult(0, outputs.pop(0))
+
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        writer = ci9.RecordWriter(Path(temporary.name), identity())
+        tracked: dict[str, dict[str, object]] = {}
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            ci9._process_event({"action": "create", "container_id": container_id, "timestamp_ns": 1_800_000_000_000_000_000, "timestamp_utc": "2027-01-15T08:00:00+00:00"}, writer, runner, fixture, tracked, [0])
+            after_create = tracked[container_id]["baseline_cgroup"]
+            ci9._process_event({"action": "start", "container_id": container_id, "timestamp_ns": 1_800_000_001_000_000_000, "timestamp_utc": "2027-01-15T08:00:01+00:00"}, writer, runner, fixture, tracked, [0])
+            sampled = ci9._sample_record({}, fixture, tracked)
+        writer.close()
+        records = [json.loads(line) for line in (Path(temporary.name) / "records.jsonl").read_text(encoding="utf-8").splitlines()]
+
+        self.assertEqual(after_create, None)
+        self.assertEqual(tracked[container_id]["baseline_cgroup"]["state"], "available")
+        self.assertEqual(sampled["containers"][0]["cgroup_delta_from_first"]["state"], "available")
+        self.assertEqual(len(records), 2)
+
+    def test_die_pid_scope_change_is_unavailable_and_removes_tracked_id(self) -> None:
+        container_id = "f" * 64
+        fixture = cgroup_v2_fixture()
+        add_container_cgroup(fixture, 123, "/docker/other-scope")
+        baseline_fixture = cgroup_v2_fixture()
+        add_container_cgroup(baseline_fixture, 123, f"/docker/{container_id}")
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            baseline = ci9._container_cgroup(123, baseline_fixture)
+        self.assertEqual(baseline["state"], "available")
+        tracked = {container_id: {"pid": 123, "baseline_cgroup": baseline}}
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        writer = ci9.RecordWriter(Path(temporary.name), identity())
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            ci9._process_event({"action": "die", "container_id": container_id, "timestamp_ns": 1_800_000_000_000_000_000, "timestamp_utc": "2027-01-15T08:00:00+00:00"}, writer, lambda argv, timeout, limit: ci9.CommandResult(0, inspect_json(container_id, 123)), fixture, tracked, [0])
+        writer.close()
+        record = json.loads((Path(temporary.name) / "records.jsonl").read_text(encoding="utf-8").splitlines()[0])
+
+        self.assertEqual(record["container_cgroup"], {"state": "Unavailable", "reason": "pid_scope_changed"})
+        self.assertNotIn(container_id, tracked)
+
+    def test_periodic_sample_marks_pid_scope_change_unavailable_and_closes_tracking(self) -> None:
+        container_id = "9" * 64
+        first_fixture = cgroup_v2_fixture()
+        add_container_cgroup(first_fixture, 123, f"/docker/{container_id}")
+        changed_fixture = cgroup_v2_fixture()
+        add_container_cgroup(changed_fixture, 123, "/docker/reused-pid-scope")
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            baseline = ci9._container_cgroup(123, first_fixture)
+        tracked = {container_id: {"pid": 123, "baseline_cgroup": baseline}}
+
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            sampled = ci9._sample_record({}, changed_fixture, tracked)
+
+        entry = sampled["containers"][0]
+        self.assertEqual(entry["cgroup"], {"state": "Unavailable", "reason": "pid_scope_changed"})
+        self.assertEqual(entry["cgroup_delta_from_first"]["reason"], "scope_changed")
+        self.assertEqual(entry["tracking_state"], "closed")
+        self.assertEqual(sampled["containers_tracking_closed"], [container_id])
+        self.assertNotIn(container_id, tracked)
+
+    def test_inspect_result_keeps_only_valid_allowlisted_fields(self) -> None:
+        image_id = "sha256:" + "d" * 64
+        response = {
+            "id": "c" * 64,
+            "image_id": image_id,
+            "pid": 123,
+            "started_at": "2026-10-31T08:00:00.000000000Z",
+            "finished_at": "",
+            "exit_code": 137,
+            "oom_killed": False,
+            "memory_limit": 0,
+            "memory_swap_limit": 0,
+            "labels": {"secret": "SHOULD_NOT_BE_PRESENT"},
+        }
+        fields = ci9._safe_inspect_fields(ci9.CommandResult(0, json.dumps(response).encode()))
+
+        self.assertEqual(fields["state"], "available")
+        self.assertEqual(fields["container_id"], "c" * 64)
+        self.assertEqual(fields["image_id"], image_id)
+        self.assertEqual(fields["exit_code"], 137)
+        self.assertIs(fields["oom_killed"], False)
+        self.assertNotIn("labels", fields)
+        self.assertNotIn("SHOULD_NOT_BE_PRESENT", json.dumps(fields))
+
+    def test_record_writer_emits_limit_and_reserves_finite_s1_slots(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        writer = ci9.RecordWriter(Path(temporary.name), identity())
+        with mock.patch.object(ci9, "MAX_RECORDS", 10), mock.patch.object(ci9, "MAX_OUTPUT_BYTES", 16 * 1024), mock.patch.object(ci9, "MAX_RECORD_BYTES", 1024):
+            for index in range(20):
+                writer.write("sample", "observer", {"index": index})
+            self.assertTrue(writer.limited)
+            writer.begin_finalization()
+            writer.write("docker_observer", "S1", {"state": "closed"})
+            writer.write("snapshot", "S1", {"host": {"state": "available"}})
+            writer.write("dmesg", "S1", {"state": "Unavailable", "reason": "fixture"})
+            writer.write("observer_finished", "S1", {"state": "complete"})
+        writer.close()
+        raw = (Path(temporary.name) / "records.jsonl").read_bytes()
+        records = [json.loads(line) for line in raw.splitlines()]
+
+        self.assertLessEqual(len(raw), 16 * 1024)
+        self.assertLessEqual(len(records), 10)
+        self.assertTrue(any(record.get("record_type") == "collection_limit" for record in records))
+        self.assertTrue(any(record.get("record_type") == "snapshot" and record.get("phase") == "S1" for record in records))
+
+    def test_event_parser_accepts_only_allowlisted_event_shape(self) -> None:
+        accepted = ci9._parse_event_line(f"container|oom|{'b' * 64}|1800000000000000000\n".encode())
+        rejected = ci9._parse_event_line(f"container|oom|{'b' * 64}|1800000000000000000|label-secret\n".encode())
+
+        self.assertEqual(accepted["action"], "oom")
+        self.assertIsNone(rejected)
+
+    def test_observer_stops_on_marker_with_finite_s1(self) -> None:
+        clock = FakeClock()
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        output_dir = Path(temporary.name)
+        writer = ci9.RecordWriter(output_dir, identity(), clock)
+        source = FakeEventSource()
+        baseline = ci9._cgroup_snapshot(cgroup_v2_fixture())
+        metadata = {
+            "identity": identity(),
+            "deadline_monotonic": 100.0,
+            "started_monotonic": 0.0,
+            "baseline_cgroup": baseline,
+        }
+        fake_host = lambda reader: {"memory": {"state": "Unavailable", "reason": "fixture"}, "workspace_disk": {"state": "Unavailable", "reason": "fixture"}, "cgroup": ci9._cgroup_snapshot(reader)}
+        stop = lambda: clock.value >= 0.5
+
+        reason = ci9._observer_loop(
+            output_dir,
+            metadata,
+            writer,
+            source,
+            lambda argv, timeout, limit: ci9.CommandResult(1),
+            cgroup_v2_fixture(),
+            stop,
+            clock,
+            clock.sleep,
+            lambda phase, started, runner: {"state": "Unavailable", "reason": "fixture", "phase": phase},
+            fake_host,
+        )
+
+        done = json.loads((output_dir / "observer-done.json").read_text(encoding="utf-8"))
+        records = [json.loads(line) for line in (output_dir / "records.jsonl").read_text(encoding="utf-8").splitlines()]
+        self.assertEqual(reason, "stop")
+        self.assertEqual(done["reason"], "stop")
+        self.assertTrue(source.closed)
+        self.assertTrue(any(record.get("phase") == "S1" and record.get("record_type") == "snapshot" for record in records))
+        self.assertLess(clock.value, 1.0)
+
+    def test_observer_exits_on_deadline_without_stop(self) -> None:
+        clock = FakeClock()
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        output_dir = Path(temporary.name)
+        writer = ci9.RecordWriter(output_dir, identity(), clock)
+        source = FakeEventSource()
+        baseline = ci9._cgroup_snapshot(cgroup_v2_fixture())
+        metadata = {"identity": identity(), "deadline_monotonic": 1.0, "started_monotonic": 0.0, "baseline_cgroup": baseline}
+        fake_host = lambda reader: {"memory": {"state": "Unavailable"}, "workspace_disk": {"state": "Unavailable"}, "cgroup": ci9._cgroup_snapshot(reader)}
+
+        reason = ci9._observer_loop(
+            output_dir,
+            metadata,
+            writer,
+            source,
+            lambda argv, timeout, limit: ci9.CommandResult(1),
+            cgroup_v2_fixture(),
+            lambda: False,
+            clock,
+            clock.sleep,
+            lambda phase, started, runner: {"state": "Unavailable", "reason": "fixture", "phase": phase},
+            fake_host,
+        )
+
+        self.assertEqual(reason, "deadline")
+        self.assertEqual(clock.value, 1.0)
+        self.assertTrue((output_dir / "observer-done.json").is_file())
+
+    def test_shutdown_drains_queued_events_prioritizes_failures_and_counts_omissions(self) -> None:
+        first = "1" * 64
+        second = "2" * 64
+        queued = [
+            f"container|create|{first}|1800000000000000000\n".encode(),
+            f"container|start|{first}|1800000001000000000\n".encode(),
+            f"container|oom|{first}|1800000002000000000\n".encode(),
+            f"container|kill|{first}|1800000003000000000\n".encode(),
+            f"container|die|{first}|1800000004000000000\n".encode(),
+            f"container|create|{second}|1800000005000000000\n".encode(),
+            f"container|start|{second}|1800000006000000000\n".encode(),
+            f"container|die|{second}|1800000007000000000\n".encode(),
+            b"invalid|private-secret\n",
+        ]
+        source = FakeEventSource(queued, dropped=2)
+        clock = FakeClock()
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        output_dir = Path(temporary.name)
+        writer = ci9.RecordWriter(output_dir, identity(), clock)
+        baseline = {"state": "Unavailable", "reason": "fixture"}
+        metadata = {"identity": identity(), "deadline_monotonic": 10.0, "started_monotonic": 0.0, "baseline_cgroup": baseline}
+        fake_host = lambda reader: {"memory": {"state": "Unavailable"}, "workspace_disk": {"state": "Unavailable"}, "cgroup": {"state": "Unavailable"}}
+
+        def runner(argv: object, timeout: float, limit: int) -> ci9.CommandResult:
+            self.fail("shutdown drain must not inspect each queued event")
+
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            reason = ci9._observer_loop(
+                output_dir, metadata, writer, source, runner, cgroup_v2_fixture(),
+                lambda: True, clock, clock.sleep,
+                lambda phase, started, command_runner: {"state": "Unavailable", "reason": "fixture", "phase": phase},
+                fake_host,
+            )
+        records = [json.loads(line) for line in (output_dir / "records.jsonl").read_text(encoding="utf-8").splitlines()]
+        event_records = [record for record in records if record.get("record_type") == "docker_event"]
+        summary = next(record for record in records if record.get("record_type") == "docker_observer" and record.get("phase") == "S1")
+        finished = next(record for record in records if record.get("record_type") == "observer_finished")
+
+        self.assertEqual(reason, "stop")
+        self.assertTrue(source.closed)
+        self.assertEqual([record["event"]["action"] for record in event_records], ["oom", "kill", "die", "die"])
+        self.assertTrue(all(record["final_drain"] for record in event_records))
+        self.assertTrue(all(record["inspect"]["reason"] == "shutdown_drain_inspect_skipped" for record in event_records))
+        self.assertEqual(summary["final_queue_items"], 9)
+        self.assertEqual(summary["final_valid_events"], 8)
+        self.assertEqual(summary["final_events_coalesced"], 4)
+        self.assertEqual(summary["events_dropped"], 2)
+        self.assertEqual(finished["events_seen"], 8)
+        self.assertEqual(finished["events_not_captured"], 7)
+        self.assertEqual(finished["events_inspect_skipped"], 4)
+
+    def test_stop_racing_after_single_drain_keeps_oom_and_final_die(self) -> None:
+        container_id = "8" * 64
+        queued = [
+            f"container|oom|{container_id}|1800000002000000000\n".encode(),
+            f"container|die|{container_id}|1800000003000000000\n".encode(),
+        ]
+        source = FakeEventSource(queued)
+        clock = FakeClock()
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        output_dir = Path(temporary.name)
+        writer = ci9.RecordWriter(output_dir, identity(), clock)
+        metadata = {"identity": identity(), "deadline_monotonic": 10.0, "started_monotonic": 0.0, "baseline_cgroup": {"state": "Unavailable"}}
+        stop_results = iter([False, True])
+        stop_calls = [0]
+
+        def stop_requested() -> bool:
+            stop_calls[0] += 1
+            return next(stop_results, True)
+
+        runner_calls = [0]
+
+        def runner(argv: object, timeout: float, limit: int) -> ci9.CommandResult:
+            runner_calls[0] += 1
+            return ci9.CommandResult(1, b"container disappeared during inspect")
+
+        fake_host = lambda reader: {"memory": {"state": "Unavailable"}, "workspace_disk": {"state": "Unavailable"}, "cgroup": {"state": "Unavailable"}}
+        reason = ci9._observer_loop(
+            output_dir, metadata, writer, source, runner, cgroup_v2_fixture(),
+            stop_requested, clock, clock.sleep,
+            lambda phase, started, command_runner: {"state": "Unavailable", "reason": "fixture", "phase": phase},
+            fake_host,
+        )
+        records = [json.loads(line) for line in (output_dir / "records.jsonl").read_text(encoding="utf-8").splitlines()]
+        event_records = [record for record in records if record.get("record_type") == "docker_event"]
+        finished = next(record for record in records if record.get("record_type") == "observer_finished")
+        final_summary = next(record for record in records if record.get("record_type") == "docker_observer" and record.get("phase") == "S1")
+
+        self.assertEqual(reason, "stop")
+        self.assertEqual(stop_calls[0], 3)
+        self.assertEqual([record["event"]["action"] for record in event_records], ["oom", "die"])
+        self.assertEqual(runner_calls[0], 1)
+        self.assertEqual(finished["events_seen"], 2)
+        self.assertEqual(finished["events_recorded"], 2)
+        self.assertEqual(finished["events_not_captured"], 0)
+        self.assertEqual(final_summary["final_valid_events"], 1)
+        self.assertEqual(final_summary["final_events_recorded"], 1)
+
+    def test_bounded_command_reader_error_is_unavailable_even_when_child_exits_zero(self) -> None:
+        secret = "RAW_CHILD_OUTPUT_MUST_NOT_LEAK"
+
+        class BrokenStdout:
+            def read(self, size: int) -> bytes:
+                raise OSError(errno.EIO, secret)
+
+            def close(self) -> None:
+                return None
+
+        class ExitedProcess:
+            stdout = BrokenStdout()
+
+            def poll(self) -> int:
+                return 0
+
+            def wait(self, timeout: float | None = None) -> int:
+                return 0
+
+            def terminate(self) -> None:
+                return None
+
+            def kill(self) -> None:
+                return None
+
+        with mock.patch.object(ci9.subprocess, "Popen", lambda *args, **kwargs: ExitedProcess()):
+            result = ci9._bounded_command_runner(("dmesg",), 1.0, 1024)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(result.failure, "read_error")
+        self.assertEqual(result.errno, errno.EIO)
+        self.assertEqual(result.error_type, "OSError")
+        self.assertEqual(result.stdout, b"")
+        with mock.patch.object(ci9.sys, "platform", "linux"):
+            diagnostic = ci9._filtered_dmesg("S0", 1.0, lambda argv, timeout, limit: result)
+        self.assertEqual(diagnostic["state"], "Unavailable")
+        self.assertEqual(diagnostic["reason"], "read_error")
+        self.assertNotIn(secret, json.dumps(diagnostic))
+
+    def test_start_requires_fresh_runner_temp_child_and_ready_before_return(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_root:
+            output_dir = Path(temp_root) / "Luckbound-BuildDiagnostics-42-1-windows"
+            options = ci9._build_parser().parse_args([
+                "start", "--platform", "windows", "--output-dir", str(output_dir),
+                "--run-id", "42", "--attempt", "1", "--commit", "a" * 40,
+                "--duration-seconds", "3900",
+            ])
+            fake_host = lambda reader: {
+                "memory": {"state": "available", "available_bytes": 10, "total_bytes": 20, "swap_available_bytes": 0, "swap_total_bytes": 0},
+                "workspace_disk": {"state": "available", "free_bytes": 1, "total_bytes": 2},
+                "cgroup": ci9._cgroup_snapshot(cgroup_v2_fixture()),
+            }
+
+            def launcher(directory: Path) -> bool:
+                ci9._atomic_json(directory / "observer-ready.json", {"state": "ready"})
+                return True
+
+            stdout = io.StringIO()
+            with mock.patch.dict(os.environ, {"RUNNER_TEMP": temp_root}, clear=False), contextlib.redirect_stdout(stdout):
+                result = ci9._start_command(
+                    options,
+                    lambda argv, timeout, limit: ci9.CommandResult(1),
+                    cgroup_v2_fixture(),
+                    launcher,
+                    host_snapshot=fake_host,
+                )
+
+            self.assertEqual(result, 0)
+            self.assertEqual(json.loads(stdout.getvalue())["state"], "ready")
+            records = [json.loads(line) for line in (output_dir / "records.jsonl").read_text(encoding="utf-8").splitlines()]
+            self.assertEqual(records[0]["phase"], "S0")
+            self.assertEqual(records[0]["host"]["memory"]["available_bytes"], 10)
+            self.assertEqual(records[0]["identity"]["platform"], "windows")
+
+    def test_windows_owned_helpers_require_create_no_window(self) -> None:
+        with mock.patch.object(ci9.os, "name", "nt"):
+            with mock.patch.object(ci9.subprocess, "CREATE_NO_WINDOW", 0x08000000, create=True):
+                self.assertEqual(ci9._windows_creationflags(), 0x08000000)
+            with mock.patch.object(ci9.subprocess, "CREATE_NO_WINDOW", 0, create=True):
+                with self.assertRaises(RuntimeError):
+                    ci9._windows_creationflags()
+
+    def test_stop_timeout_is_finite_and_records_explicit_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_root:
+            output_dir = Path(temp_root) / "Luckbound-BuildDiagnostics-42-1-webgl"
+            output_dir.mkdir()
+            ci9._atomic_json(output_dir / "metadata.json", {"identity": {"run_id": "42", "attempt": 1, "platform": "webgl", "commit": "a" * 40}})
+            clock = FakeClock()
+            stderr = io.StringIO()
+            with mock.patch.dict(os.environ, {"RUNNER_TEMP": temp_root}, clear=False), contextlib.redirect_stderr(stderr):
+                result = ci9._stop_command(str(output_dir), clock, clock.sleep, timeout_seconds=0.3)
+
+            self.assertEqual(result, 2)
+            self.assertLessEqual(clock.value, 0.31)
+            self.assertTrue((output_dir / "stop-requested").is_file())
+            error = json.loads((output_dir / "collector-error.json").read_text(encoding="utf-8"))
+            self.assertEqual(error["reason"], "observer_shutdown_timeout")
+            self.assertEqual(json.loads(stderr.getvalue())["state"], "Unavailable")
+
+    def test_stop_marker_completion_is_idempotent_and_finite(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_root:
+            output_dir = Path(temp_root) / "Luckbound-BuildDiagnostics-42-1-webgl"
+            output_dir.mkdir()
+            ci9._atomic_json(output_dir / "metadata.json", {"identity": {"run_id": "42", "attempt": 1, "platform": "webgl", "commit": "a" * 40}})
+            clock = FakeClock()
+            sleeper_calls = [0]
+
+            def sleeper(seconds: float) -> None:
+                clock.sleep(seconds)
+                sleeper_calls[0] += 1
+                (output_dir / "observer-done.json").write_text('{"state":"complete"}', encoding="utf-8")
+
+            with mock.patch.dict(os.environ, {"RUNNER_TEMP": temp_root}, clear=False), contextlib.redirect_stdout(io.StringIO()):
+                result = ci9._stop_command(str(output_dir), clock, sleeper, timeout_seconds=1.0)
+
+            self.assertEqual(result, 0)
+            self.assertLessEqual(sleeper_calls[0], 1)
+            self.assertTrue((output_dir / "stop-requested").is_file())
+            self.assertFalse((output_dir / "collector-error.json").exists())
+
+    def test_bad_cli_arguments_and_contaminated_environment_never_echo_values(self) -> None:
+        secret = "SHOULD_NEVER_APPEAR_IN_OUTPUT"
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with mock.patch.dict(os.environ, {"PRIVATE_ENV_SENTINEL": secret}, clear=False), contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            result = ci9.main(["unknown-command", secret])
+
+        self.assertEqual(result, 2)
+        self.assertNotIn(secret, stdout.getvalue() + stderr.getvalue())
+        self.assertNotIn("PRIVATE_ENV_SENTINEL", stdout.getvalue() + stderr.getvalue())
+
+
+if __name__ == "__main__":
+    unittest.main()

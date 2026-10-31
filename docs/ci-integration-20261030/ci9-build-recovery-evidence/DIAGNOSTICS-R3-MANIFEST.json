@@ -1,0 +1,96 @@
+{
+  "schema": "luckbound.ci9.build-diagnostics-candidate",
+  "schema_version": 3,
+  "prepared_utc_date": "2026-10-31",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-CI9-BUILD-DIAGNOSTIC-CONTRACT.md",
+    "sha256": "8b78d0cbc73ce7f5c2a3861f86b36526557260a5974e47bd7a2a645f71451853"
+  },
+  "base_candidate": {
+    "root": "Logs/CI9BuildDiagnostics-20261031-r2/candidate",
+    "helper_sha256": "cfa9e7cc035b5f2ab0f3a0bdf21dbabf41df3ea252062dad278efe236df8554f",
+    "tests_sha256": "8639a271cd902839382e48fd8b618edb47d03e0b918934523523baae5403d411",
+    "immutable_verified": true
+  },
+  "candidate_root": "Logs/CI9BuildDiagnostics-20261031-r3/candidate",
+  "files": [
+    {
+      "logical_path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "candidate_path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "sha256": "ffbbb0cdbf49a2bc6b981b83bd774655a55f6922d974d9f3d623004d6e1ad3f7",
+      "bytes": 67080,
+      "lines": 1664
+    },
+    {
+      "logical_path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "candidate_path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "sha256": "4d12903bdec97ef6e190e1143ab2376b14c8395b9119bc01c90368f52779c277",
+      "bytes": 33213,
+      "lines": 655
+    },
+    {
+      "logical_path": "DIFF-R2.patch",
+      "candidate_path": "DIFF-R2.patch",
+      "sha256": "8066dfbc2b16c8de6a33021e2c725802fca2b295bdb92e1a7e2ec01010c2d2ca",
+      "bytes": 8069,
+      "lines": 142
+    },
+    {
+      "logical_path": "REPORT.md",
+      "candidate_path": "REPORT.md",
+      "sha256": "7ef68f7c150248c0b53f72c4a83e046056ed1324b15ec3978ef8c9abea6f8425",
+      "bytes": 2988
+    }
+  ],
+  "verification": {
+    "command": "python -B -m unittest discover -s Logs/CI9BuildDiagnostics-20261031-r3/candidate/Tools/Automation/tests -p test_capture_ci_build_diagnostics.py -v",
+    "result": "passed",
+    "tests_passed": 23,
+    "tests_failed": 0,
+    "elapsed_seconds": 0.204,
+    "python": "3.14.7",
+    "host": "Windows",
+    "pycache_directories_created": 0,
+    "external_docker_invoked": false,
+    "external_sudo_invoked": false,
+    "unity_invoked": false,
+    "network_used": false,
+    "actual_helper_process_launched": false,
+    "prior_failed_attempt": {
+      "tests_passed": 22,
+      "tests_failed": 1,
+      "failure": "Race regression expected two stop predicate calls; implementation checks once more to label the stop reason. Only the test expectation changed before the final pass."
+    }
+  },
+  "review_findings_addressed": [
+    "Periodic sampling detects a PID cgroup-scope change, marks cgroup data Unavailable, and closes tracking for the old container ID.",
+    "After the single dequeued event is removed, the loop processes it before stopping; final drain preserves the queued DIE and reports zero uncaptured events in the race regression."
+  ],
+  "inherited_bounds": {
+    "max_duration_seconds": 21900,
+    "max_sample_frequency_hz": 1,
+    "max_output_bytes": 33554432,
+    "max_records": 25000,
+    "max_record_bytes": 65536,
+    "max_queued_docker_events": 512,
+    "max_recorded_docker_events": 1024,
+    "stop_wait_timeout_seconds": 15,
+    "docker_endpoint": "local_only"
+  },
+  "integration_state": {
+    "r1_modified": false,
+    "r2_modified": false,
+    "live_paths_modified": false,
+    "workflow_modified": false,
+    "git_staged": false,
+    "candidate_paths_ignored_by_gitignore_logs_rule": true,
+    "workflow_binding_checked": false,
+    "ci_build_run": false,
+    "sol_rereview": "pending",
+    "root_integration_review": "pending"
+  },
+  "limitations": [
+    "Tests use synthetic cgroup/proc fixtures and a fake Docker event source; they do not establish real runner permissions or availability.",
+    "No build, workflow, artifact upload, OOM attribution, GLX attribution, or causal conclusion was verified."
+  ]
+}

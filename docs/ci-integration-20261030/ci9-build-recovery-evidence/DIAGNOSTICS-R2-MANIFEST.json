@@ -1,0 +1,97 @@
+{
+  "schema": "luckbound.ci9.build-diagnostics-candidate",
+  "schema_version": 2,
+  "prepared_utc_date": "2026-10-31",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-CI9-BUILD-DIAGNOSTIC-CONTRACT.md",
+    "sha256": "8b78d0cbc73ce7f5c2a3861f86b36526557260a5974e47bd7a2a645f71451853"
+  },
+  "base_candidate": {
+    "root": "Logs/CI9BuildDiagnostics-20261031-r1/candidate",
+    "helper_sha256": "fe719c46bc2f408acdfaf205acb7658ed4266f76d0385b9ce74b8ed661baf3db",
+    "tests_sha256": "2d4c1066c6bdb3a21ed72b8f86ac2b564c0a152a0b7130f09f98427bd8329cc5",
+    "immutable_verified": true
+  },
+  "candidate_root": "Logs/CI9BuildDiagnostics-20261031-r2/candidate",
+  "files": [
+    {
+      "logical_path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "candidate_path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "sha256": "cfa9e7cc035b5f2ab0f3a0bdf21dbabf41df3ea252062dad278efe236df8554f",
+      "bytes": 66271,
+      "lines": 1648
+    },
+    {
+      "logical_path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "candidate_path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "sha256": "8639a271cd902839382e48fd8b618edb47d03e0b918934523523baae5403d411",
+      "bytes": 29501,
+      "lines": 587
+    },
+    {
+      "logical_path": "DIFF-R1.patch",
+      "candidate_path": "DIFF-R1.patch",
+      "sha256": "10febfadeacc24a9c6f883a01c833080b2e131b796275f2b6919446ebac4feb7",
+      "bytes": 28740,
+      "lines": 568
+    },
+    {
+      "logical_path": "REPORT.md",
+      "candidate_path": "REPORT.md",
+      "sha256": "8990f97e13f9176bfe2ebe2890954543640e643b5659fc18976c928af84d1c2c",
+      "bytes": 3639
+    }
+  ],
+  "verification": {
+    "command": "python -B -m unittest discover -s Logs/CI9BuildDiagnostics-20261031-r2/candidate/Tools/Automation/tests -p test_capture_ci_build_diagnostics.py -v",
+    "result": "passed",
+    "tests_passed": 21,
+    "tests_failed": 0,
+    "elapsed_seconds": 0.132,
+    "python": "3.14.7",
+    "host": "Windows",
+    "pycache_directories_created": 0,
+    "external_docker_invoked": false,
+    "external_sudo_invoked": false,
+    "unity_invoked": false,
+    "network_used": false,
+    "actual_helper_process_launched": false
+  },
+  "review_findings_addressed": [
+    "Create event with PID 0 no longer locks an unavailable cgroup baseline; start can set the first available scope.",
+    "Every die event removes tracking. A cgroup scope mismatch is Unavailable and is not attributed to the old container ID.",
+    "Shutdown closes and joins the owned Docker stream, drains the bounded queued events, prioritizes failures/latest lifecycle states, skips per-event inspect, and counts omissions.",
+    "A stdout reader exception propagates as read_error with error type/errno and empty output, even when the child exits zero."
+  ],
+  "bounds": {
+    "max_duration_seconds": 21900,
+    "max_sample_frequency_hz": 1,
+    "max_output_bytes": 33554432,
+    "max_records": 25000,
+    "max_record_bytes": 65536,
+    "max_queued_docker_events": 512,
+    "max_recorded_docker_events": 1024,
+    "start_ready_timeout_seconds": 10,
+    "stop_wait_timeout_seconds": 15,
+    "command_timeout_seconds": 3,
+    "docker_inspect_timeout_seconds": 2,
+    "docker_endpoint": "local_only"
+  },
+  "integration_state": {
+    "r1_modified": false,
+    "live_paths_modified": false,
+    "workflow_modified": false,
+    "git_staged": false,
+    "candidate_paths_ignored_by_gitignore_logs_rule": true,
+    "workflow_binding_checked": false,
+    "ci_build_run": false,
+    "sol_rereview": "pending",
+    "root_integration_review": "pending"
+  },
+  "limitations": [
+    "Tests use synthetic cgroup/proc fixtures and injected Docker/sudo runners; they do not establish real runner permissions or availability.",
+    "Shutdown inspection is skipped for queued events to keep final draining bounded; each such event records an Unavailable inspect reason and the S1 summary counts events not captured.",
+    "A Docker reader join timeout marks unknown queued loss explicitly; events_not_captured_unknown is true.",
+    "No build, workflow, artifact upload, OOM attribution, GLX attribution, or causal conclusion was verified."
+  ]
+}

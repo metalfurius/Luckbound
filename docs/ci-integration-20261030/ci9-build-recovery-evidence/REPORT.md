@@ -1,0 +1,11 @@
+# CI9 — recuperación de builds y capacidad del tablón
+
+[Accepted estático final R3](../SOL-CI9-COMBINED-STATIC-R3.md), SHA256 `834f2ff1b2d8e51e3e7ff291afd3b1bab6c0247ab3f07c94d2a2590188dd70dd`. Cinco archivos integrados: dos C# existentes del tablón, workflow existente y dos Python nuevos. INTEGRATION.json y COMPOSED-R3-FREEZE fijan hashes completos/preimágenes.
+
+E10 Controllera595d0e1 yTestsa2ffbcf2 cierran acciones de contratos en readonly y conservan el reintento de perfil autoritativo; Settings/idioma siguen independientes. Cuatro casos nuevos; los escenarios anteriores se conservan. App56/Play78 compilan y134inputs cotejados coinciden con los bytes integrados.
+
+Workflowd6115f8d sustituye el diagnóstico basado en rg por el helper compartido en Windows/WebGL, con start/S0 antes del builder, stop/S1 y upload always. Solo WebGL añade nographics. Cabecera/tests yrelease/deploy se conservan byte exactos; no cambian Editor/imagen/actions/CLI/perfiles/caché/permisos/triggers/timeouts ni recursos. Dos deadlines:3900s y5700s. Cuatro bloques Bash-n pasan; cuatro comandos delworkflow se parsearon contra el parser real sin ejecutar observador. No hay un resultado de parserYAML semántico.
+
+Helperffbbb0cd/tests4d12903b: Root23/23 unittest reales, con Linux/cgroup/Docker/sudo/Popen simulados. Se conserva stdout real, recibos y hashes. R1/R2 y sus fallos de revisión siguen en las actas/diffs/baselines; R3 cierra referencias inválidas de cgroup, PID muerto/cambiado, pérdida de cola al parar y lectura errónea que simulaba éxito. La calificación en Docker real queda pendiente de CI. Los cierres por handle Popen afectan solo a CLI readonly creados por el helper, nunca contenedores/Unity/procesos ajenos.
+
+411fuentes C# antes/después, dos modificadas/409intactas;868GUID/metas y492fixtures históricas intactos. No Unity local, Docker real local ni players ejecutados. La única ejecución real pendiente esCI9:1168esperados654+514 (cuatro nuevos), V6real11/97/14+77 y ambas builds propias con diagnóstico. No se atribuye el137 deCI8 a OOM/GLX/licencia. [CI8Native1164 y Windows verificado](../ci8-corrective-runtime-evidence/REPORT.md) se conservan; G04 sigueInProgressporWebGL. F09/F10, E10/G07 padres, percepción ySave7operativo permanecen abiertos. Sin publicación.

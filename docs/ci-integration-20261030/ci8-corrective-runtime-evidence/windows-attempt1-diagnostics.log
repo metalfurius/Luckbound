@@ -1,0 +1,16 @@
+2026-10-30T23:06:43Z UTC
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       1.3Gi       1.8Gi        47Mi        12Gi        14Gi
+Swap:          3.0Gi        64Ki       3.0Gi
+free exit status: 0
+$ df -h .
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       145G   72G   73G  50% /
+df exit status: 0
+$ sudo -n dmesg --ctime | rg -i "out of memory|oom-kill|killed process" | tail -n 30
+dmesg exit status: 0
+/home/runner/work/_temp/e39c8ed7-6fb0-4419-8e68-f4451aa6dd59.sh: line 22: rg: command not found
+/home/runner/work/_temp/e39c8ed7-6fb0-4419-8e68-f4451aa6dd59.sh: line 22: printf: write error: Broken pipe
+OOM filter exit status: 127
+OOM filter failed; diagnostic is inconclusive.

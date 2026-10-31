@@ -1,0 +1,142 @@
+diff --git a/Logs/CI9BuildDiagnostics-20261031-r2/candidate/Tools/Automation/capture_ci_build_diagnostics.py b/Logs/CI9BuildDiagnostics-20261031-r3/candidate/Tools/Automation/capture_ci_build_diagnostics.py
+index 6acca51..27d53f4 100644
+--- a/Logs/CI9BuildDiagnostics-20261031-r2/candidate/Tools/Automation/capture_ci_build_diagnostics.py
++++ b/Logs/CI9BuildDiagnostics-20261031-r3/candidate/Tools/Automation/capture_ci_build_diagnostics.py
+@@ -1178,20 +1178,36 @@ def _event_inspect_fields(container_id: str, runner: CommandRunner) -> dict[str,
+ def _sample_record(
+     baseline: Mapping[str, Any],
+     proc_reader: ProcReader,
+-    tracked: Mapping[str, Mapping[str, Any]],
++    tracked: dict[str, dict[str, Any]],
+ ) -> dict[str, Any]:
+     current = _cgroup_snapshot(proc_reader)
+     record: dict[str, Any] = {"cgroup": current, "cgroup_delta_from_S0": _delta_from(baseline, current)}
+     containers: list[dict[str, Any]] = []
++    close_tracking: list[str] = []
+     for container_id, state in list(tracked.items())[:MAX_CONTAINER_SAMPLES_PER_TICK]:
+         cgroup = _container_cgroup(state.get("pid"), proc_reader)
+         first = state.get("baseline_cgroup")
+-        containers.append({
++        scope_changed = (
++            isinstance(first, Mapping)
++            and first.get("state") == "available"
++            and cgroup.get("state") == "available"
++            and first.get("scope_id") != cgroup.get("scope_id")
++        )
++        entry: dict[str, Any] = {
+             "container_id": container_id,
+-            "cgroup": cgroup,
++            "cgroup": {"state": "Unavailable", "reason": "pid_scope_changed"} if scope_changed else cgroup,
+             "cgroup_delta_from_first": _delta_from(first, cgroup),
+-        })
++        }
++        if scope_changed:
++            entry["tracking_state"] = "closed"
++            entry["tracking_close_reason"] = "pid_scope_changed"
++            close_tracking.append(container_id)
++        containers.append(entry)
++    for container_id in close_tracking:
++        tracked.pop(container_id, None)
+     record["containers"] = containers
++    if close_tracking:
++        record["containers_tracking_closed"] = close_tracking
+     if len(tracked) > MAX_CONTAINER_SAMPLES_PER_TICK:
+         record["containers_omitted"] = len(tracked) - MAX_CONTAINER_SAMPLES_PER_TICK
+     return record
+@@ -1348,8 +1364,8 @@ def _observer_loop(
+         # Pull one item at a time so a stop/deadline cannot strand a locally
+         # drained batch before the final queue drain.
+         for raw_event in event_source.drain(limit=1):
+-            if stop_requested() or monotonic() >= deadline:
+-                break
++            # Once removed from the queue, retain this single bounded item by
++            # processing it before the post-event stop/deadline check below.
+             if raw_event is None:
+                 continue
+             if raw_event == b"__oversized__":
+diff --git a/Logs/CI9BuildDiagnostics-20261031-r2/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py b/Logs/CI9BuildDiagnostics-20261031-r3/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py
+index 36400e0..e3cb760 100644
+--- a/Logs/CI9BuildDiagnostics-20261031-r2/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py
++++ b/Logs/CI9BuildDiagnostics-20261031-r3/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py
+@@ -278,6 +278,26 @@ class CaptureCi9DiagnosticsTests(unittest.TestCase):
+         self.assertEqual(record["container_cgroup"], {"state": "Unavailable", "reason": "pid_scope_changed"})
+         self.assertNotIn(container_id, tracked)
+ 
++    def test_periodic_sample_marks_pid_scope_change_unavailable_and_closes_tracking(self) -> None:
++        container_id = "9" * 64
++        first_fixture = cgroup_v2_fixture()
++        add_container_cgroup(first_fixture, 123, f"/docker/{container_id}")
++        changed_fixture = cgroup_v2_fixture()
++        add_container_cgroup(changed_fixture, 123, "/docker/reused-pid-scope")
++        with mock.patch.object(ci9.sys, "platform", "linux"):
++            baseline = ci9._container_cgroup(123, first_fixture)
++        tracked = {container_id: {"pid": 123, "baseline_cgroup": baseline}}
++
++        with mock.patch.object(ci9.sys, "platform", "linux"):
++            sampled = ci9._sample_record({}, changed_fixture, tracked)
++
++        entry = sampled["containers"][0]
++        self.assertEqual(entry["cgroup"], {"state": "Unavailable", "reason": "pid_scope_changed"})
++        self.assertEqual(entry["cgroup_delta_from_first"]["reason"], "scope_changed")
++        self.assertEqual(entry["tracking_state"], "closed")
++        self.assertEqual(sampled["containers_tracking_closed"], [container_id])
++        self.assertNotIn(container_id, tracked)
++
+     def test_inspect_result_keeps_only_valid_allowlisted_fields(self) -> None:
+         image_id = "sha256:" + "d" * 64
+         response = {
+@@ -451,6 +471,54 @@ class CaptureCi9DiagnosticsTests(unittest.TestCase):
+         self.assertEqual(finished["events_not_captured"], 7)
+         self.assertEqual(finished["events_inspect_skipped"], 4)
+ 
++    def test_stop_racing_after_single_drain_keeps_oom_and_final_die(self) -> None:
++        container_id = "8" * 64
++        queued = [
++            f"container|oom|{container_id}|1800000002000000000\n".encode(),
++            f"container|die|{container_id}|1800000003000000000\n".encode(),
++        ]
++        source = FakeEventSource(queued)
++        clock = FakeClock()
++        temporary = tempfile.TemporaryDirectory()
++        self.addCleanup(temporary.cleanup)
++        output_dir = Path(temporary.name)
++        writer = ci9.RecordWriter(output_dir, identity(), clock)
++        metadata = {"identity": identity(), "deadline_monotonic": 10.0, "started_monotonic": 0.0, "baseline_cgroup": {"state": "Unavailable"}}
++        stop_results = iter([False, True])
++        stop_calls = [0]
++
++        def stop_requested() -> bool:
++            stop_calls[0] += 1
++            return next(stop_results, True)
++
++        runner_calls = [0]
++
++        def runner(argv: object, timeout: float, limit: int) -> ci9.CommandResult:
++            runner_calls[0] += 1
++            return ci9.CommandResult(1, b"container disappeared during inspect")
++
++        fake_host = lambda reader: {"memory": {"state": "Unavailable"}, "workspace_disk": {"state": "Unavailable"}, "cgroup": {"state": "Unavailable"}}
++        reason = ci9._observer_loop(
++            output_dir, metadata, writer, source, runner, cgroup_v2_fixture(),
++            stop_requested, clock, clock.sleep,
++            lambda phase, started, command_runner: {"state": "Unavailable", "reason": "fixture", "phase": phase},
++            fake_host,
++        )
++        records = [json.loads(line) for line in (output_dir / "records.jsonl").read_text(encoding="utf-8").splitlines()]
++        event_records = [record for record in records if record.get("record_type") == "docker_event"]
++        finished = next(record for record in records if record.get("record_type") == "observer_finished")
++        final_summary = next(record for record in records if record.get("record_type") == "docker_observer" and record.get("phase") == "S1")
++
++        self.assertEqual(reason, "stop")
++        self.assertEqual(stop_calls[0], 3)
++        self.assertEqual([record["event"]["action"] for record in event_records], ["oom", "die"])
++        self.assertEqual(runner_calls[0], 1)
++        self.assertEqual(finished["events_seen"], 2)
++        self.assertEqual(finished["events_recorded"], 2)
++        self.assertEqual(finished["events_not_captured"], 0)
++        self.assertEqual(final_summary["final_valid_events"], 1)
++        self.assertEqual(final_summary["final_events_recorded"], 1)
++
+     def test_bounded_command_reader_error_is_unavailable_even_when_child_exits_zero(self) -> None:
+         secret = "RAW_CHILD_OUTPUT_MUST_NOT_LEAK"
+ 

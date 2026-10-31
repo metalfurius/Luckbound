@@ -30,3 +30,7 @@ docs/ci-integration-20261030/g04-passives-ci7-evidence/** -text
 docs/ci-integration-20261030/g04-passives-ci7-failure-evidence/** -text
 
 docs/ci-integration-20261030/ci8-corrective-evidence/** -text
+
+docs/ci-integration-20261030/ci8-corrective-runtime-evidence/** -text
+
+docs/ci-integration-20261030/ci9-build-recovery-evidence/** -text

@@ -551,6 +551,15 @@ namespace Luckbound.App
                 RefreshContractBoard();
                 return;
             }
+            if (!CanStartFreshContractOperation(app))
+            {
+                _contractFeedback = !app.CanWriteProfile
+                    ? LocalizedStatus("El perfil no permite guardar cambios.", "The profile cannot be changed.")
+                    : LocalizedStatus("No se puede cambiar el perfil mientras hay otro guardado pendiente.",
+                        "The profile cannot be changed while another save is pending.");
+                RefreshContractBoard();
+                return;
+            }
 
             ContractProgressionSnapshot before = app.ContractProgression;
             bool claim = before.IsAccepted(contractId) && before.IsComplete(contractId);
@@ -570,8 +579,10 @@ namespace Luckbound.App
                 _contractFeedback = FormatContractResult(result);
                 if (result != null && result.Pending)
                 {
-                    if (HasExpectedPendingUiResult(result, uiOperation))
+                    if (HasExpectedPendingUiResult(app, result, uiOperation))
                         _pendingContractUiOperation = uiOperation;
+                    else
+                        _pendingContractUiOperation = null;
                 }
                 else
                 {
@@ -593,9 +604,15 @@ namespace Luckbound.App
         {
             if (_contractOperationInProgress) return;
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
-            if (app == null) return;
+            if (app == null || !app.SaveDataReady) return;
             EnsureContractUiAudioStateOwner(app);
             ReconcilePendingContractUiOperation(app.ContractProgression);
+            if (!app.CanWriteProfile)
+            {
+                _contractFeedback = LocalizedStatus("El perfil no permite guardar cambios.", "The profile cannot be changed.");
+                RefreshContractBoard();
+                return;
+            }
             if (!app.HasPendingContractProgression) return;
 
             PendingContractUiOperation uiOperation = _pendingContractUiOperation;
@@ -607,7 +624,7 @@ namespace Luckbound.App
                 _contractFeedback = FormatContractResult(result);
                 if (result != null && result.Pending)
                 {
-                    if (uiOperation != null && result.Operation != uiOperation.Operation)
+                    if (!app.HasPendingContractProgression || uiOperation == null || result.Operation != uiOperation.Operation)
                         _pendingContractUiOperation = null;
                 }
                 else
@@ -644,10 +661,12 @@ namespace Luckbound.App
         }
 
         private static bool HasExpectedPendingUiResult(
-            ContractProgressionCommitResult result, PendingContractUiOperation uiOperation)
+            ApplicationBootstrapper app, ContractProgressionCommitResult result,
+            PendingContractUiOperation uiOperation)
         {
-            if (result == null || uiOperation == null || !result.Pending || result.Persisted ||
-                result.Operation != uiOperation.Operation)
+            if (app == null || !app.HasPendingContractProgression || result == null || uiOperation == null ||
+                !result.Pending || result.Persisted || result.Operation != uiOperation.Operation ||
+                !ReferenceEquals(result.Snapshot, uiOperation.Before))
                 return false;
 
             switch (uiOperation.Operation)
@@ -833,7 +852,8 @@ namespace Luckbound.App
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
             ContractProgressionSnapshot snapshot = app == null ? null : app.ContractProgression;
             int activeCount = snapshot == null ? 0 : snapshot.ActiveContractIds.Count;
-            bool pending = app != null && app.HasPendingContractProgression;
+            bool canRetryPendingContract = CanRetryPendingContractWrite(app);
+            bool canStartFreshContractOperation = CanStartFreshContractOperation(app);
             if (_openContractsButton != null) SetLabel(_openContractsButton, GetText("ui.contracts.title"));
             if (_contractBoardTitleText != null) _contractBoardTitleText.text = GetText("ui.contracts.title");
             if (_contractActiveLimitText != null)
@@ -850,8 +870,8 @@ namespace Luckbound.App
             if (_contractStatusText != null) _contractStatusText.text = _contractFeedback ?? string.Empty;
             if (_retryContractWriteButton != null)
             {
-                _retryContractWriteButton.gameObject.SetActive(pending);
-                _retryContractWriteButton.interactable = pending && !_contractOperationInProgress;
+                _retryContractWriteButton.gameObject.SetActive(canRetryPendingContract);
+                _retryContractWriteButton.interactable = canRetryPendingContract && !_contractOperationInProgress;
                 SetLabel(_retryContractWriteButton, LocalizedStatus("Reintentar", "Retry"));
             }
 
@@ -879,7 +899,7 @@ namespace Luckbound.App
                 else if (accepted && complete)
                 {
                     SetLabel(action, GetText("ui.contracts.claim"));
-                    action.interactable = !_contractOperationInProgress && !pending;
+                    action.interactable = !_contractOperationInProgress && canStartFreshContractOperation;
                 }
                 else if (accepted)
                 {
@@ -889,10 +909,23 @@ namespace Luckbound.App
                 else
                 {
                     SetLabel(action, GetText("ui.contracts.accept"));
-                    action.interactable = !_contractOperationInProgress && !pending && activeCount < ContractProgressionRules.MaximumActiveContracts;
+                    action.interactable = !_contractOperationInProgress && canStartFreshContractOperation &&
+                        activeCount < ContractProgressionRules.MaximumActiveContracts;
                 }
             }
             // ContractProgressionRules also enforces this limit if the profile changes between UI refreshes.
+        }
+
+        private static bool CanStartFreshContractOperation(ApplicationBootstrapper app)
+        {
+            return app != null && app.SaveDataReady && app.CanWriteProfile &&
+                !app.HasPendingContractProgression && !app.HasPendingSessionMutation &&
+                !app.HasPendingFortuneMutation;
+        }
+
+        private static bool CanRetryPendingContractWrite(ApplicationBootstrapper app)
+        {
+            return app != null && app.SaveDataReady && app.CanWriteProfile && app.HasPendingContractProgression;
         }
 
         private string FormatContractResult(ContractProgressionCommitResult result)

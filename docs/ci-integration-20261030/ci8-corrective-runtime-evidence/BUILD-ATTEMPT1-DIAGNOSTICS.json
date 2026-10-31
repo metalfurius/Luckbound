@@ -1,0 +1,46 @@
+{
+  "attempt": 1,
+  "run": 41141336004,
+  "commit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "windows": {
+    "job": 124358709734,
+    "result": "failure",
+    "exitCodeObserved": 137,
+    "privateLog": {
+      "bytes": 75022,
+      "sha256": "53fcaf6191d857d3eaf768d63e039a5d9743ec7f859e063a768c95148fb78f17",
+      "published": false
+    }
+  },
+  "webgl": {
+    "job": 124358709741,
+    "result": "failure",
+    "exitCodeObserved": 137,
+    "privateLog": {
+      "bytes": 78798,
+      "sha256": "c290e71ae82a24ab25ce3993265448ffd2bf03e00f73fdd4f5834eb6e016fc0f",
+      "published": false
+    }
+  },
+  "cause": "Not established; exit137/Killed is an observed outcome, not proof of OOM or licensing failure",
+  "compilerErrorsObserved": 0,
+  "windowsDiagnosticArtifact": {
+    "id": 13019825927,
+    "bytes": 569,
+    "sha256": "6c5531b55cb99244b63ec096c0dec64c2c577ca471295d8516c47b90ffcdac30"
+  },
+  "windowsDiagnosticFile": {
+    "bytes": 763,
+    "sha256": "4c5b502a6afdeaaf848cfa21e33a7d874b536197814ea0909738adc6f0afc1f0",
+    "oomFilterExit": 127,
+    "oomConclusion": "inconclusive: rg missing; post-exit free memory/disk does not identify cause"
+  },
+  "retry": {
+    "requestedOnce": true,
+    "command": "gh run rerun 41141336004 --failed --repo metalfurius/Luckbound",
+    "sameCommit": true,
+    "sourceOrWorkflowChanged": false,
+    "debugLogging": false,
+    "secondBlindRetryAllowed": false
+  }
+}

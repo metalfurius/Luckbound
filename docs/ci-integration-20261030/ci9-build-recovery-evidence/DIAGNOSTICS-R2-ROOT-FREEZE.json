@@ -1,0 +1,18 @@
+{
+  "previous": "../diagnostics-composed-r1",
+  "files": [
+    {
+      "path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "sha256": "cfa9e7cc035b5f2ab0f3a0bdf21dbabf41df3ea252062dad278efe236df8554f",
+      "bytes": 66271,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r2/candidate/Tools/Automation/capture_ci_build_diagnostics.py"
+    },
+    {
+      "path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "sha256": "8639a271cd902839382e48fd8b618edb47d03e0b918934523523baae5403d411",
+      "bytes": 29501,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r2/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py"
+    }
+  ],
+  "workerFinalManifestBindingPending": true
+}

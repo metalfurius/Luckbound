@@ -1,0 +1,38 @@
+{
+  "beforeSha256": "67f3f4235aeba072519b32121251f883592c471e9158366bd538e4764cd6f252",
+  "afterSha256": "d6115f8df83b260fb794922286dd7c84575362dd932fc7c03ec213f1888b9a08",
+  "testsAndHeaderByteExact": true,
+  "releaseAndDeployByteExact": true,
+  "newRunBlocks": [
+    {
+      "step": "Start Windows build diagnostics",
+      "file": "start-windows-build-diagnostics.sh",
+      "command": "diagnostics_dir=\"${RUNNER_TEMP}/Luckbound-BuildDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-windows\"\npython3 Tools/Automation/capture_ci_build_diagnostics.py start \\\n  --platform windows --output-dir \"$diagnostics_dir\" \\\n  --run-id \"$GITHUB_RUN_ID\" --attempt \"$GITHUB_RUN_ATTEMPT\" \\\n  --commit \"$GITHUB_SHA\" --duration-seconds 3900"
+    },
+    {
+      "step": "Stop Windows build diagnostics",
+      "file": "stop-windows-build-diagnostics.sh",
+      "command": "diagnostics_dir=\"${RUNNER_TEMP}/Luckbound-BuildDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-windows\"\npython3 Tools/Automation/capture_ci_build_diagnostics.py stop --output-dir \"$diagnostics_dir\""
+    },
+    {
+      "step": "Start WebGL build diagnostics",
+      "file": "start-webgl-build-diagnostics.sh",
+      "command": "diagnostics_dir=\"${RUNNER_TEMP}/Luckbound-BuildDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-webgl\"\npython3 Tools/Automation/capture_ci_build_diagnostics.py start \\\n  --platform webgl --output-dir \"$diagnostics_dir\" \\\n  --run-id \"$GITHUB_RUN_ID\" --attempt \"$GITHUB_RUN_ATTEMPT\" \\\n  --commit \"$GITHUB_SHA\" --duration-seconds 5700"
+    },
+    {
+      "step": "Stop WebGL build diagnostics",
+      "file": "stop-webgl-build-diagnostics.sh",
+      "command": "diagnostics_dir=\"${RUNNER_TEMP}/Luckbound-BuildDiagnostics-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-webgl\"\npython3 Tools/Automation/capture_ci_build_diagnostics.py stop --output-dir \"$diagnostics_dir\""
+    }
+  ],
+  "noRgDependency": true,
+  "nographicsBuildInputs": 2,
+  "semanticYamlParserAvailable": false,
+  "bashSyntax": {
+    "checkedBlocks": 4,
+    "result": "passed",
+    "executor": "C:/Program Files/Git/bin/bash.exe --noprofile --norc -n",
+    "executedCommands": false
+  },
+  "cliIntegration": "pending helper candidate"
+}

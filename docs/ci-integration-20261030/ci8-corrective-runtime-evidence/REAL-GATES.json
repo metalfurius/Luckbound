@@ -1,0 +1,75 @@
+{
+  "testJob": 124356047126,
+  "testJobConclusion": "success",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Checkout source",
+      "conclusion": "success"
+    },
+    {
+      "name": "Cache Unity Library",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run Unity tests",
+      "conclusion": "success"
+    },
+    {
+      "name": "Verify explicit V6 capture",
+      "conclusion": "success"
+    },
+    {
+      "name": "Require successful tests and explicit V6 capture",
+      "conclusion": "success"
+    },
+    {
+      "name": "Upload test results",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Cache Unity Library",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Checkout source",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "unityOutcome": "success",
+  "v6GateOutcome": "success",
+  "sentinelConclusion": "success",
+  "evidence": {
+    "verifierCommand": "python3 Tools/Automation/verify_v6_capture.py",
+    "sentinel": [
+      "test \"${UNITY_TEST_OUTCOME}\" = success",
+      "test \"${V6_GATE_OUTCOME}\" = success",
+      "UNITY_TEST_OUTCOME: success",
+      "V6_GATE_OUTCOME: success"
+    ],
+    "rawLogSha256": "4c5429d4d322307e897676b14e45bc794dc4c827cf3667facdd0543b538c5427",
+    "rawLogBytes": 5961943,
+    "rawLogPublished": false
+  },
+  "verifier": {
+    "commit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+    "sessionId": "8a3b0f8b55ff45b0b78890af2bfac0da",
+    "expectedUnityVersion": "6000.6.7f1",
+    "observedUnityVersion": "6000.6.7f1",
+    "projectVersionDeclared": "6000.6.7f1",
+    "projectPinUnityVersion": "6000.6.7f1",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "58103b1a8b09c562f129d3fa6c602dfedc4fc7ce441bb89befefb512e79295bd",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  }
+}

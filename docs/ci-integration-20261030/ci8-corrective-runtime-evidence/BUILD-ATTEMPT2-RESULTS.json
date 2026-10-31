@@ -1,0 +1,55 @@
+{
+  "attempt": 2,
+  "windows": {
+    "run": 41141336004,
+    "commit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+    "attempt": 2,
+    "job": 124361241432,
+    "status": "success",
+    "artifact": {
+      "id": 13019797300,
+      "bytes": 50565563,
+      "sha256": "6e3318eb6fc650ee194eb66e1a1521954c3c144c0ddd9a279ff8168c909d9d68"
+    },
+    "crcChecked": true,
+    "extractedFiles": 210,
+    "exe": {
+      "path": "Luckbound.exe",
+      "bytes": 667136,
+      "sha256": "9806abde4a406ed68647e9505852c49f6aa72a372f4f084e2aa2821affea57a2",
+      "magic": "MZ",
+      "peSignature": "PE\\0\\0",
+      "machine": "AMD64/0x8664",
+      "optionalHeaderMagic": "20b"
+    },
+    "unityPlayerDllPresent": true,
+    "playerExecuted": false
+  },
+  "webgl": {
+    "job": 124361241256,
+    "status": "failure",
+    "exitCodeObserved": 137,
+    "privateLog": {
+      "bytes": 78335,
+      "sha256": "f241e4924d359aacd91877d86213b8013e2ed3aae235d7bb9f011d1702c516fa",
+      "published": false
+    },
+    "lastObservedPhase": "Begin MonoManager ReloadAssembly / Register platform support modules / Killed",
+    "cause": "Not established",
+    "additionalBlindRetriesAllowed": false
+  },
+  "tests": {
+    "reused": true,
+    "artifactId": 13020185153,
+    "artifactUnchanged": true,
+    "apiAssignedJobId": 124361242801,
+    "originalStart": "2026-10-30T22:56:18Z",
+    "originalEnd": "2026-10-30T23:03:59Z",
+    "failedBuildsRerunStarted": "2026-10-30T23:11:22Z",
+    "rerunExecutedTests": false
+  },
+  "release": "skipped",
+  "deploy": "skipped",
+  "overall": "failure",
+  "sourceAndWorkflowUnchanged": true
+}

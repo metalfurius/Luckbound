@@ -1,0 +1,13 @@
+{
+  "path": ".github/workflows/build.yml",
+  "beforeSha256": "67f3f4235aeba072519b32121251f883592c471e9158366bd538e4764cd6f252",
+  "afterSha256": "d6115f8df83b260fb794922286dd7c84575362dd932fc7c03ec213f1888b9a08",
+  "contract": "docs/ci-integration-20261030/SOL-CI9-BUILD-DIAGNOSTIC-CONTRACT.md",
+  "contractSha256": "8b78d0cbc73ce7f5c2a3861f86b36526557260a5974e47bd7a2a645f71451853",
+  "helperCli": "start/stop",
+  "deadlineSeconds": {
+    "windows": 3900,
+    "webgl": 5700
+  },
+  "newSourceAndPackageSettings": false
+}

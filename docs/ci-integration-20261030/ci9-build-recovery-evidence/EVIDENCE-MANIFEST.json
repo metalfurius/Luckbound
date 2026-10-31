@@ -1,0 +1,217 @@
+{
+  "baseCommit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "review": "../SOL-CI9-COMBINED-STATIC-R3.md",
+  "reviewSha256": "834f2ff1b2d8e51e3e7ff291afd3b1bab6c0247ab3f07c94d2a2590188dd70dd",
+  "files": [
+    {
+      "path": "COMPOSED-R2-FREEZE.json",
+      "bytes": 2700,
+      "sha256": "58478157d97873c8ea3e074fa0c9ea665301eb8044363b94c02ff7afaa6cf1a7"
+    },
+    {
+      "path": "COMPOSED-R2-REPORT.md",
+      "bytes": 1223,
+      "sha256": "c27303a20972c26ecca1f51f882aea6140448357bbf4113cc23066db3fffff2f"
+    },
+    {
+      "path": "COMPOSED-R3-FREEZE.json",
+      "bytes": 2700,
+      "sha256": "0e7372e998a0b00432aadbe7fdad9acb30479fd1f9801e6c750c005dfbb7b2e9"
+    },
+    {
+      "path": "COMPOSED-R3-REPORT.md",
+      "bytes": 1145,
+      "sha256": "19bf381f7083d5978e3bbfae2c2848ba422a9dd99ee7d6b653c884cbf345abfa"
+    },
+    {
+      "path": "DIAGNOSTICS-R2-DIFF.patch",
+      "bytes": 28740,
+      "sha256": "10febfadeacc24a9c6f883a01c833080b2e131b796275f2b6919446ebac4feb7"
+    },
+    {
+      "path": "DIAGNOSTICS-R2-MANIFEST.json",
+      "bytes": 4210,
+      "sha256": "6afda96c371f427a71669d3895818776a80c6c39845ca582659c4d7dc6046c3f"
+    },
+    {
+      "path": "DIAGNOSTICS-R2-REPORT.md",
+      "bytes": 3639,
+      "sha256": "8990f97e13f9176bfe2ebe2890954543640e643b5659fc18976c928af84d1c2c"
+    },
+    {
+      "path": "DIAGNOSTICS-R2-ROOT-FREEZE.json",
+      "bytes": 771,
+      "sha256": "295fcde9bbc8f97bdfb1bba60f05d14bade0e8c6b6226fb09d398d8d33a31d36"
+    },
+    {
+      "path": "DIAGNOSTICS-R2-ROOT-TEST-OUTPUT.log",
+      "bytes": 4093,
+      "sha256": "5c48b5f2b6e0967b7cc752e202639c5d97a7027cb6d639becdc1a45ac40cb2b3"
+    },
+    {
+      "path": "DIAGNOSTICS-R2-ROOT-TEST-RECEIPT.json",
+      "bytes": 1275,
+      "sha256": "50e15365e980c88877b854380b08e65969f491980ed923ac9ca953884dd10eec"
+    },
+    {
+      "path": "DIAGNOSTICS-R3-DIFF.patch",
+      "bytes": 8069,
+      "sha256": "8066dfbc2b16c8de6a33021e2c725802fca2b295bdb92e1a7e2ec01010c2d2ca"
+    },
+    {
+      "path": "DIAGNOSTICS-R3-MANIFEST.json",
+      "bytes": 3863,
+      "sha256": "264786a7a17ce4e4b0e6c1cc4691fee3386d9bb9c9dc90205891b0a670957550"
+    },
+    {
+      "path": "DIAGNOSTICS-R3-REPORT.md",
+      "bytes": 2988,
+      "sha256": "7ef68f7c150248c0b53f72c4a83e046056ed1324b15ec3978ef8c9abea6f8425"
+    },
+    {
+      "path": "DIAGNOSTICS-R3-ROOT-FREEZE.json",
+      "bytes": 766,
+      "sha256": "151c453e2e6c94d5a2e6fecee1bdb9659083be9c2d94382fe2bf41f91856cfc9"
+    },
+    {
+      "path": "DIAGNOSTICS-R3-ROOT-TEST-OUTPUT.log",
+      "bytes": 4507,
+      "sha256": "c9cee719e4e26d42a7204a0d443739dbfdf13e36593922e5bf201a8a08c1b6b6"
+    },
+    {
+      "path": "DIAGNOSTICS-R3-ROOT-TEST-RECEIPT.json",
+      "bytes": 1268,
+      "sha256": "0b71fd0d13433da82640b5283172f2e7c165697e19e61b782bf0523b73d73f92"
+    },
+    {
+      "path": "DIAGNOSTICS-ROOT-FREEZE.json",
+      "bytes": 771,
+      "sha256": "79616c304e89862b8ad39207daa7bbc86f11ab97d371f57db58bf930a19377ec"
+    },
+    {
+      "path": "DIAGNOSTICS-ROOT-TEST-RECEIPT.json",
+      "bytes": 1210,
+      "sha256": "254067dfcc0786de4a4b0f11adfd0dd688b48fe79221618e141d7a43dabc7053"
+    },
+    {
+      "path": "DIAGNOSTICS-WORKER-MANIFEST.json",
+      "bytes": 2977,
+      "sha256": "6e440327acc94749cd911c0c27de254a0e4b881067ceaaa91f7db493702132b0"
+    },
+    {
+      "path": "DIAGNOSTICS-WORKER-REPORT.md",
+      "bytes": 4892,
+      "sha256": "fbc84e5e466cd9cba0a69e9453f1b79674533557426bcf797090b6566887e19c"
+    },
+    {
+      "path": "E10-COMPILE-RESULTS.json",
+      "bytes": 44430,
+      "sha256": "933895831d1c01f7aa08692da109667240357d8bc0e0701a661e849408f0fb39"
+    },
+    {
+      "path": "E10-COMPOSED-FREEZE.json",
+      "bytes": 912,
+      "sha256": "e6c8d42b7dbec381354721c716db5d3159b749950f169a530dbfd506ea2e4cca"
+    },
+    {
+      "path": "E10-COMPOSED-REPORT.md",
+      "bytes": 735,
+      "sha256": "85df4393f704e7f9c01c5490901ecde5505d975fc2ea5d3a9c3682f741ea7a70"
+    },
+    {
+      "path": "E10-INPUT-BINDING.json",
+      "bytes": 29101,
+      "sha256": "aa6b01deb898dafb7f4db3d67a4010e11eb2cfaba747be9e1e935b866ebd27f6"
+    },
+    {
+      "path": "E10-R1-MANIFEST.json",
+      "bytes": 1605,
+      "sha256": "f0239748127d07b089193d9055f28db4c935f296033206657c9207a52d460d30"
+    },
+    {
+      "path": "E10-R1-REPORT.md",
+      "bytes": 2067,
+      "sha256": "62a243ca7d022e24ede6a1ebbb0ceaf3447dd37f6d5a41252e33292a221b1792"
+    },
+    {
+      "path": "E10-R2-MANIFEST.json",
+      "bytes": 1917,
+      "sha256": "bfb42bfaf417a1267de0995c1227c36f1314d901902becdd07d1b5d54cd3073c"
+    },
+    {
+      "path": "E10-R2-REPORT.md",
+      "bytes": 1561,
+      "sha256": "b9ae1b8e5f2ead4616c35d0729cae8dc5ecb5f6fa02df69adf17481c7df4de57"
+    },
+    {
+      "path": "INTEGRATED-INPUT-BINDING.json",
+      "bytes": 45049,
+      "sha256": "046079a8512e8f00748c764c6dd68fbe23ef1e847ac672d1db1771b737fbb093"
+    },
+    {
+      "path": "INTEGRATION.json",
+      "bytes": 3396,
+      "sha256": "8269a72fdeb39be0c9dd530a2537e7487af5d4c55599d5b55a9e21e1c16e3100"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2303,
+      "sha256": "058833947558a418ddb0b8cccabb499838330d0d0c8c428832866417d1d0203c"
+    },
+    {
+      "path": "review-baselines/capture_ci_build_diagnostics.py.R1.txt",
+      "bytes": 59145,
+      "sha256": "fe719c46bc2f408acdfaf205acb7658ed4266f76d0385b9ce74b8ed661baf3db"
+    },
+    {
+      "path": "review-baselines/capture_ci_build_diagnostics.py.R2.txt",
+      "bytes": 66271,
+      "sha256": "cfa9e7cc035b5f2ab0f3a0bdf21dbabf41df3ea252062dad278efe236df8554f"
+    },
+    {
+      "path": "review-baselines/HubPreparationTests.R1.cs.txt",
+      "bytes": 93154,
+      "sha256": "22034e6602a69dd70dc8e5543fceb2ae2fd3a27345d2eb41bf2854a9019c62ff"
+    },
+    {
+      "path": "review-baselines/test_capture_ci_build_diagnostics.py.R1.txt",
+      "bytes": 20479,
+      "sha256": "2d4c1066c6bdb3a21ed72b8f86ac2b564c0a152a0b7130f09f98427bd8329cc5"
+    },
+    {
+      "path": "review-baselines/test_capture_ci_build_diagnostics.py.R2.txt",
+      "bytes": 29501,
+      "sha256": "8639a271cd902839382e48fd8b618edb47d03e0b918934523523baae5403d411"
+    },
+    {
+      "path": "WORKFLOW-CLI-BINDING.json",
+      "bytes": 1565,
+      "sha256": "95dec2dbe803c58c8ded20e837513984f2e74163be06f9f876dc0fa69aeafccc"
+    },
+    {
+      "path": "WORKFLOW-R1-MANIFEST.json",
+      "bytes": 522,
+      "sha256": "8a868895e652fdb4a749f0f1364378da949487da8df10b4b6fe03495e6cd65c2"
+    },
+    {
+      "path": "WORKFLOW-R1-REPORT.md",
+      "bytes": 1310,
+      "sha256": "d3c957e4146464f8877e8fb754ae19175c0465ecb0776e03bd30528ab9c376fa"
+    },
+    {
+      "path": "WORKFLOW-R1-STRUCTURAL-CHECK.json",
+      "bytes": 2226,
+      "sha256": "f7b20589b6a4578eb91ca38101f626271cf2f09918134cb68bfca5c57b8fb6b2"
+    },
+    {
+      "path": "WORKFLOW-R2-CLI-BINDING.json",
+      "bytes": 1565,
+      "sha256": "95dec2dbe803c58c8ded20e837513984f2e74163be06f9f876dc0fa69aeafccc"
+    },
+    {
+      "path": "WORKFLOW-R3-CLI-BINDING.json",
+      "bytes": 1565,
+      "sha256": "95dec2dbe803c58c8ded20e837513984f2e74163be06f9f876dc0fa69aeafccc"
+    }
+  ]
+}

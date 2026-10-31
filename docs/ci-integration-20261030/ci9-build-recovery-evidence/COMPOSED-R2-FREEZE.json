@@ -1,0 +1,49 @@
+{
+  "baseCommit": "579d30f75a31a7e2bbe8d3f74171ca2068741003",
+  "supersedes": "../combined-r1",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "beforeSha256": "938aef74df556eb7c887d19b531c1b04435063031808ae545965adc9250a8fad",
+      "sha256": "a595d0e18d28bafc352fa004b94ac80b15dbae5288544e24f45e8142be3c41fc",
+      "bytes": 70318,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/combined-r2/candidate/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "type": "existing",
+      "source": "Logs/CI9BuildRecovery-20261031-r1/combined-r1/candidate/Assets/Luckbound/Scripts/App/HubPreparationController.cs"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+      "beforeSha256": "53772af61eac98a1e5f97127f82775a96ae9cbf6c12a650fd934e8bb3ad77a73",
+      "sha256": "a2ffbcf281a94eca3d3ac1bcfaa02048dae1a509b120699558e1adfb9473d67e",
+      "bytes": 94374,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/combined-r2/candidate/Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+      "type": "existing",
+      "source": "Logs/CI9BuildRecovery-20261031-r1/combined-r1/candidate/Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs"
+    },
+    {
+      "path": ".github/workflows/build.yml",
+      "beforeSha256": "67f3f4235aeba072519b32121251f883592c471e9158366bd538e4764cd6f252",
+      "sha256": "d6115f8df83b260fb794922286dd7c84575362dd932fc7c03ec213f1888b9a08",
+      "bytes": 15950,
+      "type": "existing",
+      "source": "Logs/CI9BuildRecovery-20261031-r1/combined-r1/candidate/.github/workflows/build.yml",
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/combined-r2/candidate/.github/workflows/build.yml"
+    },
+    {
+      "path": "Tools/Automation/capture_ci_build_diagnostics.py",
+      "sha256": "cfa9e7cc035b5f2ab0f3a0bdf21dbabf41df3ea252062dad278efe236df8554f",
+      "bytes": 66271,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/combined-r2/candidate/Tools/Automation/capture_ci_build_diagnostics.py",
+      "type": "new",
+      "source": "Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r2/candidate/Tools/Automation/capture_ci_build_diagnostics.py"
+    },
+    {
+      "path": "Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "sha256": "8639a271cd902839382e48fd8b618edb47d03e0b918934523523baae5403d411",
+      "bytes": 29501,
+      "frozen": "Logs/CI9BuildRecovery-20261031-r1/combined-r2/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py",
+      "type": "new",
+      "source": "Logs/CI9BuildRecovery-20261031-r1/diagnostics-composed-r2/candidate/Tools/Automation/tests/test_capture_ci_build_diagnostics.py"
+    }
+  ]
+}
