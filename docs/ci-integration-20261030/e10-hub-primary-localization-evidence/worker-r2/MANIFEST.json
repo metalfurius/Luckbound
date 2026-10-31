@@ -1,0 +1,52 @@
+{
+  "package": "E10.HUB.PRIMARY.LOCALIZATION.R2.TEST-DIAGNOSTICS",
+  "authorization": {
+    "path": "docs/ci-integration-20261030/SOL-E10-HUB-PRIMARY-LOCALIZATION-R1-STATIC.md",
+    "sha256": "F24586CDB6AF0DB3B75FA06EDD42709EB84601C9E3AD7CEBABCB0B0961D41848",
+    "dictamen": "f24586cdb6af0db3b75fa06edd42709eb84601c9e3ad7cebabcb0b0961d41848"
+  },
+  "base": {
+    "path": "Logs/E10HubPrimaryLocalization-20261031-r1/composed-r1/candidate/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+    "sha256": "031F4A54F0777200CFE126D208C8FF375DF8550AEF3418405BE4D43F887F6DE8",
+    "bytes": 41444
+  },
+  "candidate": {
+    "path": "Logs/E10HubPrimaryLocalization-20261031-r1/revision-r2/candidate/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+    "sha256": "D5B0362814741F5770B1ABA0DD2BEB4BB5C6FDE2B4768FBEFA02261CA9108FAB",
+    "bytes": 47302
+  },
+  "diff": {
+    "path": "Logs/E10HubPrimaryLocalization-20261031-r1/revision-r2/DIFF.patch",
+    "sha256": "FBEFD0F1E49DD48D0E6D45F1D7B61D4C417905AC7EBA1D544C55635CFA047694",
+    "bytes": 12857
+  },
+  "report": {
+    "path": "Logs/E10HubPrimaryLocalization-20261031-r1/revision-r2/REPORT.md",
+    "sha256": "18070879C752D0D537C1771EA8F571548033A42B30875A5A6640A336399BDE01",
+    "bytes": 2024
+  },
+  "checks": {
+    "unityTestCount": 2,
+    "actualTextInitialMetrics": {
+      "firstCaseEs": 20,
+      "readonlyCaseEn": 20
+    },
+    "contentOverrideMetrics": 18,
+    "skillIds": 9,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "layoutToleranceRetained": 0.5,
+    "profileWriteAssertionsRetained": 2,
+    "guildRootCapturedBeforeSubmit": true,
+    "contentOverrideMutatesTextOrLayout": false,
+    "unityOrCompileExecuted": false
+  },
+  "scope": {
+    "candidateFiles": 1,
+    "controllerOrCatalogChanged": false,
+    "liveAssetsOrMetaChanged": false,
+    "nativeMetricsObserved": false
+  }
+}

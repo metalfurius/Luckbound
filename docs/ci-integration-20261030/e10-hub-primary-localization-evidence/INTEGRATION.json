@@ -1,0 +1,47 @@
+{
+  "baseCommit": "237d372b1af97ac862706bd622600b34f1e000de",
+  "actaSha256": "5ac30116a04bd3214e08d5106010e6dc3bf8ad8a42d7ac324de79ee946c634d6",
+  "changes": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "sha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843",
+      "bytes": 96081
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a",
+      "bytes": 31890
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "sha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab",
+      "bytes": 47302
+    }
+  ],
+  "meta": {
+    "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs.meta",
+    "guid": "2ae3679bfabe4e6ebe28e1be8f540349",
+    "sha256": "e173565dba4ab2befd09dbf0578669811270cd8a7e8f43088050a52e122717fa"
+  },
+  "sourceCount": 413,
+  "originalSourcesUnchanged": 411,
+  "existingSourcesChanged": 1,
+  "addedSources": 1,
+  "metas": {
+    "before": 869,
+    "after": 870,
+    "oldUnchanged": 869,
+    "unique": 870
+  },
+  "fixturesUnchanged": 493,
+  "locale": {
+    "old": 183,
+    "new": 241,
+    "oldEntriesUnchanged": 183
+  },
+  "compiledInputsMatchLive": 136,
+  "expectedNativeTests": 1173,
+  "NativeExecuted": false,
+  "UnityLocalExecuted": false,
+  "published": false
+}

@@ -1,0 +1,22 @@
+{
+  "run": 41203388580,
+  "commit": "237d372b1af97ac862706bd622600b34f1e000de",
+  "artifact": "webgl-237d372b1af97ac862706bd622600b34f1e000de",
+  "zipSha256": "b6a552b6dcadabfb8746f5b5666564cb1f1c50f1544f6650c612d2555d7ec9da",
+  "zipBytes": 16206447,
+  "verifiedFiles": 17,
+  "playerExecuted": false,
+  "wasm": {
+    "path": "WebGL/Build/WebGL.wasm.br",
+    "compressedSha256": "8b9b74685271791ee685f2dd01563556017330262687a99e3800189639a921ab",
+    "decompressedSha256": "e3e02a2e9147d3bb13153ac56f4901b36eb931e5f162a4acb91bf4f863c7e025",
+    "decompressedBytes": 41593046,
+    "magic": "0061736d",
+    "version": 1
+  },
+  "index": {
+    "path": "WebGL/index.html",
+    "sha256": "11b0fcd185c8978cbb11b7cae80b78ab334dc20d160e685ac986c9326077a841",
+    "bytes": 6378
+  }
+}

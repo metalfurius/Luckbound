@@ -1,0 +1,67 @@
+{
+  "run": 41203388580,
+  "commit": "237d372b1af97ac862706bd622600b34f1e000de",
+  "platform": "windows",
+  "records": 160,
+  "phases": [
+    "S0",
+    "observer",
+    "S1"
+  ],
+  "snapshotPhases": [
+    "S0",
+    "S1"
+  ],
+  "dmesg": [
+    {
+      "phase": "S0",
+      "state": "available",
+      "returnCode": 0,
+      "matchCount": 0,
+      "source": "sudo_n_dmesg"
+    },
+    {
+      "phase": "S1",
+      "state": "available",
+      "returnCode": 0,
+      "matchCount": 0,
+      "source": "sudo_n_dmesg"
+    }
+  ],
+  "events": {
+    "events_dropped": 0,
+    "events_inspect_skipped": 0,
+    "events_not_captured": 0,
+    "events_recorded": 3,
+    "events_seen": 3,
+    "identity": {
+      "attempt": 1,
+      "commit": "237d372b1af97ac862706bd622600b34f1e000de",
+      "platform": "windows",
+      "run_id": "41203388580"
+    },
+    "inspects": 3,
+    "monotonic_seconds": 184.102912,
+    "phase": "S1",
+    "reason": "stop",
+    "record_type": "observer_finished",
+    "schema": "luckbound.ci9.build-diagnostics",
+    "state": "complete",
+    "timestamp_utc": "2026-10-31T13:07:57.850+00:00",
+    "version": 1
+  },
+  "observerDone": {
+    "identity": {
+      "attempt": 1,
+      "commit": "237d372b1af97ac862706bd622600b34f1e000de",
+      "platform": "windows",
+      "run_id": "41203388580"
+    },
+    "reason": "stop",
+    "schema": "luckbound.ci9.build-diagnostics",
+    "state": "complete",
+    "timestamp_utc": "2026-10-31T13:07:57.850+00:00",
+    "version": 1
+  },
+  "scope": "Recorded build diagnostics only; no causal inference about prior137 or HostGuard"
+}

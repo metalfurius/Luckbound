@@ -1,0 +1,72 @@
+[
+  {
+    "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6HistoricalDtos.cs",
+    "gitBlobSha1": "44cee851931dc470bbff3bf3f6da308aa2c274c9",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/Compatibility/SaveV6ChecksumInspector.cs",
+    "gitBlobSha1": "6551c633a2de7e4c15998169618379938077af8c",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Saves/SaveDocuments.cs",
+    "gitBlobSha1": "d62c870fcd0ed5861cce0296c57592fb8d0221b6",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Fortune/FortuneOfferBookSnapshot.cs",
+    "gitBlobSha1": "3d6c91726f94c80fde4b4ea2cb1874178646c727",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/SaveRepository.cs",
+    "gitBlobSha1": "f68fc60019903eff25bca247c05ba70ee4d5b9c1",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/AssemblyInfo.cs",
+    "gitBlobSha1": "a0faf75fdffe83c7474d5b9f0d7bf0f15a73ed1d",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+    "gitBlobSha1": "be15eb24a77952400060f345b684e9735b0f0851",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/Fixtures/Saves/V6/fixture-index.json",
+    "gitBlobSha1": "afca9976e04c128293afdce4b09102a1497f9b18",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/Luckbound.App.asmdef",
+    "gitBlobSha1": "e2651ceea22370bc71db6eec997af038463ea2c4",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Luckbound.Core.asmdef",
+    "gitBlobSha1": "e51e69e80015697a0c1f1627f3fc6d622460441b",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Luckbound.PlayMode.Tests.asmdef",
+    "gitBlobSha1": "97904300d05845e188c731d5a2e0964855d9ef01",
+    "mode": "100644"
+  },
+  {
+    "path": "ProjectSettings/ProjectVersion.txt",
+    "gitBlobSha1": "c0d11a3b00e7dae3a4f521d7a75ff93388e01966",
+    "mode": "100644"
+  },
+  {
+    "path": "Packages/manifest.json",
+    "gitBlobSha1": "0df120389f01f83f360d65d0870db74aead1b4d1",
+    "mode": "100644"
+  },
+  {
+    "path": "Packages/packages-lock.json",
+    "gitBlobSha1": "7cd71641bd6817b7cba166a81dfecb878b1f100c",
+    "mode": "100644"
+  }
+]

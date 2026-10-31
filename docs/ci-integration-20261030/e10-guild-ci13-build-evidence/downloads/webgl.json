@@ -1,0 +1,94 @@
+{
+  "run": 41203388580,
+  "artifact": "webgl-237d372b1af97ac862706bd622600b34f1e000de",
+  "url": "https://nightly.link/metalfurius/Luckbound/suites/111688152046/artifacts/13044485256",
+  "sha256": "b6a552b6dcadabfb8746f5b5666564cb1f1c50f1544f6650c612d2555d7ec9da",
+  "zip_bytes": 16206447,
+  "files": [
+    {
+      "path": "WebGL/Build/WebGL.data.br",
+      "sha256": "f71051316cd17d3567791d738038b84b9cd4059c1404681725fed2aba970d0fc",
+      "bytes": 7896728
+    },
+    {
+      "path": "WebGL/Build/WebGL.framework.js.br",
+      "sha256": "daf6c30cbafdc86f6634835f6aaabc4c3b57c6312bee37ee12abb027e39fcd9a",
+      "bytes": 73310
+    },
+    {
+      "path": "WebGL/Build/WebGL.loader.js",
+      "sha256": "2b0ee8e8929785beb61d92d765643aa11f37471c6c3ea9c6dbc2824fbfd46573",
+      "bytes": 27675
+    },
+    {
+      "path": "WebGL/Build/WebGL.wasm.br",
+      "sha256": "8b9b74685271791ee685f2dd01563556017330262687a99e3800189639a921ab",
+      "bytes": 8410406
+    },
+    {
+      "path": "WebGL/index.html",
+      "sha256": "11b0fcd185c8978cbb11b7cae80b78ab334dc20d160e685ac986c9326077a841",
+      "bytes": 6378
+    },
+    {
+      "path": "WebGL/TemplateData/favicon.ico",
+      "sha256": "9c13beb90ee8f70580d52a21d5233970d1c89e71e4a34a462c22610941c3c77f",
+      "bytes": 2305
+    },
+    {
+      "path": "WebGL/TemplateData/fullscreen-button.png",
+      "sha256": "21221581673a54b8139d408d4a3f8d2b879e86827d4b6fc53b995ff7a99ee3e9",
+      "bytes": 175
+    },
+    {
+      "path": "WebGL/TemplateData/MemoryProfiler.png",
+      "sha256": "0ce87be20d0c24ab6cb73b57de2004da261cc2a641e69319c6ae3fe11fc85483",
+      "bytes": 665
+    },
+    {
+      "path": "WebGL/TemplateData/progress-bar-empty-dark.png",
+      "sha256": "bbee7131afe8a3365906240d89184dc86234c119467f390bc4bc6802328fdb4d",
+      "bytes": 96
+    },
+    {
+      "path": "WebGL/TemplateData/progress-bar-empty-light.png",
+      "sha256": "143696c060ad43d6c30f19ff5f49000927a139a2a1e4c9f45fafaa2b90d7d2be",
+      "bytes": 109
+    },
+    {
+      "path": "WebGL/TemplateData/progress-bar-full-dark.png",
+      "sha256": "3306a6244dcb3926fca38a28e3ced589df8ff1beed955eb17c0bbf01c918bc62",
+      "bytes": 74
+    },
+    {
+      "path": "WebGL/TemplateData/progress-bar-full-light.png",
+      "sha256": "12395ea785480c5cdf12fade6e6cbf49666d5bb1cef7240c113dbcba6bdc5c87",
+      "bytes": 84
+    },
+    {
+      "path": "WebGL/TemplateData/style.css",
+      "sha256": "6ecc2390eb4fadd552622770f677d344c5393620b6c66511c17ff0805eea8aa2",
+      "bytes": 1666
+    },
+    {
+      "path": "WebGL/TemplateData/unity-logo-dark.png",
+      "sha256": "c1b72d26c096487dabc948b54bc203f8dac7ed4e3f5733918798e858acb4b159",
+      "bytes": 3042
+    },
+    {
+      "path": "WebGL/TemplateData/unity-logo-light.png",
+      "sha256": "002990aea0d946833cadc1519d5b7e50a4570bd537a0517dd79a59d3eec84da7",
+      "bytes": 3077
+    },
+    {
+      "path": "WebGL/TemplateData/unity-logo-title-footer.png",
+      "sha256": "9e8b3bdb67c2446d16362fe59449d892100931dbbadfe6a9d923a4142b57a79f",
+      "bytes": 1151
+    },
+    {
+      "path": "WebGL/TemplateData/webmemd-icon.png",
+      "sha256": "c56f5494640cedda273aad38d58e6ab9da625d5b3f4d875c0ff92c6192a569c2",
+      "bytes": 1670
+    }
+  ]
+}

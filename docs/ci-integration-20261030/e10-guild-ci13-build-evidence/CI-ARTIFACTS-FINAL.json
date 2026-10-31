@@ -1,0 +1,105 @@
+{
+  "total_count": 5,
+  "artifacts": [
+    {
+      "id": 13044485256,
+      "node_id": "MDg6QXJ0aWZhY3QxMzA0NDQ4NTI1Ng==",
+      "name": "webgl-237d372b1af97ac862706bd622600b34f1e000de",
+      "size_in_bytes": 16206447,
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13044485256",
+      "archive_download_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13044485256/zip",
+      "expired": false,
+      "digest": "sha256:b6a552b6dcadabfb8746f5b5666564cb1f1c50f1544f6650c612d2555d7ec9da",
+      "created_at": "2026-10-31T13:16:21Z",
+      "updated_at": "2026-10-31T13:16:21Z",
+      "expires_at": "2026-11-30T13:16:19Z",
+      "workflow_run": {
+        "id": 41203388580,
+        "repository_id": 874357623,
+        "head_repository_id": 874357623,
+        "head_branch": "codex/luckbound-integration-unity-20261030",
+        "head_sha": "237d372b1af97ac862706bd622600b34f1e000de"
+      }
+    },
+    {
+      "id": 13043571438,
+      "node_id": "MDg6QXJ0aWZhY3QxMzA0MzU3MTQzOA==",
+      "name": "windows-237d372b1af97ac862706bd622600b34f1e000de",
+      "size_in_bytes": 50569203,
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13043571438",
+      "archive_download_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13043571438/zip",
+      "expired": false,
+      "digest": "sha256:8966fa040579051a211b7ba85dfc88c368a8ba9d0e2ccf46e7cf51b92c577055",
+      "created_at": "2026-10-31T13:08:04Z",
+      "updated_at": "2026-10-31T13:08:04Z",
+      "expires_at": "2026-11-30T13:07:59Z",
+      "workflow_run": {
+        "id": 41203388580,
+        "repository_id": 874357623,
+        "head_repository_id": 874357623,
+        "head_branch": "codex/luckbound-integration-unity-20261030",
+        "head_sha": "237d372b1af97ac862706bd622600b34f1e000de"
+      }
+    },
+    {
+      "id": 13043561495,
+      "node_id": "MDg6QXJ0aWZhY3QxMzA0MzU2MTQ5NQ==",
+      "name": "build-diagnostics-windows-237d372b1af97ac862706bd622600b34f1e000de-41203388580-1",
+      "size_in_bytes": 9860,
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13043561495",
+      "archive_download_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13043561495/zip",
+      "expired": false,
+      "digest": "sha256:66d33a757d75d7b29e8354d949982894413a7bf2c6427fd2a958fab14d1b4e5b",
+      "created_at": "2026-10-31T13:07:58Z",
+      "updated_at": "2026-10-31T13:07:58Z",
+      "expires_at": "2026-11-14T13:07:58Z",
+      "workflow_run": {
+        "id": 41203388580,
+        "repository_id": 874357623,
+        "head_repository_id": 874357623,
+        "head_branch": "codex/luckbound-integration-unity-20261030",
+        "head_sha": "237d372b1af97ac862706bd622600b34f1e000de"
+      }
+    },
+    {
+      "id": 13043422504,
+      "node_id": "MDg6QXJ0aWZhY3QxMzA0MzQyMjUwNA==",
+      "name": "build-diagnostics-webgl-237d372b1af97ac862706bd622600b34f1e000de-41203388580-1",
+      "size_in_bytes": 31868,
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13043422504",
+      "archive_download_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13043422504/zip",
+      "expired": false,
+      "digest": "sha256:928290ae88aca33104d0c510bceba14ea7ca82f2ecd452eda1800eadaa51290f",
+      "created_at": "2026-10-31T13:16:18Z",
+      "updated_at": "2026-10-31T13:16:18Z",
+      "expires_at": "2026-11-14T13:16:17Z",
+      "workflow_run": {
+        "id": 41203388580,
+        "repository_id": 874357623,
+        "head_repository_id": 874357623,
+        "head_branch": "codex/luckbound-integration-unity-20261030",
+        "head_sha": "237d372b1af97ac862706bd622600b34f1e000de"
+      }
+    },
+    {
+      "id": 13042799265,
+      "node_id": "MDg6QXJ0aWZhY3QxMzA0Mjc5OTI2NQ==",
+      "name": "test-results-237d372b1af97ac862706bd622600b34f1e000de",
+      "size_in_bytes": 9908398,
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13042799265",
+      "archive_download_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/artifacts/13042799265/zip",
+      "expired": false,
+      "digest": "sha256:3ddce59ccff591c7b0b9f40bdbd5607f3573f3d9dfe92c3ebd32ba3244002b0f",
+      "created_at": "2026-10-31T13:05:03Z",
+      "updated_at": "2026-10-31T13:05:03Z",
+      "expires_at": "2026-11-14T13:05:01Z",
+      "workflow_run": {
+        "id": 41203388580,
+        "repository_id": 874357623,
+        "head_repository_id": 874357623,
+        "head_branch": "codex/luckbound-integration-unity-20261030",
+        "head_sha": "237d372b1af97ac862706bd622600b34f1e000de"
+      }
+    }
+  ]
+}

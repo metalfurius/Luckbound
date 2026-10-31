@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Luckbound.Content;
 using Luckbound.Core.Combat;
@@ -34,6 +35,12 @@ namespace Luckbound.App
             "CONTRATO DE COMBATE",
             "CONTRATO DE HISTORIA",
             "CONTRATO DE FABRICACIÓN"
+        };
+        private static readonly string[] OtherRaceUnlockLocalizationKeys =
+        {
+            "ui.hub.race.unlock.combat_contract",
+            "ui.hub.race.unlock.story_contract",
+            "ui.hub.race.unlock.crafting_contract"
         };
         private static readonly string[] GuildIntroNameKeys =
         {
@@ -129,8 +136,8 @@ namespace Luckbound.App
         private string _languageFeedback = string.Empty;
         private int _selectedClassIndex;
         private string _selectedRaceId = ExpeditionRunConfiguration.HumanRaceId;
-        private string _statusMessage;
-        private string _profileStatusMessage;
+        private LocalizedUiMessage _statusMessage;
+        private LocalizedUiMessage _profileStatusMessage;
         private bool _startingExpedition;
         private bool _purchasingUpgrade;
         private bool _contractOperationInProgress;
@@ -269,7 +276,8 @@ namespace Luckbound.App
             }
             catch (Exception exception)
             {
-                _statusMessage = "No se puede preparar la expedición: " + exception.Message;
+                SetStatusMessage("ui.hub.error.preparation_unavailable",
+                    "No se puede preparar la expedición: {0}", exception.Message);
                 _startExpeditionButton.interactable = false;
                 RefreshView();
             }
@@ -341,7 +349,7 @@ namespace Luckbound.App
                     if (!_selectedSkillIds.Contains(skill.Id)) _selectedSkillIds.Add(skill.Id);
                 }
             }
-            _statusMessage = string.Empty;
+            _statusMessage = null;
             RefreshView();
         }
 
@@ -351,16 +359,18 @@ namespace Luckbound.App
             string skillId = _classSkills[skillIndex].Id;
             if (_selectedSkillIds.Remove(skillId))
             {
-                _statusMessage = "Elige dos habilidades para salir.";
+                SetStatusMessage("ui.hub.selection.choose_two_before_departure",
+                    "Elige dos habilidades para salir.");
             }
             else if (_selectedSkillIds.Count == 2)
             {
-                _statusMessage = "Quita una habilidad antes de elegir otra.";
+                SetStatusMessage("ui.hub.selection.remove_before_choosing",
+                    "Quita una habilidad antes de elegir otra.");
             }
             else
             {
                 _selectedSkillIds.Add(skillId);
-                _statusMessage = string.Empty;
+                _statusMessage = null;
             }
             RefreshView();
         }
@@ -376,13 +386,13 @@ namespace Luckbound.App
             ProfileSaveData profile = GetProfileForRaceSelection(app);
             if (!ExpeditionRunConfiguration.IsKnownRaceId(raceId) || !IsRaceUnlocked(profile, raceId))
             {
-                _statusMessage = "Esa raza sigue bloqueada en tu perfil.";
+                SetStatusMessage("ui.hub.race.locked_profile", "Esa raza sigue bloqueada en tu perfil.");
                 RefreshView();
                 return;
             }
 
             _selectedRaceId = raceId;
-            _statusMessage = string.Empty;
+            _statusMessage = null;
             RefreshView();
         }
 
@@ -399,7 +409,7 @@ namespace Luckbound.App
                     SaveWriteResult retry = await app.RetryPendingExpeditionWriteAsync();
                     if (!retry.Succeeded)
                     {
-                        _statusMessage = "El guardado sigue pendiente: " + retry.Message;
+                        SetStatusMessage("ui.hub.status.save_pending", "El guardado sigue pendiente: {0}", retry.Message);
                         return;
                     }
                     if (app.CanContinueExpedition) app.ContinueActiveExpedition();
@@ -407,7 +417,7 @@ namespace Luckbound.App
                 }
                 catch (Exception exception)
                 {
-                    _statusMessage = "No se pudo reintentar el guardado: " + exception.Message;
+                    SetStatusMessage("ui.hub.error.retry_save", "No se pudo reintentar el guardado: {0}", exception.Message);
                 }
                 finally
                 {
@@ -422,13 +432,16 @@ namespace Luckbound.App
                 try
                 {
                     ExpeditionSettlementCommitResult retry = await app.RetryPendingSettlementAsync();
-                    _statusMessage = retry.Persisted
-                        ? "La liquidación se guardó. Puedes preparar otra expedición."
-                        : "La liquidación sigue pendiente: " + retry.Message;
+                    if (retry.Persisted)
+                        SetStatusMessage("ui.hub.settlement.saved",
+                            "La liquidación se guardó. Puedes preparar otra expedición.");
+                    else
+                        SetStatusMessage("ui.hub.settlement.pending", "La liquidación sigue pendiente: {0}", retry.Message);
                 }
                 catch (Exception exception)
                 {
-                    _statusMessage = "No se pudo reintentar la liquidación: " + exception.Message;
+                    SetStatusMessage("ui.hub.error.retry_settlement",
+                        "No se pudo reintentar la liquidación: {0}", exception.Message);
                 }
                 finally
                 {
@@ -442,7 +455,7 @@ namespace Luckbound.App
                 try { app.ContinueActiveExpedition(); }
                 catch (Exception exception)
                 {
-                    _statusMessage = "No se pudo reanudar: " + exception.Message;
+                    SetStatusMessage("ui.hub.error.continue_expedition", "No se pudo reanudar: {0}", exception.Message);
                     RefreshView();
                 }
                 return;
@@ -455,7 +468,7 @@ namespace Luckbound.App
             }
             if (_selectedSkillIds.Count != 2)
             {
-                _statusMessage = "Debes elegir exactamente dos habilidades.";
+                SetStatusMessage("ui.hub.selection.exact_two_required", "Debes elegir exactamente dos habilidades.");
                 RefreshView();
                 return;
             }
@@ -465,7 +478,8 @@ namespace Luckbound.App
                 ProfileSaveData profile = app.Profile;
                 if (!IsRaceUnlocked(profile, SelectedRaceId))
                 {
-                    _statusMessage = "La raza seleccionada ya no está desbloqueada en tu perfil.";
+                    SetStatusMessage("ui.hub.race.selected_locked_profile",
+                        "La raza seleccionada ya no está desbloqueada en tu perfil.");
                     RefreshView();
                     return;
                 }
@@ -479,7 +493,7 @@ namespace Luckbound.App
                 SaveWriteResult save = await app.BeginExpeditionAsync(run);
                 if (!save.Succeeded)
                 {
-                    _statusMessage = "No se pudo guardar la expedición: " + save.Message;
+                    SetStatusMessage("ui.hub.error.save_expedition", "No se pudo guardar la expedición: {0}", save.Message);
                     RefreshView();
                     return;
                 }
@@ -488,7 +502,7 @@ namespace Luckbound.App
             }
             catch (Exception exception)
             {
-                _statusMessage = "No se pudo iniciar: " + exception.Message;
+                SetStatusMessage("ui.hub.error.start_expedition", "No se pudo iniciar: {0}", exception.Message);
                 RefreshView();
             }
             finally
@@ -1409,6 +1423,15 @@ namespace Luckbound.App
         {
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
             ProfileSaveData profile = GetProfileForRaceSelection(app);
+            SetNamedHubText("HubTitle", "ui.hub.title", "LA TABERNA");
+            SetNamedHubText("HubSubtitle", "ui.hub.subtitle",
+                "Elige tu senda. El castillo ya está despierto.");
+            SetNamedHubText("ClassSectionTitle", "ui.hub.section.class", "CLASE");
+            SetNamedHubText("SkillSectionTitle", "ui.hub.skills_hint",
+                "ELIGE DOS HABILIDADES · SE CONSERVAN DURANTE LA EXPEDICIÓN");
+            SetLabel(_returnToMenuButton, GetHubText("ui.hub.back", "VOLVER AL MENÚ"));
+            if (_openUpgradesButton != null)
+                SetLabel(_openUpgradesButton, GetHubText("ui.hub.upgrades", "MEJORAS"));
             if (_classButtons != null)
             {
                 for (int index = 0; index < _classButtons.Length && index < ClassLabels.Length; index++)
@@ -1443,8 +1466,13 @@ namespace Luckbound.App
                 bool unlocked = IsRaceUnlocked(profile, ExpeditionRunConfiguration.HumanRaceId);
                 bool selected = _selectedRaceId == ExpeditionRunConfiguration.HumanRaceId;
                 _humanRaceButton.interactable = unlocked;
-                SetLabel(_humanRaceButton, (selected ? "◆ " : "") + "HUMANO · " +
-                    (unlocked ? "DISPONIBLE · INICIAL · 2 FORTUNA" : "BLOQUEADO"));
+                string human = GetHubText("ui.hub.race.human", "HUMANO");
+                string availability = GetHubText(unlocked ? "ui.hub.race.available" : "ui.hub.race.human_locked",
+                    unlocked ? "DISPONIBLE" : "BLOQUEADO");
+                string defaultState = GetHubText("ui.hub.race.default", "INICIAL");
+                string fortune = GetHubText("ui.hub.race.fortune", "FORTUNA");
+                SetLabel(_humanRaceButton, (selected ? "◆ " : "") + human + " · " + availability +
+                    (unlocked ? " · " + defaultState + " · 2 " + fortune : string.Empty));
                 SetButtonColors(_humanRaceButton, selected, "#32251F", "#F0C15A");
             }
             if (_lockedRaceButtons != null)
@@ -1456,8 +1484,11 @@ namespace Luckbound.App
                     bool selected = _selectedRaceId == raceId;
                     _lockedRaceButtons[index].interactable = unlocked;
                     SetLabel(_lockedRaceButtons[index], unlocked
-                        ? (selected ? "◆ " : "") + OtherRaceLabels[index] + " · DESBLOQUEADA · " + OtherRaceUnlockLabels[index]
-                        : "BLOQUEADA · " + OtherRaceLabels[index] + " · " + OtherRaceUnlockLabels[index]);
+                        ? (selected ? "◆ " : "") + OtherRaceLabels[index] + " · " +
+                          GetHubText("ui.hub.race.unlocked", "DESBLOQUEADA") + " · " +
+                          GetHubText(OtherRaceUnlockLocalizationKeys[index], OtherRaceUnlockLabels[index])
+                        : GetHubText("ui.hub.race.locked", "BLOQUEADA") + " · " + OtherRaceLabels[index] + " · " +
+                          GetHubText(OtherRaceUnlockLocalizationKeys[index], OtherRaceUnlockLabels[index]));
                     SetButtonColors(_lockedRaceButtons[index], selected, "#32251F", "#F0C15A");
                 }
             }
@@ -1465,18 +1496,22 @@ namespace Luckbound.App
             if (_selectionSummaryText != null)
             {
                 string selected = string.Join("  ·  ", _selectedSkillIds.Select(SkillLabel));
-                _selectionSummaryText.text = "CLASE  " + ClassLabels[_selectedClassIndex] +
-                    "     RAZA  " + RaceLabel(_selectedRaceId) + "\nHABILIDADES  " + (selected.Length == 0 ? "elige dos" : selected);
+                _selectionSummaryText.text = GetHubText("ui.hub.summary.class", "CLASE") + "  " +
+                    ClassLabels[_selectedClassIndex] + "     " + GetHubText("ui.hub.summary.race", "RAZA") + "  " +
+                    RaceLabel(_selectedRaceId) + "\n" + GetHubText("ui.hub.summary.skills", "HABILIDADES") + "  " +
+                    (selected.Length == 0 ? GetHubText("ui.hub.summary.choose_two", "elige dos") : selected);
             }
             RefreshUpgradeControls();
             RefreshContractBoard();
             RefreshGuildIntro();
             if (_statusText != null)
             {
-                string selectionStatus = string.IsNullOrEmpty(_statusMessage)
-                    ? (_selectedSkillIds.Count == 2 ? StartingStatsStatus() : "Elige exactamente dos habilidades (" + _selectedSkillIds.Count + "/2).")
-                    : _statusMessage;
-                _statusText.text = string.IsNullOrEmpty(_profileStatusMessage) ? selectionStatus : _profileStatusMessage;
+                LocalizedUiMessage selectionStatus = _statusMessage ??
+                    (_selectedSkillIds.Count == 2
+                        ? StartingStatsStatus()
+                        : CreateMessage("ui.hub.selection.exact_two_count",
+                            "Elige exactamente dos habilidades ({0}/2).", _selectedSkillIds.Count));
+                _statusText.text = ResolveHubMessage(_profileStatusMessage ?? selectionStatus);
             }
             if (_startExpeditionButton != null)
             {
@@ -1484,7 +1519,13 @@ namespace Luckbound.App
                 bool canRetry = app != null && app.HasPendingExpeditionWrite;
                 bool retrySettlement = app != null && app.HasPendingSettlement;
                 bool selectedRaceUnlocked = IsRaceUnlocked(profile, _selectedRaceId);
-                SetLabel(_startExpeditionButton, retrySettlement ? "REINTENTAR LIQUIDACIÓN" : canRetry ? "REINTENTAR GUARDADO" : canContinue ? "CONTINUAR EXPEDICIÓN" : "PARTIR");
+                string actionKey = retrySettlement ? "ui.hub.action.retry_settlement" :
+                    canRetry ? "ui.hub.action.retry_save" :
+                    canContinue ? "ui.hub.action.continue" : "ui.hub.action.depart";
+                string actionFallback = retrySettlement ? "REINTENTAR LIQUIDACIÓN" :
+                    canRetry ? "REINTENTAR GUARDADO" :
+                    canContinue ? "CONTINUAR EXPEDICIÓN" : "PARTIR";
+                SetLabel(_startExpeditionButton, GetHubText(actionKey, actionFallback));
                 _startExpeditionButton.interactable = !_startingExpedition && (retrySettlement || canRetry || canContinue ||
                     (_selectedSkillIds.Count == 2 && selectedRaceUnlocked && app != null && app.CanStartNewExpedition));
             }
@@ -1522,7 +1563,7 @@ namespace Luckbound.App
                 level < maximumLevel && renown >= cost));
         }
 
-        private string StartingStatsStatus()
+        private LocalizedUiMessage StartingStatsStatus()
         {
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
             ProfileSaveData profile = app == null ? ProfileSaveData.CreateNewProfile() : app.Profile;
@@ -1531,8 +1572,9 @@ namespace Luckbound.App
             int energy = PermanentUpgradeRules.ApplyFivePercentPerLevel(ExpeditionRunConfiguration.InitialEnergy,
                 profile.energyUpgradeLevel);
             int potions = ExpeditionRunConfiguration.InitialHealthPotions + profile.additionalPotionUpgradeLevel;
-            return "Preparación lista · " + RaceLabel(_selectedRaceId) + " · " + health + " SALUD · " +
-                energy + " ENERGÍA · " + potions + " pociones";
+            return CreateMessage("ui.hub.preparation.ready",
+                "Preparación lista · {0} · {1} SALUD · {2} ENERGÍA · {3} pociones",
+                RaceLabel(_selectedRaceId), health, energy, potions);
         }
 
         private static ProfileSaveData GetProfileForRaceSelection(ApplicationBootstrapper app)
@@ -1547,12 +1589,12 @@ namespace Luckbound.App
                 profile.unlockedRaceIds.Contains(raceId, StringComparer.Ordinal);
         }
 
-        private static string RaceLabel(string raceId)
+        private string RaceLabel(string raceId)
         {
             if (raceId == ExpeditionRunConfiguration.OrciniRaceId) return "ORCINI";
             if (raceId == ExpeditionRunConfiguration.AlvariRaceId) return "ALVARI";
             if (raceId == ExpeditionRunConfiguration.DvergarRaceId) return "DVERGAR";
-            return "HUMANO";
+            return GetHubText("ui.hub.race.human", "HUMANO");
         }
 
         private static string FormatPurchaseStatus(ProgressionPurchaseCommitResult result)
@@ -1581,17 +1623,34 @@ namespace Luckbound.App
                 _profileStatusMessage = ProfileStatusMessage(app);
         }
 
-        private static string ProfileStatusMessage(ApplicationBootstrapper app)
+        private static LocalizedUiMessage ProfileStatusMessage(ApplicationBootstrapper app)
         {
-            if (app == null || !app.SaveDataReady) return "El perfil todavía no está disponible. Vuelve a intentarlo en unos segundos.";
-            if (app.HasPendingSettlement) return "Hay una liquidación pendiente de guardar. Reinténtala o exporta el guardado antes de iniciar otra expedición.";
-            if (app.HasPendingExpeditionWrite) return "La expedición no se ha guardado. Reintenta la escritura antes de continuar.";
-            if (app.CanContinueExpedition) return "Hay una expedición guardada. Continúa para volver al punto de entrada de la sala actual.";
-            if (app.HasActiveExpedition) return "La expedición guardada necesita revisión y se conserva: " + app.ActiveExpeditionLoadError;
-            if (app.ProfileLoadStatus == SaveLoadStatus.Incompatible) return "El perfil pertenece a una versión más nueva. Se conserva sin cambios y no se iniciará una partida nueva.";
-            if (app.ProfileLoadStatus == SaveLoadStatus.RecoveredBackup) return "El perfil principal estaba dañado; se recuperó la copia de respaldo. Revisa el Renombre y vuelve a guardar cuando puedas.";
-            if (app.ProfileLoadStatus == SaveLoadStatus.Corrupted) return "El perfil y su respaldo no se pudieron leer. Se conservaron y no se sobrescribirán.";
-            return "El perfil no está disponible; no se iniciará una expedición.";
+            if (app == null || !app.SaveDataReady)
+                return CreateMessage("ui.hub.profile.unavailable_yet",
+                    "El perfil todavía no está disponible. Vuelve a intentarlo en unos segundos.");
+            if (app.HasPendingSettlement)
+                return CreateMessage("ui.hub.profile.settlement_pending",
+                    "Hay una liquidación pendiente de guardar. Reinténtala o exporta el guardado antes de iniciar otra expedición.");
+            if (app.HasPendingExpeditionWrite)
+                return CreateMessage("ui.hub.profile.expedition_write_pending",
+                    "La expedición no se ha guardado. Reintenta la escritura antes de continuar.");
+            if (app.CanContinueExpedition)
+                return CreateMessage("ui.hub.profile.continue_expedition",
+                    "Hay una expedición guardada. Continúa para volver al punto de entrada de la sala actual.");
+            if (app.HasActiveExpedition)
+                return CreateMessage("ui.hub.profile.expedition_review",
+                    "La expedición guardada necesita revisión y se conserva: {0}", app.ActiveExpeditionLoadError);
+            if (app.ProfileLoadStatus == SaveLoadStatus.Incompatible)
+                return CreateMessage("ui.hub.profile.incompatible",
+                    "El perfil pertenece a una versión más nueva. Se conserva sin cambios y no se iniciará una partida nueva.");
+            if (app.ProfileLoadStatus == SaveLoadStatus.RecoveredBackup)
+                return CreateMessage("ui.hub.profile.recovered_backup",
+                    "El perfil principal estaba dañado; se recuperó la copia de respaldo. Revisa el Renombre y vuelve a guardar cuando puedas.");
+            if (app.ProfileLoadStatus == SaveLoadStatus.Corrupted)
+                return CreateMessage("ui.hub.profile.corrupted",
+                    "El perfil y su respaldo no se pudieron leer. Se conservaron y no se sobrescribirán.");
+            return CreateMessage("ui.hub.profile.unavailable",
+                "El perfil no está disponible; no se iniciará una expedición.");
         }
 
         private void ValidateReferences()
@@ -1602,6 +1661,33 @@ namespace Luckbound.App
                 _lockedRaceButtons.Any(button => button == null) || _startExpeditionButton == null ||
                 _returnToMenuButton == null || _selectionSummaryText == null || _statusText == null)
                 throw new InvalidOperationException("HubPreparationController requires all class, skill, race, status, and navigation controls.");
+        }
+
+        private string GetHubText(string key, string spanishFallback)
+        {
+            return _localization == null ? spanishFallback : _localization.GetText(key);
+        }
+
+        private void SetNamedHubText(string objectName, string key, string spanishFallback)
+        {
+            GameObject target = GameObject.Find(objectName);
+            Text text = target == null ? null : target.GetComponent<Text>();
+            if (text != null) text.text = GetHubText(key, spanishFallback);
+        }
+
+        private void SetStatusMessage(string key, string spanishFormat, params object[] arguments)
+        {
+            _statusMessage = CreateMessage(key, spanishFormat, arguments);
+        }
+
+        private string ResolveHubMessage(LocalizedUiMessage message)
+        {
+            return message == null ? string.Empty : message.Resolve(_localization);
+        }
+
+        private static LocalizedUiMessage CreateMessage(string key, string spanishFormat, params object[] arguments)
+        {
+            return new LocalizedUiMessage(key, spanishFormat, arguments);
         }
 
         private static void SetLabel(Button button, string value)
@@ -1624,12 +1710,48 @@ namespace Luckbound.App
             button.colors = colors;
         }
 
-        private static string SkillLabel(string skillId)
+        private string SkillLabel(string skillId)
         {
-            string value = skillId ?? string.Empty;
-            int separator = value.LastIndexOf('.');
-            if (separator >= 0) value = value.Substring(separator + 1);
-            return value.Replace('_', ' ').ToUpperInvariant();
+            return GetHubText(skillId + ".name", SpanishSkillName(skillId)).ToUpperInvariant();
+        }
+
+        private static string SpanishSkillName(string skillId)
+        {
+            switch (skillId)
+            {
+                case "skill.bellator.circular_cut": return "Corte circular";
+                case "skill.bellator.guard": return "Guardia";
+                case "skill.bellator.charge": return "Embestida";
+                case "skill.venator.piercing_arrow": return "Flecha penetrante";
+                case "skill.venator.triple_shot": return "Disparo triple";
+                case "skill.venator.root_trap": return "Trampa de raíces";
+                case "skill.magus.fireball": return "Bola de fuego";
+                case "skill.magus.frost_nova": return "Nova de escarcha";
+                case "skill.magus.arcane_seal": return "Sello arcano";
+                default: return skillId ?? string.Empty;
+            }
+        }
+
+        private sealed class LocalizedUiMessage
+        {
+            private readonly string _key;
+            private readonly string _spanishFormat;
+            private readonly object[] _arguments;
+
+            public LocalizedUiMessage(string key, string spanishFormat, object[] arguments)
+            {
+                _key = key;
+                _spanishFormat = spanishFormat;
+                _arguments = arguments ?? Array.Empty<object>();
+            }
+
+            public string Resolve(LocalizationService localization)
+            {
+                string format = localization == null ? _spanishFormat : localization.GetText(_key);
+                return _arguments.Length == 0
+                    ? format
+                    : string.Format(CultureInfo.InvariantCulture, format, _arguments);
+            }
         }
     }
 }

@@ -1,0 +1,440 @@
+{
+  "total_count": 6,
+  "jobs": [
+    {
+      "id": 124543514430,
+      "run_id": 41203388580,
+      "workflow_name": "Luckbound CI",
+      "head_branch": "codex/luckbound-integration-unity-20261030",
+      "run_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/41203388580",
+      "run_attempt": 1,
+      "node_id": "CR_kwDONB2jd88AAAAc_183Pg",
+      "head_sha": "237d372b1af97ac862706bd622600b34f1e000de",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/jobs/124543514430",
+      "html_url": "https://github.com/metalfurius/Luckbound/actions/runs/41203388580/job/124543514430",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-31T12:57:39Z",
+      "started_at": "2026-10-31T12:57:40Z",
+      "completed_at": "2026-10-31T13:05:09Z",
+      "name": "EditMode and PlayMode tests",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-31T12:57:41Z",
+          "completed_at": "2026-10-31T12:57:42Z"
+        },
+        {
+          "name": "Checkout source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-31T12:57:42Z",
+          "completed_at": "2026-10-31T12:57:47Z"
+        },
+        {
+          "name": "Cache Unity Library",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-31T12:57:47Z",
+          "completed_at": "2026-10-31T12:57:52Z"
+        },
+        {
+          "name": "Run Unity tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-31T12:57:52Z",
+          "completed_at": "2026-10-31T13:05:01Z"
+        },
+        {
+          "name": "Verify explicit V6 capture",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-31T13:05:01Z",
+          "completed_at": "2026-10-31T13:05:01Z"
+        },
+        {
+          "name": "Require successful tests and explicit V6 capture",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-31T13:05:01Z",
+          "completed_at": "2026-10-31T13:05:01Z"
+        },
+        {
+          "name": "Upload test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-31T13:05:01Z",
+          "completed_at": "2026-10-31T13:05:03Z"
+        },
+        {
+          "name": "Post Cache Unity Library",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-31T13:05:03Z",
+          "completed_at": "2026-10-31T13:05:07Z"
+        },
+        {
+          "name": "Post Checkout source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-31T13:05:07Z",
+          "completed_at": "2026-10-31T13:05:07Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-31T13:05:07Z",
+          "completed_at": "2026-10-31T13:05:07Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/metalfurius/Luckbound/check-runs/124543514430",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000004830,
+      "runner_name": "GitHub Actions 1000004830",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124545125547,
+      "run_id": 41203388580,
+      "workflow_name": "Luckbound CI",
+      "head_branch": "codex/luckbound-integration-unity-20261030",
+      "run_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/41203388580",
+      "run_attempt": 1,
+      "node_id": "CR_kwDONB2jd88AAAAc_3fMqw",
+      "head_sha": "237d372b1af97ac862706bd622600b34f1e000de",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/jobs/124545125547",
+      "html_url": "https://github.com/metalfurius/Luckbound/runs/124545125547",
+      "status": "completed",
+      "conclusion": "neutral",
+      "created_at": "2026-10-31T13:05:00Z",
+      "started_at": "2026-10-31T13:05:00Z",
+      "completed_at": "2026-10-31T13:05:00Z",
+      "name": "Unity EditMode and PlayMode",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/metalfurius/Luckbound/check-runs/124545125547",
+      "labels": [],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 124545162285,
+      "run_id": 41203388580,
+      "workflow_name": "Luckbound CI",
+      "head_branch": "codex/luckbound-integration-unity-20261030",
+      "run_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/41203388580",
+      "run_attempt": 1,
+      "node_id": "CR_kwDONB2jd88AAAAc_3hcLQ",
+      "head_sha": "237d372b1af97ac862706bd622600b34f1e000de",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/jobs/124545162285",
+      "html_url": "https://github.com/metalfurius/Luckbound/actions/runs/41203388580/job/124545162285",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-31T13:05:10Z",
+      "started_at": "2026-10-31T13:05:12Z",
+      "completed_at": "2026-10-31T13:08:33Z",
+      "name": "Build Windows x64",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-31T13:05:13Z",
+          "completed_at": "2026-10-31T13:05:14Z"
+        },
+        {
+          "name": "Checkout source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-31T13:05:14Z",
+          "completed_at": "2026-10-31T13:05:19Z"
+        },
+        {
+          "name": "Cache Unity Library",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-31T13:05:19Z",
+          "completed_at": "2026-10-31T13:05:27Z"
+        },
+        {
+          "name": "Start Windows build diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-31T13:05:27Z",
+          "completed_at": "2026-10-31T13:05:27Z"
+        },
+        {
+          "name": "Build Windows player",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-31T13:05:27Z",
+          "completed_at": "2026-10-31T13:07:57Z"
+        },
+        {
+          "name": "Stop Windows build diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-31T13:07:57Z",
+          "completed_at": "2026-10-31T13:07:57Z"
+        },
+        {
+          "name": "Upload Windows build diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-31T13:07:57Z",
+          "completed_at": "2026-10-31T13:07:59Z"
+        },
+        {
+          "name": "Verify Windows output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-31T13:07:59Z",
+          "completed_at": "2026-10-31T13:07:59Z"
+        },
+        {
+          "name": "Upload Windows build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-31T13:07:59Z",
+          "completed_at": "2026-10-31T13:08:04Z"
+        },
+        {
+          "name": "Post Cache Unity Library",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-10-31T13:08:04Z",
+          "completed_at": "2026-10-31T13:08:31Z"
+        },
+        {
+          "name": "Post Checkout source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-10-31T13:08:31Z",
+          "completed_at": "2026-10-31T13:08:31Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-10-31T13:08:31Z",
+          "completed_at": "2026-10-31T13:08:31Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/metalfurius/Luckbound/check-runs/124545162285",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000004831,
+      "runner_name": "GitHub Actions 1000004831",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124545162330,
+      "run_id": 41203388580,
+      "workflow_name": "Luckbound CI",
+      "head_branch": "codex/luckbound-integration-unity-20261030",
+      "run_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/41203388580",
+      "run_attempt": 1,
+      "node_id": "CR_kwDONB2jd88AAAAc_3hcWg",
+      "head_sha": "237d372b1af97ac862706bd622600b34f1e000de",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/jobs/124545162330",
+      "html_url": "https://github.com/metalfurius/Luckbound/actions/runs/41203388580/job/124545162330",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-31T13:05:10Z",
+      "started_at": "2026-10-31T13:05:12Z",
+      "completed_at": "2026-10-31T13:16:41Z",
+      "name": "Build WebGL",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-31T13:05:13Z",
+          "completed_at": "2026-10-31T13:05:14Z"
+        },
+        {
+          "name": "Checkout source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-31T13:05:14Z",
+          "completed_at": "2026-10-31T13:05:20Z"
+        },
+        {
+          "name": "Cache Unity Library",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-31T13:05:20Z",
+          "completed_at": "2026-10-31T13:05:34Z"
+        },
+        {
+          "name": "Start WebGL build diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-31T13:05:34Z",
+          "completed_at": "2026-10-31T13:05:34Z"
+        },
+        {
+          "name": "Build WebGL player",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-31T13:05:34Z",
+          "completed_at": "2026-10-31T13:16:17Z"
+        },
+        {
+          "name": "Stop WebGL build diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-31T13:16:17Z",
+          "completed_at": "2026-10-31T13:16:17Z"
+        },
+        {
+          "name": "Upload WebGL build diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-31T13:16:17Z",
+          "completed_at": "2026-10-31T13:16:19Z"
+        },
+        {
+          "name": "Verify WebGL output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-31T13:16:19Z",
+          "completed_at": "2026-10-31T13:16:19Z"
+        },
+        {
+          "name": "Upload WebGL build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-31T13:16:19Z",
+          "completed_at": "2026-10-31T13:16:22Z"
+        },
+        {
+          "name": "Post Cache Unity Library",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-10-31T13:16:22Z",
+          "completed_at": "2026-10-31T13:16:38Z"
+        },
+        {
+          "name": "Post Checkout source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-10-31T13:16:38Z",
+          "completed_at": "2026-10-31T13:16:38Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-10-31T13:16:38Z",
+          "completed_at": "2026-10-31T13:16:38Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/metalfurius/Luckbound/check-runs/124545162330",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000004832,
+      "runner_name": "GitHub Actions 1000004832",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124547688504,
+      "run_id": 41203388580,
+      "workflow_name": "Luckbound CI",
+      "head_branch": "codex/luckbound-integration-unity-20261030",
+      "run_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/41203388580",
+      "run_attempt": 1,
+      "node_id": "CR_kwDONB2jd88AAAAc_57oOA",
+      "head_sha": "237d372b1af97ac862706bd622600b34f1e000de",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/jobs/124547688504",
+      "html_url": "https://github.com/metalfurius/Luckbound/actions/runs/41203388580/job/124547688504",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-31T13:16:41Z",
+      "started_at": "2026-10-31T13:16:41Z",
+      "completed_at": "2026-10-31T13:16:41Z",
+      "name": "Publish versioned WebGL on gh-pages",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/metalfurius/Luckbound/check-runs/124547688504",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 124547688839,
+      "run_id": 41203388580,
+      "workflow_name": "Luckbound CI",
+      "head_branch": "codex/luckbound-integration-unity-20261030",
+      "run_url": "https://api.github.com/repos/metalfurius/Luckbound/actions/runs/41203388580",
+      "run_attempt": 1,
+      "node_id": "CR_kwDONB2jd88AAAAc_57phw",
+      "head_sha": "237d372b1af97ac862706bd622600b34f1e000de",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/actions/jobs/124547688839",
+      "html_url": "https://github.com/metalfurius/Luckbound/actions/runs/41203388580/job/124547688839",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-10-31T13:16:41Z",
+      "started_at": "2026-10-31T13:16:41Z",
+      "completed_at": "2026-10-31T13:16:41Z",
+      "name": "Create version release",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/metalfurius/Luckbound/check-runs/124547688839",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    }
+  ]
+}

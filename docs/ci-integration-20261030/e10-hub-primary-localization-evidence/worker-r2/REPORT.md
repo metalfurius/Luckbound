@@ -1,0 +1,10 @@
+# R2 — Hub preparation localization test correction
+
+- Authorization: `SOL-E10-HUB-PRIMARY-LOCALIZATION-R1-STATIC.md`, SHA256 `F24586CDB6AF0DB3B75FA06EDD42709EB84601C9E3AD7CEBABCB0B0961D41848`. Scope: test-only static observability and the deterministic Guild close-helper correction.
+- Input test: composed R1 SHA256 `031F4A54F0777200CFE126D208C8FF375DF8550AEF3418405BE4D43F887F6DE8`. Candidate test SHA256 `D5B0362814741F5770B1ABA0DD2BEB4BB5C6FDE2B4768FBEFA02261CA9108FAB` (47302 bytes).
+- `CloseGuildLanguageList` captures the active `GuildIntroRoot` before Submit, then checks that the retained instance still exists and is inactive.
+- Before the first Hub layout assertion, the first test logs 20 `actualText` records for its initial Spanish Hub and 18 `contentOverride` records (the nine canonical skills × ES/EN) against the corresponding three skill-label controls. The readonly test logs 20 `actualText` records for its initial English Hub.
+- Each record includes `measurementKind`, `skillId`, `language`, content, control name, font, font size, actual rect/anchors, pixels-per-unit, preferred width/height, and visible count. Preferred-size and visibility measurements use separate `TextGenerator`s; invalid floats use finite `-1` sentinels. The 18 content overrides do not assign text or alter selection/layout and are diagnostic only.
+- The two existing UnityTest cases, class/skill loops, settings/profile guards, profile write assertions, visible-character checks, and ±0.5 fit tolerances remain. Existing fit assertions still apply to actual text; this delta does not claim that the contentOverride variants fit.
+- Static validation passed for base hash, two test cases, pre-assert diagnostic ordering, 20+18+20 record paths, retained-root ordering, and preserved profile/fit assertions. No Unity, compile, Native, browser, Controller, catalog, live Asset, or `.meta` changes were made.
+- `DIFF.patch` contains only the R1 test → R2 test change. No visual-fit conclusion is made without Native metrics.

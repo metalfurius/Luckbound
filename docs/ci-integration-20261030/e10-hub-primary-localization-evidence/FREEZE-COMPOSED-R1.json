@@ -1,0 +1,22 @@
+{
+  "baseCommit": "237d372b1af97ac862706bd622600b34f1e000de",
+  "contractSha256": "47acd864f2fb6483f149c5029655d907e1865dacb7c94cc6af8c3dd2ffa5a377",
+  "rebase": "Only two approved Guild language tuples from -140/140 to -130/160",
+  "changes": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "sha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843",
+      "bytes": 96081
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a",
+      "bytes": 31890
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "sha256": "031f4a54f0777200cfe126d208c8ff375df8550aef3418405be4d43f887f6de8",
+      "bytes": 41444
+    }
+  ]
+}

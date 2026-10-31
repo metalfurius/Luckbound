@@ -1,0 +1,114 @@
+{
+  "files": [
+    {
+      "path": "CI-ARTIFACTS-FINAL.json",
+      "bytes": 4701,
+      "sha256": "6435f65b63d9d4a837be03d07bb43ad431db6cd08851c4aa1bbd0a1171be48e3"
+    },
+    {
+      "path": "CI-JOBS-FINAL.json",
+      "bytes": 15404,
+      "sha256": "0f6a9463feea9242638faa29418fb3816c0f4ac647d94c71047704c5cf3d8769"
+    },
+    {
+      "path": "CI-RUN-FINAL.json",
+      "bytes": 13939,
+      "sha256": "74dc3432bccef2d713850414c73513e866889689a4c8a23d21df088579a1af74"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1868,
+      "sha256": "ef24ba6870882ba660b4b774a432c24c47d73fa2453709378fe553c26222fc6c"
+    },
+    {
+      "path": "WEBGL-DIAGNOSTIC-SUMMARY.json",
+      "bytes": 1565,
+      "sha256": "a6d3718221c81c3e5ac4d7197fe63fe2ff6ebba3f98fa8bde6784d3fcce7461c"
+    },
+    {
+      "path": "WEBGL-OUTPUT.json",
+      "bytes": 773,
+      "sha256": "ae0450ba9a04ca7b607a205b6f4194dff63b6049e8b87f11c780c85fcf140654"
+    },
+    {
+      "path": "WINDOWS-DIAGNOSTIC-SUMMARY.json",
+      "bytes": 1571,
+      "sha256": "f3fdf6f21d7da634c036cfb6c7492771a53890532547008ac5ef306e69bb85d5"
+    },
+    {
+      "path": "WINDOWS-OUTPUT.json",
+      "bytes": 664,
+      "sha256": "a07b519eed64a416b7efddabdec411a5f18dc64f8aa0b3502d0d2d30ad01086f"
+    },
+    {
+      "path": "diagnostics/webgl/metadata.json",
+      "bytes": 931,
+      "sha256": "78e9a08d0998bd1f882b7af1be7164468a4e6cb8a0ef5d6b4be83bb3606b5357"
+    },
+    {
+      "path": "diagnostics/webgl/observer-done.json",
+      "bytes": 258,
+      "sha256": "41f2774d3737be61e89f61ecdf7dc6893f821abf00c7f1ef9e510ec8658bd407"
+    },
+    {
+      "path": "diagnostics/webgl/observer-ready.json",
+      "bytes": 72,
+      "sha256": "0d89afb0383e609134512e1ac215ffedffaca50db6e901476efa412131b7c85c"
+    },
+    {
+      "path": "diagnostics/webgl/records.jsonl",
+      "bytes": 1548177,
+      "sha256": "33f88b4dc68301cbd8096be946dfc2f10a7a712c32fc8b0dacdc5bb8b6e884f9"
+    },
+    {
+      "path": "diagnostics/webgl/stop-requested",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "diagnostics/windows/metadata.json",
+      "bytes": 931,
+      "sha256": "083a9128419ea6a27de3753c5a75d4ae763f0ae401e85ce40852a65062e7cf8f"
+    },
+    {
+      "path": "diagnostics/windows/observer-done.json",
+      "bytes": 260,
+      "sha256": "bc9e37c2f250813b55477822872c12a6ed4947d5b93404252dd6d4181b82c57f"
+    },
+    {
+      "path": "diagnostics/windows/observer-ready.json",
+      "bytes": 72,
+      "sha256": "0d89afb0383e609134512e1ac215ffedffaca50db6e901476efa412131b7c85c"
+    },
+    {
+      "path": "diagnostics/windows/records.jsonl",
+      "bytes": 303153,
+      "sha256": "18cb7326136dcfb6af8df460d5c17f86d5caf61efe5c9a2b0b1a01f50f1629cf"
+    },
+    {
+      "path": "diagnostics/windows/stop-requested",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "downloads/webgl-diagnostics.json",
+      "bytes": 1119,
+      "sha256": "180782c829a5dc2cc90926d11f8b8cf8305fb3b83b1642a2139b1d8e2b7ec829"
+    },
+    {
+      "path": "downloads/webgl.json",
+      "bytes": 3299,
+      "sha256": "c3af92efc8a334979d9315752bb7fe887195a2e11b68adb78dab88ff1fef0c1a"
+    },
+    {
+      "path": "downloads/windows-diagnostics.json",
+      "bytes": 1119,
+      "sha256": "0bbc871f4ebfedd44fbff24d7b036af5cfe13afb5dc362295a5111559d29461d"
+    },
+    {
+      "path": "downloads/windows.json",
+      "bytes": 40540,
+      "sha256": "7bfb4fbd773271297d9d6edda9350f586c737e6a8cfe55847a8ecba59eb2545d"
+    }
+  ]
+}

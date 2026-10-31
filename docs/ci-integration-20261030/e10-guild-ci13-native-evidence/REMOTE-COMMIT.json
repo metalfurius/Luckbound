@@ -1,0 +1,35 @@
+{
+  "sha": "237d372b1af97ac862706bd622600b34f1e000de",
+  "node_id": "C_kwDONB2jd9oAKDIzN2QzNzJiMWFmOTdhYzg2MjcwNmJkNjIyNjAwYjM0ZjFlMDAwZGU",
+  "url": "https://api.github.com/repos/metalfurius/Luckbound/git/commits/237d372b1af97ac862706bd622600b34f1e000de",
+  "html_url": "https://github.com/metalfurius/Luckbound/commit/237d372b1af97ac862706bd622600b34f1e000de",
+  "author": {
+    "name": "metalfurius",
+    "email": "75508084+metalfurius@users.noreply.github.com",
+    "date": "2026-10-31T12:57:08Z"
+  },
+  "committer": {
+    "name": "metalfurius",
+    "email": "75508084+metalfurius@users.noreply.github.com",
+    "date": "2026-10-31T12:57:08Z"
+  },
+  "tree": {
+    "sha": "f7a1a66d69579ef43d684fadbc5937fc66983b6b",
+    "url": "https://api.github.com/repos/metalfurius/Luckbound/git/trees/f7a1a66d69579ef43d684fadbc5937fc66983b6b"
+  },
+  "message": "test(hub): match guild language expectations to the unchanged catalog\n\nCorrect four English-UI Spanish labels, preserving every other assertion and production byte. Retain CI12 failure evidence and literal audit. No release or publication.",
+  "parents": [
+    {
+      "sha": "b99cb0f795715cf194738aade67d50b8414a347d",
+      "url": "https://api.github.com/repos/metalfurius/Luckbound/git/commits/b99cb0f795715cf194738aade67d50b8414a347d",
+      "html_url": "https://github.com/metalfurius/Luckbound/commit/b99cb0f795715cf194738aade67d50b8414a347d"
+    }
+  ],
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}

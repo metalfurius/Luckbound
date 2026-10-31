@@ -1,0 +1,239 @@
+--- a/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs
++++ b/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs
+@@ -54,6 +54,16 @@
+             new[] { "PIERCING ARROW", "TRIPLE SHOT", "ROOT TRAP" },
+             new[] { "FIREBALL", "FROST NOVA", "ARCANE SEAL" }
+         };
++        private static readonly string[] PrimaryTextObjectNames =
++        {
++            "HubTitle", "HubSubtitle", "ClassSectionTitle", "SkillSectionTitle",
++            "PreparationSelectionSummary", "HubPreparationStatus", "ClassBellatorButtonLabel",
++            "ClassVenatorButtonLabel", "ClassMagusButtonLabel", "SkillOptionOneButtonLabel",
++            "SkillOptionTwoButtonLabel", "SkillOptionThreeButtonLabel", "RaceHumanButtonLabel",
++            "RaceOrciniButtonLabel", "RaceAlvariButtonLabel", "RaceDvergarButtonLabel",
++            "StartExpeditionButtonLabel", "HubReturnToMenuButtonLabel",
++            "OpenPermanentUpgradesButtonLabel", "OpenGuildIntroButtonLabel"
++        };
+ 
+         [UnityTest]
+         public IEnumerator PrimaryPreparationChangesLanguageInPlaceWithoutChangingSelectionOrState()
+@@ -68,6 +78,9 @@
+                 yield return LoadBootstrappedApplication(store, value => app = value);
+                 Assert.That(app != null && app.SaveDataReady && app.CanWriteProfile, Is.True);
+                 yield return LoadHub();
++                LogPrimaryTextDiagnostics("es");
++                LogSkillContentOverrideDiagnostics("es");
++                LogSkillContentOverrideDiagnostics("en");
+ 
+                 HubPreparationController preparation = UnityEngine.Object.FindAnyObjectByType<HubPreparationController>();
+                 Canvas canvas = FindHubCanvas();
+@@ -191,6 +204,7 @@
+                 Assert.That(app.HasActiveExpedition, Is.True);
+                 Assert.That(app.ActiveRun, Is.Null);
+                 yield return LoadHub();
++                LogPrimaryTextDiagnostics("en");
+ 
+                 HubPreparationController preparation = UnityEngine.Object.FindAnyObjectByType<HubPreparationController>();
+                 Assert.That(preparation, Is.Not.Null);
+@@ -365,9 +379,14 @@
+ 
+         private static void CloseGuildLanguageList()
+         {
++            GameObject root = GameObject.Find("GuildIntroRoot");
++            Assert.That(root != null && root.activeSelf, Is.True,
++                "The language modal root must be active before its close action.");
+             SimulateSubmit(FindButton("GuildIntroListCloseButton"));
+-            GameObject root = GameObject.Find("GuildIntroRoot");
+-            Assert.That(root != null && !root.activeSelf, Is.True);
++            Assert.That(root, Is.Not.Null,
++                "The same language modal root must remain available after closing.");
++            Assert.That(root.activeSelf, Is.False,
++                "The captured language modal root must be inactive after its close action.");
+         }
+ 
+         private static IEnumerator WaitForLanguage(ApplicationBootstrapper app, string languageId)
+@@ -525,40 +544,130 @@
+             Canvas.ForceUpdateCanvases();
+             RectTransform rect = text.rectTransform;
+             Vector2 extents = rect.rect.size;
++            HubTextMetric metric = CaptureHubTextMetric(text, text.name, content,
++                "actualText", string.Empty, ActiveLanguageId());
++            int visibleCharacters = content.Count(character => character != '\n' && character != '\r');
++            Debug.Log("[E10.HUB.PRIMARY.TEXT-METRIC] " + JsonUtility.ToJson(metric));
++            Assert.That(IsFinite(metric.pixelsPerUnit) && metric.pixelsPerUnit > 0f, Is.True,
++                text.name + " pixels-per-unit scale must be finite and positive.");
++            Assert.That(IsFinite(metric.preferredWidth) && metric.preferredWidth >= 0f, Is.True,
++                text.name + " preferred width metric must be finite.");
++            Assert.That(IsFinite(metric.preferredHeight) && metric.preferredHeight >= 0f, Is.True,
++                text.name + " preferred height metric must be finite.");
++            if (!wrapped)
++                Assert.That(metric.preferredWidth, Is.LessThanOrEqualTo(extents.x + 0.5f),
++                    text.name + " preferred width must fit its existing rect.");
++            Assert.That(metric.preferredHeight, Is.LessThanOrEqualTo(extents.y + 0.5f),
++                text.name + " preferred height must fit its existing rect.");
++            Assert.That(metric.visibleCount, Is.GreaterThanOrEqualTo(visibleCharacters),
++                text.name + " must display every authored character with its existing overflow mode.");
++        }
++
++        private static void LogPrimaryTextDiagnostics(string language)
++        {
++            Canvas.ForceUpdateCanvases();
++            foreach (string name in PrimaryTextObjectNames)
++            {
++                GameObject target = GameObject.Find(name);
++                Text text = target == null ? null : target.GetComponent<Text>();
++                if (text == null && target != null) text = target.GetComponentInChildren<Text>(true);
++                string content = text == null ? string.Empty : text.text;
++                Debug.Log("[E10.HUB.PRIMARY.TEXT-METRIC] " + JsonUtility.ToJson(
++                    CaptureHubTextMetric(text, name, content, "actualText", string.Empty, language)));
++            }
++        }
++
++        private static void LogSkillContentOverrideDiagnostics(string language)
++        {
++            Canvas.ForceUpdateCanvases();
++            string[][] expectedNames = language == "es" ? SpanishSkillNames : EnglishSkillNames;
++            for (int classIndex = 0; classIndex < ClassIds.Length; classIndex++)
++            {
++                for (int skillIndex = 0; skillIndex < SkillButtonNames.Length; skillIndex++)
++                {
++                    GameObject buttonObject = GameObject.Find(SkillButtonNames[skillIndex]);
++                    Text text = buttonObject == null ? null : buttonObject.GetComponentInChildren<Text>(true);
++                    string marker = skillIndex < 2 ? "✓ " : "＋ ";
++                    string content = marker + expectedNames[classIndex][skillIndex] + "  ·  " +
++                        SkillCosts[classIndex][skillIndex] + " EN";
++                    string name = text == null ? SkillButtonNames[skillIndex] + "Label" : text.name;
++                    Debug.Log("[E10.HUB.PRIMARY.TEXT-METRIC] " + JsonUtility.ToJson(
++                        CaptureHubTextMetric(text, name, content, "contentOverride",
++                            SkillIds[classIndex][skillIndex], language)));
++                }
++            }
++        }
++
++        private static HubTextMetric CaptureHubTextMetric(
++            Text text, string name, string content, string measurementKind, string skillId, string language)
++        {
++            var metric = new HubTextMetric
++            {
++                name = name ?? string.Empty,
++                content = content ?? string.Empty,
++                measurementKind = measurementKind ?? string.Empty,
++                skillId = skillId ?? string.Empty,
++                language = language ?? string.Empty,
++                fontName = string.Empty,
++                fontSize = -1,
++                anchoredX = -1f,
++                anchoredY = -1f,
++                rectWidth = -1f,
++                rectHeight = -1f,
++                pixelsPerUnit = -1f,
++                preferredWidth = -1f,
++                preferredHeight = -1f,
++                visibleCount = -1,
++                expectedVisibleCount = -1
++            };
++            if (text == null) return metric;
++
++            RectTransform rect = text.rectTransform;
++            if (rect == null) return metric;
++            Vector2 extents = rect.rect.size;
++            string measuredContent = content ?? string.Empty;
++            float pixelsPerUnit = text.pixelsPerUnit;
++            metric.fontName = text.font == null ? string.Empty : text.font.name;
++            metric.fontSize = text.fontSize;
++            metric.anchoredX = FiniteOrSentinel(rect.anchoredPosition.x);
++            metric.anchoredY = FiniteOrSentinel(rect.anchoredPosition.y);
++            metric.rectWidth = FiniteOrSentinel(extents.x);
++            metric.rectHeight = FiniteOrSentinel(extents.y);
++            metric.pixelsPerUnit = FiniteOrSentinel(pixelsPerUnit);
++
+             TextGenerationSettings settings = text.GetGenerationSettings(extents);
+-            var generator = new TextGenerator();
+-            generator.Populate(content, settings);
+-            float pixelsPerUnit = text.pixelsPerUnit;
+-            Assert.That(pixelsPerUnit, Is.GreaterThan(0f), text.name + " pixels-per-unit scale");
+-            float preferredWidth = generator.GetPreferredWidth(content, settings) / pixelsPerUnit;
+-            float preferredHeight = generator.GetPreferredHeight(content, settings) / pixelsPerUnit;
+-            var visibleGenerator = new TextGenerator();
+-            visibleGenerator.Populate(content, settings);
+-            int visibleCharacters = content.Count(character => character != '\n' && character != '\r');
+-            var metric = new HubTextMetric
+-            {
+-                name = text.name,
+-                content = content,
+-                fontName = text.font == null ? string.Empty : text.font.name,
+-                fontSize = text.fontSize,
+-                anchoredX = rect.anchoredPosition.x,
+-                anchoredY = rect.anchoredPosition.y,
+-                rectWidth = extents.x,
+-                rectHeight = extents.y,
+-                pixelsPerUnit = pixelsPerUnit,
+-                preferredWidth = preferredWidth,
+-                preferredHeight = preferredHeight,
+-                visibleCharacterCount = visibleGenerator.characterCountVisible,
+-                expectedVisibleCharacterCount = visibleCharacters
+-            };
+-            Debug.Log("[E10.HUB.PRIMARY.TEXT-METRIC] " + JsonUtility.ToJson(metric));
+-            if (!wrapped)
+-                Assert.That(preferredWidth, Is.LessThanOrEqualTo(extents.x + 0.5f),
+-                    text.name + " preferred width must fit its existing rect.");
+-            Assert.That(preferredHeight, Is.LessThanOrEqualTo(extents.y + 0.5f),
+-                text.name + " preferred height must fit its existing rect.");
+-            Assert.That(visibleGenerator.characterCountVisible, Is.GreaterThanOrEqualTo(visibleCharacters),
+-                text.name + " must display every authored character with its existing overflow mode.");
++            if (IsFinite(pixelsPerUnit) && pixelsPerUnit > 0f)
++            {
++                var preferredGenerator = new TextGenerator();
++                preferredGenerator.Populate(measuredContent, settings);
++                metric.preferredWidth = FiniteOrSentinel(
++                    preferredGenerator.GetPreferredWidth(measuredContent, settings) / pixelsPerUnit);
++                metric.preferredHeight = FiniteOrSentinel(
++                    preferredGenerator.GetPreferredHeight(measuredContent, settings) / pixelsPerUnit);
++            }
++
++            var visibilityGenerator = new TextGenerator();
++            visibilityGenerator.Populate(measuredContent, settings);
++            metric.visibleCount = visibilityGenerator.characterCountVisible;
++            metric.expectedVisibleCount = measuredContent.Count(character => character != '\n' && character != '\r');
++            if (metric.visibleCount < 0) metric.visibleCount = -1;
++            return metric;
++        }
++
++        private static string ActiveLanguageId()
++        {
++            ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
++            return app == null ? string.Empty : app.Settings.languageId ?? string.Empty;
++        }
++
++        private static bool IsFinite(float value)
++        {
++            return !float.IsNaN(value) && !float.IsInfinity(value);
++        }
++
++        private static float FiniteOrSentinel(float value)
++        {
++            return IsFinite(value) ? value : -1f;
+         }
+ 
+         private static UiElementSnapshot[] CapturePrimaryUiLayout()
+@@ -640,6 +749,9 @@
+         {
+             public string name;
+             public string content;
++            public string measurementKind;
++            public string skillId;
++            public string language;
+             public string fontName;
+             public int fontSize;
+             public float anchoredX;
+@@ -649,8 +761,8 @@
+             public float pixelsPerUnit;
+             public float preferredWidth;
+             public float preferredHeight;
+-            public int visibleCharacterCount;
+-            public int expectedVisibleCharacterCount;
++            public int visibleCount;
++            public int expectedVisibleCount;
+         }
+ 
+         private sealed class UiElementSnapshot

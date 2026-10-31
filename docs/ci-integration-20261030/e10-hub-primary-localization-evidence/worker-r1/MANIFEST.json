@@ -1,0 +1,86 @@
+{
+  "package": "E10.HUB.PRIMARY.LOCALIZATION",
+  "staging": "Logs/E10HubPrimaryLocalization-20261031-r1",
+  "contract": {
+    "path": "docs/ci-integration-20261030/SOL-E10-HUB-PRIMARY-LOCALIZATION-CONTRACT.md",
+    "sha256": "47ACD864F2FB6483F149C5029655D907E1865DACB7C94CC6AF8C3DD2FFA5A377"
+  },
+  "base": [
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/before/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "sha256": "797D3BE0E86BC540FBA9912413187DCEC4B32D4615554A3E5654E9ACE6D8B979",
+      "bytes": 89538
+    },
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/before/Assets/Resources/Luckbound/Localization/Initial.json",
+      "sha256": "04F078ACBC977696F2CA260992F85CC6C51747BEDB5F3AEF592356DB1819C750",
+      "bytes": 24822
+    }
+  ],
+  "candidate": [
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/candidate/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "sha256": "E6B7440489DA182BFD5FA21280CBC08BEB9DB00322E7A63EC061025441618FF0",
+      "bytes": 96081
+    },
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/candidate/Assets/Resources/Luckbound/Localization/Initial.json",
+      "sha256": "9EBA4773925500C8DB3D3912AD9F28EC46382DD5EBDF6BF88CC5B6FEC6B7B66A",
+      "bytes": 31890
+    },
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/candidate/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "sha256": "031F4A54F0777200CFE126D208C8FF375DF8550AEF3418405BE4D43F887F6DE8",
+      "bytes": 41444
+    }
+  ],
+  "worker": [
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/worker/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "sha256": "E6B7440489DA182BFD5FA21280CBC08BEB9DB00322E7A63EC061025441618FF0",
+      "bytes": 96081
+    },
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/worker/Assets/Resources/Luckbound/Localization/Initial.json",
+      "sha256": "9EBA4773925500C8DB3D3912AD9F28EC46382DD5EBDF6BF88CC5B6FEC6B7B66A",
+      "bytes": 31890
+    },
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/worker/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "sha256": "031F4A54F0777200CFE126D208C8FF375DF8550AEF3418405BE4D43F887F6DE8",
+      "bytes": 41444
+    }
+  ],
+  "localization": {
+    "beforeEntries": 183,
+    "candidateEntries": 241,
+    "addedEntries": 58,
+    "unchangedBeforeEntries": 183,
+    "duplicateKeys": 0,
+    "uiHubKeysReferenced": 49,
+    "missingUiHubKeys": 0,
+    "skillNameKeysRequired": 9,
+    "missingSkillNameKeys": 0
+  },
+  "tests": {
+    "unityTestCount": 2,
+    "names": [
+      "PrimaryPreparationChangesLanguageInPlaceWithoutChangingSelectionOrState",
+      "PrimaryPreparationLoadsPersistedEnglishWithReadOnlyProfileAndKeepsSettingsIndependent"
+    ],
+    "executed": false
+  },
+  "verification": {
+    "jsonParsed": true,
+    "originalEntriesDeepEqual": true,
+    "candidateWorkerBytesEqual": true,
+    "candidateContainsOnlyTwoCSharpFilesAndOneJson": true,
+    "unityOrBrowserRun": false,
+    "compileRun": false,
+    "liveAssetsEditedByWorker": false
+  },
+  "ownership": {
+    "controllerSourceAndLocalization": "worker candidate",
+    "newTestMeta": "coordinator-owned; supplied separately, GUID 2ae3679bfabe4e6ebe28e1be8f540349"
+  }
+}

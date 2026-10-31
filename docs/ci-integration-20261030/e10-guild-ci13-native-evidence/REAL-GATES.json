@@ -1,0 +1,27 @@
+{
+  "testJob": 124543514430,
+  "unityOutcome": "success",
+  "v6GateOutcome": "success",
+  "verifier": {
+    "commit": "237d372b1af97ac862706bd622600b34f1e000de",
+    "sessionId": "09461a04f30d4bc0b0b7d667e342bd33",
+    "expectedUnityVersion": "6000.6.7f1",
+    "observedUnityVersion": "6000.6.7f1",
+    "projectVersionDeclared": "6000.6.7f1",
+    "projectPinUnityVersion": "6000.6.7f1",
+    "caseCount": 11,
+    "attemptCount": 11,
+    "outputFileCount": 97,
+    "sourceCount": 14,
+    "manifestSha256": "f9e33857455f6de4e6f598c54f9abe9e69c894976ab21f4e68217c0d51b1023e",
+    "scope": "Artifact completeness and exact bytes; not independent golden acceptance or full Unity XML"
+  },
+  "rawLogBytes": 6008620,
+  "rawLogSha256": "7e28587d9d1c6ff1dad3d09b21e9f84c966309d6474651dbeebe8c6f76c6e6eb",
+  "rawLogPublished": false,
+  "evidence": [
+    "python3 Tools/Automation/verify_v6_capture.py",
+    "UNITY_TEST_OUTCOME: success",
+    "V6_GATE_OUTCOME: success"
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "files": [
+    {
+      "path": "FREEZE-COMPOSED-R1.json",
+      "bytes": 833,
+      "sha256": "1e0a6a90e2b0de60f6b2e36a26abf7927de71d8232825365004b743ee8fec960"
+    },
+    {
+      "path": "FREEZE-COMPOSED-R2.json",
+      "bytes": 840,
+      "sha256": "5e0f3a402c6ba2b852e774f427270b0bd4ebff544b9c05c5b842d98a934d873a"
+    },
+    {
+      "path": "INTEGRATION.json",
+      "bytes": 1443,
+      "sha256": "3d4220c854879811256b457bc4237e67def2e4d75351949a3e66b1c3b230ae24"
+    },
+    {
+      "path": "LOCALIZATION-AUDIT.json",
+      "bytes": 2098,
+      "sha256": "a1e77c5ad5f686d9ba58fe3fd470c82ab79a7be2e8d860f1b0b5eb1c68639df6"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1758,
+      "sha256": "77d6802d91491557812ac4547064b5a52a83d2ad5beceae58d56672c742e3b99"
+    },
+    {
+      "path": "after/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 96081,
+      "sha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "bytes": 47302,
+      "sha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs.meta",
+      "bytes": 60,
+      "sha256": "e173565dba4ab2befd09dbf0578669811270cd8a7e8f43088050a52e122717fa"
+    },
+    {
+      "path": "after/Assets/Resources/Luckbound/Localization/Initial.json",
+      "bytes": 31890,
+      "sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a"
+    },
+    {
+      "path": "before/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "fc8a4dfc6a0a0aa14abad31124d3db97817a52406f7d30be308d4f29705e1a8b"
+    },
+    {
+      "path": "before/Assets/Resources/Luckbound/Localization/Initial.json",
+      "bytes": 24822,
+      "sha256": "04f078acbc977696f2ca260992f85cc6c51747bedb5f3aef592356db1819c750"
+    },
+    {
+      "path": "compile-r2/INPUT-BINDING.json",
+      "bytes": 866,
+      "sha256": "ff5b8d6a59a4970d4be4f8a543c75006740689637b610d9db33401c4db3e3717"
+    },
+    {
+      "path": "compile-r2/Luckbound.App.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "compile-r2/Luckbound.App.rsp",
+      "bytes": 52969,
+      "sha256": "53e9a24ea52ae02db5ad42739d4c9ad67dc1948a9dc685d13009d04fb13cb157"
+    },
+    {
+      "path": "compile-r2/Luckbound.PlayMode.Tests.log",
+      "bytes": 2704,
+      "sha256": "9665ea262f6ee3ec6a42e9fea1b8717d18f15191eac5179ee14b72afd3a9f6a7"
+    },
+    {
+      "path": "compile-r2/Luckbound.PlayMode.Tests.rsp",
+      "bytes": 56069,
+      "sha256": "269f17ab6e2bad397c5abcfa497d5c5b88ce5a90f05926b7769e34cadc4a6106"
+    },
+    {
+      "path": "compile-r2/RESULTS.json",
+      "bytes": 45086,
+      "sha256": "beed1d9b551a13f9f00076eab8133d46532a1ddc312503f6b2824f745be810a8"
+    },
+    {
+      "path": "compile_candidates.py",
+      "bytes": 6413,
+      "sha256": "2b8c94e853f700534bf3d49cad25cc68c145a0d65ffabcac4d5077a92beb0838"
+    },
+    {
+      "path": "worker-r1/DIFF.patch",
+      "bytes": 74339,
+      "sha256": "e349b70059fd01ad84a6334ed5c33a5e3bcfdd283cb80ff58f8456b583f16391"
+    },
+    {
+      "path": "worker-r1/FREEZE.json",
+      "bytes": 962,
+      "sha256": "708547d64c0337f4dfe411d928359f5c26c71525da08e9af294f6501d3c7d9a5"
+    },
+    {
+      "path": "worker-r1/MANIFEST.json",
+      "bytes": 3397,
+      "sha256": "9bcf76de65cb2b53dfb60944f4aca94fe63d4484d3e7c569831fd05eb6327210"
+    },
+    {
+      "path": "worker-r1/REPORT.md",
+      "bytes": 1591,
+      "sha256": "6431af8b647dd58783a54f6f3f6b964f12ba38c2bbaa25d9e4990d95d5b5e8f6"
+    },
+    {
+      "path": "worker-r2/DIFF.patch",
+      "bytes": 12857,
+      "sha256": "fbefd0f1e49dd48d0e6d45f1d7b61d4c417905ac7eba1d544c55635cfa047694"
+    },
+    {
+      "path": "worker-r2/MANIFEST.json",
+      "bytes": 1883,
+      "sha256": "c63b02f2cac3d4e7ed2a670a34fbd2ee71d05baf24197dd71601d7a96e6ae489"
+    },
+    {
+      "path": "worker-r2/REPORT.md",
+      "bytes": 2024,
+      "sha256": "18070879c752d0d537c1771ea8f571548033a42b30875a5a6640a336399bde01"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "frozenAtUtc": "2026-10-31T12:52:55.446629+00:00",
+  "files": [
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/candidate/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "sha256": "E6B7440489DA182BFD5FA21280CBC08BEB9DB00322E7A63EC061025441618FF0",
+      "bytes": 96081
+    },
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/candidate/Assets/Resources/Luckbound/Localization/Initial.json",
+      "sha256": "9EBA4773925500C8DB3D3912AD9F28EC46382DD5EBDF6BF88CC5B6FEC6B7B66A",
+      "bytes": 31890
+    },
+    {
+      "path": "Logs/E10HubPrimaryLocalization-20261031-r1/candidate/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "sha256": "031F4A54F0777200CFE126D208C8FF375DF8550AEF3418405BE4D43F887F6DE8",
+      "bytes": 41444
+    }
+  ],
+  "state": "candidate frozen for coordinator composite compile and acceptance",
+  "postFreezeCompileOrUnityExecution": false
+}

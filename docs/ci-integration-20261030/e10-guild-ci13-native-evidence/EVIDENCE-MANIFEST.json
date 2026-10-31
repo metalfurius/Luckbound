@@ -1,0 +1,109 @@
+{
+  "files": [
+    {
+      "path": "C08-SUMMARY.json",
+      "bytes": 1738,
+      "sha256": "405c56c0119c3680f9ccf75a7fbb616b12da30554b998554bb5d5af8c1e5b318"
+    },
+    {
+      "path": "CI-ARTIFACTS-NATIVE.json",
+      "bytes": 968,
+      "sha256": "0cbf9a9ad824abb62e0d7658966da0cfeb9064326a68bdc3e5635a19167c4fb7"
+    },
+    {
+      "path": "CI-JOBS-NATIVE.json",
+      "bytes": 11381,
+      "sha256": "b18a18d4af5b2a9db8d885bb0e8327ab5e4e0efb002c945756e92cc1e4e48c6b"
+    },
+    {
+      "path": "CI-RUN-AS-OBSERVED.json",
+      "bytes": 13936,
+      "sha256": "6d9489c943c0ffdf4da527fbec54c4e9381d17d05a21a36d7e291bf3e8f7a568"
+    },
+    {
+      "path": "DATA-COMPARISON.json",
+      "bytes": 31516,
+      "sha256": "9d995d85d711107c8345f8c0e6e059288aeb874517cc9ddb52baa8f5fe137746"
+    },
+    {
+      "path": "GIT-SOURCES.json",
+      "bytes": 2238,
+      "sha256": "539499cae2768d51f295964c7aaf623b8df6824a06a60c01fd1abff6534bc57c"
+    },
+    {
+      "path": "NATIVE-CALLSITE-BINDING.json",
+      "bytes": 6837,
+      "sha256": "960716ca80081e7efc35fc500c6120733b2e836698633b1c1a58ddca6c5fb50a"
+    },
+    {
+      "path": "NATIVE-MANIFEST.json",
+      "bytes": 16196,
+      "sha256": "4a0708f5e32118a9769d48ebb67efc7d8cf6c9fc94dd95c100d5ece589f1eb40"
+    },
+    {
+      "path": "OBSERVABILITY-VERIFICATION.json",
+      "bytes": 27464,
+      "sha256": "c38d5375fd26edb5abb4bd6d9a24bf4bbf9b13e7e55b5810e20f020bd6fa554e"
+    },
+    {
+      "path": "REAL-GATES.json",
+      "bytes": 991,
+      "sha256": "b64ba68781d27e4c830240984bd29e5f2d5daf7a0933def277c537d5abfb8b89"
+    },
+    {
+      "path": "REMOTE-COMMIT.json",
+      "bytes": 1558,
+      "sha256": "1d42bf82b09466e3bdf86cdb5c2a862645b61d9ffc1050e995003152ab5a066e"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2069,
+      "sha256": "58bc65ac2b97ca28eba178ef6b9760e3ad560777ce047191c902aaa980ca4da8"
+    },
+    {
+      "path": "SOURCE-BINDING.json",
+      "bytes": 4858,
+      "sha256": "aee0b79104cadae5f9e69659f1100ee28c31facf45996e70fa49f1b101014672"
+    },
+    {
+      "path": "TEST-SUMMARY.json",
+      "bytes": 5726,
+      "sha256": "5fa279c042fdc706bde581a414eff7a325405f83304595d3421e25f331a70a06"
+    },
+    {
+      "path": "audit_native.py",
+      "bytes": 6237,
+      "sha256": "f68a6dfce865ef5b39d852a5577ad7de714ccd3887d709853278f0067f85c532"
+    },
+    {
+      "path": "c08/C08_EarlyJumpLanding.json",
+      "bytes": 7667,
+      "sha256": "c229a7eddd366b912c5a79ae265cad1b3e61512359436e5e54304bb9c1204596"
+    },
+    {
+      "path": "c08/C08_ObservedSpawnLanding.json",
+      "bytes": 7669,
+      "sha256": "e7c66d20143d73fa266ce6f5edd1be5599d1ab7c6e5689239f2b31c4cf47752d"
+    },
+    {
+      "path": "c08/C08_RealKeyboardTwoWaveCombat.json",
+      "bytes": 29372,
+      "sha256": "f92bc13cada93a9a420d0b034abf8d4851724fa65c8996f5b7fea0d821bcbfe3"
+    },
+    {
+      "path": "c08/source-manifest.sha256",
+      "bytes": 715653,
+      "sha256": "a6208ecd671b8151a59918cb43880cb06e83d4087df0e82f56a59b293ce3c08f"
+    },
+    {
+      "path": "editmode-results.xml",
+      "bytes": 568807,
+      "sha256": "2e81484e19b28350da3d3543a9cb20f1eee1c30f2e5ccc104286eec966cd4e82"
+    },
+    {
+      "path": "playmode-results.xml",
+      "bytes": 1622379,
+      "sha256": "3aff2d71a9785a97fa4e60e9c4c3ba7cf6e9146e1f663eb59def6ef142d22b25"
+    }
+  ]
+}

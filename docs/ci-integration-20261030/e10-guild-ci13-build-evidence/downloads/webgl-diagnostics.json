@@ -1,0 +1,34 @@
+{
+  "run": 41203388580,
+  "artifact": "build-diagnostics-webgl-237d372b1af97ac862706bd622600b34f1e000de-41203388580-1",
+  "url": "https://nightly.link/metalfurius/Luckbound/suites/111688152046/artifacts/13043422504",
+  "sha256": "928290ae88aca33104d0c510bceba14ea7ca82f2ecd452eda1800eadaa51290f",
+  "zip_bytes": 31868,
+  "files": [
+    {
+      "path": "metadata.json",
+      "sha256": "78e9a08d0998bd1f882b7af1be7164468a4e6cb8a0ef5d6b4be83bb3606b5357",
+      "bytes": 931
+    },
+    {
+      "path": "observer-done.json",
+      "sha256": "41f2774d3737be61e89f61ecdf7dc6893f821abf00c7f1ef9e510ec8658bd407",
+      "bytes": 258
+    },
+    {
+      "path": "observer-ready.json",
+      "sha256": "0d89afb0383e609134512e1ac215ffedffaca50db6e901476efa412131b7c85c",
+      "bytes": 72
+    },
+    {
+      "path": "records.jsonl",
+      "sha256": "33f88b4dc68301cbd8096be946dfc2f10a7a712c32fc8b0dacdc5bb8b6e884f9",
+      "bytes": 1548177
+    },
+    {
+      "path": "stop-requested",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ]
+}

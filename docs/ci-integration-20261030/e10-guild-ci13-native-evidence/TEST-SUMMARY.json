@@ -1,0 +1,166 @@
+{
+  "assemblies": [
+    {
+      "file": "editmode-results.xml",
+      "sha256": "2e81484e19b28350da3d3543a9cb20f1eee1c30f2e5ccc104286eec966cd4e82",
+      "total": 654,
+      "passed": 654,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    {
+      "file": "playmode-results.xml",
+      "sha256": "3aff2d71a9785a97fa4e60e9c4c3ba7cf6e9146e1f663eb59def6ef142d22b25",
+      "total": 517,
+      "passed": 517,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    }
+  ],
+  "guild": [
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroReadsAllFiveExactEntriesInBothLanguagesAndReusesOnePresentation",
+      "result": "Passed",
+      "message": null,
+      "stack": null,
+      "diagnostics": [
+        {
+          "kind": "[E10.GUILD.LAYOUT]",
+          "value": {
+            "hubTitle": {
+              "name": "HubTitle",
+              "content": "LA TABERNA",
+              "fontName": "LegacyRuntime",
+              "fontSize": 21,
+              "anchoredX": 43.0,
+              "anchoredY": 111.0,
+              "rectWidth": 150.0,
+              "rectHeight": 28.0,
+              "pixelsPerUnit": 1.5396007299423218,
+              "preferredWidth": 146.7913055419922,
+              "preferredHeight": 23.382686614990234,
+              "visibleCount": 10
+            },
+            "languageStatuses": [
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "GUARDANDO",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 160.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 152.63697814941406,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 9
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "SAVING",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 160.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 89.63362884521484,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 6
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "REINTENTAR",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 160.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 148.7398681640625,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 10
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "RETRY",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 160.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 75.99372863769531,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroRemainsReadableForAuthenticReadOnlyAndUnrelatedPendingProfiles",
+      "result": "Passed",
+      "message": null,
+      "stack": null,
+      "diagnostics": []
+    },
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroSubmitBackCloseEscapeAndLanguagePreserveFocusAndPreparation",
+      "result": "Passed",
+      "message": null,
+      "stack": null,
+      "diagnostics": [
+        {
+          "kind": "[E10.GUILD.SUBMIT.PRECONDITION]",
+          "value": {
+            "updateMode": "ProcessEventsInDynamicUpdate",
+            "eventSystemEnabled": true,
+            "moduleEnabled": true,
+            "sendNavigationEvents": true,
+            "submitEnabled": true,
+            "enterResolved": true,
+            "queuedFrame": -1,
+            "performedCount": 0,
+            "performedFrame": -1,
+            "matchedControlPath": "",
+            "observedFrame": -1,
+            "selectedBefore": "GuildCharacterButton2",
+            "selectedAfter": "",
+            "conversationActive": false,
+            "characterName": ""
+          }
+        },
+        {
+          "kind": "[E10.GUILD.SUBMIT.RESULT]",
+          "value": {
+            "updateMode": "ProcessEventsInDynamicUpdate",
+            "eventSystemEnabled": true,
+            "moduleEnabled": true,
+            "sendNavigationEvents": true,
+            "submitEnabled": true,
+            "enterResolved": true,
+            "queuedFrame": 361051,
+            "performedCount": 1,
+            "performedFrame": 361052,
+            "matchedControlPath": "/Keyboard/enter",
+            "observedFrame": 361054,
+            "selectedBefore": "GuildCharacterButton2",
+            "selectedAfter": "GuildIntroBackButton",
+            "conversationActive": true,
+            "characterName": "Talia Arboris"
+          }
+        }
+      ]
+    }
+  ],
+  "previousCases": 1168,
+  "previousNotPassed": []
+}

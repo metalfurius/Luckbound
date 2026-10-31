@@ -1,0 +1,30 @@
+{
+  "assemblies": [
+    {
+      "assembly": "Luckbound.App",
+      "sourceCount": 56,
+      "exitCode": 0,
+      "responseSha256": "53e9a24ea52ae02db5ad42739d4c9ad67dc1948a9dc685d13009d04fb13cb157",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "assembly": "Luckbound.PlayMode.Tests",
+      "sourceCount": 80,
+      "exitCode": 0,
+      "responseSha256": "269f17ab6e2bad397c5abcfa497d5c5b88ce5a90f05926b7769e34cadc4a6106",
+      "logSha256": "9665ea262f6ee3ec6a42e9fea1b8717d18f15191eac5179ee14b72afd3a9f6a7"
+    }
+  ],
+  "inputCount": 136,
+  "allInputsMatchFrozenBytes": true,
+  "guardedLiveSources": 412,
+  "warningCount": 8,
+  "warningMultisetUnchanged": true,
+  "locale": {
+    "count": 241,
+    "originalEntriesUnchanged": 183,
+    "added": 58
+  },
+  "UnityExecuted": false,
+  "NUnitExecuted": false
+}
