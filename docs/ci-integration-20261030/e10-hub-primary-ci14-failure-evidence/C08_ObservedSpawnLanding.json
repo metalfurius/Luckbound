@@ -1,0 +1,66 @@
+{
+    "taskId": "C08",
+    "scenarioId": "C08_ObservedSpawnLanding",
+    "seed": 17320508,
+    "sourceCommit": "5c4bed77ced5e99c444657e61988dc6819d331ae",
+    "sourceHash": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+    "sourceHashVersion": 2,
+    "sourceFileCount": 4747,
+    "sourceSnapshotCapturedUtc": "2026-10-31T13:51:44.8321030Z",
+    "sourceWorkingTree": "unspecified",
+    "unityVersion": "6000.6.7f1",
+    "platform": "LinuxEditor",
+    "graphicsDevice": "OpenGLCore",
+    "startedUtc": "2026-10-31T13:51:47.8195160Z",
+    "completedUtc": "2026-10-31T13:51:47.9399800Z",
+    "evidenceDirectory": "Logs/Scenarios/C08/20261031T135147817Z_C08_ObservedSpawnLanding_78b7798f",
+    "screenshotStatus": "Not attempted",
+    "passed": true,
+    "exitCode": 0,
+    "inputs": [],
+    "events": [
+        "C08 ordered landing: instance=22874:1792; frame=50347; fixedTime=16.1833324; tick=1; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=True; baselineBefore=False; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=True; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=False; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 input ordering: early=False; tick=1; frame=50347; observedSpawnBaseline=True",
+        "C08 ordered input down: frame=50347; tick=1; jumps=0; grounded=True; space=True",
+        "C08 ordered input after Fixed: frame=50348; tick=2; jumps=1; grounded=False",
+        "C08 ordered input release: frame=50348; tick=2; space=False",
+        "C08 ordered landing: instance=22874:1792; frame=50348; fixedTime=16.2166672; tick=3; jumps=1; reportedJumpsBefore=0; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=True; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50349; fixedTime=16.25; tick=5; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50350; fixedTime=16.2833328; tick=7; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50351; fixedTime=16.3166676; tick=9; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50352; fixedTime=16.35; tick=11; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50353; fixedTime=16.3833332; tick=13; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50354; fixedTime=16.416666; tick=15; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50355; fixedTime=16.45; tick=17; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50356; fixedTime=16.4833336; tick=19; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50357; fixedTime=16.5166664; tick=21; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50358; fixedTime=16.55; tick=23; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=-1; pendingNow=0",
+        "C08 ordered landing: instance=22874:1792; frame=50359; fixedTime=16.583334; tick=25; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=True; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=True; landingCall=True; landingResult=True; routerPresent=True; routerActive=True; routerId=22580:2816; gesture=True; pendingBeforeLanding=0; pendingNow=0"
+    ],
+    "assertions": [
+        {
+            "name": "The requested early or observed-spawn order occurred",
+            "passed": true,
+            "expected": "requested order=False",
+            "actual": "early=False; baselineBeforeJump=True"
+        },
+        {
+            "name": "A real accepted jump leaves the ground and returns",
+            "passed": true,
+            "expected": "one jump, airborne, grounded",
+            "actual": "airborne=True; grounded=True"
+        },
+        {
+            "name": "The physical return routes the landing clip exactly once",
+            "passed": true,
+            "expected": "one request and the real landing clip while output is paused",
+            "actual": "calls=1; clip=True; paused=True"
+        }
+    ],
+    "errors": [],
+    "artifacts": [
+        "source-manifest.sha256",
+        "scenario.log",
+        "scenario-report.json"
+    ]
+}

@@ -1,0 +1,42 @@
+{
+  "stage": "Final composed candidate frozen before compile; not integrated and no Native acceptance",
+  "baseCommit": "5c4bed77ced5e99c444657e61988dc6819d331ae",
+  "contractSha256": "213180358709af40bb0a22ba87ae227f26d6d398201a1aaf775a453a5e144847",
+  "workerFreezeSha256": "9654f015a72e4aea87868f149b0938eaa0c4a5d37720aed77c5df34814eba85d",
+  "guardedLiveSourcesUnchanged": 413,
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "before": {
+        "bytes": 96081,
+        "sha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843"
+      },
+      "after": {
+        "bytes": 98075,
+        "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "before": {
+        "bytes": 47302,
+        "sha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab"
+      },
+      "after": {
+        "bytes": 85767,
+        "sha256": "45dca8b433068bcb6cfea56c43334a4cbf7f16c486d55b201b58e1b6f39d27c3"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+      "before": {
+        "bytes": 32661,
+        "sha256": "a8d037b1512f10bd45341cb9ed9a338a86ed6d491b6a064546018885cb168ff9"
+      },
+      "after": {
+        "bytes": 32661,
+        "sha256": "8a830c510f40b1c0dcb05ca45a7a7fa636fae43864e331fa88b3a992ffff1d80"
+      }
+    }
+  ]
+}

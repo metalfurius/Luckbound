@@ -1,0 +1,102 @@
+[
+  {
+    "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+    "gitBlobSha1": "b5dff1992d99e1373a26e6cc63fdd3929c9f34ed",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+    "gitBlobSha1": "d3f2c83837878af44dae0ec2b40451cba6c48eff",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+    "gitBlobSha1": "b3e636db961034189212c4715ce90379ca1a75f4",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+    "gitBlobSha1": "a2ac3c5859a42fa5e9cf366c97f3d6a7db54950e",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs",
+    "gitBlobSha1": "c2663530a039621ac32c60a9c217e1f590f56957",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+    "gitBlobSha1": "fac508b7aba9fb3b8d7d41d6be2b9c7b24bdecda",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+    "gitBlobSha1": "208928f22c25d0bee4f5f72843d619a64e984f83",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+    "gitBlobSha1": "be52737eb7fbef84385d2a6b2343407ad63ea518",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Core/Relics/SupportRelicResolver.cs",
+    "gitBlobSha1": "35461f4c435c7ae3f8c5fe8142d3ecb5e6556a17",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+    "gitBlobSha1": "5e1b266beaad04999737cc1a543824ddb5287c2a",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+    "gitBlobSha1": "19bac41221ae7b995db24547a1c28dfb1a077104",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+    "gitBlobSha1": "bac0c033e18fe8827353f94476ffb65f7124023d",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+    "gitBlobSha1": "1757e5bbb63f4939f88b8490bc088c0f6290c37a",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+    "gitBlobSha1": "5d853bada0c2629e8d180e8f4690b209d2077732",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+    "gitBlobSha1": "c667c7ff8bd3b86efddcc3cd755e4f0225d024bd",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+    "gitBlobSha1": "9bbcc96de3dae9f2a7f6d79667422f5b22f38abb",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+    "gitBlobSha1": "263874d4d31a0e9e2575e53e58d0814e8d531662",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+    "gitBlobSha1": "8b95c3c2a38d142991139624dddede0c56e73a37",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+    "gitBlobSha1": "cc900444adaf2fa8bea10b9de4941975cd95ddbd",
+    "mode": "100644"
+  },
+  {
+    "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs.meta",
+    "gitBlobSha1": "0423e612f7a6552c6ce70ff7b7de56b7c59738d2",
+    "mode": "100644"
+  }
+]

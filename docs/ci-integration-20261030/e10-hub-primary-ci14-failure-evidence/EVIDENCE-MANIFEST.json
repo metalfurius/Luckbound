@@ -1,0 +1,96 @@
+{
+  "run": 41207289640,
+  "commit": "5c4bed77ced5e99c444657e61988dc6819d331ae",
+  "files": [
+    {
+      "path": "ARTIFACT.json",
+      "bytes": 843,
+      "sha256": "41328f408a483450444cc270c5ea5013027ce8c97af3b52b1eafb12144de45c1"
+    },
+    {
+      "path": "audit_scenarios.py",
+      "bytes": 3199,
+      "sha256": "099608683bb92b38b0e06314fbda8ce29cc65b143319b86fb808d673d1efe57b"
+    },
+    {
+      "path": "C08-SUMMARY.json",
+      "bytes": 1781,
+      "sha256": "56eddc7d6ac65794bb3a756464ed9c7169fc4a29dcea44ab2f5f6b7e45e50c82"
+    },
+    {
+      "path": "C08_EarlyJumpLanding.json",
+      "bytes": 7644,
+      "sha256": "f5d7bcaf1fc7a9e7a838aeef5c7892f655871034bdf3ed4736ba54dee8b65b31"
+    },
+    {
+      "path": "C08_ObservedSpawnLanding.json",
+      "bytes": 7657,
+      "sha256": "1a570982e31ead40d1a5689e0cff5bd8d4c4c3ea2b423a3a73fce07699d81f4c"
+    },
+    {
+      "path": "C08_RealKeyboardTwoWaveCombat.json",
+      "bytes": 29908,
+      "sha256": "d0f744054a1e902ae05803ad28095fabf907489e7762524a57c79aa1af5ad960"
+    },
+    {
+      "path": "CI-JOBS-FINAL.json",
+      "bytes": 8201,
+      "sha256": "e1b86b3dab24d84aced65433bc31f62a4bc7beeb0772663e4daae31b9c2409db"
+    },
+    {
+      "path": "CI-RUN-FINAL.json",
+      "bytes": 13749,
+      "sha256": "f12b332db51f8b40d9093abdb124cd1362e343a937c76f3c0c443956e65f25d7"
+    },
+    {
+      "path": "DOWNLOAD.json",
+      "bytes": 62865,
+      "sha256": "98c1230112f5fb1f6fd0cbdc847442a531b7c10be3187f57e2075724323db27c"
+    },
+    {
+      "path": "editmode-results.xml",
+      "bytes": 568832,
+      "sha256": "ff381fc32bac86fc165c3395d882aa16caff6ac1df8f60b360df413a621267e8"
+    },
+    {
+      "path": "NATIVE-RELEVANT-SOURCE-BINDING.json",
+      "bytes": 8176,
+      "sha256": "4942e9a8e6c0624270e05160e188b31bdbd1e9b15ad0c084ad37d1a05abec8ec"
+    },
+    {
+      "path": "playmode-results.xml",
+      "bytes": 1077520,
+      "sha256": "fd9975940e88a42263e38b2e61c3daa562ef6dfa6b7ae6af0bb47f9a94d90b42"
+    },
+    {
+      "path": "PRIMARY-METRICS.json",
+      "bytes": 62229,
+      "sha256": "5c18224c4b1289e04eeaf880a04a61e5051ad4546f0e114a3f638150e9fd0cf5"
+    },
+    {
+      "path": "RELEVANT-GIT-SOURCES.json",
+      "bytes": 3392,
+      "sha256": "1964e417a91f02b1d0450008465249423db16482cf6ce945fe00b8ab62a9f83e"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1359,
+      "sha256": "101971e6901868f6fdaac67ed2fd44105bd257a6a18564e11bebf8cd998c618a"
+    },
+    {
+      "path": "source-manifest.sha256",
+      "bytes": 715922,
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42"
+    },
+    {
+      "path": "summarize_tests.py",
+      "bytes": 3353,
+      "sha256": "e8747ed094061f0f386fa7b66618d740c84f6948c216ec3572f51d71751fa8d6"
+    },
+    {
+      "path": "SUMMARY.json",
+      "bytes": 114320,
+      "sha256": "e52aa817604598a1f436c1345c16df31908fa71b5ec528c293fa44bf12986f45"
+    }
+  ]
+}

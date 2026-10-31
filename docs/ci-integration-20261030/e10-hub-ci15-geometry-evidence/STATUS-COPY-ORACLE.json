@@ -1,0 +1,511 @@
+{
+  "purpose": "Independent static comparison to approved immutable Initial9eba templates. Not a runtime fixture or measurement; not read by tests.",
+  "localeSha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a",
+  "count": 60,
+  "cases": [
+    {
+      "key": "ui.hub.selection.exact_two_count",
+      "language": "es",
+      "content": "Elige exactamente dos habilidades (1/2).",
+      "args": [
+        1
+      ]
+    },
+    {
+      "key": "ui.hub.selection.exact_two_count",
+      "language": "en",
+      "content": "Choose exactly two skills (1/2).",
+      "args": [
+        1
+      ]
+    },
+    {
+      "key": "ui.hub.selection.choose_two_before_departure",
+      "language": "es",
+      "content": "Elige dos habilidades para salir.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.selection.choose_two_before_departure",
+      "language": "en",
+      "content": "Choose two skills before departing.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.selection.remove_before_choosing",
+      "language": "es",
+      "content": "Quita una habilidad antes de elegir otra.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.selection.remove_before_choosing",
+      "language": "en",
+      "content": "Remove a skill before choosing another.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.selection.exact_two_required",
+      "language": "es",
+      "content": "Debes elegir exactamente dos habilidades.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.selection.exact_two_required",
+      "language": "en",
+      "content": "You must choose exactly two skills.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.race.locked_profile",
+      "language": "es",
+      "content": "Esa raza sigue bloqueada en tu perfil.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.race.locked_profile",
+      "language": "en",
+      "content": "That race is still locked in your profile.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.race.selected_locked_profile",
+      "language": "es",
+      "content": "La raza seleccionada ya no está desbloqueada en tu perfil.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.race.selected_locked_profile",
+      "language": "en",
+      "content": "The selected race is no longer unlocked in your profile.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.preparation.ready",
+      "language": "es",
+      "content": "Preparación lista · HUMANO · 100 SALUD · 50 ENERGÍA · 2 pociones",
+      "args": [
+        "HUMANO",
+        100,
+        50,
+        2
+      ]
+    },
+    {
+      "key": "ui.hub.preparation.ready",
+      "language": "en",
+      "content": "Ready · HUMAN · 100 HEALTH · 50 ENERGY · 2 potions",
+      "args": [
+        "HUMAN",
+        100,
+        50,
+        2
+      ]
+    },
+    {
+      "key": "ui.hub.status.save_pending",
+      "language": "es",
+      "content": "El guardado sigue pendiente: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.status.save_pending",
+      "language": "en",
+      "content": "The save is still pending: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.retry_save",
+      "language": "es",
+      "content": "No se pudo reintentar el guardado: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.retry_save",
+      "language": "en",
+      "content": "Could not retry the save: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.settlement.saved",
+      "language": "es",
+      "content": "La liquidación se guardó. Puedes preparar otra expedición.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.settlement.saved",
+      "language": "en",
+      "content": "Settlement saved. You can prepare another expedition.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.settlement.pending",
+      "language": "es",
+      "content": "La liquidación sigue pendiente: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.settlement.pending",
+      "language": "en",
+      "content": "Settlement is still pending: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.retry_settlement",
+      "language": "es",
+      "content": "No se pudo reintentar la liquidación: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.retry_settlement",
+      "language": "en",
+      "content": "Could not retry settlement: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.continue_expedition",
+      "language": "es",
+      "content": "No se pudo reanudar: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.continue_expedition",
+      "language": "en",
+      "content": "Could not resume: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.save_expedition",
+      "language": "es",
+      "content": "No se pudo guardar la expedición: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.save_expedition",
+      "language": "en",
+      "content": "Could not save the expedition: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.start_expedition",
+      "language": "es",
+      "content": "No se pudo iniciar: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.start_expedition",
+      "language": "en",
+      "content": "Could not start: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.preparation_unavailable",
+      "language": "es",
+      "content": "No se puede preparar la expedición: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.error.preparation_unavailable",
+      "language": "en",
+      "content": "Cannot prepare the expedition: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.unavailable_yet",
+      "language": "es",
+      "content": "El perfil todavía no está disponible. Vuelve a intentarlo en unos segundos.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.unavailable_yet",
+      "language": "en",
+      "content": "The profile is not available yet. Try again in a few seconds.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.settlement_pending",
+      "language": "es",
+      "content": "Hay una liquidación pendiente de guardar. Reinténtala o exporta el guardado antes de iniciar otra expedición.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.settlement_pending",
+      "language": "en",
+      "content": "A settlement is waiting to be saved. Retry it or export the save before starting another expedition.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.expedition_write_pending",
+      "language": "es",
+      "content": "La expedición no se ha guardado. Reintenta la escritura antes de continuar.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.expedition_write_pending",
+      "language": "en",
+      "content": "The expedition was not saved. Retry the write before continuing.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.continue_expedition",
+      "language": "es",
+      "content": "Hay una expedición guardada. Continúa para volver al punto de entrada de la sala actual.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.continue_expedition",
+      "language": "en",
+      "content": "A saved expedition is ready. Continue to return to the current room's entry point.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.expedition_review",
+      "language": "es",
+      "content": "La expedición guardada necesita revisión y se conserva: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.expedition_review",
+      "language": "en",
+      "content": "The saved expedition needs review and has been preserved: LegacyEncounterPinMissing",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.incompatible",
+      "language": "es",
+      "content": "El perfil pertenece a una versión más nueva. Se conserva sin cambios y no se iniciará una partida nueva.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.incompatible",
+      "language": "en",
+      "content": "This profile belongs to a newer version. It is preserved unchanged and a new run cannot start.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.recovered_backup",
+      "language": "es",
+      "content": "El perfil principal estaba dañado; se recuperó la copia de respaldo. Revisa el Renombre y vuelve a guardar cuando puedas.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.recovered_backup",
+      "language": "en",
+      "content": "The primary profile was damaged; the backup was recovered. Review your Renown and save again when you can.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.corrupted",
+      "language": "es",
+      "content": "El perfil y su respaldo no se pudieron leer. Se conservaron y no se sobrescribirán.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.corrupted",
+      "language": "en",
+      "content": "The profile and its backup could not be read. They were preserved and will not be overwritten.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.unavailable",
+      "language": "es",
+      "content": "El perfil no está disponible; no se iniciará una expedición.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.profile.unavailable",
+      "language": "en",
+      "content": "The profile is unavailable; an expedition cannot start.",
+      "args": [
+        "LegacyEncounterPinMissing"
+      ]
+    },
+    {
+      "key": "ui.hub.selection.exact_two_count",
+      "language": "es",
+      "content": "Elige exactamente dos habilidades (0/2).",
+      "args": [
+        0
+      ]
+    },
+    {
+      "key": "ui.hub.selection.exact_two_count",
+      "language": "en",
+      "content": "Choose exactly two skills (0/2).",
+      "args": [
+        0
+      ]
+    },
+    {
+      "key": "ui.hub.selection.exact_two_count",
+      "language": "es",
+      "content": "Elige exactamente dos habilidades (2/2).",
+      "args": [
+        2
+      ]
+    },
+    {
+      "key": "ui.hub.selection.exact_two_count",
+      "language": "en",
+      "content": "Choose exactly two skills (2/2).",
+      "args": [
+        2
+      ]
+    },
+    {
+      "key": "ui.hub.preparation.ready",
+      "language": "es",
+      "content": "Preparación lista · ORCINI · 110 SALUD · 55 ENERGÍA · 3 pociones",
+      "args": [
+        "ORCINI",
+        110,
+        55,
+        3
+      ]
+    },
+    {
+      "key": "ui.hub.preparation.ready",
+      "language": "en",
+      "content": "Ready · ORCINI · 110 HEALTH · 55 ENERGY · 3 potions",
+      "args": [
+        "ORCINI",
+        110,
+        55,
+        3
+      ]
+    },
+    {
+      "key": "ui.hub.preparation.ready",
+      "language": "es",
+      "content": "Preparación lista · ALVARI · 110 SALUD · 55 ENERGÍA · 3 pociones",
+      "args": [
+        "ALVARI",
+        110,
+        55,
+        3
+      ]
+    },
+    {
+      "key": "ui.hub.preparation.ready",
+      "language": "en",
+      "content": "Ready · ALVARI · 110 HEALTH · 55 ENERGY · 3 potions",
+      "args": [
+        "ALVARI",
+        110,
+        55,
+        3
+      ]
+    },
+    {
+      "key": "ui.hub.preparation.ready",
+      "language": "es",
+      "content": "Preparación lista · DVERGAR · 110 SALUD · 55 ENERGÍA · 3 pociones",
+      "args": [
+        "DVERGAR",
+        110,
+        55,
+        3
+      ]
+    },
+    {
+      "key": "ui.hub.preparation.ready",
+      "language": "en",
+      "content": "Ready · DVERGAR · 110 HEALTH · 55 ENERGY · 3 potions",
+      "args": [
+        "DVERGAR",
+        110,
+        55,
+        3
+      ]
+    }
+  ]
+}

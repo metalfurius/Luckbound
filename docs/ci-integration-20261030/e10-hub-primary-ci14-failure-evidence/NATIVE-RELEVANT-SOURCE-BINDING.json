@@ -1,0 +1,169 @@
+{
+  "commit": "5c4bed77ced5e99c444657e61988dc6819d331ae",
+  "nativeManifestSha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+  "sourceFiles": 4747,
+  "count": 20,
+  "allMatched": true,
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/CombatArenaComposition.cs",
+      "nativeSha256": "e7f5267330dba1422cb5bbf141e21d5c0884fbab239892154de1b9347749d7fe",
+      "nativeMode": "raw",
+      "localRawSha256": "e7f5267330dba1422cb5bbf141e21d5c0884fbab239892154de1b9347749d7fe",
+      "gitBlobSha": "b5dff1992d99e1373a26e6cc63fdd3929c9f34ed",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/ExpeditionPlayerRunBinder.cs",
+      "nativeSha256": "165e6d7a404380afe2b2dcbc2e2c761a4c4f8a778dbd7f0ea022529d9fd65a41",
+      "nativeMode": "raw",
+      "localRawSha256": "165e6d7a404380afe2b2dcbc2e2c761a4c4f8a778dbd7f0ea022529d9fd65a41",
+      "gitBlobSha": "d3f2c83837878af44dae0ec2b40451cba6c48eff",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/FortuneOfferPanelController.cs",
+      "nativeSha256": "ed92256efc014f2f42ecccfcdc6dccdb7c0fea4b1e875309379676dde1e96ab7",
+      "nativeMode": "raw",
+      "localRawSha256": "ed92256efc014f2f42ecccfcdc6dccdb7c0fea4b1e875309379676dde1e96ab7",
+      "gitBlobSha": "b3e636db961034189212c4715ce90379ca1a75f4",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "nativeSha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843",
+      "nativeMode": "raw",
+      "localRawSha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843",
+      "gitBlobSha": "a2ac3c5859a42fa5e9cf366c97f3d6a7db54950e",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/App/RestStopServicesPanelController.cs",
+      "nativeSha256": "006a67bc1ce1fca65380bfc5dcd215678bdfa2aef0928aa2f471c97c76c2fb96",
+      "nativeMode": "CRLF-to-LF",
+      "localRawSha256": "227a1fbcc7f6c090d198ed848d0f5241a49334115291016b29005ff25dec75dc",
+      "gitBlobSha": "c2663530a039621ac32c60a9c217e1f590f56957",
+      "gitMode": "CRLF-to-LF"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/HealthPotionUseState.cs",
+      "nativeSha256": "288f8f34b3f256dd03ad182d43f7d62e499d0ed6ab184bd306eab76578ff249f",
+      "nativeMode": "raw",
+      "localRawSha256": "288f8f34b3f256dd03ad182d43f7d62e499d0ed6ab184bd306eab76578ff249f",
+      "gitBlobSha": "fac508b7aba9fb3b8d7d41d6be2b9c7b24bdecda",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Combat/SkillUseState.cs",
+      "nativeSha256": "627e7ee9dff01ae818d2190baefb3748e598a8ca7aa0518a662ef80eb45d01fd",
+      "nativeMode": "raw",
+      "localRawSha256": "627e7ee9dff01ae818d2190baefb3748e598a8ca7aa0518a662ef80eb45d01fd",
+      "gitBlobSha": "208928f22c25d0bee4f5f72843d619a64e984f83",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Relics/SupportRelicActorRules.cs",
+      "nativeSha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9",
+      "nativeMode": "raw",
+      "localRawSha256": "b6efac547208f2cf0ba555d4e1d2bf08589731df26f409642043905708ebabe9",
+      "gitBlobSha": "be52737eb7fbef84385d2a6b2343407ad63ea518",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Core/Relics/SupportRelicResolver.cs",
+      "nativeSha256": "b4edc89824902f63ff1a6ca18d8777c0b16e44b645f921bd0a201cd14266fa24",
+      "nativeMode": "CRLF-to-LF",
+      "localRawSha256": "d1da19d4afdcf64ca157496b00696aaa718cb18049f75173894886db7b3bfe02",
+      "gitBlobSha": "35461f4c435c7ae3f8c5fe8142d3ecb5e6556a17",
+      "gitMode": "CRLF-to-LF"
+    },
+    {
+      "path": "Assets/Luckbound/Scripts/Gameplay/Movement/PlayerMotor2D.cs",
+      "nativeSha256": "6ca7326e509702c9f6a256dbd4f3b6803330aa0d94b59e5356fdffbbd2403ebd",
+      "nativeMode": "raw",
+      "localRawSha256": "6ca7326e509702c9f6a256dbd4f3b6803330aa0d94b59e5356fdffbbd2403ebd",
+      "gitBlobSha": "5e1b266beaad04999737cc1a543824ddb5287c2a",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/CombatArenaTests.cs",
+      "nativeSha256": "550fe63c2a9835d86dc3511f1b20ffac197cad8ec3582f80d6b7bd7cd1fa7de7",
+      "nativeMode": "raw",
+      "localRawSha256": "550fe63c2a9835d86dc3511f1b20ffac197cad8ec3582f80d6b7bd7cd1fa7de7",
+      "gitBlobSha": "19bac41221ae7b995db24547a1c28dfb1a077104",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/Economy/RestStopServicesPanelTests.cs",
+      "nativeSha256": "6923dccd004940ced4fa28623e7ec84fe1b8f878501a2f7ba224e1d451049144",
+      "nativeMode": "raw",
+      "localRawSha256": "6923dccd004940ced4fa28623e7ec84fe1b8f878501a2f7ba224e1d451049144",
+      "gitBlobSha": "bac0c033e18fe8827353f94476ffb65f7124023d",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/FortuneOfferPanelControllerTests.cs",
+      "nativeSha256": "774cdefc8c2122695f9cb4611ce6361d2f4a7becf88369c5855a4e7ca3d95dd7",
+      "nativeMode": "raw",
+      "localRawSha256": "774cdefc8c2122695f9cb4611ce6361d2f4a7becf88369c5855a4e7ca3d95dd7",
+      "gitBlobSha": "1757e5bbb63f4939f88b8490bc088c0f6290c37a",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationTests.cs",
+      "nativeSha256": "a2ffbcf281a94eca3d3ac1bcfaa02048dae1a509b120699558e1adfb9473d67e",
+      "nativeMode": "raw",
+      "localRawSha256": "a2ffbcf281a94eca3d3ac1bcfaa02048dae1a509b120699558e1adfb9473d67e",
+      "gitBlobSha": "5d853bada0c2629e8d180e8f4690b209d2077732",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicEquipmentRuntimeTests.cs",
+      "nativeSha256": "6b931ee940c626a2e9ee9c18add62496b04ce0de93a1529994947c1d4dcda8dc",
+      "nativeMode": "raw",
+      "localRawSha256": "6b931ee940c626a2e9ee9c18add62496b04ce0de93a1529994947c1d4dcda8dc",
+      "gitBlobSha": "c667c7ff8bd3b86efddcc3cd755e4f0225d024bd",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/SupportRelicPassiveEquipmentRuntimeTests.cs",
+      "nativeSha256": "6956bbe752b93b85a0c8ce94e79c1f29b584ab78b839f67fa36792a26e0c29c0",
+      "nativeMode": "raw",
+      "localRawSha256": "6956bbe752b93b85a0c8ce94e79c1f29b584ab78b839f67fa36792a26e0c29c0",
+      "gitBlobSha": "9bbcc96de3dae9f2a7f6d79667422f5b22f38abb",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "nativeSha256": "35d44be382ce1cf4e0078624219cc1a2018d61f1d4269d90d277ea1f88b2f78b",
+      "nativeMode": "raw",
+      "localRawSha256": "35d44be382ce1cf4e0078624219cc1a2018d61f1d4269d90d277ea1f88b2f78b",
+      "gitBlobSha": "263874d4d31a0e9e2575e53e58d0814e8d531662",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "nativeSha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab",
+      "nativeMode": "raw",
+      "localRawSha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab",
+      "gitBlobSha": "8b95c3c2a38d142991139624dddede0c56e73a37",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "nativeSha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a",
+      "nativeMode": "raw",
+      "localRawSha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a",
+      "gitBlobSha": "cc900444adaf2fa8bea10b9de4941975cd95ddbd",
+      "gitMode": "raw"
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs.meta",
+      "nativeSha256": "e173565dba4ab2befd09dbf0578669811270cd8a7e8f43088050a52e122717fa",
+      "nativeMode": "raw",
+      "localRawSha256": "e173565dba4ab2befd09dbf0578669811270cd8a7e8f43088050a52e122717fa",
+      "gitBlobSha": "0423e612f7a6552c6ce70ff7b7de56b7c59738d2",
+      "gitMode": "raw"
+    }
+  ]
+}

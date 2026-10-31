@@ -1,0 +1,1244 @@
+{
+  "run": 41207289640,
+  "artifact": "test-results-5c4bed77ced5e99c444657e61988dc6819d331ae",
+  "url": "https://nightly.link/metalfurius/Luckbound/suites/111698399233/artifacts/13045331755",
+  "sha256": "100e9397667fcfb3712a8c8205958009d6b4dbec97d5e8f4555946d02551493f",
+  "zip_bytes": 9921599,
+  "files": [
+    {
+      "path": "Logs/Scenarios/A08/20261031T135356221Z_startup-menu_82d9809e/scenario-report.json",
+      "sha256": "9dcd12790f0ddbcfcf3afeed5e7a883ae360a021e988899e062f97dbf9c9a9c6",
+      "bytes": 1778
+    },
+    {
+      "path": "Logs/Scenarios/A08/20261031T135356221Z_startup-menu_82d9809e/scenario.log",
+      "sha256": "2b972f144b25b9c7e9f11928ab12525a17c47e9f706b2079f3230e8386e0a6b2",
+      "bytes": 704
+    },
+    {
+      "path": "Logs/Scenarios/A08/20261031T135356221Z_startup-menu_82d9809e/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/A08/20261031T135356300Z_failure-evidence-probe_fd127baf/scenario-report.json",
+      "sha256": "6e29f7040948db7bb341a76c20f0665d65c2fdc0aa1c99d9ecf70bcb1086f695",
+      "bytes": 1612
+    },
+    {
+      "path": "Logs/Scenarios/A08/20261031T135356300Z_failure-evidence-probe_fd127baf/scenario.log",
+      "sha256": "9f42160e5cea1fe0cd8ee49a0c755f68a843ff81f29b20d44a9e822f17e9fb9a",
+      "bytes": 642
+    },
+    {
+      "path": "Logs/Scenarios/A08/20261031T135356300Z_failure-evidence-probe_fd127baf/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/B03/20261031T135341440Z_B03_WalkWall_330f4b03/scenario-report.json",
+      "sha256": "027e19ab81b271e6ac3fb6c9af5f660d231f27ad77632a491420694aa736a1ce",
+      "bytes": 2378
+    },
+    {
+      "path": "Logs/Scenarios/B03/20261031T135341440Z_B03_WalkWall_330f4b03/scenario.log",
+      "sha256": "dacc6e7c3df0fb62f5bf2f451d595a5f167322c759a7ee1de17e7aba7cb6d3f9",
+      "bytes": 1121
+    },
+    {
+      "path": "Logs/Scenarios/B03/20261031T135341440Z_B03_WalkWall_330f4b03/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135258745Z_B04_Coyote_4ea68a42/scenario-report.json",
+      "sha256": "b049d4a764d6263dc350a5879aad6c74a12f21b9d06c57245a4c625ad84b3b0d",
+      "bytes": 2529
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135258745Z_B04_Coyote_4ea68a42/scenario.log",
+      "sha256": "1ec7536bf7f00eb24acfc2c182dec4a42a810240273ee1a38484dfab1ee71fd3",
+      "bytes": 1182
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135258745Z_B04_Coyote_4ea68a42/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135259877Z_B04_JumpProfile_c6d87fa7/scenario-report.json",
+      "sha256": "1c6af211f016a522cfa797d829e8e68f90ec7d0c5c076d50d913cb858ad82dbd",
+      "bytes": 2395
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135259877Z_B04_JumpProfile_c6d87fa7/scenario.log",
+      "sha256": "7d0262233b020daaab40676664fa850bd20da98eb02e05eefa422c29de34fbdd",
+      "bytes": 1111
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135259877Z_B04_JumpProfile_c6d87fa7/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135300993Z_B04_JumpBuffer_d958cc2f/scenario-report.json",
+      "sha256": "51ca7c46a05ec6bcfc1b05a2280bbed9d321eff6594c54dd547cb2cbe0be1203",
+      "bytes": 1894
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135300993Z_B04_JumpBuffer_d958cc2f/scenario.log",
+      "sha256": "323fee55da38ec7d75b4c47f62dbd6341532ce8462eaa06320229a47982901be",
+      "bytes": 789
+    },
+    {
+      "path": "Logs/Scenarios/B04/20261031T135300993Z_B04_JumpBuffer_d958cc2f/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/B05/20261031T135339336Z_B05_Dodge_a002796c/scenario-report.json",
+      "sha256": "1eaebe8999ec5fab678fd893bf273ebd14724c31dd8a29402d52c1e3b68b77eb",
+      "bytes": 4205
+    },
+    {
+      "path": "Logs/Scenarios/B05/20261031T135339336Z_B05_Dodge_a002796c/scenario.log",
+      "sha256": "91fc747411d9b78e832102f94f34825bbe47841ffb182860eb4f218a99e6fbbb",
+      "bytes": 2448
+    },
+    {
+      "path": "Logs/Scenarios/B05/20261031T135339336Z_B05_Dodge_a002796c/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/B06/20261031T135343904Z_B06_PlayerVisualStates_c95e41ba/scenario-report.json",
+      "sha256": "d665e8f03947e250d92ac2815044409bfd724b6d7904a9504a35caf3ad35cbbb",
+      "bytes": 2559
+    },
+    {
+      "path": "Logs/Scenarios/B06/20261031T135343904Z_B06_PlayerVisualStates_c95e41ba/scenario.log",
+      "sha256": "a20f6da5613e8d34b583d776fb88788c3c51000f2e5e57cd9eaf3cf7cf378d4f",
+      "bytes": 1340
+    },
+    {
+      "path": "Logs/Scenarios/B06/20261031T135343904Z_B06_PlayerVisualStates_c95e41ba/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/B06/20261031T135345155Z_B06_CameraBounds_f1ae5f3f/scenario-report.json",
+      "sha256": "c017b51de6ba5e286b88af6714557eaabd626ae7a266f1a1be8ecf4d791b12df",
+      "bytes": 3445
+    },
+    {
+      "path": "Logs/Scenarios/B06/20261031T135345155Z_B06_CameraBounds_f1ae5f3f/scenario.log",
+      "sha256": "a968bced60665fa7422cfe2fbe3c9816c636b935101090447690f9ed9ef65d8f",
+      "bytes": 1951
+    },
+    {
+      "path": "Logs/Scenarios/B06/20261031T135345155Z_B06_CameraBounds_f1ae5f3f/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/B07/20261031T135322018Z_B07_MovementDemoFlow_4df06931/scenario-report.json",
+      "sha256": "6fac40c511f13f07f3f65ec18289aba1118abaa3d7a0d3fa5435e0e6b28d79a9",
+      "bytes": 6783
+    },
+    {
+      "path": "Logs/Scenarios/B07/20261031T135322018Z_B07_MovementDemoFlow_4df06931/scenario.log",
+      "sha256": "cd547b54131731286a99eff3e99907717c09f16741803186566c7b8bc3d7e1d7",
+      "bytes": 3755
+    },
+    {
+      "path": "Logs/Scenarios/B07/20261031T135322018Z_B07_MovementDemoFlow_4df06931/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C02/20261031T135321277Z_C02_AttackMovement_ab20dd6d/scenario-report.json",
+      "sha256": "300df31d805e90e9c7e6c50cffebde1231f3eb799ee1181d05e425d7fc63ff17",
+      "bytes": 2129
+    },
+    {
+      "path": "Logs/Scenarios/C02/20261031T135321277Z_C02_AttackMovement_ab20dd6d/scenario.log",
+      "sha256": "54360c97cee4353f282e1b9a20badd965db73aa59c63e52db371650e5af10f87",
+      "bytes": 822
+    },
+    {
+      "path": "Logs/Scenarios/C02/20261031T135321277Z_C02_AttackMovement_ab20dd6d/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C02/20261031T135321977Z_C02_AirAttack_2cbcd386/scenario-report.json",
+      "sha256": "1047d5f7b5b701b84110ea78a66b824a20aa31f7a98b98e3ef037e07383f87fd",
+      "bytes": 1463
+    },
+    {
+      "path": "Logs/Scenarios/C02/20261031T135321977Z_C02_AirAttack_2cbcd386/scenario.log",
+      "sha256": "0bb96bd30780264b7d6d89c213f7baf82a43c95ffb9f09e44827253f0b2fcaf9",
+      "bytes": 396
+    },
+    {
+      "path": "Logs/Scenarios/C02/20261031T135321977Z_C02_AirAttack_2cbcd386/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345246Z_C03_RoomProjectileCleanup_3d36afae/scenario-report.json",
+      "sha256": "7727184ee1f2b4162857501d6dde1dc2bb2f4b1f705630314f8919981a3b322d",
+      "bytes": 1892
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345246Z_C03_RoomProjectileCleanup_3d36afae/scenario.log",
+      "sha256": "ae2610ff96639d5ff58aef7858d0ce2502c32e7007996b615fcfbd5259c7c782",
+      "bytes": 729
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345246Z_C03_RoomProjectileCleanup_3d36afae/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345255Z_C03_PiercingProjectile_8ce98110/scenario-report.json",
+      "sha256": "4b376b2cad34b8721a8836f0718dcab321482d540116e4735e6a71f2dbb43126",
+      "bytes": 2191
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345255Z_C03_PiercingProjectile_8ce98110/scenario.log",
+      "sha256": "3958e5b2d2ec1e793989cae025eef309bde57ad20c42643b3ef0b52156cf5fa1",
+      "bytes": 978
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345255Z_C03_PiercingProjectile_8ce98110/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345535Z_C03_ProjectileExpiry_cacea330/scenario-report.json",
+      "sha256": "b754a8b1a0c48221c42ad5a3d978d202f300f7b96383b62d53624a4e4bcacff4",
+      "bytes": 1205
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345535Z_C03_ProjectileExpiry_cacea330/scenario.log",
+      "sha256": "fa9b69d5deaf0bd5f180d7935fe565b8d57bf8ddbe52ca2d59933702647d3078",
+      "bytes": 303
+    },
+    {
+      "path": "Logs/Scenarios/C03/20261031T135345535Z_C03_ProjectileExpiry_cacea330/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C04/20261031T135339251Z_C04_ProtectedKnockback_09cb2594/scenario-report.json",
+      "sha256": "9b2aa4eb93a0785aa82ce28c44a5c36c403b032fe7ab5b6b70d380b6c9879273",
+      "bytes": 2325
+    },
+    {
+      "path": "Logs/Scenarios/C04/20261031T135339251Z_C04_ProtectedKnockback_09cb2594/scenario.log",
+      "sha256": "942c98e1a19ab7bac8569d03d10921845c6704f2114a36828cb46ffae1a2a52a",
+      "bytes": 1157
+    },
+    {
+      "path": "Logs/Scenarios/C04/20261031T135339251Z_C04_ProtectedKnockback_09cb2594/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C04/20261031T135339301Z_C04_DeathBlocksActions_f8d620d8/scenario-report.json",
+      "sha256": "406f56572384144f2c1437ac0c05484912c4501fe96f38a2b2f1c5139e0f2869",
+      "bytes": 1945
+    },
+    {
+      "path": "Logs/Scenarios/C04/20261031T135339301Z_C04_DeathBlocksActions_f8d620d8/scenario.log",
+      "sha256": "ac77a58b294e96bd1f930a2a7ef3aae1815bbd7bff00788d7203792d84940021",
+      "bytes": 851
+    },
+    {
+      "path": "Logs/Scenarios/C04/20261031T135339301Z_C04_DeathBlocksActions_f8d620d8/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C05/20261031T135354788Z_C05_SlimeProjectileDeath_fa395745/scenario-report.json",
+      "sha256": "92ebe53a351b54bf87419be09289240089e7dbfbaeb65e2ca365fca8cd829caa",
+      "bytes": 2090
+    },
+    {
+      "path": "Logs/Scenarios/C05/20261031T135354788Z_C05_SlimeProjectileDeath_fa395745/scenario.log",
+      "sha256": "9df4a7ceebfac16009b616ef3269c63564b773f0d0f0486806852336c0491cf1",
+      "bytes": 851
+    },
+    {
+      "path": "Logs/Scenarios/C05/20261031T135354788Z_C05_SlimeProjectileDeath_fa395745/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C05/20261031T135354938Z_C05_SlimeTelegraphedLeap_41f7c1d0/scenario-report.json",
+      "sha256": "ac1266f7487cb32b3e71e942d04a83853be6146d5eadc483358fca728d7a6525",
+      "bytes": 1989
+    },
+    {
+      "path": "Logs/Scenarios/C05/20261031T135354938Z_C05_SlimeTelegraphedLeap_41f7c1d0/scenario.log",
+      "sha256": "a9239f8ca4a8cf23f5eef11badc3464f3df03d8a1739ca31de53948367cf38a7",
+      "bytes": 808
+    },
+    {
+      "path": "Logs/Scenarios/C05/20261031T135354938Z_C05_SlimeTelegraphedLeap_41f7c1d0/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C06/20261031T135256182Z_C06_CutAndRecovery_7abd385f/scenario-report.json",
+      "sha256": "7693e12899aecd0c813a7f3e60835907c644d41ed5a764bd2be5a028109fb2b5",
+      "bytes": 2424
+    },
+    {
+      "path": "Logs/Scenarios/C06/20261031T135256182Z_C06_CutAndRecovery_7abd385f/scenario.log",
+      "sha256": "70617133fc3d7936059d1460c4195881c682e00a9d989806211e9ba7ae70b5b3",
+      "bytes": 963
+    },
+    {
+      "path": "Logs/Scenarios/C06/20261031T135256182Z_C06_CutAndRecovery_7abd385f/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C06/20261031T135258193Z_C06_FrontGuardAndRearDamage_c2517a25/scenario-report.json",
+      "sha256": "58456b366f3ce8ad3770f6c63d3a72375441de1a4d38152a3343e759967013d2",
+      "bytes": 1960
+    },
+    {
+      "path": "Logs/Scenarios/C06/20261031T135258193Z_C06_FrontGuardAndRearDamage_c2517a25/scenario.log",
+      "sha256": "89d4044d1b95afa26556b7c87e8e7a4cb8ebba01dcc44695e46dba240a3501ee",
+      "bytes": 748
+    },
+    {
+      "path": "Logs/Scenarios/C06/20261031T135258193Z_C06_FrontGuardAndRearDamage_c2517a25/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C07/20261031T135340697Z_C07_HudAndHealthPotion_3bddeea8/scenario-report.json",
+      "sha256": "632c80bf9ce9c19bb6414dbb7c306ef827ddd5812d4bb26a56e9a7178032050d",
+      "bytes": 3383
+    },
+    {
+      "path": "Logs/Scenarios/C07/20261031T135340697Z_C07_HudAndHealthPotion_3bddeea8/scenario.log",
+      "sha256": "45494a7a69573ead2336b960b94cc10fab090f4544f2b184a4b24b013b0df6a4",
+      "bytes": 1529
+    },
+    {
+      "path": "Logs/Scenarios/C07/20261031T135340697Z_C07_HudAndHealthPotion_3bddeea8/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C07/20261031T135341238Z_C07_PauseAndFocusLoss_484fab0c/scenario-report.json",
+      "sha256": "d2126472dbc14c75df79b6276610220f090f5e9e54f3586802bb93e60461225a",
+      "bytes": 2018
+    },
+    {
+      "path": "Logs/Scenarios/C07/20261031T135341238Z_C07_PauseAndFocusLoss_484fab0c/scenario.log",
+      "sha256": "735b3723aabf1358e10c4d65bbe89a02b916917e0de5e243b5fb037dbbb5d80e",
+      "bytes": 765
+    },
+    {
+      "path": "Logs/Scenarios/C07/20261031T135341238Z_C07_PauseAndFocusLoss_484fab0c/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135144828Z_C08_EarlyJumpLanding_e8d1ad30/scenario-report.json",
+      "sha256": "f5d7bcaf1fc7a9e7a838aeef5c7892f655871034bdf3ed4736ba54dee8b65b31",
+      "bytes": 7644
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135144828Z_C08_EarlyJumpLanding_e8d1ad30/scenario.log",
+      "sha256": "a2e01658c9a1f0c1b545801b13875e14558a4bccb5b147a8be2354d605807541",
+      "bytes": 6927
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135144828Z_C08_EarlyJumpLanding_e8d1ad30/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135147817Z_C08_ObservedSpawnLanding_78b7798f/scenario-report.json",
+      "sha256": "1a570982e31ead40d1a5689e0cff5bd8d4c4c3ea2b423a3a73fce07699d81f4c",
+      "bytes": 7657
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135147817Z_C08_ObservedSpawnLanding_78b7798f/scenario.log",
+      "sha256": "16bd91649d194ef0caf11b178cb7ff15b2f55a7b5efe57ce2c4b244d8c498bbb",
+      "bytes": 6935
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135147817Z_C08_ObservedSpawnLanding_78b7798f/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135147987Z_C08_RealKeyboardTwoWaveCombat_a5987e36/scenario-report.json",
+      "sha256": "d0f744054a1e902ae05803ad28095fabf907489e7762524a57c79aa1af5ad960",
+      "bytes": 29908
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135147987Z_C08_RealKeyboardTwoWaveCombat_a5987e36/scenario.log",
+      "sha256": "3ad0344bfe4aa5ffce47ace30a1ca06a081b63b480ea34bcee512ff695a69635",
+      "bytes": 27653
+    },
+    {
+      "path": "Logs/Scenarios/C08/20261031T135147987Z_C08_RealKeyboardTwoWaveCombat_a5987e36/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D02/20261031T135251555Z_D02_SeededMandatoryRoute_2b6ea612/scenario-report.json",
+      "sha256": "226b31bfe6822356e18a90a97f565ee5ed5c1fde918a95f764b1050f6995d752",
+      "bytes": 2319
+    },
+    {
+      "path": "Logs/Scenarios/D02/20261031T135251555Z_D02_SeededMandatoryRoute_2b6ea612/scenario.log",
+      "sha256": "23fe23ec3748ca4f030bab516e6b101211d822ac2fcf74627044361a1c3b2dff",
+      "bytes": 858
+    },
+    {
+      "path": "Logs/Scenarios/D02/20261031T135251555Z_D02_SeededMandatoryRoute_2b6ea612/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D03/20261031T135348663Z_D03_TwentyRoomTransitions_d9c92f44/scenario-report.json",
+      "sha256": "9d5aa0ddffb928a3930300269881bcbb12e578f7c96d2815e4f0775b161ee3da",
+      "bytes": 21357
+    },
+    {
+      "path": "Logs/Scenarios/D03/20261031T135348663Z_D03_TwentyRoomTransitions_d9c92f44/scenario.log",
+      "sha256": "dda401cff675a5a28fba60e4df61aa4b17f3369cdb3cd6a858113c816551432a",
+      "bytes": 12587
+    },
+    {
+      "path": "Logs/Scenarios/D03/20261031T135348663Z_D03_TwentyRoomTransitions_d9c92f44/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D04/20261031T135258570Z_D04_PhysicalLootAndInventorySwap_dc2d7c41/scenario-report.json",
+      "sha256": "df2bdbbd3b8b96035c88b7ede5d934a64a77b2a8256caea8e26bc8dcba3a0294",
+      "bytes": 4150
+    },
+    {
+      "path": "Logs/Scenarios/D04/20261031T135258570Z_D04_PhysicalLootAndInventorySwap_dc2d7c41/scenario.log",
+      "sha256": "74e6488e309ce62707e4902a17d63ceac5d7d654c8113469668d905d55b375e3",
+      "bytes": 2224
+    },
+    {
+      "path": "Logs/Scenarios/D04/20261031T135258570Z_D04_PhysicalLootAndInventorySwap_dc2d7c41/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D05/20261031T135253895Z_D05_TavernSelectionAndFreshRun_41456154/scenario-report.json",
+      "sha256": "e585b4ebb0cd207753a9bd248966023c809948fc231a0371f169319f7179ff4c",
+      "bytes": 6483
+    },
+    {
+      "path": "Logs/Scenarios/D05/20261031T135253895Z_D05_TavernSelectionAndFreshRun_41456154/scenario.log",
+      "sha256": "5861044994c8c116ef28b28bfe6bba5e9e9aa423aa3b55e68036bd0db1cb13c8",
+      "bytes": 3338
+    },
+    {
+      "path": "Logs/Scenarios/D05/20261031T135253895Z_D05_TavernSelectionAndFreshRun_41456154/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D06/20261031T135201422Z_D06_RealCombatCustodianTwoPhases_9a3b27b9/scenario-report.json",
+      "sha256": "2a5a0edbe400d0ed9c826154f7fd3251e892fe6a65448e5e967c1fedc9260496",
+      "bytes": 8593
+    },
+    {
+      "path": "Logs/Scenarios/D06/20261031T135201422Z_D06_RealCombatCustodianTwoPhases_9a3b27b9/scenario.log",
+      "sha256": "c4bbe0e7d5667243af8c6cee9ef5e5941a195ce57c045fefcc8e4c8b5e925b01",
+      "bytes": 5347
+    },
+    {
+      "path": "Logs/Scenarios/D06/20261031T135201422Z_D06_RealCombatCustodianTwoPhases_9a3b27b9/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D07/20261031T135251732Z_D07_ExtractionSettlementIsIdempotent_b79385ca/scenario-report.json",
+      "sha256": "8bd33918cfedcccaf3ad1d8d019d0ec2361811f8cb322a3a8ea1875712cafafd",
+      "bytes": 2157
+    },
+    {
+      "path": "Logs/Scenarios/D07/20261031T135251732Z_D07_ExtractionSettlementIsIdempotent_b79385ca/scenario.log",
+      "sha256": "44adc122bc971c566e31978fc50578405b4c522149ea940c7b343a0d5e23bc61",
+      "bytes": 905
+    },
+    {
+      "path": "Logs/Scenarios/D07/20261031T135251732Z_D07_ExtractionSettlementIsIdempotent_b79385ca/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D08/20261031T135351984Z_D08_ProfileRestartAndBackupRecovery_2d0ea03c/scenario-report.json",
+      "sha256": "c5a06f83a3cda57524a25365709bda974b2d76b9a3c11b48797c5ba55c279a87",
+      "bytes": 2183
+    },
+    {
+      "path": "Logs/Scenarios/D08/20261031T135351984Z_D08_ProfileRestartAndBackupRecovery_2d0ea03c/scenario.log",
+      "sha256": "fc55e154c55f81273d632b3052ed20fefaaabc0330ec9cd0b053ffd5a71932a7",
+      "bytes": 951
+    },
+    {
+      "path": "Logs/Scenarios/D08/20261031T135351984Z_D08_ProfileRestartAndBackupRecovery_2d0ea03c/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D09/20261031T135254240Z_D09_BootstrapResumeAndRoomProgress_258fd8d0/scenario-report.json",
+      "sha256": "3a2f5ac33c7c7f418ac65c2a3ea328af6306336cbe8572e1a712e12f0e520424",
+      "bytes": 3865
+    },
+    {
+      "path": "Logs/Scenarios/D09/20261031T135254240Z_D09_BootstrapResumeAndRoomProgress_258fd8d0/scenario.log",
+      "sha256": "8a84090ee912900a41a9f5fb488bb92e24d8f15b90b14f6a641711b09a1bd255",
+      "bytes": 1819
+    },
+    {
+      "path": "Logs/Scenarios/D09/20261031T135254240Z_D09_BootstrapResumeAndRoomProgress_258fd8d0/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/D09/20261031T135351994Z_D09_RoomCheckpointRestartAndCompletedResult_d1f4a74a/scenario-report.json",
+      "sha256": "e7cf284747e9b1eb4da6eacf85d04711ee5f4d80e0fd878f65c89cb9292d60e2",
+      "bytes": 2756
+    },
+    {
+      "path": "Logs/Scenarios/D09/20261031T135351994Z_D09_RoomCheckpointRestartAndCompletedResult_d1f4a74a/scenario.log",
+      "sha256": "2dca28258cd7bb0151cffe441def560401710af31d7de4ae60e19f11631798b5",
+      "bytes": 1179
+    },
+    {
+      "path": "Logs/Scenarios/D09/20261031T135351994Z_D09_RoomCheckpointRestartAndCompletedResult_d1f4a74a/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E01/20261031T135258668Z_E01_PhysicalWorldMaterialPickupAndBag_aa687db0/scenario-report.json",
+      "sha256": "061c35cbdaf8ed79f9e3bc2e6f46e8eef5ad129801b42c61139eb6f32abfec07",
+      "bytes": 3413
+    },
+    {
+      "path": "Logs/Scenarios/E01/20261031T135258668Z_E01_PhysicalWorldMaterialPickupAndBag_aa687db0/scenario.log",
+      "sha256": "a59b76639a1cb630f4270f9eaad3e6852eb84b076d5df81ef01139da2bd7395c",
+      "bytes": 1648
+    },
+    {
+      "path": "Logs/Scenarios/E01/20261031T135258668Z_E01_PhysicalWorldMaterialPickupAndBag_aa687db0/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E02/20261031T135201144Z_E02_PhysicalCraftCommitRetryAndRestart_0f3d3e1d/scenario-report.json",
+      "sha256": "f9e67dd53b1edb597b839a820596c97ddb29707867fd68550d1de69a8181b8cd",
+      "bytes": 5760
+    },
+    {
+      "path": "Logs/Scenarios/E02/20261031T135201144Z_E02_PhysicalCraftCommitRetryAndRestart_0f3d3e1d/scenario.log",
+      "sha256": "5509072cc3298589388c173b5837e3dea4e537e15f67abe39c80950233803ee7",
+      "bytes": 3151
+    },
+    {
+      "path": "Logs/Scenarios/E02/20261031T135201144Z_E02_PhysicalCraftCommitRetryAndRestart_0f3d3e1d/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135245786Z_E03_MerchantTransactionsAndSmithingRestart_a71b5d2c/scenario-report.json",
+      "sha256": "5a570f329930d42b18226c00c2585236803b835056d3b7fed4bf8c082b6d71b9",
+      "bytes": 4945
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135245786Z_E03_MerchantTransactionsAndSmithingRestart_a71b5d2c/scenario.log",
+      "sha256": "6a8ab6c69db59eb4ed688f6ecee9e44a821d4ec2e57d2a99db9528b8226fa514",
+      "bytes": 2794
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135245786Z_E03_MerchantTransactionsAndSmithingRestart_a71b5d2c/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246059Z_E03_RestServicesDurableRetryAndRestart_4e38fd08/scenario-report.json",
+      "sha256": "35b67c5f849719cbbe1d24ed2aa187b1996226c4e45e315556cf643eee1c1bea",
+      "bytes": 4018
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246059Z_E03_RestServicesDurableRetryAndRestart_4e38fd08/scenario.log",
+      "sha256": "dc663439a40c7b91d7610d9b817cb7604de336acbc35bef4a7b405b94aa94692",
+      "bytes": 2110
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246059Z_E03_RestServicesDurableRetryAndRestart_4e38fd08/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246232Z_E03_RestStopBoundariesAndIdentity_17c5faea/scenario-report.json",
+      "sha256": "d93ad45d394395b79ea71c56cedca3c682f21b10cf6d54b8e733d59bd29b0563",
+      "bytes": 3239
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246232Z_E03_RestStopBoundariesAndIdentity_17c5faea/scenario.log",
+      "sha256": "23699f2b1e244e9e942323300374a1b57d6a18bebb45079a88ef6fa5ea7eb179",
+      "bytes": 1613
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246232Z_E03_RestStopBoundariesAndIdentity_17c5faea/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246480Z_E03_AccessibleServicesClickKeyboardRetry_f3efdc80/scenario-report.json",
+      "sha256": "8f79f3f47e743cf85a60a7d0f795b3a191d0848f8c6a826b1f05198e04aeea31",
+      "bytes": 5603
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246480Z_E03_AccessibleServicesClickKeyboardRetry_f3efdc80/scenario.log",
+      "sha256": "fed3a57b5c7a4317e520f3660ebd35681922a058e44c0399d0bb19e0833d0143",
+      "bytes": 3122
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246480Z_E03_AccessibleServicesClickKeyboardRetry_f3efdc80/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246824Z_E03_NoServiceEntryOutsideRest_8313963e/scenario-report.json",
+      "sha256": "97382791fdb51990a46c79ab3cc93d58ae7ebb6d9283f285662dd0f42c2dc966",
+      "bytes": 1528
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246824Z_E03_NoServiceEntryOutsideRest_8313963e/scenario.log",
+      "sha256": "0fc7e55755a7629048d604e8ab0bf2422d052fe64071f326559049d53c3715de",
+      "bytes": 510
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246824Z_E03_NoServiceEntryOutsideRest_8313963e/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246951Z_E03_MerchantBasePriceWithoutSeal_de0fe446/scenario-report.json",
+      "sha256": "bc72013be9fa634f017ed07283b2e45f1903f9aa3048af0309d9be3493c3f463",
+      "bytes": 1996
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246951Z_E03_MerchantBasePriceWithoutSeal_de0fe446/scenario.log",
+      "sha256": "4929d30a88b14c4bbfa6d03eaf824a440953e693e575fce9bf41bfd5b79d6c75",
+      "bytes": 835
+    },
+    {
+      "path": "Logs/Scenarios/E03/20261031T135246951Z_E03_MerchantBasePriceWithoutSeal_de0fe446/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/E06/20261031T135337310Z_E06_PermanentUpgrades_5e9fd54a/scenario-report.json",
+      "sha256": "ea79ee08dd25c9bfbc93bf0d1d36d123264bda69a8e1ac0c2f635c5bcb23e9a1",
+      "bytes": 4767
+    },
+    {
+      "path": "Logs/Scenarios/E06/20261031T135337310Z_E06_PermanentUpgrades_5e9fd54a/scenario.log",
+      "sha256": "7467ec05441dd356cd3808e0dedcc003ea3380dce278b649b59cdcbf6d50ec56",
+      "bytes": 2531
+    },
+    {
+      "path": "Logs/Scenarios/E06/20261031T135337310Z_E06_PermanentUpgrades_5e9fd54a/source-manifest.sha256",
+      "sha256": "b3edbbd194811580d4f78bd54244ebfe9b17f2c93e82583abebe212f40432d42",
+      "bytes": 715922
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-comparison.json",
+      "sha256": "1668b3e51df2ae116cb548a7649eacb68177c344a64b38612ab1d729cb272e37",
+      "bytes": 251
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.json",
+      "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "bytes": 3819
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-current.sha256.txt",
+      "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.json",
+      "sha256": "9e113482f46d64e54e25c89452139066b83cb58d4bcc97b03cd7b99b4ef98410",
+      "bytes": 3819
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+      "sha256": "0e4f60ea702dd7a08fb268750585bc30c934dc57a6fd5544b503d1c695e14280",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/decode.json",
+      "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "bytes": 281
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/descriptor.json",
+      "sha256": "d3e9863c41d3c5ca66c6a2856c3578071693275a9a7baceb0796c70ed5379276",
+      "bytes": 8102
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/inspector.json",
+      "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "bytes": 503
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-empty-slots/attempt-0001/semantic-validation.json",
+      "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "bytes": 284
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-comparison.json",
+      "sha256": "db7632110808ff94e6a6c62eee202dac1adf21f05b628ba740e7ea842519932b",
+      "bytes": 265
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.json",
+      "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "bytes": 3821
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-current.sha256.txt",
+      "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.json",
+      "sha256": "85cf2e607bb727c04b16770b912145f5d16d22b022d11e4282b4e1410c528ceb",
+      "bytes": 3821
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/checkpoint-legacy.sha256.txt",
+      "sha256": "957d8ce67ccca588c71439ae0e7aa2f103a196ac074dd16e66709e1416e1f15d",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/decode.json",
+      "sha256": "08b7e6b9d797ffdb0db6649fdf261428e897daaf9182191833082a777a3fa7f9",
+      "bytes": 281
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/descriptor.json",
+      "sha256": "87c86b6d668b728b54cb35149c2f0d78307c3d15b0a87ec067263c20a8fd5895",
+      "bytes": 8126
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/inspector.json",
+      "sha256": "e6c6620fd26b3352783f2d7cc1feacfcaf9edbf9db132bce99a4e164a6468896",
+      "bytes": 503
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-checkpoint-null-slots/attempt-0001/semantic-validation.json",
+      "sha256": "ad49a6460d540c3bb3ba159a89ac29734e0e60736236748325a467b6238d002c",
+      "bytes": 284
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/checksum.sha256.txt",
+      "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/descriptor.json",
+      "sha256": "e6247462a5f810d6b9bae593a26aa7e9d8c1f9aabb804c508b2726eb65969454",
+      "bytes": 8075
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/envelope.json",
+      "sha256": "601421132919a20b2f46e2f7e635ec81c7413180164e6be42de78b95646a1405",
+      "bytes": 2227
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/input.json",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/inspector-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/inspector.json",
+      "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "bytes": 620
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P0-profile-no-active/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/checksum-preimage.utf8",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "bytes": 13170
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/checksum.sha256.txt",
+      "sha256": "5614184f1e15bcf94641e989e17e18f64b14de50ae2facbd2620ef9be20ca589",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/descriptor.json",
+      "sha256": "4bc5069bcfa5999f6ebde5741b6a2e10cf9f9056f89818e151c119979e3793cd",
+      "bytes": 8113
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/envelope.json",
+      "sha256": "6814ec3b42d7e754622dac845339b53175ec79f95f6354e7a2fb57c3e03493f3",
+      "bytes": 15920
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/input.json",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "bytes": 13170
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/inspector-preimage.utf8",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "bytes": 13170
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/inspector.json",
+      "sha256": "19f1ab85733ee44cd4a5277e565ec6414281d138980f0b44461cea1207ce3816",
+      "bytes": 620
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "e5240bcaa4e4b8ea6e1897233fc09d369aedaeb6d6d6a268e3c3aae821c96385",
+      "bytes": 13170
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-nontrivial/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/checksum-preimage.utf8",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "bytes": 13170
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/checksum.sha256.txt",
+      "sha256": "e390de361a4c61db887904f5103e06dd883e1666347ba7d672944b5836efd9c9",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/descriptor.json",
+      "sha256": "5c2d840f6b3ab7e77467450d2773994b3cc3e332e12573b9aacd516192c60322",
+      "bytes": 8089
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/envelope.json",
+      "sha256": "16367a7932485facf2f1c59d04b45b3252e7acc04da168720c931d499da4354d",
+      "bytes": 15920
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/input.json",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "bytes": 13170
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/inspector-preimage.utf8",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "bytes": 13170
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/inspector.json",
+      "sha256": "1882651f928bc9825a4e66d15c522b136d6f44f69cfce0904ac07f139e71e322",
+      "bytes": 620
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "efe2c31abc41986777a8ff5ab39a2e9dc4388dfe1b9e7f86b5321e6d52bbd076",
+      "bytes": 13170
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P1-active-known-zero/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/checksum.sha256.txt",
+      "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/descriptor.json",
+      "sha256": "ace5f63cc44e3d87cc1733fbd60d4fa1ea933398eb4a7bc3b5f007cfc9dfabca",
+      "bytes": 8128
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/envelope.json",
+      "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "bytes": 11338
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/input.json",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/inspector.json",
+      "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+      "bytes": 620
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-inline-empty/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/checksum.sha256.txt",
+      "sha256": "4e1c74e2d14942a45ce3790688ede76c9ce6bc06c1e7ac1aaa06dad2e9e3401c",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/descriptor.json",
+      "sha256": "fb23cb75fbec5c9128f2ce01e03639e780ec1310cefe136d8f58efd7053016a6",
+      "bytes": 8097
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/envelope.json",
+      "sha256": "4e9fa1737207471c28fa1d4dd361f9b29ed670ea602887f2e43b41b41d58a5ce",
+      "bytes": 11338
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/input.json",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/inspector-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/inspector.json",
+      "sha256": "f17860c9eff5e0fd37d75315690fe67d94e94f9848aa0ad96ea8d42cc97604fa",
+      "bytes": 620
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "9c6bf2a7ff2990cfe972255d9c2e09d727f22a0b900cf6c6a694217e6579684a",
+      "bytes": 10461
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P2-active-unknown-null/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/checksum-preimage.utf8",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "bytes": 9345
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/checksum.sha256.txt",
+      "sha256": "8b3a6ce32e9a20cab58e0e7a016dde78f7d3546b201104a099af432926e4b4c3",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/decode.json",
+      "sha256": "ce5e22549cd96db59e73ecc697a44e784503831c3e2a45d210353e15aeac5580",
+      "bytes": 208
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/descriptor.json",
+      "sha256": "60cb307d8a24eb25841e2cb85c536d4db50f2b6334e70610660cab024df84d83",
+      "bytes": 8068
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/envelope.json",
+      "sha256": "2b3b77e26dff116d1b99521546bf720fd305a89be73ce5263718dc37c796386c",
+      "bytes": 12973
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/input.json",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "bytes": 9345
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/inspector-preimage.utf8",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "bytes": 9345
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/inspector.json",
+      "sha256": "6ee492d12b3dc1e1f601f71f57a784ee6939d8d0859ba6bd94c1c046d3b0d8b6",
+      "bytes": 620
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "5f5c672482565ce212c060540ee376bb55606b60deb292bf9fea47776e4e4edc",
+      "bytes": 9345
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P3-receipts-full/attempt-0001/semantic-validation.json",
+      "sha256": "7fee51fea2ced8e835f6ca867975f69ddd6b4210a2cae6bdca3b53caaec7b975",
+      "bytes": 201
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/checksum-preimage.utf8",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "bytes": 10665
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/checksum.sha256.txt",
+      "sha256": "ea77ac4f038bf0077a48cb8154a45115b83130779c397d5bb7853b754b6ef3ae",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/decode.json",
+      "sha256": "1cb10347d13b11e2a36789b7c6afa2a7451cee3376fe3cecfbf731e55bf1ba74",
+      "bytes": 231
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/descriptor.json",
+      "sha256": "6a799c0e2f014439e8c21dd3103405988e5be91e69f95a3b6760942f9aa283c1",
+      "bytes": 9230
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/envelope.json",
+      "sha256": "564ce6869d47e5fe2bfcd09c05b86f6fb110ce5e66f0bbf6251e62ec882ede8f",
+      "bytes": 12060
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/input.json",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "bytes": 10665
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/inspector-preimage.utf8",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "bytes": 10665
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/inspector.json",
+      "sha256": "ba84c0cc50843d5390dde0ee23b27c62eafc21da833a9ee50823394a22fddc08",
+      "bytes": 620
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "dade9e9ae8674ada77c28fc313cd2800882774d83a7161ba1fdf69426a7c2098",
+      "bytes": 10665
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P4-null-empty-boundary/attempt-0001/semantic-validation.json",
+      "sha256": "2b84445773f61ddab7c778aa6ab073c21dab4f18eaebc6303a2e5b6fa9b2d552",
+      "bytes": 1259
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/checksum.sha256.txt",
+      "sha256": "b5ca4c1f8e42803519a7e1480f07b77c2f325a25df2aff6bb0f484f6f82375ab",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/decode.json",
+      "sha256": "1cb10347d13b11e2a36789b7c6afa2a7451cee3376fe3cecfbf731e55bf1ba74",
+      "bytes": 231
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/descriptor.json",
+      "sha256": "ffebe14d86097760e60e173c3088fe8ccf8ae27364aeace7e2e908c5cc1d1765",
+      "bytes": 8216
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/envelope.json",
+      "sha256": "d4c8df43672cc47c93aecdecb801d25184c826c187e093e86b3e027a64edc536",
+      "bytes": 15921
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/input.json",
+      "sha256": "c93c3d01328b590b06ebbc5eef06ae7190b1f22835e2391b731cb2b48bc83b0e",
+      "bytes": 13171
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/inspector-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/inspector.json",
+      "sha256": "3a08cf8053ce748965b56213772eb20113b02f7d7d7b1e95440c9a0f5809678f",
+      "bytes": 620
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "56971d26b90f8db0a021845e6fadedd58c58a27a82e5046ac2ec2c0e9844aee8",
+      "bytes": 1442
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-P5-flag-payload-conflict/attempt-0001/semantic-validation.json",
+      "sha256": "f67cb61a394181bb2191bc08214bdb016bbc53b6ea01bca574784e77972eb85f",
+      "bytes": 283
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/checksum-preimage.utf8",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "bytes": 285
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/checksum.sha256.txt",
+      "sha256": "ea6091fb2cf56dddd707126c8ed2d376e3ca4d77ff3c50d708c63df91bfea5fb",
+      "bytes": 64
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/decode.json",
+      "sha256": "f323cd8efbf3eadf5e1a5abb0733ca4e0a35323948c4197e1b4ebb7275b8c0c6",
+      "bytes": 209
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/descriptor.json",
+      "sha256": "fd1365a267e92ed0fd919b624aa5b3a3db432e025199bcc3053c73f7886fd6bc",
+      "bytes": 8054
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/envelope.json",
+      "sha256": "ed872b2bd66dfab35fd2b0ca44a32cac8b20dbf1c9a209b2e6660f0ab2331139",
+      "bytes": 447
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/input.json",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "bytes": 285
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/inspector-preimage.utf8",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "bytes": 285
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/inspector.json",
+      "sha256": "41082449d6d3f56265623c584df11922e02e2aa92ac147f4a5fddad3ffa9da90",
+      "bytes": 621
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/legacy-checksum-preimage.utf8",
+      "sha256": "6a1d0a0d7d2c2361967033e09dc7fa67e8ddd4ac51ff6fe82dc8929f8f4b4d16",
+      "bytes": 285
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/cases/V6-S0-settings/attempt-0001/semantic-validation.json",
+      "sha256": "64a51e43b727e543b045e30a64d4194facb7473255202887ebcf7b5a5aafbbeb",
+      "bytes": 202
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/manifest.json",
+      "sha256": "19557e6cf833d5057b6ce2f75a434647c2973f18dc50d9d185ea0449b9cdaab1",
+      "bytes": 17874
+    },
+    {
+      "path": "Logs/Scenarios/V6Capture-5c4bed77ced5e99c444657e61988dc6819d331ae-41207289640-1/session.json",
+      "sha256": "e6cbb9cb14c4d945a52b1af990ebc6bdb55799420bad601fe179b7090e371396",
+      "bytes": 4551
+    },
+    {
+      "path": "test-results/COMBINE_RESULTS.log",
+      "sha256": "0dd16d984c74875a26c12737d014df9369d85dc32cd50a4f98418470865e8c2b",
+      "bytes": 33214
+    },
+    {
+      "path": "test-results/editmode-results.xml",
+      "sha256": "ff381fc32bac86fc165c3395d882aa16caff6ac1df8f60b360df413a621267e8",
+      "bytes": 568832
+    },
+    {
+      "path": "test-results/editmode.log",
+      "sha256": "709cba0ec29dc465a44d1dbe00b2095ad40cd4fe4e410c9c7f5d740f5b7cf9e1",
+      "bytes": 673164
+    },
+    {
+      "path": "test-results/playmode-results.xml",
+      "sha256": "fd9975940e88a42263e38b2e61c3daa562ef6dfa6b7ae6af0bb47f9a94d90b42",
+      "bytes": 1077520
+    },
+    {
+      "path": "test-results/playmode.log",
+      "sha256": "494b355ca3e1a32f606a963326a7370a9ef5766372586a6448138ddfdb592146",
+      "bytes": 1665903
+    }
+  ]
+}

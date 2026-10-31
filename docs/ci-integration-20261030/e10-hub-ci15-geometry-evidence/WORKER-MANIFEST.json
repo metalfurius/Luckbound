@@ -1,0 +1,65 @@
+{
+  "artifact": "E10HubPrimaryGeometryFix-20261031-r1/worker",
+  "source_inventory_count": 2,
+  "before_candidate_pairs": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "before": {
+        "sha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843",
+        "bytes": 96081
+      },
+      "candidate": {
+        "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f",
+        "bytes": 98075
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "before": {
+        "sha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab",
+        "bytes": 47302
+      },
+      "candidate": {
+        "sha256": "45dca8b433068bcb6cfea56c43334a4cbf7f16c486d55b201b58e1b6f39d27c3",
+        "bytes": 85767
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "before/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 96081,
+      "sha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843"
+    },
+    {
+      "path": "before/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "bytes": 47302,
+      "sha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 98075,
+      "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f"
+    },
+    {
+      "path": "candidate/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "bytes": 85767,
+      "sha256": "45dca8b433068bcb6cfea56c43334a4cbf7f16c486d55b201b58e1b6f39d27c3"
+    },
+    {
+      "path": "DIFF.patch",
+      "bytes": 52637,
+      "sha256": "2bd096300d48350790d83c92a0dda41d5125064a70aa68c09668f976412c75ec"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 3886,
+      "sha256": "9654f015a72e4aea87868f149b0938eaa0c4a5d37720aed77c5df34814eba85d"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 3724,
+      "sha256": "5ef155f3aed47b76a537ab5d3fdd4f359fd258c0dfef1b54fc5b3b371e0a3df9"
+    }
+  ]
+}

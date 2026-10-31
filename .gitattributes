@@ -46,3 +46,7 @@ docs/ci-integration-20261030/e10-guild-ci13-expectation-evidence/** -text
 docs/ci-integration-20261030/e10-guild-ci13-native-evidence/** -text
 docs/ci-integration-20261030/e10-guild-ci13-build-evidence/** -text
 docs/ci-integration-20261030/e10-hub-primary-localization-evidence/** -text
+
+docs/ci-integration-20261030/e10-hub-primary-ci14-failure-evidence/** -text
+
+docs/ci-integration-20261030/e10-hub-ci15-geometry-evidence/** -text

@@ -1,0 +1,100 @@
+{
+  "artifact": "E10HubPrimaryGeometryFix-20261031-r1",
+  "status": "candidate_staging_only_uncompiled",
+  "scope": {
+    "source_files_changed": 2,
+    "source_files": [
+      {
+        "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+        "before": {
+          "sha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843",
+          "bytes": 96081
+        },
+        "candidate": {
+          "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f",
+          "bytes": 98075
+        }
+      },
+      {
+        "path": "Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+        "before": {
+          "sha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab",
+          "bytes": 47302
+        },
+        "candidate": {
+          "sha256": "45dca8b433068bcb6cfea56c43334a4cbf7f16c486d55b201b58e1b6f39d27c3",
+          "bytes": 85767
+        }
+      }
+    ],
+    "all_candidate_paths_under": "worker/candidate/",
+    "no_live_Assets_edits": true
+  },
+  "geometry": {
+    "runtime_rects": 11,
+    "helper": "HubPreparationController.ArrangePrimaryHubGeometry",
+    "invocation": "OnEnable after EnsureGuildIntroPresentation and before handler registration",
+    "rects": [
+      "SkillOptionOneButton",
+      "SkillOptionTwoButton",
+      "SkillOptionThreeButton",
+      "RaceHumanButton",
+      "RaceOrciniButton",
+      "RaceAlvariButton",
+      "RaceDvergarButton",
+      "StartExpeditionButton",
+      "OpenPermanentUpgradesButton",
+      "PreparationSelectionSummary",
+      "HubPreparationStatus"
+    ]
+  },
+  "initial_measurement_block": {
+    "per_UnityTest": {
+      "actualText": 20,
+      "skillContentOverrides": 18,
+      "startActionOverrides": 8,
+      "raceOverrides": 26,
+      "summaryOverrides": 72,
+      "statusOverrides": 60,
+      "initialTotalPerUnityTest": 204
+    },
+    "max_per_test": 256,
+    "unity_tests": [
+      "PrimaryPreparationChangesLanguageInPlaceWithoutChangingSelectionOrState",
+      "PrimaryPreparationLoadsPersistedEnglishWithReadOnlyProfileAndKeepsSettingsIndependent"
+    ],
+    "all_records_registered_and_logged_before_fit_assertions": true,
+    "status_matrix_is_finite_content_override_only": true
+  },
+  "diagnostics_and_assertions": [
+    "Screen dimensions, Canvas pixelRect/scale/reference resolution and real Canvas RectTransform bounds are recorded; resolution is not inferred from pixels-per-unit.",
+    "All eleven approved rects are checked in Canvas-local transformed space for expected bounds, containment, pairwise separation and separation from SkillSectionTitle.",
+    "Button labels are checked inside their button bounds in that same transformed space.",
+    "Language transitions compare geometry snapshots for existing Hub elements, including OpenContractsButton and GuildIntroBackButton."
+  ],
+  "excluded": {
+    "legacy_expected_file": "Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+    "legacy_owner": "Root",
+    "initial_locale_json_sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a",
+    "scaffold_changes": false,
+    "scene_prefab_meta_save_config_workflow_changes": false
+  },
+  "validation": {
+    "offline_static_checks": [
+      "both before hashes match contract bases",
+      "helper has exactly eleven PlaceRuntimeRect calls",
+      "two UnityTest methods retained",
+      "25 status keys and 204 case accounting in candidate source",
+      "status content literals manually cross-checked against the read-only 60-case oracle; tests embed independent literals"
+    ],
+    "compiled": false,
+    "Unity_tests_executed": false,
+    "CI_executed": false,
+    "native_or_visual_acceptance_claimed": false
+  },
+  "diff": {
+    "path": "worker/DIFF.patch",
+    "sha256": "2bd096300d48350790d83c92a0dda41d5125064a70aa68c09668f976412c75ec",
+    "bytes": 52637
+  }
+}

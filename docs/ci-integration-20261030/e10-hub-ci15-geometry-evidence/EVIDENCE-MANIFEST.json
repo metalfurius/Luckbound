@@ -1,0 +1,126 @@
+{
+  "baseCommit": "5c4bed77ced5e99c444657e61988dc6819d331ae",
+  "staticAcceptedActaSha256": "d0c288a703d259c76976a0928e8562f65ef9edbdde75358b0ce4c3a98905e554",
+  "files": [
+    {
+      "path": "after/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 98075,
+      "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "bytes": 85767,
+      "sha256": "45dca8b433068bcb6cfea56c43334a4cbf7f16c486d55b201b58e1b6f39d27c3"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+      "bytes": 32661,
+      "sha256": "8a830c510f40b1c0dcb05ca45a7a7fa636fae43864e331fa88b3a992ffff1d80"
+    },
+    {
+      "path": "BASELINE.json",
+      "bytes": 375595,
+      "sha256": "c4e5901916e4d1e843d736a3d7d04145dc4d8c64ba4cd79b8337c50b3a83711b"
+    },
+    {
+      "path": "before/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 96081,
+      "sha256": "3ec9526181240cbcde297c97b5a303d02e17aa7e27e28f13a24ec94fe6070843"
+    },
+    {
+      "path": "before/Assets/Luckbound/Tests/PlayMode/HubPreparationLocalizationTests.cs",
+      "bytes": 47302,
+      "sha256": "d5b0362814741f5770b1aba0dd2beb4bb5c6fde2b4768fbefa02261ca9108fab"
+    },
+    {
+      "path": "before/Assets/Luckbound/Tests/PlayMode/SaveLegacyReadOnlyApplicationTests.cs",
+      "bytes": 32661,
+      "sha256": "a8d037b1512f10bd45341cb9ed9a338a86ed6d491b6a064546018885cb168ff9"
+    },
+    {
+      "path": "compile/INPUT-BINDING.json",
+      "bytes": 41118,
+      "sha256": "a086316b17a761919ccaa74631b26d5e47972f2f50f502d93a68ea839eebefcd"
+    },
+    {
+      "path": "compile/Luckbound.App.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "compile/Luckbound.App.rsp",
+      "bytes": 52966,
+      "sha256": "f2e8c90fd5de50b9a961f06a5202fa4195bcf4f5ca6fc2d5b65ae9ee62880908"
+    },
+    {
+      "path": "compile/Luckbound.PlayMode.Tests.log",
+      "bytes": 2704,
+      "sha256": "9665ea262f6ee3ec6a42e9fea1b8717d18f15191eac5179ee14b72afd3a9f6a7"
+    },
+    {
+      "path": "compile/Luckbound.PlayMode.Tests.rsp",
+      "bytes": 56121,
+      "sha256": "900debcd0f495c77c0dde1d4514bdb2d9c62a1a1828d8b14063182de450ebf22"
+    },
+    {
+      "path": "compile/RESULTS.json",
+      "bytes": 45219,
+      "sha256": "b7cbe13be9f7a455529ab2fb0e6349b8c5914ed218c04dc3af85a7c9c06d3919"
+    },
+    {
+      "path": "compile_candidates.py",
+      "bytes": 6441,
+      "sha256": "9cb36fe882a79460ead197570990c7987833c5f91c47ec43b9cd86d75652640b"
+    },
+    {
+      "path": "DIFF.patch",
+      "bytes": 53628,
+      "sha256": "dd035b8965ab15702d4c20e8e71a12e1feb071859f80bdc83444ded6c2eb0bbf"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 1494,
+      "sha256": "f23a18b41d5c1dcc0b1321fd4381a32ae3dc04e016d60d8efd1bd3a2b4274e44"
+    },
+    {
+      "path": "INTEGRATION.json",
+      "bytes": 1844,
+      "sha256": "3567fafbf0ca2628bc6513e440466bf54ba96a50999d1aac351666da7fa966a1"
+    },
+    {
+      "path": "make_diff.py",
+      "bytes": 780,
+      "sha256": "6b33887b1f0f04ce43d961eb66554f08eba24cfc2e6a155d624549288fdc3bfc"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1752,
+      "sha256": "3d24aed7b45d3d5de7a358444ce229322a5143e294578cc3e4fafcc826919afd"
+    },
+    {
+      "path": "STATUS-COPY-ORACLE.json",
+      "bytes": 13806,
+      "sha256": "c10b62112790b38fa0f4f0e9e579270d0920db46730d127f0af4e0e3d684d320"
+    },
+    {
+      "path": "WORKER-DIFF.patch",
+      "bytes": 52637,
+      "sha256": "2bd096300d48350790d83c92a0dda41d5125064a70aa68c09668f976412c75ec"
+    },
+    {
+      "path": "WORKER-FREEZE.json",
+      "bytes": 3886,
+      "sha256": "9654f015a72e4aea87868f149b0938eaa0c4a5d37720aed77c5df34814eba85d"
+    },
+    {
+      "path": "WORKER-MANIFEST.json",
+      "bytes": 2136,
+      "sha256": "b72bf3ad9f19efd55e6a39ec83231526ea55108fc4d0e1c791d5589aa126a264"
+    },
+    {
+      "path": "WORKER-REPORT.md",
+      "bytes": 3724,
+      "sha256": "5ef155f3aed47b76a537ab5d3fdd4f359fd258c0dfef1b54fc5b3b371e0a3df9"
+    }
+  ]
+}

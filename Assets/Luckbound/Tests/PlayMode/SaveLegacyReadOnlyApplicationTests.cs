@@ -150,7 +150,7 @@ namespace Luckbound.Tests.PlayMode
                 Text status = GameObject.Find("HubPreparationStatus")?.GetComponent<Text>();
                 Button startButton = GameObject.Find("StartExpeditionButton")?.GetComponent<Button>();
                 Assert.That(status, Is.Not.Null, "The existing hub diagnostic status element should be present.");
-                Assert.That(status.text, Does.Contain("La expedición guardada necesita revisión y se conserva"));
+                Assert.That(status.text, Does.Contain("The saved expedition needs review and has been preserved"));
                 Assert.That(status.text, Does.Contain(LegacyDiagnostic));
                 Assert.That(startButton, Is.Not.Null);
                 Assert.That(startButton.interactable, Is.False, "The Hub must not offer a new or continued run for a protected profile.");

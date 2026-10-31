@@ -155,6 +155,7 @@ namespace Luckbound.App
             ValidateReferences();
             EnsureContractPresentation();
             EnsureGuildIntroPresentation();
+            ArrangePrimaryHubGeometry();
             if (_localization != null)
             {
                 _localization.LanguageChanged -= OnContractLanguageChanged;
@@ -257,6 +258,34 @@ namespace Luckbound.App
                 : _guildCharacterButtons[0].gameObject;
             if (firstSelectable.activeInHierarchy && firstSelectable.GetComponent<Selectable>().interactable)
                 eventSystem.SetSelectedGameObject(firstSelectable);
+        }
+
+        private void ArrangePrimaryHubGeometry()
+        {
+            if (_skillButtons != null && _skillButtons.Length == 3)
+            {
+                PlaceRuntimeRect(_skillButtons[0].GetComponent<RectTransform>(), new Vector2(-72f, 2f), new Vector2(246f, 22f));
+                PlaceRuntimeRect(_skillButtons[1].GetComponent<RectTransform>(), new Vector2(-72f, -24f), new Vector2(246f, 22f));
+                PlaceRuntimeRect(_skillButtons[2].GetComponent<RectTransform>(), new Vector2(-72f, -50f), new Vector2(246f, 22f));
+            }
+
+            if (_humanRaceButton != null)
+                PlaceRuntimeRect(_humanRaceButton.GetComponent<RectTransform>(), new Vector2(126f, 1f), new Vector2(138f, 24f));
+            if (_lockedRaceButtons != null && _lockedRaceButtons.Length == 3)
+            {
+                PlaceRuntimeRect(_lockedRaceButtons[0].GetComponent<RectTransform>(), new Vector2(126f, -33f), new Vector2(138f, 38f));
+                PlaceRuntimeRect(_lockedRaceButtons[1].GetComponent<RectTransform>(), new Vector2(126f, -73f), new Vector2(138f, 38f));
+                PlaceRuntimeRect(_lockedRaceButtons[2].GetComponent<RectTransform>(), new Vector2(126f, -113f), new Vector2(138f, 38f));
+            }
+
+            if (_startExpeditionButton != null)
+                PlaceRuntimeRect(_startExpeditionButton.GetComponent<RectTransform>(), new Vector2(-112f, -77f), new Vector2(166f, 26f));
+            if (_openUpgradesButton != null)
+                PlaceRuntimeRect(_openUpgradesButton.GetComponent<RectTransform>(), new Vector2(13f, -77f), new Vector2(76f, 22f));
+            if (_selectionSummaryText != null)
+                PlaceRuntimeRect(_selectionSummaryText.rectTransform, new Vector2(-72f, -100f), new Vector2(246f, 16f));
+            if (_statusText != null)
+                PlaceRuntimeRect(_statusText.rectTransform, new Vector2(-72f, -122f), new Vector2(246f, 24f));
         }
 
         private void Start()
