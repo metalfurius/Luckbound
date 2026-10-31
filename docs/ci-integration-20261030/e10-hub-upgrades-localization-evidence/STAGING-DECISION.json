@@ -1,0 +1,13 @@
+{
+  "recordedBy": "Root from formal reviewer message; not a reviewer-authored acta",
+  "reviewer": "/root/sol_reviewer_20261031",
+  "model": "gpt-6.1-sol",
+  "effort": "xhigh",
+  "decision": "Accepted for staging only; no integration/CI16 until corrective closes",
+  "contractSha256": "df5427a749fa898a2c4731c8a909f30b42cc6f5ff0876cd8864f2e548c6064b6",
+  "baseControllerSha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f",
+  "baseInitialSha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a",
+  "worker": "/root/luna_upgrades_localization_20261031",
+  "scope": "Only Logs/E10HubUpgradesLocalization-20261031-r1 candidates, same20keys/2tests and eleven geometry rects; Assets/CI15 frozen. Root composes and re-reviews any CI15 delta.",
+  "noNewNativeOrPerceptualAcceptance": true
+}

@@ -1,0 +1,301 @@
+{
+    "taskId": "C08",
+    "scenarioId": "C08_RealKeyboardTwoWaveCombat",
+    "seed": 17320508,
+    "sourceCommit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+    "sourceHash": "c1b55f1adc8bcb2a37bb43b1db2ffbb72052b4a60421ac4f8bc26648d4ebca34",
+    "sourceHashVersion": 2,
+    "sourceFileCount": 4747,
+    "sourceSnapshotCapturedUtc": "2026-10-31T14:40:18.8299330Z",
+    "sourceWorkingTree": "unspecified",
+    "unityVersion": "6000.6.7f1",
+    "platform": "LinuxEditor",
+    "graphicsDevice": "OpenGLCore",
+    "startedUtc": "2026-10-31T14:40:21.2767570Z",
+    "completedUtc": "2026-10-31T14:40:34.3938580Z",
+    "evidenceDirectory": "Logs/Scenarios/C08/20261031T144021273Z_C08_RealKeyboardTwoWaveCombat_1cf12922",
+    "screenshotStatus": "Not attempted",
+    "passed": true,
+    "exitCode": 0,
+    "inputs": [
+        {
+            "frame": 0,
+            "action": "MenuButton",
+            "value": "LUCHAR · ARENA 0.2"
+        },
+        {
+            "frame": 1,
+            "action": "Keyboard",
+            "value": "A/D move, J attack, Left Shift dodge, F health potion"
+        },
+        {
+            "frame": 0,
+            "action": "Jump",
+            "value": "Space: one real jump to verify the landing cue"
+        },
+        {
+            "frame": 89,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 116,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 145,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 200,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 228,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 229,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 258,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 287,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 295,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 316,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 345,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 346,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 375,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 404,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 433,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 443,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 462,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 491,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 512,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 520,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 549,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 578,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 585,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 607,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 636,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 663,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 665,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 694,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 723,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        },
+        {
+            "frame": 742,
+            "action": "Dodge",
+            "value": "Left Shift away from an enemy telegraph or active attack"
+        },
+        {
+            "frame": 767,
+            "action": "Attack",
+            "value": "J sword attack at melee range"
+        }
+    ],
+    "events": [
+        "C08 landing trace before arena; pending=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=initialized; instance=23931:1792; frame=49520; fixedTime=16.583334; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=False; baselineBefore=False; baselineAfter=False; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=False; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=49520; fixedTime=16.583334; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=False; baselineBefore=False; baselineAfter=False; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=False; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=49520; fixedTime=16.583334; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=False; baselineBefore=False; baselineAfter=False; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=False; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=49520; fixedTime=16.583334; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=False; baselineBefore=False; baselineAfter=False; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=False; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=49521; fixedTime=16.583334; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=False; baselineBefore=False; baselineAfter=False; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=False; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=49521; fixedTime=16.583334; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=False; baselineBefore=False; baselineAfter=False; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=False; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=49521; fixedTime=16.583334; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=False; baselineBefore=False; baselineAfter=False; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=False; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 jump boundary=before-enqueue; frame=49522; fixedTime=16.6; updateMode=ProcessEventsInDynamicUpdate; tick=0; successfulJumps=0; spaceLastPump=NotSampled; spaceSamplePhase=NotSampled; spaceSampleFrame=-1; grounded=True; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.499; velocityY=0",
+        "C08 jump boundary=after-down-pump; frame=49522; fixedTime=16.6; updateMode=ProcessEventsInDynamicUpdate; tick=0; successfulJumps=0; spaceLastPump=True; spaceSamplePhase=after-down-pump; spaceSampleFrame=49522; grounded=True; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.499; velocityY=0",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=49522; fixedTime=16.6; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=True; baselineBefore=False; baselineAfter=False; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=49522; fixedTime=16.6; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=True; baselineBefore=False; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=True; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=49522; fixedTime=16.6; tick=0; jumps=0; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=True; baselineBefore=False; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=True; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 jump boundary=after-fixed; frame=49523; fixedTime=16.6166668; updateMode=ProcessEventsInDynamicUpdate; tick=1; successfulJumps=1; spaceLastPump=True; spaceSamplePhase=after-down-pump; spaceSampleFrame=49522; grounded=False; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.25941682; velocityY=14.375",
+        "C08 jump boundary=after-release-pump; frame=49523; fixedTime=16.6166668; updateMode=ProcessEventsInDynamicUpdate; tick=1; successfulJumps=1; spaceLastPump=False; spaceSamplePhase=after-release-pump; spaceSampleFrame=49523; grounded=False; jumpBuffer=0; timeScale=1; dead=False; stunned=False; dodging=False; y=-3.25941682; velocityY=14.375",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=49523; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=0; reportedJumpsAfter=0; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=True; reportedGroundAfter=True; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=49523; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=0; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=True; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=True",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=49523; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=0; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=True; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=True",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=49524; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=49524; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=49524; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=49525; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=49525; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=49525; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=49526; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=49526; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=49526; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=49527; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=49527; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=49527; fixedTime=16.6166668; tick=1; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=False; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 first grounded after airborne before existing yield; frame=50260; tick=24; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=50260; fixedTime=17; tick=24; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=True; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=False; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22960:256,landing=False,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=ground-decision-after; instance=23931:1792; frame=50260; fixedTime=17; tick=24; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=True; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=True; landingCall=True; landingResult=True; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=0; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22955:256,landing=True,isPlaying=True|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-after; instance=23931:1792; frame=50260; fixedTime=17; tick=24; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=True; baselineBefore=True; baselineAfter=True; reportedGroundBefore=False; reportedGroundAfter=True; landingCall=True; landingResult=True; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=0; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22955:256,landing=True,isPlaying=True|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 landing trace phase=audio-before; instance=23931:1792; frame=50261; fixedTime=17; tick=24; jumps=1; reportedJumpsBefore=1; reportedJumpsAfter=1; grounded=True; baselineBefore=True; baselineAfter=True; reportedGroundBefore=True; reportedGroundAfter=True; landingCall=False; landingResult=NotCalledOrRouterMissing; routerPresent=True; routerActive=True; routerId=23881:2304; gesture=True; pendingBeforeLanding=-1; pendingNow=0; listenerPaused=True; voices=voice=24279:2304,clip=22955:256,landing=True,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "C08 existing landing clip probe=1; frame=50261; tick=24; routed=True; listenerPaused=True; voices=voice=24279:2304,clip=22955:256,landing=True,isPlaying=False|voice=24213:1792,clip=22936:256,landing=False,isPlaying=False|voice=24357:1792,clip=Missing,landing=False,isPlaying=False|voice=24355:1792,clip=22947:256,landing=False,isPlaying=False|voice=24280:2304,clip=Missing,landing=False,isPlaying=False",
+        "Wave 1 Slimes confirmed dead; wave 2 Huesoguardias spawned at tick 268.",
+        "C08 landing trace summary; updates=6059; records=29; overflow=0; landingCalls=1; firstGrounded=True; probes=1; tickWindowExpired=True; producerTransitionCompleteness=NotAssessed; fixtureReturnWithinWindowAndProbeObserved=True",
+        "ticks=776; result=Victory; playerHealth=60; meleeQueued=16; slimesDead=True; huesoguardiasDead=True; wave=2"
+    ],
+    "assertions": [
+        {
+            "name": "Arena opens from its menu button with two live Slimes",
+            "passed": true,
+            "expected": "wave 1; two live Slimes; menu button route",
+            "actual": "button=True; wave=1; slimes=2; alive=2"
+        },
+        {
+            "name": "The player uses the real melee overlap path against targets",
+            "passed": true,
+            "expected": "at least one queued and applied melee impact",
+            "actual": "queued=16; applied=16"
+        },
+        {
+            "name": "Melee contact stays queued until a later 60 Hz simulation tick",
+            "passed": true,
+            "expected": "a collected hit remains pending during its collection tick",
+            "actual": "delayedResolutionObserved=True"
+        },
+        {
+            "name": "Accepted physical enemy impacts request the enemy_damage effect while audio output stays paused",
+            "passed": true,
+            "expected": "an applied Slime or Huesoguardia impact assigns the enemy_damage clip to an audio voice",
+            "actual": "routed=True; listenerPaused=True; clipAvailable=True"
+        },
+        {
+            "name": "Spawn contact stays silent and a real jump landing requests the landing effect",
+            "passed": true,
+            "expected": "the player leaves the floor, returns to grounded, and assigns the landing clip to an audio voice",
+            "actual": "pendingAtSpawn=0; jumpStarted=True; airborne=True; routed=True; listenerPaused=True; clipAvailable=True; jumpCountBefore=0; jumpCountAfter=1; jumpTickBefore=0; jumpTickAfter=1"
+        },
+        {
+            "name": "Both Slimes die through combat before the next wave",
+            "passed": true,
+            "expected": "two Slimes dead and wave 2 reached",
+            "actual": "dead=True; wave=2"
+        },
+        {
+            "name": "The two Huesoguardias die through combat without forced removal",
+            "passed": true,
+            "expected": "two Huesoguardias enter Dead after melee impacts",
+            "actual": "dead=True; states=Dead,Dead"
+        },
+        {
+            "name": "Victory requires clearing both configured encounter waves",
+            "passed": true,
+            "expected": "Victory; zero living enemies; player alive",
+            "actual": "result=Victory; alive=0; playerHealth=60"
+        },
+        {
+            "name": "The standalone combat demo does not advance Expedition contracts",
+            "passed": true,
+            "expected": "CT01=0 and CT03=0 after a physical demo victory",
+            "actual": "won=True; CT01=0; CT03=0; afterExtraFrames=0/0"
+        },
+        {
+            "name": "Standalone demo victories leave Expedition contract progress unchanged after restart",
+            "passed": true,
+            "expected": "reloaded profile CT01=0 and CT03=0",
+            "actual": "CT01=0; CT03=0"
+        }
+    ],
+    "errors": [],
+    "artifacts": [
+        "source-manifest.sha256",
+        "scenario.log",
+        "scenario-report.json"
+    ]
+}

@@ -144,7 +144,7 @@ namespace Luckbound.App
         private bool _languageWriteInProgress;
         private bool _restoreGuildOpenerFocusOnEnable;
         private int _selectedGuildIntroCharacterIndex = -1;
-        private string _upgradeStatusMessage;
+        private LocalizedUiMessage _upgradeStatusMessage;
 
         public string SelectedClassId => PlayableClasses[_selectedClassIndex];
         public string SelectedRaceId => _selectedRaceId;
@@ -552,7 +552,7 @@ namespace Luckbound.App
             if (_upgradePanel == null) return;
             if (_contractPanel != null) _contractPanel.SetActive(false);
             if (_guildIntroRoot != null) _guildIntroRoot.SetActive(false);
-            _upgradeStatusMessage = string.Empty;
+            _upgradeStatusMessage = null;
             _upgradePanel.SetActive(true);
             RefreshView();
         }
@@ -1411,7 +1411,8 @@ namespace Luckbound.App
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
             if (app == null)
             {
-                _upgradeStatusMessage = "El perfil no está disponible.";
+                _upgradeStatusMessage = CreateMessage("ui.upgrades.profile_unavailable",
+                    "El perfil no está disponible.");
                 RefreshView();
                 return;
             }
@@ -1425,7 +1426,8 @@ namespace Luckbound.App
                 {
                     if (app.PendingPermanentUpgradeKind != kind)
                     {
-                        _upgradeStatusMessage = "Reintenta primero la compra pendiente.";
+                        _upgradeStatusMessage = CreateMessage("ui.upgrades.retry_pending_first",
+                            "Reintenta primero la compra pendiente.");
                         return;
                     }
                     result = await app.RetryPendingPermanentUpgradePurchaseAsync();
@@ -1439,7 +1441,8 @@ namespace Luckbound.App
             }
             catch (Exception exception)
             {
-                _upgradeStatusMessage = "No se pudo guardar la mejora: " + exception.Message;
+                _upgradeStatusMessage = CreateMessage("ui.upgrades.save_error",
+                    "No se pudo guardar la mejora: {0}", exception.Message);
             }
             finally
             {
@@ -1563,31 +1566,40 @@ namespace Luckbound.App
         private void RefreshUpgradeControls()
         {
             ApplicationBootstrapper app = ApplicationBootstrapper.Instance;
+            SetUpgradePanelText("PermanentUpgradeTitle", "ui.upgrades.title", "MEJORAS PERMANENTES · RENOMBRE");
+            SetUpgradePanelText("ClosePermanentUpgradesButtonLabel", "ui.upgrades.back", "VOLVER");
             if (app == null) return;
             ProfileSaveData profile = app.Profile;
             int renown = profile.availableRenown;
             bool pending = app.HasPendingPermanentUpgradePurchase;
-            if (_upgradeBalanceText != null) _upgradeBalanceText.text = "RENOMBRE DISPONIBLE · " + renown;
-            if (_upgradeStatusText != null) _upgradeStatusText.text = _upgradeStatusMessage ?? string.Empty;
+            if (_upgradeBalanceText != null)
+                _upgradeBalanceText.text = ResolveHubMessage(CreateMessage("ui.upgrades.balance",
+                    "RENOMBRE DISPONIBLE · {0}", renown));
+            if (_upgradeStatusText != null)
+                _upgradeStatusText.text = _upgradeStatusMessage == null ? string.Empty : ResolveHubMessage(_upgradeStatusMessage);
             SetUpgradeButton(_healthUpgradeButton, app, PermanentUpgradeKind.MaximumHealth,
                 profile.healthUpgradeLevel, PermanentUpgradeSnapshot.MaximumHealthUpgradeLevel,
-                renown, "SALUD MÁXIMA · +5 %", pending);
+                renown, "ui.upgrades.health", "SALUD MÁXIMA · +5 %", pending);
             SetUpgradeButton(_energyUpgradeButton, app, PermanentUpgradeKind.MaximumEnergy,
                 profile.energyUpgradeLevel, PermanentUpgradeSnapshot.MaximumEnergyUpgradeLevel,
-                renown, "ENERGÍA MÁXIMA · +5 %", pending);
+                renown, "ui.upgrades.energy", "ENERGÍA MÁXIMA · +5 %", pending);
             SetUpgradeButton(_potionUpgradeButton, app, PermanentUpgradeKind.AdditionalHealthPotion,
                 profile.additionalPotionUpgradeLevel, PermanentUpgradeSnapshot.MaximumPotionUpgradeLevel,
-                renown, "POCIÓN INICIAL · +1", pending);
+                renown, "ui.upgrades.potion", "POCIÓN INICIAL · +1", pending);
         }
 
         private void SetUpgradeButton(Button button, ApplicationBootstrapper app, PermanentUpgradeKind kind,
-            int level, int maximumLevel, int renown, string label, bool pending)
+            int level, int maximumLevel, int renown, string labelKey, string spanishLabel, bool pending)
         {
             if (button == null) return;
             bool retry = pending && app.PendingPermanentUpgradeKind == kind;
             int cost = PermanentUpgradeRules.GetNextCost(kind, level);
-            string detail = level >= maximumLevel ? "COMPLETA" : cost + " RENOMBRE";
-            SetLabel(button, (retry ? "REINTENTAR · " : "") + label + " · " + level + "/" + maximumLevel + " · " + detail);
+            string detail = level >= maximumLevel
+                ? GetHubText("ui.upgrades.complete", "COMPLETA")
+                : ResolveHubMessage(CreateMessage("ui.upgrades.cost", "{0} RENOMBRE", cost));
+            string retryPrefix = retry ? GetHubText("ui.upgrades.retry_prefix", "REINTENTAR · ") : string.Empty;
+            string label = GetHubText(labelKey, spanishLabel);
+            SetLabel(button, retryPrefix + label + " · " + level + "/" + maximumLevel + " · " + detail);
             button.interactable = !_purchasingUpgrade && (retry || (!pending && app.CanStartNewExpedition &&
                 level < maximumLevel && renown >= cost));
         }
@@ -1626,22 +1638,37 @@ namespace Luckbound.App
             return GetHubText("ui.hub.race.human", "HUMANO");
         }
 
-        private static string FormatPurchaseStatus(ProgressionPurchaseCommitResult result)
+        private static LocalizedUiMessage FormatPurchaseStatus(ProgressionPurchaseCommitResult result)
         {
-            if (result == null) return "No se recibió resultado de compra.";
-            if (result.Pending) return "Guardado pendiente. Pulsa la mejora marcada para reintentar.";
-            if (result.Purchase == null) return result.Message;
+            if (result == null)
+                return CreateMessage("ui.upgrades.result.missing", "No se recibió resultado de compra.");
+            if (result.Pending)
+                return CreateMessage("ui.upgrades.result.pending",
+                    "Guardado pendiente. Pulsa la mejora marcada para reintentar.");
+            if (result.Purchase == null)
+                return CreateMessage("ui.upgrades.result.details", "{0}", result.Message);
             if (result.Purchase.Status == PermanentUpgradePurchaseStatus.AlreadyProcessed && result.Persisted)
-                return "Esta compra ya estaba guardada; no se volvió a cobrar.";
+                return CreateMessage("ui.upgrades.result.already_saved",
+                    "Esta compra ya estaba guardada; no se volvió a cobrar.");
             if (result.Purchase.Status == PermanentUpgradePurchaseStatus.Purchased && result.Persisted)
-                return "Mejora guardada. Renombre disponible: " + result.Purchase.Snapshot.AvailableRenown + ".";
+                return CreateMessage("ui.upgrades.result.saved", "Mejora guardada. Renombre disponible: {0}.",
+                    result.Purchase.Snapshot.AvailableRenown);
             if (result.Purchase.Status == PermanentUpgradePurchaseStatus.RejectedInsufficientRenown)
-                return "Renombre insuficiente. Coste: " + result.Purchase.Cost + ".";
+                return CreateMessage("ui.upgrades.result.insufficient", "Renombre insuficiente. Coste: {0}.",
+                    result.Purchase.Cost);
             if (result.Purchase.Status == PermanentUpgradePurchaseStatus.RejectedMaximumLevel)
-                return "Esta mejora ya está completa.";
+                return CreateMessage("ui.upgrades.result.maximum", "Esta mejora ya está completa.");
             if (result.Purchase.Status == PermanentUpgradePurchaseStatus.RejectedNotInTavern)
-                return "Solo puedes comprar mejoras en la taberna.";
-            return result.Message;
+                return CreateMessage("ui.upgrades.result.tavern_only", "Solo puedes comprar mejoras en la taberna.");
+            return CreateMessage("ui.upgrades.result.details", "{0}", result.Message);
+        }
+
+        private void SetUpgradePanelText(string objectName, string key, string spanishFallback)
+        {
+            if (_upgradePanel == null) return;
+            Text text = _upgradePanel.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(candidate => candidate != null && candidate.name == objectName);
+            if (text != null) text.text = GetHubText(key, spanishFallback);
         }
 
         private void RefreshProfileStatus()

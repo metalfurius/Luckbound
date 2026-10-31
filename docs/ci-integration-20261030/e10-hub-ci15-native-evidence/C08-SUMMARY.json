@@ -1,0 +1,45 @@
+{
+  "run": 41211023582,
+  "scenarios": [
+    {
+      "scenario": "C08_EarlyJumpLanding",
+      "passed": true,
+      "assertions": 3,
+      "allAssertionsPassed": true,
+      "sourceCommit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+      "sourceFileCount": 4747,
+      "sourceManifestSha256": "c1b55f1adc8bcb2a37bb43b1db2ffbb72052b4a60421ac4f8bc26648d4ebca34",
+      "reportSha256": "6322a2eb3870c850b898c2dc631c202ace140cf8fa84c3555db422f5b048ce2a",
+      "keyEvents": [
+        "C08 input ordering: early=True; tick=0; frame=49478; observedSpawnBaseline=False"
+      ]
+    },
+    {
+      "scenario": "C08_ObservedSpawnLanding",
+      "passed": true,
+      "assertions": 3,
+      "allAssertionsPassed": true,
+      "sourceCommit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+      "sourceFileCount": 4747,
+      "sourceManifestSha256": "c1b55f1adc8bcb2a37bb43b1db2ffbb72052b4a60421ac4f8bc26648d4ebca34",
+      "reportSha256": "da4feb8756300ab2eb59a4b33f94a9d2885662a429e4826ef427d67a85e1f3bb",
+      "keyEvents": [
+        "C08 input ordering: early=False; tick=1; frame=49498; observedSpawnBaseline=True"
+      ]
+    },
+    {
+      "scenario": "C08_RealKeyboardTwoWaveCombat",
+      "passed": true,
+      "assertions": 10,
+      "allAssertionsPassed": true,
+      "sourceCommit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+      "sourceFileCount": 4747,
+      "sourceManifestSha256": "c1b55f1adc8bcb2a37bb43b1db2ffbb72052b4a60421ac4f8bc26648d4ebca34",
+      "reportSha256": "dda4b422e1a43d22c5550f0e156aa83eb4c9a38294b87598d91326bf4c0f6b24",
+      "keyEvents": [
+        "ticks=776; result=Victory; playerHealth=60; meleeQueued=16; slimesDead=True; huesoguardiasDead=True; wave=2"
+      ]
+    }
+  ],
+  "perceptualReview": false
+}

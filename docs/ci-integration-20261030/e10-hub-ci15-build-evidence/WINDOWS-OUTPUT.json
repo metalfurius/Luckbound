@@ -1,0 +1,21 @@
+{
+  "run": 41211023582,
+  "commit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "artifact": "windows-9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "zipSha256": "669ec79291d9f29d97679d7f66b38947f46475c1f031616c72ae0a882a3215be",
+  "zipBytes": 50573213,
+  "verifiedFiles": 210,
+  "playerExecuted": false,
+  "executable": {
+    "path": "Luckbound.exe",
+    "bytes": 667136,
+    "sha256": "9806abde4a406ed68647e9505852c49f6aa72a372f4f084e2aa2821affea57a2",
+    "machine": "AMD64",
+    "pe32Plus": true
+  },
+  "unityPlayer": {
+    "path": "UnityPlayer.dll",
+    "bytes": 38753192,
+    "sha256": "38db99e19730fad74e8cc21758c87ffe7387b7774ebd9a14405c62ae481f2550"
+  }
+}

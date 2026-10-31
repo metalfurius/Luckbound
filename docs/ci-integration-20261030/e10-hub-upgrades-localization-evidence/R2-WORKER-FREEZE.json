@@ -1,0 +1,49 @@
+{
+  "artifact": "E10HubUpgradesLocalization-20261031-r2",
+  "status": "candidate_static_fix_only_uncompiled",
+  "input_r1": {
+    "path": "Logs/E10HubUpgradesLocalization-20261031-r1/candidate/Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs",
+    "bytes": 53066,
+    "sha256": "aff69777df3e741af02dad272f6ec679772d05cc1dd36d3bc51d431b904bcd84"
+  },
+  "candidate": {
+    "path": "candidate/Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs",
+    "bytes": 56360,
+    "sha256": "43d678f7db37634ffe480c80b37e2ba19c8cb88c0b5e7fdb2c11bc3f48557fe9"
+  },
+  "scope": {
+    "changed_source_files": [
+      "Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs"
+    ],
+    "no_live_assets_edits": true,
+    "no_meta_files": true,
+    "other_r1_sources_unchanged_and_retained_by_root": true
+  },
+  "compile_diagnostic_fixes": {
+    "CS0619": "Font identity uses UnityEngine.EntityId from Font.GetEntityId(), serialized as its complete ToString() value.",
+    "CS1061": "Removed wrapper GetPrimaryPath call; ISaveStore exposes ReadAsync and WriteAsync. Profile and backup evidence continues through ReadAsync.",
+    "CS0618": "Five object searches use FindObjectsInactive.Include overloads without FindObjectsSortMode."
+  },
+  "Sol_review_corrections": {
+    "hub_start_wait": "Three yielded frames after Hub scene/controller confirmation, before caller input or measurement; no expected-text wait.",
+    "button_parent_layout": "Snapshots compare the instance and RectTransform anchors, pivot, anchoredPosition, and sizeDelta for all four button parents.",
+    "first_test_close": "Uses production close button and checks all seven captured Texts are inactive before opening Guild.",
+    "temp_cleanup": "Delete guard requires system temp root, the task-specific prefix, and an N-format GUID leaf."
+  },
+  "preserved": {
+    "unity_test_count": 2,
+    "methods": [
+      "UpgradePanelLoadsEnglishAndTranslatesCompleteStatesWithoutProfileWrites",
+      "UpgradePendingPurchaseChangesLanguageAndRetriesTheExactPayload"
+    ],
+    "metric_capture_and_assertions_preserved": true,
+    "validators_and_save_store_flow_preserved": true,
+    "ui_actions_and_exact_retry_payload_comparison_preserved": true
+  },
+  "validation": {
+    "static_source_checks": "passed",
+    "compile": "not_run",
+    "unity_tests": "not_run",
+    "ci": "not_run"
+  }
+}

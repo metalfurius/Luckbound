@@ -1,0 +1,70 @@
+{
+  "baseCommit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "actaSha256": "4537dea5c28dfe4bf5f5a3283ce2c1a080ca9db93cf7b5dcc2759026c2bd6698",
+  "freezeSha256": "ab01dc46fcac88c1149b74394b7d85b4babd551edf3f3fe8c069b7b623f5ce68",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "before": {
+        "bytes": 98075,
+        "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f"
+      },
+      "after": {
+        "bytes": 100040,
+        "sha256": "0194c41154f98a135c28943c79d101e2c7e4045e795c3c32e03b28336d2020f1"
+      }
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "before": {
+        "bytes": 31890,
+        "sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a"
+      },
+      "after": {
+        "bytes": 34107,
+        "sha256": "6bee4724c1edf8c6cbde5653b280f36d61c207b83eadce2d8d6bcb107918c54d"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs",
+      "before": null,
+      "after": {
+        "bytes": 56360,
+        "sha256": "43d678f7db37634ffe480c80b37e2ba19c8cb88c0b5e7fdb2c11bc3f48557fe9"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs.meta",
+      "before": null,
+      "after": {
+        "bytes": 60,
+        "sha256": "88749b068993c688306efc705cf85605aaf2d4adad5434a6024e55de9364a9da"
+      }
+    }
+  ],
+  "sourceCount": 414,
+  "existingSourcesChanged": 1,
+  "addedSources": 1,
+  "originalSourcesUnchanged": 412,
+  "metas": {
+    "before": 870,
+    "after": 871,
+    "oldUnchanged": 870,
+    "unique": 871,
+    "newGuid": "7cb6870e694148c3aa9e39f0b67486be"
+  },
+  "fixturesUnchanged": 493,
+  "locale": {
+    "before": 241,
+    "after": 261,
+    "previousEntriesUnchangedInOrder": 241,
+    "new": 20
+  },
+  "geometryHelperByteUnchanged": true,
+  "hubSceneUnchanged": true,
+  "compiledInputsMatchLive": 137,
+  "expectedTests": 1175,
+  "NativeExecuted": false,
+  "unityLocalExecuted": false,
+  "ci16Started": false
+}

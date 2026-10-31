@@ -1,0 +1,289 @@
+{
+  "contractSha256": "df5427a749fa898a2c4731c8a909f30b42cc6f5ff0876cd8864f2e548c6064b6",
+  "candidateLocaleSha256": "6bee4724c1edf8c6cbde5653b280f36d61c207b83eadce2d8d6bcb107918c54d",
+  "old241EntriesUnchanged": true,
+  "new20EntriesDirectlyIdentical": true,
+  "tablePaddingRemovedExactlyOneSpace": true,
+  "cases": [
+    {
+      "key": "ui.upgrades.title",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.title",
+        "es": "MEJORAS PERMANENTES · RENOMBRE",
+        "en": "PERMANENT UPGRADES · RENOWN"
+      },
+      "actual": {
+        "key": "ui.upgrades.title",
+        "es": "MEJORAS PERMANENTES · RENOMBRE",
+        "en": "PERMANENT UPGRADES · RENOWN"
+      }
+    },
+    {
+      "key": "ui.upgrades.balance",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.balance",
+        "es": "RENOMBRE DISPONIBLE · {0}",
+        "en": "AVAILABLE RENOWN · {0}"
+      },
+      "actual": {
+        "key": "ui.upgrades.balance",
+        "es": "RENOMBRE DISPONIBLE · {0}",
+        "en": "AVAILABLE RENOWN · {0}"
+      }
+    },
+    {
+      "key": "ui.upgrades.health",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.health",
+        "es": "SALUD MÁXIMA · +5 %",
+        "en": "MAXIMUM HEALTH · +5%"
+      },
+      "actual": {
+        "key": "ui.upgrades.health",
+        "es": "SALUD MÁXIMA · +5 %",
+        "en": "MAXIMUM HEALTH · +5%"
+      }
+    },
+    {
+      "key": "ui.upgrades.energy",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.energy",
+        "es": "ENERGÍA MÁXIMA · +5 %",
+        "en": "MAXIMUM ENERGY · +5%"
+      },
+      "actual": {
+        "key": "ui.upgrades.energy",
+        "es": "ENERGÍA MÁXIMA · +5 %",
+        "en": "MAXIMUM ENERGY · +5%"
+      }
+    },
+    {
+      "key": "ui.upgrades.potion",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.potion",
+        "es": "POCIÓN INICIAL · +1",
+        "en": "STARTING POTION · +1"
+      },
+      "actual": {
+        "key": "ui.upgrades.potion",
+        "es": "POCIÓN INICIAL · +1",
+        "en": "STARTING POTION · +1"
+      }
+    },
+    {
+      "key": "ui.upgrades.back",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.back",
+        "es": "VOLVER",
+        "en": "BACK"
+      },
+      "actual": {
+        "key": "ui.upgrades.back",
+        "es": "VOLVER",
+        "en": "BACK"
+      }
+    },
+    {
+      "key": "ui.upgrades.complete",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.complete",
+        "es": "COMPLETA",
+        "en": "COMPLETE"
+      },
+      "actual": {
+        "key": "ui.upgrades.complete",
+        "es": "COMPLETA",
+        "en": "COMPLETE"
+      }
+    },
+    {
+      "key": "ui.upgrades.cost",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.cost",
+        "es": "{0} RENOMBRE",
+        "en": "{0} RENOWN"
+      },
+      "actual": {
+        "key": "ui.upgrades.cost",
+        "es": "{0} RENOMBRE",
+        "en": "{0} RENOWN"
+      }
+    },
+    {
+      "key": "ui.upgrades.retry_prefix",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.retry_prefix",
+        "es": "REINTENTAR · ",
+        "en": "RETRY · "
+      },
+      "actual": {
+        "key": "ui.upgrades.retry_prefix",
+        "es": "REINTENTAR · ",
+        "en": "RETRY · "
+      }
+    },
+    {
+      "key": "ui.upgrades.profile_unavailable",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.profile_unavailable",
+        "es": "El perfil no está disponible.",
+        "en": "The profile is not available."
+      },
+      "actual": {
+        "key": "ui.upgrades.profile_unavailable",
+        "es": "El perfil no está disponible.",
+        "en": "The profile is not available."
+      }
+    },
+    {
+      "key": "ui.upgrades.retry_pending_first",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.retry_pending_first",
+        "es": "Reintenta primero la compra pendiente.",
+        "en": "Retry the pending purchase first."
+      },
+      "actual": {
+        "key": "ui.upgrades.retry_pending_first",
+        "es": "Reintenta primero la compra pendiente.",
+        "en": "Retry the pending purchase first."
+      }
+    },
+    {
+      "key": "ui.upgrades.save_error",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.save_error",
+        "es": "No se pudo guardar la mejora: {0}",
+        "en": "Could not save the upgrade: {0}"
+      },
+      "actual": {
+        "key": "ui.upgrades.save_error",
+        "es": "No se pudo guardar la mejora: {0}",
+        "en": "Could not save the upgrade: {0}"
+      }
+    },
+    {
+      "key": "ui.upgrades.result.missing",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.result.missing",
+        "es": "No se recibió resultado de compra.",
+        "en": "No purchase result was received."
+      },
+      "actual": {
+        "key": "ui.upgrades.result.missing",
+        "es": "No se recibió resultado de compra.",
+        "en": "No purchase result was received."
+      }
+    },
+    {
+      "key": "ui.upgrades.result.pending",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.result.pending",
+        "es": "Guardado pendiente. Pulsa la mejora marcada para reintentar.",
+        "en": "Save pending. Select the marked upgrade to retry."
+      },
+      "actual": {
+        "key": "ui.upgrades.result.pending",
+        "es": "Guardado pendiente. Pulsa la mejora marcada para reintentar.",
+        "en": "Save pending. Select the marked upgrade to retry."
+      }
+    },
+    {
+      "key": "ui.upgrades.result.already_saved",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.result.already_saved",
+        "es": "Esta compra ya estaba guardada; no se volvió a cobrar.",
+        "en": "This purchase was already saved; you were not charged again."
+      },
+      "actual": {
+        "key": "ui.upgrades.result.already_saved",
+        "es": "Esta compra ya estaba guardada; no se volvió a cobrar.",
+        "en": "This purchase was already saved; you were not charged again."
+      }
+    },
+    {
+      "key": "ui.upgrades.result.saved",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.result.saved",
+        "es": "Mejora guardada. Renombre disponible: {0}.",
+        "en": "Upgrade saved. Available Renown: {0}."
+      },
+      "actual": {
+        "key": "ui.upgrades.result.saved",
+        "es": "Mejora guardada. Renombre disponible: {0}.",
+        "en": "Upgrade saved. Available Renown: {0}."
+      }
+    },
+    {
+      "key": "ui.upgrades.result.insufficient",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.result.insufficient",
+        "es": "Renombre insuficiente. Coste: {0}.",
+        "en": "Not enough Renown. Cost: {0}."
+      },
+      "actual": {
+        "key": "ui.upgrades.result.insufficient",
+        "es": "Renombre insuficiente. Coste: {0}.",
+        "en": "Not enough Renown. Cost: {0}."
+      }
+    },
+    {
+      "key": "ui.upgrades.result.maximum",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.result.maximum",
+        "es": "Esta mejora ya está completa.",
+        "en": "This upgrade is already complete."
+      },
+      "actual": {
+        "key": "ui.upgrades.result.maximum",
+        "es": "Esta mejora ya está completa.",
+        "en": "This upgrade is already complete."
+      }
+    },
+    {
+      "key": "ui.upgrades.result.tavern_only",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.result.tavern_only",
+        "es": "Solo puedes comprar mejoras en la taberna.",
+        "en": "You can only buy upgrades in the tavern."
+      },
+      "actual": {
+        "key": "ui.upgrades.result.tavern_only",
+        "es": "Solo puedes comprar mejoras en la taberna.",
+        "en": "You can only buy upgrades in the tavern."
+      }
+    },
+    {
+      "key": "ui.upgrades.result.details",
+      "identical": true,
+      "expected": {
+        "key": "ui.upgrades.result.details",
+        "es": "{0}",
+        "en": "{0}"
+      },
+      "actual": {
+        "key": "ui.upgrades.result.details",
+        "es": "{0}",
+        "en": "{0}"
+      }
+    }
+  ]
+}

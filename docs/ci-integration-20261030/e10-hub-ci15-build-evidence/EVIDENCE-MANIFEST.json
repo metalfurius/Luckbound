@@ -1,0 +1,116 @@
+{
+  "run": 41211023582,
+  "commit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "files": [
+    {
+      "path": "CI-ARTIFACTS-FINAL.json",
+      "bytes": 4701,
+      "sha256": "8d016882121df3e48d822aa479676d3bcdab3ca189bf86264e09371058e10f12"
+    },
+    {
+      "path": "CI-JOBS-FINAL.json",
+      "bytes": 15404,
+      "sha256": "4d5d045f9a46dae0dd6584059b0de49b16e4d7a2b88235181ca9cd2d9c84a6a7"
+    },
+    {
+      "path": "CI-RUN-FINAL.json",
+      "bytes": 13777,
+      "sha256": "98ac7d34fdae7ba96359dd472ba8cbeeabfb24c55f6c89346b3452482f83c247"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2169,
+      "sha256": "224365c773903c8454be90a8c1a1581e1d099be60df532bfa1f6c45f889448d8"
+    },
+    {
+      "path": "WEBGL-DIAGNOSTIC-SUMMARY.json",
+      "bytes": 1630,
+      "sha256": "ef82810b1dc6106144527ea4c4880de93396330f8027e959754748af2da683a0"
+    },
+    {
+      "path": "webgl-diagnostics/metadata.json",
+      "bytes": 930,
+      "sha256": "7da8a3c19d8b19b433cc4556fc401b823074aaeb1d94293f0a5c06e18baf9eb4"
+    },
+    {
+      "path": "webgl-diagnostics/observer-done.json",
+      "bytes": 258,
+      "sha256": "0e3cd513dd6fde24ab277677cbdbe6cf64f11430176511014eb9061b52e86213"
+    },
+    {
+      "path": "webgl-diagnostics/observer-ready.json",
+      "bytes": 72,
+      "sha256": "0d89afb0383e609134512e1ac215ffedffaca50db6e901476efa412131b7c85c"
+    },
+    {
+      "path": "webgl-diagnostics/records.jsonl",
+      "bytes": 1533310,
+      "sha256": "3cda7e08136f95199ad2614e8b8c26e3a27f233385e19724817024350fde2c75"
+    },
+    {
+      "path": "webgl-diagnostics/stop-requested",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "WEBGL-DIAGNOSTICS-DOWNLOAD.json",
+      "bytes": 1119,
+      "sha256": "889b4248b79ee9eaa1f20e8d7eb9728247e4006d1a6cdeab745b282e2541bf32"
+    },
+    {
+      "path": "WEBGL-DOWNLOAD.json",
+      "bytes": 3299,
+      "sha256": "745c1e49430b850db02cdc0ea19d9d4ae0229ed1462f3464f72846cd234a3f62"
+    },
+    {
+      "path": "WEBGL-OUTPUT.json",
+      "bytes": 908,
+      "sha256": "528360b21da0e966fa4bdc2c2067aa6e601386d930b7db3340b54cbdda1006fe"
+    },
+    {
+      "path": "WINDOWS-DIAGNOSTIC-SUMMARY.json",
+      "bytes": 1684,
+      "sha256": "45a024a55d11374ee8193df19de6fea0891de896a361beede811d0b08ac1ff39"
+    },
+    {
+      "path": "windows-diagnostics/metadata.json",
+      "bytes": 932,
+      "sha256": "b753844384316f8640689a9a0015356508e19f234b0468bd38b3b8157dc22f93"
+    },
+    {
+      "path": "windows-diagnostics/observer-done.json",
+      "bytes": 260,
+      "sha256": "3ac5b6c358c7d534c2ee2dd3ec036b15eda8c0c6e211b958ffb032858d5feb0b"
+    },
+    {
+      "path": "windows-diagnostics/observer-ready.json",
+      "bytes": 72,
+      "sha256": "0d89afb0383e609134512e1ac215ffedffaca50db6e901476efa412131b7c85c"
+    },
+    {
+      "path": "windows-diagnostics/records.jsonl",
+      "bytes": 302573,
+      "sha256": "6303de182120a3a67b99efb50e6d0779d63bc45a00194c4448d2ae3994fd4be5"
+    },
+    {
+      "path": "windows-diagnostics/stop-requested",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "WINDOWS-DIAGNOSTICS-DOWNLOAD.json",
+      "bytes": 1119,
+      "sha256": "03f61bcbf016d8daf49ddb6558631192cf7e6b99d0abe5db2ecae06bb5d66490"
+    },
+    {
+      "path": "WINDOWS-DOWNLOAD.json",
+      "bytes": 40540,
+      "sha256": "fc04591f0aea6786200c276d6ba047967f527374f7a5c80d9343db802baaa242"
+    },
+    {
+      "path": "WINDOWS-OUTPUT.json",
+      "bytes": 664,
+      "sha256": "e0c8dd6a065018219e79d5ad3356272dc7fccb4e67fc1d53ddf8af5f388ecd74"
+    }
+  ]
+}

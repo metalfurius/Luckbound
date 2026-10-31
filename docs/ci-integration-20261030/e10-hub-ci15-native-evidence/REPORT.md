@@ -1,0 +1,11 @@
+# CI15 — preparación bilingüe: Native verificado
+
+CI 41211023582, commit 9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1, Unity 6000.6.7f1. El job Native 124565845944 termina success: **1173/1173** (654 EditMode + 519 PlayMode), sin fallos, omitidos o inconclusos. Pasan ambos Primary, el ProtectedPrimary corregido y las 1171 regresiones de CI13. CI14 conserva sus tres fallos originales.
+
+Se registraron 408 muestras iniciales (204 por test), 532 medidas de texto en total y 64 registros de geometría. HUB-PRIMARY-VERIFICATION contrasta directamente esas medidas: once controles dentro del Canvas y separados entre sí y de SkillSectionTitle, nueve labels dentro de sus botones y todos los caracteres de la copia finita. En ambos tests se observó Screen 640×480 y Canvas 415.6922×311.7691, escala 1.53960073. Los overrides no representan estados del dominio alcanzados. Las fuentes pequeñas siguen provisionales; no hay aceptación perceptiva ni de otros viewports.
+
+Checker V6 y sentinel reales: success, 11 casos, 11 intentos, 97 outputs y 14 fuentes, ligados a su manifest/session/version. Comparación directa: 97 datos y 77 observaciones idénticos al Gate D aceptado. Se ligan 14 fuentes Native antes/después/Git y 21 fuentes o recursos relevantes al manifest Native de 4747 archivos y a Git, incluidas las tres fuentes corregidas. C08 físico pasa 3/3 + 3/3 + 10/10 sin victoria forzada.
+
+Artefacto 13046273634: 9995888 bytes, SHA256 f33e343de4d9327a8cce4a1661807a0643e55d083c32fc44b4e3b0966f719baa, 247 archivos verificados por CRC/hash. El log privado (8845531 bytes, SHA256 1f41fadb7e0b02fbb35282b336db802910f69d1e490b0381393a5592265be6b5) queda excluido. gh run view rechazó el run global aún en curso; la API del job completado permitió comprobar el checker. El parser inicial buscó otro tag de geometría: corregido a LAYOUT-METRIC, obtiene 64 registros sin cambiar XML ni resultados.
+
+Al congelar: Windows job success y WebGL en curso; sus ZIPs propios aún sin verificación. No hay aceptación anticipada de builds/global. Percepción, E10/F09/F10 y F02 conservan sus gates; SaveFormat 6 sigue operativo. No Unity/player/browser local, medios, ventanas, audio, foco o cursor visibles ni publicación.

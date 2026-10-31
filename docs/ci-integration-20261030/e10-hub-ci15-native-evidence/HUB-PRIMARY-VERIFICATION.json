@@ -1,0 +1,69 @@
+{
+  "run": 41211023582,
+  "commit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "initialCasesTotal": 408,
+  "textRecordsTotal": 532,
+  "layoutRecordsTotal": 64,
+  "measuredCasesPass": true,
+  "scope": "Observed LinuxEditor640x480; finite technical content matrix and two real UI flows. Not perceptual or arbitrary-error/platform fit acceptance.",
+  "cases": [
+    {
+      "test": "Luckbound.Tests.PlayMode.HubPreparationLocalizationTests.PrimaryPreparationChangesLanguageInPlaceWithoutChangingSelectionOrState",
+      "result": "Passed",
+      "initialCases": 204,
+      "groups": {
+        "actual": 20,
+        "skills": 18,
+        "actions": 8,
+        "races": 26,
+        "summaries": 72,
+        "statuses": 60
+      },
+      "totalTextRecords": 272,
+      "layoutRecords": 32,
+      "allRecordedTextFits": true,
+      "approvedControls": 11,
+      "pairsChecked": 55,
+      "buttonLabelsContained": 9,
+      "screen": {
+        "width": 640,
+        "height": 480
+      },
+      "canvas": {
+        "width": 415.69219970703125,
+        "height": 311.7691345214844,
+        "scaleFactor": 1.5396007299423218
+      },
+      "fontsRemainProvisional": true
+    },
+    {
+      "test": "Luckbound.Tests.PlayMode.HubPreparationLocalizationTests.PrimaryPreparationLoadsPersistedEnglishWithReadOnlyProfileAndKeepsSettingsIndependent",
+      "result": "Passed",
+      "initialCases": 204,
+      "groups": {
+        "actual": 20,
+        "skills": 18,
+        "actions": 8,
+        "races": 26,
+        "summaries": 72,
+        "statuses": 60
+      },
+      "totalTextRecords": 260,
+      "layoutRecords": 32,
+      "allRecordedTextFits": true,
+      "approvedControls": 11,
+      "pairsChecked": 55,
+      "buttonLabelsContained": 9,
+      "screen": {
+        "width": 640,
+        "height": 480
+      },
+      "canvas": {
+        "width": 415.69219970703125,
+        "height": 311.7691345214844,
+        "scaleFactor": 1.5396007299423218
+      },
+      "fontsRemainProvisional": true
+    }
+  ]
+}

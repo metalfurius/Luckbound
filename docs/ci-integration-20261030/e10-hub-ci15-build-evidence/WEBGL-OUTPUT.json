@@ -1,0 +1,26 @@
+{
+  "run": 41211023582,
+  "commit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "artifact": "webgl-9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "zipSha256": "e40601a6596eda19ae27e5706e963c131243803fb17b76fc55ab5c77f14393a8",
+  "zipBytes": 16208199,
+  "verifiedFiles": 17,
+  "playerExecuted": false,
+  "index": {
+    "path": "WebGL/index.html",
+    "bytes": 6378,
+    "sha256": "b6af403ebe0ce523ecb68fdc19b042fe65f99903ebf03692a396e296180e6b11"
+  },
+  "wasm": {
+    "path": "WebGL/Build/WebGL.wasm.br",
+    "compressedBytes": 8436978,
+    "compressedSha256": "ef9c0a8624c199348f2bea7c64f9addae9eb0c029a686614339f59d54820ab59",
+    "decompressedBytes": 41603285,
+    "decompressedSha256": "910eefde5d56b98d619cc68565b1f7906d9247541191748cb3fb3643effb537f",
+    "magicAndVersion": "0061736d01000000",
+    "instantiated": false
+  },
+  "loaderPresent": true,
+  "frameworkPresent": true,
+  "dataPresent": true
+}

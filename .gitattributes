@@ -50,3 +50,9 @@ docs/ci-integration-20261030/e10-hub-primary-localization-evidence/** -text
 docs/ci-integration-20261030/e10-hub-primary-ci14-failure-evidence/** -text
 
 docs/ci-integration-20261030/e10-hub-ci15-geometry-evidence/** -text
+
+docs/ci-integration-20261030/e10-hub-ci15-native-evidence/** -text
+
+docs/ci-integration-20261030/e10-hub-ci15-build-evidence/** -text
+
+docs/ci-integration-20261030/e10-hub-upgrades-localization-evidence/** -text

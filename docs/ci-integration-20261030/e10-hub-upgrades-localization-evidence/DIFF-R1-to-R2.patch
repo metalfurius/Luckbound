@@ -1,0 +1,202 @@
+--- a/Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs (R1)
++++ b/Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs (R2)
+@@ -20,6 +20,8 @@
+ {
+     public sealed class HubPermanentUpgradeLocalizationTests : LuckboundInputTestFixture
+     {
++        private const string SaveDirectoryPrefix = "LuckboundE10HubUpgradesLocalization";
++
+         private static readonly string[] UpgradeTextNames =
+         {
+             "PermanentUpgradeTitle",
+@@ -93,6 +95,10 @@
+                 Task<SaveStorageSnapshot> profileBeforeTask = store.ReadAsync(SaveDocument.Profile);
+                 yield return WaitForTask(profileBeforeTask, "read the fully-upgraded Profile before locale navigation");
+                 SaveStorageSnapshot profileBeforeSnapshot = profileBeforeTask.GetAwaiter().GetResult();
++
++                SimulatePointerClick(panelButtons[3]);
++                Assert.That(panelTexts.All(text => text != null && !text.gameObject.activeInHierarchy), Is.True,
++                    "The production close button must hide all captured upgrade Text before Guild opens.");
+ 
+                 OpenGuildLanguageList();
+                 yield return SwitchGuildLanguage(app, store, "es", settingsWritesBefore + 1);
+@@ -366,6 +372,7 @@
+             Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Hub"));
+             Assert.That(Object.FindAnyObjectByType<HubPreparationController>(), Is.Not.Null,
+                 "The Hub scene must create its production preparation controller.");
++            for (int frame = 0; frame < 3; frame++) yield return null;
+         }
+ 
+         private static void OpenUpgradePanel()
+@@ -468,27 +475,27 @@
+ 
+         private static Text[] FindUpgradeTexts()
+         {
+-            Text[] sceneTexts = Object.FindObjectsByType<Text>(FindObjectsInactive.Include, FindObjectsSortMode.None);
++            Text[] sceneTexts = Object.FindObjectsByType<Text>(FindObjectsInactive.Include);
+             return UpgradeTextNames.Select(name => sceneTexts.FirstOrDefault(text => text != null && text.name == name))
+                 .ToArray();
+         }
+ 
+         private static Button[] FindUpgradeButtons()
+         {
+-            Button[] sceneButtons = Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
++            Button[] sceneButtons = Object.FindObjectsByType<Button>(FindObjectsInactive.Include);
+             return UpgradeButtonNames.Select(name => sceneButtons.FirstOrDefault(button => button != null && button.name == name))
+                 .ToArray();
+         }
+ 
+         private static Text FindText(string name)
+         {
+-            return Object.FindObjectsByType<Text>(FindObjectsInactive.Include, FindObjectsSortMode.None)
++            return Object.FindObjectsByType<Text>(FindObjectsInactive.Include)
+                 .FirstOrDefault(text => text != null && text.name == name);
+         }
+ 
+         private static Button FindButton(string name)
+         {
+-            return Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None)
++            return Object.FindObjectsByType<Button>(FindObjectsInactive.Include)
+                 .FirstOrDefault(button => button != null && button.name == name);
+         }
+ 
+@@ -524,7 +531,7 @@
+                 horizontalOverflow = string.Empty,
+                 verticalOverflow = string.Empty,
+                 fontSize = -1,
+-                fontInstanceId = -1,
++                fontEntityId = string.Empty,
+                 activeInHierarchy = false,
+                 available = false,
+                 anchoredX = -1f,
+@@ -562,7 +569,11 @@
+             metric.fontName = text.font == null ? string.Empty : text.font.name;
+             metric.fontSource = text.font == null ? string.Empty : "Text.font:" + text.font.name;
+             metric.fontSize = text.fontSize;
+-            metric.fontInstanceId = text.font == null ? -1 : text.font.GetInstanceID();
++            if (text.font != null)
++            {
++                UnityEngine.EntityId fontEntityId = text.font.GetEntityId();
++                metric.fontEntityId = fontEntityId.IsValid() ? fontEntityId.ToString() : string.Empty;
++            }
+             metric.horizontalOverflow = text.horizontalOverflow.ToString();
+             metric.verticalOverflow = text.verticalOverflow.ToString();
+             metric.anchoredX = FiniteOrSentinel(rect.anchoredPosition.x);
+@@ -572,7 +583,7 @@
+             metric.pixelsPerUnit = FiniteOrSentinel(pixelsPerUnit);
+             metric.expectedVisibleCount = content.Count(character => character != '\n' && character != '\r');
+ 
+-            Canvas canvas = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None)
++            Canvas canvas = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include)
+                 .FirstOrDefault(candidate => candidate != null && candidate.name == "HubPreparationCanvas");
+             RectTransform canvasRect = canvas == null ? null : canvas.transform as RectTransform;
+             if (canvas != null)
+@@ -637,7 +648,7 @@
+                 Assert.That(metric.fontName, Is.Not.Empty, context + " font source must be present.");
+                 Assert.That(metric.fontSource, Is.Not.Empty, context + " Text.font binding must be recorded.");
+                 Assert.That(metric.fontSize, Is.GreaterThan(0), context + " must retain its source font size.");
+-                Assert.That(metric.fontInstanceId, Is.Not.EqualTo(0), context + " font identity must be captured.");
++                Assert.That(metric.fontEntityId, Is.Not.Empty, context + " full font EntityId must be captured.");
+                 Assert.That(IsFinite(metric.rectWidth) && metric.rectWidth > 0f, Is.True,
+                     context + " rect width must be finite and positive.");
+                 Assert.That(IsFinite(metric.rectHeight) && metric.rectHeight > 0f, Is.True,
+@@ -697,7 +708,22 @@
+                 texts = texts.ToArray(),
+                 appearances = texts.Select(CaptureTextAppearance).ToArray(),
+                 buttons = buttons.ToArray(),
++                buttonLayouts = buttons.Select(CaptureButtonLayout).ToArray(),
+                 interactable = buttons.Select(button => button != null && button.interactable).ToArray()
++            };
++        }
++
++        private static UpgradeButtonLayout CaptureButtonLayout(Button button)
++        {
++            RectTransform rect = button == null ? null : button.transform as RectTransform;
++            return new UpgradeButtonLayout
++            {
++                rect = rect,
++                anchorMin = rect == null ? Vector2.zero : rect.anchorMin,
++                anchorMax = rect == null ? Vector2.zero : rect.anchorMax,
++                pivot = rect == null ? Vector2.zero : rect.pivot,
++                anchoredPosition = rect == null ? Vector2.zero : rect.anchoredPosition,
++                sizeDelta = rect == null ? Vector2.zero : rect.sizeDelta
+             };
+         }
+ 
+@@ -764,6 +790,15 @@
+             {
+                 Assert.That(buttons[index], Is.SameAs(snapshot.buttons[index]),
+                     checkpoint + " preserves " + UpgradeButtonNames[index] + " instance.");
++                RectTransform rect = buttons[index].transform as RectTransform;
++                UpgradeButtonLayout layout = snapshot.buttonLayouts[index];
++                Assert.That(rect, Is.SameAs(layout.rect), checkpoint + " preserves Button parent RectTransform instance.");
++                Assert.That(rect.anchorMin, Is.EqualTo(layout.anchorMin), checkpoint + " preserves Button parent anchorMin.");
++                Assert.That(rect.anchorMax, Is.EqualTo(layout.anchorMax), checkpoint + " preserves Button parent anchorMax.");
++                Assert.That(rect.pivot, Is.EqualTo(layout.pivot), checkpoint + " preserves Button parent pivot.");
++                Assert.That(rect.anchoredPosition, Is.EqualTo(layout.anchoredPosition),
++                    checkpoint + " preserves Button parent anchoredPosition.");
++                Assert.That(rect.sizeDelta, Is.EqualTo(layout.sizeDelta), checkpoint + " preserves Button parent sizeDelta.");
+                 if (compareInteractability)
+                     Assert.That(buttons[index].interactable, Is.EqualTo(snapshot.interactable[index]),
+                         checkpoint + " preserves " + UpgradeButtonNames[index] + " interactability.");
+@@ -776,12 +811,22 @@
+ 
+         private static string NewSaveDirectory()
+         {
+-            return Path.Combine(Path.GetTempPath(), "LuckboundE10HubUpgradesLocalization", Guid.NewGuid().ToString("N"));
++            return Path.Combine(Path.GetTempPath(), SaveDirectoryPrefix, Guid.NewGuid().ToString("N"));
+         }
+ 
+         private static void DeleteSaveDirectory(string saveDirectory)
+         {
+-            if (Directory.Exists(saveDirectory)) Directory.Delete(saveDirectory, recursive: true);
++            string separator = Path.DirectorySeparatorChar.ToString();
++            string tempRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(Path.DirectorySeparatorChar,
++                Path.AltDirectorySeparatorChar) + separator;
++            string isolatedRoot = Path.GetFullPath(Path.Combine(tempRoot, SaveDirectoryPrefix))
++                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + separator;
++            string fullDirectory = Path.GetFullPath(saveDirectory);
++            if (!fullDirectory.StartsWith(tempRoot, StringComparison.OrdinalIgnoreCase) ||
++                !fullDirectory.StartsWith(isolatedRoot, StringComparison.OrdinalIgnoreCase) ||
++                !Guid.TryParseExact(Path.GetFileName(fullDirectory), "N", out _))
++                throw new InvalidOperationException("Refusing to delete a save directory outside its isolated test prefix.");
++            if (Directory.Exists(fullDirectory)) Directory.Delete(fullDirectory, recursive: true);
+         }
+ 
+         [Serializable]
+@@ -799,7 +844,7 @@
+             public string horizontalOverflow;
+             public string verticalOverflow;
+             public int fontSize;
+-            public int fontInstanceId;
++            public string fontEntityId;
+             public bool activeInHierarchy;
+             public bool available;
+             public int screenWidth;
+@@ -833,7 +878,18 @@
+             public Text[] texts;
+             public UpgradeTextAppearance[] appearances;
+             public Button[] buttons;
++            public UpgradeButtonLayout[] buttonLayouts;
+             public bool[] interactable;
++        }
++
++        private sealed class UpgradeButtonLayout
++        {
++            public RectTransform rect;
++            public Vector2 anchorMin;
++            public Vector2 anchorMax;
++            public Vector2 pivot;
++            public Vector2 anchoredPosition;
++            public Vector2 sizeDelta;
+         }
+ 
+         private sealed class UpgradeTextAppearance
+@@ -872,7 +928,6 @@
+             public int FailedProfileWriteCount { get; private set; }
+             public string FailedProfilePayload { get; private set; } = string.Empty;
+             public IReadOnlyList<string> ProfileWritePayloads => _profileWritePayloads;
+-            public string GetPrimaryPath(SaveDocument document) => _inner.GetPrimaryPath(document);
+             public Task<SaveStorageSnapshot> ReadAsync(SaveDocument document) => _inner.ReadAsync(document);
+             public void FailNextProfileWrite() => _failNextProfileWrite = true;
+ 

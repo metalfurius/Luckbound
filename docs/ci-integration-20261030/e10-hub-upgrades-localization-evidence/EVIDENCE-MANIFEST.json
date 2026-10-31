@@ -1,0 +1,161 @@
+{
+  "baseCommit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "actaSha256": "4537dea5c28dfe4bf5f5a3283ce2c1a080ca9db93cf7b5dcc2759026c2bd6698",
+  "files": [
+    {
+      "path": "after/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 100040,
+      "sha256": "0194c41154f98a135c28943c79d101e2c7e4045e795c3c32e03b28336d2020f1"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs",
+      "bytes": 56360,
+      "sha256": "43d678f7db37634ffe480c80b37e2ba19c8cb88c0b5e7fdb2c11bc3f48557fe9"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs.meta",
+      "bytes": 60,
+      "sha256": "88749b068993c688306efc705cf85605aaf2d4adad5434a6024e55de9364a9da"
+    },
+    {
+      "path": "after/Assets/Resources/Luckbound/Localization/Initial.json",
+      "bytes": 34107,
+      "sha256": "6bee4724c1edf8c6cbde5653b280f36d61c207b83eadce2d8d6bcb107918c54d"
+    },
+    {
+      "path": "BASELINE.json",
+      "bytes": 375772,
+      "sha256": "de02e43d200a15e332ed73111e25df82d30e3b7205145d6f2e13254652afddc0"
+    },
+    {
+      "path": "before/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 98075,
+      "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f"
+    },
+    {
+      "path": "before/Assets/Resources/Luckbound/Localization/Initial.json",
+      "bytes": 31890,
+      "sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a"
+    },
+    {
+      "path": "compile-r1/Luckbound.App.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "compile-r1/Luckbound.PlayMode.Tests.log",
+      "bytes": 7562,
+      "sha256": "d67015246fc81b85b5b1e33289ef126ebdc8f5c25ad8005da291ceeecbc669a7"
+    },
+    {
+      "path": "compile-r1/RESULTS.json",
+      "bytes": 45422,
+      "sha256": "17ef7187d0af43fa0d252d44af8fa05b0cdefc589c7aa2d51cefce2cebe8a0e2"
+    },
+    {
+      "path": "compile-r2/INPUT-BINDING.json",
+      "bytes": 41395,
+      "sha256": "ac5a52f5e125261392e86ed8c59a433347a6a10d32f170aff52e1067da8fbe37"
+    },
+    {
+      "path": "compile-r2/Luckbound.App.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "compile-r2/Luckbound.App.rsp",
+      "bytes": 52969,
+      "sha256": "bb8f240bcbf9bd6186373c924dfec2d9cdc5876710485ece3466834341ec340c"
+    },
+    {
+      "path": "compile-r2/Luckbound.PlayMode.Tests.log",
+      "bytes": 2704,
+      "sha256": "9665ea262f6ee3ec6a42e9fea1b8717d18f15191eac5179ee14b72afd3a9f6a7"
+    },
+    {
+      "path": "compile-r2/Luckbound.PlayMode.Tests.rsp",
+      "bytes": 56185,
+      "sha256": "ad37014362fb60f46e00562ffc0c594b732b668bbe47dbb9588ee8f66f7156f8"
+    },
+    {
+      "path": "compile-r2/RESULTS.json",
+      "bytes": 45428,
+      "sha256": "edf610f27b03acc29790c5e639dda0939a476e847116341cb6a414dedc68e77a"
+    },
+    {
+      "path": "compile_candidates.py",
+      "bytes": 6441,
+      "sha256": "9cb36fe882a79460ead197570990c7987833c5f91c47ec43b9cd86d75652640b"
+    },
+    {
+      "path": "DIFF-R1-to-R2.patch",
+      "bytes": 11723,
+      "sha256": "307d1bacc862bd51efd647c29167cdce54980b6ccaeb107cca15b99cd1cf8e98"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 1989,
+      "sha256": "ab01dc46fcac88c1149b74394b7d85b4babd551edf3f3fe8c069b7b623f5ce68"
+    },
+    {
+      "path": "INTEGRATION.json",
+      "bytes": 2088,
+      "sha256": "fe29cbbc03b85e139f32bb2311a3f45dbbdb597af67ec1b023c46600fd7772e7"
+    },
+    {
+      "path": "LOCALIZATION-COPY-AUDIT.json",
+      "bytes": 8269,
+      "sha256": "f7f9fa78c4ed3f33e501181e0377af4990d21f344a02427de601ee1eaffabce2"
+    },
+    {
+      "path": "R1-COMPOSED-FREEZE.json",
+      "bytes": 1812,
+      "sha256": "901c9e0f8bfe99b1f3f9a416be78a2f2ae1813c1db2abb7936ffcb245b19a25b"
+    },
+    {
+      "path": "R1-HubPermanentUpgradeLocalizationTests.cs",
+      "bytes": 53066,
+      "sha256": "aff69777df3e741af02dad272f6ec679772d05cc1dd36d3bc51d431b904bcd84"
+    },
+    {
+      "path": "R1-WORKER-DIFF.patch",
+      "bytes": 66052,
+      "sha256": "71702173907e94e3df4e2efed27a14062741c0d108849fe41b5c3ae037533565"
+    },
+    {
+      "path": "R1-WORKER-FREEZE.json",
+      "bytes": 4034,
+      "sha256": "237aea4449b16f41eb6be04869b2720e6380fb0dcc41517d493f5d5426b09b8a"
+    },
+    {
+      "path": "R1-WORKER-MANIFEST.json",
+      "bytes": 2575,
+      "sha256": "3bc46426f2fb282d742e17d4d3fd2c1ef8d53d9045ee2a645e305d625b304d07"
+    },
+    {
+      "path": "R1-WORKER-REPORT.md",
+      "bytes": 3402,
+      "sha256": "72a7de0d31d223fa641723be8b955571a76ba8485ae5ce4709d4a6bc9d22e544"
+    },
+    {
+      "path": "R2-WORKER-FREEZE.json",
+      "bytes": 2444,
+      "sha256": "b2ef0c4e852799c6e2c6585dc45ba67b38e9942443f84525bc53fca837f80703"
+    },
+    {
+      "path": "R2-WORKER-REPORT.md",
+      "bytes": 1539,
+      "sha256": "3131e5660fc30e7d65864bc47d40eba6cf57bb39d7c2a3e5b76f9eb82fcdd6f7"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1958,
+      "sha256": "cbd3a0cba631770029d4e3bb72a03a0fd19f6a386ce2a6d5b11272d7b09b56b6"
+    },
+    {
+      "path": "STAGING-DECISION.json",
+      "bytes": 826,
+      "sha256": "d8302aebfc49fc5542502147f94a20e851b4f7ad09a2c3fee3be15af197d05cf"
+    }
+  ]
+}

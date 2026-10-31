@@ -1,0 +1,120 @@
+{
+  "artifact": "E10HubUpgradesLocalization-20261031-r1",
+  "status": "candidate_static_only_uncompiled",
+  "base": {
+    "controller_sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f",
+    "initial_sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a",
+    "initial_keys": 241
+  },
+  "candidate_sources": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "before": {
+        "bytes": 98075,
+        "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f"
+      },
+      "candidate": {
+        "bytes": 100040,
+        "sha256": "0194c41154f98a135c28943c79d101e2c7e4045e795c3c32e03b28336d2020f1"
+      }
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "before": {
+        "bytes": 31890,
+        "sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a"
+      },
+      "candidate": {
+        "bytes": 34107,
+        "sha256": "6bee4724c1edf8c6cbde5653b280f36d61c207b83eadce2d8d6bcb107918c54d"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs",
+      "before": null,
+      "candidate": {
+        "bytes": 53066,
+        "sha256": "aff69777df3e741af02dad272f6ec679772d05cc1dd36d3bc51d431b904bcd84"
+      }
+    }
+  ],
+  "scope": {
+    "only_candidate_sources": [
+      "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "Assets/Resources/Luckbound/Localization/Initial.json",
+      "Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs"
+    ],
+    "no_live_assets_edits": true,
+    "no_meta_files": true,
+    "new_test_meta_owner": "Root",
+    "preserved_geometry": {
+      "helper": "HubPreparationController.ArrangePrimaryHubGeometry",
+      "byte_equal": true,
+      "sha256_utf8": "09709d9907afa337259f50ad417dc6b38ccc86fb012b5c92b04debddb80dd316",
+      "PlaceRuntimeRect_calls": 11,
+      "rects": [
+        "SkillOptionOneButton",
+        "SkillOptionTwoButton",
+        "SkillOptionThreeButton",
+        "RaceHumanButton",
+        "RaceOrciniButton",
+        "RaceAlvariButton",
+        "RaceDvergarButton",
+        "StartExpeditionButton",
+        "OpenPermanentUpgradesButton",
+        "PreparationSelectionSummary",
+        "HubPreparationStatus"
+      ]
+    }
+  },
+  "localization": {
+    "schema_version": 1,
+    "default_language_id": "es",
+    "before_entry_count": 241,
+    "candidate_entry_count": 261,
+    "before_entries_deeply_identical_in_order": true,
+    "new_key_count": 20,
+    "new_keys": [
+      "ui.upgrades.title",
+      "ui.upgrades.balance",
+      "ui.upgrades.health",
+      "ui.upgrades.energy",
+      "ui.upgrades.potion",
+      "ui.upgrades.back",
+      "ui.upgrades.complete",
+      "ui.upgrades.cost",
+      "ui.upgrades.retry_prefix",
+      "ui.upgrades.profile_unavailable",
+      "ui.upgrades.retry_pending_first",
+      "ui.upgrades.save_error",
+      "ui.upgrades.result.missing",
+      "ui.upgrades.result.pending",
+      "ui.upgrades.result.already_saved",
+      "ui.upgrades.result.saved",
+      "ui.upgrades.result.insufficient",
+      "ui.upgrades.result.maximum",
+      "ui.upgrades.result.tavern_only",
+      "ui.upgrades.result.details"
+    ],
+    "approved_key_set_exact": true
+  },
+  "tests": {
+    "unity_test_count": 2,
+    "methods": [
+      "UpgradePanelLoadsEnglishAndTranslatesCompleteStatesWithoutProfileWrites",
+      "UpgradePendingPurchaseChangesLanguageAndRetriesTheExactPayload"
+    ],
+    "compiled": false,
+    "executed": false,
+    "test_evidence_captured": false,
+    "runtime_text_metrics_are_logged_before_fit_assertions": true
+  },
+  "validation": {
+    "static_json_and_scope_checks": "passed",
+    "geometry_helper_byte_comparison": "passed",
+    "unity_compile": "not_run",
+    "unity_playmode": "not_run",
+    "ci": "not_run",
+    "native_or_visual_acceptance_claimed": false
+  }
+}

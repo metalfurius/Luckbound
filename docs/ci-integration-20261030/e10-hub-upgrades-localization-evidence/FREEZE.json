@@ -1,0 +1,56 @@
+{
+  "stage": "R2 frozen before compilation; no integration",
+  "baseCommit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "contractSha256": "df5427a749fa898a2c4731c8a909f30b42cc6f5ff0876cd8864f2e548c6064b6",
+  "ci15FullTechnicalClosureActaSha256": "93fcfd739182851f94683aa79acbee031110a1e7df64fd2966347abeef159a29",
+  "workerFreezeSha256": "237aea4449b16f41eb6be04869b2720e6380fb0dcc41517d493f5d5426b09b8a",
+  "files": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "before": {
+        "bytes": 98075,
+        "sha256": "9b2d36ffa5a6f437ab873a4e570c2101a5f242174506bff842693ae4e92bbf1f"
+      },
+      "after": {
+        "bytes": 100040,
+        "sha256": "0194c41154f98a135c28943c79d101e2c7e4045e795c3c32e03b28336d2020f1"
+      }
+    },
+    {
+      "path": "Assets/Resources/Luckbound/Localization/Initial.json",
+      "before": {
+        "bytes": 31890,
+        "sha256": "9eba4773925500c8db3d3912ad9f28ec46382dd5ebdf6bf88cc5b6fec6b7b66a"
+      },
+      "after": {
+        "bytes": 34107,
+        "sha256": "6bee4724c1edf8c6cbde5653b280f36d61c207b83eadce2d8d6bcb107918c54d"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs",
+      "before": null,
+      "after": {
+        "bytes": 56360,
+        "sha256": "43d678f7db37634ffe480c80b37e2ba19c8cb88c0b5e7fdb2c11bc3f48557fe9"
+      }
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubPermanentUpgradeLocalizationTests.cs.meta",
+      "before": null,
+      "after": {
+        "bytes": 60,
+        "sha256": "88749b068993c688306efc705cf85605aaf2d4adad5434a6024e55de9364a9da"
+      }
+    }
+  ],
+  "locale": {
+    "before": 241,
+    "after": 261,
+    "previousEntriesUnchangedInOrder": 241,
+    "new": 20
+  },
+  "geometryHelperByteUnchanged": true,
+  "r1FreezeSha256": "901c9e0f8bfe99b1f3f9a416be78a2f2ae1813c1db2abb7936ffcb245b19a25b",
+  "r2TestFreezeSha256": "b2ef0c4e852799c6e2c6585dc45ba67b38e9942443f84525bc53fca837f80703"
+}

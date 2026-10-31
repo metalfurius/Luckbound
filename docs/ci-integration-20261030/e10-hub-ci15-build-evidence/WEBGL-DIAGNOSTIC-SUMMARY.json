@@ -1,0 +1,69 @@
+{
+  "run": 41211023582,
+  "commit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+  "platform": "webgl",
+  "records": 648,
+  "phases": [
+    "S0",
+    "observer",
+    "S1"
+  ],
+  "snapshotPhases": [
+    "S0",
+    "S1"
+  ],
+  "dmesg": [
+    {
+      "phase": "S0",
+      "state": "available",
+      "returnCode": 0,
+      "matchCount": 0,
+      "source": "sudo_n_dmesg",
+      "outputTruncated": false
+    },
+    {
+      "phase": "S1",
+      "state": "available",
+      "returnCode": 0,
+      "matchCount": 0,
+      "source": "sudo_n_dmesg",
+      "outputTruncated": false
+    }
+  ],
+  "events": {
+    "events_dropped": 0,
+    "events_inspect_skipped": 0,
+    "events_not_captured": 0,
+    "events_recorded": 3,
+    "events_seen": 3,
+    "identity": {
+      "attempt": 1,
+      "commit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+      "platform": "webgl",
+      "run_id": "41211023582"
+    },
+    "inspects": 3,
+    "monotonic_seconds": 670.974436,
+    "phase": "S1",
+    "reason": "stop",
+    "record_type": "observer_finished",
+    "schema": "luckbound.ci9.build-diagnostics",
+    "state": "complete",
+    "timestamp_utc": "2026-10-31T14:57:22.236+00:00",
+    "version": 1
+  },
+  "observerDone": {
+    "identity": {
+      "attempt": 1,
+      "commit": "9ad667f5362111bbf0f2e40d8ac23a337ce2d3d1",
+      "platform": "webgl",
+      "run_id": "41211023582"
+    },
+    "reason": "stop",
+    "schema": "luckbound.ci9.build-diagnostics",
+    "state": "complete",
+    "timestamp_utc": "2026-10-31T14:57:22.236+00:00",
+    "version": 1
+  },
+  "scope": "Recorded build diagnostics only; no causal inference about prior137 or HostGuard."
+}
