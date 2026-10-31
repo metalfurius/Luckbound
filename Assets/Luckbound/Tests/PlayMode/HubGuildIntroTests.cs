@@ -118,6 +118,7 @@ namespace Luckbound.Tests.PlayMode
                 Assert.That(EventSystem.current.currentSelectedGameObject, Is.SameAs(FindButton("GuildCharacterButton0").gameObject));
                 AssertThatModalExclusive(canvas, "GuildIntroRoot");
                 LogGuildLayoutDiagnostics(canvas);
+                AssertGuildLanguageButtonGeometry(canvas);
                 AssertHubHeaderGeometry(canvas);
                 AssertGuildTextLayout(FindText("HubTitle"));
                 AssertGuildTextLayout(FindText("OpenGuildIntroButtonLabel"));
@@ -693,6 +694,32 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(guildRect.anchorMin, Is.EqualTo(new Vector2(0f, 1f)));
             Assert.That(guildRect.anchoredPosition, Is.EqualTo(new Vector2(92f, -10f)));
             Assert.That(guildRect.sizeDelta, Is.EqualTo(new Vector2(108f, 28f)));
+        }
+
+        private static void AssertGuildLanguageButtonGeometry(Canvas canvas)
+        {
+            Canvas.ForceUpdateCanvases();
+            foreach (string name in new[] { "GuildIntroListLanguageButton", "GuildIntroConversationLanguageButton" })
+            {
+                RectTransform buttonRect = FindObject(canvas, name).GetComponent<RectTransform>();
+                Assert.That(buttonRect.anchorMin, Is.EqualTo(new Vector2(0.5f, 0.5f)), name);
+                Assert.That(buttonRect.anchorMax, Is.EqualTo(new Vector2(0.5f, 0.5f)), name);
+                Assert.That(buttonRect.pivot, Is.EqualTo(new Vector2(0.5f, 0.5f)), name);
+                Assert.That(buttonRect.anchoredPosition, Is.EqualTo(new Vector2(-130f, 99f)), name);
+                Assert.That(buttonRect.sizeDelta, Is.EqualTo(new Vector2(160f, 30f)), name);
+                Assert.That(buttonRect.rect.size, Is.EqualTo(new Vector2(160f, 30f)), name);
+                Text label = FindTextOnCanvas(canvas, name + "Label");
+                Assert.That(label.fontSize, Is.EqualTo(21), name);
+                Assert.That(label.fontStyle, Is.EqualTo(FontStyle.Bold), name);
+                RectTransform labelRect = label.rectTransform;
+                Assert.That(labelRect.anchorMin, Is.EqualTo(Vector2.zero), name);
+                Assert.That(labelRect.anchorMax, Is.EqualTo(Vector2.one), name);
+                Assert.That(labelRect.pivot, Is.EqualTo(new Vector2(0.5f, 0.5f)), name);
+                Assert.That(labelRect.anchoredPosition, Is.EqualTo(Vector2.zero), name);
+                Assert.That(labelRect.offsetMin, Is.EqualTo(Vector2.zero), name);
+                Assert.That(labelRect.offsetMax, Is.EqualTo(Vector2.zero), name);
+                Assert.That(labelRect.rect.size, Is.EqualTo(new Vector2(160f, 30f)), name);
+            }
         }
 
         private static void AssertGuildTextLayout(Text text, bool wrapped = false, string contentOverride = null)

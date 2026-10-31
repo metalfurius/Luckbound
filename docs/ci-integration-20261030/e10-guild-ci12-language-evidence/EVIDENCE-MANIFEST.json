@@ -1,0 +1,89 @@
+{
+  "files": [
+    {
+      "path": "DIFF.patch",
+      "bytes": 4295,
+      "sha256": "608965a3dbb5c416a6d58d32cb626b2fc3827d2c4bc760d68d1c9eb7191d90a1"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 783,
+      "sha256": "aaf3ae5fa218180f71eb21788dde7a3dd825d415b23d9cb8f521a5560bc9bf0d"
+    },
+    {
+      "path": "INTEGRATION.json",
+      "bytes": 1030,
+      "sha256": "51ba47cde4327420a7fac90474ff988d93f48cc7f2480f2e923bd09205b5961e"
+    },
+    {
+      "path": "METADATA-GUARD.json",
+      "bytes": 283,
+      "sha256": "6adbda32c061f9deb1f3699b315c765cce1a6c7d3f5bc6ca15d59b47f47980bf"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1465,
+      "sha256": "2c1e578e68a68d6dfb89efedf39be25a5c8d5131f9d9d65c583d64aa34394eac"
+    },
+    {
+      "path": "SOURCE-GUARD.json",
+      "bytes": 145306,
+      "sha256": "ae072f2e6bb7916bdd04e7c10d26ec02ebcf23d6d68f6afcee5a1492df94fd2e"
+    },
+    {
+      "path": "after/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "fc8a4dfc6a0a0aa14abad31124d3db97817a52406f7d30be308d4f29705e1a8b"
+    },
+    {
+      "path": "after/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 54855,
+      "sha256": "e6001942252ab6b49d7f0f18d5627818f62ac733a479e4aef58e79ec0f8681eb"
+    },
+    {
+      "path": "before/Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "bytes": 89538,
+      "sha256": "797d3be0e86bc540fba9912413187dcec4b32d4615554a3e5654e9ace6d8b979"
+    },
+    {
+      "path": "before/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "bytes": 52941,
+      "sha256": "df5ac503dd29734f01d4adcd1a61e59b307b5825ec8267f78db2156b791230cc"
+    },
+    {
+      "path": "compile-r1/INPUT-BINDING.json",
+      "bytes": 163,
+      "sha256": "9dd4f4f32dac2e921d855c8fa653e0b06972cee421d32dafe3198091a13fdc47"
+    },
+    {
+      "path": "compile-r1/Luckbound.App.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "compile-r1/Luckbound.App.rsp",
+      "bytes": 52930,
+      "sha256": "212d0a7feba993ba4f98f48a9856c3d379013d84bcee57e23286b789d437264b"
+    },
+    {
+      "path": "compile-r1/Luckbound.PlayMode.Tests.log",
+      "bytes": 2704,
+      "sha256": "9665ea262f6ee3ec6a42e9fea1b8717d18f15191eac5179ee14b72afd3a9f6a7"
+    },
+    {
+      "path": "compile-r1/Luckbound.PlayMode.Tests.rsp",
+      "bytes": 55898,
+      "sha256": "eb0cded426962bbd98d11b4e9d884f5c75cca56a6ea1b4445b5e57d7c5d5ebc8"
+    },
+    {
+      "path": "compile-r1/RESULTS.json",
+      "bytes": 44708,
+      "sha256": "75959c996c0d10373a1a2d52d8f39727f174818285cca9ef26f01d60d4491712"
+    },
+    {
+      "path": "compile_candidates.py",
+      "bytes": 6413,
+      "sha256": "2b8c94e853f700534bf3d49cad25cc68c145a0d65ffabcac4d5077a92beb0838"
+    }
+  ]
+}

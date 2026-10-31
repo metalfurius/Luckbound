@@ -1,0 +1,39 @@
+{
+  "files": [
+    {
+      "path": "CI-ARTIFACTS.json",
+      "bytes": 968,
+      "sha256": "a326847815ace5fc23c35adb0e048e2cc3620597d4c8baf3633483c163e8823c"
+    },
+    {
+      "path": "CI-JOBS.json",
+      "bytes": 8201,
+      "sha256": "94715b632d69b3fd7a889641dc3f99db4818513c2fdd977a51285bcd7a124af1"
+    },
+    {
+      "path": "CI-RUN.json",
+      "bytes": 13913,
+      "sha256": "a8a3dc1c54bd200aa5d52302697c4646469fdd42564b5dcc4cf93e1a2d4f3d14"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 1591,
+      "sha256": "1a744cbef27a555b573669d8a05895d395c8b0b4f6138503939c10ba65d19aa4"
+    },
+    {
+      "path": "SUMMARY.json",
+      "bytes": 7783,
+      "sha256": "9631d881076c4e4e3485fbfe7f24c55bcc70f32225a8aefc52adca265f2dd344"
+    },
+    {
+      "path": "editmode-results.xml",
+      "bytes": 568837,
+      "sha256": "ba26b371c70e61d74cf449b389bb7d6e979141ca24a31fccc408b4f4c23c4815"
+    },
+    {
+      "path": "playmode-results.xml",
+      "bytes": 1231384,
+      "sha256": "be6a219fa73ad4371e4d6eb79bb5568690b95668a95d08ea8d61bd3eb86f2387"
+    }
+  ]
+}

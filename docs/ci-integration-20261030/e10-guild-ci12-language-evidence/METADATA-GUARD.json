@@ -1,0 +1,7 @@
+{
+  "baseline": "docs/ci-integration-20261030/e10-guild-ci11-corrective-evidence/BASELINE-GUARD.json",
+  "baselineSha256": "ecaf21b8587e68878123eb44c86526773c5b8042cfa76e2c4f9012dc55e70588",
+  "metasVerifiedUnchanged": 869,
+  "uniqueGuids": 869,
+  "fixturesVerifiedUnchanged": 493
+}

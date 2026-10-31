@@ -1,0 +1,166 @@
+{
+  "assemblies": [
+    {
+      "file": "editmode-results.xml",
+      "sha256": "ba26b371c70e61d74cf449b389bb7d6e979141ca24a31fccc408b4f4c23c4815",
+      "total": 654,
+      "passed": 654,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    {
+      "file": "playmode-results.xml",
+      "sha256": "be6a219fa73ad4371e4d6eb79bb5568690b95668a95d08ea8d61bd3eb86f2387",
+      "total": 517,
+      "passed": 515,
+      "failed": 2,
+      "skipped": 0,
+      "inconclusive": 0
+    }
+  ],
+  "guild": [
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroReadsAllFiveExactEntriesInBothLanguagesAndReusesOnePresentation",
+      "result": "Failed",
+      "message": "  GuildIntroListLanguageButtonLabel preferred width must fit its available rect.\n  Expected: less than or equal to 140.5f\n  But was:  152.636978f\n",
+      "stack": "at Luckbound.Tests.PlayMode.HubGuildIntroTests.AssertGuildTextLayout (UnityEngine.UI.Text text, System.Boolean wrapped, System.String contentOverride) [0x000d2] in /github/workspace/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs:716\nat Luckbound.Tests.PlayMode.HubGuildIntroTests.AssertGuildLanguageStateLabelsFit (UnityEngine.UI.Text text) [0x0002f] in /github/workspace/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs:730\nat Luckbound.Tests.PlayMode.HubGuildIntroTests+<E10GuildIntroReadsAllFiveExactEntriesInBothLanguagesAndReusesOnePresentation>d__7.MoveNext () [0x00250] in /github/workspace/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs:126\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@ba1d06c8c02f/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+      "diagnostics": [
+        {
+          "kind": "[E10.GUILD.LAYOUT]",
+          "value": {
+            "hubTitle": {
+              "name": "HubTitle",
+              "content": "LA TABERNA",
+              "fontName": "LegacyRuntime",
+              "fontSize": 21,
+              "anchoredX": 43.0,
+              "anchoredY": 111.0,
+              "rectWidth": 150.0,
+              "rectHeight": 28.0,
+              "pixelsPerUnit": 1.5396007299423218,
+              "preferredWidth": 146.7913055419922,
+              "preferredHeight": 23.382686614990234,
+              "visibleCount": 10
+            },
+            "languageStatuses": [
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "GUARDANDO",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 140.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 152.63697814941406,
+                "preferredHeight": 47.41489028930664,
+                "visibleCount": 7
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "SAVING",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 140.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 89.63362884521484,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 6
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "REINTENTAR",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 140.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 148.7398681640625,
+                "preferredHeight": 47.41489028930664,
+                "visibleCount": 8
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "RETRY",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 140.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 75.99372863769531,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroRemainsReadableForAuthenticReadOnlyAndUnrelatedPendingProfiles",
+      "result": "Passed",
+      "message": null,
+      "stack": null,
+      "diagnostics": []
+    },
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroSubmitBackCloseEscapeAndLanguagePreserveFocusAndPreparation",
+      "result": "Failed",
+      "message": "  GuildIntroConversationLanguageButtonLabel preferred width must fit its available rect.\n  Expected: less than or equal to 140.5f\n  But was:  152.636978f\n",
+      "stack": "at Luckbound.Tests.PlayMode.HubGuildIntroTests.AssertGuildTextLayout (UnityEngine.UI.Text text, System.Boolean wrapped, System.String contentOverride) [0x000d2] in /github/workspace/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs:716\nat Luckbound.Tests.PlayMode.HubGuildIntroTests.AssertGuildLanguageStateLabelsFit (UnityEngine.UI.Text text) [0x0002f] in /github/workspace/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs:730\nat Luckbound.Tests.PlayMode.HubGuildIntroTests+<E10GuildIntroSubmitBackCloseEscapeAndLanguagePreserveFocusAndPreparation>d__8.MoveNext () [0x00a5f] in /github/workspace/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs:329\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@ba1d06c8c02f/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+      "diagnostics": [
+        {
+          "kind": "[E10.GUILD.SUBMIT.PRECONDITION]",
+          "value": {
+            "updateMode": "ProcessEventsInDynamicUpdate",
+            "eventSystemEnabled": true,
+            "moduleEnabled": true,
+            "sendNavigationEvents": true,
+            "submitEnabled": true,
+            "enterResolved": true,
+            "queuedFrame": -1,
+            "performedCount": 0,
+            "performedFrame": -1,
+            "matchedControlPath": "",
+            "observedFrame": -1,
+            "selectedBefore": "GuildCharacterButton2",
+            "selectedAfter": "",
+            "conversationActive": false,
+            "characterName": ""
+          }
+        },
+        {
+          "kind": "[E10.GUILD.SUBMIT.RESULT]",
+          "value": {
+            "updateMode": "ProcessEventsInDynamicUpdate",
+            "eventSystemEnabled": true,
+            "moduleEnabled": true,
+            "sendNavigationEvents": true,
+            "submitEnabled": true,
+            "enterResolved": true,
+            "queuedFrame": 249322,
+            "performedCount": 1,
+            "performedFrame": 249323,
+            "matchedControlPath": "/Keyboard/enter",
+            "observedFrame": 249325,
+            "selectedBefore": "GuildCharacterButton2",
+            "selectedAfter": "GuildIntroBackButton",
+            "conversationActive": true,
+            "characterName": "Talia Arboris"
+          }
+        }
+      ]
+    }
+  ],
+  "previousCases": 1168,
+  "previousNotPassed": []
+}

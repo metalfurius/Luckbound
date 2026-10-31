@@ -1,0 +1,20 @@
+{
+  "baseCommit": "22891ce4c6621628d2c90832163d36332d77e956",
+  "contractSha256": "5fee0ac81b80455346f01bbb1bc7eca87a9baac1ac7c33551c088794ede92da2",
+  "changes": [
+    {
+      "path": "Assets/Luckbound/Scripts/App/HubPreparationController.cs",
+      "sha256": "797d3be0e86bc540fba9912413187dcec4b32d4615554a3e5654e9ace6d8b979",
+      "bytes": 89538,
+      "afterSha256": "fc8a4dfc6a0a0aa14abad31124d3db97817a52406f7d30be308d4f29705e1a8b",
+      "afterBytes": 89538
+    },
+    {
+      "path": "Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs",
+      "sha256": "df5ac503dd29734f01d4adcd1a61e59b307b5825ec8267f78db2156b791230cc",
+      "bytes": 52941,
+      "afterSha256": "e6001942252ab6b49d7f0f18d5627818f62ac733a479e4aef58e79ec0f8681eb",
+      "afterBytes": 54855
+    }
+  ]
+}

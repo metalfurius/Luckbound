@@ -636,7 +636,7 @@ namespace Luckbound.App
                 new Vector2(60f, 99f), new Vector2(210f, 30f), 24, "#F0C15A", FontStyle.Bold);
             _guildListTitleText.alignment = TextAnchor.MiddleCenter;
             _guildListLanguageButton = CreateRuntimeButton("GuildIntroListLanguageButton", "ENGLISH", _guildListView.transform,
-                new Vector2(-140f, 99f), new Vector2(140f, 30f), 21, "#E8E3CD", "#32251F");
+                new Vector2(-130f, 99f), new Vector2(160f, 30f), 21, "#E8E3CD", "#32251F");
             _guildListCloseButton = CreateRuntimeButton("GuildIntroListCloseButton", string.Empty, _guildListView.transform,
                 new Vector2(0f, -101f), new Vector2(120f, 28f), 21, "#E8E3CD", "#493363");
 
@@ -650,7 +650,7 @@ namespace Luckbound.App
             }
 
             _guildConversationLanguageButton = CreateRuntimeButton("GuildIntroConversationLanguageButton", "ENGLISH",
-                _guildConversationView.transform, new Vector2(-140f, 99f), new Vector2(140f, 30f),
+                _guildConversationView.transform, new Vector2(-130f, 99f), new Vector2(160f, 30f),
                 21, "#E8E3CD", "#32251F");
             _guildCharacterNameText = CreateRuntimeText("GuildIntroCharacterName", string.Empty,
                 _guildConversationView.transform, new Vector2(0f, 62f), new Vector2(300f, 30f),
