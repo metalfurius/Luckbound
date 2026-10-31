@@ -152,10 +152,10 @@ namespace Luckbound.Tests.PlayMode
                 Button listLanguage = FindButton("GuildIntroListLanguageButton");
                 SimulatePointerClick(listLanguage);
                 Text listLanguageLabel = listLanguage.GetComponentInChildren<Text>(true);
-                for (int frame = 0; frame < 300 && (app.Settings.languageId != "en" || listLanguageLabel.text != "Español"); frame++)
+                for (int frame = 0; frame < 300 && (app.Settings.languageId != "en" || listLanguageLabel.text != "Spanish"); frame++)
                     yield return null;
                 Assert.That(app.Settings.languageId, Is.EqualTo("en"));
-                Assert.That(listLanguageLabel.text, Is.EqualTo("Español"));
+                Assert.That(listLanguageLabel.text, Is.EqualTo("Spanish"));
                 Assert.That(FindText("GuildIntroListTitle").text, Is.EqualTo("GUILD"));
 
                 for (int index = 0; index < EnglishNames.Length; index++)
@@ -335,11 +335,11 @@ namespace Luckbound.Tests.PlayMode
 
                 SimulatePointerClick(language);
                 for (int frame = 0; frame < 300 &&
-                    (app.Settings.languageId != "en" || languageLabel.text != "Español"); frame++)
+                    (app.Settings.languageId != "en" || languageLabel.text != "Spanish"); frame++)
                     yield return null;
 
                 Assert.That(app.Settings.languageId, Is.EqualTo("en"));
-                Assert.That(languageLabel.text, Is.EqualTo("Español"));
+                Assert.That(languageLabel.text, Is.EqualTo("Spanish"));
                 AssertGuildTextLayout(languageLabel);
                 AssertGuildTextLayout(FindText("GuildIntroText"), wrapped: true);
                 AssertGuildTextLayout(FindText("GuildIntroConversationCloseButtonLabel"));

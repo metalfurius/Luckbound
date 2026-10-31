@@ -1,0 +1,187 @@
+{
+  "controllerSha256": "fc8a4dfc6a0a0aa14abad31124d3db97817a52406f7d30be308d4f29705e1a8b",
+  "testSha256": "e6001942252ab6b49d7f0f18d5627818f62ac733a479e4aef58e79ec0f8681eb",
+  "localeSha256": "04f078acbc977696f2ca260992f85cc6c51747bedb5f3aef592356db1819c750",
+  "comparisons": [
+    {
+      "language": "es",
+      "key": "npc.maelis.name",
+      "testArray": "SpanishNames",
+      "index": 0,
+      "expectedSha256": "bb6d5b1d92f1fc79a79d46b1ed97d58073696fcff58b727f5e75729559ecef6a",
+      "canonicalSha256": "bb6d5b1d92f1fc79a79d46b1ed97d58073696fcff58b727f5e75729559ecef6a",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.ronan.name",
+      "testArray": "SpanishNames",
+      "index": 1,
+      "expectedSha256": "4acdcbd7aeb542b52405944ba9f1e96a9ae0f85b86ee3e7dcf8e71dd9f06b55a",
+      "canonicalSha256": "4acdcbd7aeb542b52405944ba9f1e96a9ae0f85b86ee3e7dcf8e71dd9f06b55a",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.talia.name",
+      "testArray": "SpanishNames",
+      "index": 2,
+      "expectedSha256": "aea72fee7e975600a6991893c51787e1032d8a588aae0b78ad96524d7ccb0336",
+      "canonicalSha256": "aea72fee7e975600a6991893c51787e1032d8a588aae0b78ad96524d7ccb0336",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.bram.name",
+      "testArray": "SpanishNames",
+      "index": 3,
+      "expectedSha256": "f45eb93f6def73c7dcf7723fc756bcfc4266cc9bb7871c3eff5ce1b3aea5d052",
+      "canonicalSha256": "f45eb93f6def73c7dcf7723fc756bcfc4266cc9bb7871c3eff5ce1b3aea5d052",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.neris.name",
+      "testArray": "SpanishNames",
+      "index": 4,
+      "expectedSha256": "a00986f17edc3edea42c691c9e09e8e48ab3b8a4d7cb8f841ef1e2f2634af3e0",
+      "canonicalSha256": "a00986f17edc3edea42c691c9e09e8e48ab3b8a4d7cb8f841ef1e2f2634af3e0",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.maelis.intro",
+      "testArray": "SpanishIntros",
+      "index": 0,
+      "expectedSha256": "357ad84c73c4c35f033bbc69af0a469da77fe86b1e4c20e1f881198876445e23",
+      "canonicalSha256": "357ad84c73c4c35f033bbc69af0a469da77fe86b1e4c20e1f881198876445e23",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.ronan.intro",
+      "testArray": "SpanishIntros",
+      "index": 1,
+      "expectedSha256": "1512b2152e56c767d466437988fe730af9e8a208432c89f8d9903e912dc75627",
+      "canonicalSha256": "1512b2152e56c767d466437988fe730af9e8a208432c89f8d9903e912dc75627",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.talia.intro",
+      "testArray": "SpanishIntros",
+      "index": 2,
+      "expectedSha256": "2af2748f27a856f2a0ab7921693f037139dbbc3c5e8a5516f94e85969fb9645e",
+      "canonicalSha256": "2af2748f27a856f2a0ab7921693f037139dbbc3c5e8a5516f94e85969fb9645e",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.bram.intro",
+      "testArray": "SpanishIntros",
+      "index": 3,
+      "expectedSha256": "55e7cc0402a34f28c165e81575bb31bf0aee36f070a621020c65e6bad13411c5",
+      "canonicalSha256": "55e7cc0402a34f28c165e81575bb31bf0aee36f070a621020c65e6bad13411c5",
+      "identical": true
+    },
+    {
+      "language": "es",
+      "key": "npc.neris.intro",
+      "testArray": "SpanishIntros",
+      "index": 4,
+      "expectedSha256": "1dd0a0fd845bb0030cd49bfb24963388ac90fe31fcc6816b72524f71a97011f8",
+      "canonicalSha256": "1dd0a0fd845bb0030cd49bfb24963388ac90fe31fcc6816b72524f71a97011f8",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.maelis.name",
+      "testArray": "EnglishNames",
+      "index": 0,
+      "expectedSha256": "bb6d5b1d92f1fc79a79d46b1ed97d58073696fcff58b727f5e75729559ecef6a",
+      "canonicalSha256": "bb6d5b1d92f1fc79a79d46b1ed97d58073696fcff58b727f5e75729559ecef6a",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.ronan.name",
+      "testArray": "EnglishNames",
+      "index": 1,
+      "expectedSha256": "4acdcbd7aeb542b52405944ba9f1e96a9ae0f85b86ee3e7dcf8e71dd9f06b55a",
+      "canonicalSha256": "4acdcbd7aeb542b52405944ba9f1e96a9ae0f85b86ee3e7dcf8e71dd9f06b55a",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.talia.name",
+      "testArray": "EnglishNames",
+      "index": 2,
+      "expectedSha256": "aea72fee7e975600a6991893c51787e1032d8a588aae0b78ad96524d7ccb0336",
+      "canonicalSha256": "aea72fee7e975600a6991893c51787e1032d8a588aae0b78ad96524d7ccb0336",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.bram.name",
+      "testArray": "EnglishNames",
+      "index": 3,
+      "expectedSha256": "f45eb93f6def73c7dcf7723fc756bcfc4266cc9bb7871c3eff5ce1b3aea5d052",
+      "canonicalSha256": "f45eb93f6def73c7dcf7723fc756bcfc4266cc9bb7871c3eff5ce1b3aea5d052",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.neris.name",
+      "testArray": "EnglishNames",
+      "index": 4,
+      "expectedSha256": "a00986f17edc3edea42c691c9e09e8e48ab3b8a4d7cb8f841ef1e2f2634af3e0",
+      "canonicalSha256": "a00986f17edc3edea42c691c9e09e8e48ab3b8a4d7cb8f841ef1e2f2634af3e0",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.maelis.intro",
+      "testArray": "EnglishIntros",
+      "index": 0,
+      "expectedSha256": "463a6988aa6c1e0e70c15355414c820798870fbdf86574aea82ad313c05a8e55",
+      "canonicalSha256": "463a6988aa6c1e0e70c15355414c820798870fbdf86574aea82ad313c05a8e55",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.ronan.intro",
+      "testArray": "EnglishIntros",
+      "index": 1,
+      "expectedSha256": "750a0967603b6e142eaaecc7b35bf23e3c08cc7eea75a080a9fb9e8aa227d868",
+      "canonicalSha256": "750a0967603b6e142eaaecc7b35bf23e3c08cc7eea75a080a9fb9e8aa227d868",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.talia.intro",
+      "testArray": "EnglishIntros",
+      "index": 2,
+      "expectedSha256": "ad182e3f748e8ef2d2fe99c54cde24955baad90325bdcc4eb7685f5201b103f0",
+      "canonicalSha256": "ad182e3f748e8ef2d2fe99c54cde24955baad90325bdcc4eb7685f5201b103f0",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.bram.intro",
+      "testArray": "EnglishIntros",
+      "index": 3,
+      "expectedSha256": "c28a9c2ea4bbc9e209fb57364fc16290d037f05b15c122c16d622bb9dacdb8fd",
+      "canonicalSha256": "c28a9c2ea4bbc9e209fb57364fc16290d037f05b15c122c16d622bb9dacdb8fd",
+      "identical": true
+    },
+    {
+      "language": "en",
+      "key": "npc.neris.intro",
+      "testArray": "EnglishIntros",
+      "index": 4,
+      "expectedSha256": "490c538db19cdec460abda94552b3521e7bf2a69ca7836ca80fe9092d9d8575d",
+      "canonicalSha256": "490c538db19cdec460abda94552b3521e7bf2a69ca7836ca80fe9092d9d8575d",
+      "identical": true
+    }
+  ]
+}

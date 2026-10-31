@@ -1,0 +1,166 @@
+{
+  "assemblies": [
+    {
+      "file": "editmode-results.xml",
+      "sha256": "968787725be0f59ede6f1b2dfa9976b43ccc4fed52f1c0b7f4870884f56be81c",
+      "total": 654,
+      "passed": 654,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    {
+      "file": "playmode-results.xml",
+      "sha256": "1dfaeee3d8324860d279cbabe230b3fe1d065998d6e5e9179f2dccf4d23af759",
+      "total": 517,
+      "passed": 515,
+      "failed": 2,
+      "skipped": 0,
+      "inconclusive": 0
+    }
+  ],
+  "guild": [
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroReadsAllFiveExactEntriesInBothLanguagesAndReusesOnePresentation",
+      "result": "Failed",
+      "message": "  String lengths are both 7. Strings differ at index 0.\n  Expected: \"Español\"\n  But was:  \"Spanish\"\n  -----------^\n",
+      "stack": "at Luckbound.Tests.PlayMode.HubGuildIntroTests+<E10GuildIntroReadsAllFiveExactEntriesInBothLanguagesAndReusesOnePresentation>d__7.MoveNext () [0x004cd] in /github/workspace/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs:158\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@ba1d06c8c02f/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+      "diagnostics": [
+        {
+          "kind": "[E10.GUILD.LAYOUT]",
+          "value": {
+            "hubTitle": {
+              "name": "HubTitle",
+              "content": "LA TABERNA",
+              "fontName": "LegacyRuntime",
+              "fontSize": 21,
+              "anchoredX": 43.0,
+              "anchoredY": 111.0,
+              "rectWidth": 150.0,
+              "rectHeight": 28.0,
+              "pixelsPerUnit": 1.5396007299423218,
+              "preferredWidth": 146.7913055419922,
+              "preferredHeight": 23.382686614990234,
+              "visibleCount": 10
+            },
+            "languageStatuses": [
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "GUARDANDO",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 160.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 152.63697814941406,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 9
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "SAVING",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 160.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 89.63362884521484,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 6
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "REINTENTAR",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 160.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 148.7398681640625,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 10
+              },
+              {
+                "name": "GuildIntroListLanguageButtonLabel",
+                "content": "RETRY",
+                "fontName": "LegacyRuntime",
+                "fontSize": 21,
+                "anchoredX": 0.0,
+                "anchoredY": 0.0,
+                "rectWidth": 160.0,
+                "rectHeight": 30.0,
+                "pixelsPerUnit": 1.5396007299423218,
+                "preferredWidth": 75.99372863769531,
+                "preferredHeight": 23.382686614990234,
+                "visibleCount": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroRemainsReadableForAuthenticReadOnlyAndUnrelatedPendingProfiles",
+      "result": "Passed",
+      "message": null,
+      "stack": null,
+      "diagnostics": []
+    },
+    {
+      "name": "Luckbound.Tests.PlayMode.HubGuildIntroTests.E10GuildIntroSubmitBackCloseEscapeAndLanguagePreserveFocusAndPreparation",
+      "result": "Failed",
+      "message": "  String lengths are both 7. Strings differ at index 0.\n  Expected: \"Español\"\n  But was:  \"Spanish\"\n  -----------^\n",
+      "stack": "at Luckbound.Tests.PlayMode.HubGuildIntroTests+<E10GuildIntroSubmitBackCloseEscapeAndLanguagePreserveFocusAndPreparation>d__8.MoveNext () [0x00b8b] in /github/workspace/Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs:342\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in ./Library/PackageCache/com.unity.test-framework@ba1d06c8c02f/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52\n",
+      "diagnostics": [
+        {
+          "kind": "[E10.GUILD.SUBMIT.PRECONDITION]",
+          "value": {
+            "updateMode": "ProcessEventsInDynamicUpdate",
+            "eventSystemEnabled": true,
+            "moduleEnabled": true,
+            "sendNavigationEvents": true,
+            "submitEnabled": true,
+            "enterResolved": true,
+            "queuedFrame": -1,
+            "performedCount": 0,
+            "performedFrame": -1,
+            "matchedControlPath": "",
+            "observedFrame": -1,
+            "selectedBefore": "GuildCharacterButton2",
+            "selectedAfter": "",
+            "conversationActive": false,
+            "characterName": ""
+          }
+        },
+        {
+          "kind": "[E10.GUILD.SUBMIT.RESULT]",
+          "value": {
+            "updateMode": "ProcessEventsInDynamicUpdate",
+            "eventSystemEnabled": true,
+            "moduleEnabled": true,
+            "sendNavigationEvents": true,
+            "submitEnabled": true,
+            "enterResolved": true,
+            "queuedFrame": 188397,
+            "performedCount": 1,
+            "performedFrame": 188398,
+            "matchedControlPath": "/Keyboard/enter",
+            "observedFrame": 188400,
+            "selectedBefore": "GuildCharacterButton2",
+            "selectedAfter": "GuildIntroBackButton",
+            "conversationActive": true,
+            "characterName": "Talia Arboris"
+          }
+        }
+      ]
+    }
+  ],
+  "previousCases": 1168,
+  "previousNotPassed": []
+}

@@ -1,0 +1,17 @@
+# Guild CI12 — expectativa corregida, revisión estática final
+
+**Dictamen: Accepted del test congelado y de su integración para la siguiente CI.** No encuentro P1/P2 nuevos en este delta. La auditoría restante del contrato `774993a2561d68b33cb6f1accda3f2fc0e077f96caf2dfe08b64320370f19681` sigue vigente; no acepta las fases Native todavía no ejecutadas.
+
+Staging `Logs/E10GuildLanguageExpectationFix-20261031-r1/`, baseb99cb0f795715cf194738aade67d50b8414a347d. FREEZE SHA256 `925cb87373b611465075ebffd9f43e534a8769117e4ce381508423b67d62192a`; diff `15f8510074f4cffe979aeb5cc8592235673581371426d227b56e8ec2aa66f7fe` leído completo.
+
+Único archivo: `Assets/Luckbound/Tests/PlayMode/HubGuildIntroTests.cs`, before `e6001942252ab6b49d7f0f18d5627818f62ac733a479e4aef58e79ec0f8681eb` /54855B, after **`35d44be382ce1cf4e0078624219cc1a2018d61f1d4269d90d277ea1f88b2f78b` /54851B**. Hash recalculado. Comprobación independiente de todo el texto: after es exactamente before.Replace(`"Español"`,`"Spanish"`), cuatro ocurrencias; no hay otro cambio. Son dos condiciones de espera y sus dos asserts bajo UIEN, donde el catálogo canónico devuelveSpanish. No cambia el bound300frames ni deriva expected del GetText productivo.
+
+Se conservan íntegros los tres UnityTests,20literales de nombres/introducciones ES/EN ya contrastados, SettingsEN y retry/payload exacto, Profile sin escrituras, selección/foco/modal/reapertura/re-enable/Escape, contadores, geometría150/160, fuente21 y todos los asserts/tolerancias. Controller `fc8a4dfc6a0a0aa14abad31124d3db97817a52406f7d30be308d4f29705e1a8b` e Initial `04f078acbc977696f2ca260992f85cc6c51747bedb5f3aef592356db1819c750` siguen intactos, recalculados aquí. No cambio de producción/canon para acomodar un test.
+
+Compile-r1 RESULTS SHA256 `c8daea7ac1796971b081e20b903cb1761bc92a6dcc5aaa811c415623db5271be`; INPUT-BINDING `2de16b7d548c7b5ebbe90f0e28f0af55c895a42e694954a2b65d7286586857c1`. App56/Play79 exit0; comprobé135inputs contra sus rutas reales, cero discrepancias, guard412 registrado. Referencias6000.6.6f1 frente a targetCI6000.6.7f1; sin Unity/NUnit local. App log vacío. Playlog **`e64e3029643ea3df9a6842d58233bb64790302901db33aafc02074b49bbf7946` difiere del anterior9665ea26 por orden de emisión**: comparé los8renglones ordenados y su multiset coincide exactamente, incluidos archivo/línea/mensaje. No se afirma identidad byte a byte de ambos logs ni se oculta el nuevo digest.
+
+CI12failure preservada: `e10-guild-ci12-failure-evidence/EVIDENCE-MANIFEST.json` SHA256 `d7e8bc706e4b48498b4e9682d7c026cfce9f88d0801d8ab475187a567a36803a`;7hojas verificadas por hash/tamaño,8archivos contando manifest. Su1169/1171 y V6/builds skipped no se reetiquetan como verdes. El título, geometría/estados de idioma, cincoES y Enter observados conservan su alcance; el tramoEN y cierres posteriores siguen pendientes.
+
+Root puede integrar **solo35d4** tras su baseline/binding final y lanzar CI del snapshot resultante. Esperado1171=654+517 sin omisiones, V6 real11/97/14+97/77/sentinel y builds propias; si otro paquete aprobado añade casos, conservar el total efectivo y el binding de cada delta. La entrega no autoriza producción adicional, publicación o repetición del mismo commit fallido sin cambios.
+
+Percepción Guild aún `Not reviewable` sin build/capturas propias. E10/F09/F10 abiertos. No ejecuté Unity/player/navegador/modelo/audio o medios ni modifiqué código/documentos centrales; solo esta acta nueva.
