@@ -216,7 +216,16 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(ApplicationBootstrapper.Instance, Is.Null);
             context.PreviousScene = SceneManager.GetActiveScene();
             context.PreviousCaptureDelta = Time.captureDeltaTime;
+            context.PreviousInputSettings = InputSystem.settings;
+            context.PreviousBackgroundBehavior = context.PreviousInputSettings.backgroundBehavior;
+            context.PreviousEditorInputBehavior = context.PreviousInputSettings.editorInputBehaviorInPlayMode;
+            context.RestoreInputSettings = true;
+            context.PreviousInputSettings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            context.PreviousInputSettings.editorInputBehaviorInPlayMode =
+                InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
             context.Keyboard = InputSystem.AddDevice<Keyboard>();
+            InputSystem.EnableDevice(context.Keyboard);
+            Assert.That(context.Keyboard.enabled, Is.True, "The owned virtual test keyboard must be enabled.");
 
             // Fixed frame duration only; health, damage, collision, physics and win conditions stay real.
             Time.captureDeltaTime = 1f / 30f;
@@ -1127,14 +1136,32 @@ namespace Luckbound.Tests.PlayMode
         private static void CloseDiagnostic(RouteContext context)
         {
             if (context == null) return;
-            ReleaseAll(context);
-            if (context.PreviousCaptureDelta > 0f || context.PreviousCaptureDelta == 0f)
-                Time.captureDeltaTime = context.PreviousCaptureDelta;
-            if (context.Keyboard != null && context.Keyboard.added) InputSystem.RemoveDevice(context.Keyboard);
-            if (context.PreviousScene.IsValid() && context.PreviousScene.isLoaded)
-                SceneManager.SetActiveScene(context.PreviousScene);
-            if (context.DiagnosticScene.IsValid() && context.DiagnosticScene.isLoaded)
-                SceneManager.UnloadSceneAsync(context.DiagnosticScene);
+            try
+            {
+                ReleaseAll(context);
+                if (context.PreviousCaptureDelta > 0f || context.PreviousCaptureDelta == 0f)
+                    Time.captureDeltaTime = context.PreviousCaptureDelta;
+                if (context.Keyboard != null && context.Keyboard.added) InputSystem.RemoveDevice(context.Keyboard);
+                if (context.PreviousScene.IsValid() && context.PreviousScene.isLoaded)
+                    SceneManager.SetActiveScene(context.PreviousScene);
+                if (context.DiagnosticScene.IsValid() && context.DiagnosticScene.isLoaded)
+                    SceneManager.UnloadSceneAsync(context.DiagnosticScene);
+            }
+            finally
+            {
+                if (context.RestoreInputSettings && context.PreviousInputSettings != null)
+                {
+                    try
+                    {
+                        context.PreviousInputSettings.backgroundBehavior = context.PreviousBackgroundBehavior;
+                    }
+                    finally
+                    {
+                        context.PreviousInputSettings.editorInputBehaviorInPlayMode = context.PreviousEditorInputBehavior;
+                        context.RestoreInputSettings = false;
+                    }
+                }
+            }
         }
 
         private static void SetKey(RouteContext context, Key key, bool pressed)
@@ -1239,6 +1266,10 @@ namespace Luckbound.Tests.PlayMode
             public Keyboard Keyboard;
             public readonly HashSet<Key> Keys = new HashSet<Key>();
             public float PreviousCaptureDelta;
+            public InputSettings PreviousInputSettings;
+            public InputSettings.BackgroundBehavior PreviousBackgroundBehavior;
+            public InputSettings.EditorInputBehaviorInPlayMode PreviousEditorInputBehavior;
+            public bool RestoreInputSettings;
             public F10DiagnosticSceneRunner Runner;
             public ApplicationBootstrapper App;
             public PlayerMotor2D Player;
