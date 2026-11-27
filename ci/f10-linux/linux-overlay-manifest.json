@@ -1,0 +1,49 @@
+{
+  "schema": "luckbound.f10.linux-overlay.v1",
+  "schemaVersion": 1,
+  "baseOverlayManifestSha256": "d918873b7206f8091a4d286cb8e5be94be2d0c45d2df60de85e46cf9e390139c",
+  "baseSnapshot": {
+    "path": "Logs/F10LinuxSourceSnapshot-20261127/source.zip",
+    "sourceZipSha256": "0d710dc65065a1435897db61a9bee2124fe8ed1989e97c738b5ee15ea9b47f0e",
+    "sourceInventoryPath": "Logs/F10LinuxSourceSnapshot-20261127/source-inventory.json",
+    "sourceInventorySha256": "6aca3aa53a27dcba77893b24495041e16a47fb188d9cf727dbcaa2b16a4d99be"
+  },
+  "overlays": [
+    {
+      "destination": "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs",
+      "source": "Logs/F10V6LinuxAcceptance-20261121/candidate/Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs",
+      "sha256": "66b3d4e0ec3fe8584de7d46474d3a2d092e2d87500592c5935925d2553307dcf",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs.meta",
+      "source": "Logs/F10V6LinuxAcceptance-20261121/candidate/Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs.meta",
+      "sha256": "b3531076d26c27d83bd1e77f464bd8cddd86bb1ecf534e5fa2bbb0c4c199f90d",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10Diagnostic.cs",
+      "source": "Logs/F10LinuxGuardFix-20261127/ApplicationBootstrapper.F10Diagnostic.cs",
+      "sha256": "594348aeacd6ae2ea9764ccbc9c438f2c74a78ac0c4431de55a59b7119e4d443",
+      "preimageSha256": "1aaeac8aa90ad81d7492544c045d4c0a839c6d6a0a98cfdb77e1c116198bea5d"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs",
+      "source": "Logs/F10V6LinuxRuntime-20261121/candidate/Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs",
+      "sha256": "2b27a98271e8146d067e95eacc33182794fbd1f210e7fc32a97744dd5f6f96d2",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs.meta",
+      "source": "Logs/F10V6LinuxRuntime-20261121/candidate/Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs.meta",
+      "sha256": "10c94a1387cbda4f4cfa97317dfcfec28c32be43258b0daf0cccd7cb6f70be73",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
+      "source": "Logs/F10V6LinuxAcceptance-20261121/candidate/Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
+      "sha256": "8f16f8c42f01be3b532f51594a86ee02e6ffe3e44dc479d2029d58adfe13eed7",
+      "preimageSha256": "4e9d1fee461b9a5f0110808b751edf86763b4eaabf5f915ebb8fa614b767121c"
+    }
+  ]
+}

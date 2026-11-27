@@ -1,2 +1,2 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+ci/f10-linux/** -text
+.github/workflows/build.yml -text

@@ -1,79 +1,71 @@
-name: Build and Deploy WebGL
+# Candidate content for .github/workflows/build.yml ONLY on the diagnostic
+# branch. Never merge or apply this replacement to Main.
+name: F10 V6 Linux Diagnostic
 
 on:
-  push:
-    branches:
-      - Main
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  buildAndDeploy:
-    runs-on: ubuntu-latest
-
+  f10-v6-linux-acceptance:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/codex/luckbound-f10-linux-20261127'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
     steps:
-      # Checkout del código fuente
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Checkout the selected diagnostic commit
+        uses: actions/checkout@v7.0.1
         with:
-          fetch-depth: 0
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
-      # Cachear la carpeta Library
-      - name: Cache Unity Library
-        uses: actions/cache@v3
-        with:
-          path: Library
-          key: Library-WebGL
-          restore-keys: Library-
-
-      # Construir el proyecto en WebGL
-      - name: Build Unity Project
-        uses: game-ci/unity-builder@v4
+      - name: Run the frozen diagnostic in one container
+        shell: bash
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          targetPlatform: WebGL
-
-      # Desplegar en GitHub Pages
-      - name: Deploy to GitHub Pages
+          F10_IMAGE: unityci/editor:ubuntu-6000.6.10f1-base-4.0.0@sha256:b298e645b9982ee48dbcb90b77f900e82afd7eb59daf9512ed5a5220ee6911d5
         run: |
-          BUILD_DIR=build/WebGL
-          GH_PAGES_BRANCH=gh-pages
+          set -euo pipefail
+          payload="$GITHUB_WORKSPACE/ci/f10-linux"
+          evidence="$RUNNER_TEMP/f10-v6-linux-evidence"
+          test -d "$payload/tools"
+          test -d "$payload/overlays"
+          test -f "$payload/linux-overlay-manifest.json"
+          test ! -e "$evidence"
+          mkdir "$evidence"
+          docker pull "$F10_IMAGE"
+          docker run --rm --init --shm-size=1g \
+            --mount "type=bind,src=$payload,dst=/luckbound,readonly" \
+            --mount "type=bind,src=$evidence,dst=/tmp/luckbound-run/evidence" \
+            -e UNITY_LICENSE -e UNITY_EMAIL -e UNITY_PASSWORD \
+            -e GITHUB_ACTIONS -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF \
+            -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW \
+            -e GITHUB_WORKFLOW_REF -e GITHUB_JOB -e RUNNER_OS -e RUNNER_ENVIRONMENT \
+            -e GITHUB_WORKSPACE=/luckbound -e RUNNER_TEMP=/tmp/luckbound-run \
+            -e LUCKBOUND_F10_LINUX_PROJECT_ROOT=/tmp/luckbound-run/project \
+            --entrypoint /bin/bash "$F10_IMAGE" \
+            /luckbound/tools/container_entrypoint.sh \
+            --workspace /luckbound \
+            --source-zip /luckbound/input/source.zip \
+            --source-inventory /luckbound/input/source-inventory.json \
+            --linux-manifest /luckbound/linux-overlay-manifest.json \
+            --overlay-root /luckbound/overlays \
+            --temp-root /tmp/luckbound-run \
+            --project-root /tmp/luckbound-run/project \
+            --state /tmp/luckbound-run/state.json \
+            --unity-editor /opt/unity/Editor/Unity \
+            --results-root /tmp/luckbound-run/evidence/results
 
-          # Configurar Git
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Verificar si existe la rama gh-pages
-          if git ls-remote --exit-code --heads origin $GH_PAGES_BRANCH; then
-            # Clonar la rama existente
-            git clone --branch $GH_PAGES_BRANCH https://github.com/${{ github.repository }}.git deploy
-          else
-            # Crear nuevo repositorio para gh-pages
-            mkdir deploy
-            cd deploy
-            git init
-            git remote add origin https://github.com/${{ github.repository }}.git
-            git checkout --orphan $GH_PAGES_BRANCH
-            cd ..
-          fi
-
-          # Limpiar directorio y copiar archivos
-          cd deploy
-          rm -rf * .gitignore .gitmodules || true
-          cp -r $GITHUB_WORKSPACE/$BUILD_DIR/* .
-
-          # Mover contenido de WebGL a la raíz si es necesario
-          if [ -d WebGL ]; then
-            mv WebGL/* .
-            rmdir WebGL
-          fi
-
-          # Hacer commit y push
-          git add -A
-          git commit -m "Deploy WebGL build from ${{ github.sha }}"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git $GH_PAGES_BRANCH
+      - name: Preserve diagnostic results
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: f10-v6-linux-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/f10-v6-linux-evidence
+          if-no-files-found: warn
+          retention-days: 7
