@@ -68,23 +68,25 @@ GENERATOR_FILES = (
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs",
 )
 EXPECTED_LINUX_DELTA_DESTINATIONS = {
-    "Assets/Luckbound/Editor/F10DiagnosticSceneGenerator.cs",
-    "Assets/Luckbound/Editor/F10RoomTemplatePrefabGenerator.cs",
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs",
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs.meta",
+    "Assets/Luckbound/Editor/F10DiagnosticSceneGenerator.cs",
+    "Assets/Luckbound/Editor/F10RoomTemplatePrefabGenerator.cs",
     "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10Diagnostic.cs",
+    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPayment.cs.meta",
     "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs",
     "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs.meta",
-    "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
     "Assets/Luckbound/Scripts/App/F10ObjectiveDriver2D.cs.meta",
     "Assets/Luckbound/Scripts/App/F10ObjectiveObservation.cs.meta",
     "Assets/Luckbound/Scripts/App/RoomObjectiveTriggerRelay2D.cs.meta",
-    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPayment.cs.meta",
     "Assets/Luckbound/Tests/PlayMode/F10ObjectiveDriver2DTests.cs.meta",
+    "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
     "Assets/Luckbound/Tests/PlayMode/F10V7CombatPaymentCandidateTests.cs.meta",
     "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7AdmissionPendingTests.cs.meta",
     "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7AdmissionRaceTests.cs.meta",
     "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7SessionHandleTests.cs.meta",
+    "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+    "Packages/packages-lock.json",
 }
 PROCESS_A = "Luckbound.Tests.PlayMode.F10V6ResumeAcceptanceTests.ProcessA_BeginsNewRunClearsC1AndWritesReadOnlyReceipt"
 PROCESS_B = "Luckbound.Tests.PlayMode.F10V6ResumeAcceptanceTests.ProcessB_ResumesSameC1CheckpointWithoutRepayAndExtracts"
@@ -364,7 +366,7 @@ def read_linux_manifest(path: Path, overlay_root: Path) -> tuple[dict[str, objec
         source = safe_relative(row.get("source"))
         digest = row.get("sha256")
         preimage = row.get("preimageSha256")
-        if not destination.startswith("Assets/"):
+        if not (destination.startswith("Assets/") or destination == "Packages/packages-lock.json"):
             fail(f"Only fixed project asset destinations are allowed in the Linux overlay: {destination}")
         if destination in destinations:
             fail(f"The Linux overlay repeats a destination: {destination}")

@@ -110,6 +110,18 @@
       "source": "scene/F10DiagnosticSceneGenerator.cs",
       "sha256": "37e6ef1012834eae26f932f5230e2fce15eadbd50b8f8358db3d9f971d672dd9",
       "preimageSha256": "1aeb80f3831b6818c21f648a116f3c46211cd986af8bc32c72b444a434810b43"
+    },
+    {
+      "destination": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+      "source": "r6/00-UniversalRenderPipelineGlobalSettings.asset",
+      "sha256": "6e193ed0d0734ba156391192edb4ce4705c0649a0c57ad357a62b210a0990552",
+      "preimageSha256": "adcf683780138e1c4987add26ce706020423ac21725ca7fb391ffb096afdcfea"
+    },
+    {
+      "destination": "Packages/packages-lock.json",
+      "source": "r6/01-packages-lock.json",
+      "sha256": "6227d5177185d936f819ace66716d3b8628dde89de2c7f8fe4f719c49ba25ef9",
+      "preimageSha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
     }
   ]
 }
