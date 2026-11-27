@@ -509,6 +509,7 @@ namespace Luckbound.Tests.PlayMode
             }
 
             ReleaseAll(context);
+            TestContext.WriteLine(DescribeLastC1Confirmation(context, lastCoordinator));
             RoomLifetimeScope finalScope = context.Runner == null || context.Runner.Composition == null
                 ? null : context.Runner.Composition.RoomTransitions.ActiveScope;
             F10C1RuntimeCoordinator finalCoordinator = finalScope == null ? null :
@@ -580,6 +581,34 @@ namespace Luckbound.Tests.PlayMode
             TestContext.WriteLine("C1 physical proof: waves=1,2; Slimes=" + evidence.SeenSlimeCount +
                 "; Huesoguardias=" + evidence.SeenBoneguardCount + "; impact count=" +
                 evidence.TotalCombatImpacts + "; claims=" + evidence.C1ClaimsAfter.Length + ".");
+        }
+
+        private static string DescribeLastC1Confirmation(RouteContext context, F10C1RuntimeCoordinator coordinator)
+        {
+            if (coordinator == null) return "C1 last confirmation: no live coordinator.";
+            RoomEncounterRuntime runtime = coordinator.Runtime;
+            string state = "C1 last confirmation: runtime=" + coordinator.RuntimeStatus +
+                "; message=" + coordinator.StatusMessage + "; enabled=" + coordinator.isActiveAndEnabled +
+                "; setupFailed=" + coordinator.IsSetupFailed + "; disposed=" + coordinator.IsDisposed +
+                "; wave=" + coordinator.CurrentWaveNumber + "; physics=" + Physics2D.simulationMode +
+                "; timeScale=" + Time.timeScale + "; playerHealth=" + context.Player.CurrentHealth +
+                "; playerDead=" + context.Player.IsDead +
+                "; App.HasPendingRoomAdvance=" + context.App.HasPendingRoomAdvance +
+                "; runnerActive=" + context.Runner.isActiveAndEnabled;
+            if (runtime == null) return state + "; no runtime.";
+            state += "; observed=" + runtime.HasLastConfirmationRead + "; read=" + runtime.LastConfirmationReadStatus;
+            if (!runtime.HasLastConfirmationRead) return state;
+            RoomEncounterRuntimeSessionSnapshot snapshot = runtime.LastConfirmationSnapshot;
+            return state + "; initialized=" + snapshot.IsInitialized + "; matches=" + snapshot.Matches(coordinator.Context) +
+                "; SessionActive=" + snapshot.IsSessionActive + "; BoundPlayer=" + snapshot.HasBoundPlayer +
+                "; Checkpoint=" + snapshot.HasCheckpointBinding + "; Published=" + snapshot.HasPublishedSession +
+                "; GameplayBindings=" + snapshot.HasRequiredGameplayBindings +
+                "; CommitActivation=" + snapshot.RoomCommitAndActivationComplete +
+                "; PendingMutation=" + snapshot.HasPendingSessionMutation +
+                "; AdvanceInFlight=" + snapshot.IsRoomAdvanceInFlight +
+                "; PendingCommitActivation=" + snapshot.HasPendingCommitOrActivation +
+                "; PendingSimulationGate=" + snapshot.HasPendingSimulationLeaseOrGate +
+                "; SimulationPaused=" + snapshot.IsSimulationPaused + "; CanArm=" + snapshot.CanArmOrDrain;
         }
 
         private static IEnumerator TraverseE1AndExit(RouteContext context)

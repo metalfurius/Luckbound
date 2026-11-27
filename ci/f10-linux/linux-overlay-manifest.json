@@ -42,7 +42,7 @@
     {
       "destination": "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
       "source": "Logs/F10V6LinuxAcceptance-20261121/candidate/Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
-      "sha256": "44d93a241cb6aaa167a82efb4f2553304d0d00d1ae77e849dfa87f5855e99e03",
+      "sha256": "126bccbfa3a65f4364cb5df16eb9c97d85d4f8c010ca33a582fd0576d3370249",
       "preimageSha256": "4e9d1fee461b9a5f0110808b751edf86763b4eaabf5f915ebb8fa614b767121c"
     },
     {
@@ -128,6 +128,12 @@
       "source": "r13/00-F10DiagnosticSceneRunner.cs",
       "sha256": "d53e5ffb853dccc1de6150fd5e1b79e0a1345aad851b6122d4891bec9eea8e1c",
       "preimageSha256": "50c25c6ce96c9c741de06ab34139077798f6cf3f52aeba1c8a44117f7f3be738"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/RoomEncounterRuntime.cs",
+      "source": "r20/00-RoomEncounterRuntime.cs",
+      "sha256": "d93f7bfdcc21bfa7ff4e9ce82ac7e8fc514dd1a46565f4f3299dfc4a37a36bfa",
+      "preimageSha256": "d520a3f3efc04d95e7ac4b84bc7bcf412487b9c937030c490c1adf618086d941"
     }
   ]
 }

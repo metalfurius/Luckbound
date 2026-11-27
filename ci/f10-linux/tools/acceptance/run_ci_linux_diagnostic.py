@@ -79,6 +79,7 @@ EXPECTED_LINUX_DELTA_DESTINATIONS = {
     "Assets/Luckbound/Scripts/App/F10DiagnosticSceneRunner.cs",
     "Assets/Luckbound/Scripts/App/F10ObjectiveDriver2D.cs.meta",
     "Assets/Luckbound/Scripts/App/F10ObjectiveObservation.cs.meta",
+    "Assets/Luckbound/Scripts/App/RoomEncounterRuntime.cs",
     "Assets/Luckbound/Scripts/App/RoomObjectiveTriggerRelay2D.cs.meta",
     "Assets/Luckbound/Tests/PlayMode/F10ObjectiveDriver2DTests.cs.meta",
     "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
