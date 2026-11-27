@@ -59,6 +59,22 @@ jobs:
               cp -- "$package/package.json" /evidence/package.json
               cp -- "$script" /evidence/PlaymodeTestsController.cs
               cp -- "$script.meta" /evidence/PlaymodeTestsController.cs.meta
+              urp=/opt/unity/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.render-pipelines.universal
+              if [ -d "$urp" ] && [ ! -L "$urp" ]; then
+                echo "SDK URP directory present" > /evidence/urp-sdk-status.txt
+                for relative in package.json Runtime/Materials/Sprite-Lit-Default.mat Runtime/Materials/Sprite-Lit-Default.mat.meta Shaders/2D/Sprite-Lit-Default.shader Shaders/2D/Sprite-Lit-Default.shader.meta; do
+                  if [ -f "$urp/$relative" ] && [ ! -L "$urp/$relative" ]; then
+                    (cd "$urp" && sha256sum "$relative") >> /evidence/urp-sdk-sha256.txt
+                  else
+                    echo "Missing or non-plain SDK file: $relative" >> /evidence/urp-sdk-status.txt
+                  fi
+                done
+                if [ -f "$urp/package.json" ] && [ ! -L "$urp/package.json" ]; then
+                  cp -- "$urp/package.json" /evidence/urp-package.json
+                fi
+              else
+                echo "SDK URP directory absent or symlink; not accepted as a package source" > /evidence/urp-sdk-status.txt
+              fi
               cd /evidence
               sha256sum package.json PlaymodeTestsController.cs PlaymodeTestsController.cs.meta > SHA256SUMS
             '
