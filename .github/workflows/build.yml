@@ -39,7 +39,7 @@ jobs:
           test ! -e "$evidence"
           mkdir "$evidence"
           docker pull "$F10_IMAGE"
-          docker run --rm --init --shm-size=1g \
+          docker run --rm --init --shm-size=2g \
             --mount "type=bind,src=$payload,dst=/luckbound,readonly" \
             --mount "type=bind,src=$evidence,dst=/tmp/luckbound-run/evidence" \
             -e UNITY_LICENSE -e UNITY_EMAIL -e UNITY_PASSWORD \
