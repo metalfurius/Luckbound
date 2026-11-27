@@ -68,6 +68,7 @@ GENERATOR_FILES = (
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs",
 )
 EXPECTED_LINUX_DELTA_DESTINATIONS = {
+    "Assets/Luckbound/Editor/F10RoomTemplatePrefabGenerator.cs",
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs",
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs.meta",
     "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10Diagnostic.cs",

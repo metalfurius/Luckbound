@@ -98,6 +98,12 @@
       "source": "metadata/SaveRepositoryV7SessionHandleTests.cs.meta",
       "sha256": "8bdd3b248b471094f5eb3cd4cffcd7ad7c9dc2ca6a0b2cf72f057483cec80117",
       "preimageSha256": "ea219eac4603217110371b773c9a4730a1e5f7a67d8aff3ce1ba89927134c210"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10RoomTemplatePrefabGenerator.cs",
+      "source": "room-prefab/F10RoomTemplatePrefabGenerator.cs",
+      "sha256": "d55645e4c8704cb37976c87d635c823305c619412ace067f6a8848c54e73c7e8",
+      "preimageSha256": "1afca9f85725a3a66fe26996f55e226ba63084e5c86d4e61f436b5f532fcd390"
     }
   ]
 }
