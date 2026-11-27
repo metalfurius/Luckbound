@@ -1,0 +1,357 @@
+{
+  "schema": "luckbound.f10.v7.linux-overlay.v1",
+  "schemaVersion": 1,
+  "baseOverlayManifestSha256": "d918873b7206f8091a4d286cb8e5be94be2d0c45d2df60de85e46cf9e390139c",
+  "baseSnapshot": {
+    "path": "Logs/F10LinuxSourceSnapshot-20261127/source.zip",
+    "sourceZipSha256": "0d710dc65065a1435897db61a9bee2124fe8ed1989e97c738b5ee15ea9b47f0e",
+    "sourceInventoryPath": "Logs/F10LinuxSourceSnapshot-20261127/source-inventory.json",
+    "sourceInventorySha256": "6aca3aa53a27dcba77893b24495041e16a47fb188d9cf727dbcaa2b16a4d99be"
+  },
+  "overlays": [
+    {
+      "destination": "Assets/Luckbound/Editor/F10DiagnosticSceneGenerator.cs",
+      "source": "scene/F10DiagnosticSceneGenerator.cs",
+      "sha256": "37e6ef1012834eae26f932f5230e2fce15eadbd50b8f8358db3d9f971d672dd9",
+      "preimageSha256": "1aeb80f3831b6818c21f648a116f3c46211cd986af8bc32c72b444a434810b43"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10RoomTemplatePrefabGenerator.cs",
+      "source": "room-prefab/F10RoomTemplatePrefabGenerator.cs",
+      "sha256": "d55645e4c8704cb37976c87d635c823305c619412ace067f6a8848c54e73c7e8",
+      "preimageSha256": "1afca9f85725a3a66fe26996f55e226ba63084e5c86d4e61f436b5f532fcd390"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10TechnicalPhysicalDescriptorExporter.cs",
+      "source": "v7-live/Assets/Luckbound/Editor/F10TechnicalPhysicalDescriptorExporter.cs",
+      "sha256": "389e0991a9d673205004ea17bcacc242a448989b85a5c9a25dabfb079db73bbc",
+      "preimageSha256": "2f5d1f8c549f65a6257ca52cbe3b4d6f25db1fd792af175075bbb6556ebd3860"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10V7DiagnosticCatalogBuilder.cs",
+      "source": "v7-live/Assets/Luckbound/Editor/F10V7DiagnosticCatalogBuilder.cs",
+      "sha256": "a937cfde55ee46953d940c26b7dd4f926e1a61ed3bab1466c74e6ed2d8483ab9",
+      "preimageSha256": "233ac791d6c110c1cd25b8842e13c2beb970c5b5263e33d42476e6ab10a62caa"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10V7DiagnosticOpening.cs",
+      "source": "v7-live/Assets/Luckbound/Editor/F10V7DiagnosticOpening.cs",
+      "sha256": "285bca462b1634e037e291c1bc6a53a52f33f19ba2a0858dc427d6bfff6423b2",
+      "preimageSha256": "f0c0cd57e2258cb12aadd9143a1a9a5ce15ff8b317c7a3fc86f5eec5752dd70c"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.EncounterReadiness.cs",
+      "sha256": "b3966964cd8352cd36beba83f9532eb1a2d3280cdead6f0815da824ff4a287f8",
+      "preimageSha256": "cfa281e89167cccfe89802b4252d2e0abe0636814d50a1d46fd923889255cb46"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10Diagnostic.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10Diagnostic.cs",
+      "sha256": "a77b1bf2dd958b974e53f78df2facd9fa79a8338d3a06be794226a5538cc1db9",
+      "preimageSha256": "1aaeac8aa90ad81d7492544c045d4c0a839c6d6a0a98cfdb77e1c116198bea5d"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7C1Issuer.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7C1Issuer.cs",
+      "sha256": "d023b63b871f3cf019eeb798c6b1cbfd9cfd0e263c2c91ede6f703ace238b25c",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7C1Issuer.cs.meta",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7C1Issuer.cs.meta",
+      "sha256": "2ba52c62a734af932a8c9386cb2b981f815796bbe3c62af711ace9a2eb013e2f",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7C1Runtime.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7C1Runtime.cs",
+      "sha256": "f71e94871bc8380ae0ccd4f8d360d0821b24e42934325f539e9edf80298fdb03",
+      "preimageSha256": "d399d4026324c2ec646735ff1cd8f82c20c7e9d5f78f2d0083463df16f1502b7"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPayment.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPayment.cs",
+      "sha256": "a1e6d4fd5caa3d71f77ac1d2d355558a9f20ca1927bb55ac29ffdb2796b7dbca",
+      "preimageSha256": "7a930380b22f6bd1bf684829fbf580cc128e194677114d8aba085db9a61d380e"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPayment.cs.meta",
+      "source": "metadata/ApplicationBootstrapper.F10V7CombatPayment.cs.meta",
+      "sha256": "956574fdadfe83a88f1da1906a5009d9547f4a9e071a3af048759f9e51195be5",
+      "preimageSha256": "0195b38beab4f6ecf8a85a325e83f4c762373ec383e2041b074ed307930c86ff"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPaymentGateway.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPaymentGateway.cs",
+      "sha256": "0ed09682d3fd031a1784be53949823f138479826f959f36ab2a5df152281cf35",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPaymentGateway.cs.meta",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPaymentGateway.cs.meta",
+      "sha256": "b1e338da6e99708642e59b0b4a11f617c201c773f00dc31a2a9e0bebd1a24835",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.V7SessionStart.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ApplicationBootstrapper.V7SessionStart.cs",
+      "sha256": "d2e5919c74a6e55f0b9b8b82dd01bcb676028af07e8d87627eee26e8fb725674",
+      "preimageSha256": "7e61623320bcd7fdbde8f9d901a52c0572de8748108f8ce733c38cef5fa68d7d"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ExpeditionGameplayComposition.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ExpeditionGameplayComposition.cs",
+      "sha256": "e4e02518214ab9859f2d321bf56442b78fdfb90681004768adcafb71b6788e97",
+      "preimageSha256": "7dc2ba41969b9af2f9092c57773c82a0dca333705f846ba5c5e3f032cf6e364b"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ExpeditionRoomTransitionController.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ExpeditionRoomTransitionController.cs",
+      "sha256": "9f9102cef3561c062c6d3ecdda62668400298d733415e7ba03879e355b5ca771",
+      "preimageSha256": "7aaeb5d805f804a3b10500337711dc4f9eee478881ecc6eed3f7dc2ae13a645a"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ExpeditionSessionReadinessRegistration.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/ExpeditionSessionReadinessRegistration.cs",
+      "sha256": "f5b2047b974f5305237e2f2b412bde14e15e82516e5f703fcfca505479e1a533",
+      "preimageSha256": "0409a71bcacb1dcf035320816779abd97156fb1c045e159796f81654e3ca7289"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs",
+      "sha256": "abcb4753118aee1219a1154695077a146a0204d968fb038272ea87d63bf94ac8",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs.meta",
+      "source": "Logs/F10V6LinuxRuntime-20261121/candidate/Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs.meta",
+      "sha256": "10c94a1387cbda4f4cfa97317dfcfec28c32be43258b0daf0cccd7cb6f70be73",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticSceneRunner.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/F10DiagnosticSceneRunner.cs",
+      "sha256": "33bae1b5168a5957036b6ae335b37d5597f16b76873f9800df0d4f1a298a9159",
+      "preimageSha256": "50c25c6ce96c9c741de06ab34139077798f6cf3f52aeba1c8a44117f7f3be738"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10ObjectiveDriver2D.cs.meta",
+      "source": "metadata/F10ObjectiveDriver2D.cs.meta",
+      "sha256": "adb43d7c947366d9e3e53216851af0c015f55d6f7f95e97cf2e6c63b2e753898",
+      "preimageSha256": "3f3d79260c4e7cdeb504ac95edb66fbdcd9669c36ee94f0ce8f6b27a5f1c46ab"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10ObjectiveObservation.cs.meta",
+      "source": "metadata/F10ObjectiveObservation.cs.meta",
+      "sha256": "966569069b148e6a6159af3b337d7af30aa7f7ae860d77fb14279291518f81f1",
+      "preimageSha256": "1a69afce2e6b87902a18cf9d951a3b3e3242fb69ad3eeea995bf88d6205e04ad"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10PhysicalDescriptorTableV1.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/F10PhysicalDescriptorTableV1.cs",
+      "sha256": "41c76afec929f3ee57b91018f9d50c121cba1a75aa0050de56d92f7e9cb016e7",
+      "preimageSha256": "117dd201f05d6549c4914f6fc0a6f326a328800fea9c57fcb5b0a1ae41eb9006"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10V7VerifiedPhysicalInputs.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/F10V7VerifiedPhysicalInputs.cs",
+      "sha256": "46cc0eb486b116ca70ab3238a8a49ff5a5a43a645b6963545661bf1c8b9a8c37",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10V7VerifiedPhysicalInputs.cs.meta",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/F10V7VerifiedPhysicalInputs.cs.meta",
+      "sha256": "8751136bedbffb02dc98d225b792c6489fec5d403473a97472f24c85d2d09100",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/RoomObjectiveTriggerRelay2D.cs.meta",
+      "source": "metadata/RoomObjectiveTriggerRelay2D.cs.meta",
+      "sha256": "e78a49907bcb5dd7808c83edcd5ebf8d167ac2bfad78d30c98287dcabbada8dc",
+      "preimageSha256": "51ef95d1e88ddfff5cbfaffc4affc3a3ddc118e3454797d1ba4382143fccf76a"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/SaveRepository.V7Settlement.cs",
+      "source": "v7-live/Assets/Luckbound/Scripts/App/SaveRepository.V7Settlement.cs",
+      "sha256": "5241fb3252140b92d443c14597c406c2d77fe866d2363206c650e1f3fb7f03b3",
+      "preimageSha256": "cb88ee0b1fa39b78f668c47a5893c79ebf34cf26c10da746cb23f81174f03955"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/EditMode/Editor/F10V7DiagnosticOpeningSafetyTests.cs",
+      "source": "v7-live/Assets/Luckbound/Tests/EditMode/Editor/F10V7DiagnosticOpeningSafetyTests.cs",
+      "sha256": "34ddc7e3bd39425700a8d3698e33d6f6c35aa2836e36a8f7d081da7a2401f35c",
+      "preimageSha256": "339450a8d61aa5a5dd4a6bd65149934bfef9fe9e6be2554e75bb42558d84cdc0"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10ObjectiveDriver2DTests.cs.meta",
+      "source": "metadata/F10ObjectiveDriver2DTests.cs.meta",
+      "sha256": "5a0d2941dba8eccbfc4647dbe95125d2e6a900619d8b3857385d31b9d581cc45",
+      "preimageSha256": "2c17c71438ff4fe48c44ecba8fa1d0551419ba248bba04630915721df471a5d3"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V7C1PaymentPendingTests.cs",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/F10V7C1PaymentPendingTests.cs",
+      "sha256": "5531ff071eed07d46780cb7c608500e6d4616d41f0760eae31d05e11ec64a411",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V7C1PaymentPendingTests.cs.meta",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/F10V7C1PaymentPendingTests.cs.meta",
+      "sha256": "fff659af95e08e155c61a4aa021860213e412fcb7d948d1dcfb3cafcfa06a22c",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V7C1PhysicalAdapterContractTests.cs",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/F10V7C1PhysicalAdapterContractTests.cs",
+      "sha256": "dcb24d2e1c12f76710f6e5f06109b9a4caefacb441c12c5ecb9e6cc39ae7a35e",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V7C1PhysicalAdapterContractTests.cs.meta",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/F10V7C1PhysicalAdapterContractTests.cs.meta",
+      "sha256": "a6ae819e7070824a74d93ca6c4a50e43331fc63ab3cf7e1307898b4f5469191b",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V7CombatPaymentCandidateTests.cs.meta",
+      "source": "metadata/F10V7CombatPaymentCandidateTests.cs.meta",
+      "sha256": "7df4d00fed768378a934a74c49436a953765a22fa389a1191f7fc55de04cb93a",
+      "preimageSha256": "18f579f0bd76496266ac01ec0ffc2b7b2777fdce32b11a46219076adee808331"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V7ExpeditionReadProjectionTests.cs",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/F10V7ExpeditionReadProjectionTests.cs",
+      "sha256": "3a6c53340b18f122bca57e0e7d902a9f35ab7c1d454e33b3418af39e0b3bfd50",
+      "preimageSha256": "26736662efff7e470578d21792a58cac20f2edb8d3165afbcb26d3ea052668d3"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V7SessionStartAdmissionFixTests.cs",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/F10V7SessionStartAdmissionFixTests.cs",
+      "sha256": "502b0e6e3b21e3b580daa814ad2d5c5f25b895773a08c30eaf623f51ede4f251",
+      "preimageSha256": "b2f4e3d675188f74dfcd20aab4682df0439cd290def3f675b272618797979af0"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7AdmissionPendingTests.cs.meta",
+      "source": "metadata/SaveRepositoryV7AdmissionPendingTests.cs.meta",
+      "sha256": "70bb030ef7784251d9d83ff508bd2b7e8edcd7ae6cf470ae559e1e7d5d0cf944",
+      "preimageSha256": "366d9a6b0cdf25893216dd24bc0d3664709a7922ab7b5a4688f9af68db9f2f65"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7AdmissionRaceTests.cs.meta",
+      "source": "metadata/SaveRepositoryV7AdmissionRaceTests.cs.meta",
+      "sha256": "2a4dbc9e05bbfbc8dd0676d8b19bdb0a4233851a53d99fdb60d52e9623a93095",
+      "preimageSha256": "bb2909ecb28c7866504191cf598fcaf070e5ce3639ffaa3b6d93f300c3f91edd"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7SessionHandleTests.cs.meta",
+      "source": "metadata/SaveRepositoryV7SessionHandleTests.cs.meta",
+      "sha256": "8bdd3b248b471094f5eb3cd4cffcd7ad7c9dc2ca6a0b2cf72f057483cec80117",
+      "preimageSha256": "ea219eac4603217110371b773c9a4730a1e5f7a67d8aff3ce1ba89927134c210"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7SettlementHandleTests.cs",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7SettlementHandleTests.cs",
+      "sha256": "9583ec6bd478ba404394e1a44c9674a831995c0aef95c2670e4208dbb801af81",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7SettlementHandleTests.cs.meta",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7SettlementHandleTests.cs.meta",
+      "sha256": "22046c0e10266fc4d19508a653b0c68bb9869b8cb526e9ece9ffeeebb05f7d94",
+      "preimageSha256": null
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "source": "v7-live/Assets/Luckbound/Tests/PlayMode/SaveV6CharacterizationTests.cs",
+      "sha256": "42b30c89f7ed2cc10ca9ddd3414ec4015db773cac5e6b9e79df1db3efa7731b9",
+      "preimageSha256": "2dd3ad4bd6c820b60440debff69ac970edd9fccd60d38fa8476e95d71d6e0b98"
+    },
+    {
+      "destination": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+      "source": "r6/00-UniversalRenderPipelineGlobalSettings.asset",
+      "sha256": "6e193ed0d0734ba156391192edb4ce4705c0649a0c57ad357a62b210a0990552",
+      "preimageSha256": "adcf683780138e1c4987add26ce706020423ac21725ca7fb391ffb096afdcfea"
+    },
+    {
+      "destination": "Packages/packages-lock.json",
+      "source": "r6/01-packages-lock.json",
+      "sha256": "6227d5177185d936f819ace66716d3b8628dde89de2c7f8fe4f719c49ba25ef9",
+      "preimageSha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
+    }
+  ],
+  "deletions": [
+    {
+      "destination": "Assets/Luckbound/Editor/Diagnostic/F10DisposableArtReferenceImporter.cs",
+      "preimageSha256": "05d4a2641026ec833938911db332701ac2385dfd71e4d951330c98445ae3e75a"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/Diagnostic/F10DisposableArtReferenceImporter.cs.meta",
+      "preimageSha256": "dfd278e6a137acccf0a9b94a7235f1f2b17253bfa4129a9f25c46a61c299c3f3"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10DiagnosticMaterializationReceiptExporter.cs",
+      "preimageSha256": "7d1f230c585bb0375f19877d368a3822152c0d5f6608ae5e89a416631de6dd86"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10DiagnosticMaterializationReceiptExporter.cs.meta",
+      "preimageSha256": "8275d10be642c889fd5a98fff041cab6a57665622263f3e00928485e33d4e305"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticMaterializationReceiptValidator.cs",
+      "preimageSha256": "88b57da3f5f3905f34496ea37e3119fc4ce480fc2872409ae4ddb0458ee9547c"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticMaterializationReceiptValidator.cs.meta",
+      "preimageSha256": "cc586424b54c81d80edf480a8773a697c9031f2ddea869638ffefe1bbb705882"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticPackageDependencyEvidence.cs",
+      "preimageSha256": "ca8013d7368e76c9e41beac827c0f8abe6bc11924fc1e390eb55e8229bee5c24"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticPackageDependencyEvidence.cs.meta",
+      "preimageSha256": "0579c2691cf37ee69d5d6289bc24cbb0509b0a9a984417d73468f426ca9bbdc8"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/SaveRepository.F10DiagnosticResume.cs",
+      "preimageSha256": "0652e7f4cde85b5f7bab305f82f1e1b0e40e9d1ccb9081981dfb9b1ac7b4de2b"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/SaveRepository.F10DiagnosticResume.cs.meta",
+      "preimageSha256": "4641a8a4ef90386482522ffd7134d002009a3fcf0edc1872ac94b77325676f8d"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/EditMode/Editor/F10DiagnosticMaterializationPackageDependencyTests.cs",
+      "preimageSha256": "46c7870c9602b6dff03409f2daf67ba276605f262dcdf44f33e74af1ce50a0b6"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/EditMode/Editor/F10DiagnosticMaterializationPackageDependencyTests.cs.meta",
+      "preimageSha256": "0df2d66e0194c3610f7130723cd1f102224a3bd3e51dd7b19a77847b918a8392"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/EditMode/Editor/F10DiagnosticPackageDependencyEvidenceTests.cs",
+      "preimageSha256": "4f64f24b15fd89cbd2d51ee5d7593350a3c6a880e426c893e27fd3d35050f6e0"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/EditMode/Editor/F10DiagnosticPackageDependencyEvidenceTests.cs.meta",
+      "preimageSha256": "f7e9a3c2c531aeded2a33eba652bc441aca2d37d2ae2d09983e93c6b122ebc2e"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
+      "preimageSha256": "4e9d1fee461b9a5f0110808b751edf86763b4eaabf5f915ebb8fa614b767121c"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs.meta",
+      "preimageSha256": "c96c3255e482afd9bcc109f7f134608046738394a7f358ef2c1432b46ea3543a"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryF10DiagnosticResumeConflictTests.cs",
+      "preimageSha256": "391b4c1628ec763b00741334c1357f19203d18b974219a23d79844563f860e53"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryF10DiagnosticResumeConflictTests.cs.meta",
+      "preimageSha256": "58a176fdbf8128331429d3fe06c998fd5d7c2f05bf395a45ab202ef78b6370a9"
+    }
+  ]
+}

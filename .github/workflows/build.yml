@@ -1,6 +1,7 @@
 # Candidate content for .github/workflows/build.yml ONLY on the diagnostic
 # branch. Never merge or apply this replacement to Main.
 name: F10 V6 Linux Diagnostic
+run-name: F10 Linux diagnostic (${{ inputs.diagnostic_mode }})
 
 on:
   workflow_dispatch:
@@ -13,6 +14,7 @@ on:
         options:
           - acceptance
           - framework-source
+          - v7-export
 
 permissions:
   contents: read
@@ -62,7 +64,7 @@ jobs:
             '
 
       - name: Run the frozen diagnostic in one container
-        if: inputs.diagnostic_mode != 'framework-source'
+        if: inputs.diagnostic_mode != 'framework-source' && inputs.diagnostic_mode != 'v7-export'
         shell: bash
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -101,11 +103,62 @@ jobs:
             --unity-editor /opt/unity/Editor/Unity \
             --results-root /tmp/luckbound-run/evidence/results
 
+      - name: Export the SHA-pinned V7 physical inputs in one container
+        if: inputs.diagnostic_mode == 'v7-export'
+        shell: bash
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          F10_IMAGE: unityci/editor:ubuntu-6000.6.10f1-base-4.0.0@sha256:b298e645b9982ee48dbcb90b77f900e82afd7eb59daf9512ed5a5220ee6911d5
+        run: |
+          set -euo pipefail
+          payload="$GITHUB_WORKSPACE/ci/f10-linux"
+          evidence="$RUNNER_TEMP/f10-v7-linux-evidence"
+          test -d "$payload/v7-tools"
+          test -d "$payload/v7-overlays"
+          test -f "$payload/linux-v7-overlay-manifest.json"
+          test ! -e "$evidence"
+          mkdir "$evidence"
+          docker pull "$F10_IMAGE"
+          docker run --rm --init --shm-size=2g \
+            --mount "type=bind,src=$payload,dst=/luckbound,readonly" \
+            --mount "type=bind,src=$evidence,dst=/tmp/luckbound-run/evidence" \
+            -e UNITY_LICENSE -e UNITY_EMAIL -e UNITY_PASSWORD \
+            -e GITHUB_ACTIONS -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF \
+            -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW \
+            -e GITHUB_WORKFLOW_REF -e GITHUB_JOB -e RUNNER_OS -e RUNNER_ENVIRONMENT \
+            -e GITHUB_WORKSPACE=/luckbound -e RUNNER_TEMP=/tmp/luckbound-run \
+            -e LUCKBOUND_F10_LINUX_PROJECT_ROOT=/tmp/luckbound-run/project \
+            --entrypoint /bin/bash "$F10_IMAGE" \
+            /luckbound/v7-tools/container_entrypoint.sh \
+            --workspace /luckbound \
+            --source-zip /luckbound/input/source.zip \
+            --source-inventory /luckbound/input/source-inventory.json \
+            --route v7-export \
+            --v7-linux-manifest /luckbound/linux-v7-overlay-manifest.json \
+            --v7-linux-manifest-sha256 178ed68d3e85e4fdf7a4c88b2cf37f5bb18cbd3c7f615ae7d66838ee084b04ca \
+            --overlay-root /luckbound/v7-overlays \
+            --temp-root /tmp/luckbound-run \
+            --project-root /tmp/luckbound-run/project \
+            --state /tmp/luckbound-run/state.json \
+            --unity-editor /opt/unity/Editor/Unity \
+            --results-root /tmp/luckbound-run/evidence/results
+
       - name: Preserve diagnostic results
-        if: always()
+        if: always() && inputs.diagnostic_mode != 'v7-export'
         uses: actions/upload-artifact@v7.0.2
         with:
           name: f10-v6-linux-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/f10-v6-linux-evidence
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Preserve V7 export results
+        if: always() && inputs.diagnostic_mode == 'v7-export'
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: f10-v7-linux-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/f10-v7-linux-evidence
           if-no-files-found: warn
           retention-days: 7
