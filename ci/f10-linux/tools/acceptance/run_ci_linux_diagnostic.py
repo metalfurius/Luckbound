@@ -68,6 +68,7 @@ GENERATOR_FILES = (
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs",
 )
 EXPECTED_LINUX_DELTA_DESTINATIONS = {
+    "Assets/Luckbound/Editor/F10DiagnosticSceneGenerator.cs",
     "Assets/Luckbound/Editor/F10RoomTemplatePrefabGenerator.cs",
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs",
     "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs.meta",
@@ -1063,6 +1064,31 @@ def preserve_available_evidence() -> list[str]:
             write_create_only(destination, (json.dumps(inventory_document, ensure_ascii=False, indent=2) + "\n").encode("utf-8"), 0o444)
             copied.append({"path": "project/observed-inventory-at-exit.json",
                            "sha256": sha256_file(destination), "length": destination.stat().st_size})
+            # Preserve rejected migration bytes only after Unity's full process group is gone.
+            # These files remain rejected inputs; this capture never changes the expected inventory.
+            if _cleanup_unconfirmed or _launching_child or _active_child is not None or _active_pgid is not None:
+                errors.append("Rejected-input bytes were not captured: Unity shutdown is unconfirmed.")
+            else:
+                for relative in (
+                    "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+                    "Packages/packages-lock.json",
+                ):
+                    try:
+                        source = path_below(project_root, relative)
+                        before = artifact_identity(source)
+                        data = source.read_bytes()
+                        after = artifact_identity(source)
+                        observed = next((row for row in rows if row["path"] == relative), None)
+                        if (before != after or len(data) != before["length"] or
+                                sha256_bytes(data) != before["sha256"] or observed != dict(before, path=relative)):
+                            fail(f"Rejected-input capture is unstable or differs from the exit inventory: {relative}")
+                        relative_output = f"rejected-inputs/{relative}"
+                        output = path_below(evidence_root, relative_output)
+                        digest = write_create_only(output, data, 0o444)
+                        copied.append({"path": relative_output, "sha256": digest, "length": len(data),
+                                       "sourcePhysicalIdentity": before, "approvedAsInput": False})
+                    except Exception as exc:
+                        errors.append(f"rejected input {relative}: {exc}")
         except Exception as exc:
             errors.append(f"observed inventory: {exc}")
 

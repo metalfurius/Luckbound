@@ -104,6 +104,12 @@
       "source": "room-prefab/F10RoomTemplatePrefabGenerator.cs",
       "sha256": "d55645e4c8704cb37976c87d635c823305c619412ace067f6a8848c54e73c7e8",
       "preimageSha256": "1afca9f85725a3a66fe26996f55e226ba63084e5c86d4e61f436b5f532fcd390"
+    },
+    {
+      "destination": "Assets/Luckbound/Editor/F10DiagnosticSceneGenerator.cs",
+      "source": "scene/F10DiagnosticSceneGenerator.cs",
+      "sha256": "37e6ef1012834eae26f932f5230e2fce15eadbd50b8f8358db3d9f971d672dd9",
+      "preimageSha256": "1aeb80f3831b6818c21f648a116f3c46211cd986af8bc32c72b444a434810b43"
     }
   ]
 }
