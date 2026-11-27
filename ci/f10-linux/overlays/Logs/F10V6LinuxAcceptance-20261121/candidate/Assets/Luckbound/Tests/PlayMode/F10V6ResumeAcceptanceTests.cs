@@ -223,8 +223,16 @@ namespace Luckbound.Tests.PlayMode
             F10DiagnosticSceneRunner.SetSessionModeForNextStart(mode);
             context.DiagnosticScene = EditorSceneManager.LoadSceneInPlayMode(ScenePath,
                 new LoadSceneParameters(LoadSceneMode.Additive));
+            double sceneLoadDeadline = Time.realtimeSinceStartupAsDouble + 45d;
+            for (int frame = 0; frame < 2400 && Time.realtimeSinceStartupAsDouble < sceneLoadDeadline &&
+                (!context.DiagnosticScene.IsValid() || !context.DiagnosticScene.isLoaded); frame++)
+            {
+                yield return null;
+                context.DiagnosticScene = SceneManager.GetSceneByPath(ScenePath);
+            }
             Assert.That(context.DiagnosticScene.IsValid() && context.DiagnosticScene.isLoaded, Is.True,
-                "The canonical diagnostic scene must be valid and loaded.");
+                "The canonical diagnostic scene did not finish loading within the bounded wait; handle=" +
+                context.DiagnosticScene.handle + ", loadedScenes=" + SceneManager.sceneCount + ".");
             Assert.That(context.DiagnosticScene.path, Is.EqualTo(ScenePath));
             Assert.That(context.DiagnosticScene.name, Is.EqualTo("F10Diagnostic"));
             if (SceneManager.GetActiveScene() != context.DiagnosticScene)
