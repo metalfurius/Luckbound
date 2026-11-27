@@ -18,7 +18,7 @@
     {
       "destination": "Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs.meta",
       "source": "Logs/F10V6LinuxAcceptance-20261121/candidate/Assets/Luckbound/Editor/F10DiagnosticLinuxMaterializationReceiptExporter.cs.meta",
-      "sha256": "b3531076d26c27d83bd1e77f464bd8cddd86bb1ecf534e5fa2bbb0c4c199f90d",
+      "sha256": "dc2f406f43cad34c2d78672e2f559c43769529369c2200f9c91157f07c320386",
       "preimageSha256": null
     },
     {
@@ -44,6 +44,60 @@
       "source": "Logs/F10V6LinuxAcceptance-20261121/candidate/Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
       "sha256": "8f16f8c42f01be3b532f51594a86ee02e6ffe3e44dc479d2029d58adfe13eed7",
       "preimageSha256": "4e9d1fee461b9a5f0110808b751edf86763b4eaabf5f915ebb8fa614b767121c"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10ObjectiveDriver2D.cs.meta",
+      "source": "metadata/F10ObjectiveDriver2D.cs.meta",
+      "sha256": "adb43d7c947366d9e3e53216851af0c015f55d6f7f95e97cf2e6c63b2e753898",
+      "preimageSha256": "3f3d79260c4e7cdeb504ac95edb66fbdcd9669c36ee94f0ce8f6b27a5f1c46ab"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10ObjectiveObservation.cs.meta",
+      "source": "metadata/F10ObjectiveObservation.cs.meta",
+      "sha256": "966569069b148e6a6159af3b337d7af30aa7f7ae860d77fb14279291518f81f1",
+      "preimageSha256": "1a69afce2e6b87902a18cf9d951a3b3e3242fb69ad3eeea995bf88d6205e04ad"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/RoomObjectiveTriggerRelay2D.cs.meta",
+      "source": "metadata/RoomObjectiveTriggerRelay2D.cs.meta",
+      "sha256": "e78a49907bcb5dd7808c83edcd5ebf8d167ac2bfad78d30c98287dcabbada8dc",
+      "preimageSha256": "51ef95d1e88ddfff5cbfaffc4affc3a3ddc118e3454797d1ba4382143fccf76a"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPayment.cs.meta",
+      "source": "metadata/ApplicationBootstrapper.F10V7CombatPayment.cs.meta",
+      "sha256": "956574fdadfe83a88f1da1906a5009d9547f4a9e071a3af048759f9e51195be5",
+      "preimageSha256": "0195b38beab4f6ecf8a85a325e83f4c762373ec383e2041b074ed307930c86ff"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10ObjectiveDriver2DTests.cs.meta",
+      "source": "metadata/F10ObjectiveDriver2DTests.cs.meta",
+      "sha256": "5a0d2941dba8eccbfc4647dbe95125d2e6a900619d8b3857385d31b9d581cc45",
+      "preimageSha256": "2c17c71438ff4fe48c44ecba8fa1d0551419ba248bba04630915721df471a5d3"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/F10V7CombatPaymentCandidateTests.cs.meta",
+      "source": "metadata/F10V7CombatPaymentCandidateTests.cs.meta",
+      "sha256": "7df4d00fed768378a934a74c49436a953765a22fa389a1191f7fc55de04cb93a",
+      "preimageSha256": "18f579f0bd76496266ac01ec0ffc2b7b2777fdce32b11a46219076adee808331"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7AdmissionPendingTests.cs.meta",
+      "source": "metadata/SaveRepositoryV7AdmissionPendingTests.cs.meta",
+      "sha256": "70bb030ef7784251d9d83ff508bd2b7e8edcd7ae6cf470ae559e1e7d5d0cf944",
+      "preimageSha256": "366d9a6b0cdf25893216dd24bc0d3664709a7922ab7b5a4688f9af68db9f2f65"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7AdmissionRaceTests.cs.meta",
+      "source": "metadata/SaveRepositoryV7AdmissionRaceTests.cs.meta",
+      "sha256": "2a4dbc9e05bbfbc8dd0676d8b19bdb0a4233851a53d99fdb60d52e9623a93095",
+      "preimageSha256": "bb2909ecb28c7866504191cf598fcaf070e5ce3639ffaa3b6d93f300c3f91edd"
+    },
+    {
+      "destination": "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7SessionHandleTests.cs.meta",
+      "source": "metadata/SaveRepositoryV7SessionHandleTests.cs.meta",
+      "sha256": "8bdd3b248b471094f5eb3cd4cffcd7ad7c9dc2ca6a0b2cf72f057483cec80117",
+      "preimageSha256": "ea219eac4603217110371b773c9a4730a1e5f7a67d8aff3ce1ba89927134c210"
     }
   ]
 }

@@ -74,6 +74,15 @@ EXPECTED_LINUX_DELTA_DESTINATIONS = {
     "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs",
     "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs.meta",
     "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
+    "Assets/Luckbound/Scripts/App/F10ObjectiveDriver2D.cs.meta",
+    "Assets/Luckbound/Scripts/App/F10ObjectiveObservation.cs.meta",
+    "Assets/Luckbound/Scripts/App/RoomObjectiveTriggerRelay2D.cs.meta",
+    "Assets/Luckbound/Scripts/App/ApplicationBootstrapper.F10V7CombatPayment.cs.meta",
+    "Assets/Luckbound/Tests/PlayMode/F10ObjectiveDriver2DTests.cs.meta",
+    "Assets/Luckbound/Tests/PlayMode/F10V7CombatPaymentCandidateTests.cs.meta",
+    "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7AdmissionPendingTests.cs.meta",
+    "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7AdmissionRaceTests.cs.meta",
+    "Assets/Luckbound/Tests/PlayMode/SaveRepositoryV7SessionHandleTests.cs.meta",
 }
 PROCESS_A = "Luckbound.Tests.PlayMode.F10V6ResumeAcceptanceTests.ProcessA_BeginsNewRunClearsC1AndWritesReadOnlyReceipt"
 PROCESS_B = "Luckbound.Tests.PlayMode.F10V6ResumeAcceptanceTests.ProcessB_ResumesSameC1CheckpointWithoutRepayAndExtracts"
@@ -367,7 +376,7 @@ def read_linux_manifest(path: Path, overlay_root: Path) -> tuple[dict[str, objec
         if sha256_file(source_path) != digest:
             fail(f"Overlay source bytes differ from their frozen hash: {source}")
     if destinations != EXPECTED_LINUX_DELTA_DESTINATIONS:
-        fail("The Linux manifest must contain exactly the fixed exporter/runtime/helper/test delta.")
+        fail("The Linux manifest must contain exactly the fixed exporter/runtime/helper/test and metadata-repair delta.")
     return manifest, sha256_bytes(raw)
 
 
