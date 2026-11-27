@@ -1035,6 +1035,8 @@ def preserve_available_evidence() -> list[str]:
         MATERIALIZATION_RECEIPT_PATH,
         RUNTIME_RECEIPT_PATH,
         "Logs/F10V6Resume-20261120/acceptance/process-a-receipt.json",
+        "Logs/F10V6Resume-20261120/acceptance/bootstrap-process-a.json",
+        "Logs/F10V6Resume-20261120/acceptance/bootstrap-process-b.json",
         "Logs/F10V6Resume-20261120/session-manifest.json",
     ):
         copy_bytes(path_below(project_root, relative), f"project/{relative}")

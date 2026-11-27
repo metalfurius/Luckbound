@@ -30,7 +30,7 @@
     {
       "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs",
       "source": "Logs/F10V6LinuxRuntime-20261121/candidate/Assets/Luckbound/Scripts/App/F10DiagnosticLinuxRuntimeEvidence.cs",
-      "sha256": "2b27a98271e8146d067e95eacc33182794fbd1f210e7fc32a97744dd5f6f96d2",
+      "sha256": "eb1a0332cd9c4f781a09d0b61e5aab7c029f01bde7dc8531051e671f43eb2ef8",
       "preimageSha256": null
     },
     {
@@ -42,7 +42,7 @@
     {
       "destination": "Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
       "source": "Logs/F10V6LinuxAcceptance-20261121/candidate/Assets/Luckbound/Tests/PlayMode/F10V6ResumeAcceptanceTests.cs",
-      "sha256": "8f16f8c42f01be3b532f51594a86ee02e6ffe3e44dc479d2029d58adfe13eed7",
+      "sha256": "c5212e01d0bd2a687e82d4239d8e4884187c59fb47c60b13829b9c73a9f4d2ed",
       "preimageSha256": "4e9d1fee461b9a5f0110808b751edf86763b4eaabf5f915ebb8fa614b767121c"
     },
     {

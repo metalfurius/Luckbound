@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,9 @@ using System.Security.Cryptography;
 using System.Text;
 using UnityEditor;
 using UnityEditor.PackageManager;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace Luckbound.App
@@ -94,6 +97,40 @@ namespace Luckbound.App
     }
 
     [Serializable]
+    internal sealed class F10DiagnosticLinuxBootstrapReceipt
+    {
+        public string schema;
+        public int schemaVersion;
+        public string status;
+        public string runtimeReceiptSha256;
+        public string snapshotSha256;
+        public string sourceSnapshotSha256;
+        public string copyInventorySha256;
+        public string materializationReceiptSha256;
+        public string selector;
+        public string testFullName;
+        public int processId;
+        public long processStartUtcTicks;
+        public string scenePath;
+        public string filenameGuid;
+        public string assetDatabaseGuid;
+        public string testFrameworkPackageName;
+        public string testFrameworkPackageVersion;
+        public string testFrameworkPackageSource;
+        public string testFrameworkPackageId;
+        public string testFrameworkPackageAssetPath;
+        public string testFrameworkPackageResolvedRoot;
+        public string testFrameworkPackageResolvedRootIdentity;
+        public string controllerScriptAssetPath;
+        public string controllerScriptGuid;
+        public string controllerScriptSha256;
+        public string controllerScriptMetaSha256;
+        public string controllerTypeFullName;
+        public string controllerAssemblyName;
+        public F10DiagnosticLinuxInventoryFile[] bootstrapFiles;
+    }
+
+    [Serializable]
     internal sealed class F10DiagnosticLinuxGeneratorFile
     {
         public string path;
@@ -173,6 +210,8 @@ namespace Luckbound.App
     {
         internal const string ReceiptRelativePath = "Logs/F10V6Resume-20261120/ci-linux-diagnostic.json";
         internal const string MaterializationReceiptRelativePath = "Logs/F10V6Resume-20261120/materialization-linux-diagnostic.json";
+        internal const string BootstrapProcessAReceiptRelativePath = "Logs/F10V6Resume-20261120/acceptance/bootstrap-process-a.json";
+        internal const string BootstrapProcessBReceiptRelativePath = "Logs/F10V6Resume-20261120/acceptance/bootstrap-process-b.json";
         internal const string LinuxOverlayManifestRelativePath = "Logs/F10V6LinuxAcceptance-20261121/linux-overlay-manifest.json";
         private const string FrozenSourceZipRelativePath = "Logs/F10LinuxSourceSnapshot-20261127/source.zip";
         private const string FrozenSourceInventoryRelativePath = "Logs/F10LinuxSourceSnapshot-20261127/source-inventory.json";
@@ -185,6 +224,22 @@ namespace Luckbound.App
         private const int FrozenSourceFileCount = 4953;
         private const string MaterializationSchema = "ci-linux-materialization-diagnostic";
         private const string SnapshotSchema = "ci-linux-diagnostic";
+        private const string BootstrapReceiptSchema = "ci-linux-test-framework-bootstrap";
+        private const int BootstrapReceiptSchemaVersion = 1;
+        private const string ProcessASelector = "process-a";
+        private const string ProcessBSelector = "process-b";
+        private const string TestFrameworkPackageName = "com.unity.test-framework";
+        private const string TestFrameworkPackageVersion = "1.8.0";
+        private const string TestFrameworkPackageAssetPath = "Packages/com.unity.test-framework";
+        private const string ControllerScriptAssetPath = "Packages/com.unity.test-framework/UnityEngine.TestRunner/TestRunner/PlaymodeTestsController.cs";
+        private const string ControllerScriptGuid = "102e512f651ee834f951a2516c1ea3b8";
+        private const string ControllerScriptSha256 = "574984aa87984b572ee45a3372bd57f69b6c49d3da78ccfe8e1e751557e3ca26";
+        private const string ControllerScriptMetaSha256 = "3bc9385d15464a7df2d61f4353d88bee51c068a1f1d9a13e9090f24375bb11ab";
+        private const string ControllerTypeFullName = "UnityEngine.TestTools.TestRunner.PlaymodeTestsController";
+        private const string ControllerAssemblyName = "UnityEngine.TestRunner";
+        private const string ControllerGameObjectName = "Code-based tests runner";
+        private const string ProcessATestFullName = "Luckbound.Tests.PlayMode.F10V6ResumeAcceptanceTests.ProcessA_BeginsNewRunClearsC1AndWritesReadOnlyReceipt";
+        private const string ProcessBTestFullName = "Luckbound.Tests.PlayMode.F10V6ResumeAcceptanceTests.ProcessB_ResumesSameC1CheckpointWithoutRepayAndExtracts";
         private const string BuiltInUniversalPackageName = "com.unity.render-pipelines.universal";
         private const string PackageLockRelativePath = "Packages/packages-lock.json";
         private const string BuiltInUniversalRootRelativePath = "@editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.render-pipelines.universal";
@@ -248,8 +303,59 @@ namespace Luckbound.App
             internal long Length { get; }
         }
 
+        private sealed class BootstrapSceneIdentity
+        {
+            internal BootstrapSceneIdentity(Scene scene, string scenePath, string filenameGuid,
+                string assetDatabaseGuid)
+            {
+                Scene = scene;
+                ScenePath = scenePath;
+                FilenameGuid = filenameGuid;
+                AssetDatabaseGuid = assetDatabaseGuid;
+            }
+
+            internal Scene Scene { get; }
+            internal string ScenePath { get; }
+            internal string FilenameGuid { get; }
+            internal string AssetDatabaseGuid { get; }
+        }
+
+        private sealed class ControllerFrameworkIdentity
+        {
+            internal string PackageName;
+            internal string PackageVersion;
+            internal string PackageSource;
+            internal string PackageId;
+            internal string PackageAssetPath;
+            internal string PackageResolvedRoot;
+            internal string PackageResolvedRootIdentity;
+            internal string ScriptAssetPath;
+            internal string ScriptGuid;
+            internal string ScriptSha256;
+            internal string ScriptMetaSha256;
+            internal string ControllerTypeFullName;
+            internal string ControllerAssemblyName;
+        }
+
+        internal static F10DiagnosticLinuxRuntimeEvidence ValidateForRuntime(string projectRoot)
+        {
+            EnsureLinuxRuntime();
+            string root = CanonicalPath(projectRoot);
+            EnsureExistingDirectoryAndAncestorsArePlain(root);
+            string currentSelector = FindCurrentBootstrapSelector(root);
+            return ValidateForRuntimeCore(root, currentSelector,
+                requireBootstrapReceipt: currentSelector != null, verifyWholeInventory: true);
+        }
+
         internal static F10DiagnosticLinuxRuntimeEvidence ValidateForRuntime(string projectRoot,
-            bool verifyWholeInventory = true)
+            string expectedBootstrapSelector)
+        {
+            return ValidateForRuntimeCore(projectRoot, expectedBootstrapSelector,
+                requireBootstrapReceipt: true, verifyWholeInventory: true);
+        }
+
+        private static F10DiagnosticLinuxRuntimeEvidence ValidateForRuntimeCore(string projectRoot,
+            string expectedBootstrapSelector, bool requireBootstrapReceipt, bool verifyWholeInventory)
         {
             EnsureLinuxRuntime();
             string root = CanonicalPath(projectRoot);
@@ -269,11 +375,413 @@ namespace Luckbound.App
             if (!string.Equals(computedInventorySha256, receipt.copyInventorySha256, StringComparison.Ordinal))
                 throw new InvalidDataException("The copy inventory digest does not match its actual receipt rows.");
             ValidateSnapshotDigests(receipt, inventory);
+            F10DiagnosticLinuxBootstrapReceipt bootstrapReceipt = requireBootstrapReceipt
+                ? ReadAndValidateCurrentBootstrapReceipt(root, expectedBootstrapSelector, receiptSha256, receipt, inventory)
+                : null;
             if (verifyWholeInventory)
-                VerifyWholeProjectInventory(root, inventory);
+                VerifyWholeProjectInventory(root, inventory,
+                    bootstrapReceipt == null ? null : bootstrapReceipt.scenePath,
+                    bootstrapReceipt == null ? null : bootstrapReceipt.bootstrapFiles);
 
             ValidateMaterialization(root, receipt, inventory);
             return new F10DiagnosticLinuxRuntimeEvidence(root, receiptSha256, receipt, inventory);
+        }
+
+        private static string FindCurrentBootstrapSelector(string projectRoot)
+        {
+            GetCurrentProcessIdentity(out int processId, out long processStartUtcTicks);
+            var currentSelectors = new List<string>();
+            string[] fixedSelectors = { ProcessASelector, ProcessBSelector };
+            foreach (string selector in fixedSelectors)
+            {
+                string path = ProjectPath(projectRoot, BootstrapReceiptPath(selector));
+                if (!File.Exists(path)) continue;
+
+                try
+                {
+                    EnsurePlainFileAndAncestors(path);
+                    F10DiagnosticLinuxBootstrapReceipt receipt = ReadJson<F10DiagnosticLinuxBootstrapReceipt>(path,
+                        "The fixed Linux bootstrap receipt could not be parsed.");
+                    if (receipt.processId == processId && receipt.processStartUtcTicks == processStartUtcTicks)
+                        currentSelectors.Add(selector);
+                }
+                catch (Exception exception) when (exception is IOException ||
+                    exception is UnauthorizedAccessException || exception is FormatException)
+                {
+                    // An unreadable or malformed historical phase receipt cannot select the current process.
+                    // If it is the current phase receipt, the strict inventory path below still fails closed.
+                }
+            }
+
+            if (currentSelectors.Count > 1)
+                throw new InvalidDataException("More than one fixed Linux bootstrap receipt claims the current Editor process start.");
+            return currentSelectors.Count == 1 ? currentSelectors[0] : null;
+        }
+
+        internal static void CaptureCurrentBootstrapReceipt(string projectRoot, string selector, string testFullName)
+        {
+            string expectedTestFullName = ExpectedTestFullName(selector);
+            if (!string.Equals(testFullName, expectedTestFullName, StringComparison.Ordinal))
+                throw new InvalidOperationException("The selected Linux bootstrap test does not match its fixed process selector.");
+
+            string root = CanonicalPath(projectRoot);
+            string receiptRelativePath = BootstrapReceiptPath(selector);
+            string receiptPath = ProjectPath(root, receiptRelativePath);
+            if (File.Exists(receiptPath) || Directory.Exists(receiptPath))
+                throw new IOException("The fixed Linux bootstrap receipt is create-only and already exists: " + receiptRelativePath);
+
+            F10DiagnosticLinuxRuntimeEvidence evidence = ValidateForRuntimeCore(root, null,
+                requireBootstrapReceipt: false, verifyWholeInventory: false);
+            BootstrapSceneIdentity sceneIdentity = ValidateCurrentBootstrapScene(root);
+            ControllerFrameworkIdentity controllerIdentity = ValidateCurrentTestFrameworkController(sceneIdentity.Scene);
+            F10DiagnosticLinuxInventoryFile[] bootstrapFiles =
+            {
+                MeasureBootstrapFile(root, sceneIdentity.ScenePath),
+                MeasureBootstrapFile(root, sceneIdentity.ScenePath + ".meta")
+            };
+            ValidateBootstrapFileRows(evidence.Inventory, sceneIdentity.ScenePath, bootstrapFiles);
+            VerifyWholeProjectInventory(root, evidence.Inventory, sceneIdentity.ScenePath, bootstrapFiles);
+
+            GetCurrentProcessIdentity(out int processId, out long processStartUtcTicks);
+            var receipt = new F10DiagnosticLinuxBootstrapReceipt
+            {
+                schema = BootstrapReceiptSchema,
+                schemaVersion = BootstrapReceiptSchemaVersion,
+                status = "verified",
+                runtimeReceiptSha256 = evidence.ReceiptSha256,
+                snapshotSha256 = evidence.SnapshotSha256,
+                sourceSnapshotSha256 = evidence.SourceSnapshotSha256,
+                copyInventorySha256 = evidence.CopyInventorySha256,
+                materializationReceiptSha256 = evidence.MaterializationReceiptSha256,
+                selector = selector,
+                testFullName = testFullName,
+                processId = processId,
+                processStartUtcTicks = processStartUtcTicks,
+                scenePath = sceneIdentity.ScenePath,
+                filenameGuid = sceneIdentity.FilenameGuid,
+                assetDatabaseGuid = sceneIdentity.AssetDatabaseGuid,
+                testFrameworkPackageName = controllerIdentity.PackageName,
+                testFrameworkPackageVersion = controllerIdentity.PackageVersion,
+                testFrameworkPackageSource = controllerIdentity.PackageSource,
+                testFrameworkPackageId = controllerIdentity.PackageId,
+                testFrameworkPackageAssetPath = controllerIdentity.PackageAssetPath,
+                testFrameworkPackageResolvedRoot = controllerIdentity.PackageResolvedRoot,
+                testFrameworkPackageResolvedRootIdentity = controllerIdentity.PackageResolvedRootIdentity,
+                controllerScriptAssetPath = controllerIdentity.ScriptAssetPath,
+                controllerScriptGuid = controllerIdentity.ScriptGuid,
+                controllerScriptSha256 = controllerIdentity.ScriptSha256,
+                controllerScriptMetaSha256 = controllerIdentity.ScriptMetaSha256,
+                controllerTypeFullName = controllerIdentity.ControllerTypeFullName,
+                controllerAssemblyName = controllerIdentity.ControllerAssemblyName,
+                bootstrapFiles = bootstrapFiles
+            };
+
+            string acceptanceDirectory = ProjectPath(root, "Logs/F10V6Resume-20261120/acceptance");
+            string receiptParent = Path.GetDirectoryName(acceptanceDirectory);
+            EnsureExistingDirectoryAndAncestorsArePlain(receiptParent);
+            Directory.CreateDirectory(acceptanceDirectory);
+            EnsurePlainDirectoryAndAncestors(acceptanceDirectory);
+            WriteCreateOnlyJson(receiptPath, receipt);
+        }
+
+        private static F10DiagnosticLinuxBootstrapReceipt ReadAndValidateCurrentBootstrapReceipt(
+            string projectRoot, string selector, string runtimeReceiptSha256,
+            F10DiagnosticLinuxRuntimeReceipt runtimeReceipt,
+            IDictionary<string, F10DiagnosticLinuxInventoryFile> inventory)
+        {
+            string expectedTestFullName = ExpectedTestFullName(selector);
+            string receiptRelativePath = BootstrapReceiptPath(selector);
+            string receiptPath = ProjectPath(projectRoot, receiptRelativePath);
+            EnsurePlainFileAndAncestors(receiptPath);
+            F10DiagnosticLinuxBootstrapReceipt receipt = ReadJson<F10DiagnosticLinuxBootstrapReceipt>(receiptPath,
+                "The fixed Linux bootstrap receipt could not be parsed.");
+            if (!string.Equals(receipt.schema, BootstrapReceiptSchema, StringComparison.Ordinal) ||
+                receipt.schemaVersion != BootstrapReceiptSchemaVersion ||
+                !string.Equals(receipt.status, "verified", StringComparison.Ordinal) ||
+                !string.Equals(receipt.selector, selector, StringComparison.Ordinal) ||
+                !string.Equals(receipt.testFullName, expectedTestFullName, StringComparison.Ordinal) ||
+                !string.Equals(receipt.runtimeReceiptSha256, runtimeReceiptSha256, StringComparison.Ordinal) ||
+                !string.Equals(receipt.snapshotSha256, runtimeReceipt.snapshotSha256, StringComparison.Ordinal) ||
+                !string.Equals(receipt.sourceSnapshotSha256, runtimeReceipt.sourceSnapshotSha256, StringComparison.Ordinal) ||
+                !string.Equals(receipt.copyInventorySha256, runtimeReceipt.copyInventorySha256, StringComparison.Ordinal) ||
+                !string.Equals(receipt.materializationReceiptSha256, runtimeReceipt.materializationReceiptSha256, StringComparison.Ordinal))
+                throw new InvalidDataException("The Linux bootstrap receipt is not bound to the current selected test and complete runtime snapshot.");
+
+            GetCurrentProcessIdentity(out int processId, out long processStartUtcTicks);
+            if (receipt.processId != processId || receipt.processStartUtcTicks != processStartUtcTicks)
+                throw new InvalidDataException("The Linux bootstrap receipt belongs to another Editor process or process start.");
+
+            string scenePath = NormalizeRelativePath(receipt.scenePath);
+            string filenameGuid = ExtractBootstrapFilenameGuid(scenePath);
+            if (!string.Equals(filenameGuid, receipt.filenameGuid, StringComparison.Ordinal) ||
+                !IsUnityGuid(receipt.assetDatabaseGuid))
+                throw new InvalidDataException("The Linux bootstrap receipt has an invalid scene filename GUID or AssetDatabase GUID.");
+            string sceneMetaPath = ProjectPath(projectRoot, scenePath + ".meta");
+            EnsurePlainFileAndAncestors(sceneMetaPath);
+            string sceneMetaGuid = ReadMetaGuid(sceneMetaPath);
+            if (!string.Equals(sceneMetaGuid, receipt.assetDatabaseGuid, StringComparison.Ordinal) ||
+                !string.Equals(AssetDatabase.AssetPathToGUID(scenePath), receipt.assetDatabaseGuid, StringComparison.Ordinal) ||
+                AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
+                throw new InvalidDataException("The saved Linux bootstrap scene and its AssetDatabase meta GUID no longer agree.");
+
+            ControllerFrameworkIdentity controller = ReadControllerFrameworkIdentity();
+            ValidateControllerReceiptIdentity(receipt, controller);
+            IDictionary<string, F10DiagnosticLinuxInventoryFile> bootstrapRows =
+                ValidateBootstrapFileRows(inventory, scenePath, receipt.bootstrapFiles);
+            foreach (F10DiagnosticLinuxInventoryFile row in bootstrapRows.Values)
+                VerifyMeasuredFileRow(projectRoot, row, inventory, requireCopyInventoryRow: false);
+            return receipt;
+        }
+
+        private static BootstrapSceneIdentity ValidateCurrentBootstrapScene(string projectRoot)
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            if (!scene.IsValid() || !scene.isLoaded || string.IsNullOrWhiteSpace(scene.path))
+                throw new InvalidOperationException("The active Unity Test Framework bootstrap scene must be valid, loaded, and saved.");
+
+            string scenePath = NormalizeRelativePath(scene.path);
+            string filenameGuid = ExtractBootstrapFilenameGuid(scenePath);
+            string sceneFullPath = ProjectPath(projectRoot, scenePath);
+            EnsurePlainFileAndAncestors(sceneFullPath);
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
+                throw new InvalidDataException("The active Unity Test Framework bootstrap path is not a saved SceneAsset.");
+
+            string assetDatabaseGuid = AssetDatabase.AssetPathToGUID(scenePath);
+            if (!IsUnityGuid(assetDatabaseGuid))
+                throw new InvalidDataException("The saved Unity Test Framework bootstrap scene has no valid AssetDatabase GUID.");
+            string metaPath = sceneFullPath + ".meta";
+            EnsurePlainFileAndAncestors(metaPath);
+            if (!string.Equals(ReadMetaGuid(metaPath), assetDatabaseGuid, StringComparison.Ordinal))
+                throw new InvalidDataException("The saved Unity Test Framework bootstrap scene meta does not match AssetDatabase.");
+
+            return new BootstrapSceneIdentity(scene, scenePath, filenameGuid, assetDatabaseGuid);
+        }
+
+        private static ControllerFrameworkIdentity ValidateCurrentTestFrameworkController(Scene scene)
+        {
+            var controllers = new List<MonoBehaviour>();
+            foreach (GameObject rootObject in scene.GetRootGameObjects())
+            {
+                foreach (Component component in rootObject.GetComponentsInChildren<Component>(includeInactive: true))
+                {
+                    if (component != null && string.Equals(component.GetType().FullName,
+                        ControllerTypeFullName, StringComparison.Ordinal))
+                    {
+                        if (!(component is MonoBehaviour controller))
+                            throw new InvalidDataException("The exact Unity Test Framework controller type is not a MonoBehaviour.");
+                        controllers.Add(controller);
+                    }
+                }
+            }
+
+            if (controllers.Count != 1)
+                throw new InvalidDataException("The active bootstrap scene must contain exactly one Unity Test Framework PlaymodeTestsController.");
+            MonoBehaviour selectedController = controllers[0];
+            if (selectedController.gameObject.scene != scene || !selectedController.enabled ||
+                selectedController.gameObject.transform.parent != null ||
+                !string.Equals(selectedController.gameObject.name, ControllerGameObjectName, StringComparison.Ordinal))
+                throw new InvalidDataException("The Unity Test Framework controller is not the enabled root controller created by the bootstrap task.");
+
+            MonoScript controllerScript = MonoScript.FromMonoBehaviour(selectedController);
+            string assetPath = controllerScript == null ? null : AssetDatabase.GetAssetPath(controllerScript);
+            if (!string.Equals(assetPath, ControllerScriptAssetPath, StringComparison.Ordinal))
+                throw new InvalidDataException("The active bootstrap controller does not use the pinned Unity Test Framework script asset.");
+            return ReadControllerFrameworkIdentity();
+        }
+
+        private static ControllerFrameworkIdentity ReadControllerFrameworkIdentity()
+        {
+            MonoScript controllerScript = AssetDatabase.LoadAssetAtPath<MonoScript>(ControllerScriptAssetPath);
+            Type controllerType = controllerScript == null ? null : controllerScript.GetClass();
+            if (controllerScript == null || controllerType == null ||
+                !string.Equals(controllerType.FullName, ControllerTypeFullName, StringComparison.Ordinal) ||
+                !string.Equals(controllerType.Assembly.GetName().Name, ControllerAssemblyName, StringComparison.Ordinal) ||
+                !string.Equals(AssetDatabase.AssetPathToGUID(ControllerScriptAssetPath), ControllerScriptGuid, StringComparison.Ordinal))
+                throw new InvalidDataException("The Unity Test Framework controller script, assembly, or pinned asset GUID differs from package 1.8.0.");
+
+            PackageInfo package = PackageInfo.FindForAssetPath(ControllerScriptAssetPath);
+            if (package == null || !string.Equals(package.name, TestFrameworkPackageName, StringComparison.Ordinal) ||
+                !string.Equals(package.version, TestFrameworkPackageVersion, StringComparison.Ordinal) ||
+                package.source != PackageSource.BuiltIn ||
+                !string.Equals(package.assetPath, TestFrameworkPackageAssetPath, StringComparison.Ordinal) ||
+                string.IsNullOrWhiteSpace(package.resolvedPath))
+                throw new InvalidDataException("The Unity Test Framework controller is not from the pinned built-in 1.8.0 package.");
+
+            string resolvedRoot = CanonicalPath(package.resolvedPath);
+            string scriptRelativePath = ControllerScriptAssetPath.Substring(package.assetPath.Length + 1);
+            string scriptPath = Path.GetFullPath(Path.Combine(resolvedRoot,
+                scriptRelativePath.Replace('/', Path.DirectorySeparatorChar)));
+            if (!IsPathEqualOrWithin(scriptPath, resolvedRoot) || PathEquals(scriptPath, resolvedRoot))
+                throw new InvalidDataException("The Unity Test Framework controller source escaped its resolved package root.");
+            string scriptMetaPath = scriptPath + ".meta";
+            EnsurePlainFileAndAncestors(scriptPath);
+            EnsurePlainFileAndAncestors(scriptMetaPath);
+            string scriptSha256 = HashFile(scriptPath);
+            string scriptMetaSha256 = HashFile(scriptMetaPath);
+            string scriptMetaGuid = ReadMetaGuid(scriptMetaPath);
+            if (!string.Equals(scriptSha256, ControllerScriptSha256, StringComparison.Ordinal) ||
+                !string.Equals(scriptMetaSha256, ControllerScriptMetaSha256, StringComparison.Ordinal) ||
+                !string.Equals(scriptMetaGuid, ControllerScriptGuid, StringComparison.Ordinal))
+                throw new InvalidDataException("The Unity Test Framework controller script source or meta differs from the pinned package 1.8.0 bytes.");
+
+            return new ControllerFrameworkIdentity
+            {
+                PackageName = package.name,
+                PackageVersion = package.version,
+                PackageSource = package.source.ToString(),
+                PackageId = package.packageId ?? string.Empty,
+                PackageAssetPath = package.assetPath,
+                PackageResolvedRoot = resolvedRoot,
+                PackageResolvedRootIdentity = InspectDirectory(resolvedRoot).Identity,
+                ScriptAssetPath = ControllerScriptAssetPath,
+                ScriptGuid = ControllerScriptGuid,
+                ScriptSha256 = scriptSha256,
+                ScriptMetaSha256 = scriptMetaSha256,
+                ControllerTypeFullName = controllerType.FullName,
+                ControllerAssemblyName = controllerType.Assembly.GetName().Name
+            };
+        }
+
+        private static void ValidateControllerReceiptIdentity(F10DiagnosticLinuxBootstrapReceipt receipt,
+            ControllerFrameworkIdentity controller)
+        {
+            if (!string.Equals(receipt.testFrameworkPackageName, controller.PackageName, StringComparison.Ordinal) ||
+                !string.Equals(receipt.testFrameworkPackageVersion, controller.PackageVersion, StringComparison.Ordinal) ||
+                !string.Equals(receipt.testFrameworkPackageSource, controller.PackageSource, StringComparison.Ordinal) ||
+                !string.Equals(receipt.testFrameworkPackageId ?? string.Empty, controller.PackageId, StringComparison.Ordinal) ||
+                !string.Equals(receipt.testFrameworkPackageAssetPath, controller.PackageAssetPath, StringComparison.Ordinal) ||
+                !PathEquals(receipt.testFrameworkPackageResolvedRoot, controller.PackageResolvedRoot) ||
+                !string.Equals(receipt.testFrameworkPackageResolvedRootIdentity, controller.PackageResolvedRootIdentity, StringComparison.Ordinal) ||
+                !string.Equals(receipt.controllerScriptAssetPath, controller.ScriptAssetPath, StringComparison.Ordinal) ||
+                !string.Equals(receipt.controllerScriptGuid, controller.ScriptGuid, StringComparison.Ordinal) ||
+                !string.Equals(receipt.controllerScriptSha256, controller.ScriptSha256, StringComparison.Ordinal) ||
+                !string.Equals(receipt.controllerScriptMetaSha256, controller.ScriptMetaSha256, StringComparison.Ordinal) ||
+                !string.Equals(receipt.controllerTypeFullName, controller.ControllerTypeFullName, StringComparison.Ordinal) ||
+                !string.Equals(receipt.controllerAssemblyName, controller.ControllerAssemblyName, StringComparison.Ordinal))
+                throw new InvalidDataException("The Linux bootstrap receipt controller provenance differs from the pinned local package/script.");
+        }
+
+        private static IDictionary<string, F10DiagnosticLinuxInventoryFile> ValidateBootstrapFileRows(
+            IDictionary<string, F10DiagnosticLinuxInventoryFile> originalInventory, string scenePath,
+            F10DiagnosticLinuxInventoryFile[] bootstrapFiles)
+        {
+            string expectedScenePath = NormalizeRelativePath(scenePath);
+            ExtractBootstrapFilenameGuid(expectedScenePath);
+            if (bootstrapFiles == null || bootstrapFiles.Length != 2)
+                throw new InvalidDataException("The Unity Test Framework bootstrap receipt must contain exactly a scene and its meta row.");
+
+            string[] expectedPaths = { expectedScenePath, expectedScenePath + ".meta" };
+            var originalIdentities = new HashSet<string>(originalInventory.Values.Select(row =>
+                PhysicalIdentityKey(row.deviceMajor, row.deviceMinor, row.inode)), StringComparer.Ordinal);
+            var result = new Dictionary<string, F10DiagnosticLinuxInventoryFile>(StringComparer.Ordinal);
+            var identities = new HashSet<string>(StringComparer.Ordinal);
+            for (int index = 0; index < bootstrapFiles.Length; index++)
+            {
+                F10DiagnosticLinuxInventoryFile row = bootstrapFiles[index];
+                string path = NormalizeRelativePath(row == null ? null : row.path);
+                if (!string.Equals(path, expectedPaths[index], StringComparison.Ordinal) ||
+                    !IsSha256(row.sha256) || row.length < 0 || row.inode <= 0 || row.linkCount != 1 ||
+                    originalInventory.ContainsKey(path))
+                    throw new InvalidDataException("The measured Unity bootstrap pair is malformed, overlaps the original inventory, or has an extra path: " + path);
+                string identity = PhysicalIdentityKey(row.deviceMajor, row.deviceMinor, row.inode);
+                if (originalIdentities.Contains(identity) || !identities.Add(identity) || !result.TryAdd(path, row))
+                    throw new InvalidDataException("Unity bootstrap scene and meta files must have separate, new physical inode identities.");
+            }
+            return result;
+        }
+
+        private static F10DiagnosticLinuxInventoryFile MeasureBootstrapFile(string projectRoot, string relativePath)
+        {
+            string path = ProjectPath(projectRoot, relativePath);
+            EnsurePlainFileAndAncestors(path);
+            F10DiagnosticLinuxFileMetadata metadata = InspectRegularFile(path);
+            return new F10DiagnosticLinuxInventoryFile
+            {
+                path = NormalizeRelativePath(relativePath),
+                sha256 = HashFile(path),
+                length = metadata.Length,
+                deviceMajor = metadata.DeviceMajor,
+                deviceMinor = metadata.DeviceMinor,
+                inode = metadata.Inode,
+                linkCount = metadata.LinkCount
+            };
+        }
+
+        private static string BootstrapReceiptPath(string selector)
+        {
+            if (string.Equals(selector, ProcessASelector, StringComparison.Ordinal))
+                return BootstrapProcessAReceiptRelativePath;
+            if (string.Equals(selector, ProcessBSelector, StringComparison.Ordinal))
+                return BootstrapProcessBReceiptRelativePath;
+            throw new InvalidDataException("The Linux bootstrap selector must be exactly process-a or process-b.");
+        }
+
+        private static string ExpectedTestFullName(string selector)
+        {
+            if (string.Equals(selector, ProcessASelector, StringComparison.Ordinal)) return ProcessATestFullName;
+            if (string.Equals(selector, ProcessBSelector, StringComparison.Ordinal)) return ProcessBTestFullName;
+            throw new InvalidDataException("The Linux bootstrap selector must be exactly process-a or process-b.");
+        }
+
+        private static string ExtractBootstrapFilenameGuid(string scenePath)
+        {
+            const string prefix = "Assets/InitTestScene";
+            const string suffix = ".unity";
+            if (string.IsNullOrWhiteSpace(scenePath) || !scenePath.StartsWith(prefix, StringComparison.Ordinal) ||
+                !scenePath.EndsWith(suffix, StringComparison.Ordinal))
+                throw new InvalidDataException("Only Unity Test Framework's saved Assets/InitTestScene{GUID}.unity path is allowed.");
+            string value = scenePath.Substring(prefix.Length, scenePath.Length - prefix.Length - suffix.Length);
+            if (!Guid.TryParseExact(value, "D", out Guid parsed) || parsed == Guid.Empty ||
+                !string.Equals(value, parsed.ToString("D"), StringComparison.Ordinal))
+                throw new InvalidDataException("The Unity Test Framework bootstrap scene filename must contain its exact generated GUID format.");
+            return value;
+        }
+
+        private static bool IsUnityGuid(string value)
+        {
+            return value != null && value.Length == 32 &&
+                Guid.TryParseExact(value, "N", out Guid parsed) && parsed != Guid.Empty &&
+                value.All(character => character >= '0' && character <= '9' ||
+                    character >= 'a' && character <= 'f' || character >= 'A' && character <= 'F');
+        }
+
+        private static string ReadMetaGuid(string metaPath)
+        {
+            EnsurePlainFileAndAncestors(metaPath);
+            string found = null;
+            foreach (string rawLine in File.ReadAllLines(metaPath, StrictUtf8))
+            {
+                string line = rawLine.Trim();
+                if (!line.StartsWith("guid:", StringComparison.Ordinal)) continue;
+                if (found != null) throw new InvalidDataException("A Unity meta file contains more than one GUID line: " + metaPath);
+                string value = line.Substring("guid:".Length).Trim();
+                if (!IsUnityGuid(value)) throw new InvalidDataException("A Unity meta file has a malformed asset GUID: " + metaPath);
+                found = value;
+            }
+            if (found == null) throw new InvalidDataException("A Unity meta file has no asset GUID: " + metaPath);
+            return found;
+        }
+
+        private static void GetCurrentProcessIdentity(out int processId, out long processStartUtcTicks)
+        {
+            using (Process process = Process.GetCurrentProcess())
+            {
+                processId = process.Id;
+                processStartUtcTicks = process.StartTime.ToUniversalTime().Ticks;
+            }
+            if (processId <= 0 || processStartUtcTicks <= 0)
+                throw new InvalidOperationException("The current Linux Editor process has no valid PID/start-time identity.");
+        }
+
+        private static void WriteCreateOnlyJson<T>(string path, T value)
+        {
+            byte[] bytes = StrictUtf8.GetBytes(JsonUtility.ToJson(value, prettyPrint: true));
+            using (var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            {
+                stream.Write(bytes, 0, bytes.Length);
+                stream.Flush(flushToDisk: true);
+            }
+            EnsurePlainFileAndAncestors(path);
         }
 
         internal static F10DiagnosticLinuxFileMetadata InspectRegularFile(string path) =>
@@ -718,8 +1226,16 @@ namespace Luckbound.App
         }
 
         private static void VerifyWholeProjectInventory(string projectRoot,
-            IDictionary<string, F10DiagnosticLinuxInventoryFile> expected)
+            IDictionary<string, F10DiagnosticLinuxInventoryFile> expected,
+            string bootstrapScenePath,
+            F10DiagnosticLinuxInventoryFile[] bootstrapFiles)
         {
+            if ((bootstrapScenePath == null) != (bootstrapFiles == null))
+                throw new InvalidDataException("A Linux bootstrap inventory requires both its fixed scene path and measured pair.");
+            IDictionary<string, F10DiagnosticLinuxInventoryFile> bootstrapByPath = bootstrapFiles == null
+                ? new Dictionary<string, F10DiagnosticLinuxInventoryFile>(StringComparer.Ordinal)
+                : ValidateBootstrapFileRows(expected, bootstrapScenePath, bootstrapFiles);
+
             var actualPaths = new HashSet<string>(StringComparer.Ordinal);
             foreach (string rootName in InventoryRootNames)
             {
@@ -739,29 +1255,38 @@ namespace Luckbound.App
                     foreach (string file in Directory.GetFiles(directory))
                     {
                         string relative = ToRelativePath(projectRoot, file);
-                        VerifyActualInventoryEntry(projectRoot, relative, expected, actualPaths);
+                        VerifyActualInventoryEntry(projectRoot, relative, expected, bootstrapByPath, actualPaths);
                     }
                 }
             }
             foreach (string relative in RequiredExternalInventoryPaths)
-                VerifyActualInventoryEntry(projectRoot, relative, expected, actualPaths);
-            if (!actualPaths.SetEquals(expected.Keys))
+                VerifyActualInventoryEntry(projectRoot, relative, expected, bootstrapByPath, actualPaths);
+            var expectedPaths = new HashSet<string>(expected.Keys, StringComparer.Ordinal);
+            foreach (string bootstrapPath in bootstrapByPath.Keys)
+                expectedPaths.Add(bootstrapPath);
+            if (!actualPaths.SetEquals(expectedPaths))
                 throw new InvalidDataException("The current protected project tree does not match the measured full copy inventory.");
         }
 
         private static void VerifyActualInventoryEntry(string projectRoot, string relativePath,
-            IDictionary<string, F10DiagnosticLinuxInventoryFile> expected, ISet<string> actualPaths)
+            IDictionary<string, F10DiagnosticLinuxInventoryFile> expected,
+            IDictionary<string, F10DiagnosticLinuxInventoryFile> bootstrapFiles,
+            ISet<string> actualPaths)
         {
             string relative = NormalizeRelativePath(relativePath);
             if (!actualPaths.Add(relative))
                 throw new InvalidDataException("The current protected project inventory repeats a path: " + relative);
-            if (!expected.TryGetValue(relative, out F10DiagnosticLinuxInventoryFile row))
-                throw new InvalidDataException("The current protected project contains an unmeasured path: " + relative);
-            string fullPath = ProjectPath(projectRoot, relative);
-            VerifyMeasuredFileRow(projectRoot, row, expected, requireCopyInventoryRow: true);
-            if (!string.Equals(HashFile(fullPath), row.sha256, StringComparison.Ordinal) ||
-                new FileInfo(fullPath).Length != row.length)
-                throw new InvalidDataException("A protected project file differs from its measured copy inventory: " + relative);
+            if (expected.TryGetValue(relative, out F10DiagnosticLinuxInventoryFile inventoryRow))
+            {
+                VerifyMeasuredFileRow(projectRoot, inventoryRow, expected, requireCopyInventoryRow: true);
+                return;
+            }
+            if (bootstrapFiles.TryGetValue(relative, out F10DiagnosticLinuxInventoryFile bootstrapRow))
+            {
+                VerifyMeasuredFileRow(projectRoot, bootstrapRow, expected, requireCopyInventoryRow: false);
+                return;
+            }
+            throw new InvalidDataException("The current protected project contains an unmeasured path: " + relative);
         }
 
         private static void VerifyMeasuredFileRow(string projectRoot, F10DiagnosticLinuxInventoryFile row,

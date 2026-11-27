@@ -15,6 +15,7 @@ using Luckbound.Gameplay.Enemies;
 using Luckbound.Gameplay.Movement;
 using Luckbound.Gameplay.Rooms;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,10 +25,46 @@ using UnityEngine.TestTools;
 
 namespace Luckbound.Tests.PlayMode
 {
+    public sealed class F10V6LinuxBootstrapEvidenceSetup : IPrebuildSetupWithTestData
+    {
+        internal const string ProcessASelector = "process-a";
+        internal const string ProcessBSelector = "process-b";
+
+        public void Setup(TestData testData)
+        {
+            if (testData == null || testData.TestMode != TestMode.PlayMode ||
+                testData.TestPlatform != RuntimePlatform.LinuxEditor)
+                throw new InvalidOperationException("The F10 Linux bootstrap receipt requires exactly the Linux Editor PlayMode test run.");
+
+            ITest[] selectedLeaves = testData.TestList == null
+                ? Array.Empty<ITest>()
+                : testData.TestList.ToArray();
+            if (selectedLeaves.Length != 1 || selectedLeaves[0] == null)
+                throw new InvalidOperationException("Select exactly one F10 V6 acceptance leaf for each Linux Editor process.");
+
+            string processA = typeof(F10V6ResumeAcceptanceTests).FullName + "." +
+                nameof(F10V6ResumeAcceptanceTests.ProcessA_BeginsNewRunClearsC1AndWritesReadOnlyReceipt);
+            string processB = typeof(F10V6ResumeAcceptanceTests).FullName + "." +
+                nameof(F10V6ResumeAcceptanceTests.ProcessB_ResumesSameC1CheckpointWithoutRepayAndExtracts);
+            string selectedName = selectedLeaves[0].FullName;
+            string selector;
+            if (string.Equals(selectedName, processA, StringComparison.Ordinal))
+                selector = ProcessASelector;
+            else if (string.Equals(selectedName, processB, StringComparison.Ordinal))
+                selector = ProcessBSelector;
+            else
+                throw new InvalidOperationException("The F10 Linux bootstrap setup rejects any selected test outside the exact Process A or Process B leaf.");
+
+            string projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+            F10DiagnosticLinuxRuntimeEvidenceReader.CaptureCurrentBootstrapReceipt(projectRoot, selector, selectedName);
+        }
+    }
+
     /// <summary>
     /// Disposable Editor-only two-process acceptance. The two tests must run in fresh Unity processes
     /// against one verified project copy. All progress comes from virtual keyboard input and real physics.
     /// </summary>
+    [PrebuildSetupWithTestData(typeof(F10V6LinuxBootstrapEvidenceSetup))]
     public sealed class F10V6ResumeAcceptanceTests
     {
         private const string ScenePath = "Assets/Luckbound/Editor/Diagnostic/F10Diagnostic.unity";
@@ -52,7 +89,7 @@ namespace Luckbound.Tests.PlayMode
 
             string projectRoot = ProjectRoot;
             LinuxDiagnosticReceipt linuxEvidence = ReadLinuxDiagnosticReceipt(projectRoot);
-            AssertLinuxDiagnosticReceipt(linuxEvidence, projectRoot);
+            AssertLinuxDiagnosticReceipt(linuxEvidence, projectRoot, F10V6LinuxBootstrapEvidenceSetup.ProcessASelector);
             Assert.That(File.Exists(Absolute(projectRoot, SessionManifestRelative)), Is.False,
                 "Process A refuses to replace an existing session manifest.");
             Assert.That(File.Exists(Absolute(projectRoot, TestReceiptRelative)), Is.False,
@@ -114,7 +151,7 @@ namespace Luckbound.Tests.PlayMode
 
             string projectRoot = ProjectRoot;
             LinuxDiagnosticReceipt linuxEvidence = ReadLinuxDiagnosticReceipt(projectRoot);
-            AssertLinuxDiagnosticReceipt(linuxEvidence, projectRoot);
+            AssertLinuxDiagnosticReceipt(linuxEvidence, projectRoot, F10V6LinuxBootstrapEvidenceSetup.ProcessBSelector);
             string testReceiptPath = Absolute(projectRoot, TestReceiptRelative);
             Assert.That(File.Exists(testReceiptPath), Is.True,
                 "Process B requires Process A's read-only test receipt.");
@@ -767,9 +804,11 @@ namespace Luckbound.Tests.PlayMode
             return receipt;
         }
 
-        private static void AssertLinuxDiagnosticReceipt(LinuxDiagnosticReceipt receipt, string projectRoot)
+        private static void AssertLinuxDiagnosticReceipt(LinuxDiagnosticReceipt receipt, string projectRoot,
+            string bootstrapSelector)
         {
-            Assert.That(F10DiagnosticLinuxRuntimeEvidenceReader.ValidateForRuntime(projectRoot), Is.Not.Null,
+            Assert.That(F10DiagnosticLinuxRuntimeEvidenceReader.ValidateForRuntime(projectRoot,
+                expectedBootstrapSelector: bootstrapSelector), Is.Not.Null,
                 "The exact Linux runner receipt, physical copy inventory, and Unity materialization must revalidate.");
             Assert.That(receipt.schema, Is.EqualTo("ci-linux-diagnostic"));
             Assert.That(receipt.schemaVersion, Is.EqualTo(1));
