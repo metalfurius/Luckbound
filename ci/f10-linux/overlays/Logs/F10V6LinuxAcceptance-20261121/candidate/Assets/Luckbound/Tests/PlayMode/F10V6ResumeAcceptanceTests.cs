@@ -221,10 +221,29 @@ namespace Luckbound.Tests.PlayMode
             // Fixed frame duration only; health, damage, collision, physics and win conditions stay real.
             Time.captureDeltaTime = 1f / 30f;
             F10DiagnosticSceneRunner.SetSessionModeForNextStart(mode);
-            context.DiagnosticScene = EditorSceneManager.LoadSceneInPlayMode(ScenePath,
-                new LoadSceneParameters(LoadSceneMode.Additive));
-            Assert.That(context.DiagnosticScene.IsValid(), Is.True);
-            Assert.That(SceneManager.SetActiveScene(context.DiagnosticScene), Is.True);
+            bool activatedBeforeStart = false;
+            UnityEngine.Events.UnityAction<Scene, LoadSceneMode> activateLoadedDiagnostic = (loaded, loadMode) =>
+            {
+                if (!string.Equals(loaded.path, ScenePath, StringComparison.Ordinal)) return;
+                Assert.That(loadMode, Is.EqualTo(LoadSceneMode.Additive));
+                Assert.That(loaded.IsValid() && loaded.isLoaded, Is.True);
+                if (SceneManager.GetActiveScene() != loaded) SceneManager.SetActiveScene(loaded);
+                activatedBeforeStart = SceneManager.GetActiveScene() == loaded;
+                Assert.That(activatedBeforeStart, Is.True, "The exact diagnostic scene must be active before runner Start.");
+            };
+            SceneManager.sceneLoaded += activateLoadedDiagnostic;
+            try
+            {
+                context.DiagnosticScene = EditorSceneManager.LoadSceneInPlayMode(ScenePath,
+                    new LoadSceneParameters(LoadSceneMode.Additive));
+                Assert.That(context.DiagnosticScene.IsValid(), Is.True);
+                Assert.That(activatedBeforeStart, Is.True, "The exact scene-loaded callback must activate the diagnostic scene.");
+                Assert.That(SceneManager.GetActiveScene(), Is.EqualTo(context.DiagnosticScene));
+            }
+            finally
+            {
+                SceneManager.sceneLoaded -= activateLoadedDiagnostic;
+            }
 
             double deadline = Time.realtimeSinceStartupAsDouble + 45d;
             for (int frame = 0; frame < 2400 && Time.realtimeSinceStartupAsDouble < deadline; frame++)
