@@ -122,6 +122,12 @@
       "source": "r6/01-packages-lock.json",
       "sha256": "6227d5177185d936f819ace66716d3b8628dde89de2c7f8fe4f719c49ba25ef9",
       "preimageSha256": "c4b62fe5b9236a3047d7f06b4880722a0338ddcfff321399cc88ccb3cfce6225"
+    },
+    {
+      "destination": "Assets/Luckbound/Scripts/App/F10DiagnosticSceneRunner.cs",
+      "source": "r13/00-F10DiagnosticSceneRunner.cs",
+      "sha256": "d53e5ffb853dccc1de6150fd5e1b79e0a1345aad851b6122d4891bec9eea8e1c",
+      "preimageSha256": "50c25c6ce96c9c741de06ab34139077798f6cf3f52aeba1c8a44117f7f3be738"
     }
   ]
 }
