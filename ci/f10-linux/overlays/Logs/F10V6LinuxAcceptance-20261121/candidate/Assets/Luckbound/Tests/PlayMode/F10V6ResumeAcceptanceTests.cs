@@ -216,6 +216,11 @@ namespace Luckbound.Tests.PlayMode
             Assert.That(ApplicationBootstrapper.Instance, Is.Null);
             context.PreviousScene = SceneManager.GetActiveScene();
             context.PreviousCaptureDelta = Time.captureDeltaTime;
+            context.PreviousAudioListenerVolume = AudioListener.volume;
+            context.PreviousAudioListenerPause = AudioListener.pause;
+            context.RestoreAudioListenerGlobals = true;
+            AudioListener.volume = 0f;
+            AudioListener.pause = true;
             context.PreviousInputSettings = InputSystem.settings;
             context.PreviousBackgroundBehavior = context.PreviousInputSettings.backgroundBehavior;
             context.PreviousEditorInputBehavior = context.PreviousInputSettings.editorInputBehaviorInPlayMode;
@@ -248,6 +253,14 @@ namespace Luckbound.Tests.PlayMode
                 SceneManager.SetActiveScene(context.DiagnosticScene);
             Assert.That(SceneManager.GetActiveScene(), Is.EqualTo(context.DiagnosticScene),
                 "The canonical diagnostic scene must be active before waiting for its runner.");
+            AudioListener[] loadedListeners = Resources.FindObjectsOfTypeAll<AudioListener>();
+            Assert.That(loadedListeners.Any(listener => listener != null && listener.enabled &&
+                listener.gameObject.activeInHierarchy && listener.gameObject.scene.IsValid() &&
+                listener.gameObject.scene.isLoaded), Is.False,
+                "The diagnostic route requires one harness-owned AudioListener and no other active listener.");
+            context.SilentListenerObject = new GameObject("F10 harness silent AudioListener");
+            SceneManager.MoveGameObjectToScene(context.SilentListenerObject, context.DiagnosticScene);
+            context.SilentListener = context.SilentListenerObject.AddComponent<AudioListener>();
 
             double deadline = Time.realtimeSinceStartupAsDouble + 45d;
             for (int frame = 0; frame < 2400 && Time.realtimeSinceStartupAsDouble < deadline; frame++)
@@ -372,7 +385,28 @@ namespace Luckbound.Tests.PlayMode
                 if (CurrentNode(context) != C1Node) break;
                 RoomLifetimeScope scope = context.Runner.Composition.RoomTransitions.ActiveScope;
                 F10C1RuntimeCoordinator coordinator = scope == null ? null : scope.GetComponent<F10C1RuntimeCoordinator>();
-                if (coordinator == null) continue;
+                if (coordinator == null)
+                {
+                    UnityEngine.UI.Text statusLabel = context.Runner == null ? null :
+                        context.Runner.GetComponentsInChildren<UnityEngine.UI.Text>(true)
+                            .FirstOrDefault(label => label != null && label.gameObject.name == "Tutorial status");
+                    string statusText = statusLabel == null ? "<Tutorial status missing>" : statusLabel.text ?? string.Empty;
+                    if (statusText.StartsWith("NO SE PUDO INICIAR EL COMBATE", StringComparison.Ordinal))
+                    {
+                        string appState = context.App == null ? "<null>" :
+                            "HasPendingSessionMutation=" + context.App.HasPendingSessionMutation +
+                            "; IsRoomAdvanceInFlight=" + context.App.IsRoomAdvanceInFlight;
+                        string runnerError = context.Runner == null ? "<null>" : context.Runner.LastError;
+                        string playerTick = context.Player == null ? "<null>" : context.Player.SimulationTick.ToString();
+                        string playerPosition = context.Player == null ? "<null>" :
+                            context.Player.transform.position.ToString("F3");
+                        Assert.Fail("C1 has no F10C1RuntimeCoordinator. Tutorial status: " + statusText +
+                            "; App state: " + appState + "; Runner.LastError: " + runnerError +
+                            "; PlayerTick: " + playerTick + "; PlayerPosition: " + playerPosition +
+                            "; ActiveScope: " + (scope == null ? "<null>" : scope.name));
+                    }
+                    continue;
+                }
                 lastCoordinator = coordinator;
                 ExpeditionReadinessCompositionView view = context.Runner.Composition.CaptureReadinessCompositionView();
                 RoomEncounterRuntimeContext activeContext = view == null || view.ReadinessRegistration == null ||
@@ -475,6 +509,26 @@ namespace Luckbound.Tests.PlayMode
             }
 
             ReleaseAll(context);
+            RoomLifetimeScope finalScope = context.Runner == null || context.Runner.Composition == null
+                ? null : context.Runner.Composition.RoomTransitions.ActiveScope;
+            F10C1RuntimeCoordinator finalCoordinator = finalScope == null ? null :
+                finalScope.GetComponent<F10C1RuntimeCoordinator>();
+            UnityEngine.UI.Text finalStatusLabel = context.Runner == null ? null :
+                context.Runner.GetComponentsInChildren<UnityEngine.UI.Text>(true)
+                    .FirstOrDefault(label => label != null && label.gameObject.name == "Tutorial status");
+            string finalStatusText = finalStatusLabel == null ? "<Tutorial status missing>" :
+                finalStatusLabel.text ?? string.Empty;
+            TestContext.WriteLine("C1 state before E1 wait: node=" + CurrentNode(context) +
+                "; coordinator=" + (finalCoordinator != null) + "; Tutorial status=" + finalStatusText +
+                "; App.HasPendingSessionMutation=" + (context.App == null ? "<null>" :
+                    context.App.HasPendingSessionMutation.ToString()) +
+                "; App.IsRoomAdvanceInFlight=" + (context.App == null ? "<null>" :
+                    context.App.IsRoomAdvanceInFlight.ToString()) +
+                "; Runner.LastError=" + (context.Runner == null ? "<null>" : context.Runner.LastError) +
+                "; PlayerTick=" + (context.Player == null ? "<null>" : context.Player.SimulationTick.ToString()) +
+                "; PlayerPosition=" + (context.Player == null ? "<null>" :
+                    context.Player.transform.position.ToString("F3")) +
+                "; ActiveScope=" + (finalScope == null ? "<null>" : finalScope.name));
             yield return WaitForNode(context, E1Node, 90d, 5400);
             // The coordinator retains its immutable physical clear even if its Unity object was
             // destroyed during the transition. Do not depend on a transient roster counter.
@@ -1138,6 +1192,13 @@ namespace Luckbound.Tests.PlayMode
             if (context == null) return;
             try
             {
+                if (context.SilentListener != null)
+                {
+                    context.SilentListener.enabled = false;
+                    UnityEngine.Object.Destroy(context.SilentListener.gameObject);
+                    context.SilentListener = null;
+                    context.SilentListenerObject = null;
+                }
                 ReleaseAll(context);
                 if (context.PreviousCaptureDelta > 0f || context.PreviousCaptureDelta == 0f)
                     Time.captureDeltaTime = context.PreviousCaptureDelta;
@@ -1149,16 +1210,46 @@ namespace Luckbound.Tests.PlayMode
             }
             finally
             {
-                if (context.RestoreInputSettings && context.PreviousInputSettings != null)
+                try
                 {
-                    try
+                    if (context.RestoreInputSettings && context.PreviousInputSettings != null)
                     {
-                        context.PreviousInputSettings.backgroundBehavior = context.PreviousBackgroundBehavior;
+                        try
+                        {
+                            context.PreviousInputSettings.backgroundBehavior = context.PreviousBackgroundBehavior;
+                        }
+                        finally
+                        {
+                            try
+                            {
+                                context.PreviousInputSettings.editorInputBehaviorInPlayMode = context.PreviousEditorInputBehavior;
+                            }
+                            finally
+                            {
+                                context.RestoreInputSettings = false;
+                            }
+                        }
                     }
-                    finally
+                }
+                finally
+                {
+                    if (context.RestoreAudioListenerGlobals)
                     {
-                        context.PreviousInputSettings.editorInputBehaviorInPlayMode = context.PreviousEditorInputBehavior;
-                        context.RestoreInputSettings = false;
+                        try
+                        {
+                            AudioListener.volume = context.PreviousAudioListenerVolume;
+                        }
+                        finally
+                        {
+                            try
+                            {
+                                AudioListener.pause = context.PreviousAudioListenerPause;
+                            }
+                            finally
+                            {
+                                context.RestoreAudioListenerGlobals = false;
+                            }
+                        }
                     }
                 }
             }
@@ -1266,6 +1357,11 @@ namespace Luckbound.Tests.PlayMode
             public Keyboard Keyboard;
             public readonly HashSet<Key> Keys = new HashSet<Key>();
             public float PreviousCaptureDelta;
+            public float PreviousAudioListenerVolume;
+            public bool PreviousAudioListenerPause;
+            public bool RestoreAudioListenerGlobals;
+            public GameObject SilentListenerObject;
+            public AudioListener SilentListener;
             public InputSettings PreviousInputSettings;
             public InputSettings.BackgroundBehavior PreviousBackgroundBehavior;
             public InputSettings.EditorInputBehaviorInPlayMode PreviousEditorInputBehavior;

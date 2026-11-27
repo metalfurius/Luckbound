@@ -137,7 +137,7 @@ jobs:
             --source-inventory /luckbound/input/source-inventory.json \
             --route v7-export \
             --v7-linux-manifest /luckbound/linux-v7-overlay-manifest.json \
-            --v7-linux-manifest-sha256 178ed68d3e85e4fdf7a4c88b2cf37f5bb18cbd3c7f615ae7d66838ee084b04ca \
+            --v7-linux-manifest-sha256 dbe274ac2b45a4b34fc70119c2930fca035cdbe47efc221e0d077a21b0933101 \
             --overlay-root /luckbound/v7-overlays \
             --temp-root /tmp/luckbound-run \
             --project-root /tmp/luckbound-run/project \

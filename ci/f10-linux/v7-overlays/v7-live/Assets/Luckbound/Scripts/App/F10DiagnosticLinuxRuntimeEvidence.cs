@@ -686,12 +686,15 @@ namespace Luckbound.App
             {
                 string destination = NormalizeRelativePath(row == null ? null : row.destination);
                 string source = NormalizeRelativePath(row == null ? null : row.source);
+                string preimageSha256 = row == null || string.IsNullOrEmpty(row.preimageSha256)
+                    ? null : row.preimageSha256;
                 if (row == null ||
                     !(destination.StartsWith("Assets/", StringComparison.Ordinal) ||
                       string.Equals(destination, PackageLockRelativePath, StringComparison.Ordinal)) ||
                     !destinations.Add(destination) || !IsSha256(row.sha256) ||
-                    (row.preimageSha256 != null && !IsSha256(row.preimageSha256)) || generatedAssetPaths.Contains(destination))
-                    throw new InvalidDataException("The V7 overlay contains a malformed, repeated, deletion-overlapping, out-of-root, or generated-output destination: " + destination);
+                    (preimageSha256 != null && !IsSha256(preimageSha256)) || generatedAssetPaths.Contains(destination))
+                    throw new InvalidDataException("The V7 overlay contains a malformed, repeated, deletion-overlapping, out-of-root, or generated-output destination: " + destination +
+                        "; raw optional-preimage length=" + (row?.preimageSha256?.Length ?? -1) + ".");
                 string sourcePath = Path.GetFullPath(Path.Combine(overlayRoot,
                     source.Replace('/', Path.DirectorySeparatorChar)));
                 if (!IsPathEqualOrWithin(sourcePath, overlayRoot) || PathEquals(sourcePath, overlayRoot))
@@ -703,10 +706,10 @@ namespace Luckbound.App
                     throw new InvalidDataException("A V7 overlay source changed after its manifest was frozen: " + source);
                 if (expected.TryGetValue(destination, out ContentSnapshotFile preimage))
                 {
-                    if (row.preimageSha256 == null || !string.Equals(preimage.Sha256, row.preimageSha256, StringComparison.Ordinal))
+                    if (preimageSha256 == null || !string.Equals(preimage.Sha256, preimageSha256, StringComparison.Ordinal))
                         throw new InvalidDataException("A V7 overlay preimage differs from the frozen source ZIP: " + destination);
                 }
-                else if (row.preimageSha256 != null)
+                else if (preimageSha256 != null)
                     throw new InvalidDataException("A V7 overlay declared a preimage for a path absent from the frozen source ZIP: " + destination);
                 expected[destination] = new ContentSnapshotFile(destination, sourceHash, sourceMetadata.Length);
             }
