@@ -4,6 +4,15 @@ name: F10 V6 Linux Diagnostic
 
 on:
   workflow_dispatch:
+    inputs:
+      diagnostic_mode:
+        description: Internal diagnostic operation
+        required: false
+        default: acceptance
+        type: choice
+        options:
+          - acceptance
+          - framework-source
 
 permissions:
   contents: read
@@ -22,7 +31,38 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
 
+      - name: Capture the pinned image Test Framework source
+        if: inputs.diagnostic_mode == 'framework-source'
+        shell: bash
+        env:
+          F10_IMAGE: unityci/editor:ubuntu-6000.6.10f1-base-4.0.0@sha256:b298e645b9982ee48dbcb90b77f900e82afd7eb59daf9512ed5a5220ee6911d5
+        run: |
+          set -euo pipefail
+          evidence="$RUNNER_TEMP/f10-v6-linux-evidence"
+          test ! -e "$evidence"
+          mkdir -p "$evidence/framework-source"
+          printf '%s\n' "$F10_IMAGE" > "$evidence/framework-source/IMAGE.txt"
+          docker pull "$F10_IMAGE"
+          docker run --rm --read-only --network=none \
+            --mount "type=bind,src=$evidence/framework-source,dst=/evidence" \
+            --entrypoint /bin/sh "$F10_IMAGE" -c '
+              set -eu
+              package=/opt/unity/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.test-framework
+              script="$package/UnityEngine.TestRunner/TestRunner/PlaymodeTestsController.cs"
+              test -f "$package/package.json"
+              test -f "$script"
+              test ! -L "$script"
+              test -f "$script.meta"
+              test ! -L "$script.meta"
+              cp -- "$package/package.json" /evidence/package.json
+              cp -- "$script" /evidence/PlaymodeTestsController.cs
+              cp -- "$script.meta" /evidence/PlaymodeTestsController.cs.meta
+              cd /evidence
+              sha256sum package.json PlaymodeTestsController.cs PlaymodeTestsController.cs.meta > SHA256SUMS
+            '
+
       - name: Run the frozen diagnostic in one container
+        if: inputs.diagnostic_mode != 'framework-source'
         shell: bash
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
