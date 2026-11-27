@@ -233,7 +233,7 @@ namespace Luckbound.App
         private const string TestFrameworkPackageAssetPath = "Packages/com.unity.test-framework";
         private const string ControllerScriptAssetPath = "Packages/com.unity.test-framework/UnityEngine.TestRunner/TestRunner/PlaymodeTestsController.cs";
         private const string ControllerScriptGuid = "102e512f651ee834f951a2516c1ea3b8";
-        private const string ControllerScriptSha256 = "574984aa87984b572ee45a3372bd57f69b6c49d3da78ccfe8e1e751557e3ca26";
+        private const string ControllerScriptSha256 = "f1fa05b98d81b88979d3c02479de7d6c86bf3ee2804be86d60333aa0536afd5a";
         private const string ControllerScriptMetaSha256 = "3bc9385d15464a7df2d61f4353d88bee51c068a1f1d9a13e9090f24375bb11ab";
         private const string ControllerTypeFullName = "UnityEngine.TestTools.TestRunner.PlaymodeTestsController";
         private const string ControllerAssemblyName = "UnityEngine.TestRunner";
