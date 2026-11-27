@@ -116,6 +116,7 @@ namespace Luckbound.Editor
             string[] projectilePrefabPaths = FindMaterializedProjectilePrefabs();
             List<object> assetRoots = BuildAssetRootRows(roomPrefabPaths, generatedPlayer, generatedCache, projectilePrefabPaths);
             List<object> dependencyRows = CaptureRootDependencyClosures(assetRoots);
+            List<CanonicalBundleDependency> bundleDependencies = CanonicalizeBundleDependencies(dependencyRows);
             object[] packageDependencies = CaptureV7PackageDependencyEvidence(dependencyRows);
             List<object> roomRows = CaptureGeneratedRooms(roomPrefabPaths);
             List<object> physicalPrefabRows = CapturePhysicalPrefabs(generatedPlayer, generatedCache, projectilePrefabPaths);
@@ -195,10 +196,10 @@ namespace Luckbound.Editor
             ValidateFrozenInventoryUnchanged(projectRoot, frozenInventory);
 
             List<BundlePayloadRecord> payloads = MaterializeBundlePayload(projectRoot, outputPath,
-                assetRoots, dependencyRows, assemblyManifest, compiledAssemblies,
+                assetRoots, bundleDependencies, assemblyManifest, compiledAssemblies,
                 assemblyManifestBytes, inventoryBytes, evidenceBytes);
             BundleManifestData bundleManifest = CreateBundleManifest(revisionId, payloads,
-                assetRoots, dependencyRows, missingPhysicalDependencies, installable, packageDependencies);
+                assetRoots, bundleDependencies, missingPhysicalDependencies, installable, packageDependencies);
             byte[] bundleManifestBytes = CanonicalJson.Serialize(bundleManifest.ToJson());
             WriteNewFile(Path.Combine(outputPath, "bundle-manifest.json"), bundleManifestBytes);
             return outputPath;
@@ -632,8 +633,66 @@ namespace Luckbound.Editor
             return rows;
         }
 
+        private static List<CanonicalBundleDependency> CanonicalizeBundleDependencies(IReadOnlyList<object> dependencyRows)
+        {
+            if (dependencyRows == null) throw new ArgumentNullException(nameof(dependencyRows));
+
+            var dependencies = new SortedDictionary<string, CanonicalBundleDependency>(StringComparer.Ordinal);
+            foreach (Dictionary<string, object> closure in dependencyRows.Cast<Dictionary<string, object>>())
+            {
+                foreach (Dictionary<string, object> dependency in ((IEnumerable<object>)closure["dependencyEntries"]).Cast<Dictionary<string, object>>())
+                {
+                    string assetPath = dependency["assetPath"] as string;
+                    ValidateBundleDependencyAssetPath(assetPath);
+                    string guid = dependency["guid"] as string;
+                    if (string.IsNullOrWhiteSpace(guid) || !string.Equals(guid, guid.Trim(), StringComparison.Ordinal))
+                        throw new InvalidDataException("A dependency has an invalid GUID for asset path: " + assetPath);
+
+                    BundleDependencyFileRecord assetBytes = ReadBundleDependencyFileRecord(dependency, "assetBytes", assetPath, assetPath);
+                    BundleDependencyFileRecord metaBytes = ReadBundleDependencyFileRecord(dependency, "metaBytes", assetPath + ".meta", assetPath);
+                    var candidate = new CanonicalBundleDependency(assetPath, guid, assetBytes, metaBytes);
+
+                    if (dependencies.TryGetValue(assetPath, out CanonicalBundleDependency existing))
+                    {
+                        if (!existing.HasSamePhysicalRecords(candidate))
+                            throw new InvalidDataException("Root dependency descriptors disagree for asset path: " + assetPath);
+                        continue;
+                    }
+                    dependencies.Add(assetPath, candidate);
+                }
+            }
+
+            return dependencies.Values.ToList();
+        }
+
+        private static void ValidateBundleDependencyAssetPath(string assetPath)
+        {
+            if (string.IsNullOrEmpty(assetPath) ||
+                !(assetPath.StartsWith("Assets/", StringComparison.Ordinal) || assetPath.StartsWith("Packages/", StringComparison.Ordinal)) ||
+                assetPath.IndexOf('\\') >= 0 ||
+                !IsSafeBundlePath("payload/assets/" + assetPath) ||
+                !IsSafeBundlePath("payload/assets/" + assetPath + ".meta"))
+                throw new InvalidDataException("Dependency path is unsafe or non-canonical: " + (assetPath ?? "<missing>"));
+        }
+
+        private static BundleDependencyFileRecord ReadBundleDependencyFileRecord(Dictionary<string, object> dependency,
+            string key, string expectedPath, string assetPath)
+        {
+            if (!dependency.TryGetValue(key, out object value) || !(value is Dictionary<string, object> record))
+                throw new InvalidDataException("Dependency file record is missing for asset path: " + assetPath);
+            if (!record.TryGetValue("path", out object pathValue) || !(pathValue is string path) ||
+                !string.Equals(path, expectedPath, StringComparison.Ordinal))
+                throw new InvalidDataException("Dependency file record path disagrees for asset path: " + assetPath);
+            if (!record.TryGetValue("sha256", out object shaValue) || !(shaValue is string sha256) ||
+                sha256.Length != 64 || sha256.Any(character => !((character >= '0' && character <= '9') || (character >= 'a' && character <= 'f'))))
+                throw new InvalidDataException("Dependency file record SHA-256 is invalid for asset path: " + assetPath);
+            if (!record.TryGetValue("bytes", out object bytesValue) || !(bytesValue is long bytes) || bytes < 0)
+                throw new InvalidDataException("Dependency file record byte length is missing or invalid for asset path: " + assetPath);
+            return new BundleDependencyFileRecord(path, sha256, bytes);
+        }
+
         private static List<BundlePayloadRecord> MaterializeBundlePayload(string projectRoot, string bundleRoot,
-            IReadOnlyList<object> assetRoots, IReadOnlyList<object> dependencyRows,
+            IReadOnlyList<object> assetRoots, IReadOnlyList<CanonicalBundleDependency> dependencies,
             IReadOnlyDictionary<string, AssemblyRecord> assemblies, IReadOnlyList<CompiledAssemblyRecord> compiledAssemblies,
             byte[] assemblyManifestBytes, byte[] inventoryBytes, byte[] descriptorBytes)
         {
@@ -648,18 +707,14 @@ namespace Luckbound.Editor
             AddPayloadBytes(bundleRoot, rows, destinationPaths, "payload/evidence/physical-descriptor.json",
                 "physical-descriptor", "generated:physical-descriptor.json", descriptorBytes);
 
-            foreach (Dictionary<string, object> closure in dependencyRows.Cast<Dictionary<string, object>>())
+            foreach (CanonicalBundleDependency dependency in dependencies)
             {
-                foreach (Dictionary<string, object> dependency in ((IEnumerable<object>)closure["dependencyEntries"]).Cast<Dictionary<string, object>>())
-                {
-                    string assetPath = dependency["assetPath"].ToString();
-                    Dictionary<string, object> assetBytes = (Dictionary<string, object>)dependency["assetBytes"];
-                    Dictionary<string, object> metaBytes = (Dictionary<string, object>)dependency["metaBytes"];
-                    AddMeasuredPayloadFile(projectRoot, bundleRoot, rows, destinationPaths,
-                        assetPath, "payload/assets/" + assetPath, "asset-dependency", assetBytes["sha256"].ToString());
-                    AddMeasuredPayloadFile(projectRoot, bundleRoot, rows, destinationPaths,
-                        assetPath + ".meta", "payload/assets/" + assetPath + ".meta", "asset-meta", metaBytes["sha256"].ToString());
-                }
+                AddMeasuredPayloadFile(projectRoot, bundleRoot, rows, destinationPaths,
+                    dependency.AssetPath, "payload/assets/" + dependency.AssetPath, "asset-dependency",
+                    dependency.AssetSha256, dependency.AssetBytes);
+                AddMeasuredPayloadFile(projectRoot, bundleRoot, rows, destinationPaths,
+                    dependency.AssetPath + ".meta", "payload/assets/" + dependency.AssetPath + ".meta", "asset-meta",
+                    dependency.MetaSha256, dependency.MetaBytes);
             }
 
             foreach (AssemblyRecord assembly in assemblies.Values.OrderBy(row => row.Name, StringComparer.Ordinal))
@@ -690,7 +745,8 @@ namespace Luckbound.Editor
         }
 
         private static void AddMeasuredPayloadFile(string projectRoot, string bundleRoot, List<BundlePayloadRecord> rows,
-            HashSet<string> destinationPaths, string sourcePath, string destinationPath, string role, string expectedSha256)
+            HashSet<string> destinationPaths, string sourcePath, string destinationPath, string role, string expectedSha256,
+            long? expectedBytes = null)
         {
             string fullSourcePath = sourcePath.StartsWith("Packages/", StringComparison.Ordinal)
                 ? GetPhysicalAssetOrMetaPath(sourcePath)
@@ -698,6 +754,8 @@ namespace Luckbound.Editor
             FileRecord measured = ReadStrictFileRecord(sourcePath, fullSourcePath);
             if (!string.IsNullOrEmpty(expectedSha256) && !string.Equals(measured.Sha256, expectedSha256, StringComparison.Ordinal))
                 throw new IOException("A materialized input changed since its descriptor measurement: " + sourcePath);
+            if (expectedBytes.HasValue && measured.Length != expectedBytes.Value)
+                throw new IOException("A materialized input byte length changed since its descriptor measurement: " + sourcePath);
             byte[] bytes = File.ReadAllBytes(fullSourcePath);
             AddPayloadBytes(bundleRoot, rows, destinationPaths, destinationPath, role, sourcePath, bytes, measured);
         }
@@ -727,28 +785,21 @@ namespace Luckbound.Editor
         }
 
         private static BundleManifestData CreateBundleManifest(string revisionId, IReadOnlyList<BundlePayloadRecord> payloads,
-            IReadOnlyList<object> assetRoots, IReadOnlyList<object> dependencyRows,
+            IReadOnlyList<object> assetRoots, IReadOnlyList<CanonicalBundleDependency> canonicalDependencies,
             IReadOnlyList<object> missingDependencies, bool installable, object[] packageDependencies)
         {
             var dependencies = new Dictionary<string, BundleDependencyRecord>(StringComparer.Ordinal);
-            foreach (Dictionary<string, object> closure in dependencyRows.Cast<Dictionary<string, object>>())
+            foreach (CanonicalBundleDependency dependency in canonicalDependencies)
             {
-                foreach (Dictionary<string, object> dependency in ((IEnumerable<object>)closure["dependencyEntries"]).Cast<Dictionary<string, object>>())
+                dependencies.Add(dependency.AssetPath, new BundleDependencyRecord
                 {
-                    string assetPath = dependency["assetPath"].ToString();
-                    Dictionary<string, object> assetBytes = (Dictionary<string, object>)dependency["assetBytes"];
-                    Dictionary<string, object> metaBytes = (Dictionary<string, object>)dependency["metaBytes"];
-                    if (dependencies.ContainsKey(assetPath)) continue;
-                    dependencies.Add(assetPath, new BundleDependencyRecord
-                    {
-                        assetPath = assetPath,
-                        assetPayloadPath = "payload/assets/" + assetPath,
-                        metaPayloadPath = "payload/assets/" + assetPath + ".meta",
-                        guid = dependency["guid"].ToString(),
-                        assetSha256 = assetBytes["sha256"].ToString(),
-                        metaSha256 = metaBytes["sha256"].ToString()
-                    });
-                }
+                    assetPath = dependency.AssetPath,
+                    assetPayloadPath = "payload/assets/" + dependency.AssetPath,
+                    metaPayloadPath = "payload/assets/" + dependency.AssetPath + ".meta",
+                    guid = dependency.Guid,
+                    assetSha256 = dependency.AssetSha256,
+                    metaSha256 = dependency.MetaSha256
+                });
             }
             return new BundleManifestData
             {
@@ -1355,6 +1406,53 @@ namespace Luckbound.Editor
                 { "assetPath", assetPath }, { "assetPayloadPath", assetPayloadPath }, { "assetSha256", assetSha256 },
                 { "guid", guid }, { "metaPayloadPath", metaPayloadPath }, { "metaSha256", metaSha256 }
             };
+        }
+
+        private sealed class CanonicalBundleDependency
+        {
+            internal CanonicalBundleDependency(string assetPath, string guid, BundleDependencyFileRecord assetBytes,
+                BundleDependencyFileRecord metaBytes)
+            {
+                AssetPath = assetPath;
+                Guid = guid;
+                AssetFile = assetBytes;
+                MetaFile = metaBytes;
+            }
+
+            internal string AssetPath { get; }
+            internal string Guid { get; }
+            internal BundleDependencyFileRecord AssetFile { get; }
+            internal BundleDependencyFileRecord MetaFile { get; }
+            internal string AssetSha256 => AssetFile.Sha256;
+            internal long AssetBytes => AssetFile.Bytes;
+            internal string MetaSha256 => MetaFile.Sha256;
+            internal long MetaBytes => MetaFile.Bytes;
+
+            internal bool HasSamePhysicalRecords(CanonicalBundleDependency other)
+            {
+                return other != null &&
+                    string.Equals(AssetPath, other.AssetPath, StringComparison.Ordinal) &&
+                    string.Equals(Guid, other.Guid, StringComparison.Ordinal) &&
+                    AssetFile.HasSameRecord(other.AssetFile) && MetaFile.HasSameRecord(other.MetaFile);
+            }
+        }
+
+        private sealed class BundleDependencyFileRecord
+        {
+            internal BundleDependencyFileRecord(string path, string sha256, long bytes)
+            { Path = path; Sha256 = sha256; Bytes = bytes; }
+
+            internal string Path { get; }
+            internal string Sha256 { get; }
+            internal long Bytes { get; }
+
+            internal bool HasSameRecord(BundleDependencyFileRecord other)
+            {
+                return other != null &&
+                    string.Equals(Path, other.Path, StringComparison.Ordinal) &&
+                    string.Equals(Sha256, other.Sha256, StringComparison.Ordinal) &&
+                    Bytes == other.Bytes;
+            }
         }
 
         private sealed class CompiledAssemblyRecord
