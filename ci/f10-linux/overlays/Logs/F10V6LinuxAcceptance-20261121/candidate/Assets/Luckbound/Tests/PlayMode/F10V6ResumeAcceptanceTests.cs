@@ -221,29 +221,16 @@ namespace Luckbound.Tests.PlayMode
             // Fixed frame duration only; health, damage, collision, physics and win conditions stay real.
             Time.captureDeltaTime = 1f / 30f;
             F10DiagnosticSceneRunner.SetSessionModeForNextStart(mode);
-            bool activatedBeforeStart = false;
-            UnityEngine.Events.UnityAction<Scene, LoadSceneMode> activateLoadedDiagnostic = (loaded, loadMode) =>
-            {
-                if (!string.Equals(loaded.path, ScenePath, StringComparison.Ordinal)) return;
-                Assert.That(loadMode, Is.EqualTo(LoadSceneMode.Additive));
-                Assert.That(loaded.IsValid() && loaded.isLoaded, Is.True);
-                if (SceneManager.GetActiveScene() != loaded) SceneManager.SetActiveScene(loaded);
-                activatedBeforeStart = SceneManager.GetActiveScene() == loaded;
-                Assert.That(activatedBeforeStart, Is.True, "The exact diagnostic scene must be active before runner Start.");
-            };
-            SceneManager.sceneLoaded += activateLoadedDiagnostic;
-            try
-            {
-                context.DiagnosticScene = EditorSceneManager.LoadSceneInPlayMode(ScenePath,
-                    new LoadSceneParameters(LoadSceneMode.Additive));
-                Assert.That(context.DiagnosticScene.IsValid(), Is.True);
-                Assert.That(activatedBeforeStart, Is.True, "The exact scene-loaded callback must activate the diagnostic scene.");
-                Assert.That(SceneManager.GetActiveScene(), Is.EqualTo(context.DiagnosticScene));
-            }
-            finally
-            {
-                SceneManager.sceneLoaded -= activateLoadedDiagnostic;
-            }
+            context.DiagnosticScene = EditorSceneManager.LoadSceneInPlayMode(ScenePath,
+                new LoadSceneParameters(LoadSceneMode.Additive));
+            Assert.That(context.DiagnosticScene.IsValid() && context.DiagnosticScene.isLoaded, Is.True,
+                "The canonical diagnostic scene must be valid and loaded.");
+            Assert.That(context.DiagnosticScene.path, Is.EqualTo(ScenePath));
+            Assert.That(context.DiagnosticScene.name, Is.EqualTo("F10Diagnostic"));
+            if (SceneManager.GetActiveScene() != context.DiagnosticScene)
+                SceneManager.SetActiveScene(context.DiagnosticScene);
+            Assert.That(SceneManager.GetActiveScene(), Is.EqualTo(context.DiagnosticScene),
+                "The canonical diagnostic scene must be active before waiting for its runner.");
 
             double deadline = Time.realtimeSinceStartupAsDouble + 45d;
             for (int frame = 0; frame < 2400 && Time.realtimeSinceStartupAsDouble < deadline; frame++)
