@@ -265,6 +265,11 @@ namespace Luckbound.Tests.PlayMode
         private static IEnumerator CompleteTutorial(RouteContext context)
         {
             AssertNode(context, TutorialNode, "tutorial start");
+            Vector3 initialPosition = context.Player.transform.position;
+            float minX = initialPosition.x, maxX = initialPosition.x;
+            float minY = initialPosition.y, maxY = initialPosition.y;
+            long initialTick = context.Player.SimulationTick;
+            int observedFrames = 0, movingCommandFrames = 0, groundedFrames = 0;
             long lastTick = -1;
             long jumpUntil = -1;
             long interactUntil = -1;
@@ -275,6 +280,13 @@ namespace Luckbound.Tests.PlayMode
                 CurrentNode(context) == TutorialNode; frame++)
             {
                 yield return null;
+                observedFrames++;
+                Vector3 position = context.Player.transform.position;
+                minX = Mathf.Min(minX, position.x); maxX = Mathf.Max(maxX, position.x);
+                minY = Mathf.Min(minY, position.y); maxY = Mathf.Max(maxY, position.y);
+                if (context.Player.IsGrounded) groundedFrames++;
+                if (context.Player.HasConsumedCommand && Mathf.Abs(context.Player.LastConsumedCommand.MoveX) > 0.1f)
+                    movingCommandFrames++;
                 long tick = context.Player.SimulationTick;
                 if (tick == lastTick)
                 {
@@ -299,8 +311,27 @@ namespace Luckbound.Tests.PlayMode
                 }
                 SetKey(context, Key.E, interactionRequested && tick < interactUntil);
             }
+            Rigidbody2D body = context.Player.GetComponent<Rigidbody2D>();
+            string tutorialState = "Tutorial observation: frames=" + observedFrames +
+                "; tick=" + initialTick + "->" + context.Player.SimulationTick +
+                "; initial=" + initialPosition + "; final=" + context.Player.transform.position +
+                "; xRange=" + minX + ".." + maxX + "; yRange=" + minY + ".." + maxY +
+                "; groundedFrames=" + groundedFrames + "; movingCommandFrames=" + movingCommandFrames +
+                "; consumed=" + context.Player.HasConsumedCommand +
+                "; commandMove=" + context.Player.LastConsumedCommand.MoveX +
+                "; commandPressed=" + context.Player.LastConsumedCommand.Pressed +
+                "; velocity=" + (body == null ? "missing" : body.linearVelocity.ToString()) +
+                "; timeScale=" + Time.timeScale + "; fixedDelta=" + Time.fixedDeltaTime +
+                "; active=" + context.Player.isActiveAndEnabled +
+                "; keyboardEnabled=" + context.Keyboard.enabled + "; dKey=" + context.Keyboard.dKey.isPressed +
+                "; focused=" + Application.isFocused + "; runInBackground=" + Application.runInBackground +
+                "; inputUpdate=" + InputSystem.settings.updateMode +
+                "; background=" + InputSystem.settings.backgroundBehavior +
+                "; node=" + CurrentNode(context);
+            TestContext.WriteLine(tutorialState);
             ReleaseAll(context);
-            Assert.That(interactionRequested, Is.True, "The player did not reach the physical tutorial interaction.");
+            Assert.That(interactionRequested, Is.True,
+                "The player did not reach the physical tutorial interaction. " + tutorialState);
             yield return WaitForNode(context, C1Node, 60d, 3600);
         }
 
